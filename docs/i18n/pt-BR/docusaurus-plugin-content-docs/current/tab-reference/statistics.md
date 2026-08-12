@@ -6,7 +6,7 @@ sidebar_position: 6
 
 A guia de estatísticas permite uma análise estatística profunda de campos numéricos, analisando tendências gerais em vez de mudanças ao longo do tempo. Os campos selecionados são analisados usando um histograma e uma variedade de medidas estatísticas padrão.
 
-<img src="/img/tab-reference/statistics-1.png" alt="Visão geral da aba de estatísticas" />
+<img src="/img/tab-reference/statistics-1.webp" alt="Visão geral da aba de estatísticas" />
 
 ## Painel de controle {#control-pane}
 

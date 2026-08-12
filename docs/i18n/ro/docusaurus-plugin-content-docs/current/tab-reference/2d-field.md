@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 Fila teren 2D prezintă o vizualizare 2D a robotului suprapusă pe o hartă a terenului. De asemenea, poate afișa date suplimentare, cum ar fi starea țintirii vizuale și pose-uri de referință.
 
-<img src="/img/tab-reference/2d-field-1.png" alt="Prezentare generală a filei teren 2D" />
+<img src="/img/tab-reference/2d-field-1.webp" alt="Prezentare generală a filei teren 2D" />
 
 <details>
 <summary>Controale cronologie</summary>
@@ -20,7 +20,7 @@ Secțiunile galbene indică momentul în care robotul este în modul autonom, se
 
 Pentru a mări, plasați cursorul peste cronologie și derulați în sus sau în jos. Un interval poate fi de asemenea selectat prin clic și tragere în timp ce țineți apăsată tasta `Shift`. Mutați-vă la stânga și la dreapta prin derulare orizontală (pe dispozitivele suportate) sau prin clic și tragere pe cronologie. Când sunteți conectat live, derularea spre stânga deblochează timpul curent, iar derularea până la capăt în dreapta blochează din nou timpul curent. Apăsați `Ctrl+\` pentru a mări la perioada în care robotul este activat.
 
-<img src="/img/tab-reference/timeline.png" alt="Cronologie" />
+<img src="/img/tab-reference/timeline.webp" alt="Cronologie" />
 
 </details>
 
@@ -34,7 +34,7 @@ Pentru a începe, trageți un câmp în secțiunea „Pose-uri”. Ștergeți un
 Pentru a vedea o listă completă a tipurilor de obiecte suportate, dați clic pe pictograma `?`. Această listă include de asemenea tipurile de date suportate și dacă obiectele trebuie adăugate ca obiecte copil.
 :::
 
-<img src="/img/tab-reference/2d-field-2.png" alt="Teren 2D cu obiecte" />
+<img src="/img/tab-reference/2d-field-2.webp" alt="Teren 2D cu obiecte" />
 
 ## Formatul datelor {#data-format}
 

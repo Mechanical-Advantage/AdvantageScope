@@ -27,7 +27,7 @@ AdvantageScope 中的所有視覺化除了支援日誌檔案外，還被設計�
 
 當連線到即時來源時，AdvantageScope 預設會將所有分頁鎖定為目前時間。諸如 📉 [折線圖](/tab-reference/line-graph) 和 🔢 [表格](/tab-reference/table) 等視圖會自動滾動，而場地與搖桿等視圖則顯示每個欄位的目前值。點擊導覽列中的紅色箭頭按鈕可切換此鎖定狀態，進而允許檢視與重播過去的資料。
 
-<img src="/img/overview/live-sources/open-live-1.png" alt="即時鎖定/解鎖按鈕" />
+<img src="/img/overview/live-sources/open-live-1.webp" alt="即時鎖定/解鎖按鈕" />
 
 :::tip
 在折線圖或時間軸中向左滾動會解鎖目前時間，滾動到最右側會再次鎖定到目前時間。
@@ -37,7 +37,7 @@ AdvantageScope 中的所有視覺化除了支援日誌檔案外，還被設計�
 
 點擊 `應用程式` > `顯示偏好設定...` (Windows/Linux) 或 `AdvantageScope` > `設定...` (macOS) 開啟偏好設定視窗。
 
-<img src="/img/prefs.png" alt="偏好設定圖解" />
+<img src="/img/prefs.webp" alt="偏好設定圖解" />
 
 ### 機器人位址 {#robot-address}
 

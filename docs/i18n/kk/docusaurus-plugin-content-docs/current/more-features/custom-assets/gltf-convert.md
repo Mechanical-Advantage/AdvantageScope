@@ -8,11 +8,11 @@ Onshape ішінде glTF үшін экспорттау опциясы болс�
 
 1. Onshape файлын ашқаннан кейін, негізгі торапты (main assembly) тінтуірдің оң жақ түймесімен басып, «Export...» тармағын таңдаңыз:
 
-<img src="/img/more-features/custom-assets/gltf-convert-1.png" alt="«Export...» опциясын таңдау" />
+<img src="/img/more-features/custom-assets/gltf-convert-1.webp" alt="«Export...» опциясын таңдау" />
 
 2. Опциялардың қалқымалы терезесінде экспорттау пішімі «STEP» екеніне көз жеткізіп, «Export» басыңыз:
 
-<img src="/img/more-features/custom-assets/gltf-convert-2.png" alt="Экспорттау опцияларының қалқымалы терезесі" />
+<img src="/img/more-features/custom-assets/gltf-convert-2.webp" alt="Экспорттау опцияларының қалқымалы терезесі" />
 
 3. Файл түрлендіріліп, жүктеп алынғанша күтіңіз. Бұл бірнеше минут алуы мүмкін.
 
@@ -22,22 +22,22 @@ Onshape ішінде glTF үшін экспорттау опциясы болс�
 
 2. CAD Assistant бағдарламасын ашып, түрлендірілетін STEP файлын таңдаңыз:
 
-<img src="/img/more-features/custom-assets/gltf-convert-3.png" alt="STEP файлын CAD Assistant бағдарламасында ашу" />
+<img src="/img/more-features/custom-assets/gltf-convert-3.webp" alt="STEP файлын CAD Assistant бағдарламасында ашу" />
 
 3. STEP файлы импортталғанша күтіңіз. Бұл бірнеше минут алуы мүмкін.
 
 4. «Save» белгішесін басыңыз:
 
-<img src="/img/more-features/custom-assets/gltf-convert-4.png" alt="«Сақтау» белгішесіن басу" />
+<img src="/img/more-features/custom-assets/gltf-convert-4.webp" alt="«Сақтау» белгішесіن басу" />
 
 5. Сақтау орнын таңдаңыз, содан кейін ашылмалы тізімді пайдаланып, экспорттау пішімін «glb» күйіне ауыстырыңыз:
 
-<img src="/img/more-features/custom-assets/gltf-convert-5.png" alt="Экспорттау форматын ауыстыру" />
+<img src="/img/more-features/custom-assets/gltf-convert-5.webp" alt="Экспорттау форматын ауыстыру" />
 
 6. Тісті дөңгелек белгішесін басып, «Merge faces within the same part» опциясын қосыңыз:
 
-<img src="/img/more-features/custom-assets/gltf-convert-6.png" alt="«Merge faces within the same part» параметрін қосу" />
+<img src="/img/more-features/custom-assets/gltf-convert-6.webp" alt="«Merge faces within the same part» параметрін қосу" />
 
 7. «Save» белгішесін басып, экспорттаудың аяқталуын күтіңіз:
 
-<img src="/img/more-features/custom-assets/gltf-convert-7.png" alt="«Сақтау» белгішесіن басу" />
+<img src="/img/more-features/custom-assets/gltf-convert-7.webp" alt="«Сақтау» белгішесіن басу" />

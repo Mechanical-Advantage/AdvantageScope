@@ -5,8 +5,8 @@ sidebar_position: 2
 
 #
 
-<img src="/img/whats-new/banner-light.png" className="light-only" />
-<img src="/img/whats-new/banner-dark.png" className="dark-only" />
+<img src="/img/whats-new/banner-light.webp" className="light-only" />
+<img src="/img/whats-new/banner-dark.webp" className="dark-only" />
 
 Версия AdvantageScope 2026 года уже доступна! Ознакомьтесь с [документацией по установке](/overview/installation) и [полным списком изменений](https://github.com/Mechanical-Advantage/AdvantageScope/releases) для получения подробностей. Этот релиз включает несколько крупных новых функций и многочисленные улучшения по всему приложению. Многие функции в этом релизе разработаны для улучшения работы с существующими системами управления и обеспечения плавного перехода на [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) в будущих сезонах.
 
@@ -28,9 +28,9 @@ sidebar_position: 2
 <div className="image-gallery">
   <img src="/img/whats-new/ftc-1.jpg" />
   <img src="/img/whats-new/ftc-2.jpg" />
-  <img src="/img/whats-new/ftc-3.png" />
-  <img src="/img/whats-new/ftc-4.png" />
-  <img src="/img/whats-new/ftc-5.png" />
+  <img src="/img/whats-new/ftc-3.webp" />
+  <img src="/img/whats-new/ftc-4.webp" />
+  <img src="/img/whats-new/ftc-5.webp" />
 </div>
 
 Несколько сторонних библиотек логирования/телеметрии FTC поддерживают другие форматы, совместимые с AdvantageScope, такие как WPILOG и RLOG. Документацию по этим библиотекам можно найти в соответствующих проектах; разработчики AdvantageScope не рекламируют и не рекомендуют какое-либо конкретное решение для логирования FTC для использования с AdvantageScope.
@@ -54,7 +54,7 @@ AdvantageScope разработано для обеспечения наилуч
 
 _Дополнительную информацию о поддержке единиц измерения можно найти в [документации](/tab-reference/line-graph/units)._
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="Графики с учетом единиц измерения" />
+<img src="/img/tab-reference/line-graph/units-1.webp" alt="Графики с учетом единиц измерения" />
 
 ## 🏁 Более быстрое скачивание логов {#faster-log-downloads}
 
@@ -72,7 +72,7 @@ _Дополнительную информацию о поддержке еди�
 
 Окно скачивания теперь поддерживает сохранение логов, хранящихся в подпапках. Каждую подпапку с логами можно скачать как группу, что обеспечивает оптимизированный подход для скачивания логов, сгенерированных релизом 2026 года CTRE [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) (который использует подпапки в качестве обходного пути из-за невозможности сохранения данных в одном файле лога).
 
-<img src="/img/whats-new/subfolders.png" alt="Загрузка подпапок логов" />
+<img src="/img/whats-new/subfolders.webp" alt="Загрузка подпапок логов" />
 
 ## 🌈 Новые опции визуализации {#new-visualization-options}
 
@@ -90,19 +90,19 @@ _Дополнительную информацию о поддержке еди�
 
 И URCL, и официальный `StatusLogger` останутся доступными в течение сезона 2026 года для обеспечения плавного перехода и сохранения функционального паритета с предыдущими сезонами. Позже мы поделимся более подробной информацией о вариантах логирования в 2027 году и далее.
 
-<img src="/img/whats-new/revlog.png" alt="Визуализация REVLOG" />
+<img src="/img/whats-new/revlog.webp" alt="Визуализация REVLOG" />
 
 ## 💿 Импорт CSV-файлов {#csv-file-imports}
 
 Для более гибкой визуализации данных, созданных вне фреймворков логирования робота, AdvantageScope теперь включает базовую поддержку импорта CSV-файлов. Ознакомьтесь с [документацией](/overview/log-files/#csv-formatting) для получения дополнительной информации о поддерживаемых форматах и других ограничениях.
 
-<img src="/img/overview/log-files/export-2.png" alt="Данные CSV" />
+<img src="/img/overview/log-files/export-2.webp" alt="Данные CSV" />
 
 ## 🤩 Улучшения внешнего вида {#aesthetic-improvements}
 
 Пользовательский интерфейс AdvantageScope в Windows 11 был обновлен и теперь поддерживает полупрозрачную боковую панель, которая ранее была доступна только в релизах для macOS. Обновленная иконка приложения также доступна для macOS Tahoe на основе материала Apple Liquid Glass.
 
-<img src="/img/whats-new/windows-ui.png" alt="Пользовательский интерфейс Windows" />
+<img src="/img/whats-new/windows-ui.webp" alt="Пользовательский интерфейс Windows" />
 
 ## 📋 Упрощённые меню {#streamlined-menus}
 
@@ -113,9 +113,9 @@ _Дополнительную информацию о поддержке еди�
 - Реорганизация окна настроек, что облегчает быстрый поиск опций.
 
 <div className="image-gallery">
-  <img src="/img/whats-new/menus-1.png" />
-  <img src="/img/whats-new/menus-2.png" />
-  <img src="/img/prefs.png" />
+  <img src="/img/whats-new/menus-1.webp" />
+  <img src="/img/whats-new/menus-2.webp" />
+  <img src="/img/prefs.webp" />
 </div>
 
 ## 🐛 Улучшения стабильности {#stability-improvements}

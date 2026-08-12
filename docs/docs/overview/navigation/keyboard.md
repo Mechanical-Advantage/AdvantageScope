@@ -84,5 +84,5 @@ AdvantageScope includes numerous keyboard shortcuts that allow for faster naviga
 
 On supported MacBook models, the Touch Bar can be used to scrub through the log and add new tabs.
 
-<img src="/img/overview/navigation/keyboard-1.png" alt="Touch Bar scrubbing interface" />
-<img src="/img/overview/navigation/keyboard-2.png" alt="Touch Bar new tab interface" />
+<img src="/img/overview/navigation/keyboard-1.webp" alt="Touch Bar scrubbing interface" />
+<img src="/img/overview/navigation/keyboard-2.webp" alt="Touch Bar new tab interface" />

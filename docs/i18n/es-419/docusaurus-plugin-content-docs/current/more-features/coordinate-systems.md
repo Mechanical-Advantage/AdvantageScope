@@ -18,22 +18,22 @@ Todas las opciones del sistema de coordenadas son compatibles con los campos de 
 
 El origen está en el centro del campo con el eje +X mirando en dirección opuesta a la pared de la alianza roja, como se muestra a continuación. **Este es el sistema de coordenadas predeterminado para los campos de FRC a partir de 2027 y los campos de FTC a partir de 2027-2028.**
 
-<img src="/img/more-features/coordinate-system-center-red.png" alt="Sistema de coordenadas centro/rojo" />
+<img src="/img/more-features/coordinate-system-center-red.webp" alt="Sistema de coordenadas centro/rojo" />
 
 ## Pared azul {#blue-wall}
 
 El origen está en la esquina más a la derecha de la pared de la alianza azul con el eje +X mirando hacia la pared de la alianza roja, como se muestra a continuación. **Este es el sistema de coordenadas predeterminado para los campos de FRC de 2023 a 2026.**
 
-<img src="/img/more-features/coordinate-system-blue-wall.png" alt="Sistema de coordenadas pared azul" />
+<img src="/img/more-features/coordinate-system-blue-wall.webp" alt="Sistema de coordenadas pared azul" />
 
 ## Pared de la alianza {#alliance-wall}
 
 El origen está en la esquina más a la derecha de la pared de la alianza para la _alianza actual del robot_ con el eje +X mirando hacia la pared de la alianza opuesta, como se muestra a continuación. **Este es el sistema de coordenadas predeterminado para FRC en 2022.**
 
-<img src="/img/more-features/coordinate-system-alliance-wall.png" alt="Sistema de coordenadas pared de alianza" />
+<img src="/img/more-features/coordinate-system-alliance-wall.webp" alt="Sistema de coordenadas pared de alianza" />
 
 ## Centro/rotado {#center-rotated}
 
 El origen está en el centro del campo con el eje +X apuntando hacia la derecha desde la perspectiva de la pared de la alianza roja, como se muestra a continuación. **Este es el sistema de coordenadas predeterminado para los campos de FTC de 2024-2025 a 2026-2027.**
 
-<img src="/img/more-features/coordinate-system-center-rotated.png" alt="Sistema de coordenadas centro/rotado" />
+<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="Sistema de coordenadas centro/rotado" />

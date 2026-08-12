@@ -6,7 +6,7 @@ The line graph tab is unit-aware, which means that numeric values can be easily 
 - Click the three dots near the axis title to **quickly switch to alternative units**. This list includes the most common units that are compatible with the selected fields.
 - Enable **integration or differentiation** ([docs](/tab-reference/line-graph/#integration-and-differentiation)) to see the accurate integral or derivative units. The base unit can be adjusted using the menu to support filtering in non-native units.
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="Unit-aware graphing" />
+<img src="/img/tab-reference/line-graph/units-1.webp" alt="Unit-aware graphing" />
 
 ## Supported Formats {#supported-formats}
 
@@ -54,4 +54,4 @@ To configure manual conversion, click the three dots near the axis title and the
 To quickly enable or disable unit conversion, click the three dots near the axis title and choose `Recent Presets` or `Reset Units`.
 :::
 
-<img src="/img/tab-reference/line-graph/units-2.png" alt="Editing unit conversion" height="250" />
+<img src="/img/tab-reference/line-graph/units-2.webp" alt="Editing unit conversion" height="250" />

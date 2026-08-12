@@ -2,7 +2,7 @@
 
 Aşağıdaki ekran görüntüsü, ana AdvantageScope penceresinin önemli öğelerini göstermektedir. Tam görünüm işletim sistemlerine göre değişiklik gösterir.
 
-<img src="/img/overview/navigation/navigation-1.png" alt="Gezinme diyagramı" />
+<img src="/img/overview/navigation/navigation-1.webp" alt="Gezinme diyagramı" />
 
 :::tip
 Birden fazla log dosyasını eş zamanlı olarak görüntülemek için `Dosya` > `Yeni Pencere` seçeneğine tıklayın.

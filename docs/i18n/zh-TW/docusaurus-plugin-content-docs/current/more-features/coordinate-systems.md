@@ -18,22 +18,22 @@ AdvantageScope 在 [🗺️ 2D 場地](/tab-reference/2d-field) 與 [👀 3D 場
 
 原點位於場地中心，+X 軸背對紅方聯盟牆，如下圖所示。**這是自 2027 年起的 FRC 場地與自 2027-2028 年起的 FTC 場地的預設座標系。**
 
-<img src="/img/more-features/coordinate-system-center-red.png" alt="中心/紅方座標系" />
+<img src="/img/more-features/coordinate-system-center-red.webp" alt="中心/紅方座標系" />
 
 ## 藍方牆 {#blue-wall}
 
 原點位於藍方聯盟牆的最右角，+X 軸面向紅方聯盟牆，如下圖所示。**這是 2023 年至 2026 年 FRC 場地的預設座標系。**
 
-<img src="/img/more-features/coordinate-system-blue-wall.png" alt="藍方牆座標系" />
+<img src="/img/more-features/coordinate-system-blue-wall.webp" alt="藍方牆座標系" />
 
 ## 聯盟牆 {#alliance-wall}
 
 原點位於*機器人目前聯盟*的聯盟牆最右角，+X 軸面向對面聯盟牆，如下圖所示。**這是 2022 年 FRC 的預設座標系。**
 
-<img src="/img/more-features/coordinate-system-alliance-wall.png" alt="聯盟牆座標系" />
+<img src="/img/more-features/coordinate-system-alliance-wall.webp" alt="聯盟牆座標系" />
 
 ## 中心/旋轉 {#center-rotated}
 
 原點位於場地中心，從紅方聯盟牆的視角來看，+X 軸面向右側，如下圖所示。**這是 2024-2025 年至 2026-2027 年 FTC 場地的預設座標系。**
 
-<img src="/img/more-features/coordinate-system-center-rotated.png" alt="中心/旋轉座標系" />
+<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="中心/旋轉座標系" />

@@ -8,7 +8,7 @@ AdvantageScope comprend un système flexible pour exporter des données de journ
 
 Pour afficher les options d'exportation, cliquez sur `Fichier` > `Exporter les données...`.
 
-<img src="/img/overview/log-files/export-1.png" alt="Options d'exportation" />
+<img src="/img/overview/log-files/export-1.webp" alt="Options d'exportation" />
 
 :::tip
 En plus de l'exportation complète du journal décrite ici, l'onglet 💬 [Console](/tab-reference/console) permet d'exporter les données de la console vers un fichier texte.
@@ -46,4 +46,4 @@ Les options suivantes sont fournies lors de l'exportation :
 
 Un exemple de fichier CSV exporté depuis AdvantageScope est illustré ci-dessous, au format « CSV (Tableau) » avec des horodatages définis sur « Tous les changements » :
 
-<img src="/img/overview/log-files/export-2.png" alt="Tableau CSV" />
+<img src="/img/overview/log-files/export-2.webp" alt="Tableau CSV" />

@@ -22,7 +22,7 @@ Fișierele log Hoot pot fi deschise numai după ce sunteți de acord cu [acordul
 Dacă sunt deschise mai multe fișiere simultan, marcajele de timp vor fi aliniate automat. Acest lucru permite compararea ușoară a fișierelor log din mai multe surse.
 :::
 
-<img src="/img/overview/log-files/open-file-1.png" alt="Deschiderea unui log salvat" />
+<img src="/img/overview/log-files/open-file-1.webp" alt="Deschiderea unui log salvat" />
 
 ## Adăugarea de loguri noi {#adding-new-logs}
 
@@ -37,7 +37,7 @@ După deschiderea unui fișier log, loguri suplimentare pot fi adăugate cu ușu
 
 Deschideți fereastra de preferințe dând clic pe `Aplicație` > `Afișează preferințele...` (Windows/Linux) sau `AdvantageScope` > `Setări...` (macOS). Actualizați adresa robotului și folderul de loguri.
 
-<img src="/img/prefs.png" alt="Diagramă de preferințe" />
+<img src="/img/prefs.webp" alt="Diagramă de preferințe" />
 </details>
 
 Dați clic pe `Fișier` > `Descărcare loguri...` pentru a deschide fereastra de descărcare. Odată conectat la robot, logurile disponibile sunt afișate cu cele mai noi în partea de sus. Selectați unul sau mai multe fișiere log de descărcat (shift-clic pentru a selecta un interval sau **cmd/ctrl + A** pentru a selecta tot). Apoi dați clic pe simbolul ↓ și selectați o locație de salvare.
@@ -50,7 +50,7 @@ Dați clic pe `Fișier` > `Descărcare loguri...` pentru a deschide fereastra de
 La descărcarea mai multor fișiere, AdvantageScope omite orice fișiere care există deja în folderul de destinație.
 :::
 
-<img src="/img/overview/log-files/open-file-2.png" alt="Descărcarea fișierelor log" />
+<img src="/img/overview/log-files/open-file-2.webp" alt="Descărcarea fișierelor log" />
 
 ## Formatarea CSV {#csv-formatting}
 

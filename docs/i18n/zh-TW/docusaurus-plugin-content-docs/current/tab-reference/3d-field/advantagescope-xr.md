@@ -32,11 +32,11 @@ AdvantageScope XR 僅在 iOS 與 iPadOS 上受支援。目前沒有支援其他�
 
 1. 在主機系統上，**點擊任何 3D 場地分頁上的「XR」按鈕**。同一時間只能有一個 XR 主機工作階段處於活動狀態，因此點擊此按鈕將中斷任何其他活動工作階段。
 
-<img src="/img/tab-reference/3d-field/xr-1.png" alt="XR 按鈕" />
+<img src="/img/tab-reference/3d-field/xr-1.webp" alt="XR 按鈕" />
 
 2. **XR 控制視窗**將開啟，其中包含 QR 碼與自訂 AR 體驗的[選項](#options)。要取消 XR 工作階段並中斷任何客戶端的連線，請關閉控制視窗。
 
-<img src="/img/tab-reference/3d-field/xr-2.png" alt="XR 視窗" />
+<img src="/img/tab-reference/3d-field/xr-2.webp" alt="XR 視窗" />
 
 3. 使用客戶端裝置上的**內建相機應用程式**掃描 QR 碼。無需安裝應用程式。
 4. 點擊「AdvantageScope XR」，然後點擊「打開」以**啟動體驗**並連線到主機。如果出現提示，請允許 AdvantageScope XR 存取**相機和區域網路**。

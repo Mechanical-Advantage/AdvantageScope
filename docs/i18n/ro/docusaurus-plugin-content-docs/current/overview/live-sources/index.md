@@ -27,7 +27,7 @@ Titlul ferestrei afișează adresa IP și textul „Se caută” până când ț
 
 Când este conectat la o sursă live, AdvantageScope blochează toate filele la timpul curent în mod implicit. Vizualizările precum 📉 [Grafic liniar](/tab-reference/line-graph) și 🔢 [Tabel](/tab-reference/table) se derulează automat, iar vizualizările precum terenul și joystick-urile afișează valorile curente ale fiecărui câmp. Dând clic pe butonul săgeată roșie din bara de navigare, se comută acest blocaj, permițând vizualizarea și reluarea datelor anterioare.
 
-<img src="/img/overview/live-sources/open-live-1.png" alt="Buton de blocare/deblocare live" />
+<img src="/img/overview/live-sources/open-live-1.webp" alt="Buton de blocare/deblocare live" />
 
 :::tip
 Derularea spre stânga în graficul liniar sau cronologie deblochează timpul curent, iar derularea până la capăt în dreapta blochează din nou timpul curent.
@@ -37,7 +37,7 @@ Derularea spre stânga în graficul liniar sau cronologie deblochează timpul cu
 
 Deschideți fereastra de preferințe dând clic pe `Aplicație` > `Afișează preferințele...` (Windows/Linux) sau `AdvantageScope` > `Setări...` (macOS).
 
-<img src="/img/prefs.png" alt="Diagramă de preferințe" />
+<img src="/img/prefs.webp" alt="Diagramă de preferințe" />
 
 ### Adresă robot {#robot-address}
 

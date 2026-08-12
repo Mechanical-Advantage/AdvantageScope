@@ -5,8 +5,8 @@ sidebar_position: 2
 
 #
 
-<img src="/img/whats-new/banner-light.png" className="light-only" />
-<img src="/img/whats-new/banner-dark.png" className="dark-only" />
+<img src="/img/whats-new/banner-light.webp" className="light-only" />
+<img src="/img/whats-new/banner-dark.webp" className="dark-only" />
 
 Versiunea 2026 a AdvantageScope este acum disponibilă! Consultați [documentația de instalare](/overview/installation) și [jurnalul complet de modificări](https://github.com/Mechanical-Advantage/AdvantageScope/releases) pentru detalii. Această versiune include câteva caracteristici noi majore și numeroase îmbunătățiri în întreaga aplicație. Multe dintre caracteristicile din această versiune sunt concepute pentru a îmbunătăți experiența pe sistemele de control existente, pregătind în același timp o tranziție lină către [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) în sezoanele viitoare.
 
@@ -28,9 +28,9 @@ Echipele FTC ar trebui să fie prudente atunci când utilizează software experi
 <div className="image-gallery">
   <img src="/img/whats-new/ftc-1.jpg" />
   <img src="/img/whats-new/ftc-2.jpg" />
-  <img src="/img/whats-new/ftc-3.png" />
-  <img src="/img/whats-new/ftc-4.png" />
-  <img src="/img/whats-new/ftc-5.png" />
+  <img src="/img/whats-new/ftc-3.webp" />
+  <img src="/img/whats-new/ftc-4.webp" />
+  <img src="/img/whats-new/ftc-5.webp" />
 </div>
 
 Mai multe biblioteci terțe de înregistrare/telemetrie FTC acceptă alte formate compatibile cu AdvantageScope, cum ar fi WPILOG și RLOG. Documentația acestor biblioteci poate fi găsită în proiectele respective; dezvoltatorii AdvantageScope nu susțin/recomandă o anumită soluție de logare FTC pentru utilizarea cu AdvantageScope.
@@ -54,7 +54,7 @@ Captura de ecran de mai jos prezintă toate aceste caracteristici în acțiune. 
 
 _Mai multe informații despre suportul pentru unități pot fi găsite în [documentație](/tab-reference/line-graph/units)._
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="Grafice bazate pe unități" />
+<img src="/img/tab-reference/line-graph/units-1.webp" alt="Grafice bazate pe unități" />
 
 ## 🏁 Descărcări mai rapide de loguri {#faster-log-downloads}
 
@@ -72,7 +72,7 @@ Tabelul de mai jos arată viteza de transfer măsurată pe versiunile 2025 și 2
 
 Fereastra de descărcare acceptă acum salvarea logurilor care sunt stocate în subfoldere. Fiecare subfolder de loguri poate fi descărcat ca un grup, oferind o abordare simplificată pentru descărcarea logurilor generate de versiunea 2026 a [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) de la CTRE (care folosește subfoldere ca o soluție pentru imposibilitatea de a stoca date într-un singur fișier log).
 
-<img src="/img/whats-new/subfolders.png" alt="Descărcarea subdosarelor de log" />
+<img src="/img/whats-new/subfolders.webp" alt="Descărcarea subdosarelor de log" />
 
 ## 🌈 Opțiuni noi de vizualizare {#new-visualization-options}
 
@@ -90,19 +90,19 @@ Acum puteți deschide fișiere `.revlog` produse de [`StatusLogger`](https://cod
 
 Atât URCL, cât și `StatusLogger`-ul oficial vor rămâne disponibile în timpul sezonului 2026 pentru a asigura o tranziție lină și pentru a oferi paritate de caracteristici cu sezoanele anterioare. Vom avea mai multe detalii de împărtășit despre opțiunile de logare în 2027 și ulterior la o dată viitoare.
 
-<img src="/img/whats-new/revlog.png" alt="Vizualizare REVLOG" />
+<img src="/img/whats-new/revlog.webp" alt="Vizualizare REVLOG" />
 
 ## 💿 Importuri de fișiere CSV {#csv-file-imports}
 
 Pentru o vizualizare mai flexibilă a datelor produse în afara cadrelor de logare ale robotului, AdvantageScope include acum suport de bază pentru importul fișierelor CSV. Consultați [documentația](/overview/log-files/#csv-formatting) pentru mai multe detalii despre formatele suportate și alte limitări.
 
-<img src="/img/overview/log-files/export-2.png" alt="Date CSV" />
+<img src="/img/overview/log-files/export-2.webp" alt="Date CSV" />
 
 ## 🤩 Îmbunătățiri estetice {#aesthetic-improvements}
 
 Interfața de utilizator AdvantageScope pe Windows 11 a fost actualizată pentru a suporta o bară laterală translucidă, care anterior era exclusivă pentru versiunile macOS. O pictogramă actualizată a aplicației este de asemenea disponibilă pentru macOS Tahoe bazată pe materialul Liquid Glass de la Apple.
 
-<img src="/img/whats-new/windows-ui.png" alt="Interfață utilizator Windows" />
+<img src="/img/whats-new/windows-ui.webp" alt="Interfață utilizator Windows" />
 
 ## 📋 Meniuri simplificate {#streamlined-menus}
 
@@ -113,9 +113,9 @@ Bara de meniu și controalele conexe au fost simplificate și reorganizate pentr
 - Reorganizarea ferestrei de preferințe, făcând opțiunile mai ușor de găsit rapid.
 
 <div className="image-gallery">
-  <img src="/img/whats-new/menus-1.png" />
-  <img src="/img/whats-new/menus-2.png" />
-  <img src="/img/prefs.png" />
+  <img src="/img/whats-new/menus-1.webp" />
+  <img src="/img/whats-new/menus-2.webp" />
+  <img src="/img/prefs.webp" />
 </div>
 
 ## 🐛 Îmbunătățiri ale stabilității {#stability-improvements}

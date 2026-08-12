@@ -84,5 +84,5 @@ O AdvantageScope inclui inúmeros atalhos de teclado que permitem uma navegaçã
 
 Em modelos de MacBook suportados, a Touch Bar pode ser usada para percorrer o log e adicionar novas guias.
 
-<img src="/img/overview/navigation/keyboard-1.png" alt="Interface de navegação do Touch Bar" />
-<img src="/img/overview/navigation/keyboard-2.png" alt="Interface de nova aba do Touch Bar" />
+<img src="/img/overview/navigation/keyboard-1.webp" alt="Interface de navegação do Touch Bar" />
+<img src="/img/overview/navigation/keyboard-2.webp" alt="Interface de nova aba do Touch Bar" />

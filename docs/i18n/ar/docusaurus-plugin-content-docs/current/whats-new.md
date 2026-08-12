@@ -5,8 +5,8 @@ sidebar_position: 2
 
 #
 
-<img src="/img/whats-new/banner-light.png" className="light-only" />
-<img src="/img/whats-new/banner-dark.png" className="dark-only" />
+<img src="/img/whats-new/banner-light.webp" className="light-only" />
+<img src="/img/whats-new/banner-dark.webp" className="dark-only" />
 
 إصدار 2026 من AdvantageScope متاح الآن! تحقق من [وثائق التثبيت](/overview/installation) و [سجل التغييرات الكامل](https://github.com/Mechanical-Advantage/AdvantageScope/releases) للحصول على التفاصيل. يتضمن هذا الإصدار العديد من الميزات الرئيسية الجديدة والتحسينات العديدة عبر التطبيق. تم تصميم العديد من الميزات في هذا الإصدار لتحسين التجربة على أنظمة التحكم الحالية مع التمهيد للانتقال السلس إلى [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) في المواسم القادمة.
 
@@ -28,9 +28,9 @@ sidebar_position: 2
 <div className="image-gallery">
   <img src="/img/whats-new/ftc-1.jpg" />
   <img src="/img/whats-new/ftc-2.jpg" />
-  <img src="/img/whats-new/ftc-3.png" />
-  <img src="/img/whats-new/ftc-4.png" />
-  <img src="/img/whats-new/ftc-5.png" />
+  <img src="/img/whats-new/ftc-3.webp" />
+  <img src="/img/whats-new/ftc-4.webp" />
+  <img src="/img/whats-new/ftc-5.webp" />
 </div>
 
 تدعم العديد من مكتبات التسجيل/القياس عن بعد لـ FTC من طرف ثالث التنسيقات الأخرى المتوافقة مع AdvantageScope، مثل WPILOG و RLOG. يمكن العثور على وثائق هذه المكتبات في المشاريع الخاصة بها؛ لا يوصي مطورو AdvantageScope بأي حل معين لتسجيل بيانات FTC للاستخدام مع AdvantageScope.
@@ -54,7 +54,7 @@ sidebar_position: 2
 
 _يمكن العثور على مزيد من المعلومات حول دعم الوحدات في [الوثائق](/tab-reference/line-graph/units)._
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="رسم بياني مدرك للوحدات" />
+<img src="/img/tab-reference/line-graph/units-1.webp" alt="رسم بياني مدرك للوحدات" />
 
 ## 🏁 تنزيل سجلات أسرع {#faster-log-downloads}
 
@@ -72,7 +72,7 @@ _يمكن العثور على مزيد من المعلومات حول دعم ا�
 
 تدعم نافذة التنزيل الآن حفظ السجلات المخزنة في مجلدات فرعية. يمكن تنزيل كل مجلد فرعي من السجلات كمجموعة، مما يوفر نهجاً مبسطاً لتنزيل السجلات المُنشأة بواسطة إصدار 2026 من [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) لـ CTRE (الذي يستخدم المجلدات الفرعية كحل بديل لعدم القدرة على تخزين البيانات في ملف سجل واحد).
 
-<img src="/img/whats-new/subfolders.png" alt="تنزيل المجلدات الفرعية للسجل" />
+<img src="/img/whats-new/subfolders.webp" alt="تنزيل المجلدات الفرعية للسجل" />
 
 ## 🌈 خيارات عرض مرئي جديدة {#new-visualization-options}
 
@@ -90,19 +90,19 @@ _يمكن العثور على مزيد من المعلومات حول دعم ا�
 
 سيتظل كل من URCL و `StatusLogger` الرسمي متاحين خلال موسم 2026 لضمان انتقال سلس وتوفير تكافؤ الميزات مع المواسم السابقة. سيكون لدينا المزيد من التفاصيل لمشاركتها حول خيارات التسجيل في عام 2027 وما بعده في وقت لاحق.
 
-<img src="/img/whats-new/revlog.png" alt="مرئيات REVLOG" />
+<img src="/img/whats-new/revlog.webp" alt="مرئيات REVLOG" />
 
 ## 💿 استيراد ملفات CSV {#csv-file-imports}
 
 للحصول على عرض مرئي أكثر مرونة للبيانات المُنتجة خارج أطر عمل تسجيل بيانات الروبوت، يتضمن AdvantageScope الآن دعماً أساسياً لاستيراد ملفات CSV. تحقق من [الوثائق](/overview/log-files/#csv-formatting) للحصول على مزيد من التفاصيل حول التنسيقات المدعومة والقيود الأخرى.
 
-<img src="/img/overview/log-files/export-2.png" alt="بيانات CSV" />
+<img src="/img/overview/log-files/export-2.webp" alt="بيانات CSV" />
 
 ## 🤩 تحسينات جمالية {#aesthetic-improvements}
 
 تم تحديث واجهة المستخدم لـ AdvantageScope على Windows 11 لدعم شريط جانبي شبه شفاف، والذي كان حصرياً في السابق لإصدارات macOS. تتوفر أيضاً أيقونة تطبيق محدثة لـ macOS Tahoe استناداً إلى خامة Liquid Glass من Apple.
 
-<img src="/img/whats-new/windows-ui.png" alt="واجهة المستخدم لـ Windows" />
+<img src="/img/whats-new/windows-ui.webp" alt="واجهة المستخدم لـ Windows" />
 
 ## 📋 قوائم مبسطة {#streamlined-menus}
 
@@ -113,9 +113,9 @@ _يمكن العثور على مزيد من المعلومات حول دعم ا�
 - إعادة تنظيم نافذة التفضيلات، مما يجعل العثور على الخيارات أسهل وأسرع.
 
 <div className="image-gallery">
-  <img src="/img/whats-new/menus-1.png" />
-  <img src="/img/whats-new/menus-2.png" />
-  <img src="/img/prefs.png" />
+  <img src="/img/whats-new/menus-1.webp" />
+  <img src="/img/whats-new/menus-2.webp" />
+  <img src="/img/prefs.webp" />
 </div>
 
 ## 🐛 تحسينات الاستقرار {#stability-improvements}

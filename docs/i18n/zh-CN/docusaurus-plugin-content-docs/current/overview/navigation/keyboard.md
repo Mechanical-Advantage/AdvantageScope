@@ -84,5 +84,5 @@ AdvantageScope 包含众多允许更快速导航的键盘快捷键。使用 `ctr
 
 在支持的 MacBook 机型上，可以使用 Touch Bar 滚动日志并添加新的选项卡。
 
-<img src="/img/overview/navigation/keyboard-1.png" alt="Touch Bar 拖动时间轴界面" />
-<img src="/img/overview/navigation/keyboard-2.png" alt="Touch Bar 新建标签页界面" />
+<img src="/img/overview/navigation/keyboard-1.webp" alt="Touch Bar 拖动时间轴界面" />
+<img src="/img/overview/navigation/keyboard-2.webp" alt="Touch Bar 新建标签页界面" />

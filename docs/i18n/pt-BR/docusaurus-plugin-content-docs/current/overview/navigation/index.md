@@ -2,7 +2,7 @@
 
 A captura de tela abaixo mostra os elementos importantes da janela principal do AdvantageScope. A aparência exata difere entre os sistemas operacionais.
 
-<img src="/img/overview/navigation/navigation-1.png" alt="Diagrama de navegação" />
+<img src="/img/overview/navigation/navigation-1.webp" alt="Diagrama de navegação" />
 
 :::tip
 Para visualizar múltiplos arquivos de log simultaneamente, clique em `Arquivo` > `Nova janela`.

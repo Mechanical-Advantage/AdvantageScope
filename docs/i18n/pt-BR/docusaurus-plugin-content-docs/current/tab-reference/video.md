@@ -14,7 +14,7 @@ O AdvantageScope oferece três opções para carregar um vídeo:
 2. **YouTube:** Copie um link do YouTube para a área de transferência, depois clique no ícone de prancheta vermelho. Após alguns segundos, o vídeo começará a ser baixado.
 3. **The Blue Alliance:** Clique no ícone azul do TBA para carregar automaticamente o vídeo da partida com base no arquivo de log. Se múltiplos vídeos estiverem disponíveis, escolha o vídeo a ser baixado no menu pop-up. Este recurso requer uma chave de API para o TBA, que deve ser obtida em [thebluealliance.com/account](https://www.thebluealliance.com/account) e copiada para a página de preferências do AdvantageScope sob "Chave de API do TBA".
 
-<img src="/img/tab-reference/video-1.png" alt="Seletor de fonte" />
+<img src="/img/tab-reference/video-1.webp" alt="Seletor de fonte" />
 
 Após escolher um vídeo, a linha do tempo no canto inferior direito começa a ficar azul para indicar os quadros que foram armazenados em cache (esta etapa é necessária para uma reprodução suave). Este recurso destina-se apenas a vídeos de duração de partida devido à conversão de quadros necessária.
 
@@ -36,7 +36,7 @@ Quando um vídeo é carregado inicialmente e ainda não foi sincronizado com os 
 - \> = avançar cinco segundos
 - < = voltar cinco segundos
 
-<img src="/img/tab-reference/video-2.png" alt="Controles de vídeo" />
+<img src="/img/tab-reference/video-2.webp" alt="Controles de vídeo" />
 
 ## Sincronização automática {#automatic-synchronization}
 
@@ -56,7 +56,7 @@ O cursor na linha do tempo se encaixa no início e no fim dos períodos da parti
 
 Assim que o vídeo e o log estiverem alinhados, clique no ícone de cadeado ao lado da linha do tempo do vídeo (ou pressione **↑ ou ↓**). Os controles do vídeo agora estão desativados. Clique no ícone de cadeado novamente para desbloquear a reprodução do vídeo.
 
-<img src="/img/tab-reference/video-3.png" alt="Botão de bloqueio" />
+<img src="/img/tab-reference/video-3.webp" alt="Botão de bloqueio" />
 
 ## Reprodução {#playback}
 
@@ -71,7 +71,7 @@ Seções amarelas indicam quando o robô está em autônomo, seções azuis indi
 
 Para dar zoom, posicione o cursor sobre a linha do tempo e role para cima ou para baixo. Um intervalo também pode ser selecionado clicando e arrastando enquanto mantém `Shift` pressionado. Mova para a esquerda e para a direita rolando horizontalmente (em dispositivos suportados) ou clicando e arrastando na linha do tempo. Quando conectado ao vivo, rolar para a esquerda desbloqueia do tempo atual, e rolar totalmente para a direita bloqueia no tempo atual novamente. Pressione `Ctrl+\` para dar zoom no período em que o robô está habilitado.
 
-<img src="/img/tab-reference/timeline.png" alt="Linha do tempo" />
+<img src="/img/tab-reference/timeline.webp" alt="Linha do tempo" />
 
 </details>
 
@@ -79,4 +79,4 @@ Para dar zoom, posicione o cursor sobre a linha do tempo e role para cima ou par
 Se desejado, o FOV da câmera pode ser ajustado na visualização de campo 3D para corresponder à aparência do vídeo. Para mais detalhes, consulte "Opções de câmera" na página do 👀 [Campo 3D](/tab-reference/3d-field).
 :::
 
-<img src="/img/tab-reference/video-4.png" alt="Captura de vídeo com odometria" />
+<img src="/img/tab-reference/video-4.webp" alt="Captura de vídeo com odometria" />

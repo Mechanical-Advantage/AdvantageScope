@@ -6,7 +6,7 @@ sidebar_position: 8
 
 Fila joystick-uri afișează starea a până la șase controlere conectate. Imaginea de mai jos prezintă un exemplu de aranjament, cu două controlere Xbox și un joystick generic. Fiecare buton este evidențiat când este apăsat, și sunt afișate stările joystick-urilor și ale altor axe.
 
-<img src="/img/tab-reference/joysticks-1.png" alt="Prezentare generală a filei joystick-uri" />
+<img src="/img/tab-reference/joysticks-1.webp" alt="Prezentare generală a filei joystick-uri" />
 
 <details>
 <summary>Controale cronologie</summary>
@@ -17,7 +17,7 @@ Secțiunile galbene indică momentul în care robotul este în modul autonom, se
 
 Pentru a mări, plasați cursorul peste cronologie și derulați în sus sau în jos. Un interval poate fi de asemenea selectat prin clic și tragere în timp ce țineți apăsată tasta `Shift`. Mutați-vă la stânga și la dreapta prin derulare orizontală (pe dispozitivele suportate) sau prin clic și tragere pe cronologie. Când sunteți conectat live, derularea spre stânga deblochează timpul curent, iar derularea până la capăt în dreapta blochează din nou timpul curent. Apăsați `Ctrl+\` pentru a mări la perioada în care robotul este activat.
 
-<img src="/img/tab-reference/timeline.png" alt="Cronologie" />
+<img src="/img/tab-reference/timeline.webp" alt="Cronologie" />
 
 </details>
 

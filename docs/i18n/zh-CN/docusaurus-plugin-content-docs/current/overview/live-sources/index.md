@@ -27,7 +27,7 @@ AdvantageScope 中的所有可视化功能除了处理日志文件外，均旨�
 
 当连接到实时数据源时，AdvantageScope 默认将所有选项卡锁定到当前时间。诸如 📉 [折线图](/tab-reference/line-graph) 和 🔢 [表格](/tab-reference/table) 等视图会自动滚动，而场地和控制器等视图则显示每个字段的当前值。点击导航栏中的红色箭头按钮可以切换此锁定，从而允许查看和重放过去的数据。
 
-<img src="/img/overview/live-sources/open-live-1.png" alt="实时锁定/解锁按钮" />
+<img src="/img/overview/live-sources/open-live-1.webp" alt="实时锁定/解锁按钮" />
 
 :::tip
 在折线图或时间轴中向左滚动会解锁与当前时间的关联，而一路向右滚动将重新锁定到当前时间。
@@ -37,7 +37,7 @@ AdvantageScope 中的所有可视化功能除了处理日志文件外，均旨�
 
 点击 `应用程序` > `显示首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。
 
-<img src="/img/prefs.png" alt="偏好设置图解" />
+<img src="/img/prefs.webp" alt="偏好设置图解" />
 
 ### 机器人地址 {#robot-address}
 

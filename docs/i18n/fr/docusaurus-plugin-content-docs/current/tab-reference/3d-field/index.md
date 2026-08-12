@@ -5,7 +5,7 @@ import TabItem from '@theme/TabItem';
 
 Le terrain 3D montre une visualisation 3D du robot et du terrain. Il peut être utilisé avec des poses 2D régulières, mais il est particulièrement utile lors du travail avec des calculs 3D (comme la localisation avec AprilTags). Plusieurs vues de caméra sont disponibles, y compris relatives au terrain, relatives au robot et fixes. [AdvantageScope XR](advantagescope-xr) permet de visualiser cet onglet à l'aide de la réalité augmentée. La chronologie indique quand le robot est activé et peut être utilisée pour naviguer dans les données du journal.
 
-<img src="/img/tab-reference/3d-field/3d-field-1.png" alt="Exemple d'onglet terrain 3D" />
+<img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="Exemple d'onglet terrain 3D" />
 
 <details>
 <summary>Contrôles de la chronologie</summary>
@@ -16,7 +16,7 @@ Les sections jaunes indiquent quand le robot est en mode autonome, les sections 
 
 Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le haut ou vers le bas. Une plage peut également être sélectionnée en cliquant et en faisant glisser tout en maintenant la touche `Shift` enfoncée. Déplacez-vous vers la gauche et la droite en faisant défiler horizontalement (sur les appareils pris en charge), ou en cliquant et en faisant glisser sur la chronologie. Lors d'une connexion en direct, le défilement vers la gauche déverrouille à partir de l'heure actuelle, et le défilement tout à fait vers la droite verrouille à nouveau à l'heure actuelle. Appuyez sur `Ctrl+\` pour zoomer sur la période où le robot est activé.
 
-<img src="/img/tab-reference/timeline.png" alt="Chronologie" />
+<img src="/img/tab-reference/timeline.webp" alt="Chronologie" />
 
 </details>
 
@@ -105,7 +105,7 @@ Les données de mécanisme peuvent être visualisées à l'aide de mécanismes 2
 
 Pour visualiser des données de mécanisme enregistrées à l'aide d'un [`Mechanism2d`](https://docs.wpilib.org/fr/stable/docs/software/dashboards/glass/mech2d-widget.html), ajoutez le champ de mécanisme à un objet robot ou fantôme existant. Le mécanisme est projeté sur le plan XZ ou YZ du robot à l'aide de simples boîtes, comme illustré ci-dessous. Cliquez sur l'icône d'engrenage ou faites un clic droit sur le nom du champ pour basculer entre les plans XZ et YZ. L'origine du robot est centrée sur le bord inférieur du mécanisme.
 
-<img src="/img/tab-reference/3d-field/3d-field-2.png" alt="Mécanisme 2D" />
+<img src="/img/tab-reference/3d-field/3d-field-2.webp" alt="Mécanisme 2D" />
 
 ### Composants 3D {#3d-components}
 
@@ -117,7 +117,7 @@ Les mécanismes peuvent être visualisés avec des composants articulés en enre
 
 Chaque composant peut être déplacé indépendamment (comme un chariot d'élévateur, un bras ou un effecteur terminal). Les utilisateurs d'AdvantageKit doivent envisager d'utiliser la méthode [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) pour convertir un Mechanism2d en un tableau d'objets Pose3d. Pour plus d'informations sur la configuration des robots avec des composants, voir [Ressources personnalisées](/more-features/custom-assets).
 
-<img src="/img/tab-reference/3d-field/3d-field-3.png" alt="Mécanisme 3D" />
+<img src="/img/tab-reference/3d-field/3d-field-3.webp" alt="Mécanisme 3D" />
 
 ## Objets d'éléments de pointage {#game-piece-objects}
 
@@ -137,7 +137,7 @@ Le projet d'exemple KitBot 2024 d'AdvantageKit comprend un exemple simple d'une 
 
 </details>
 
-<img src="/img/tab-reference/3d-field/3d-field-4.png" alt="Visualisation de la note du KitBot 2024" />
+<img src="/img/tab-reference/3d-field/3d-field-4.webp" alt="Visualisation de la note du KitBot 2024" />
 
 ## Options de caméra {#camera-options}
 
@@ -171,7 +171,7 @@ La sélection automatique du numéro de poste peut être inexacte lors de la vis
 
 Chaque modèle de robot est configuré avec un ensemble de caméras fixes, comme les caméras de vision et les caméras de pilotage. Ces caméras ont des positions, des rapports d'aspect et des champs de vision fixes. Ces vues sont souvent utiles pour vérifier les données de vision ou pour simuler une vue de caméra de pilotage. Dans l'exemple ci-dessous, une caméra de pilotage est illustrée.
 
-<img src="/img/tab-reference/3d-field/3d-field-5.png" alt="Caméra fixe" />
+<img src="/img/tab-reference/3d-field/3d-field-5.webp" alt="Caméra fixe" />
 
 Si une pose de « Remplacement de la caméra » est fournie, elle remplace les poses par défaut de toutes les caméras fixes tout en conservant leurs champs de vision et rapports d'aspect configurés. Cela permet au code robot de fournir la position d'une caméra mobile, comme une caméra montée sur une tourelle ou un capot de lanceur.
 
@@ -195,8 +195,8 @@ Le terrain 3D prend en charge trois modes de rendu :
 - **Standard (Par défaut) :** Rendu avec un éclairage minimal et des modèles 3D simplifiés. S'exécute bien sur la plupart des appareils.
 - **Basse consommation :** Diminue la fréquence d'images, la résolution et les détails du modèle pour réduire la consommation de la batterie et offrir des performances plus cohérentes sur les appareils bas de gamme.
 
-<img src="/img/tab-reference/3d-field/3d-field-6.png" alt="Comparaison des modes de rendu" />
+<img src="/img/tab-reference/3d-field/3d-field-6.webp" alt="Comparaison des modes de rendu" />
 
 Pour configurer le mode de rendu, ouvrez la fenêtre des préférences en appuyant sur `Application` > `Afficher les préférences...` (Windows/Linux) ou `AdvantageScope` > `Paramètres...` (macOS). Le paramètre « Mode 3D (batterie) » peut être remplacé de la valeur par défaut pour ignorer le mode de rendu utilisé sur un ordinateur portable lorsqu'il n'est pas en charge. Par exemple, cela peut être utilisé pour préserver la batterie lors d'une compétition.
 
-<img src="/img/prefs.png" alt="Schéma des préférences" />
+<img src="/img/prefs.webp" alt="Schéma des préférences" />

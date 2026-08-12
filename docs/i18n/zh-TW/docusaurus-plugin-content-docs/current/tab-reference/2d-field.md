@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 2D 場地分頁顯示了覆蓋在場地地圖上的機器人 2D 視覺化。它還可以顯示視覺目標狀態與參考姿態等額外資料。
 
-<img src="/img/tab-reference/2d-field-1.png" alt="2D 場地分頁概述" />
+<img src="/img/tab-reference/2d-field-1.webp" alt="2D 場地分頁概述" />
 
 <details>
 <summary>時間軸控制項</summary>
@@ -20,7 +20,7 @@ import TabItem from '@theme/TabItem';
 
 要縮放，請將游標置於時間軸上方並向上或向下滾動。也可以透過按住 `Shift` 的同時點擊並拖曳來選擇範圍。透過水平滾動（在受支援的裝置上）或透過在時間軸上點擊並拖曳來左右移動。當即時連線時，向左滾動會解鎖目前時間，滾動到最右側會再次鎖定到目前時間。按下 `Ctrl+\` 可縮放至機器人啟用的時間段。
 
-<img src="/img/tab-reference/timeline.png" alt="時間軸" />
+<img src="/img/tab-reference/timeline.webp" alt="時間軸" />
 
 </details>
 
@@ -34,7 +34,7 @@ import TabItem from '@theme/TabItem';
 要檢視受支援物件類型的完整清單，請點擊 `?` 圖示。該清單還包含受支援的資料類型以及物件是否必須作為子物件新增。
 :::
 
-<img src="/img/tab-reference/2d-field-2.png" alt="帶有物件的 2D 場地" />
+<img src="/img/tab-reference/2d-field-2.webp" alt="帶有物件的 2D 場地" />
 
 ## 資料格式 {#data-format}
 

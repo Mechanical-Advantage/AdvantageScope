@@ -32,11 +32,11 @@ AdvantageScope XR solo es compatible con iOS y iPadOS. No hay planes inmediatos 
 
 1. En el sistema host, **haz clic en el botón "XR"** en cualquier pestaña de campo 3D. Solo una sesión de host de XR puede estar activa al mismo tiempo, por lo que hacer clic en este botón interrumpirá cualquier otra sesión activa.
 
-<img src="/img/tab-reference/3d-field/xr-1.png" alt="Botón XR" />
+<img src="/img/tab-reference/3d-field/xr-1.webp" alt="Botón XR" />
 
 2. Se abrirá la **ventana de controles de XR**, con un código QR y [opciones](#options) para personalizar la experiencia de realidad aumentada. Para cancelar la sesión de XR y desconectar cualquier cliente, cierra la ventana de controles.
 
-<img src="/img/tab-reference/3d-field/xr-2.png" alt="Ventana XR" />
+<img src="/img/tab-reference/3d-field/xr-2.webp" alt="Ventana XR" />
 
 3. Escanea el código QR utilizando la **aplicación de cámara integrada** en el dispositivo cliente. No se requiere instalación de la aplicación.
 4. Toca "AdvantageScope XR" y luego "Abrir" para **iniciar la experiencia** y conectarte al host. Si se te solicita, permite que AdvantageScope XR acceda a la **cámara y red local**.

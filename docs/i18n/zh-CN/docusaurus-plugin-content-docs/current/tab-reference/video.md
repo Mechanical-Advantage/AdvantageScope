@@ -14,7 +14,7 @@ AdvantageScope 提供了三种加载视频的选项：
 2. **YouTube：** 将 YouTube 链接复制到剪贴板，然后点击红色剪贴板图标。几秒钟后，视频将开始下载。
 3. **The Blue Alliance：** 点击蓝色 TBA 图标，以根据日志文件自动加载比赛视频。如果包含多个可用视频，请从弹出菜单中选择要下载的视频。此功能需要 TBA 的 API 密钥，应从 [thebluealliance.com/account](https://www.thebluealliance.com/account) 获取并复制到 AdvantageScope 首选项页面的“TBA API 密钥”下方。
 
-<img src="/img/tab-reference/video-1.png" alt="源选择器" />
+<img src="/img/tab-reference/video-1.webp" alt="源选择器" />
 
 选择视频后，右下角的时间轴开始变为蓝色，表示已缓存的帧（此步骤对于平滑播放是必需的）。由于需要进行帧转换，此功能仅适用于比赛精度的视频长度。
 
@@ -36,7 +36,7 @@ AdvantageScope 需要 [FFmpeg](https://ffmpeg.org) 来处理视频文件。如�
 - \> = 快进五秒
 - < = 快退五秒
 
-<img src="/img/tab-reference/video-2.png" alt="视频控件" />
+<img src="/img/tab-reference/video-2.webp" alt="视频控件" />
 
 ## 自动同步 {#automatic-synchronization}
 
@@ -56,7 +56,7 @@ AdvantageScope 需要 [FFmpeg](https://ffmpeg.org) 来处理视频文件。如�
 
 一旦视频和日志对齐，点击视频时间轴旁边的锁图标（或按 **↑ 或 ↓**）。视频控制现已被禁用。再次点击锁图标可解锁视频播放。
 
-<img src="/img/tab-reference/video-3.png" alt="锁定按钮" />
+<img src="/img/tab-reference/video-3.webp" alt="锁定按钮" />
 
 ## 播放 {#playback}
 
@@ -71,7 +71,7 @@ AdvantageScope 需要 [FFmpeg](https://ffmpeg.org) 来处理视频文件。如�
 
 要进行缩放，请将光标置于时间轴上方并向上或向下滚动。按住 `Shift` 的同时点击并拖动也可以选择一个范围。通过水平滚动（在受支持的设备上）或在时间轴上点击并拖动来左右移动。当进行实时连接时，向左滚动会解锁与当前时间的关联，而一路向右滚动将重新锁定到当前时间。按下 `Ctrl+\` 可缩放到机器人处于启用状态的时间段。
 
-<img src="/img/tab-reference/timeline.png" alt="时间轴" />
+<img src="/img/tab-reference/timeline.webp" alt="时间轴" />
 
 </details>
 
@@ -79,4 +79,4 @@ AdvantageScope 需要 [FFmpeg](https://ffmpeg.org) 来处理视频文件。如�
 如果需要，可以在 3D 场地视图中调整相机 FOV（视野），以匹配视频的外观。有关详细信息，请参阅 👀 [3D 场地](/tab-reference/3d-field) 页面上的“相机选项”。
 :::
 
-<img src="/img/tab-reference/video-4.png" alt="包含里程计的视频快照" />
+<img src="/img/tab-reference/video-4.webp" alt="包含里程计的视频快照" />

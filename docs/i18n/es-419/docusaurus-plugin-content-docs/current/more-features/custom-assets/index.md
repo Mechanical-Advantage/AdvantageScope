@@ -104,7 +104,7 @@ Para calibrar las posiciones de los componentes articulados, recomendamos el sig
 
 ## Joysticks {#joysticks}
 
-Se debe incluir una imagen en la carpeta con el nombre "image.png". El archivo de configuración debe tener el siguiente formato:
+Se debe incluir una imagen en la carpeta con el nombre "image.webp". El archivo de configuración debe tener el siguiente formato:
 
 ```json
 {
@@ -189,7 +189,7 @@ Los botones, joysticks y valores de los ejes son compatibles tanto con las vincu
 
 ## Imágenes planas del campo {#flat-field-images}
 
-Se debe incluir una imagen en la carpeta con el nombre "image.png". Debe orientarse con la alianza roja a la izquierda. El archivo de configuración debe tener el siguiente formato:
+Se debe incluir una imagen en la carpeta con el nombre "image.webp". Debe orientarse con la alianza roja a la izquierda. El archivo de configuración debe tener el siguiente formato:
 
 ```json
 {

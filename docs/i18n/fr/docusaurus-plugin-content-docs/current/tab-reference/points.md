@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 L'onglet points montre une visualisation 2D de points arbitraires. Il s'agit d'un outil très flexible, permettant des visualisations personnalisées de données/pipelines de vision, d'états de mécanismes, etc.
 
-<img src="/img/tab-reference/points-1.png" alt="Exemple d'onglet points" />
+<img src="/img/tab-reference/points-1.webp" alt="Exemple d'onglet points" />
 
 <details>
 <summary>Contrôles de la chronologie</summary>
@@ -20,7 +20,7 @@ Les sections jaunes indiquent quand le robot est en mode autonome, les sections 
 
 Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le haut ou vers le bas. Une plage peut également être sélectionnée en cliquant et en faisant glisser tout en maintenant la touche `Shift` enfoncée. Déplacez-vous vers la gauche et la droite en faisant défiler horizontalement (sur les appareils pris en charge), ou en cliquant et en faisant glisser sur la chronologie. Lors d'une connexion en direct, le défilement vers la gauche déverrouille à partir de l'heure actuelle, et le défilement tout à fait vers la droite verrouille à nouveau à l'heure actuelle. Appuyez sur `Ctrl+\` pour zoomer sur la période où le robot est activé.
 
-<img src="/img/tab-reference/timeline.png" alt="Chronologie" />
+<img src="/img/tab-reference/timeline.webp" alt="Chronologie" />
 
 </details>
 

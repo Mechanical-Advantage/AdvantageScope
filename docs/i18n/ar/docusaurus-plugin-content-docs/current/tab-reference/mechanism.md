@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 تعرض علامة تبويب الآلية آلية مفصلية تم إنشاؤها باستخدام كائن واحد أو أكثر من كائنات [Mechanism2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html).
 
-<img src="/img/tab-reference/mechanism-1.png" alt="نظرة عامة على علامة تبويب الآلية" />
+<img src="/img/tab-reference/mechanism-1.webp" alt="نظرة عامة على علامة تبويب الآلية" />
 
 <details>
 <summary>عناصر تحكم المخطط الزمني</summary>
@@ -20,7 +20,7 @@ import TabItem from '@theme/TabItem';
 
 التكبير/التصغير، ضع المؤشر فوق المخطط الزمني وقم بالتمرير للأعلى أو الأسفل. يمكن أيضاً تحديد نطاق بالنقر والسحب أثناء الضغط على مفتاح `Shift`. تحرك يساراً ويميناً بالتمرير أفقيًا (على الأجهزة المدعومة)، أو بالنقر والسحب على المخطط الزمني. عند الاتصال المباشر، يؤدي التمرير إلى اليسار إلى إلغاء القفل من الوقت الحالي، والتمرير حتى أقصى اليمين يقفل على الوقت الحالي مرة أخرى. اضغط على `Ctrl+\` للتكبير إلى الفترة التي يكون فيها الروبوت ممكّناً.
 
-<img src="/img/tab-reference/timeline.png" alt="الجدول الزمني" />
+<img src="/img/tab-reference/timeline.webp" alt="الجدول الزمني" />
 
 </details>
 

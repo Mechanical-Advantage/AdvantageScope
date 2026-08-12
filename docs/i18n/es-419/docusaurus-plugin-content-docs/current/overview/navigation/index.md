@@ -2,7 +2,7 @@
 
 La captura de pantalla a continuación muestra los elementos importantes de la ventana principal de AdvantageScope. La apariencia exacta difiere entre sistemas operativos.
 
-<img src="/img/overview/navigation/navigation-1.png" alt="Diagrama de navegación" />
+<img src="/img/overview/navigation/navigation-1.webp" alt="Diagrama de navegación" />
 
 :::tip
 Para ver varios archivos de registro simultáneamente, haz clic en `Archivo` > `Nueva ventana`.

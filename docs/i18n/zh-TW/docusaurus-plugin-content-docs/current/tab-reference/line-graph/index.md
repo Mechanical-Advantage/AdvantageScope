@@ -2,7 +2,7 @@
 
 折線圖是 AdvantageScope 中的預設視圖。它同時支援連續（數值）與離散欄位。
 
-<img src="/img/tab-reference/line-graph/line-graph-1.png" alt="折線圖示範" />
+<img src="/img/tab-reference/line-graph/line-graph-1.webp" alt="折線圖示範" />
 
 ## 檢視器面板 {#viewer-pane}
 
@@ -20,19 +20,19 @@
 
 可以透過點擊彩色圖示或在欄位名稱上按右鍵來自訂每個欄位的顏色與線條樣式。來自 WPILib [持久性警示](https://docs.wpilib.org/zh-cn/latest/docs/software/telemetry/persistent-alerts.html) API 的資料可以透過將警示群組作為離散欄位新增來視覺化。下面顯示了一個範例視覺化。
 
-<img src="/img/tab-reference/line-graph/line-graph-2.png" alt="警示視覺化" />
+<img src="/img/tab-reference/line-graph/line-graph-2.webp" alt="警示視覺化" />
 
 :::tip
 要覆蓋機器人模式（自動、遙控或實用工具），請點擊「離散欄位」旁邊的三個點，然後點擊「顯示機器人模式」。
 
-<img src="/img/tab-reference/line-graph/line-graph-3.png" alt="機器人模式覆蓋層" />
+<img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="機器人模式覆蓋層" />
 :::
 
 ### 調整軸 {#adjusting-axes}
 
 預設情況下，每個軸會根據可見資料調整其範圍。要停用自動範圍調整並將範圍鎖定到目前的最小值與最大值，請點擊軸標題附近的三個點，然後點擊 `鎖定軸`。要手動調整範圍，請選擇 `編輯範圍...` 並輸入所需的數值。
 
-<img src="/img/tab-reference/line-graph/line-graph-4.png" alt="編輯軸範圍" />
+<img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="編輯軸範圍" />
 
 ### 積分與微分 {#integration-and-differentiation}
 

@@ -84,5 +84,5 @@ AdvantageScope 包含多個鍵盤快捷鍵，可實現更快的導覽。在 macO
 
 在受支援的 MacBook 機型上，觸控列可用於滾動瀏覽日誌並新增新分頁。
 
-<img src="/img/overview/navigation/keyboard-1.png" alt="觸控列滾動瀏覽介面" />
-<img src="/img/overview/navigation/keyboard-2.png" alt="觸控列新增分頁介面" />
+<img src="/img/overview/navigation/keyboard-1.webp" alt="觸控列滾動瀏覽介面" />
+<img src="/img/overview/navigation/keyboard-2.webp" alt="觸控列新增分頁介面" />

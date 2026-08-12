@@ -2,7 +2,7 @@
 
 下方螢幕截圖顯示了 AdvantageScope 主視窗的重要元素。在不同作業系統之間的確切外觀會有所不同。
 
-<img src="/img/overview/navigation/navigation-1.png" alt="導覽圖解" />
+<img src="/img/overview/navigation/navigation-1.webp" alt="導覽圖解" />
 
 :::tip
 要同時檢視多個日誌檔案，請點擊 `檔案` > `新視窗`。

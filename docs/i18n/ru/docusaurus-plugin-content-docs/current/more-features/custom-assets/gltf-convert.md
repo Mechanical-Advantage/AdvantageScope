@@ -8,11 +8,11 @@
 
 1. После открытия файла Onshape щелкните правой кнопкой мыши по главной сборке и выберите «Export...»:
 
-<img src="/img/more-features/custom-assets/gltf-convert-1.png" alt="Выбор параметра «Export...»" />
+<img src="/img/more-features/custom-assets/gltf-convert-1.webp" alt="Выбор параметра «Export...»" />
 
 2. Во всплывающем окне опций убедитесь, что формат экспорта — «STEP», и нажмите «Export»:
 
-<img src="/img/more-features/custom-assets/gltf-convert-2.png" alt="Всплывающее окно параметров экспорта" />
+<img src="/img/more-features/custom-assets/gltf-convert-2.webp" alt="Всплывающее окно параметров экспорта" />
 
 3. Дождитесь преобразования и скачивания файла. Это может занять несколько минут.
 
@@ -22,22 +22,22 @@
 
 2. Откройте CAD Assistant и выберите файл STEP для преобразования:
 
-<img src="/img/more-features/custom-assets/gltf-convert-3.png" alt="Открытие файла STEP в CAD Assistant" />
+<img src="/img/more-features/custom-assets/gltf-convert-3.webp" alt="Открытие файла STEP в CAD Assistant" />
 
 3. Дождитесь импорта файла STEP. Это может занять несколько минут.
 
 4. Нажмите иконку «Сохранить»:
 
-<img src="/img/more-features/custom-assets/gltf-convert-4.png" alt="Нажатие на значок «Сохранить»" />
+<img src="/img/more-features/custom-assets/gltf-convert-4.webp" alt="Нажатие на значок «Сохранить»" />
 
 5. Выберите место для сохранения, затем используйте выпадающий список для переключения формата экспорта на «glb»:
 
-<img src="/img/more-features/custom-assets/gltf-convert-5.png" alt="Переключение формата экспорта" />
+<img src="/img/more-features/custom-assets/gltf-convert-5.webp" alt="Переключение формата экспорта" />
 
 6. Нажмите иконку шестеренки, затем включите «Merge faces within the same part»:
 
-<img src="/img/more-features/custom-assets/gltf-convert-6.png" alt="Включение «Merge faces within the same part»" />
+<img src="/img/more-features/custom-assets/gltf-convert-6.webp" alt="Включение «Merge faces within the same part»" />
 
 7. Нажмите иконку «Сохранить» и дождитесь завершения экспорта:
 
-<img src="/img/more-features/custom-assets/gltf-convert-7.png" alt="Нажатие на значок «Сохранить»" />
+<img src="/img/more-features/custom-assets/gltf-convert-7.webp" alt="Нажатие на значок «Сохранить»" />

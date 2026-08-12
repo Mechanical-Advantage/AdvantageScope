@@ -6,7 +6,7 @@ sidebar_position: 6
 
 統計資料分頁允許對數值欄位進行深入的統計分析，分析整體趨勢而非隨時間的變化。使用直方圖與各種標準統計測量值來分析選取的欄位。
 
-<img src="/img/tab-reference/statistics-1.png" alt="統計資料分頁概述" />
+<img src="/img/tab-reference/statistics-1.webp" alt="統計資料分頁概述" />
 
 ## 控制面板 {#control-pane}
 

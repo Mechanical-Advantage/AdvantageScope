@@ -111,7 +111,7 @@ Eklemli bileşenlerin konumlarını kalibre etmek için aşağıdaki süreci ön
 
 ## Joystickler {#joysticks}
 
-Klasörde "image.png" adında bir görsel bulunmalıdır. Yapılandırma dosyası aşağıdaki formatta olmalıdır:
+Klasörde "image.webp" adında bir görsel bulunmalıdır. Yapılandırma dosyası aşağıdaki formatta olmalıdır:
 
 ```json
 {
@@ -198,7 +198,7 @@ NI bağlamaları için AdvantageScope eski ön eksiz yapılandırma anahtarları
 
 ## Düz saha görselleri {#flat-field-images}
 
-Klasörde "image.png" adında bir görsel bulunmalıdır. Kırmızı ittifak solda olacak şekilde yönlendirilmelidir. Yapılandırma dosyası aşağıdaki formatta olmalıdır:
+Klasörde "image.webp" adında bir görsel bulunmalıdır. Kırmızı ittifak solda olacak şekilde yönlendirilmelidir. Yapılandırma dosyası aşağıdaki formatta olmalıdır:
 
 ```json
 {

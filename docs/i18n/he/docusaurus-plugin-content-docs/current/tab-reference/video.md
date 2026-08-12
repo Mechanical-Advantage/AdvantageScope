@@ -14,7 +14,7 @@ AdvantageScope מספקת שלוש אפשרויות לטעינת סרטון:
 2. **YouTube:** יש להעתיק קישור YouTube ללוח הגזירים, ולאחר מכן ללחוץ על סמל לוח הגזירים האדום. לאחר מספר שניות, הסרטון יתחיל לרדת.
 3. **The Blue Alliance:** יש ללחוץ על סמל ה-TBA הכחול לטעינה אוטומטית של סרטון המשחק בהתבסס על קובץ היומן. אם קיימים סרטונים מרובים, יש לבחור את הסרטון להורדה מהתפריט הקופץ. תכונה זו דורשת מפתח API עבור TBA, אותו יש לקבל בכתובת [thebluealliance.com/account](https://www.thebluealliance.com/account) ולהעתיק לדף ההעדפות ב-AdvantageScope תחת "מפתח API של The Blue Alliance".
 
-<img src="/img/tab-reference/video-1.png" alt="בוחר מקור" />
+<img src="/img/tab-reference/video-1.webp" alt="בוחר מקור" />
 
 לאחר בחירת סרטון, ציר הזמן בחלק התחתון הימני מתחיל להפוך לכחול כדי לציין את הפריימים שנשמרו במטמון (צעד זה נדרש לניגון חלק). תכונה זו מיועדת לסרטונים באורך משחק בלבד בשל המרת הפריימים הנדרשת.
 
@@ -36,7 +36,7 @@ AdvantageScope דורשת את [FFmpeg](https://ffmpeg.org) לעיבוד קוב�
 - \> = קפיצה 5 שניות קדימה
 - < = חזרה 5 שניות לאחור
 
-<img src="/img/tab-reference/video-2.png" alt="פקדי וידאו" />
+<img src="/img/tab-reference/video-2.webp" alt="פקדי וידאו" />
 
 ## סנכרון אוטומטי {#automatic-synchronization}
 
@@ -56,7 +56,7 @@ AdvantageScope דורשת את [FFmpeg](https://ffmpeg.org) לעיבוד קוב�
 
 לאחר שהווידאו והיומן מיושרים, יש ללחוץ על סמל המנעול ליד ציר הזמן של הווידאו (או ללחוץ על **↑ או ↓**). בקרות הווידאו מושבתות כעת. יש ללחוץ שוב על סמל המנעול לביטול נעילת ניגון הווידאו.
 
-<img src="/img/tab-reference/video-3.png" alt="לחצן נעילה" />
+<img src="/img/tab-reference/video-3.webp" alt="לחצן נעילה" />
 
 ## ניגון {#playback}
 
@@ -71,7 +71,7 @@ AdvantageScope דורשת את [FFmpeg](https://ffmpeg.org) לעיבוד קוב�
 
 כדי להתקרב/להתרחק (Zoom), יש להציב את הסמן מעל ציר הזמן ולגלול למעלה או למטה. ניתן לבחור טווח גם על ידי לחיצה וגרירה תוך החזקת מקש `Shift`. מעבר שמאלה וימינה מתבצע על ידי גלילה אופקית (במכשירים נתמכים), או על ידי לחיצה וגרירה על ציר הזמן. בעת התחברות חיה, גלילה שמאלה מבטלת את הנעילה מהזמן הנוכחי, וגלילה עד הסוף ימינה נועלת שוב לזמן הנוכחי. לחיצה על `Ctrl+\` תקרב את התצוגה לפרק הזמן שבו הרובוט מאופשר.
 
-<img src="/img/tab-reference/timeline.png" alt="صير זמן" />
+<img src="/img/tab-reference/timeline.webp" alt="صير זמן" />
 
 </details>
 
@@ -79,4 +79,4 @@ AdvantageScope דורשת את [FFmpeg](https://ffmpeg.org) לעיבוד קוב�
 אם תרצו, ניתן להתאים את ה-FOV של המצלמה בתצוגת מגרש ה-3D כדי להתאים למראה הווידאו. לפרטים, ראו "אפשרויות מצלמה" בדף 👀 [מגרש 3D](/tab-reference/3d-field).
 :::
 
-<img src="/img/tab-reference/video-4.png" alt="תצלום וידאו עם אודומטריה" />
+<img src="/img/tab-reference/video-4.webp" alt="תצלום וידאו עם אודומטריה" />

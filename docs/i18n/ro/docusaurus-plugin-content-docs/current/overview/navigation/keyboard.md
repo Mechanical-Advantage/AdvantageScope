@@ -84,5 +84,5 @@ AdvantageScope include numeroase scurtături de tastatură care permit o navigar
 
 Pe modelele de MacBook suportate, Touch Bar-ul poate fi utilizat pentru derularea prin log și adăugarea de file noi.
 
-<img src="/img/overview/navigation/keyboard-1.png" alt="Interfață de derulare Touch Bar" />
-<img src="/img/overview/navigation/keyboard-2.png" alt="Interfață filă nouă Touch Bar" />
+<img src="/img/overview/navigation/keyboard-1.webp" alt="Interfață de derulare Touch Bar" />
+<img src="/img/overview/navigation/keyboard-2.webp" alt="Interfață filă nouă Touch Bar" />

@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 点位选项卡展示任意点的 2D 可视化。这是一个非常灵活的工具，允许对视觉数据/管道、机构状态等进行自定义可视化。
 
-<img src="/img/tab-reference/points-1.png" alt="点标签页示例" />
+<img src="/img/tab-reference/points-1.webp" alt="点标签页示例" />
 
 <details>
 <summary>时间轴控制</summary>
@@ -20,7 +20,7 @@ import TabItem from '@theme/TabItem';
 
 要进行缩放，请将光标置于时间轴上方并向上或向下滚动。按住 `Shift` 的同时点击并拖动也可以选择一个范围。通过水平滚动（在受支持的设备上）或在时间轴上点击并拖动来左右移动。当进行实时连接时，向左滚动会解锁与当前时间的关联，而一路向右滚动将重新锁定到当前时间。按下 `Ctrl+\` 可缩放到机器人处于启用状态的时间段。
 
-<img src="/img/tab-reference/timeline.png" alt="时间轴" />
+<img src="/img/tab-reference/timeline.webp" alt="时间轴" />
 
 </details>
 

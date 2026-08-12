@@ -27,7 +27,7 @@ Le titre de la fenêtre affiche l'adresse IP et le texte « Recherche » jusqu
 
 Lorsqu'elle est connectée à une source en direct, AdvantageScope verrouille tous les onglets à l'heure actuelle par défaut. Les vues comme le 📉 [Graphique linéaire](/tab-reference/line-graph) et le 🔢 [Tableau](/tab-reference/table) défilent automatiquement, et les vues comme le terrain et les manettes affichent les valeurs actuelles de chaque champ. Cliquer sur le bouton fléché rouge dans la barre de navigation bascule ce verrouillage, permettant la visualisation et la relecture des données passées.
 
-<img src="/img/overview/live-sources/open-live-1.png" alt="Bouton de verrouillage/déverrouillage en direct" />
+<img src="/img/overview/live-sources/open-live-1.webp" alt="Bouton de verrouillage/déverrouillage en direct" />
 
 :::tip
 Faire défiler vers la gauche dans le graphique linéaire ou la chronologie déverrouille de l'heure actuelle, et faire défiler jusqu'à la droite verrouille à nouveau à l'heure actuelle.
@@ -37,7 +37,7 @@ Faire défiler vers la gauche dans le graphique linéaire ou la chronologie dév
 
 Ouvrez la fenêtre des préférences en cliquant sur `Application` > `Afficher les préférences...` (Windows/Linux) ou `AdvantageScope` > `Paramètres...` (macOS).
 
-<img src="/img/prefs.png" alt="Schéma des préférences" />
+<img src="/img/prefs.webp" alt="Schéma des préférences" />
 
 ### Adresse du robot {#robot-address}
 

@@ -22,7 +22,7 @@ Menü çubuğunda `Dosya` > `Log aç...` seçeneğine tıklayın, ardından yere
 Birden fazla dosya aynı anda açılırsa, zaman damgaları otomatik olarak hizalanacaktır. Bu, birden fazla kaynaktan gelen log dosyalarının kolayca karşılaştırılmasını sağlar.
 :::
 
-<img src="/img/overview/log-files/open-file-1.png" alt="Kaydedilmiş bir logu açma" />
+<img src="/img/overview/log-files/open-file-1.webp" alt="Kaydedilmiş bir logu açma" />
 
 ## Yeni loglar ekleme {#adding-new-logs}
 
@@ -37,7 +37,7 @@ Menü çubuğunda `Dosya` > `Yeni log ekle...` seçeneğine tıklayın, ardında
 
 `Uygulama` > `Tercihleri göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) seçeneğine tıklayarak tercihler penceresini açın. Robot adresini ve log klasörünü güncelleyin.
 
-<img src="/img/prefs.png" alt="Tercihler diyagramı" />
+<img src="/img/prefs.webp" alt="Tercihler diyagramı" />
 </details>
 
 `Dosya` > `Logları indir...` seçeneğine tıklayarak indirme penceresini açın. Robota bağlandıktan sonra mevcut loglar en yenisi en üstte olacak şekilde gösterilir. İndirmek için bir veya daha fazla log dosyası seçin (bir aralık seçmek için shift-tıkla veya tümünü seçmek için **cmd/ctrl + A** kullanın). Ardından ↓ simgesine tıklayın ve bir kaydetme konumu seçin.
@@ -50,7 +50,7 @@ CTRE'nin [sinyal loglayıcısı](https://v6.docs.ctr-electronics.com/en/stable/d
 Birden fazla dosya indirirken AdvantageScope, hedef klasörde zaten mevcut olan tüm dosyaları atlar.
 :::
 
-<img src="/img/overview/log-files/open-file-2.png" alt="Log dosyalarını indirme" />
+<img src="/img/overview/log-files/open-file-2.webp" alt="Log dosyalarını indirme" />
 
 ## CSV biçimlendirme {#csv-formatting}
 

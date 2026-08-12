@@ -111,7 +111,7 @@ Pour étalonner les positions des composants articulés, nous recommandons la pr
 
 ## Manettes {#joysticks}
 
-Une image doit être incluse dans le dossier avec le nom « image.png ». Le fichier de configuration doit être au format suivant :
+Une image doit être incluse dans le dossier avec le nom « image.webp ». Le fichier de configuration doit être au format suivant :
 
 ```json
 {
@@ -198,7 +198,7 @@ Pour les liaisons NI, AdvantageScope est rétrocompatible avec les anciennes cl�
 
 ## Images de terrain plates {#flat-field-images}
 
-Une image doit être incluse dans le dossier avec le nom « image.png ». Elle doit être orientée avec l'alliance rouge sur la gauche. Le fichier de configuration doit être au format suivant :
+Une image doit être incluse dans le dossier avec le nom « image.webp ». Elle doit être orientée avec l'alliance rouge sur la gauche. Le fichier de configuration doit être au format suivant :
 
 ```json
 {

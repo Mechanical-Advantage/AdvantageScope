@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 點分頁顯示任意點的 2D 視覺化。這是一個非常彈性的工具，允許對視覺資料/管線、機構狀態等進行自訂視覺化。
 
-<img src="/img/tab-reference/points-1.png" alt="點分頁範例" />
+<img src="/img/tab-reference/points-1.webp" alt="點分頁範例" />
 
 <details>
 <summary>時間軸控制項</summary>
@@ -20,7 +20,7 @@ import TabItem from '@theme/TabItem';
 
 要縮放，請將游標置於時間軸上方並向上或向下滾動。也可以透過按住 `Shift` 的同時點擊並拖曳來選擇範圍。透過水平滾動（在受支援的裝置上）或透過在時間軸上點擊並拖曳來左右移動。當即時連線時，向左滾動會解鎖目前時間，滾動到最右側會再次鎖定到目前時間。按下 `Ctrl+\` 可縮放至機器人啟用的時間段。
 
-<img src="/img/tab-reference/timeline.png" alt="時間軸" />
+<img src="/img/tab-reference/timeline.webp" alt="時間軸" />
 
 </details>
 

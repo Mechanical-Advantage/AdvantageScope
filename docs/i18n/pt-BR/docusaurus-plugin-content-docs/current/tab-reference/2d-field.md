@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 A guia de campo 2D mostra uma visualização 2D do robô sobreposta em um mapa do campo. Ela também pode mostrar dados extras, como status de alvos de visão e poses de referência.
 
-<img src="/img/tab-reference/2d-field-1.png" alt="Visão geral da aba de campo 2D" />
+<img src="/img/tab-reference/2d-field-1.webp" alt="Visão geral da aba de campo 2D" />
 
 <details>
 <summary>Controles da linha do tempo</summary>
@@ -20,7 +20,7 @@ Seções amarelas indicam quando o robô está em autônomo, seções azuis indi
 
 Para dar zoom, posicione o cursor sobre a linha do tempo e role para cima ou para baixo. Um intervalo também pode ser selecionado clicando e arrastando enquanto mantém `Shift` pressionado. Mova para a esquerda e para a direita rolando horizontalmente (em dispositivos suportados) ou clicando e arrastando na linha do tempo. Quando conectado ao vivo, rolar para a esquerda desbloqueia do tempo atual, e rolar totalmente para a direita bloqueia no tempo atual novamente. Pressione `Ctrl+\` para dar zoom no período em que o robô está habilitado.
 
-<img src="/img/tab-reference/timeline.png" alt="Linha do tempo" />
+<img src="/img/tab-reference/timeline.webp" alt="Linha do tempo" />
 
 </details>
 
@@ -34,7 +34,7 @@ Para começar, arraste um campo para a seção "Poses". Exclua um objeto usando 
 Para ver uma lista completa de tipos de objetos suportados, clique no ícone `?`. Esta lista também inclui os tipos de dados suportados e se os objetos devem ser adicionados como filhos.
 :::
 
-<img src="/img/tab-reference/2d-field-2.png" alt="Campo 2D com objetos" />
+<img src="/img/tab-reference/2d-field-2.webp" alt="Campo 2D com objetos" />
 
 ## Formato dos dados {#data-format}
 

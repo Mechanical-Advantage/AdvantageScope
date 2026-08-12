@@ -8,7 +8,7 @@ import DocCardList from "@theme/DocCardList";
 
 #
 
-<img src="/img/banner.png" alt="AdvantageScope" />
+<img src="/img/banner.webp" alt="AdvantageScope" />
 
 AdvantageScope 是由 [6328 團隊](https://littletonrobotics.org) 為 FIRST 隊伍開發的一款機器人診斷、日誌查看/分析和資料視覺化應用程式。它可以讀取 WPILOG、DS log、Hoot (CTRE)、REVLOG (REV Robotics)、Road Runner、CSV 和 RLOG 等格式的日誌檔案，並支援使用 NT4、Phoenix、RLOG 或 FTC Dashboard 串流即時查看機器人資料。AdvantageScope 可以配合任何 WPILib 專案使用，但也針對我們的 [AdvantageKit](https://docs.advantagekit.org) 日誌重播框架進行了優化。請注意，**使用 AdvantageScope 並不強制要求使用 AdvantageKit**。
 
@@ -59,5 +59,5 @@ style={{ marginBottom: "15px" }}
 
 歡迎在 [issues 頁面](https://github.com/Mechanical-Advantage/AdvantageScope/issues) 提供回饋、功能需求或回報 Bug。有關參與 AdvantageScope 貢獻的更多資訊，請參閱[貢獻頁面](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/CONTRIBUTING.md)。如有非公開諮詢，請致信 software@team6328.org。
 
-<img src="/img/screenshot-light.png" className="light-only" />
-<img src="/img/screenshot-light.png" className="dark-only" />
+<img src="/img/screenshot-light.webp" className="light-only" />
+<img src="/img/screenshot-light.webp" className="dark-only" />

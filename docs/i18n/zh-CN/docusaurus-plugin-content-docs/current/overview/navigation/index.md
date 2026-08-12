@@ -2,7 +2,7 @@
 
 下面的截图展示了 AdvantageScope 主窗口的重要元素。具体外观因操作系统而异。
 
-<img src="/img/overview/navigation/navigation-1.png" alt="导航图解" />
+<img src="/img/overview/navigation/navigation-1.webp" alt="导航图解" />
 
 :::tip
 要同时查看多个日志文件，请点击 `文件` > `新建窗口`。

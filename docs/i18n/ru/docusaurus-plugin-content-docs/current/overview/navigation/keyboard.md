@@ -84,5 +84,5 @@ AdvantageScope включает множество горячих клавиш, 
 
 На поддерживаемых моделях MacBook сенсорная панель Touch Bar может использоваться для прокрутки лога и добавления новых вкладок.
 
-<img src="/img/overview/navigation/keyboard-1.png" alt="Интерфейс прокрутки Touch Bar" />
-<img src="/img/overview/navigation/keyboard-2.png" alt="Интерфейс новой вкладки Touch Bar" />
+<img src="/img/overview/navigation/keyboard-1.webp" alt="Интерфейс прокрутки Touch Bar" />
+<img src="/img/overview/navigation/keyboard-2.webp" alt="Интерфейс новой вкладки Touch Bar" />

@@ -13,7 +13,7 @@ Vizualizarea de consolă este concepută pentru a vizualiza un singur câmp de t
 
 Trageți câmpul dorit în vizualizarea principală pentru a începe. Fiecare rând reprezintă o actualizare a câmpului. Pentru logurile WPILib, este creat un rând nou pentru fiecare linie salvată. Pentru logurile AdvantageKit, este creat un rând nou pentru fiecare ciclu de buclă.
 
-<img src="/img/tab-reference/console-1.png" alt="Vizualizare consolă" />
+<img src="/img/tab-reference/console-1.webp" alt="Vizualizare consolă" />
 
 :::info
 Dați clic pe pictograma paletă de culori pentru a comuta evidențierea mesajelor de avertisment și eroare. Pentru logurile WPILib și AdvantageKit, mesajele sunt evidențiate dacă conțin textul „warning” sau „error”.

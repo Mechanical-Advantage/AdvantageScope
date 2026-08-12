@@ -2,7 +2,7 @@
 
 The line graph is the default view in AdvantageScope. It supports both continuous (numerical) and discrete fields.
 
-<img src="/img/tab-reference/line-graph/line-graph-1.png" alt="Line graph demo" />
+<img src="/img/tab-reference/line-graph/line-graph-1.webp" alt="Line graph demo" />
 
 ## Viewer Pane {#viewer-pane}
 
@@ -20,19 +20,19 @@ To get started, drag a field to one of the three sections (left, right, or discr
 
 The color and line style of each field can be customized by clicking the colored icon or right-clicking on the field name. Data from the WPILib [persistent alerts](https://docs.wpilib.org/en/latest/docs/software/telemetry/persistent-alerts.html) API can be visualized by adding the alerts group as a discrete field. An example visualization is shown below.
 
-<img src="/img/tab-reference/line-graph/line-graph-2.png" alt="Alerts visualization" />
+<img src="/img/tab-reference/line-graph/line-graph-2.webp" alt="Alerts visualization" />
 
 :::tip
 To overlay the robot mode (autonomous, teleoperated, or utility), click the three dots next to "Discrete Fields" and click "Show Robot Mode".
 
-<img src="/img/tab-reference/line-graph/line-graph-3.png" alt="Robot mode overlay" />
+<img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="Robot mode overlay" />
 :::
 
 ### Adjusting Axes {#adjusting-axes}
 
 By default, each axis adjusts its range based on the visible data. To disable auto-ranging and lock the range to its current min and max, click the three dots near the axis title and then `Lock Axis`. To manually adjust the range, choose `Edit Range...` and enter the desired values.
 
-<img src="/img/tab-reference/line-graph/line-graph-4.png" alt="Editing axis range" height="250" />
+<img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="Editing axis range" height="250" />
 
 ### Integration & Differentiation {#integration-and-differentiation}
 

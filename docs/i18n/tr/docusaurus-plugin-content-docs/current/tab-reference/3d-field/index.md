@@ -5,7 +5,7 @@ import TabItem from '@theme/TabItem';
 
 3B saha, robotun ve sahanın 3B görselleştirmesini gösterir. Normal 2B pozlarla kullanılabilir, ancak özellikle 3B hesaplamalarıyla çalışırken (AprilTag'ler ile konum belirleme gibi) son derece yararlıdır. Sahaya göre, robota göre ve sabit dahil olmak üzere birden fazla kamera görünümü mevcuttur. [AdvantageScope XR](advantagescope-xr) bu sekmenin artırılmış gerçeklik kullanılarak görselleştirilmesine olanak tanır. Zaman çizelgesi robotun ne zaman etkin olduğunu gösterir ve log verileri arasında gezinmek için kullanılabilir.
 
-<img src="/img/tab-reference/3d-field/3d-field-1.png" alt="3D saha sekmesi örneği" />
+<img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="3D saha sekmesi örneği" />
 
 <details>
 <summary>Zaman Çizelgesi Kontrolleri</summary>
@@ -16,7 +16,7 @@ Sarı bölümler robotun otonomda olduğu zamanları, mavi bölümler robotun te
 
 Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı veya aşağı kaydırın. `Shift` tuşunu basılı tutarken tıklayıp sürükleyerek bir aralık da seçilebilir. Yatay olarak kaydırarak (desteklenen cihazlarda) veya zaman çizelgesinde tıklayıp sürükleyerek sola ve sağa hareket edin. Canlı bağlandığında sola kaydırmak mevcut zamandan kilidi kaldırır ve en sağa kadar kaydırmak tekrar mevcut zamana kilitler. Robotun etkin olduğu periyoda yakınlaştırmak için `Ctrl+\` tuşlarına basın.
 
-<img src="/img/tab-reference/timeline.png" alt="Zaman çizelgesi" />
+<img src="/img/tab-reference/timeline.webp" alt="Zaman çizelgesi" />
 
 </details>
 
@@ -105,7 +105,7 @@ Mekanizma verileri 2B mekanizmalar veya eklemli 3B bileşenler kullanılarak gö
 
 Bir [`Mechanism2d`](https://docs.wpilib.org/tr/stable/docs/software/dashboards/glass/mech2d-widget.html) kullanılarak loglanan mekanizma verilerini görselleştirmek için mekanizma alanını mevcut bir robot veya hayalet nesnesine ekleyin. Mekanizma, aşağıda gösterildiği gibi basit kutular kullanılarak robotun XZ veya YZ düzlemine yansıtılır. XZ ve YZ düzlemleri arasında geçiş yapmak için dişli simgesine tıklayın veya alan adına sağ tıklayın. Robotun orijini mekanizmanın alt kenarında merkezlenmiştir.
 
-<img src="/img/tab-reference/3d-field/3d-field-2.png" alt="2D mekanizma" />
+<img src="/img/tab-reference/3d-field/3d-field-2.webp" alt="2D mekanizma" />
 
 ### 3B bileşenler {#3d-components}
 
@@ -117,7 +117,7 @@ Mekanizmalar, her bileşenin robota göre konumlarını temsil eden bir 3B poz k
 
 Her bileşen bağımsız olarak hareket ettirilebilir (asansör taşıyıcısı, kol veya uç işlevci gibi). AdvantageKit kullanıcıları, bir Mechanism2d'yi bir Pose3d nesneleri dizisine dönüştürmek için [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) yöntemini kullanmayı düşünmelidir. Robotların bileşenlerle yapılandırılması hakkında daha fazla bilgi için [Özel Varlıklar](/more-features/custom-assets) bölümüne bakın.
 
-<img src="/img/tab-reference/3d-field/3d-field-3.png" alt="3D mekanizma" />
+<img src="/img/tab-reference/3d-field/3d-field-3.webp" alt="3D mekanizma" />
 
 ## Oyun objesi nesneleri {#game-piece-objects}
 
@@ -137,7 +137,7 @@ AdvantageKit KitBot 2024 örnek projesi, robottan hoparlöre seyahat eden bir no
 
 </details>
 
-<img src="/img/tab-reference/3d-field/3d-field-4.png" alt="2024 KitBot nota görselleştirmesi" />
+<img src="/img/tab-reference/3d-field/3d-field-4.webp" alt="2024 KitBot nota görselleştirmesi" />
 
 ## Kamera seçenekleri {#camera-options}
 
@@ -171,7 +171,7 @@ Bu mod, kamerayı sürücü istasyonlarından birinin arkasına tipik göz hizas
 
 Her robot modeli, görüş ve sürücü kameraları gibi bir dizi sabit kamera ile yapılandırılmıştır. Bu kameralar sabit konumlara, en boy oranlarına ve FOV değerlerine sahiptir. Bu görünümler genellikle görüş verilerini kontrol etmek veya bir sürücü kamerası görünümünü simüle etmek için kullanışlıdır. Aşağıdaki örnekte bir sürücü kamerası gösterilmektedir.
 
-<img src="/img/tab-reference/3d-field/3d-field-5.png" alt="Sabit kamera" />
+<img src="/img/tab-reference/3d-field/3d-field-5.webp" alt="Sabit kamera" />
 
 Bir "Kamera Geçersiz Kılma" pozisyonu sağlanırsa, yapılandırılmış FOV değerlerini ve en boy oranlarını korurken tüm sabit kameraların varsayılan pozlarının yerini alır. Bu, robot kodunun bir taret veya atıcı başlığı üzerine monte edilmiş bir kamera gibi hareketli bir kameranın konumunu sağlamasına olanak tanır.
 
@@ -195,8 +195,8 @@ Bu sekmede kullanılan koordinat sistemi özelleştirilebilir. Ayrıntılar içi
 - **Standart (Varsayılan):** Minimum aydınlatma ve basitleştirilmiş 3B modellerle işleyin. Çoğu cihazda iyi çalışır.
 - **Düşük Güç:** Pil tüketimini azaltmak ve alt seviye cihazlarda daha tutarlı performans sağlamak için kare hızını, çözünürlüğü ve model detayını düşürün.
 
-<img src="/img/tab-reference/3d-field/3d-field-6.png" alt="İşleme modlarının karşılaştırılması" />
+<img src="/img/tab-reference/3d-field/3d-field-6.webp" alt="İşleme modlarının karşılaştırılması" />
 
 İşleme modunu yapılandırmak için `Uygulama` > `Tercihleri göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) seçeneğine tıklayarak tercihler penceresini açın. "3B modu (Pil)" ayarı, şarj olmuyorken bir dizüstü bilgisayarda kullanılan işleme modunu geçersiz kılmak için varsayılandan değiştirilebilir. Örneğin bu, yarışmadayken pili korumak için kullanılabilir.
 
-<img src="/img/prefs.png" alt="Tercihler diyagramı" />
+<img src="/img/prefs.webp" alt="Tercihler diyagramı" />

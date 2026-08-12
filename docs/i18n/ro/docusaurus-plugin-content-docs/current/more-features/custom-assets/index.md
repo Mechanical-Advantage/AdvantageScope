@@ -111,7 +111,7 @@ Pentru a calibra pozițiile componentelor articulate, recomandăm următorul pro
 
 ## Joystick-uri {#joysticks}
 
-O imagine trebuie inclusă în folder cu numele „image.png”. Fișierul de configurare trebuie să fie în următorul format:
+O imagine trebuie inclusă în folder cu numele „image.webp”. Fișierul de configurare trebuie să fie în următorul format:
 
 ```json
 {
@@ -198,7 +198,7 @@ Pentru legăturile NI, AdvantageScope este compatibil retroactiv cu vechile chei
 
 ## Imagini plate de teren {#flat-field-images}
 
-O imagine trebuie inclusă în folder cu numele „image.png”. Aceasta ar trebui orientată cu alianța roșie în stânga. Fișierul de configurare trebuie să fie în următorul format:
+O imagine trebuie inclusă în folder cu numele „image.webp”. Aceasta ar trebui orientată cu alianța roșie în stânga. Fișierul de configurare trebuie să fie în următorul format:
 
 ```json
 {

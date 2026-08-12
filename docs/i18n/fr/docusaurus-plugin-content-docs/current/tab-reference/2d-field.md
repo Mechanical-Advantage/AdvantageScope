@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 L'onglet terrain 2D montre une visualisation 2D du robot superposée sur une carte du terrain. Il peut également afficher des données supplémentaires telles que l'état de ciblage de vision et les poses de référence.
 
-<img src="/img/tab-reference/2d-field-1.png" alt="Aperçu de l'onglet terrain 2D" />
+<img src="/img/tab-reference/2d-field-1.webp" alt="Aperçu de l'onglet terrain 2D" />
 
 <details>
 <summary>Contrôles de la chronologie</summary>
@@ -20,7 +20,7 @@ Les sections jaunes indiquent quand le robot est en mode autonome, les sections 
 
 Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le haut ou vers le bas. Une plage peut également être sélectionnée en cliquant et en faisant glisser tout en maintenant la touche `Shift` enfoncée. Déplacez-vous vers la gauche et la droite en faisant défiler horizontalement (sur les appareils pris en charge), ou en cliquant et en faisant glisser sur la chronologie. Lors d'une connexion en direct, le défilement vers la gauche déverrouille à partir de l'heure actuelle, et le défilement tout à fait vers la droite verrouille à nouveau à l'heure actuelle. Appuyez sur `Ctrl+\` pour zoomer sur la période où le robot est activé.
 
-<img src="/img/tab-reference/timeline.png" alt="Chronologie" />
+<img src="/img/tab-reference/timeline.webp" alt="Chronologie" />
 
 </details>
 
@@ -34,7 +34,7 @@ Pour commencer, faites glisser un champ vers la section « Poses ». Supprimez
 Pour voir une liste complète des types d'objets pris en charge, cliquez sur l'icône `?`. Cette liste comprend également les types de données pris en charge et indique si les objets doivent être ajoutés en tant qu'enfants.
 :::
 
-<img src="/img/tab-reference/2d-field-2.png" alt="Terrain 2D avec objets" />
+<img src="/img/tab-reference/2d-field-2.webp" alt="Terrain 2D avec objets" />
 
 ## Format des données {#data-format}
 

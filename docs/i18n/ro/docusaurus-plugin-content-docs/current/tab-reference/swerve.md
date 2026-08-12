@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 Fila swerve afișează starea a patru module swerve, inclusiv vectorii de viteză, pozițiile de repaus, rotația robotului și vitezele șasiului.
 
-<img src="/img/tab-reference/swerve-1.png" alt="Prezentare generală a filei swerve" />
+<img src="/img/tab-reference/swerve-1.webp" alt="Prezentare generală a filei swerve" />
 
 <details>
 <summary>Controale cronologie</summary>
@@ -20,7 +20,7 @@ Secțiunile galbene indică momentul în care robotul este în modul autonom, se
 
 Pentru a mări, plasați cursorul peste cronologie și derulați în sus sau în jos. Un interval poate fi de asemenea selectat prin clic și tragere în timp ce țineți apăsată tasta `Shift`. Mutați-vă la stânga și la dreapta prin derulare orizontală (pe dispozitivele suportate) sau prin clic și tragere pe cronologie. Când sunteți conectat live, derularea spre stânga deblochează timpul curent, iar derularea până la capăt în dreapta blochează din nou timpul curent. Apăsați `Ctrl+\` pentru a mări la perioada în care robotul este activat.
 
-<img src="/img/tab-reference/timeline.png" alt="Cronologie" />
+<img src="/img/tab-reference/timeline.webp" alt="Cronologie" />
 
 </details>
 

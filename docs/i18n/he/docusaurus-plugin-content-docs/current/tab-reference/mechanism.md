@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 כרטיסיית המנגנון מציגה מנגנון מפרקי שנוצר באמצעות אובייקט [Mechanism2d](https://docs.wpilib.org/he/stable/docs/software/dashboards/glass/mech2d-widget.html) אחד או יותר.
 
-<img src="/img/tab-reference/mechanism-1.png" alt="סקירה כללית של כרטיסיית מנגנון" />
+<img src="/img/tab-reference/mechanism-1.webp" alt="סקירה כללית של כרטיסיית מנגנון" />
 
 <details>
 <summary>בקרות ציר זמן</summary>
@@ -20,7 +20,7 @@ import TabItem from '@theme/TabItem';
 
 כדי להתקרב/להתרחק (Zoom), יש להציב את הסמן מעל ציר הזמן ולגלול למעלה או למטה. ניתן לבחור טווח גם על ידי לחיצה וגרירה תוך החזקת מקש `Shift`. מעבר שמאלה וימינה מתבצע על ידי גלילה אופקית (במכשירים נתמכים), או על ידי לחיצה וגרירה על ציר הזמן. בעת התחברות חיה, גלילה שמאלה מבטלת את הנעילה מהזמן הנוכחי, וגלילה עד הסוף ימינה נועלת שוב לזמן הנוכחי. לחיצה על `Ctrl+\` תקרב את התצוגה לפרק הזמן שבו הרובוט מאופשר.
 
-<img src="/img/tab-reference/timeline.png" alt="ציר זמן" />
+<img src="/img/tab-reference/timeline.webp" alt="ציר זמן" />
 
 </details>
 

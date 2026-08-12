@@ -2,7 +2,7 @@
 
 Graficul liniar este vizualizarea implicită în AdvantageScope. Acesta suportă atât câmpuri continue (numerice), cât și câmpuri discrete.
 
-<img src="/img/tab-reference/line-graph/line-graph-1.png" alt="Demonstrație grafic liniar" />
+<img src="/img/tab-reference/line-graph/line-graph-1.webp" alt="Demonstrație grafic liniar" />
 
 ## Panoul de vizualizare {#viewer-pane}
 
@@ -20,19 +20,19 @@ Pentru a începe, trageți un câmp într-una dintre cele trei secțiuni (stâng
 
 Culoarea și stilul liniei fiecărui câmp pot fi personalizate dând clic pe pictograma colorată sau dând clic dreapta pe numele câmpului. Datele din API-ul de [alerte persistente](https://docs.wpilib.org/en/latest/docs/software/telemetry/persistent-alerts.html) al WPILib pot fi vizualizate adăugând grupul de alerte ca un câmp discret. Un exemplu de vizualizare este prezentat mai jos.
 
-<img src="/img/tab-reference/line-graph/line-graph-2.png" alt="Vizualizare alerte" />
+<img src="/img/tab-reference/line-graph/line-graph-2.webp" alt="Vizualizare alerte" />
 
 :::tip
 Pentru a suprapune modul robotului (autonom, teleoperat sau utilitar), dați clic pe cele trei puncte de lângă „Câmpuri discrete” și dați clic pe „Afișează modul robotului”.
 
-<img src="/img/tab-reference/line-graph/line-graph-3.png" alt="Suprapunere mod robot" />
+<img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="Suprapunere mod robot" />
 :::
 
 ### Ajustarea axelor {#adjusting-axes}
 
 În mod implicit, fiecare axă își ajustează intervalul pe baza datelor vizibile. Pentru a dezactiva ajustarea automată și a bloca intervalul la valorile curente minimă și maximă, dați clic pe cele trei puncte de lângă titlul axei și apoi pe `Blochează axa`. Pentru a ajusta manual intervalul, alegeți `Editează intervalul...` și introduceți valorile dorite.
 
-<img src="/img/tab-reference/line-graph/line-graph-4.png" alt="Editarea intervalului axei" />
+<img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="Editarea intervalului axei" />
 
 ### Integrare și diferențiere {#integration-and-differentiation}
 

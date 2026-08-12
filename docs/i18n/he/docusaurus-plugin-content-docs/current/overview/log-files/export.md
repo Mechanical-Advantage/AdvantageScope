@@ -8,7 +8,7 @@ AdvantageScope כוללת מערכת גמישה לייצוא נתוני יומן
 
 לצפייה באפשרויות הייצוא, יש ללחוץ על `קובץ` > `ייצוא נתונים...`.
 
-<img src="/img/overview/log-files/export-1.png" alt="אפשرويات ייصוא" />
+<img src="/img/overview/log-files/export-1.webp" alt="אפשرويات ייصוא" />
 
 :::tip
 בנוסף לייצוא היומן המלא המתואר כאן, כרטיסיית 💬 [מסוף](/tab-reference/console) מאפשרת ייצוא נתוני מסוף לקובץ טקסט.
@@ -46,4 +46,4 @@ _אזהרה זו **אינה חלה** על יומנים שנוצרו על ידי 
 
 דוגמה לקובץ CSV שמיוצא מ-AdvantageScope מוצגת למטה, בפורמט "CSV (טבלה)" עם חותמות זמן המוגדרות ל-"כל השינויים":
 
-<img src="/img/overview/log-files/export-2.png" alt="טבלת CSV" />
+<img src="/img/overview/log-files/export-2.webp" alt="טבלת CSV" />

@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 機構分頁顯示使用一個或多個 [Mechanism2d](https://docs.wpilib.org/zh-cn/stable/docs/software/dashboards/glass/mech2d-widget.html) 物件建立的關節機構。
 
-<img src="/img/tab-reference/mechanism-1.png" alt="機構分頁概述" />
+<img src="/img/tab-reference/mechanism-1.webp" alt="機構分頁概述" />
 
 <details>
 <summary>時間軸控制項</summary>
@@ -20,7 +20,7 @@ import TabItem from '@theme/TabItem';
 
 要縮放，請將游標置於時間軸上方並向上或向下滾動。也可以透過按住 `Shift` 的同時點擊並拖曳來選擇範圍。透過水平滾動（在受支援的裝置上）或透過在時間軸上點擊並拖曳來左右移動。當即時連線時，向左滾動會解鎖目前時間，滾動到最右側會再次鎖定到目前時間。按下 `Ctrl+\` 可縮放至機器人啟用的時間段。
 
-<img src="/img/tab-reference/timeline.png" alt="時間軸" />
+<img src="/img/tab-reference/timeline.webp" alt="時間軸" />
 
 </details>
 

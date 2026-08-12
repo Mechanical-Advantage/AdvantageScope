@@ -6,7 +6,7 @@ sidebar_position: 6
 
 İstatistikler sekmesi, zaman içindeki değişikliklerden ziyade genel eğilimleri analiz ederek sayısal alanların derin istatistiksel analizine olanak tanır. Seçilen alanlar bir histogram ve çeşitli standart istatistiksel ölçümler kullanılarak analiz edilir.
 
-<img src="/img/tab-reference/statistics-1.png" alt="İstatistikler sekmesine genel bakış" />
+<img src="/img/tab-reference/statistics-1.webp" alt="İstatistikler sekmesine genel bakış" />
 
 ## Kontrol paneli {#control-pane}
 

@@ -14,7 +14,7 @@ AdvantageScope propose trois options pour charger une vidéo :
 2. **YouTube :** Copiez un lien YouTube dans le presse-papiers, puis cliquez sur l'icône de presse-papiers rouge. Après quelques secondes, le téléchargement de la vidéo commencera.
 3. **The Blue Alliance :** Cliquez sur l'icône bleue TBA pour charger automatiquement la vidéo du match sur la base du fichier journal. Si plusieurs vidéos sont disponibles, choisissez la vidéo à télécharger dans le menu surgissant. Cette fonctionnalité nécessite une clé API pour TBA, qui doit être obtenue sur [thebluealliance.com/account](https://www.thebluealliance.com/account) et copiée dans la page des préférences d'AdvantageScope sous « Clé API TBA ».
 
-<img src="/img/tab-reference/video-1.png" alt="Sélecteur de source" />
+<img src="/img/tab-reference/video-1.webp" alt="Sélecteur de source" />
 
 Après avoir choisi une vidéo, la chronologie en bas à droite commence à devenir bleue pour indiquer les images qui ont été mises en cache (cette étape est nécessaire pour une lecture fluide). Cette fonctionnalité est destinée uniquement aux vidéos de la durée d'un match en raison de la conversion d'images requise.
 
@@ -36,7 +36,7 @@ Lorsqu'une vidéo est initialement chargée et n'a pas encore été synchronisé
 - \> = avancer de cinq secondes
 - < = reculer de cinq secondes
 
-<img src="/img/tab-reference/video-2.png" alt="Commandes vidéo" />
+<img src="/img/tab-reference/video-2.webp" alt="Commandes vidéo" />
 
 ## Synchronisation automatique {#automatic-synchronization}
 
@@ -56,7 +56,7 @@ Le curseur sur la chronologie s'aimante au début et à la fin des périodes de 
 
 Une fois la vidéo et le journal alignés, cliquez sur l'icône de cadenas à côté de la chronologie vidéo (ou appuyez sur **↑ ou ↓**). Les contrôles vidéo sont maintenant désactivés. Cliquez à nouveau sur l'icône de cadenas pour déverrouiller la lecture vidéo.
 
-<img src="/img/tab-reference/video-3.png" alt="Bouton de verrouillage" />
+<img src="/img/tab-reference/video-3.webp" alt="Bouton de verrouillage" />
 
 ## Lecture {#playback}
 
@@ -71,7 +71,7 @@ Les sections jaunes indiquent quand le robot est en mode autonome, les sections 
 
 Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le haut ou vers le bas. Une plage peut également être sélectionnée en cliquant et en faisant glisser tout en maintenant la touche `Shift` enfoncée. Déplacez-vous vers la gauche et la droite en faisant défiler horizontalement (sur les appareils pris en charge), ou en cliquant et en faisant glisser sur la chronologie. Lors d'une connexion en direct, le défilement vers la gauche déverrouille à partir de l'heure actuelle, et le défilement tout à fait vers la droite verrouille à nouveau à l'heure actuelle. Appuyez sur `Ctrl+\` pour zoomer sur la période où le robot est activé.
 
-<img src="/img/tab-reference/timeline.png" alt="Chronologie" />
+<img src="/img/tab-reference/timeline.webp" alt="Chronologie" />
 
 </details>
 
@@ -79,4 +79,4 @@ Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le hau
 Si vous le souhaitez, le champ de vision de la caméra peut être ajusté dans la vue du terrain 3D pour correspondre à l'apparence de la vidéo. Pour plus de détails, consultez « Options de caméra » sur la page 👀 [Terrain 3D](/tab-reference/3d-field).
 :::
 
-<img src="/img/tab-reference/video-4.png" alt="Instantané vidéo avec odométrie" />
+<img src="/img/tab-reference/video-4.webp" alt="Instantané vidéo avec odométrie" />

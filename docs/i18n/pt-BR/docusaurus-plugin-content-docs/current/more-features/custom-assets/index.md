@@ -111,7 +111,7 @@ Para calibrar as posições dos componentes articulados, recomendamos o seguinte
 
 ## Joysticks {#joysticks}
 
-Uma imagem deve ser incluída na pasta com o nome "image.png". O arquivo de configuração deve estar no seguinte formato:
+Uma imagem deve ser incluída na pasta com o nome "image.webp". O arquivo de configuração deve estar no seguinte formato:
 
 ```json
 {
@@ -198,7 +198,7 @@ Para associações NI, o AdvantageScope é compatível com as antigas chaves de 
 
 ## Imagens de campo planas {#flat-field-images}
 
-Uma imagem deve ser incluída na pasta com o nome "image.png". Ela deve ser orientada com a aliança vermelha à esquerda. O arquivo de configuração deve estar no seguinte formato:
+Uma imagem deve ser incluída na pasta com o nome "image.webp". Ela deve ser orientada com a aliança vermelha à esquerda. O arquivo de configuração deve estar no seguinte formato:
 
 ```json
 {

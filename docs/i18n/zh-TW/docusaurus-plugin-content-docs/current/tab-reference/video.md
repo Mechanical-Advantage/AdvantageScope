@@ -14,7 +14,7 @@ AdvantageScope 提供三種載入影片的選項：
 2. **YouTube：** 將 YouTube 連結複製到剪貼簿，然後點擊紅色剪貼簿圖示。幾秒鐘後，影片將開始下載。
 3. **The Blue Alliance：** 點擊藍色 TBA 圖示，基於日誌檔案自動載入比賽影片。如果有複數影片可用，請從快顯選單中選擇要下載的影片。此功能需要 TBA 的 API 金鑰，應在 [thebluealliance.com/account](https://www.thebluealliance.com/account) 取得並複製到 AdvantageScope 偏好設定頁面的「TBA API 金鑰」下方。
 
-<img src="/img/tab-reference/video-1.png" alt="來源選擇器" />
+<img src="/img/tab-reference/video-1.webp" alt="來源選擇器" />
 
 選擇影片後，右下角的時間軸開始變藍，以指示已快取的影格（此步驟對於流暢播放是必需的）。由於需要影格轉換，此功能僅適用於比賽長度的影片。
 
@@ -36,7 +36,7 @@ AdvantageScope 需要 [FFmpeg](https://ffmpeg.org) 來處理影片檔案。如�
 - \> = 前進五秒
 - < = 後退五秒
 
-<img src="/img/tab-reference/video-2.png" alt="影片控制項" />
+<img src="/img/tab-reference/video-2.webp" alt="影片控制項" />
 
 ## 自動同步 {#automatic-synchronization}
 
@@ -56,7 +56,7 @@ AdvantageScope 需要 [FFmpeg](https://ffmpeg.org) 來處理影片檔案。如�
 
 一旦影片與日誌對齊，點擊影片時間軸旁邊的鎖定圖示（或按下 **↑ 或 ↓**）。影片控制項現在已停用。再次點擊鎖定圖示可解鎖影片播放。
 
-<img src="/img/tab-reference/video-3.png" alt="鎖定按鈕" />
+<img src="/img/tab-reference/video-3.webp" alt="鎖定按鈕" />
 
 ## 播放 {#playback}
 
@@ -71,7 +71,7 @@ AdvantageScope 需要 [FFmpeg](https://ffmpeg.org) 來處理影片檔案。如�
 
 要縮放，請將游標置於時間軸上方並向上或向下滾動。也可以透過按住 `Shift` 的同時點擊並拖曳來選擇範圍。透過水平滾動（在受支援的裝置上）或透過在時間軸上點擊並拖曳來左右移動。當即時連線時，向左滾動會解鎖目前時間，滾動到最右側會再次鎖定到目前時間。按下 `Ctrl+\` 可縮放至機器人啟用的時間段。
 
-<img src="/img/tab-reference/timeline.png" alt="時間軸" />
+<img src="/img/tab-reference/timeline.webp" alt="時間軸" />
 
 </details>
 
@@ -79,4 +79,4 @@ AdvantageScope 需要 [FFmpeg](https://ffmpeg.org) 來處理影片檔案。如�
 如果需要，可以在 3D 場地視圖中調整攝影機 FOV 以匹配影片的外觀。有關詳細資訊，請參閱 👀 [3D 場地](/tab-reference/3d-field) 頁面上的「攝影機選項」。
 :::
 
-<img src="/img/tab-reference/video-4.png" alt="帶有里程計的影片快照" />
+<img src="/img/tab-reference/video-4.webp" alt="帶有里程計的影片快照" />

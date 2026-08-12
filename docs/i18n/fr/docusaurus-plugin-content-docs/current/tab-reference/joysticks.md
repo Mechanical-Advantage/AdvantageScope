@@ -6,7 +6,7 @@ sidebar_position: 8
 
 L'onglet manettes montre l'état de jusqu'à six manettes connectées. L'image ci-dessous montre un exemple de disposition, avec deux manettes Xbox et une manette générique. Chaque bouton est mis en surbrillance lorsqu'il est enfoncé, et les états des joysticks et des autres axes sont affichés.
 
-<img src="/img/tab-reference/joysticks-1.png" alt="Aperçu de l'onglet manettes" />
+<img src="/img/tab-reference/joysticks-1.webp" alt="Aperçu de l'onglet manettes" />
 
 <details>
 <summary>Contrôles de la chronologie</summary>
@@ -17,7 +17,7 @@ Les sections jaunes indiquent quand le robot est en mode autonome, les sections 
 
 Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le haut ou vers le bas. Une plage peut également être sélectionnée en cliquant et en faisant glisser tout en maintenant la touche `Shift` enfoncée. Déplacez-vous vers la gauche et la droite en faisant défiler horizontalement (sur les appareils pris en charge), ou en cliquant et en faisant glisser sur la chronologie. Lors d'une connexion en direct, le défilement vers la gauche déverrouille à partir de l'heure actuelle, et le défilement tout à fait vers la droite verrouille à nouveau à l'heure actuelle. Appuyez sur `Ctrl+\` pour zoomer sur la période où le robot est activé.
 
-<img src="/img/tab-reference/timeline.png" alt="Chronologie" />
+<img src="/img/tab-reference/timeline.webp" alt="Chronologie" />
 
 </details>
 

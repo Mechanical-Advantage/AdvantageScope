@@ -14,7 +14,7 @@ AdvantageScope bir video yüklemek için üç seçenek sunar:
 2. **YouTube:** Panoya bir YouTube bağlantısı kopyalayın, ardından kırmızı pano simgesine tıklayın. Birkaç saniye sonra video indirilmeye başlayacaktır.
 3. **The Blue Alliance:** Log dosyasına dayalı maç videosunu otomatik olarak yüklemek için mavi TBA simgesine tıklayın. Birden fazla video mevcutsa, açılır menüden indirilecek videoyu seçin. Bu özellik, [thebluealliance.com/account](https://www.thebluealliance.com/account) adresinden alınması ve AdvantageScope tercihler sayfasındaki "TBA API Anahtarı" altına kopyalanması gereken TBA için bir API anahtarı gerektirir.
 
-<img src="/img/tab-reference/video-1.png" alt="Kaynak seçici" />
+<img src="/img/tab-reference/video-1.webp" alt="Kaynak seçici" />
 
 Bir video seçtikten sonra, sağ alttaki zaman çizelgesi önbelleğe alınan kareleri belirtmek için maviye dönmeye başlar (akıcı oynatma için bu adım gereklidir). Bu özellik, gereken kare dönüştürme işlemi nedeniyle yalnızca maç uzunluğundaki videolar için tasarlanmıştır.
 
@@ -36,7 +36,7 @@ Bir video başlangıçta yüklendiğinde ve henüz log verileriyle senkronize ed
 - \> = beş saniye ileri atla
 - < = beş saniye geri atla
 
-<img src="/img/tab-reference/video-2.png" alt="Video kontrolleri" />
+<img src="/img/tab-reference/video-2.webp" alt="Video kontrolleri" />
 
 ## Otomatik senkronizasyon {#automatic-synchronization}
 
@@ -56,7 +56,7 @@ Zaman çizelgesindeki imleç maç periyotlarının başlangıcına ve bitişine 
 
 Video ve log hizalandıktan sonra video zaman çizelgesinin yanındaki kilit simgesine tıklayın (veya **↑ veya ↓** tuşlarına basın). Video kontrolleri artık devre dışı bırakılmıştır. Video oynatımının kilidini açmak için kilit simgesine tekrar tıklayın.
 
-<img src="/img/tab-reference/video-3.png" alt="Kilitleme düğmesi" />
+<img src="/img/tab-reference/video-3.webp" alt="Kilitleme düğmesi" />
 
 ## Oynatma {#playback}
 
@@ -71,7 +71,7 @@ Sarı bölümler robotun otonomda olduğu zamanları, mavi bölümler robotun te
 
 Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı veya aşağı kaydırın. `Shift` tuşunu basılı tutarken tıklayıp sürükleyerek bir aralık da seçilebilir. Yatay olarak kaydırarak (desteklenen cihazlarda) veya zaman çizelgesinde tıklayıp sürükleyerek sola ve sağa hareket edin. Canlı bağlandığında sola kaydırmak mevcut zamandan kilidi kaldırır ve en sağa kadar kaydırmak tekrar mevcut zamana kilitler. Robotun etkin olduğu periyoda yakınlaştırmak için `Ctrl+\` tuşlarına basın.
 
-<img src="/img/tab-reference/timeline.png" alt="Zaman çizelgesi" />
+<img src="/img/tab-reference/timeline.webp" alt="Zaman çizelgesi" />
 
 </details>
 
@@ -79,4 +79,4 @@ Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı v
 İstenirse videonun görünümüyle eşleşmesi için 3B saha görünümünde kamera FOV değeri ayarlanabilir. Detaylar için 👀 [3B saha](/tab-reference/3d-field) sayfasındaki "Kamera Seçenekleri" bölümüne bakın.
 :::
 
-<img src="/img/tab-reference/video-4.png" alt="Odometri ile video anlık görüntüsü" />
+<img src="/img/tab-reference/video-4.webp" alt="Odometri ile video anlık görüntüsü" />

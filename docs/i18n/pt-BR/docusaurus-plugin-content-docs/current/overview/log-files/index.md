@@ -22,7 +22,7 @@ Na barra de menus, clique em `Arquivo` > `Abrir log(s)...`, depois escolha um ou
 Se múltiplos arquivos forem abertos simultaneamente, os timestamps serão alinhados automaticamente. Isso permite uma comparação fácil de arquivos de log de múltiplas fontes.
 :::
 
-<img src="/img/overview/log-files/open-file-1.png" alt="Abrindo um log salvo" />
+<img src="/img/overview/log-files/open-file-1.webp" alt="Abrindo um log salvo" />
 
 ## Adicionando novos logs {#adding-new-logs}
 
@@ -37,7 +37,7 @@ Na barra de menus, clique em `Arquivo` > `Adicionar novo(s) log(s)...`, depois e
 
 Abra a janela de preferências clicando em `App` > `Mostrar preferências...` (Windows/Linux) ou `AdvantageScope` > `Configurações...` (macOS). Atualize o endereço do robô e a pasta de logs.
 
-<img src="/img/prefs.png" alt="Diagrama de preferências" />
+<img src="/img/prefs.webp" alt="Diagrama de preferências" />
 </details>
 
 Clique em `Arquivo` > `Baixar logs...` para abrir a janela de download. Assim que conectado ao robô, os logs disponíveis são exibidos com o mais recente no topo. Selecione um ou mais arquivos de log para baixar (shift-clique para selecionar um intervalo ou **cmd/ctrl + A** para selecionar todos). Em seguida, clique no símbolo ↓ e selecione um local de salvamento.
@@ -50,7 +50,7 @@ O [signal logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-referen
 Ao baixar múltiplos arquivos, o AdvantageScope ignora qualquer um que já exista na pasta de destino.
 :::
 
-<img src="/img/overview/log-files/open-file-2.png" alt="Baixando arquivos de log" />
+<img src="/img/overview/log-files/open-file-2.webp" alt="Baixando arquivos de log" />
 
 ## Formatação CSV {#csv-formatting}
 

@@ -5,8 +5,8 @@ sidebar_position: 2
 
 #
 
-<img src="/img/whats-new/banner-light.png" className="light-only" />
-<img src="/img/whats-new/banner-dark.png" className="dark-only" />
+<img src="/img/whats-new/banner-light.webp" className="light-only" />
+<img src="/img/whats-new/banner-dark.webp" className="dark-only" />
 
 La version 2026 d'AdvantageScope est maintenant disponible! Consultez la [documentation d'installation](/overview/installation) et le [journal complet des modifications](https://github.com/Mechanical-Advantage/AdvantageScope/releases) pour plus de détails. Cette version inclut plusieurs nouvelles fonctionnalités majeures et de nombreuses améliorations dans toute l'application. Bon nombre de ces fonctionnalités sont conçues pour améliorer l'expérience sur les systèmes de contrôle existants tout en préparant une transition en douceur vers [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) lors des prochaines saisons.
 
@@ -28,9 +28,9 @@ Les équipes FTC doivent faire preuve de prudence lors de l'utilisation de logic
 <div className="image-gallery">
   <img src="/img/whats-new/ftc-1.jpg" />
   <img src="/img/whats-new/ftc-2.jpg" />
-  <img src="/img/whats-new/ftc-3.png" />
-  <img src="/img/whats-new/ftc-4.png" />
-  <img src="/img/whats-new/ftc-5.png" />
+  <img src="/img/whats-new/ftc-3.webp" />
+  <img src="/img/whats-new/ftc-4.webp" />
+  <img src="/img/whats-new/ftc-5.webp" />
 </div>
 
 Plusieurs bibliothèques de journalisation/télémesure FTC tierces prennent en charge d'autres formats compatibles avec AdvantageScope, tels que WPILOG et RLOG. La documentation de ces bibliothèques se trouve dans les projets respectifs; les développeurs d'AdvantageScope n'approuvent ni ne recommandent aucune solution de journalisation FTC particulière pour une utilisation avec AdvantageScope.
@@ -54,7 +54,7 @@ La capture d'écran ci-dessous montre toutes ces fonctionnalités en action. Not
 
 _Plus d'informations sur la prise en charge des unités se trouvent dans la [documentation](/tab-reference/line-graph/units)._
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="Graphiques avec unités" />
+<img src="/img/tab-reference/line-graph/units-1.webp" alt="Graphiques avec unités" />
 
 ## 🏁 Téléchargements de journaux plus rapides {#faster-log-downloads}
 
@@ -72,7 +72,7 @@ Le tableau ci-dessous montre la vitesse de transfert mesurée sur les versions 2
 
 La fenêtre de téléchargement prend désormais en charge l'enregistrement des journaux stockés dans des sous-dossiers. Chaque sous-dossier de journaux peut être téléchargé sous forme de groupe, offrant une approche simplifiée pour télécharger les journaux générés par la version 2026 du [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) de CTRE (qui utilise des sous-dossiers pour contourner l'impossibilité de stocker des données dans un seul fichier journal).
 
-<img src="/img/whats-new/subfolders.png" alt="Téléchargement des sous-dossiers de journaux" />
+<img src="/img/whats-new/subfolders.webp" alt="Téléchargement des sous-dossiers de journaux" />
 
 ## 🌈 Nouvelles options de visualisation {#new-visualization-options}
 
@@ -90,19 +90,19 @@ Vous pouvez désormais ouvrir des fichiers `.revlog` produits par le [`StatusLog
 
 URCL et le `StatusLogger` officiel resteront tous deux disponibles pendant la saison 2026 pour assurer une transition en douceur et offrir une parité de fonctionnalités avec les saisons précédentes. Nous aurons plus de détails à partager sur les options de journalisation en 2027 et au-delà à une date ultérieure.
 
-<img src="/img/whats-new/revlog.png" alt="Visualisation REVLOG" />
+<img src="/img/whats-new/revlog.webp" alt="Visualisation REVLOG" />
 
 ## 💿 Importations de fichiers CSV {#csv-file-imports}
 
 Pour une visualisation plus flexible des données produites en dehors des frameworks de journalisation de robot, AdvantageScope inclut désormais une prise en charge de base pour l'importation de fichiers CSV. Consultez la [documentation](/overview/log-files/#csv-formatting) pour plus de détails sur les formats pris en charge et d'autres limitations.
 
-<img src="/img/overview/log-files/export-2.png" alt="Données CSV" />
+<img src="/img/overview/log-files/export-2.webp" alt="Données CSV" />
 
 ## 🤩 Améliorations esthétiques {#aesthetic-improvements}
 
 L'interface utilisateur d'AdvantageScope sur Windows 11 a été mise à jour pour prendre en charge une barre latérale translucide, qui était auparavant exclusive aux versions macOS. Une icône d'application mise à jour est également disponible pour macOS Tahoe basée sur le matériau Liquid Glass d'Apple.
 
-<img src="/img/whats-new/windows-ui.png" alt="Interface utilisateur Windows" />
+<img src="/img/whats-new/windows-ui.webp" alt="Interface utilisateur Windows" />
 
 ## 📋 Menus simplifiés {#streamlined-menus}
 
@@ -113,9 +113,9 @@ La barre de menu et les contrôles associés ont été simplifiés et réorganis
 - La réorganisation de la fenêtre des préférences, ce qui rend les options plus faciles à trouver rapidement.
 
 <div className="image-gallery">
-  <img src="/img/whats-new/menus-1.png" />
-  <img src="/img/whats-new/menus-2.png" />
-  <img src="/img/prefs.png" />
+  <img src="/img/whats-new/menus-1.webp" />
+  <img src="/img/whats-new/menus-2.webp" />
+  <img src="/img/prefs.webp" />
 </div>
 
 ## 🐛 Améliorations de la stabilité {#stability-improvements}

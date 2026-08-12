@@ -13,7 +13,7 @@ Konsol görünümü, konsol verilerini içeren tek bir metin alanını görünt�
 
 Başlamak için istenen alanı ana görünüme sürükleyin. Her satır alandaki bir güncellemeyi temsil eder. WPILib logları için kaydedilen her satır için yeni bir satır oluşturulur. AdvantageKit logları için her döngü periyodu için yeni bir satır oluşturulur.
 
-<img src="/img/tab-reference/console-1.png" alt="Konsol görünümü" />
+<img src="/img/tab-reference/console-1.webp" alt="Konsol görünümü" />
 
 :::info
 Uyarı ve hata mesajları için vurgulamayı açıp kapatmak üzere renk paleti simgesine tıklayın. WPILib ve AdvantageKit logları için "warning" veya "error" metnini içeren mesajlar vurgulanır.

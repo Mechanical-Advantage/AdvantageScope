@@ -8,7 +8,7 @@ AdvantageScope 包含一个灵活的系统，可将日志数据导出为 CSV、W
 
 要查看导出选项，请点击 `文件` > `导出数据...`。
 
-<img src="/img/overview/log-files/export-1.png" alt="导出选项" />
+<img src="/img/overview/log-files/export-1.webp" alt="导出选项" />
 
 :::tip
 除了此处描述的完整日志导出之外，💬 [控制台](/tab-reference/console) 选项卡还允许将控制台数据导出为文本文件。
@@ -46,4 +46,4 @@ _此警告 **不适用于** 由 AdvantageKit 生成的日志，选择“Advantag
 
 下面显示了从 AdvantageScope 导出的示例 CSV 文件，格式为“CSV（表格）”，时间戳设置为“所有更改”：
 
-<img src="/img/overview/log-files/export-2.png" alt="CSV 表格" />
+<img src="/img/overview/log-files/export-2.webp" alt="CSV 表格" />

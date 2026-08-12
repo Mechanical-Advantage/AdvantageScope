@@ -5,8 +5,8 @@ sidebar_position: 2
 
 #
 
-<img src="/img/whats-new/banner-light.png" className="light-only" />
-<img src="/img/whats-new/banner-dark.png" className="dark-only" />
+<img src="/img/whats-new/banner-light.webp" className="light-only" />
+<img src="/img/whats-new/banner-dark.webp" className="dark-only" />
 
 AdvantageScope 2026 版本現已推出！請查看[安裝文件](/overview/installation)與[完整更新日誌](https://github.com/Mechanical-Advantage/AdvantageScope/releases)以瞭解詳細資訊。此版本包含數個重大新功能以及整個應用程式的多項改進。此版本中的許多功能旨在提升現有控制系統的使用體驗，同時為未來賽季順暢過渡至 [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) 奠定基礎。
 
@@ -28,9 +28,9 @@ FTC 隊伍在官方賽季期間使用實驗性軟體時應保持謹慎。Advanta
 <div className="image-gallery">
   <img src="/img/whats-new/ftc-1.jpg" />
   <img src="/img/whats-new/ftc-2.jpg" />
-  <img src="/img/whats-new/ftc-3.png" />
-  <img src="/img/whats-new/ftc-4.png" />
-  <img src="/img/whats-new/ftc-5.png" />
+  <img src="/img/whats-new/ftc-3.webp" />
+  <img src="/img/whats-new/ftc-4.webp" />
+  <img src="/img/whats-new/ftc-5.webp" />
 </div>
 
 數個第三方 FTC 日誌/遙測函式庫支援與 AdvantageScope 相容的其他格式，例如 WPILOG 和 RLOG。這些函式庫的文件可在各自的專案中找到；AdvantageScope 開發人員不背書/推薦任何特定用於 AdvantageScope 的 FTC 日誌解決方案。
@@ -54,7 +54,7 @@ AdvantageScope 旨在配合 WPILib 框架及相關日誌工具使用時提供最
 
 _有關單位支援的更多資訊可以在[文件](/tab-reference/line-graph/units)中找到。_
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="感知單位的圖表繪製" />
+<img src="/img/tab-reference/line-graph/units-1.webp" alt="感知單位的圖表繪製" />
 
 ## 🏁 更快速的日誌下載 {#faster-log-downloads}
 
@@ -72,7 +72,7 @@ _有關單位支援的更多資訊可以在[文件](/tab-reference/line-graph/un
 
 下載視窗現在支援儲存儲存在子資料夾中的日誌。每個日誌子資料夾都可以作為一組下載，為下載 CTRE 2026 版本 [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) 產生的日誌提供了一種簡化的方法（該軟體使用子資料夾作為無法將資料儲存在單一日誌檔案中的通融辦法）。
 
-<img src="/img/whats-new/subfolders.png" alt="下載日誌子資料夾" />
+<img src="/img/whats-new/subfolders.webp" alt="下載日誌子資料夾" />
 
 ## 🌈 全新視覺化選項 {#new-visualization-options}
 
@@ -90,19 +90,19 @@ _有關單位支援的更多資訊可以在[文件](/tab-reference/line-graph/un
 
 URCL 和官方 `StatusLogger` 將在 2026 賽季期間繼續提供，以確保順暢過渡並提供與先前賽季同等的功能。我們將在稍後日期分享有關 2027 年及以後日誌記錄選項的更多詳細資訊。
 
-<img src="/img/whats-new/revlog.png" alt="REVLOG 視覺化" />
+<img src="/img/whats-new/revlog.webp" alt="REVLOG 視覺化" />
 
 ## 💿 CSV 檔案匯入 {#csv-file-imports}
 
 為了更彈性地視覺化機器人日誌框架之外產生的資料，AdvantageScope 現在包含匯入 CSV 檔案的基本支援。請查看[文件](/overview/log-files/#csv-formatting)以取得有關支援格式與其他限制的更多詳細資訊。
 
-<img src="/img/overview/log-files/export-2.png" alt="CSV 資料" />
+<img src="/img/overview/log-files/export-2.webp" alt="CSV 資料" />
 
 ## 🤩 美學改進 {#aesthetic-improvements}
 
 Windows 11 上的 AdvantageScope UI 已更新以支援半透明側邊欄，此功能先前為 macOS 版本獨享。基於 Apple 液態玻璃 (Liquid Glass) 材質，macOS Tahoe 還獲得了更新的應用程式圖示。
 
-<img src="/img/whats-new/windows-ui.png" alt="Windows UI" />
+<img src="/img/whats-new/windows-ui.webp" alt="Windows UI" />
 
 ## 📋 精簡的選單 {#streamlined-menus}
 
@@ -113,9 +113,9 @@ Windows 11 上的 AdvantageScope UI 已更新以支援半透明側邊欄，此�
 - 重新組織偏好設定視窗，使選項更容易快速找到。
 
 <div className="image-gallery">
-  <img src="/img/whats-new/menus-1.png" />
-  <img src="/img/whats-new/menus-2.png" />
-  <img src="/img/prefs.png" />
+  <img src="/img/whats-new/menus-1.webp" />
+  <img src="/img/whats-new/menus-2.webp" />
+  <img src="/img/prefs.webp" />
 </div>
 
 ## 🐛 穩定性提升 {#stability-improvements}

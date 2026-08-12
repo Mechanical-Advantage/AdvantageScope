@@ -8,7 +8,7 @@ import DocCardList from "@theme/DocCardList";
 
 #
 
-<img src="/img/banner.png" alt="AdvantageScope" />
+<img src="/img/banner.webp" alt="AdvantageScope" />
 
 AdvantageScope — это приложение для диагностики роботов, просмотра/анализа логов и визуализации данных для команд FIRST, разработанное [Командой 6328](https://littletonrobotics.org). Оно читает логи в форматах файлов WPILOG, DS log, Hoot (CTRE), REVLOG (REV Robotics), Road Runner, CSV и RLOG, а также поддерживает просмотр данных робота в реальном времени с использованием потоковой передачи NT4, Phoenix, RLOG или FTC Dashboard. AdvantageScope может использоваться с любым проектом WPILib, но также оптимизировано для использования с нашим фреймворком повторного воспроизведения логов [AdvantageKit](https://docs.advantagekit.org). Обратите внимание, что **AdvantageKit не требуется для использования AdvantageScope**.
 
@@ -59,5 +59,5 @@ style={{ marginBottom: "15px" }}
 
 Отзывы, запросы функций и сообщения об ошибках приветствуются на [странице проблем](https://github.com/Mechanical-Advantage/AdvantageScope/issues). Смотрите [страницу участия](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/CONTRIBUTING.md) для получения дополнительной информации о внесении вклада в AdvantageScope. Для непубличных запросов отправьте сообщение по адресу software@team6328.org.
 
-<img src="/img/screenshot-light.png" className="light-only" />
-<img src="/img/screenshot-light.png" className="dark-only" />
+<img src="/img/screenshot-light.webp" className="light-only" />
+<img src="/img/screenshot-light.webp" className="dark-only" />

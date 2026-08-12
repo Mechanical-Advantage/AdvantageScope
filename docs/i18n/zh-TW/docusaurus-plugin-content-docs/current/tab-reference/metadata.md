@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 中繼資料分頁顯示發布到隱藏的「/Metadata」表格或透過 AdvantageKit 發布的數值。中繼資料鍵名顯示在左側，各欄分隔來自不同來源的資料（例如使用 AdvantageKit 時的真實與重播資料）。
 
-<img src="/img/tab-reference/metadata-1.png" alt="中繼資料分頁概述" />
+<img src="/img/tab-reference/metadata-1.webp" alt="中繼資料分頁概述" />
 
 下面的範例程式碼展示了如何使用 Java 記錄中繼資料。
 

@@ -5,7 +5,7 @@ import TabItem from '@theme/TabItem';
 
 3D 場地顯示機器人與場地的 3D 視覺化。它可以與一般的 2D 姿態搭配使用，但在處理 3D 計算時特別有幫助（例如使用 AprilTag 進行定位）。提供多種攝影機視角，包括相對於場地、相對於機器人以及固定視角。[AdvantageScope XR](advantagescope-xr) 允許使用擴增實境來視覺化此分頁。時間軸顯示機器人何時啟用，並可用於導覽日誌資料。
 
-<img src="/img/tab-reference/3d-field/3d-field-1.png" alt="3D 場地分頁範例" />
+<img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="3D 場地分頁範例" />
 
 <details>
 <summary>時間軸控制項</summary>
@@ -16,7 +16,7 @@ import TabItem from '@theme/TabItem';
 
 要縮放，請將游標置於時間軸上方並向上或向下滾動。也可以透過按住 `Shift` 的同時點擊並拖曳來選擇範圍。透過水平滾動（在受支援的裝置上）或透過在時間軸上點擊並拖曳來左右移動。當即時連線時，向左滾動會解鎖目前時間，滾動到最右側會再次鎖定到目前時間。按下 `Ctrl+\` 可縮放至機器人啟用的時間段。
 
-<img src="/img/tab-reference/timeline.png" alt="時間軸" />
+<img src="/img/tab-reference/timeline.webp" alt="時間軸" />
 
 </details>
 
@@ -105,7 +105,7 @@ packet.put("Pose heading (deg)", 180.0); // 度
 
 要視覺化使用 [`Mechanism2d`](https://docs.wpilib.org/zh-cn/stable/docs/software/dashboards/glass/mech2d-widget.html) 記錄的機構資料，請將機構欄位新增至現有的機器人或幽靈物件。機構使用簡單的方塊投影到機器人的 XZ 或 YZ 平面上，如下所示。點擊齒輪圖示或在欄位名稱上按右鍵以在 XZ 和 YZ 平面之間切換。機器人的原點位於機構底部邊緣的中心。
 
-<img src="/img/tab-reference/3d-field/3d-field-2.png" alt="2D 機構" />
+<img src="/img/tab-reference/3d-field/3d-field-2.webp" alt="2D 機構" />
 
 ### 3D 組件 {#3d-components}
 
@@ -117,7 +117,7 @@ packet.put("Pose heading (deg)", 180.0); // 度
 
 每個組件都可以獨立移動（如升降車廂、手臂或末端執行器）。AdvantageKit 使用者應考慮使用 [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) 方法將 Mechanism2d 轉換為 Pose3d 物件陣列。有關設定帶有組件的機器人的更多資訊，請參閱[自訂資源](/more-features/custom-assets)。
 
-<img src="/img/tab-reference/3d-field/3d-field-3.png" alt="3D 機構" />
+<img src="/img/tab-reference/3d-field/3d-field-3.webp" alt="3D 機構" />
 
 ## 遊戲物件 {#game-piece-objects}
 
@@ -137,7 +137,7 @@ AdvantageKit KitBot 2024 範例專案包含一個簡單的[命令](https://githu
 
 </details>
 
-<img src="/img/tab-reference/3d-field/3d-field-4.png" alt="2024 KitBot 音符視覺化" />
+<img src="/img/tab-reference/3d-field/3d-field-4.webp" alt="2024 KitBot 音符視覺化" />
 
 ## 攝影機選項 {#camera-options}
 
@@ -171,7 +171,7 @@ AdvantageKit KitBot 2024 範例專案包含一個簡單的[命令](https://githu
 
 每個機器人模型都設定了一組固定攝影機，如視覺與駕駛攝影機。這些攝影機具有固定的位置、長寬比與 FOV。這些視圖通常用於檢查視覺資料或模擬駕駛攝影機視角。下例中顯示了一個駕駛攝影機。
 
-<img src="/img/tab-reference/3d-field/3d-field-5.png" alt="固定攝影機" />
+<img src="/img/tab-reference/3d-field/3d-field-5.webp" alt="固定攝影機" />
 
 如果提供了「攝影機覆蓋」姿態，它將取代所有固定攝影機的預設姿態，同時保留其設定的 FOV 與長寬比。這允許機器人程式碼提供移動攝影機的位置，例如安裝在砲塔或射手罩上的攝影機。
 
@@ -195,8 +195,8 @@ AdvantageKit KitBot 2024 範例專案包含一個簡單的[命令](https://githu
 - **標準模式（預設）：** 使用最少的光照與簡化的 3D 模型進行渲染。在大多數裝置上運行良好。
 - **節能模式：** 降低幀率、解析度與模型細節以減少電池消耗，並在低階裝置上提供更穩定的效能。
 
-<img src="/img/tab-reference/3d-field/3d-field-6.png" alt="渲染模式比較" />
+<img src="/img/tab-reference/3d-field/3d-field-6.webp" alt="渲染模式比較" />
 
 要設定渲染模式，請按一下 `應用程式` > `顯示偏好設定...`（Windows/Linux）或 `AdvantageScope` > `設定...`（macOS）以開啟偏好設定視窗。可以將「3D 模式（電池）」設定從預設值切換，以覆蓋筆記型電腦在未充電時使用的渲染模式。例如，這可用於在比賽時節省電池。
 
-<img src="/img/prefs.png" alt="偏好設定圖解" />
+<img src="/img/prefs.webp" alt="偏好設定圖解" />

@@ -5,7 +5,7 @@ import TabItem from '@theme/TabItem';
 
 El campo 3D muestra una visualización 3D del robot y del campo. Se puede utilizar con poses 2D regulares, pero es especialmente útil cuando se trabaja con cálculos 3D (como localizar con AprilTags). Hay varias vistas de cámara disponibles, relativas al campo, relativas al robot y fijas. [AdvantageScope XR](advantagescope-xr) permite visualizar esta pestaña mediante realidad aumentada. La línea de tiempo muestra cuándo el robot está habilitado y se puede utilizar para navegar a través de los datos del registro.
 
-<img src="/img/tab-reference/3d-field/3d-field-1.png" alt="Ejemplo de pestaña de campo 3D" />
+<img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="Ejemplo de pestaña de campo 3D" />
 
 <details>
 <summary>Controles de la línea de tiempo</summary>
@@ -16,7 +16,7 @@ Las secciones amarillas indican cuando el robot es autónomo, las secciones azul
 
 Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia arriba o hacia abajo. También se puede seleccionar un rango haciendo clic y arrastrando mientras se mantiene presionada la tecla `Shift`. Muévete hacia la izquierda y hacia la derecha desplazándose horizontalmente (en dispositivos compatibles) o haciendo clic y arrastrando en la línea de tiempo. Cuando estás conectado en vivo, desplazarte hacia la izquierda desbloquea del tiempo actual, y desplazarte hasta la derecha vuelve a bloquear al tiempo actual. Presiona `Ctrl+\` para hacer zoom al período en el que el robot está habilitado.
 
-<img src="/img/tab-reference/timeline.png" alt="Línea de tiempo" />
+<img src="/img/tab-reference/timeline.webp" alt="Línea de tiempo" />
 
 </details>
 
@@ -103,7 +103,7 @@ Los datos de los mecanismos se pueden visualizar utilizando mecanismos 2D o comp
 
 Para visualizar los datos del mecanismo registrados utilizando un [`Mechanism2d`](https://docs.wpilib.org/es/stable/docs/software/dashboards/glass/mech2d-widget.html), agrega el campo del mecanismo a un objeto de robot o fantasma existente. El mecanismo se proyecta en el plano XZ o YZ del robot utilizando cuadros simples, como se muestra a continuación. Haz clic en el icono de engranaje o haz clic derecho en el nombre del campo para cambiar entre los planos XZ e YZ. El origen del robot está centrado en el borde inferior del mecanismo.
 
-<img src="/img/tab-reference/3d-field/3d-field-2.png" alt="Mecanismo 2D" />
+<img src="/img/tab-reference/3d-field/3d-field-2.webp" alt="Mecanismo 2D" />
 
 ### Componentes 3D {#3d-components}
 
@@ -115,7 +115,7 @@ Los mecanismos se pueden visualizar con componentes articulados registrando un c
 
 Cada componente se puede mover de forma independiente (como un carro elevador, un brazo o un actuador final). Los usuarios de AdvantageKit deben considerar el uso del método [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) para convertir un Mechanism2d en una matriz de objetos Pose3d. Para obtener más información sobre la configuración de robots con componentes, consulta [Recursos personalizados](/more-features/custom-assets).
 
-<img src="/img/tab-reference/3d-field/3d-field-3.png" alt="Mecanismo 3D" />
+<img src="/img/tab-reference/3d-field/3d-field-3.webp" alt="Mecanismo 3D" />
 
 ## Objetos de elementos de juego {#game-piece-objects}
 
@@ -135,7 +135,7 @@ El proyecto de ejemplo KitBot 2024 de AdvantageKit incluye un ejemplo simple de 
 
 </details>
 
-<img src="/img/tab-reference/3d-field/3d-field-4.png" alt="Visualización de la nota de KitBot 2024" />
+<img src="/img/tab-reference/3d-field/3d-field-4.webp" alt="Visualización de la nota de KitBot 2024" />
 
 ## Opciones de cámara {#camera-options}
 
@@ -169,7 +169,7 @@ La selección automática del número de estación puede ser inexacta cuando se 
 
 Cada modelo de robot está configurado con un conjunto de cámaras fijas, como cámaras de visión y de conductor. Estas cámaras tienen posiciones, relaciones de aspecto y FOV fijos. Estas vistas suelen ser útiles para comprobar los datos de visión o para simular la vista de cámara del conductor. En el siguiente ejemplo, se muestra una cámara de conductor.
 
-<img src="/img/tab-reference/3d-field/3d-field-5.png" alt="Cámara fija" />
+<img src="/img/tab-reference/3d-field/3d-field-5.webp" alt="Cámara fija" />
 
 Si se proporciona una pose de "Anulación de cámara", reemplaza las poses predeterminadas de todas las cámaras fijas y conserva sus FOV y relaciones de aspecto configurados. Esto permite que el código del robot proporcione la posición de una cámara en movimiento, como una montada en una torreta o capota del disparador.
 
@@ -193,8 +193,8 @@ El campo 3D admite tres modos de renderizado:
 - **Estándar:** Renderiza con iluminación mínima y modelos 3D simplificados. Funciona bien en la mayoría de los dispositivos.
 - **Baja potencia:** Reduce la velocidad de fotogramas, la resolución y el detalle del modelo para reducir el consumo de la batería y proporcionar un rendimiento más consistente en dispositivos de gama baja.
 
-<img src="/img/tab-reference/3d-field/3d-field-6.png" alt="Comparación de modos de renderizado" />
+<img src="/img/tab-reference/3d-field/3d-field-6.webp" alt="Comparación de modos de renderizado" />
 
 Para configurar el modo de renderizado, abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS). La configuración "Modo 3D (batería)" se puede cambiar desde la predeterminada para anular el modo de renderizado utilizado en una computadora portátil cuando no se está cargando. Por ejemplo, esto se puede usar para preservar la batería durante la competencia.
 
-<img src="/img/prefs.png" alt="Diagrama de preferencias" />
+<img src="/img/prefs.webp" alt="Diagrama de preferencias" />

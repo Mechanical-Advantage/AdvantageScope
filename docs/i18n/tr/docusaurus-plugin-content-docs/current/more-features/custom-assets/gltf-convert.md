@@ -8,11 +8,11 @@ Onshape, glTF için bir dışa aktarma seçeneği içerse de bu genellikle yöne
 
 1. Onshape dosyasını açtıktan sonra ana montaja sağ tıklayın ve "Export..." seçeneğini seçin:
 
-<img src="/img/more-features/custom-assets/gltf-convert-1.png" alt="&quot;Export...&quot; seçeneğini seçme" />
+<img src="/img/more-features/custom-assets/gltf-convert-1.webp" alt="&quot;Export...&quot; seçeneğini seçme" />
 
 2. Seçenekler açılır penceresinde dışa aktarma formatının "STEP" olduğundan emin olun ve "Export" seçeneğine tıklayın:
 
-<img src="/img/more-features/custom-assets/gltf-convert-2.png" alt="Dışa aktarma seçenekleri penceresi" />
+<img src="/img/more-features/custom-assets/gltf-convert-2.webp" alt="Dışa aktarma seçenekleri penceresi" />
 
 3. Dosyanın dönüştürülmesini ve indirilmesini bekleyin. Bu birkaç dakika sürebilir.
 
@@ -22,22 +22,22 @@ Onshape, glTF için bir dışa aktarma seçeneği içerse de bu genellikle yöne
 
 2. CAD Assistant'ı açın ve dönüştürülecek STEP dosyasını seçin:
 
-<img src="/img/more-features/custom-assets/gltf-convert-3.png" alt="STEP dosyasını CAD Assistant içinde açma" />
+<img src="/img/more-features/custom-assets/gltf-convert-3.webp" alt="STEP dosyasını CAD Assistant içinde açma" />
 
 3. STEP dosyasının içe aktarılmasını bekleyin. Bu birkaç dakika sürebilir.
 
 4. "Save" simgesine tıklayın:
 
-<img src="/img/more-features/custom-assets/gltf-convert-4.png" alt="&quot;Kaydet&quot; simgesine tıklama" />
+<img src="/img/more-features/custom-assets/gltf-convert-4.webp" alt="&quot;Kaydet&quot; simgesine tıklama" />
 
 5. Bir kaydetme konumu seçin, ardından dışa aktarma formatını "glb" olarak değiştirmek için açılır menüyü kullanın:
 
-<img src="/img/more-features/custom-assets/gltf-convert-5.png" alt="Dışa aktarma biçيميني değiştirme" />
+<img src="/img/more-features/custom-assets/gltf-convert-5.webp" alt="Dışa aktarma biçيميني değiştirme" />
 
 6. Dişli simgesine tıklayın, ardından "Merge faces within the same part" seçeneğini etkinleştirin:
 
-<img src="/img/more-features/custom-assets/gltf-convert-6.png" alt="&quot;Merge faces within the same part&quot; seçeneğini etkinleştirme" />
+<img src="/img/more-features/custom-assets/gltf-convert-6.webp" alt="&quot;Merge faces within the same part&quot; seçeneğini etkinleştirme" />
 
 7. "Save" simgesine tıklayın ve dışa aktarmanın bitmesini bekleyin:
 
-<img src="/img/more-features/custom-assets/gltf-convert-7.png" alt="&quot;Kaydet&quot; simgesine tıklama" />
+<img src="/img/more-features/custom-assets/gltf-convert-7.webp" alt="&quot;Kaydet&quot; simgesine tıklama" />

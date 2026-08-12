@@ -6,7 +6,7 @@ sidebar_position: 6
 
 L'onglet statistiques permet une analyse statistique approfondie des champs numériques, en analysant les tendances globales plutôt que les changements au fil du temps. Les champs sélectionnés sont analysés à l'aide d'un histogramme et d'une variété de mesures statistiques standard.
 
-<img src="/img/tab-reference/statistics-1.png" alt="Aperçu de l'onglet statistiques" />
+<img src="/img/tab-reference/statistics-1.webp" alt="Aperçu de l'onglet statistiques" />
 
 ## Panneau de contrôle {#control-pane}
 

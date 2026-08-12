@@ -22,7 +22,7 @@
 如果同時開啟多個檔案，時間戳記將會自動對齊。這使得能夠輕鬆比較來自多個來源的日誌檔案。
 :::
 
-<img src="/img/overview/log-files/open-file-1.png" alt="開啟儲存的日誌" />
+<img src="/img/overview/log-files/open-file-1.webp" alt="開啟儲存的日誌" />
 
 ## 新增新日誌 {#adding-new-logs}
 
@@ -37,7 +37,7 @@
 
 點擊 `應用程式` > `顯示偏好設定...` (Windows/Linux) 或 `AdvantageScope` > `設定...` (macOS) 開啟偏好設定視窗。更新機器人位址與日誌資料夾。
 
-<img src="/img/prefs.png" alt="偏好設定圖解" />
+<img src="/img/prefs.webp" alt="偏好設定圖解" />
 </details>
 
 點擊 `檔案` > `下載日誌...` 開啟下載視窗。連線到機器人後，可用的日誌會顯示在清單中，最新的位於頂部。選擇一個或多個要下載的日誌檔案（Shift + 點擊可選擇範圍，或 **Cmd/Ctrl + A** 全選）。然後點擊 ↓ 符號並選擇儲存位置。
@@ -50,7 +50,7 @@ CTRE 的[訊號記錄器](https://v6.docs.ctr-electronics.com/en/stable/docs/api
 下載多個檔案時，AdvantageScope 會跳過目的地資料夾中已存在的任何檔案。
 :::
 
-<img src="/img/overview/log-files/open-file-2.png" alt="下載日誌檔案" />
+<img src="/img/overview/log-files/open-file-2.webp" alt="下載日誌檔案" />
 
 ## CSV 格式化 {#csv-formatting}
 

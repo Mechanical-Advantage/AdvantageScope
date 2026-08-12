@@ -2,7 +2,7 @@
 
 La capture d'écran ci-dessous montre les éléments importants de la fenêtre principale d'AdvantageScope. L'apparence exacte diffère selon les systèmes d'exploitation.
 
-<img src="/img/overview/navigation/navigation-1.png" alt="Schéma de navigation" />
+<img src="/img/overview/navigation/navigation-1.webp" alt="Schéma de navigation" />
 
 :::tip
 Pour visualiser plusieurs fichiers journaux simultanément, cliquez sur `Fichier` > `Nouvelle fenêtre`.

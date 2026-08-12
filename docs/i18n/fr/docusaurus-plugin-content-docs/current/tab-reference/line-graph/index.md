@@ -2,7 +2,7 @@
 
 Le graphique linéaire est la vue par défaut dans AdvantageScope. Il prend en charge les champs continus (numériques) et discrets.
 
-<img src="/img/tab-reference/line-graph/line-graph-1.png" alt="Démonstration du graphique linéaire" />
+<img src="/img/tab-reference/line-graph/line-graph-1.webp" alt="Démonstration du graphique linéaire" />
 
 ## Volet de visualisation {#viewer-pane}
 
@@ -20,19 +20,19 @@ Pour commencer, faites glisser un champ vers l'une des trois sections (gauche, d
 
 La couleur et le style de ligne de chaque champ peuvent être personnalisés en cliquant sur l'icône colorée ou en faisant un clic droit sur le nom du champ. Les données de l'API d'alertes persistantes de WPILib [persistent alerts](https://docs.wpilib.org/fr/latest/docs/software/telemetry/persistent-alerts.html) peuvent être visualisées en ajoutant le groupe d'alertes en tant que champ discret. Un exemple de visualisation est illustré ci-dessous.
 
-<img src="/img/tab-reference/line-graph/line-graph-2.png" alt="Visualisation des alertes" />
+<img src="/img/tab-reference/line-graph/line-graph-2.webp" alt="Visualisation des alertes" />
 
 :::tip
 Pour superposer le mode du robot (autonome, téléopéré ou utilitaire), cliquez sur les trois points à côté de « Champs discrets » et cliquez sur « Afficher le mode du robot ».
 
-<img src="/img/tab-reference/line-graph/line-graph-3.png" alt="Superposition du mode robot" />
+<img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="Superposition du mode robot" />
 :::
 
 ### Réglage des axes {#adjusting-axes}
 
 Par défaut, chaque axe ajuste sa plage en fonction des données visibles. Pour désactiver l'ajustement automatique de la plage et verrouiller la plage à ses valeurs minimale et maximale actuelles, cliquez sur les trois points près du titre de l'axe, puis sur `Verrouiller l'axe`. Pour ajuster manuellement la plage, choisissez `Modifier la plage...` et saisissez les valeurs souhaitées.
 
-<img src="/img/tab-reference/line-graph/line-graph-4.png" alt="Édition de la plage de l'axe" />
+<img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="Édition de la plage de l'axe" />
 
 ### Intégration et différenciation {#integration-and-differentiation}
 

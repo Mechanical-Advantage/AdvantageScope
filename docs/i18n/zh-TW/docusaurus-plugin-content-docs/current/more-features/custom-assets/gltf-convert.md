@@ -8,11 +8,11 @@ AdvantageScope 的 3D 視圖接受用於場地與機器人的自訂模型，這�
 
 1. 開啟 Onshape 檔案後，按右鍵點擊主組件並選擇「Export...」：
 
-<img src="/img/more-features/custom-assets/gltf-convert-1.png" alt="選擇「Export...」選項" />
+<img src="/img/more-features/custom-assets/gltf-convert-1.webp" alt="選擇「Export...」選項" />
 
 2. 在選項快顯視窗中，確保匯出格式為「STEP」，然後點擊「Export」：
 
-<img src="/img/more-features/custom-assets/gltf-convert-2.png" alt="匯出選項快顯視窗" />
+<img src="/img/more-features/custom-assets/gltf-convert-2.webp" alt="匯出選項快顯視窗" />
 
 3. 等待檔案轉換與下載。這可能需要幾分鐘的時間。
 
@@ -22,22 +22,22 @@ AdvantageScope 的 3D 視圖接受用於場地與機器人的自訂模型，這�
 
 2. 開啟 CAD Assistant 並選擇要轉換的 STEP 檔案：
 
-<img src="/img/more-features/custom-assets/gltf-convert-3.png" alt="在 CAD Assistant 中開啟 STEP 檔案" />
+<img src="/img/more-features/custom-assets/gltf-convert-3.webp" alt="在 CAD Assistant 中開啟 STEP 檔案" />
 
 3. 等待 STEP 檔案匯入。這可能需要幾分鐘的時間。
 
 4. 點擊「儲存」圖示：
 
-<img src="/img/more-features/custom-assets/gltf-convert-4.png" alt="點擊「儲存」圖示" />
+<img src="/img/more-features/custom-assets/gltf-convert-4.webp" alt="點擊「儲存」圖示" />
 
 5. 選擇儲存位置，然後使用下拉式選單將匯出格式切換為「glb」：
 
-<img src="/img/more-features/custom-assets/gltf-convert-5.png" alt="切換匯出格式" />
+<img src="/img/more-features/custom-assets/gltf-convert-5.webp" alt="切換匯出格式" />
 
 6. 點擊齒輪圖示，然後啟用「Merge faces within the same part」：
 
-<img src="/img/more-features/custom-assets/gltf-convert-6.png" alt="啟用「Merge faces within the same part」" />
+<img src="/img/more-features/custom-assets/gltf-convert-6.webp" alt="啟用「Merge faces within the same part」" />
 
 7. 點擊「儲存」圖示並等待匯出完成：
 
-<img src="/img/more-features/custom-assets/gltf-convert-7.png" alt="點擊「儲存」圖示" />
+<img src="/img/more-features/custom-assets/gltf-convert-7.webp" alt="點擊「儲存」圖示" />

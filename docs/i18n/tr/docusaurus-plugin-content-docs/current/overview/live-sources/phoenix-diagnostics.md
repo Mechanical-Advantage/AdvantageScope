@@ -19,11 +19,11 @@ AdvantageScope, **kullanıcı kodunda herhangi bir kurulum gerektirmeden** Phoen
 Bağlanmak için menü çubuğundan robota veya simülatöre bağlanırken "Phoenix Tanılama"yı seçin.
 :::
 
-<img src="/img/overview/live-sources/phoenix-1.png" alt="Çizgi grafiği ekran görüntüsü" />
+<img src="/img/overview/live-sources/phoenix-1.webp" alt="Çizgi grafiği ekran görüntüsü" />
 
 AdvantageScope'un 📊 [İstatistikler](/tab-reference/statistics) sekmesi de histogramlar, özel aralıklar ve göreli ve mutlak hata ölçümleri için türetilmiş alanlar desteğiyle Phoenix sinyallerinin gelişmiş analizine olanak tanır:
 
-<img src="/img/overview/live-sources/phoenix-2.png" alt="İstatistikler ekran görüntüsü" />
+<img src="/img/overview/live-sources/phoenix-2.webp" alt="İstatistikler ekran görüntüsü" />
 
 :::note
 Bu özellik, Phoenix güncellemelerinin bir sonucu olarak zaman zaman sorunlar yaşayabilir. Sorunları en aza indirmek için AdvantageScope'un en son sürümünü kullanmanızı öneririz. Aksi takdirde, herhangi bir sorunu bize bildirmek için lütfen [bir sorun açın](https://github.com/Mechanical-Advantage/AdvantageScope/issues).

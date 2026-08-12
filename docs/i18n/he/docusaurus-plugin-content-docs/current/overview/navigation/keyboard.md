@@ -84,5 +84,5 @@ AdvantageScope כוללת קיצורי מקלדת רבים המאפשרים ני
 
 בדגמי MacBook נתמכים, ניתן להשתמש ב-Touch Bar כדי לגלול ביומן ולהוסיף כרטיסיות חדשות.
 
-<img src="/img/overview/navigation/keyboard-1.png" alt="ממשק גרירה של Touch Bar" />
-<img src="/img/overview/navigation/keyboard-2.png" alt="ממשק כרטיסייה חדשה של Touch Bar" />
+<img src="/img/overview/navigation/keyboard-1.webp" alt="ממשק גרירה של Touch Bar" />
+<img src="/img/overview/navigation/keyboard-2.webp" alt="ממשק כרטיסייה חדשה של Touch Bar" />

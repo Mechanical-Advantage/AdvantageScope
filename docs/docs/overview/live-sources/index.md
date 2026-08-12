@@ -27,7 +27,7 @@ The window title displays the IP address and the text "Searching" until the targ
 
 When connected to a live source, AdvantageScope locks all tabs to the current time by default. Views like the 📉 [Line Graph](/tab-reference/line-graph) and 🔢 [Table](/tab-reference/table) autoscroll, and views like field and joysticks display the current values of each field. Clicking the red arrow button in the navigation bar toggles this lock, enabling viewing and replay of past data.
 
-<img src="/img/overview/live-sources/open-live-1.png" alt="Live lock/unlock button" />
+<img src="/img/overview/live-sources/open-live-1.webp" alt="Live lock/unlock button" />
 
 :::tip
 Scrolling to the left in the line graph or timeline unlocks from the current time, and scrolling all the way to the right locks to the current time again.
@@ -37,7 +37,7 @@ Scrolling to the left in the line graph or timeline unlocks from the current tim
 
 Open the preferences window by clicking `App` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS).
 
-<img src="/img/prefs.png" alt="Diagram of preferences" height="350" />
+<img src="/img/prefs.webp" alt="Diagram of preferences" height="350" />
 
 ### Robot Address {#robot-address}
 

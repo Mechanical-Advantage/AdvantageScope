@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 כרטיסיית המטא-דאטה מציגה ערכים שפורסמו לטבלה המוסתרת "/Metadata" או דרך AdvantageKit. מפתחות המטא-דאטה מוצגים משמאל, והעמודות מפרידות נתונים ממקורות שונים (למשל אמיתי ושחזור בעת שימוש ב-AdvantageKit).
 
-<img src="/img/tab-reference/metadata-1.png" alt="סקירה כללית של כרטיסיית מטא-דאטה" />
+<img src="/img/tab-reference/metadata-1.webp" alt="סקירה כללית של כרטיסיית מטא-דאטה" />
 
 קוד הדוגמה למטה מציג כיצד לתעד מטא-דאטה ב-Java.
 

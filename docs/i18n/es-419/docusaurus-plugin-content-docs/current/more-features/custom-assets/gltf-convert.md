@@ -8,11 +8,11 @@ Si bien Onshape incluye una opción de exportación para glTF, esto a menudo pro
 
 1. Después de abrir el archivo de Onshape, haz clic derecho en el ensamblaje principal y elige "Exportar...":
 
-<img src="/img/more-features/custom-assets/gltf-convert-1.png" alt="Selección de la opción &quot;Export...&quot;" />
+<img src="/img/more-features/custom-assets/gltf-convert-1.webp" alt="Selección de la opción &quot;Export...&quot;" />
 
 2. En la ventana emergente de opciones, asegúrate de que el formato de exportación sea "STEP" y haz clic en "Exportar":
 
-<img src="/img/more-features/custom-assets/gltf-convert-2.png" alt="Ventana emergente de opciones de exportación" />
+<img src="/img/more-features/custom-assets/gltf-convert-2.webp" alt="Ventana emergente de opciones de exportación" />
 
 3. Espera a que el archivo se convierta y se descargue. Esto puede tardar unos minutos.
 
@@ -22,22 +22,22 @@ Si bien Onshape incluye una opción de exportación para glTF, esto a menudo pro
 
 2. Abre CAD Assistant y selecciona el archivo STEP a convertir:
 
-<img src="/img/more-features/custom-assets/gltf-convert-3.png" alt="Apertura de archivo STEP en CAD Assistant" />
+<img src="/img/more-features/custom-assets/gltf-convert-3.webp" alt="Apertura de archivo STEP en CAD Assistant" />
 
 3. Espera a que se importe el archivo STEP. Esto puede tardar unos minutos.
 
 4. Haz clic en el ícono de "Guardar":
 
-<img src="/img/more-features/custom-assets/gltf-convert-4.png" alt="Clic en el ícono &quot;Guardar&quot;" />
+<img src="/img/more-features/custom-assets/gltf-convert-4.webp" alt="Clic en el ícono &quot;Guardar&quot;" />
 
 5. Elige una ubicación para guardar, luego usa el menú desplegable para cambiar el formato de exportación a "glb":
 
-<img src="/img/more-features/custom-assets/gltf-convert-5.png" alt="Cambio del formato de exportación" />
+<img src="/img/more-features/custom-assets/gltf-convert-5.webp" alt="Cambio del formato de exportación" />
 
 6. Haz clic en el ícono del engranaje, luego habilita "Fusionar caras dentro de la misma pieza" (Merge faces within the same part):
 
-<img src="/img/more-features/custom-assets/gltf-convert-6.png" alt="Habilitación de &quot;Merge faces within the same part&quot;" />
+<img src="/img/more-features/custom-assets/gltf-convert-6.webp" alt="Habilitación de &quot;Merge faces within the same part&quot;" />
 
 7. Haz clic en el ícono de "Guardar" y espera a que finalice la exportación:
 
-<img src="/img/more-features/custom-assets/gltf-convert-7.png" alt="Clic en el ícono &quot;Guardar&quot;" />
+<img src="/img/more-features/custom-assets/gltf-convert-7.webp" alt="Clic en el ícono &quot;Guardar&quot;" />

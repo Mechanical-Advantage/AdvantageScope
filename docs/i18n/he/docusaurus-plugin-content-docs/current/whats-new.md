@@ -5,8 +5,8 @@ sidebar_position: 2
 
 #
 
-<img src="/img/whats-new/banner-light.png" className="light-only" />
-<img src="/img/whats-new/banner-dark.png" className="dark-only" />
+<img src="/img/whats-new/banner-light.webp" className="light-only" />
+<img src="/img/whats-new/banner-dark.webp" className="dark-only" />
 
 גרסת 2026 של AdvantageScope זמינה כעת! ניתן לעיין ב[תיעוד ההתקנה](/overview/installation) וב[יומן השינויים המלא](https://github.com/Mechanical-Advantage/AdvantageScope/releases) לפרטים נוספים. גרסה זו כוללת מספר תכונות חדשות מרכזיות ושיפורים רבים ברחבי האפליקציה. תכונות רבות בגרסה זו נועדו לשפר את חוויית השימוש במערכות הבקרה הקיימות, תוך הכנת מעבר חלק ל-[Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) בעונות הבאות.
 
@@ -28,9 +28,9 @@ sidebar_position: 2
 <div className="image-gallery">
   <img src="/img/whats-new/ftc-1.jpg" />
   <img src="/img/whats-new/ftc-2.jpg" />
-  <img src="/img/whats-new/ftc-3.png" />
-  <img src="/img/whats-new/ftc-4.png" />
-  <img src="/img/whats-new/ftc-5.png" />
+  <img src="/img/whats-new/ftc-3.webp" />
+  <img src="/img/whats-new/ftc-4.webp" />
+  <img src="/img/whats-new/ftc-5.webp" />
 </div>
 
 מספר ספריות תיעוד/טלמטריה של צד שלישי ב-FTC תומכות בפורמטים אחרים התואמים ל-AdvantageScope, כגון WPILOG ו-RLOG. תיעוד של ספריות אלה ניתן למצוא בפרויקטים הרלוונטיים; מפתחי AdvantageScope אינם ממליצים על פתרון רישום יומן מסוים עבור FTC לשימוש עם AdvantageScope.
@@ -54,7 +54,7 @@ AdvantageScope מתוכננת לספק את החוויה הטובה ביותר �
 
 _מידע נוסף על תמיכה ביחידות ניתן למצוא ב[תיעוד](/tab-reference/line-graph/units)._
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="גרפים מודעי-יחידות" />
+<img src="/img/tab-reference/line-graph/units-1.webp" alt="גרפים מודעי-יחידות" />
 
 ## 🏁 הורדת יומנים מהירה יותר {#faster-log-downloads}
 
@@ -72,7 +72,7 @@ _מידע נוסף על תמיכה ביחידות ניתן למצוא ב[תיע�
 
 חלון ההורדה תומך כעת בשמירת יומנים המאוחסנים בתתי-תיקיות. כל תת-תיקייה של יומנים ניתנת להורדה כקבוצה, מה שמספק גישה יעילה להורדת יומנים שנוצרו על ידי גרסת 2026 של [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) מבית CTRE (המשתמשת בתתי-תיקיות כפתרון לעקיפת המגבלה של שמירת נתונים בקובץ יומן יחיד).
 
-<img src="/img/whats-new/subfolders.png" alt="הורדת תת-תיקיות יומן" />
+<img src="/img/whats-new/subfolders.webp" alt="הורדת תת-תיקיות יומן" />
 
 ## 🌈 אפשרויות ויזואליזציה חדשות {#new-visualization-options}
 
@@ -90,19 +90,19 @@ _מידע נוסף על תמיכה ביחידות ניתן למצוא ב[תיע�
 
 הן URCL והן `StatusLogger` הרשמי יישארו זמינים במהלך עונת 2026 כדי להבטיח מעבר חלק ולספק תאימות תכונות לעונות קודמות. יהיו לנו פרטים נוספים לשתף על אפשרויות רישום יומן ב-2027 ואילך במועד מאוחר יותר.
 
-<img src="/img/whats-new/revlog.png" alt="הדמיית REVLOG" />
+<img src="/img/whats-new/revlog.webp" alt="הדמיית REVLOG" />
 
 ## 💿 ייבוא קובצי CSV {#csv-file-imports}
 
 לוויזואליזציה גמישה יותר של נתונים שנוצרו מחוץ למסגרות רישום היומנים של רובוטים, AdvantageScope כוללת כעת תמיכה בסיסית לייבוא קובצי CSV. ניתן לעיין ב[תיעוד](/overview/log-files/#csv-formatting) לפרטים נוספים על פורמטים נתמכים ומגבלות אחרות.
 
-<img src="/img/overview/log-files/export-2.png" alt="נתוני CSV" />
+<img src="/img/overview/log-files/export-2.webp" alt="נתוני CSV" />
 
 ## 🤩 שיפורים אסתטיים {#aesthetic-improvements}
 
 ממשק המשתמש של AdvantageScope ב-Windows 11 עודכן לתמיכה בסרגל צד חצי-שקוף, שהיה רכיב בלעדי לגרסאות macOS בגרסאות קודמות. סמל אפליקציה מעודכן זמין גם עבור macOS Tahoe בהתבסס על חומר Liquid Glass של Apple.
 
-<img src="/img/whats-new/windows-ui.png" alt="ממשק משתמש של Windows" />
+<img src="/img/whats-new/windows-ui.webp" alt="ממשק משתמש של Windows" />
 
 ## 📋 תפריטים יעילים {#streamlined-menus}
 
@@ -113,9 +113,9 @@ _מידע נוסף על תמיכה ביחידות ניתן למצוא ב[תיע�
 - ארגון מחדש של חלון ההעדפות, ההופך את האפשרויות לקלות יותר למציאה מהירה.
 
 <div className="image-gallery">
-  <img src="/img/whats-new/menus-1.png" />
-  <img src="/img/whats-new/menus-2.png" />
-  <img src="/img/prefs.png" />
+  <img src="/img/whats-new/menus-1.webp" />
+  <img src="/img/whats-new/menus-2.webp" />
+  <img src="/img/prefs.webp" />
 </div>
 
 ## 🐛 שיפורי יציבות {#stability-improvements}

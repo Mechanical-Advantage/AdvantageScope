@@ -32,11 +32,11 @@ AdvantageScope XR is only supported on iOS and iPadOS. There are no immediate pl
 
 1. On the host system, **click the "XR" button** on any 3D field tab. Only one XR host session may be active at the same time, so clicking this button will interrupt any other active sessions.
 
-<img src="/img/tab-reference/3d-field/xr-1.png" alt="XR button" height="450" />
+<img src="/img/tab-reference/3d-field/xr-1.webp" alt="XR button" height="450" />
 
 2. The **XR controls window** will open, with a QR code and [options](#options) to customize the AR experience. To cancel the XR session and disconnect any clients, close the controls window.
 
-<img src="/img/tab-reference/3d-field/xr-2.png" alt="XR window" height="350" />
+<img src="/img/tab-reference/3d-field/xr-2.webp" alt="XR window" height="350" />
 
 3. Scan the QR code using the **built-in camera app** on the client device. No app installation is required.
 4. Tap "AdvantageScope XR" and then "Open" to **start the experience** and connect to the host. If prompted, allow AdvantageScope XR to access the **camera and local network**.

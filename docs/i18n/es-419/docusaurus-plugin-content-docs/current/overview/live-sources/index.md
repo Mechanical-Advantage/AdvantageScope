@@ -27,7 +27,7 @@ El título de la ventana muestra la dirección IP y el texto "Buscando" (Searchi
 
 Cuando se conecta a una fuente en vivo, AdvantageScope bloquea todas las pestañas a la hora actual de forma predeterminada. Las vistas como el 📉 [Gráfico de líneas](/tab-reference/line-graph) y la 🔢 [Tabla](/tab-reference/table) se desplazan automáticamente, y las vistas como el campo y los joysticks muestran los valores actuales de cada campo. Al hacer clic en el botón de flecha roja en la barra de navegación se alterna este bloqueo, lo que permite ver y reproducir datos pasados.
 
-<img src="/img/overview/live-sources/open-live-1.png" alt="Botón de bloqueo/desbloqueo en vivo" />
+<img src="/img/overview/live-sources/open-live-1.webp" alt="Botón de bloqueo/desbloqueo en vivo" />
 
 :::tip
 Desplazarse hacia la izquierda en el gráfico de líneas o en la línea de tiempo desbloquea la vista del tiempo actual, y desplazarse completamente hacia la derecha la vuelve a bloquear al tiempo actual.
@@ -37,7 +37,7 @@ Desplazarse hacia la izquierda en el gráfico de líneas o en la línea de tiemp
 
 Abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS).
 
-<img src="/img/prefs.png" alt="Diagrama de preferencias" />
+<img src="/img/prefs.webp" alt="Diagrama de preferencias" />
 
 ### Dirección del robot {#robot-address}
 

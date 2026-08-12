@@ -5,8 +5,8 @@ sidebar_position: 2
 
 #
 
-<img src="/img/whats-new/banner-light.png" className="light-only" />
-<img src="/img/whats-new/banner-dark.png" className="dark-only" />
+<img src="/img/whats-new/banner-light.webp" className="light-only" />
+<img src="/img/whats-new/banner-dark.webp" className="dark-only" />
 
 ¡La versión 2026 de AdvantageScope ya está disponible! Consulta los [documentos de instalación](/overview/installation) y el [registro de cambios completo](https://github.com/Mechanical-Advantage/AdvantageScope/releases) para obtener detalles. Esta versión incluye varias funciones nuevas e importantes, además de numerosas mejoras en toda la aplicación. Muchas de las funciones de esta versión están diseñadas para mejorar la experiencia en los sistemas de control existentes y, al mismo tiempo, establecer una transición fluida a [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) en temporadas futuras.
 
@@ -28,9 +28,9 @@ Los equipos de FTC deben tener precaución al utilizar software experimental dur
 <div className="image-gallery">
   <img src="/img/whats-new/ftc-1.jpg" />
   <img src="/img/whats-new/ftc-2.jpg" />
-  <img src="/img/whats-new/ftc-3.png" />
-  <img src="/img/whats-new/ftc-4.png" />
-  <img src="/img/whats-new/ftc-5.png" />
+  <img src="/img/whats-new/ftc-3.webp" />
+  <img src="/img/whats-new/ftc-4.webp" />
+  <img src="/img/whats-new/ftc-5.webp" />
 </div>
 
 Varias bibliotecas de telemetría/registro de FTC de terceros admiten otros formatos compatibles con AdvantageScope, como WPILOG y RLOG. La documentación de estas bibliotecas se puede encontrar en los proyectos respectivos; los desarrolladores de AdvantageScope no avalan/recomiendan ninguna solución de registro particular de FTC para su uso con AdvantageScope.
@@ -54,7 +54,7 @@ La siguiente captura de pantalla muestra todas estas características en acción
 
 _Se puede encontrar más información sobre el soporte de unidades en la [documentación](/tab-reference/line-graph/units)._
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="Gráficos con reconocimiento de unidades" />
+<img src="/img/tab-reference/line-graph/units-1.webp" alt="Gráficos con reconocimiento de unidades" />
 
 ## 🏁 Descargas de registros más rápidas {#faster-log-downloads}
 
@@ -72,7 +72,7 @@ La siguiente tabla muestra la velocidad de transferencia medida en los lanzamien
 
 La ventana de descarga ahora admite guardar registros que están almacenados en subcarpetas. Cada subcarpeta de registros se puede descargar como grupo, lo que proporciona un enfoque simplificado para descargar registros generados por la versión 2026 del [registrador de señales](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) de CTRE (que usa subcarpetas como solución alternativa por no poder almacenar datos en un solo archivo de registro).
 
-<img src="/img/whats-new/subfolders.png" alt="Descarga de subcarpetas de registro" />
+<img src="/img/whats-new/subfolders.webp" alt="Descarga de subcarpetas de registro" />
 
 ## 🌈 Nuevas opciones de visualización {#new-visualization-options}
 
@@ -90,19 +90,19 @@ Ahora puedes abrir archivos `.revlog` producidos por el [`StatusLogger`](https:/
 
 Tanto URCL como el `StatusLogger` oficial permanecerán disponibles durante la temporada 2026 para garantizar una transición sin problemas y proporcionar paridad de funciones con las temporadas anteriores. Tendremos más detalles para compartir sobre las opciones de registro en 2027 y más allá en una fecha posterior.
 
-<img src="/img/whats-new/revlog.png" alt="Visualización de REVLOG" />
+<img src="/img/whats-new/revlog.webp" alt="Visualización de REVLOG" />
 
 ## 💿 Importaciones de archivos CSV {#csv-file-imports}
 
 Para una visualización más flexible de los datos producidos fuera de los marcos de registro del robot, AdvantageScope ahora incluye soporte básico para importar archivos CSV. Consulta la [documentación](/overview/log-files/#csv-formatting) para obtener más detalles sobre los formatos compatibles y otras limitaciones.
 
-<img src="/img/overview/log-files/export-2.png" alt="Datos CSV" />
+<img src="/img/overview/log-files/export-2.webp" alt="Datos CSV" />
 
 ## 🤩 Mejoras estéticas {#aesthetic-improvements}
 
 La interfaz de usuario de AdvantageScope en Windows 11 se ha actualizado para admitir una barra lateral translúcida, que antes era exclusiva para los lanzamientos de macOS. También hay un ícono de aplicación actualizado para macOS Tahoe basado en el material Liquid Glass de Apple.
 
-<img src="/img/whats-new/windows-ui.png" alt="Interfaz de usuario de Windows" />
+<img src="/img/whats-new/windows-ui.webp" alt="Interfaz de usuario de Windows" />
 
 ## 📋 Menús optimizados {#streamlined-menus}
 
@@ -113,9 +113,9 @@ La barra de menú y los controles relacionados se han optimizado y reorganizado 
 - Reorganización de la ventana de preferencias, facilitando la búsqueda rápida de opciones.
 
 <div className="image-gallery">
-  <img src="/img/whats-new/menus-1.png" />
-  <img src="/img/whats-new/menus-2.png" />
-  <img src="/img/prefs.png" />
+  <img src="/img/whats-new/menus-1.webp" />
+  <img src="/img/whats-new/menus-2.webp" />
+  <img src="/img/prefs.webp" />
 </div>
 
 ## 🐛 Mejoras de estabilidad {#stability-improvements}

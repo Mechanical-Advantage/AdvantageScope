@@ -114,7 +114,7 @@ To calibrate the positions of the articulated components, we recommend the follo
 
 ## Joysticks {#joysticks}
 
-An image must be included in the folder with the name "image.png". The config file must be in the following format:
+An image must be included in the folder with the name "image.webp". The config file must be in the following format:
 
 ```json
 {
@@ -202,7 +202,7 @@ For NI bindings, AdvantageScope is backwards compatible with the old non-prefixe
 
 ## Flat Field Images {#flat-field-images}
 
-An image must be included in the folder with the name "image.png". It should be oriented with the red alliance on the left. The config file must be in the following format:
+An image must be included in the folder with the name "image.webp". It should be oriented with the red alliance on the left. The config file must be in the following format:
 
 ```json
 {

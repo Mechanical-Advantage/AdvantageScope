@@ -6,7 +6,7 @@ sidebar_position: 6
 
 La pestaña de estadísticas permite un análisis estadístico profundo de campos numéricos, analizando las tendencias generales en lugar de los cambios a lo largo del tiempo. Los campos seleccionados se analizan utilizando un histograma y una variedad de medidas estadísticas estándar.
 
-<img src="/img/tab-reference/statistics-1.png" alt="Descripción general de la pestaña de estadísticas" />
+<img src="/img/tab-reference/statistics-1.webp" alt="Descripción general de la pestaña de estadísticas" />
 
 ## Panel de control {#control-pane}
 

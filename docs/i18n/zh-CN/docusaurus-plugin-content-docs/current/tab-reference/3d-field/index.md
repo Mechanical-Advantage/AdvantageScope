@@ -5,7 +5,7 @@ import TabItem from '@theme/TabItem';
 
 3D 场地展示机器人和场地的 3D 可视化效果。它可以用于常规 2D 位姿，但在处理 3D 计算（例如利用 AprilTag 定位）时特别有用。提供多种相机视图，包括场地相对、机器人相对和固定视图。[AdvantageScope XR](advantagescope-xr) 允许使用增强现实来可视化此选项卡。时间轴显示机器人何时处于启用状态，并可用于在日志数据中进行导航。
 
-<img src="/img/tab-reference/3d-field/3d-field-1.png" alt="3D 场地标签页示例" />
+<img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="3D 场地标签页示例" />
 
 <details>
 <summary>时间轴控制</summary>
@@ -16,7 +16,7 @@ import TabItem from '@theme/TabItem';
 
 要进行缩放，请将光标置于时间轴上方并向上或向下滚动。按住 `Shift` 的同时点击并拖动也可以选择一个范围。通过水平滚动（在受支持的设备上）或在时间轴上点击并拖动来左右移动。当进行实时连接时，向左滚动会解锁与当前时间的关联，而一路向右滚动将重新锁定到当前时间。按下 `Ctrl+\` 可缩放到机器人处于启用状态的时间段。
 
-<img src="/img/tab-reference/timeline.png" alt="时间轴" />
+<img src="/img/tab-reference/timeline.webp" alt="时间轴" />
 
 </details>
 
@@ -105,7 +105,7 @@ packet.put("Pose heading (deg)", 180.0); // 度
 
 要可视化使用 [`Mechanism2d`](https://docs.wpilib.org/zh-cn/stable/docs/software/dashboards/glass/mech2d-widget.html) 记录的机构数据，请将机构字段添加到现有的机器人或幽灵模型对象中。机构使用简单的方框投影到机器人的 XZ 或 YZ 平面上（如下所示）。点击齿轮图标或右键单击字段名称可以在 XZ 和 YZ 平面之间切换。机器人的原点位于机构底边的中心。
 
-<img src="/img/tab-reference/3d-field/3d-field-2.png" alt="2D 机构" />
+<img src="/img/tab-reference/3d-field/3d-field-2.webp" alt="2D 机构" />
 
 ### 3D 组件 {#3d-components}
 
@@ -117,7 +117,7 @@ packet.put("Pose heading (deg)", 180.0); // 度
 
 每个组件都可以独立移动（例如升降机滑台、机械臂或末端执行器）。AdvantageKit 用户应考虑使用 [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) 方法将 Mechanism2d 转换为 Pose3d 对象数组。有关配置带有组件的机器人的更多信息，请参阅 [自定义资源](/more-features/custom-assets)。
 
-<img src="/img/tab-reference/3d-field/3d-field-3.png" alt="3D 机构" />
+<img src="/img/tab-reference/3d-field/3d-field-3.webp" alt="3D 机构" />
 
 ## 游戏元素对象 {#game-piece-objects}
 
@@ -137,7 +137,7 @@ AdvantageKit KitBot 2024 示例项目包含一个 [命令](https://github.com/Me
 
 </details>
 
-<img src="/img/tab-reference/3d-field/3d-field-4.png" alt="2024 KitBot 音符可视化" />
+<img src="/img/tab-reference/3d-field/3d-field-4.webp" alt="2024 KitBot 音符可视化" />
 
 ## 相机选项 {#camera-options}
 
@@ -171,7 +171,7 @@ AdvantageKit KitBot 2024 示例项目包含一个 [命令](https://github.com/Me
 
 每个机器人模型都配置了一组固定相机，例如视觉相机和驾驶员相机。这些相机具有固定的位置、宽高比和 FOV。这些视图通常有助于检查视觉数据或模拟驾驶员相机视图。在下面的示例中，显示了一个驾驶员相机。
 
-<img src="/img/tab-reference/3d-field/3d-field-5.png" alt="固定相机" />
+<img src="/img/tab-reference/3d-field/3d-field-5.webp" alt="固定相机" />
 
 如果提供了“相机覆盖”位姿，它将在保留其配置的 FOV 和宽高比的同时替换所有固定相机的默认位姿。这允许机器人代码提供移动相机的姿态，例如安装在转塔或发射罩上的相机。
 
@@ -195,8 +195,8 @@ AdvantageKit KitBot 2024 示例项目包含一个 [命令](https://github.com/Me
 - **标准（默认）：** 使用最小限度的照明和简化的 3D 模型进行渲染。在大多数设备上运行良好。
 - **低功耗：** 降低帧率、分辨率和模型细节，以减少电池消耗，并在低端设备上提供更一致的性能。
 
-<img src="/img/tab-reference/3d-field/3d-field-6.png" alt="渲染模式比较" />
+<img src="/img/tab-reference/3d-field/3d-field-6.webp" alt="渲染模式比较" />
 
 要配置渲染模式，请按点击 `应用程序` > `显示首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。“3D 模式（电池供电）”设置可以从默认值切换，以覆盖笔记本电脑未充电时使用的渲染模式。例如，这可用于在比赛现场节省电量。
 
-<img src="/img/prefs.png" alt="偏好设置图解" />
+<img src="/img/prefs.webp" alt="偏好设置图解" />

@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 La pestaña del mecanismo muestra un mecanismo articulado creado con uno o más objetos [Mechanism2d](https://docs.wpilib.org/es/stable/docs/software/dashboards/glass/mech2d-widget.html).
 
-<img src="/img/tab-reference/mechanism-1.png" alt="Descripción general de la pestaña de mecanismo" />
+<img src="/img/tab-reference/mechanism-1.webp" alt="Descripción general de la pestaña de mecanismo" />
 
 <details>
 <summary>Controles de la línea de tiempo</summary>
@@ -20,7 +20,7 @@ Las secciones amarillas indican cuando el robot es autónomo, las secciones azul
 
 Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia arriba o hacia abajo. También se puede seleccionar un rango haciendo clic y arrastrando mientras se mantiene presionada la tecla `Shift`. Muévete hacia la izquierda y hacia la derecha desplazándose horizontalmente (en dispositivos compatibles) o haciendo clic y arrastrando en la línea de tiempo. Cuando estás conectado en vivo, desplazarte hacia la izquierda desbloquea del tiempo actual, y desplazarte hasta la derecha vuelve a bloquear al tiempo actual. Presiona `Ctrl+\` para hacer zoom al período en el que el robot está habilitado.
 
-<img src="/img/tab-reference/timeline.png" alt="Línea de tiempo" />
+<img src="/img/tab-reference/timeline.webp" alt="Línea de tiempo" />
 
 </details>
 

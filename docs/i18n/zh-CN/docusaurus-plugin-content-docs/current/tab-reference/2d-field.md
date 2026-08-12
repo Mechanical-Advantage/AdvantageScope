@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 2D 场地选项卡展示了叠加在场地地图上的机器人 2D 可视化效果。它还可以显示诸如视觉目标状态和参考位姿等额外数据。
 
-<img src="/img/tab-reference/2d-field-1.png" alt="2D 场地标签页概述" />
+<img src="/img/tab-reference/2d-field-1.webp" alt="2D 场地标签页概述" />
 
 <details>
 <summary>时间轴控制</summary>
@@ -20,7 +20,7 @@ import TabItem from '@theme/TabItem';
 
 要进行缩放，请将光标置于时间轴上方并向上或向下滚动。按住 `Shift` 的同时点击并拖动也可以选择一个范围。通过水平滚动（在受支持的设备上）或在时间轴上点击并拖动来左右移动。当进行实时连接时，向左滚动会解锁与当前时间的关联，而一路向右滚动将重新锁定到当前时间。按下 `Ctrl+\` 可缩放到机器人处于启用状态的时间段。
 
-<img src="/img/tab-reference/timeline.png" alt="时间轴" />
+<img src="/img/tab-reference/timeline.webp" alt="时间轴" />
 
 </details>
 
@@ -34,7 +34,7 @@ import TabItem from '@theme/TabItem';
 要查看受支持对象类型的完整列表，请点击 `?` 图标。该列表还包含受支持的数据类型以及对象是否必须作为子项添加。
 :::
 
-<img src="/img/tab-reference/2d-field-2.png" alt="带有对象的 2D 场地" />
+<img src="/img/tab-reference/2d-field-2.webp" alt="带有对象的 2D 场地" />
 
 ## 数据格式 {#data-format}
 

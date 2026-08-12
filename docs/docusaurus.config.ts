@@ -126,12 +126,12 @@ const config: Config = {
   ],
 
   themeConfig: {
-    image: "/icons/social.png",
+    image: "/icons/social.webp",
     navbar: {
       title: "AdvantageScope Documentation",
       logo: {
         alt: "AdvantageScope Logo",
-        src: "/icons/logo.png"
+        src: "/icons/logo.webp"
       },
       items: [
         {

@@ -6,7 +6,7 @@
 - **Alternatif birimlere hızlıca geçiş yapmak** için eksen başlığının yanındaki üç noktaya tıklayın. Bu liste, seçilen alanlarla uyumlu en yaygın birimleri içerir.
 - Doğru integral veya türev birimlerini görmek için **integral veya türevi** ([dokümantasyon](/tab-reference/line-graph/#integration-and-differentiation)) etkinleştirin. Taban birim, yerel olmayan birimlerde filtrelemeyi desteklemek için menü kullanılarak ayarlanabilir.
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="Birim duyarlı grafikleme" />
+<img src="/img/tab-reference/line-graph/units-1.webp" alt="Birim duyarlı grafikleme" />
 
 ## Desteklenen formatlar {#supported-formats}
 
@@ -54,4 +54,4 @@ Manuel dönüştürmeyi yapılandırmak için eksen başlığının yanındaki �
 Birim dönüştürmeyi hızlıca etkinleştirmek veya devre dışı bırakmak için eksen başlığının yanındaki üç noktaya tıklayın ve `Son Ön Ayarlar` veya `Birimleri Sıfırla` seçeneğini seçin.
 :::
 
-<img src="/img/tab-reference/line-graph/units-2.png" alt="Birim dönüşümünü düzenleme" />
+<img src="/img/tab-reference/line-graph/units-2.webp" alt="Birim dönüşümünü düzenleme" />

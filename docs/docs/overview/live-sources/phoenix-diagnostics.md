@@ -19,11 +19,11 @@ AdvantageScope supports live-streaming of signals from Phoenix 6 devices with **
 To connect, select "Phoenix Diagnostics" when connecting to the robot or simulator from the menu bar.
 :::
 
-<img src="/img/overview/live-sources/phoenix-1.png" alt="Line graph screenshot" />
+<img src="/img/overview/live-sources/phoenix-1.webp" alt="Line graph screenshot" />
 
 AdvantageScope's 📊 [Statistics](/tab-reference/statistics) tab also enables advanced analysis of Phoenix signals, with support for histograms, custom ranges, and derived fields for relative and absolute error measurements:
 
-<img src="/img/overview/live-sources/phoenix-2.png" alt="Statistics screenshot" />
+<img src="/img/overview/live-sources/phoenix-2.webp" alt="Statistics screenshot" />
 
 :::note
 This feature may occasionally experience issues as a result of Phoenix updates. We recommend using the latest version of AdvantageScope to minimize issues. Otherwise, please [open an issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues) to let us know about any problems.

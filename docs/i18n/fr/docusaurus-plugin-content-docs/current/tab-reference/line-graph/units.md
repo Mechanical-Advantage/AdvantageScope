@@ -6,7 +6,7 @@ L'onglet graphique linéaire prend en compte les unités, ce qui signifie que le
 - Cliquez sur les trois points près du titre de l'axe pour **passer rapidement à d'autres unités**. Cette liste comprend les unités les plus courantes qui sont compatibles avec les champs sélectionnés.
 - Activez l'**intégration ou la différenciation** ([docs](/tab-reference/line-graph/#integration-and-differentiation)) pour voir les unités intégrales ou dérivées précises. L'unité de base peut être ajustée à l'aide du menu pour prendre en charge le filtrage dans des unités non natives.
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="Graphiques avec unités" />
+<img src="/img/tab-reference/line-graph/units-1.webp" alt="Graphiques avec unités" />
 
 ## Formats pris en charge {#supported-formats}
 
@@ -54,4 +54,4 @@ Pour configurer la conversion manuelle, cliquez sur les trois points près du ti
 Pour activer ou désactiver rapidement la conversion d'unités, cliquez sur les trois points près du titre de l'axe et choisissez `Préréglages récents` ou `Réinitialiser les unités`.
 :::
 
-<img src="/img/tab-reference/line-graph/units-2.png" alt="Édition de la conversion d'unités" />
+<img src="/img/tab-reference/line-graph/units-2.webp" alt="Édition de la conversion d'unités" />

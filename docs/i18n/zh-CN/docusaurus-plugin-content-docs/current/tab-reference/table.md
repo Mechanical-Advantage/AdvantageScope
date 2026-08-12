@@ -6,12 +6,12 @@ sidebar_position: 4
 
 表格视图旨在详细显示一组字段的具体数值变化。要添加字段，请将其拖动到主视图中。要删除字段，请点击其名称旁边的 "X" 按钮。可以通过点击并拖动来重新排列字段。
 
-<img src="/img/tab-reference/table-1.png" alt="概述" />
+<img src="/img/tab-reference/table-1.webp" alt="概述" />
 
 **任何所显示的字段发生变化时，都会创建一个新的行。** 不会显示重复的行。例如，显示比赛期间机器人状态的表格将如下所示：
 
-<img src="/img/tab-reference/table-2.png" alt="机器人状态表格" />
+<img src="/img/tab-reference/table-2.webp" alt="机器人状态表格" />
 
 表格中选中的时间将在所有选项卡中同步。点击某行即可选中它，或者将鼠标悬停在某行上可在任何可见的弹出窗口中进行预览。点击 ↓ 按钮可跳转到所选时间（或在框中输入的指定时间）。
 
-<img src="/img/tab-reference/table-3.png" alt="跳至某一时间" />
+<img src="/img/tab-reference/table-3.webp" alt="跳至某一时间" />

@@ -18,22 +18,22 @@ All coordinate system options are compatible with both FRC and FTC fields.
 
 The origin is in the center of the field with the +X axis facing away from the red alliance wall, as shown below. **This is the default coordinate system for FRC fields starting in 2027 and FTC fields starting in 2027-2028.**
 
-<img src="/img/more-features/coordinate-system-center-red.png" alt="Center/red coordinate system" />
+<img src="/img/more-features/coordinate-system-center-red.webp" alt="Center/red coordinate system" />
 
 ## Blue Wall {#blue-wall}
 
 The origin is in the rightmost corner of the blue alliance wall with the +X axis facing the red alliance wall, as shown below. **This is the default coordinate system for FRC fields from 2023 to 2026.**
 
-<img src="/img/more-features/coordinate-system-blue-wall.png" alt="Blue wall coordinate system" />
+<img src="/img/more-features/coordinate-system-blue-wall.webp" alt="Blue wall coordinate system" />
 
 ## Alliance Wall {#alliance-wall}
 
 The origin is in the rightmost corner of the alliance wall for the _robot's current alliance_ with the +X axis facing the opposite alliance wall, as shown below. **This is the default coordinate system for FRC in 2022.**
 
-<img src="/img/more-features/coordinate-system-alliance-wall.png" alt="Alliance wall coordinate system" />
+<img src="/img/more-features/coordinate-system-alliance-wall.webp" alt="Alliance wall coordinate system" />
 
 ## Center/Rotated {#center-rotated}
 
 The origin is in the center of the field with the +X axis facing to the right from the perspective of the red alliance wall, as shown below. **This is the default coordinate system for FTC fields from 2024-2025 to 2026-2027.**
 
-<img src="/img/more-features/coordinate-system-center-rotated.png" alt="Center/rotated coordinate system" height="400" />
+<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="Center/rotated coordinate system" height="400" />

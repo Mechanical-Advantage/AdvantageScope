@@ -5,8 +5,8 @@ sidebar_position: 2
 
 #
 
-<img src="/img/whats-new/banner-light.png" className="light-only" />
-<img src="/img/whats-new/banner-dark.png" className="dark-only" />
+<img src="/img/whats-new/banner-light.webp" className="light-only" />
+<img src="/img/whats-new/banner-dark.webp" className="dark-only" />
 
 AdvantageScope'un 2026 sürümü yayınlandı! Detaylar için [kurulum belgelerini](/overview/installation) ve [tüm değişiklik günlüğünü](https://github.com/Mechanical-Advantage/AdvantageScope/releases) kontrol edin. Bu sürüm, uygulama genelinde birkaç büyük yeni özellik ve çok sayıda iyileştirme içermektedir. Bu sürümdeki özelliklerin birçoğu, gelecekteki sezonlarda [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) sistemine sorunsuz bir geçiş sağlarken mevcut kontrol sistemlerindeki deneyimi iyileştirmek için tasarlanmıştır.
 
@@ -28,9 +28,9 @@ FTC takımları resmi sezon boyunca deneysel yazılımları kullanırken dikkatl
 <div className="image-gallery">
   <img src="/img/whats-new/ftc-1.jpg" />
   <img src="/img/whats-new/ftc-2.jpg" />
-  <img src="/img/whats-new/ftc-3.png" />
-  <img src="/img/whats-new/ftc-4.png" />
-  <img src="/img/whats-new/ftc-5.png" />
+  <img src="/img/whats-new/ftc-3.webp" />
+  <img src="/img/whats-new/ftc-4.webp" />
+  <img src="/img/whats-new/ftc-5.webp" />
 </div>
 
 Birkaç üçüncü taraf FTC loglama/telemetri kütüphanesi, AdvantageScope ile uyumlu WPILOG ve RLOG gibi diğer formatları destekler. Bu kütüphanelerin belgeleri ilgili projelerde bulunabilir; AdvantageScope geliştiricileri, AdvantageScope ile kullanım için özel bir FTC loglama çözümünü önermemekte/tavsiye etmemektedir.
@@ -54,7 +54,7 @@ Aşağıdaki ekran görüntüsü tüm bu özellikleri çalışırken göstermekt
 
 _Birim desteği hakkında daha fazla bilgi [dokümantasyonda](/tab-reference/line-graph/units) bulunabilir._
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="Birim duyarlı grafikleme" />
+<img src="/img/tab-reference/line-graph/units-1.webp" alt="Birim duyarlı grafikleme" />
 
 ## 🏁 Daha hızlı log indirmeleri {#faster-log-downloads}
 
@@ -72,7 +72,7 @@ Aşağıdaki tablo, Ethernet üzerinden bağlıyken (maksimum 100 Mb/s bant geni
 
 İndirme penceresi artık alt klasörlerde saklanan logların kaydedilmesini desteklemektedir. Log içeren her bir alt klasör bir grup olarak indirilebilir; bu da CTRE'nin [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) 2026 sürümü tarafından oluşturulan logları indirmek için kolaylaştırılmış bir yaklaşım sunar (bu sürüm, tek bir log dosyasında veri saklayamama sorununa çözüm olarak alt klasörleri kullanır).
 
-<img src="/img/whats-new/subfolders.png" alt="Log alt klasörlerini indirme" />
+<img src="/img/whats-new/subfolders.webp" alt="Log alt klasörlerini indirme" />
 
 ## 🌈 Yeni görselleştirme seçenekleri {#new-visualization-options}
 
@@ -90,19 +90,19 @@ REV Robotics'in [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revro
 
 Hem URCL hem de resmi `StatusLogger`, sorunsuz bir geçiş sağlamak ve önceki sezonlarla özellik eşitliğini korumak için 2026 sezonu boyunca mevcut kalacaktır. 2027 ve sonrasındaki loglama seçenekleri hakkında paylaşacak daha fazla ayrıntıya daha sonra sahip olacağız.
 
-<img src="/img/whats-new/revlog.png" alt="REVLOG görselleştirmesi" />
+<img src="/img/whats-new/revlog.webp" alt="REVLOG görselleştirmesi" />
 
 ## 💿 CSV dosyası içe aktarmaları {#csv-file-imports}
 
 Robot loglama çerçevelerinin dışında üretilen verilerin daha esnek görselleştirilmesi için AdvantageScope artık CSV dosyalarını içe aktarmak için temel destek içeriyor. Desteklenen formatlar ve diğer sınırlamalar hakkında daha fazla ayrıntı için [dokümantasyonu](/overview/log-files/#csv-formatting) kontrol edin.
 
-<img src="/img/overview/log-files/export-2.png" alt="CSV verileri" />
+<img src="/img/overview/log-files/export-2.webp" alt="CSV verileri" />
 
 ## 🤩 Estetik iyileştirmeler {#aesthetic-improvements}
 
 Windows 11'deki AdvantageScope UI, daha önce yalnızca macOS sürümlerine özel olan yarı saydam bir kenar çubuğunu destekleyecek şekilde güncellendi. macOS Tahoe için Apple'ın Sıvı Cam (Liquid Glass) malzemesini temel alan güncellenmiş bir uygulama simgesi de mevcuttur.
 
-<img src="/img/whats-new/windows-ui.png" alt="Windows kullanıcı arayüzü" />
+<img src="/img/whats-new/windows-ui.webp" alt="Windows kullanıcı arayüzü" />
 
 ## 📋 Yalınlaştırılmış menüler {#streamlined-menus}
 
@@ -113,9 +113,9 @@ Menü çubuğu ve ilgili kontroller, kontrolleri tüm platformlarda daha erişil
 - Tercihler penceresinin yeniden düzenlenmesi, seçeneklerin hızlıca bulunmasını kolaylaştırıyor.
 
 <div className="image-gallery">
-  <img src="/img/whats-new/menus-1.png" />
-  <img src="/img/whats-new/menus-2.png" />
-  <img src="/img/prefs.png" />
+  <img src="/img/whats-new/menus-1.webp" />
+  <img src="/img/whats-new/menus-2.webp" />
+  <img src="/img/prefs.webp" />
 </div>
 
 ## 🐛 Kararlılık iyileştirmeleri {#stability-improvements}

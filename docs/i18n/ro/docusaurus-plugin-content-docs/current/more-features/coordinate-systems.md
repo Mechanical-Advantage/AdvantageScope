@@ -18,22 +18,22 @@ Toate opțiunile sistemului de coordonate sunt compatibile atât cu terenurile F
 
 Originea se află în centrul terenului, cu axa +X orientată în direcția opusă peretelui alianței roșii, așa cum se arată mai jos. **Acesta este sistemul de coordonate implicit pentru terenurile FRC începând cu 2027 și terenurile FTC începând cu 2027-2028.**
 
-<img src="/img/more-features/coordinate-system-center-red.png" alt="Sistem de coordonate centru/roșu" />
+<img src="/img/more-features/coordinate-system-center-red.webp" alt="Sistem de coordonate centru/roșu" />
 
 ## Peretele albastru {#blue-wall}
 
 Originea se află în colțul cel mai din dreapta al peretelui alianței albastre, cu axa +X orientată spre peretele alianței roșii, așa cum se arată mai jos. **Acesta este sistemul de coordonate implicit pentru terenurile FRC din 2023 până în 2026.**
 
-<img src="/img/more-features/coordinate-system-blue-wall.png" alt="Sistem de coordonate perete albastru" />
+<img src="/img/more-features/coordinate-system-blue-wall.webp" alt="Sistem de coordonate perete albastru" />
 
 ## Peretele alianței {#alliance-wall}
 
 Originea se află în colțul cel mai din dreapta al peretelui alianței pentru _alianța curentă a robotului_, cu axa +X orientată spre peretele alianței opuse, așa cum se arată mai jos. **Acesta este sistemul de coordonate implicit pentru FRC în 2022.**
 
-<img src="/img/more-features/coordinate-system-alliance-wall.png" alt="Sistem de coordonate perete alianță" />
+<img src="/img/more-features/coordinate-system-alliance-wall.webp" alt="Sistem de coordonate perete alianță" />
 
 ## Centru/rotit {#center-rotated}
 
 Originea se află în centrul terenului, cu axa +X orientată spre dreapta din perspectiva peretelui alianței roșii, așa cum se arată mai jos. **Acesta este sistemul de coordonate implicit pentru terenurile FTC din 2024-2025 până în 2026-2027.**
 
-<img src="/img/more-features/coordinate-system-center-rotated.png" alt="Sistem de coordonate centru/rotit" />
+<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="Sistem de coordonate centru/rotit" />

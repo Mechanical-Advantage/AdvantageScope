@@ -13,7 +13,7 @@ A visualização do console é projetada para visualizar um único campo de text
 
 Arraste o campo desejado para a visualização principal para começar. Cada linha representa uma atualização do campo. Para logs da WPILib, uma nova linha é criada para cada linha salva. Para logs do AdvantageKit, uma nova linha é criada para cada ciclo de loop.
 
-<img src="/img/tab-reference/console-1.png" alt="Visualização do console" />
+<img src="/img/tab-reference/console-1.webp" alt="Visualização do console" />
 
 :::info
 Clique no ícone de paleta de cores para alternar o destaque de mensagens de aviso e erro. Para logs da WPILib e do AdvantageKit, as mensagens são destacadas se contiverem o texto "warning" ou "error".

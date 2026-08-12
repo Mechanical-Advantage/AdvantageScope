@@ -6,7 +6,7 @@ sidebar_position: 8
 
 搖桿分頁顯示多達六個已連線控制器的狀態。下圖顯示了一個範例佈局，包含兩個 Xbox 控制器和一個通用搖桿。每個按鈕在按下時都會高亮顯示，並顯示搖桿和其他軸的狀態。
 
-<img src="/img/tab-reference/joysticks-1.png" alt="搖桿分頁概述" />
+<img src="/img/tab-reference/joysticks-1.webp" alt="搖桿分頁概述" />
 
 <details>
 <summary>時間軸控制項</summary>
@@ -17,7 +17,7 @@ sidebar_position: 8
 
 要縮放，請將游標置於時間軸上方並向上或向下滾動。也可以透過按住 `Shift` 的同時點擊並拖曳來選擇範圍。透過水平滾動（在受支援的裝置上）或透過在時間軸上點擊並拖曳來左右移動。當即時連線時，向左滾動會解鎖目前時間，滾動到最右側會再次鎖定到目前時間。按下 `Ctrl+\` 可縮放至機器人啟用的時間段。
 
-<img src="/img/tab-reference/timeline.png" alt="時間軸" />
+<img src="/img/tab-reference/timeline.webp" alt="時間軸" />
 
 </details>
 
