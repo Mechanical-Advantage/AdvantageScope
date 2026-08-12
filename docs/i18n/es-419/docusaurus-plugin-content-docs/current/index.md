@@ -43,7 +43,7 @@ AdvantageScope incluye las siguientes herramientas:
 - Visualizaciones de campo 2D y 3D de datos de poses, con robots basados en CAD personalizables
 - Reproducción de video sincronizada desde un video del partido cargado por separado
 - Visualización de joysticks, que muestra las acciones del conductor en representaciones de controladores personalizables
-- Pantallas de vectores de módulos de tracción swerve
+- Visualización de vectores de módulos swerve
 - Revisión de mensajes de la consola
 - Análisis de estadísticas de registros
 - Opciones de exportación flexibles, con soporte para CSV y WPILOG
