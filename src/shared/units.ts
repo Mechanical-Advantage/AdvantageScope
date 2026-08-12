@@ -625,19 +625,19 @@ export namespace Units {
       rz: "radians"
     },
     ChassisVelocities: {
-      vx: "meters/second",
-      vy: "meters/second",
-      omega: "radians/second"
+      vx: "metersPerSecond",
+      vy: "metersPerSecond",
+      omega: "radiansPerSecond"
     },
     ChassisSpeeds: {
-      vx: "meters/second",
-      vy: "meters/second",
-      omega: "radians/second"
+      vx: "metersPerSecond",
+      vy: "metersPerSecond",
+      omega: "radiansPerSecond"
     },
     ChassisAccelerations: {
-      ax: "meters/second²",
-      ay: "meters/second²",
-      alpha: "radians/second²"
+      ax: "metersPerSecondSquared",
+      ay: "metersPerSecondSquared",
+      alpha: "radiansPerSecondSquared"
     },
     DifferentialDriveKinematics: {
       track_width: "meters"
@@ -647,16 +647,16 @@ export namespace Units {
       right: "meters"
     },
     DifferentialDriveWheelVelocities: {
-      left: "meters/second",
-      right: "meters/second"
+      left: "metersPerSecond",
+      right: "metersPerSecond"
     },
     DifferentialDriveWheelSpeeds: {
-      left: "meters/second",
-      right: "meters/second"
+      left: "metersPerSecond",
+      right: "metersPerSecond"
     },
     DifferentialDriveWheelAccelerations: {
-      left: "meters/second²",
-      right: "meters/second²"
+      left: "metersPerSecondSquared",
+      right: "metersPerSecondSquared"
     },
     DifferentialDriveWheelVoltages: {
       left: "volts",
@@ -669,34 +669,34 @@ export namespace Units {
       rear_right: "meters"
     },
     MecanumDriveWheelVelocities: {
-      front_left: "meters/second",
-      front_right: "meters/second",
-      rear_left: "meters/second",
-      rear_right: "meters/second"
+      front_left: "metersPerSecond",
+      front_right: "metersPerSecond",
+      rear_left: "metersPerSecond",
+      rear_right: "metersPerSecond"
     },
     MecanumDriveWheelSpeeds: {
-      front_left: "meters/second",
-      front_right: "meters/second",
-      rear_left: "meters/second",
-      rear_right: "meters/second"
+      front_left: "metersPerSecond",
+      front_right: "metersPerSecond",
+      rear_left: "metersPerSecond",
+      rear_right: "metersPerSecond"
     },
     MecanumDriveWheelAccelerations: {
-      front_left: "meters/second²",
-      front_right: "meters/second²",
-      rear_left: "meters/second²",
-      rear_right: "meters/second²"
+      front_left: "metersPerSecondSquared",
+      front_right: "metersPerSecondSquared",
+      rear_left: "metersPerSecondSquared",
+      rear_right: "metersPerSecondSquared"
     },
     SwerveModulePosition: {
       distance: "meters"
     },
     SwerveModuleVelocity: {
-      speed: "meters/second"
+      speed: "metersPerSecond"
     },
     SwerveModuleState: {
-      speed: "meters/second"
+      speed: "metersPerSecond"
     },
     SwerveModuleAcceleration: {
-      speed: "meters/second²"
+      speed: "metersPerSecondSquared"
     },
     ArmFeedforward: {
       dt: "seconds"
@@ -711,7 +711,7 @@ export namespace Units {
       nominal_voltage: "volts",
       stall_current: "amps",
       free_current: "amps",
-      free_speed: "radians/second"
+      free_speed: "radiansPerSecond"
     }
   };
 
