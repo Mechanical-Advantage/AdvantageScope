@@ -7,11 +7,7 @@
       "degrees": 90
     }
   ],
-  "position": [
-    0.12,
-    3.17,
-    0
-  ],
+  "position": [0.12, 3.17, 0],
   "cameras": [
     {
       "name": "Front Camera",
@@ -21,15 +17,8 @@
           "degrees": 20
         }
       ],
-      "position": [
-        0.2,
-        0,
-        0.8
-      ],
-      "resolution": [
-        960,
-        720
-      ],
+      "position": [0.2, 0, 0.8],
+      "resolution": [960, 720],
       "fov": 100,
       "locales": {
         "en-US": "Front Camera",
@@ -58,15 +47,8 @@
           "degrees": 180
         }
       ],
-      "position": [
-        -0.2,
-        0,
-        0.8
-      ],
-      "resolution": [
-        960,
-        720
-      ],
+      "position": [-0.2, 0, 0.8],
+      "resolution": [960, 720],
       "fov": 100,
       "locales": {
         "en-US": "Back Camera",
@@ -95,15 +77,8 @@
           "degrees": 90
         }
       ],
-      "position": [
-        0,
-        0.2,
-        0.8
-      ],
-      "resolution": [
-        960,
-        720
-      ],
+      "position": [0, 0.2, 0.8],
+      "resolution": [960, 720],
       "fov": 90,
       "locales": {
         "en-US": "Left Camera",
@@ -132,15 +107,8 @@
           "degrees": -90
         }
       ],
-      "position": [
-        0,
-        -0.2,
-        0.8
-      ],
-      "resolution": [
-        960,
-        720
-      ],
+      "position": [0, -0.2, 0.8],
+      "resolution": [960, 720],
       "fov": 90,
       "locales": {
         "en-US": "Right Camera",

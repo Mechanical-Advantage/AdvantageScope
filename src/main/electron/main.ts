@@ -733,7 +733,10 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           optionConfig.values.forEach((valueKey, index) => {
             menu.append(
               new MenuItem({
-                label: optionConfig.titles && optionConfig.titles[index] ? optionConfig.titles[index]! : tValue(prefix, currentTypeConfig.key, optionConfig.key, valueKey),
+                label:
+                  optionConfig.titles && optionConfig.titles[index]
+                    ? optionConfig.titles[index]!
+                    : tValue(prefix, currentTypeConfig.key, optionConfig.key, valueKey),
                 type: "checkbox",
                 checked: valueKey === state.options[optionConfig.key],
                 icon: getIcon(valueKey),
@@ -751,7 +754,10 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                 label: tOption(prefix, currentTypeConfig.key, optionConfig.key),
                 submenu: optionConfig.values.map((valueKey, index) => {
                   return {
-                    label: optionConfig.titles && optionConfig.titles[index] ? optionConfig.titles[index]! : tValue(prefix, currentTypeConfig.key, optionConfig.key, valueKey),
+                    label:
+                      optionConfig.titles && optionConfig.titles[index]
+                        ? optionConfig.titles[index]!
+                        : tValue(prefix, currentTypeConfig.key, optionConfig.key, valueKey),
                     type: "checkbox",
                     checked: valueKey === state.options[optionConfig.key],
                     icon: getIcon(valueKey),
@@ -794,7 +800,10 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                     ? undefined
                     : optionConfig.values.map((valueKey, index) => {
                         return {
-                          label: optionConfig.titles && optionConfig.titles[index] ? optionConfig.titles[index]! : tValue(prefix, typeConfig.key, optionConfig.key, valueKey),
+                          label:
+                            optionConfig.titles && optionConfig.titles[index]
+                              ? optionConfig.titles[index]!
+                              : tValue(prefix, typeConfig.key, optionConfig.key, valueKey),
                           icon: getIcon(valueKey),
                           click() {
                             state.type = typeConfig.key;

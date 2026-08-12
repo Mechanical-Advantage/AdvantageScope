@@ -858,7 +858,9 @@ async function handleHubMessage(message: NamedMessage) {
             menuItems.push({
               content:
                 (valueKey === state.options[optionConfig.key] ? "\u2714 " : "") +
-                (optionConfig.titles && optionConfig.titles[index] ? optionConfig.titles[index]! : tValue(prefix, currentTypeConfig.key, optionConfig.key, valueKey)),
+                (optionConfig.titles && optionConfig.titles[index]
+                  ? optionConfig.titles[index]!
+                  : tValue(prefix, currentTypeConfig.key, optionConfig.key, valueKey)),
               style: getStyle(valueKey),
               callback() {
                 state.options[optionConfig.key] = valueKey;
@@ -874,7 +876,9 @@ async function handleHubMessage(message: NamedMessage) {
                 return {
                   content:
                     (valueKey === state.options[optionConfig.key] ? "\u2714 " : "") +
-                    (optionConfig.titles && optionConfig.titles[index] ? optionConfig.titles[index]! : tValue(prefix, currentTypeConfig.key, optionConfig.key, valueKey)),
+                    (optionConfig.titles && optionConfig.titles[index]
+                      ? optionConfig.titles[index]!
+                      : tValue(prefix, currentTypeConfig.key, optionConfig.key, valueKey)),
                   style: getStyle(valueKey),
                   callback() {
                     state.options[optionConfig.key] = valueKey;
@@ -925,7 +929,10 @@ async function handleHubMessage(message: NamedMessage) {
                 content: (current ? "\u2714 " : "") + tType(prefix, typeConfig.key),
                 items: optionConfig.values.map((valueKey, index) => {
                   return {
-                    content: optionConfig.titles && optionConfig.titles[index] ? optionConfig.titles[index]! : tValue(prefix, typeConfig.key, optionConfig.key, valueKey),
+                    content:
+                      optionConfig.titles && optionConfig.titles[index]
+                        ? optionConfig.titles[index]!
+                        : tValue(prefix, typeConfig.key, optionConfig.key, valueKey),
                     style: getStyle(valueKey),
                     callback() {
                       state.type = typeConfig.key;
