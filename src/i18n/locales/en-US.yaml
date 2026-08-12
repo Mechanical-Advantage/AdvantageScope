@@ -147,6 +147,7 @@ sourceListHelp:
   title: "{{name}} Help — AdvantageScope" # Title template for help window
   titleDefault: "Help — AdvantageScope" # Default window title for help window
   parentWarning: "Add to existing {{items, list(type: disjunction)}} item." # Instruction warning when parent field is required
+  quoted: '"{{name}}"' # Quotation template for item names
   listOr: "{{list, list(type: disjunction)}}" # List of options formatted with disjunction
   sources_one: "Source: {{list, list(type: disjunction)}}" # Singular label for field source type
   sources_other: "Sources: {{list, list(type: disjunction)}}" # Plural label for field source types

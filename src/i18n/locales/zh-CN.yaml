@@ -147,6 +147,7 @@ sourceListHelp:
   title: "{{name}} 帮助 — AdvantageScope"
   titleDefault: "帮助 — AdvantageScope"
   parentWarning: "添加到现有的 {{items, list(type: disjunction)}} 项目。"
+  quoted: "“{{name}}”"
   listOr: "{{list, list(type: disjunction)}}"
   sources: "来源：{{list, list(type: disjunction)}}"
   optionName: "{{name}}："

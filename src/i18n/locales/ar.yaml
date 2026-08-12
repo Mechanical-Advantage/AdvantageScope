@@ -147,6 +147,7 @@ sourceListHelp:
   title: "مساعدة {{name}} — AdvantageScope"
   titleDefault: "مساعدة — AdvantageScope"
   parentWarning: "الإضافة إلى عنصر {{items, list(type: disjunction)}} موجود."
+  quoted: "«{{name}}»"
   listOr: "{{list, list(type: disjunction)}}"
   sources_zero: "المصادر: {{list, list(type: disjunction)}}"
   sources_one: "المصدر: {{list, list(type: disjunction)}}"

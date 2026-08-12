@@ -147,6 +147,7 @@ sourceListHelp:
   title: "{{name}} yardımı — AdvantageScope"
   titleDefault: "Yardım — AdvantageScope"
   parentWarning: "Mevcut {{items, list(type: disjunction)}} öğesine ekle."
+  quoted: "“{{name}}”"
   listOr: "{{list, list(type: disjunction)}}"
   sources_one: "Kaynak: {{list, list(type: disjunction)}}"
   sources_other: "Kaynaklar: {{list, list(type: disjunction)}}"

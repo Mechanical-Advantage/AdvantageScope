@@ -147,6 +147,7 @@ sourceListHelp:
   title: "{{name}} 說明 — AdvantageScope"
   titleDefault: "說明 — AdvantageScope"
   parentWarning: "新增至現有的 {{items, list(type: disjunction)}} 項目。"
+  quoted: "「{{name}}」"
   listOr: "{{list, list(type: disjunction)}}"
   sources: "來源：{{list, list(type: disjunction)}}"
   optionName: "{{name}}："

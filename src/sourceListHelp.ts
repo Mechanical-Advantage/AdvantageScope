@@ -168,7 +168,7 @@ function addItem(
     parentWarning.classList.add("parent-warning");
     document.body.appendChild(parentWarning);
     parentWarning.innerText = t("sourceListHelp.parentWarning", {
-      items: parentTypes.map((str) => '"' + str + '"')
+      items: parentTypes.map((str) => t("sourceListHelp.quoted", { name: str }))
     });
   }
 

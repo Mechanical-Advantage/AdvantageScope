@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { isolateValue } from "../shared/bidi";
 import { getRobotStateRanges } from "../shared/log/LogUtil";
 import { calcAxisStepSize, clampValue, cleanFloat, scaleValue } from "../shared/util";
 import ScrollSensor from "./ScrollSensor";
@@ -266,7 +267,13 @@ export default class Timeline {
         break;
       }
 
-      let text = cleanFloat(stepPos).toLocaleString(undefined, { useGrouping: false }) + "s";
+      let value = cleanFloat(stepPos);
+      let text = isolateValue(
+        t("units.values.seconds", {
+          value: value.toLocaleString(undefined, { useGrouping: false }),
+          count: value
+        })
+      );
       context.font = labelFont;
       let textWidth = context.measureText(text).width;
       let textX = clampValue(x, textWidth / 2 + 3, width - textWidth / 2 - 3);

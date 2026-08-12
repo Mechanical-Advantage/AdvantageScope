@@ -147,6 +147,7 @@ sourceListHelp:
   title: "Ajuda do {{name}} — AdvantageScope"
   titleDefault: "Ajuda — AdvantageScope"
   parentWarning: "Adicionar ao item {{items, list(type: disjunction)}} existente."
+  quoted: '"{{name}}"'
   listOr: "{{list, list(type: disjunction)}}"
   sources_one: "Fonte: {{list, list(type: disjunction)}}"
   sources_other: "Fontes: {{list, list(type: disjunction)}}"

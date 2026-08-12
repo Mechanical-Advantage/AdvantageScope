@@ -147,6 +147,7 @@ sourceListHelp:
   title: "{{name}} анықтамасы — AdvantageScope"
   titleDefault: "Анықтама — AdvantageScope"
   parentWarning: "Қолданыстағы {{items, list(type: disjunction)}} элементіне қосыңыз."
+  quoted: "«{{name}}»"
   listOr: "{{list, list(type: disjunction)}}"
   sources_one: "Дереккөз: {{list, list(type: disjunction)}}"
   sources_other: "Дереккөздер: {{list, list(type: disjunction)}}"
