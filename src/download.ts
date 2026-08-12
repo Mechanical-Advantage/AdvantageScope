@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import { IS_LITE } from "./shared/buildConstants";
+import { KeyboardUtil } from "./shared/KeyboardUtil";
 import NamedMessage from "./shared/NamedMessage";
 import Preferences, { getRobotAddress } from "./shared/Preferences";
 import { zfill } from "./shared/util";
@@ -339,7 +340,7 @@ DOWNLOAD_BUTTON.addEventListener("click", save);
 window.addEventListener("keydown", (event) => {
   if (event.code === "Enter") {
     save();
-  } else if (!IS_LITE && event.key === "a" && (platform === "darwin" ? event.metaKey : event.ctrlKey)) {
+  } else if (!IS_LITE && KeyboardUtil.isPrimaryModifier(event) && KeyboardUtil.matchesKey(event, "a")) {
     if (filenames.length === selectedFiles.length) {
       // Deselect all
       selectedFiles = [];

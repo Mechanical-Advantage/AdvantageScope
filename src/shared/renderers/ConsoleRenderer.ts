@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { KeyboardUtil } from "../KeyboardUtil";
 import { SelectionMode } from "../Selection";
 import { IS_LITE } from "../buildConstants";
 import { formatTimeWithMS, htmlEncode } from "../util";
@@ -118,7 +119,7 @@ export default class ConsoleRenderer implements TabRenderer {
     // Select filter
     window.addEventListener("keydown", (event) => {
       if (root === null || root.hidden || (event.target !== document.body && event.target !== window)) return;
-      if ((window.platform === "darwin" ? event.metaKey : event.ctrlKey) && event.key === "f") {
+      if (KeyboardUtil.isPrimaryModifier(event) && KeyboardUtil.matchesKey(event, "f")) {
         this.FILTER_INPUT.select();
       }
     });

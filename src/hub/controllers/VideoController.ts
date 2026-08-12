@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { KeyboardUtil } from "../../shared/KeyboardUtil";
 import { MatchType } from "../../shared/MatchInfo";
 import VideoSource from "../../shared/VideoSource";
 import { getEnabledData, getMatchInfo } from "../../shared/log/LogUtil";
@@ -175,33 +176,21 @@ export default class VideoController implements TabController {
     this.SKIP_BACK_BUTTON.addEventListener("click", () => skipTime(-5));
     this.SKIP_FORWARD_BUTTON.addEventListener("click", () => skipTime(5));
     window.addEventListener("keydown", (event) => {
-      if (
-        root === null ||
-        root.hidden ||
-        event.target !== document.body ||
-        (window.platform === "darwin" ? event.metaKey : event.ctrlKey)
-      )
+      if (root === null || root.hidden || event.target !== document.body || KeyboardUtil.isPrimaryModifier(event))
         return;
-      switch (event.code) {
-        case "ArrowUp":
-        case "ArrowDown":
-          toggleLock();
-          break;
-        case "Slash":
-          togglePlayPause();
-          break;
-        case "Comma":
-          skipTime(-5);
-          break;
-        case "Period":
-          skipTime(5);
-          break;
-        case "ArrowLeft":
-          changeFrame(-1);
-          break;
-        case "ArrowRight":
-          changeFrame(1);
-          break;
+
+      if (event.code === "ArrowUp" || event.code === "ArrowDown") {
+        toggleLock();
+      } else if (KeyboardUtil.matchesKey(event, "/")) {
+        togglePlayPause();
+      } else if (KeyboardUtil.matchesKey(event, ",")) {
+        skipTime(-5);
+      } else if (KeyboardUtil.matchesKey(event, ".")) {
+        skipTime(5);
+      } else if (event.code === "ArrowLeft") {
+        changeFrame(-1);
+      } else if (event.code === "ArrowRight") {
+        changeFrame(1);
       }
     });
     this.updateButtons();

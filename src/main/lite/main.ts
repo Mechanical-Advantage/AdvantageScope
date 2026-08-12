@@ -13,6 +13,7 @@ import { BUILD_DATE, COPYRIGHT, Distribution, DISTRIBUTION, LITE_VERSION } from 
 import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
 import { HubState } from "../../shared/HubState";
+import { KeyboardUtil } from "../../shared/KeyboardUtil";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import { LOCALIZATION_FEEDBACK_FORMS } from "../../shared/LocalizationFeedbackForms";
 import NamedMessage from "../../shared/NamedMessage";
@@ -481,7 +482,7 @@ async function handleHubMessage(message: NamedMessage) {
     case "open-app-menu":
       {
         let menuItems: (MenuItem | Submenu | "-")[] = [];
-        const modifier = navigator.userAgent.includes("Macintosh") ? "\u2318" : "Ctrl";
+        const modifier = KeyboardUtil.isMac() ? "⌘" : "Ctrl";
         switch (message.data.index) {
           case 0:
             {
@@ -666,7 +667,7 @@ async function handleHubMessage(message: NamedMessage) {
                     return {
                       content: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)} (${getTabAccelerator(
                         tabType
-                      ).replace("Alt+", "\u2325 ")})`,
+                      ).replace("Alt+", KeyboardUtil.isMac() ? "⌥ " : "Alt+")})`,
                       callback() {
                         sendMessage(hubPort, "new-tab", tabType);
                       }
@@ -813,7 +814,7 @@ async function handleHubMessage(message: NamedMessage) {
             return {
               content: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)} (${getTabAccelerator(tabType).replace(
                 "Alt+",
-                "\u2325 "
+                KeyboardUtil.isMac() ? "⌥ " : "Alt+"
               )})`,
               callback() {
                 sendMessage(hubPort, "new-tab", tabType);
@@ -1396,29 +1397,33 @@ async function handleHubMessage(message: NamedMessage) {
  */
 function processKeydown(event: KeyboardEvent): boolean {
   let triggered = true;
-  let modifier = event.metaKey || event.ctrlKey;
-  let lowerKey = event.key.toLowerCase();
-  if (event.shiftKey && modifier && lowerKey === "o") {
+  let modifier = KeyboardUtil.isPrimaryModifier(event);
+  if (event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "o")) {
     openDownload();
-  } else if (!event.shiftKey && modifier && lowerKey === "k") {
+  } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "k")) {
     sendMessage(hubPort, "start-live", false);
-  } else if (!event.shiftKey && modifier && lowerKey === "\\") {
+  } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "\\")) {
     sendMessage(hubPort, "zoom-enabled");
-  } else if (!event.shiftKey && modifier && lowerKey === ".") {
+  } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, ".")) {
     sendMessage(hubPort, "toggle-sidebar");
-  } else if (!event.shiftKey && modifier && lowerKey === "/") {
+  } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "/")) {
     sendMessage(hubPort, "toggle-controls");
-  } else if (!event.shiftKey && modifier && lowerKey === "arrowleft") {
+  } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "arrowleft")) {
     sendMessage(hubPort, "move-tab", -1);
-  } else if (!event.shiftKey && modifier && lowerKey === "arrowright") {
+  } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "arrowright")) {
     sendMessage(hubPort, "move-tab", 1);
-  } else if (!event.shiftKey && modifier && lowerKey === "[") {
+  } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "[")) {
     sendMessage(hubPort, "shift-tab", -1);
-  } else if (!event.shiftKey && modifier && lowerKey === "]") {
+  } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "]")) {
     sendMessage(hubPort, "shift-tab", 1);
-  } else if (!event.shiftKey && modifier && lowerKey === "e") {
+  } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "e")) {
     sendMessage(hubPort, "close-tab", false);
-  } else if (event.shiftKey && modifier && lowerKey === "," && DISTRIBUTION !== Distribution.LiteDS) {
+  } else if (
+    event.shiftKey &&
+    modifier &&
+    KeyboardUtil.matchesKey(event, ",") &&
+    DISTRIBUTION !== Distribution.LiteDS
+  ) {
     openPreferences();
   } else if (!event.shiftKey && !modifier && event.altKey && !event.code.startsWith("Alt")) {
     triggered = false;
@@ -1426,7 +1431,7 @@ function processKeydown(event: KeyboardEvent): boolean {
       .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
       .forEach((tabType) => {
         let accelerator = getTabAccelerator(tabType).replace("Alt+", "").toLowerCase();
-        if (accelerator.length > 0 && event.code.slice(-1).toLowerCase() === accelerator) {
+        if (accelerator.length > 0 && KeyboardUtil.matchesKey(event, accelerator)) {
           sendMessage(hubPort, "new-tab", tabType);
           triggered = true;
         }

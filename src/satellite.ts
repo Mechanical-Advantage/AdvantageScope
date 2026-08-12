@@ -7,6 +7,7 @@
 
 import { TFunction } from "i18next";
 import { AdvantageScopeAssets } from "./shared/AdvantageScopeAssets";
+import { KeyboardUtil } from "./shared/KeyboardUtil";
 import NamedMessage from "./shared/NamedMessage";
 import Preferences from "./shared/Preferences";
 import Selection, { SelectionMode } from "./shared/Selection";
@@ -227,22 +228,15 @@ window.addEventListener("beforeunload", () => {
 
 window.addEventListener("keydown", (event) => {
   if (event.target !== document.body) return;
-  switch (event.code) {
-    case "Space":
-      event.preventDefault();
-      window.selection.togglePlayback();
-      break;
-
-    case "KeyL":
-      event.preventDefault();
-      window.selection.toggleLock();
-      break;
-
-    case "ArrowLeft":
-    case "ArrowRight":
-      event.preventDefault();
-      window.selection.stepCycle(event.code === "ArrowRight");
-      break;
+  if (event.code === "Space") {
+    event.preventDefault();
+    window.selection.togglePlayback();
+  } else if (KeyboardUtil.matchesKey(event, "l")) {
+    event.preventDefault();
+    window.selection.toggleLock();
+  } else if (event.code === "ArrowLeft" || event.code === "ArrowRight") {
+    event.preventDefault();
+    window.selection.stepCycle(event.code === "ArrowRight");
   }
 });
 
