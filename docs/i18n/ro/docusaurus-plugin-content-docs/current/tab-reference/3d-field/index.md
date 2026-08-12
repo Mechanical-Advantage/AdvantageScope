@@ -5,7 +5,7 @@ import TabItem from '@theme/TabItem';
 
 Terenul 3D prezintă o vizualizare 3D a robotului și a terenului. Poate fi utilizat cu pose-uri 2D obișnuite, dar este deosebit de util când se lucrează cu calcule 3D (cum ar fi localizarea cu AprilTags). Sunt disponibile mai multe vizualizări de cameră, inclusiv relativă la teren, relativă la robot și fixă. [AdvantageScope XR](advantagescope-xr) permite ca această filă să fie vizualizată folosind realitatea augmentată. Cronologia arată când robotul este activat și poate fi utilizată pentru a naviga prin datele de log.
 
-<img src="/img/tab-reference/3d-field/3d-field-1.png" alt="Example of 3D field tab" />
+<img src="/img/tab-reference/3d-field/3d-field-1.png" alt="Exemplu de filă teren 3D" />
 
 <details>
 <summary>Controale cronologie</summary>
@@ -16,7 +16,7 @@ Secțiunile galbene indică momentul în care robotul este în modul autonom, se
 
 Pentru a mări, plasați cursorul peste cronologie și derulați în sus sau în jos. Un interval poate fi de asemenea selectat prin clic și tragere în timp ce țineți apăsată tasta `Shift`. Mutați-vă la stânga și la dreapta prin derulare orizontală (pe dispozitivele suportate) sau prin clic și tragere pe cronologie. Când sunteți conectat live, derularea spre stânga deblochează timpul curent, iar derularea până la capăt în dreapta blochează din nou timpul curent. Apăsați `Ctrl+\` pentru a mări la perioada în care robotul este activat.
 
-<img src="/img/tab-reference/timeline.png" alt="Timeline" />
+<img src="/img/tab-reference/timeline.png" alt="Cronologie" />
 
 </details>
 
@@ -105,7 +105,7 @@ Datele mecanismelor pot fi vizualizate folosind mecanisme 2D sau componente 3D a
 
 Pentru a vizualiza datele mecanismelor înregistrate folosind un [`Mechanism2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html), adăugați câmpul mecanismului la un obiect robot sau fantomă existent. Mecanismul este proiectat pe planul XZ sau YZ al robotului folosind casete simple, așa cum se arată mai jos. Dați clic pe pictograma rotiță sau dați clic dreapta pe numele câmpului pentru a comuta între planurile XZ și YZ. Originea robotului este centrată pe marginea inferioară a mecanismului.
 
-<img src="/img/tab-reference/3d-field/3d-field-2.png" alt="2D mechanism" />
+<img src="/img/tab-reference/3d-field/3d-field-2.png" alt="Mecanism 2D" />
 
 ### Componente 3D {#3d-components}
 
@@ -117,7 +117,7 @@ Mecanismele pot fi vizualizate cu componente articulate prin înregistrarea unui
 
 Fiecare componentă poate fi mutată independent (cum ar fi un cărucior de elevator, un braț sau un efector final). Utilizatorii AdvantageKit ar trebui să ia în considerare utilizarea metodei [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) pentru a converti un Mechanism2d într-un tablou de obiecte Pose3d. Pentru mai multe informații despre configurarea roboților cu componente, consultați [Resurse personalizate](/more-features/custom-assets).
 
-<img src="/img/tab-reference/3d-field/3d-field-3.png" alt="3D mechanism" />
+<img src="/img/tab-reference/3d-field/3d-field-3.png" alt="Mecanism 3D" />
 
 ## Obiecte piesă de joc {#game-piece-objects}
 
@@ -137,7 +137,7 @@ Proiectul exemplu KitBot 2024 al AdvantageKit include un exemplu simplu de [coma
 
 </details>
 
-<img src="/img/tab-reference/3d-field/3d-field-4.png" alt="2024 KitBot note visualization" />
+<img src="/img/tab-reference/3d-field/3d-field-4.png" alt="Vizualizarea notei KitBot 2024" />
 
 ## Opțiuni cameră {#camera-options}
 
@@ -171,7 +171,7 @@ Selectarea automată a numărului stației poate fi inexactă la vizualizarea da
 
 Fiecare model de robot este configurat cu un set de camere fixe, cum ar fi camerele de viziune și camerele șoferului. Aceste camere au poziții, raporturi de aspect și FOV-uri fixe. Aceste vizualizări sunt adesea utile pentru a verifica datele de viziune sau pentru a simula o vizualizare a camerei șoferului. În exemplul de mai jos este prezentată o cameră a șoferului.
 
-<img src="/img/tab-reference/3d-field/3d-field-5.png" alt="Fixed camera" />
+<img src="/img/tab-reference/3d-field/3d-field-5.png" alt="Cameră fixă" />
 
 Dacă este furnizată o pose de „Suprascriere cameră”, aceasta înlocuiește pose-urile implicite ale tuturor camerelor fixe, păstrând în același timp FOV-urile și raporturile de aspect configurate. Acest lucru permite codului robotului să furnizeze poziția unei camere mobile, cum ar fi una montată pe o turelă sau pe hota lansatorului.
 
@@ -195,8 +195,8 @@ Terenul 3D suportă trei moduri de randare:
 - **Standard (implicit):** Randează cu iluminare minimă și modele 3D simplificate. Rulează bine pe majoritatea dispozitivelor.
 - **Consum redus:** Reduce frecvența cadrelor, rezoluția și detaliile modelului pentru a reduce consumul bateriei și a oferi o performanță mai consecventă pe dispozitivele mai slabe.
 
-<img src="/img/tab-reference/3d-field/3d-field-6.png" alt="Comparion of rendering modes" />
+<img src="/img/tab-reference/3d-field/3d-field-6.png" alt="Compararea modurilor de randare" />
 
 Pentru a configura modul de randare, deschideți fereastra de preferințe dând clic pe `Aplicație` > `Afișează preferințele...` (Windows/Linux) sau `AdvantageScope` > `Setări...` (macOS). Setarea „Mod 3D (baterie)” poate fi comutată de la valoarea implicită pentru a suprascrie modul de randare utilizat pe un laptop când nu se încarcă. De exemplu, aceasta poate fi utilizată pentru a economisi bateria în timpul competiției.
 
-<img src="/img/prefs.png" alt="Diagram of preferences" height="350" />
+<img src="/img/prefs.png" alt="Diagramă de preferințe" />

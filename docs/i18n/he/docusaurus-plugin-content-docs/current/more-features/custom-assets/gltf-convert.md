@@ -8,11 +8,11 @@
 
 1. לאחר פתיחת קובץ ה-Onshape, יש ללחוץ בלחיצה ימנית על המכלול הראשי (assembly) ולבחור "Export...":
 
-<img src="/img/more-features/custom-assets/gltf-convert-1.png" alt="Selecting the &quot;Export...&quot; option" />
+<img src="/img/more-features/custom-assets/gltf-convert-1.png" alt="בחירת האפשרות &quot;Export...&quot;" />
 
 2. בחלון הקופץ של האפשרויות, ודאו כי פורמט הייצוא הוא "STEP" ולחצו על "Export":
 
-<img src="/img/more-features/custom-assets/gltf-convert-2.png" alt="Export options pop-up" />
+<img src="/img/more-features/custom-assets/gltf-convert-2.png" alt="חלون קופץ של אפשרויות ייצוא" />
 
 3. המתינו להמרת הקובץ ולהורדתו. נתון זה עשוי לקחת מספר דקות.
 
@@ -22,22 +22,22 @@
 
 2. פתחו את CAD Assistant ובחרו את קובץ ה-STEP להמרה:
 
-<img src="/img/more-features/custom-assets/gltf-convert-3.png" alt="Opening STEP file in CAD Assistant" />
+<img src="/img/more-features/custom-assets/gltf-convert-3.png" alt="פתיחת קובץ STEP ב-CAD Assistant" />
 
 3. המתינו לייבוא קובץ ה-STEP. נתון זה עשוי לקחת מספר דקות.
 
 4. לחצו על סמל ה-"Save":
 
-<img src="/img/more-features/custom-assets/gltf-convert-4.png" alt="Clicking the &quot;Save&quot; icon" />
+<img src="/img/more-features/custom-assets/gltf-convert-4.png" alt="לחיצה על סמל &quot;שמירה&quot;" />
 
 5. בחרו מיקום שמירה, ולאחר מכן השתמשו בתפריט הנפתח כדי להחליף את פורמט הייצוא ל-"glb":
 
-<img src="/img/more-features/custom-assets/gltf-convert-5.png" alt="Switching the export format" />
+<img src="/img/more-features/custom-assets/gltf-convert-5.png" alt="החלפת פורמט הייצוא" />
 
 6. לחצו על סמל גלגל השיניים, ולאחר מכן הפעילו את "Merge faces within the same part":
 
-<img src="/img/more-features/custom-assets/gltf-convert-6.png" alt="Enabling &quot;Merge faces within the same part&quot;" />
+<img src="/img/more-features/custom-assets/gltf-convert-6.png" alt="הפעלת &quot;Merge faces within the same part&quot;" />
 
 7. לחצו על סמל ה-"Save" והמתינו לסיום הייצוא:
 
-<img src="/img/more-features/custom-assets/gltf-convert-7.png" alt="Clicking the &quot;Save&quot; icon" />
+<img src="/img/more-features/custom-assets/gltf-convert-7.png" alt="לחיצה على סמל &quot;שמירה&quot;" />

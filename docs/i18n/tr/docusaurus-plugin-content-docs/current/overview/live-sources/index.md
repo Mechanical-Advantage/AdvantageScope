@@ -27,7 +27,7 @@ Pencere başlığı, hedef bağlanana kadar IP adresini ve "Aranıyor" metnini g
 
 Canlı bir kaynağa bağlandığında AdvantageScope, varsayılan olarak tüm sekmeleri mevcut zamana kilitler. 📉 [Çizgi grafik](/tab-reference/line-graph) ve 🔢 [Tablo](/tab-reference/table) gibi görünümler otomatik kaydırılır ve saha ile joystick gibi görünümler her alanın mevcut değerlerini görüntüler. Gezinme çubuğundaki kırmızı ok düğmesine tıklamak bu kilidi açıp kapatır ve geçmiş verilerin görüntülenmesini ve yeniden oynatılmasını sağlar.
 
-<img src="/img/overview/live-sources/open-live-1.png" alt="Live lock/unlock button" />
+<img src="/img/overview/live-sources/open-live-1.png" alt="Canlı kilitleme/kilidi açma düğmesi" />
 
 :::tip
 Çizgi grafiğinde veya zaman çizelgesinde sola kaydırmak mevcut zamandan kilidi kaldırır ve en sağa kadar kaydırmak tekrar mevcut zamana kilitler.
@@ -37,7 +37,7 @@ Canlı bir kaynağa bağlandığında AdvantageScope, varsayılan olarak tüm se
 
 `Uygulama` > `Tercihleri göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) seçeneğine tıklayarak tercihler penceresini açın.
 
-<img src="/img/prefs.png" alt="Diagram of preferences" height="350" />
+<img src="/img/prefs.png" alt="Tercihler diyagramı" />
 
 ### Robot adresi {#robot-address}
 

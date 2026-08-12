@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 La pestaña de campo 2D muestra una visualización 2D del robot superpuesta en un mapa del campo. También puede mostrar datos adicionales, como el estado de puntería de visión y poses de referencia.
 
-<img src="/img/tab-reference/2d-field-1.png" alt="Resumen de la pestaña de campo 2D" />
+<img src="/img/tab-reference/2d-field-1.png" alt="Descripción general de la pestaña de campo 2D" />
 
 <details>
 <summary>Controles de la línea de tiempo</summary>

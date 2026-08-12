@@ -6,7 +6,7 @@
 - יש ללחוץ על שלוש הנקודות ליד כותרת הציר כדי **לעבור במהירות ליחידות חלופיות**. רשימה זו כוללת את היחידות הנפוצות ביותר התואמות לשדות שנבחרו.
 - הפעלת **אינטגרציה או גזירה** ([תיעוד](/tab-reference/line-graph/#integration-and-differentiation)) תציג את יחידות האינטגרל או הנגזרת המדויקות. ניתן להתאים את יחידת הבסיס באמצעות התפריט לתמיכה בסינון ביחידות שאינן מובנות.
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="Unit-aware graphing" />
+<img src="/img/tab-reference/line-graph/units-1.png" alt="גרפים מודעי-יחידות" />
 
 ## פורמטים נתמכים {#supported-formats}
 
@@ -54,4 +54,4 @@ AdvantageKit כוללת תמיכה במטא-דאטה של יחידות בעת ת
 להפעלה או השבתה מהירה של המרת יחידות, יש ללחוץ על שלוש הנקודות ליד כותרת הציר ולבחור `הגדרות קבועות אחרונות` או `איפוס יחידות`.
 :::
 
-<img src="/img/tab-reference/line-graph/units-2.png" alt="Editing unit conversion" height="250" />
+<img src="/img/tab-reference/line-graph/units-2.png" alt="עריכת המרת יחידות" />

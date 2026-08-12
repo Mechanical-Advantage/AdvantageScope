@@ -54,7 +54,7 @@ Captura de ecran de mai jos prezintă toate aceste caracteristici în acțiune. 
 
 _Mai multe informații despre suportul pentru unități pot fi găsite în [documentație](/tab-reference/line-graph/units)._
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="Unit-aware graphing" />
+<img src="/img/tab-reference/line-graph/units-1.png" alt="Grafice bazate pe unități" />
 
 ## 🏁 Descărcări mai rapide de loguri {#faster-log-downloads}
 
@@ -72,7 +72,7 @@ Tabelul de mai jos arată viteza de transfer măsurată pe versiunile 2025 și 2
 
 Fereastra de descărcare acceptă acum salvarea logurilor care sunt stocate în subfoldere. Fiecare subfolder de loguri poate fi descărcat ca un grup, oferind o abordare simplificată pentru descărcarea logurilor generate de versiunea 2026 a [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) de la CTRE (care folosește subfoldere ca o soluție pentru imposibilitatea de a stoca date într-un singur fișier log).
 
-<img src="/img/whats-new/subfolders.png" alt="Downloading log subfolders" height="450" />
+<img src="/img/whats-new/subfolders.png" alt="Descărcarea subdosarelor de log" />
 
 ## 🌈 Opțiuni noi de vizualizare {#new-visualization-options}
 
@@ -82,7 +82,7 @@ Câteva opțiuni noi de vizualizare sunt suportate pe terenul 🗺️ [Teren 2D]
 - La [vizualizarea mecanicilor 2D pe terenul 3D](/tab-reference/3d-field/#2d-mechanisms), mecanismele pot fi plasate acum pe planul YZ pe lângă planul XZ. Acest lucru permite o vizualizare mai ușoară a mecanicilor complexe cu mișcare pe axe multiple.
 - Terenul 3D suportă acum antialiasing opțional pentru a îmbunătăți calitatea marginilor randate.
 
-<img src="/img/whats-new/field-viz.jpg" alt="New field visualizations" />
+<img src="/img/whats-new/field-viz.jpg" alt="Vizualizări noi de teren" />
 
 ## 🪵 Suport pentru loguri CAN REV Robotics {#rev-robotics-can-log-support}
 
@@ -90,19 +90,19 @@ Acum puteți deschide fișiere `.revlog` produse de [`StatusLogger`](https://cod
 
 Atât URCL, cât și `StatusLogger`-ul oficial vor rămâne disponibile în timpul sezonului 2026 pentru a asigura o tranziție lină și pentru a oferi paritate de caracteristici cu sezoanele anterioare. Vom avea mai multe detalii de împărtășit despre opțiunile de logare în 2027 și ulterior la o dată viitoare.
 
-<img src="/img/whats-new/revlog.png" alt="REVLOG visualization" />
+<img src="/img/whats-new/revlog.png" alt="Vizualizare REVLOG" />
 
 ## 💿 Importuri de fișiere CSV {#csv-file-imports}
 
 Pentru o vizualizare mai flexibilă a datelor produse în afara cadrelor de logare ale robotului, AdvantageScope include acum suport de bază pentru importul fișierelor CSV. Consultați [documentația](/overview/log-files/#csv-formatting) pentru mai multe detalii despre formatele suportate și alte limitări.
 
-<img src="/img/overview/log-files/export-2.png" alt="CSV data" />
+<img src="/img/overview/log-files/export-2.png" alt="Date CSV" />
 
 ## 🤩 Îmbunătățiri estetice {#aesthetic-improvements}
 
 Interfața de utilizator AdvantageScope pe Windows 11 a fost actualizată pentru a suporta o bară laterală translucidă, care anterior era exclusivă pentru versiunile macOS. O pictogramă actualizată a aplicației este de asemenea disponibilă pentru macOS Tahoe bazată pe materialul Liquid Glass de la Apple.
 
-<img src="/img/whats-new/windows-ui.png" alt="Windows UI" />
+<img src="/img/whats-new/windows-ui.png" alt="Interfață utilizator Windows" />
 
 ## 📋 Meniuri simplificate {#streamlined-menus}
 

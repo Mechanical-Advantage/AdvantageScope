@@ -6,7 +6,7 @@ sidebar_position: 8
 
 La pestaña de joysticks muestra el estado de hasta seis controladores conectados. La siguiente imagen muestra un diseño de ejemplo, con dos controladores de Xbox y un joystick genérico. Cada botón se resalta cuando se presiona, y se muestran los estados de los joysticks y otros ejes.
 
-<img src="/img/tab-reference/joysticks-1.png" alt="Resumen de la pestaña de joysticks" />
+<img src="/img/tab-reference/joysticks-1.png" alt="Descripción general de la pestaña de joysticks" />
 
 <details>
 <summary>Controles de la línea de tiempo</summary>

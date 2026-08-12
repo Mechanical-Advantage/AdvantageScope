@@ -27,7 +27,7 @@ O título da janela exibe o endereço IP e o texto "Buscando" até que o alvo es
 
 Quando conectado a uma fonte ao vivo, o AdvantageScope bloqueia todas as guias no horário atual por padrão. Visualizações como o 📉 [Gráfico de linha](/tab-reference/line-graph) e a 🔢 [Tabela](/tab-reference/table) rolam automaticamente, e visualizações como campo e joysticks exibem os valores atuais de cada campo. Clicar no botão de seta vermelha na barra de navegação alterna este bloqueio, permitindo a visualização e reprodução de dados passados.
 
-<img src="/img/overview/live-sources/open-live-1.png" alt="Live lock/unlock button" />
+<img src="/img/overview/live-sources/open-live-1.png" alt="Botão de bloquear/desbloquear ao vivo" />
 
 :::tip
 Rolar para a esquerda no gráfico de linha ou na linha do tempo desbloqueia do horário atual, e rolar totalmente para a direita bloqueia no horário atual novamente.
@@ -37,7 +37,7 @@ Rolar para a esquerda no gráfico de linha ou na linha do tempo desbloqueia do h
 
 Abra a janela de preferências clicando em `App` > `Mostrar preferências...` (Windows/Linux) ou `AdvantageScope` > `Configurações...` (macOS).
 
-<img src="/img/prefs.png" alt="Diagram of preferences" height="350" />
+<img src="/img/prefs.png" alt="Diagrama de preferências" />
 
 ### Endereço do robô {#robot-address}
 

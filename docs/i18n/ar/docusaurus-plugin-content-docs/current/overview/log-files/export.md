@@ -8,7 +8,7 @@
 
 لعرض خيارات التصدير، انقر فوق `ملف` > `تصدير البيانات...`.
 
-<img src="/img/overview/log-files/export-1.png" alt="Export options" height="250" />
+<img src="/img/overview/log-files/export-1.png" alt="خيارات التصدير" />
 
 :::tip
 بالإضافة إلى تصدير السجل الكامل المشروح هنا، تتيح علامة تبويب 💬 [وحدة التحكم](/tab-reference/console) تصدير بيانات وحدة التحكم إلى ملف نصي.
@@ -46,4 +46,4 @@ _هذا التحذير **لا ينطبق** على السجلات المُنتج�
 
 يظهر مثال لملف CSV تم تصديره من AdvantageScope أدناه، بتنسيق "CSV (جدول)« مع ضبط الطوابع الزمنية على »جميع التغييرات":
 
-<img src="/img/overview/log-files/export-2.png" alt="CSV table" />
+<img src="/img/overview/log-files/export-2.png" alt="جدول CSV" />

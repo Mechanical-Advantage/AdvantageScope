@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 تعرض علامة تبويب البيانات الوصفية القيم المنشورة في جدول "/Metadata" المخفي أو من خلال AdvantageKit. تُعرض مفاتيح البيانات الوصفية إلى اليسار، وتفصل الأعمدة البيانات من المصادر المختلفة (مثل حقيقي وإعادة عند استخدام AdvantageKit).
 
-<img src="/img/tab-reference/metadata-1.png" alt="Overview of metadata tab" />
+<img src="/img/tab-reference/metadata-1.png" alt="نظرة عامة على علامة تبويب البيانات الوصفية" />
 
 يظهر كود المثال أدناه كيفية تسجيل البيانات الوصفية باستخدام Java.
 

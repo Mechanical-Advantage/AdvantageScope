@@ -22,7 +22,7 @@
 如果同时打开多个文件，时间戳将自动对齐。这可以轻松比较来自多个数据源的日志文件。
 :::
 
-<img src="/img/overview/log-files/open-file-1.png" alt="打开已保存的日志" />
+<img src="/img/overview/log-files/open-file-1.png" alt="打开保存的日志" />
 
 ## 追加日志 {#adding-new-logs}
 
@@ -37,7 +37,7 @@
 
 点击 `应用程序` > `显示首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。更新机器人地址和日志文件夹。
 
-<img src="/img/prefs.png" alt="首选项图解" height="350" />
+<img src="/img/prefs.png" alt="偏好设置图解" />
 </details>
 
 点击 `文件` > `下载日志...` 打开下载窗口。连接到机器人后，可用的日志将显示在列表中，最新日志位于顶部。选择一个或多个要下载的日志文件（按住 shift 点击选择范围或使用 **cmd/ctrl + A** 全选）。然后点击 ↓ 符号并选择保存位置。
@@ -50,7 +50,7 @@ CTRE 的 [信号日志记录器](https://v6.docs.ctr-electronics.com/en/stable/d
 当下载多个文件时，AdvantageScope 会跳过目标文件夹中已存在的任何文件。
 :::
 
-<img src="/img/overview/log-files/open-file-2.png" alt="下载日志文件" height="350" />
+<img src="/img/overview/log-files/open-file-2.png" alt="下载日志文件" />
 
 ## CSV 格式化 {#csv-formatting}
 

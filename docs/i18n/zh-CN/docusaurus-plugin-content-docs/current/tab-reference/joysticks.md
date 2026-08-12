@@ -6,7 +6,7 @@ sidebar_position: 8
 
 控制器选项卡显示最多六个已连接控制器的状态。下图显示了一个示例布局，包含两个 Xbox 控制器和一个通用控制器。按键在按住时会高亮显示，并显示控制器和其他轴的状态。
 
-<img src="/img/tab-reference/joysticks-1.png" alt="控制器选项卡概述" />
+<img src="/img/tab-reference/joysticks-1.png" alt="控制器标签页概述" />
 
 <details>
 <summary>时间轴控制</summary>

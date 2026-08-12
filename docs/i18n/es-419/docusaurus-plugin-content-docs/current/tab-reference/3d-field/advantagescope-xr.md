@@ -32,11 +32,11 @@ AdvantageScope XR solo es compatible con iOS y iPadOS. No hay planes inmediatos 
 
 1. En el sistema host, **haz clic en el botón "XR"** en cualquier pestaña de campo 3D. Solo una sesión de host de XR puede estar activa al mismo tiempo, por lo que hacer clic en este botón interrumpirá cualquier otra sesión activa.
 
-<img src="/img/tab-reference/3d-field/xr-1.png" alt="Botón XR" height="450" />
+<img src="/img/tab-reference/3d-field/xr-1.png" alt="Botón XR" />
 
 2. Se abrirá la **ventana de controles de XR**, con un código QR y [opciones](#options) para personalizar la experiencia de realidad aumentada. Para cancelar la sesión de XR y desconectar cualquier cliente, cierra la ventana de controles.
 
-<img src="/img/tab-reference/3d-field/xr-2.png" alt="Ventana XR" height="350" />
+<img src="/img/tab-reference/3d-field/xr-2.png" alt="Ventana XR" />
 
 3. Escanea el código QR utilizando la **aplicación de cámara integrada** en el dispositivo cliente. No se requiere instalación de la aplicación.
 4. Toca "AdvantageScope XR" y luego "Abrir" para **iniciar la experiencia** y conectarte al host. Si se te solicita, permite que AdvantageScope XR acceda a la **cámara y red local**.
@@ -70,7 +70,7 @@ La ventana de controles XR presenta varias opciones que controlan cómo se muest
 
 AdvantageScope XR no requiere una conexión a Internet. Para asegurarse de que la aplicación esté disponible sin conexión, descarga AdvantageScope XR desde la App Store utilizando el enlace a continuación. Para conectarse a la aplicación de escritorio AdvantageScope, escanea el código QR usando la aplicación de cámara iOS o toca el botón "Escanear" en la aplicación AdvantageScope XR.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />
 
 :::note
 Incluso cuando se ejecuta sin conexión a Internet, los dispositivos host y cliente **deben estar conectados a la misma red** (como un robot, una red Wi-Fi personalizada o mediante conexión compartida USB).

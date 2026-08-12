@@ -14,7 +14,7 @@ AdvantageScope 提供了三种加载视频的选项：
 2. **YouTube：** 将 YouTube 链接复制到剪贴板，然后点击红色剪贴板图标。几秒钟后，视频将开始下载。
 3. **The Blue Alliance：** 点击蓝色 TBA 图标，以根据日志文件自动加载比赛视频。如果包含多个可用视频，请从弹出菜单中选择要下载的视频。此功能需要 TBA 的 API 密钥，应从 [thebluealliance.com/account](https://www.thebluealliance.com/account) 获取并复制到 AdvantageScope 首选项页面的“TBA API 密钥”下方。
 
-<img src="/img/tab-reference/video-1.png" alt="来源选择器" />
+<img src="/img/tab-reference/video-1.png" alt="源选择器" />
 
 选择视频后，右下角的时间轴开始变为蓝色，表示已缓存的帧（此步骤对于平滑播放是必需的）。由于需要进行帧转换，此功能仅适用于比赛精度的视频长度。
 
@@ -36,7 +36,7 @@ AdvantageScope 需要 [FFmpeg](https://ffmpeg.org) 来处理视频文件。如�
 - \> = 快进五秒
 - < = 快退五秒
 
-<img src="/img/tab-reference/video-2.png" alt="视频控制" />
+<img src="/img/tab-reference/video-2.png" alt="视频控件" />
 
 ## 自动同步 {#automatic-synchronization}
 

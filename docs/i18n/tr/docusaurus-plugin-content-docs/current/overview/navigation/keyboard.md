@@ -84,5 +84,5 @@ AdvantageScope, daha hızlı navigasyon sağlayan çok sayıda klavye kısayolu 
 
 Desteklenen MacBook modellerinde Touch Bar, log dosyasında gezinmek ve yeni sekmeler eklemek için kullanılabilir.
 
-<img src="/img/overview/navigation/keyboard-1.png" alt="Touch Bar scrubbing interface" />
-<img src="/img/overview/navigation/keyboard-2.png" alt="Touch Bar new tab interface" />
+<img src="/img/overview/navigation/keyboard-1.png" alt="Touch Bar kaydırma arayüzü" />
+<img src="/img/overview/navigation/keyboard-2.png" alt="Touch Bar yeni sekme arayüzü" />

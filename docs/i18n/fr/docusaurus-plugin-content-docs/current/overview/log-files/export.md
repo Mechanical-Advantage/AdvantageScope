@@ -8,7 +8,7 @@ AdvantageScope comprend un système flexible pour exporter des données de journ
 
 Pour afficher les options d'exportation, cliquez sur `Fichier` > `Exporter les données...`.
 
-<img src="/img/overview/log-files/export-1.png" alt="Options d'exportation" height="250" />
+<img src="/img/overview/log-files/export-1.png" alt="Options d'exportation" />
 
 :::tip
 En plus de l'exportation complète du journal décrite ici, l'onglet 💬 [Console](/tab-reference/console) permet d'exporter les données de la console vers un fichier texte.

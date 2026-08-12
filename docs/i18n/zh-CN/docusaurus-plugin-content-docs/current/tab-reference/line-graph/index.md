@@ -20,19 +20,19 @@
 
 可以通过点击彩色图标或右键单击字段名称来自定义每个字段的颜色和线条样式。来自 WPILib [持久警告](https://docs.wpilib.org/zh-cn/latest/docs/software/telemetry/persistent-alerts.html) API 的数据可以通过将警告组添加为离散字段来进行可视化。示例可视化如下图所示。
 
-<img src="/img/tab-reference/line-graph/line-graph-2.png" alt="警告可视化" />
+<img src="/img/tab-reference/line-graph/line-graph-2.png" alt="警报可视化" />
 
 :::tip
 要叠加机器人模式（自动阶段、遥控阶段或测试模式），请点击“离散字段”旁边的三个点，然后点击“显示机器人模式”。
 
-<img src="/img/tab-reference/line-graph/line-graph-3.png" alt="机器人模式叠加" />
+<img src="/img/tab-reference/line-graph/line-graph-3.png" alt="机器人模式覆盖层" />
 :::
 
 ### 调整轴 {#adjusting-axes}
 
 默认情况下，每个轴都会根据可见数据调整其范围。要禁用自动调程并将范围锁定到其当前的最小值和最大值，请点击轴标题附近的三个点，然后点击 `锁定轴`。要手动调整范围，请选择 `编辑范围...` 并输入所需的值。
 
-<img src="/img/tab-reference/line-graph/line-graph-4.png" alt="编辑轴范围" height="250" />
+<img src="/img/tab-reference/line-graph/line-graph-4.png" alt="编辑轴范围" />
 
 ### 积分与求导 {#integration-and-differentiation}
 

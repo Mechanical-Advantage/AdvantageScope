@@ -8,11 +8,11 @@
 
 1. بعد فتح ملف Onshape، انقر بزر الماوس الأيمن على التجميع الرئيسي واختر "Export...":
 
-<img src="/img/more-features/custom-assets/gltf-convert-1.png" alt="Selecting the &quot;Export...&quot; option" />
+<img src="/img/more-features/custom-assets/gltf-convert-1.png" alt="تحديد الخيار «Export...»" />
 
 2. في النافذة المنبثقة للخيارات، تأكد من أن تنسيق التصدير هو "STEP« وانقر فوق »Export":
 
-<img src="/img/more-features/custom-assets/gltf-convert-2.png" alt="Export options pop-up" />
+<img src="/img/more-features/custom-assets/gltf-convert-2.png" alt="نافذة خيارات التصدير المنبثقة" />
 
 3. انتظر حتى يتم تحويل الملف وتنزيله. قد يستغرق هذا بضع دقائق.
 
@@ -22,22 +22,22 @@
 
 2. افتح CAD Assistant وحدد ملف STEP للتحويل:
 
-<img src="/img/more-features/custom-assets/gltf-convert-3.png" alt="Opening STEP file in CAD Assistant" />
+<img src="/img/more-features/custom-assets/gltf-convert-3.png" alt="فتح ملف STEP في CAD Assistant" />
 
 3. انتظر حتى يتم استيراد ملف STEP. قد يستغرق هذا بضع دقائق.
 
 4. انقر فوق أيقونة «الحفظ» (Save):
 
-<img src="/img/more-features/custom-assets/gltf-convert-4.png" alt="Clicking the &quot;Save&quot; icon" />
+<img src="/img/more-features/custom-assets/gltf-convert-4.png" alt="النقر على أيقونة «حفظ»" />
 
 5. اختر موقع الحفظ، ثم استخدم القائمة المنسدلة لتبديل تنسيق التصدير إلى "glb":
 
-<img src="/img/more-features/custom-assets/gltf-convert-5.png" alt="Switching the export format" />
+<img src="/img/more-features/custom-assets/gltf-convert-5.png" alt="تبديل صيغة التصدير" />
 
 6. انقر فوق أيقونة الترس، ثم مَكّن "Merge faces within the same part":
 
-<img src="/img/more-features/custom-assets/gltf-convert-6.png" alt="Enabling &quot;Merge faces within the same part&quot;" />
+<img src="/img/more-features/custom-assets/gltf-convert-6.png" alt="تمكين «Merge faces within the same part»" />
 
 7. انقر فوق أيقونة «الحفظ» (Save) وانتظر حتى ينتهي التصدير:
 
-<img src="/img/more-features/custom-assets/gltf-convert-7.png" alt="Clicking the &quot;Save&quot; icon" />
+<img src="/img/more-features/custom-assets/gltf-convert-7.png" alt="النقر على أيقونة «حفظ»" />

@@ -54,7 +54,7 @@ A captura de tela abaixo mostra todos esses recursos em ação. Observe que o ei
 
 _Mais informações sobre o suporte a unidades podem ser encontradas na [documentação](/tab-reference/line-graph/units)._
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="Unit-aware graphing" />
+<img src="/img/tab-reference/line-graph/units-1.png" alt="Gráficos cientes de unidade" />
 
 ## 🏁 Downloads de logs mais rápidos {#faster-log-downloads}
 
@@ -72,7 +72,7 @@ A tabela abaixo mostra a velocidade de transferência medida nas versões 2025 e
 
 A janela de download agora suporta o salvamento de logs armazenados em subpastas. Cada subpasta de logs pode ser baixada como um grupo, fornecendo uma abordagem simplificada para baixar logs gerados pela versão 2026 do [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) da CTRE (que usa subpastas como alternativa para não conseguir armazenar dados em um único arquivo de log).
 
-<img src="/img/whats-new/subfolders.png" alt="Downloading log subfolders" height="450" />
+<img src="/img/whats-new/subfolders.png" alt="Baixando subpastas de log" />
 
 ## 🌈 Novas opções de visualização {#new-visualization-options}
 
@@ -82,7 +82,7 @@ Várias novas opções de visualização são suportadas no 🗺️ [Campo 2D](/
 - Ao [visualizar mecanismos 2D no campo 3D](/tab-reference/3d-field/#2d-mechanisms), os mecanismos agora podem ser posicionados no plano YZ além do plano XZ. Isso permite uma visualização mais fácil de mecanismos complexos com movimento em múltiplos eixos.
 - O campo 3D agora suporta antialiasing opcional para melhorar a qualidade das bordas renderizadas.
 
-<img src="/img/whats-new/field-viz.jpg" alt="New field visualizations" />
+<img src="/img/whats-new/field-viz.jpg" alt="Novas visualizaciones de campo" />
 
 ## 🪵 Suporte a logs de CAN da REV Robotics {#rev-robotics-can-log-support}
 
@@ -90,19 +90,19 @@ Agora você pode abrir arquivos `.revlog` produzidos pelo [`StatusLogger`](https
 
 Tanto o URCL quanto o `StatusLogger` oficial permanecerão disponíveis durante a temporada 2026 para garantir uma transição suave e fornecer paridade de recursos com as temporadas anteriores. Teremos mais detalhes a compartilhar sobre opções de log em 2027 e além em uma data posterior.
 
-<img src="/img/whats-new/revlog.png" alt="REVLOG visualization" />
+<img src="/img/whats-new/revlog.png" alt="Visualização do REVLOG" />
 
 ## 💿 Importação de arquivos CSV {#csv-file-imports}
 
 Para uma visualização mais flexível de dados produzidos fora das estruturas de log de robôs, o AdvantageScope agora inclui suporte básico para importação de arquivos CSV. Verifique a [documentação](/overview/log-files/#csv-formatting) para mais detalhes sobre os formatos suportados e outras limitações.
 
-<img src="/img/overview/log-files/export-2.png" alt="CSV data" />
+<img src="/img/overview/log-files/export-2.png" alt="Dados CSV" />
 
 ## 🤩 Melhorias estéticas {#aesthetic-improvements}
 
 A interface do AdvantageScope no Windows 11 foi atualizada para suportar uma barra lateral translúcida, que anteriormente era exclusiva das versões para macOS. Um ícone de aplicativo atualizado também está disponível para o macOS Tahoe com base no material Liquid Glass da Apple.
 
-<img src="/img/whats-new/windows-ui.png" alt="Windows UI" />
+<img src="/img/whats-new/windows-ui.png" alt="Interface do usuário do Windows" />
 
 ## 📋 Menus simplificados {#streamlined-menus}
 

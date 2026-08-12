@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 A guia de mecanismo exibe um mecanismo articulado criado com um ou mais objetos [Mechanism2d](https://docs.wpilib.org/pt/stable/docs/software/dashboards/glass/mech2d-widget.html).
 
-<img src="/img/tab-reference/mechanism-1.png" alt="Overview of mechanism tab" />
+<img src="/img/tab-reference/mechanism-1.png" alt="Visão geral da aba de mecanismo" />
 
 <details>
 <summary>Controles da linha do tempo</summary>
@@ -20,7 +20,7 @@ Seções amarelas indicam quando o robô está em autônomo, seções azuis indi
 
 Para dar zoom, posicione o cursor sobre a linha do tempo e role para cima ou para baixo. Um intervalo também pode ser selecionado clicando e arrastando enquanto mantém `Shift` pressionado. Mova para a esquerda e para a direita rolando horizontalmente (em dispositivos suportados) ou clicando e arrastando na linha do tempo. Quando conectado ao vivo, rolar para a esquerda desbloqueia do tempo atual, e rolar totalmente para a direita bloqueia no tempo atual novamente. Pressione `Ctrl+\` para dar zoom no período em que o robô está habilitado.
 
-<img src="/img/tab-reference/timeline.png" alt="Timeline" />
+<img src="/img/tab-reference/timeline.png" alt="Linha do tempo" />
 
 </details>
 

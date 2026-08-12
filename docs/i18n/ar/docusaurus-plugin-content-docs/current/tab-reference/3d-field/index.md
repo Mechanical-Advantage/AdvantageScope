@@ -5,7 +5,7 @@ import TabItem from '@theme/TabItem';
 
 يعرض الملعب ثلاثي الأبعاد عرضاً مرئياً ثلاثي الأبعاد للروبوت والملعب. يمكن استخدامه مع الوضعيات ثنائية الأبعاد العادية، ولكنه مفيد بشكل خاص عند العمل مع الحسابات ثلاثية الأبعاد (مثل تحديد الموقع باستخدام AprilTags). تتوفر عروض كاميرا متعددة، بما في ذلك المتعلقة بالملعب، والمتعلقة بالروبوت، والفيلمية/الثابتة. يتيح [AdvantageScope XR](advantagescope-xr) عرض علامة التبويب هذه باستخدام الواقع الممتد. يظهر المخطط الزمني عندما يكون الروبوت ممكّناً ويمكن استخدامه للتنقل عبر بيانات السجل.
 
-<img src="/img/tab-reference/3d-field/3d-field-1.png" alt="Example of 3D field tab" />
+<img src="/img/tab-reference/3d-field/3d-field-1.png" alt="مثال على علامة تبويب الملعب 3D" />
 
 <details>
 <summary>عناصر تحكم المخطط الزمني</summary>
@@ -16,7 +16,7 @@ import TabItem from '@theme/TabItem';
 
 التكبير/التصغير، ضع المؤشر فوق المخطط الزمني وقم بالتمرير للأعلى أو الأسفل. يمكن أيضاً تحديد نطاق بالنقر والسحب أثناء الضغط على مفتاح `Shift`. تحرك يساراً ويميناً بالتمرير أفقيًا (على الأجهزة المدعومة)، أو بالنقر والسحب على المخطط الزمني. عند الاتصال المباشر، يؤدي التمرير إلى اليسار إلى إلغاء القفل من الوقت الحالي، والتمرير حتى أقصى اليمين يقفل على الوقت الحالي مرة أخرى. اضغط على `Ctrl+\` للتكبير إلى الفترة التي يكون فيها الروبوت ممكّناً.
 
-<img src="/img/tab-reference/timeline.png" alt="Timeline" />
+<img src="/img/tab-reference/timeline.png" alt="الجدول الزمني" />
 
 </details>
 
@@ -105,7 +105,7 @@ packet.put("Pose heading (deg)", 180.0); // Degrees
 
 لعرض بيانات الآليات المسجلة باستخدام [`Mechanism2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html)، أضف حقل الآلية إلى روبوت حالي أو كائن شبح. يتم إسقاط الآلية على المستوى XZ أو YZ للروبوت باستخدام مربعات بسيطة، كما هو موضح أدناه. انقر فوق أيقونة الترس أو انقر بزر الماوس الأيمن على اسم الحقل للتبديل بين المستويين XZ و YZ. يتمركز أصل الروبوت على الحافة السفلية للآلية.
 
-<img src="/img/tab-reference/3d-field/3d-field-2.png" alt="2D mechanism" />
+<img src="/img/tab-reference/3d-field/3d-field-2.png" alt="آلية 2D" />
 
 ### المكونات ثلاثية الأبعاد {#3d-components}
 
@@ -117,7 +117,7 @@ packet.put("Pose heading (deg)", 180.0); // Degrees
 
 يمكن نقل كل مكون بشكل مستقل (مثل عربة المصعد، أو الذراع، أو المنفذ النهائي). يجب على مستخدمي AdvantageKit التفكير في استخدام طريقة [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) لتحويل Mechanism2d إلى مصفوفة من كائنات Pose3d. لمزيد من المعلومات حول تكوين الروبوتات باستخدام المكونات، راجع [الأصول المخصصة](/more-features/custom-assets).
 
-<img src="/img/tab-reference/3d-field/3d-field-3.png" alt="3D mechanism" />
+<img src="/img/tab-reference/3d-field/3d-field-3.png" alt="آلية 3D" />
 
 ## كائنات قطع اللعبة {#game-piece-objects}
 
@@ -137,7 +137,7 @@ packet.put("Pose heading (deg)", 180.0); // Degrees
 
 </details>
 
-<img src="/img/tab-reference/3d-field/3d-field-4.png" alt="2024 KitBot note visualization" />
+<img src="/img/tab-reference/3d-field/3d-field-4.png" alt="مرئيات ملاحظة 2024 KitBot" />
 
 ## خيارات الكاميرا {#camera-options}
 
@@ -171,7 +171,7 @@ packet.put("Pose heading (deg)", 180.0); // Degrees
 
 تم تكوين كل نموذج روبوت بمجموعة من الكاميرات الثابتة، مثل كاميرات الرؤية وكاميرات السائق. تمتلك هذه الكاميرات مواضع ونسب أبعاد ومجالات رؤية ثابتة. غالباً ما تكون هذه العروض مفيدة للتحقق من بيانات الرؤية أو لمحاكاة عرض كاميرا السائق. في المثال أدناه، تم إظهار كاميرا السائق.
 
-<img src="/img/tab-reference/3d-field/3d-field-5.png" alt="Fixed camera" />
+<img src="/img/tab-reference/3d-field/3d-field-5.png" alt="كاميرا ثابتة" />
 
 إذا تم توفير وضعية «تجاوز الكاميرا»، فإنها تستبدل الوضعيات الافتراضية لجميع الكاميرات الثابتة مع الاحتفاظ بمجالات رؤيتها ونسب أبعادها المكونة. يتيح ذلك لكود الروبوت توفير موقع كاميرا متحركة، مثل كاميرا مثبتة على برج (turret) أو غطاء مطلق (shooter hood).
 
@@ -195,8 +195,8 @@ packet.put("Pose heading (deg)", 180.0); // Degrees
 - **قياسي (الافتراضي):** العرض بإضاءة طفيفة ونماذج ثلاثية الأبعاد مبسطة. يعمل بشكل جيد على معظم الأجهزة.
 - **طاقة منخفضة:** خفض معدل الإطارات، والدقة، وتفاصيل النموذج لتقليل استهلاك البطارية وتوفير أداء أكثر اتساقاً على الأجهزة منخفضة المواصفات.
 
-<img src="/img/tab-reference/3d-field/3d-field-6.png" alt="Comparion of rendering modes" />
+<img src="/img/tab-reference/3d-field/3d-field-6.png" alt="مقارنة أساليب العرض" />
 
 لتكوين وضع العرض، افتح نافذة التفضيلات بالنقر فوق `التطبيق` > `إظهار التفضيلات...` (Windows/Linux) أو `AdvantageScope` > `الإعدادات...` (macOS). يمكن تبديل إعداد "الوضع ثلاثي الأبعاد (على البطارية)" من الافتراضي لتجاوز وضع العرض المستخدم على كمبيوتر محمول عندما لا يكون قيد الشحن. على سبيل المثال، يمكن استخدام هذا للحفاظ على البطارية أثناء التواجد في المسابقات.
 
-<img src="/img/prefs.png" alt="Diagram of preferences" height="350" />
+<img src="/img/prefs.png" alt="مخطط تفضيلي" />

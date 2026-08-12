@@ -32,11 +32,11 @@ AdvantageScope XR נתמכת ב-iOS וב-iPadOS בלבד. אין תוכניות 
 
 1. במערכת המארחת, **יש ללחוץ על לחצן "XR"** בכל כרטיסיית מגרש 3D. רק הפעלות מארח XR אחת יכולה להיות פעילה בו-זמנית, כך שלחיצה על לחצן זה תפסיק הפעלות פעילות אחרות.
 
-<img src="/img/tab-reference/3d-field/xr-1.png" alt="XR button" height="450" />
+<img src="/img/tab-reference/3d-field/xr-1.png" alt="לחצן XR" />
 
 2. **חלון בקרות ה-XR** ייפתח, עם קוד QR ו[אפשרויות](#options) להתאמה אישית של חוויית ה-AR. לביטול הפעלת ה-XR ונתק של לקוחות כלשהם, יש לסגור את חלון הבקרות.
 
-<img src="/img/tab-reference/3d-field/xr-2.png" alt="XR window" height="350" />
+<img src="/img/tab-reference/3d-field/xr-2.png" alt="חלון XR" />
 
 3. יש לסרוק את קוד ה-QR באמצעות **אפליקציית המצלמה המובנית** במכשיר הלקוח. אין צורך בהתקנת אפליקציה.
 4. יש להקיש על "AdvantageScope XR" ולאחר מכן על "פתיחה" כדי **להתחיל את החוויה** ולהתחבר למארח. אם תתבקשו, אפשרו ל-AdvantageScope XR גישה ל**מצלמה ולרשת המקומית**.
@@ -70,7 +70,7 @@ AdvantageScope XR היא אפליקציה תובענית, ועשויה להית�
 
 AdvantageScope XR אינה דורשת חיבור לאינטרנט. כדי להבטיח שהאפליקציה זמינה באופן לא מקוון, הורד את AdvantageScope XR מה-App Store באמצעות הקישור למטה. להתחברות לאפליקציית שולחן העבודה של AdvantageScope, יש לסרוק את קוד ה-QR באמצעות אפליקציית המצלמה ב-iOS או להקיש על לחצן "סריקה" באפליקציית AdvantageScope XR.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />
 
 :::note
 גם בעת הפעלה ללא חיבור לאינטרנט, המכשירים המארחים והלקוח **חייבים להיות מחוברים לאותה רשת** (כגון רובוט, רשת Wi-Fi מותאמת אישית, או באמצעות חיבור אינטרנט ב-USB).

@@ -84,5 +84,5 @@ AdvantageScope comprend de nombreux raccourcis clavier qui permettent une naviga
 
 Sur les modèles MacBook pris en charge, la Touch Bar peut être utilisée pour défiler dans le journal et ajouter de nouveaux onglets.
 
-<img src="/img/overview/navigation/keyboard-1.png" alt="Interface de défilement de la Touch Bar" />
-<img src="/img/overview/navigation/keyboard-2.png" alt="Interface de nouvel onglet de la Touch Bar" />
+<img src="/img/overview/navigation/keyboard-1.png" alt="Interface de défilement Touch Bar" />
+<img src="/img/overview/navigation/keyboard-2.png" alt="Interface de nouvel onglet Touch Bar" />

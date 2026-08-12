@@ -32,11 +32,11 @@ AdvantageScope XR yalnızca iOS ve iPadOS üzerinde desteklenmektedir. Alternati
 
 1. Ana bilgisayarda, herhangi bir 3B saha sekmesindeki **"XR" düğmesine tıklayın**. Aynı anda yalnızca bir XR ana bilgisayar oturumu aktif olabilir, bu nedenle bu düğmeye tıklamak diğer tüm aktif oturumları kesecektir.
 
-<img src="/img/tab-reference/3d-field/xr-1.png" alt="XR button" height="450" />
+<img src="/img/tab-reference/3d-field/xr-1.png" alt="XR düğmesi" />
 
 2. QR kodu ve AR deneyimini özelleştirmek için [seçenekler](#options) içeren **XR kontrolleri penceresi** açılacaktır. XR oturumunu iptal etmek ve tüm istemcilerin bağlantısını kesmek için kontroller penceresini kapatın.
 
-<img src="/img/tab-reference/3d-field/xr-2.png" alt="XR window" height="350" />
+<img src="/img/tab-reference/3d-field/xr-2.png" alt="XR penceresi" />
 
 3. İstemci cihazındaki **yerleşik kamera uygulamasını** kullanarak QR kodunu tarayın. Herhangi bir uygulama kurulumu gerekmez.
 4. Deneyimi başlatmak ve ana bilgisayara bağlanmak için "AdvantageScope XR"a ve ardından "Aç"a dokunun. İstendiğinde AdvantageScope XR'nin **kamera ve yerel ağa** erişmesine izin verin.
@@ -70,7 +70,7 @@ XR kontrolleri penceresi, modelin artırılmış gerçeklikte nasıl görüntül
 
 AdvantageScope XR bir internet bağlantısı gerektirmez. Uygulamanın çevrimdışı olarak kullanılabilir olduğundan emin olmak için aşağıdaki bağlantıyı kullanarak App Store'dan AdvantageScope XR'ı indirin. AdvantageScope masaüstü uygulamasına bağlanmak için iOS kamera uygulamasını kullanarak QR kodunu tarayın veya AdvantageScope XR uygulamasındaki "Tara" düğmesine dokunun.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />
 
 :::note
 İnternet bağlantısı olmadan çalışırken bile, ana bilgisayar ve istemci cihazlar **aynı ağa bağlı olmalıdır** (bir robot, özel Wi-Fi ağı veya USB internet paylaşımı gibi).

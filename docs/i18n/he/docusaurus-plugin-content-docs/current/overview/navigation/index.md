@@ -2,7 +2,7 @@
 
 צילום המסך למטה מציג את הרכיבים החשובים בחלון הראשי של AdvantageScope. המראה המדויק משתנה בין מערכות הפעלה שונות.
 
-<img src="/img/overview/navigation/navigation-1.png" alt="Navigation diagram" />
+<img src="/img/overview/navigation/navigation-1.png" alt="תרשים ניווט" />
 
 :::tip
 להצגת קובצי יומן מרובים בו-זמנית, יש ללחוץ על `קובץ` > `חלון חדש`.

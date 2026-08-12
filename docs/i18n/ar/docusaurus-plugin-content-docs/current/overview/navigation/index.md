@@ -2,7 +2,7 @@
 
 تظهر لقطة الشاشة أدناه العناصر المهمة في نافذة AdvantageScope الرئيسية. يختلف المظهر الدقيق بين أنظمة التشغيل.
 
-<img src="/img/overview/navigation/navigation-1.png" alt="Navigation diagram" />
+<img src="/img/overview/navigation/navigation-1.png" alt="مخطط التنقل" />
 
 :::tip
 لعرض ملفات سجل متعددة في وقت واحد، انقر فوق `ملف` > `نافذة جديدة`.

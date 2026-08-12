@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 La pestaña swerve muestra el estado de cuatro módulos swerve, incluidos los vectores de velocidad, las posiciones de inactividad, la rotación del robot y las velocidades del chasis.
 
-<img src="/img/tab-reference/swerve-1.png" alt="Resumen de la pestaña swerve" />
+<img src="/img/tab-reference/swerve-1.png" alt="Descripción general de la pestaña de swerve" />
 
 <details>
 <summary>Controles de la línea de tiempo</summary>

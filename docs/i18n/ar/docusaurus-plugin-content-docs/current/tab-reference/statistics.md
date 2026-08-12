@@ -6,7 +6,7 @@ sidebar_position: 6
 
 تتيح علامة تبويب الإحصائيات تحليلاً إحصائياً عميقاً للحقول الرقمية، وتحليل الاتجاهات العامة بدلاً من التغيرات عبر الوقت. يتم تحليل الحقول المحددة باستخدام مدرج تكراري ومجموعة متنوعة من القياسات الإحصائية القياسية.
 
-<img src="/img/tab-reference/statistics-1.png" alt="Overview of statistics tab" />
+<img src="/img/tab-reference/statistics-1.png" alt="نظرة عامة على علامة تبويب الإحصائيات" />
 
 ## جزء التحكم {#control-pane}
 

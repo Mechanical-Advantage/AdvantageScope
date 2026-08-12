@@ -84,5 +84,5 @@
 
 في طرازات MacBook المدعومة، يمكن استخدام Touch Bar للتمرير عبر السجل وإضافة علامات تبويب جديدة.
 
-<img src="/img/overview/navigation/keyboard-1.png" alt="Touch Bar scrubbing interface" />
-<img src="/img/overview/navigation/keyboard-2.png" alt="Touch Bar new tab interface" />
+<img src="/img/overview/navigation/keyboard-1.png" alt="واجهة التمرير عبر Touch Bar" />
+<img src="/img/overview/navigation/keyboard-2.png" alt="واجهة علامة التبويب الجديدة في Touch Bar" />

@@ -37,7 +37,7 @@ AdvantageScope 中的所有視覺化除了支援日誌檔案外，還被設計�
 
 點擊 `應用程式` > `顯示偏好設定...` (Windows/Linux) 或 `AdvantageScope` > `設定...` (macOS) 開啟偏好設定視窗。
 
-<img src="/img/prefs.png" alt="偏好設定圖解" height="350" />
+<img src="/img/prefs.png" alt="偏好設定圖解" />
 
 ### 機器人位址 {#robot-address}
 

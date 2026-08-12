@@ -6,7 +6,7 @@ A guia de gráfico de linha é consciente de unidades, o que significa que valor
 - Clique nos três pontos perto do título do eixo para **alternar rapidamente para unidades alternativas**. Esta lista inclui as unidades mais comuns que são compatíveis com os campos selecionados.
 - Habilite a **integração ou diferenciação** ([docs](/tab-reference/line-graph/#integration-and-differentiation)) para ver as unidades de integral ou derivada precisas. A unidade base pode ser ajustada usando o menu para suportar filtragem em unidades não nativas.
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="Unit-aware graphing" />
+<img src="/img/tab-reference/line-graph/units-1.png" alt="Gráficos cientes de unidade" />
 
 ## Formatos suportados {#supported-formats}
 
@@ -54,4 +54,4 @@ Para configurar a conversão manual, clique nos três pontos perto do título do
 Para habilitar ou desabilitar rapidamente a conversão de unidades, clique nos três pontos perto do título do eixo e escolha `Predefinições recentes` ou `Redefinir unidades`.
 :::
 
-<img src="/img/tab-reference/line-graph/units-2.png" alt="Editing unit conversion" height="250" />
+<img src="/img/tab-reference/line-graph/units-2.png" alt="Editando conversão de unidades" />

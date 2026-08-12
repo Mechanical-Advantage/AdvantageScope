@@ -84,5 +84,5 @@ AdvantageScope incluye numerosos atajos de teclado que permiten una navegación 
 
 En los modelos MacBook compatibles, el Touch Bar se puede utilizar para desplazarse por el registro y agregar nuevas pestañas.
 
-<img src="/img/overview/navigation/keyboard-1.png" alt="Interfaz de deslizamiento de la Touch Bar" />
-<img src="/img/overview/navigation/keyboard-2.png" alt="Interfaz de nueva pestaña de la Touch Bar" />
+<img src="/img/overview/navigation/keyboard-1.png" alt="Interfaz de desplazamiento de Touch Bar" />
+<img src="/img/overview/navigation/keyboard-2.png" alt="Interfaz de nueva pestaña de Touch Bar" />

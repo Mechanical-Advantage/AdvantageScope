@@ -8,7 +8,7 @@ AdvantageScope 包含一個彈性的系統，用於將日誌資料匯出為 CSV�
 
 要檢視匯出選項，請點擊 `檔案` > `匯出資料...`。
 
-<img src="/img/overview/log-files/export-1.png" alt="匯出選項" height="250" />
+<img src="/img/overview/log-files/export-1.png" alt="匯出選項" />
 
 :::tip
 除了此處描述的完整日誌匯出外，💬 [主控台](/tab-reference/console)分頁還允許將主控台資料匯出為文字檔案。

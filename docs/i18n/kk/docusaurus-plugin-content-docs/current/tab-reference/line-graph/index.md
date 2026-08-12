@@ -2,7 +2,7 @@
 
 Сызықтық график — AdvantageScope қолданбасындағы әдепкі көрініс. Ол үздіксіз (сандық) және дискретті өрістерді де қолдайды.
 
-<img src="/img/tab-reference/line-graph/line-graph-1.png" alt="Line graph demo" />
+<img src="/img/tab-reference/line-graph/line-graph-1.png" alt="Сызықтық график демонстрациясы" />
 
 ## Қарау тақтасы {#viewer-pane}
 
@@ -20,19 +20,19 @@
 
 Әрбір өрістің түсі мен сызық стилін түсті белгішені басу немесе өріс атауын оң жақпен басып баптауға болады. WPILib кітапханасының [тұрақты ескертулер](https://docs.wpilib.org/en/latest/docs/software/telemetry/persistent-alerts.html) API деректерін ескертулер тобын дискретті өріс ретінде қосу арқылы визуализациялауға болады. Мысал визуализациясы төменде көрсетілген.
 
-<img src="/img/tab-reference/line-graph/line-graph-2.png" alt="Alerts visualization" />
+<img src="/img/tab-reference/line-graph/line-graph-2.png" alt="Ескертулер визуализациясы" />
 
 :::tip
 Робот режимін (автономды, телеоперация немесе утилита) үстіне орналастыру үшін «Дискретті өрістер» жанындағы үш нүктені басып, «Робот режимін көрсету» тармағын басыңыз.
 
-<img src="/img/tab-reference/line-graph/line-graph-3.png" alt="Robot mode overlay" />
+<img src="/img/tab-reference/line-graph/line-graph-3.png" alt="Робот режимінің үстіңгі қабаты" />
 :::
 
 ### Осьтерді реттеу {#adjusting-axes}
 
 Әдепкі бойынша, әрбір ось өзінің ауқымын көрінетін деректерге негізделіп реттейді. Автоматты ауқымдауды өшіру және ауқымды ағымдағы мин және макс мәндеріне құлыптау үшін ось тақырыбының жанындағы үш нүктені басып, содан кейін `Осьті құлыптау` тармағын таңдаңыз. Ауқымды қолмен реттеу үшін `Диапазонды өңдеу` тармағын таңдап, қажетті мәндерді енгізіңіз.
 
-<img src="/img/tab-reference/line-graph/line-graph-4.png" alt="Editing axis range" height="250" />
+<img src="/img/tab-reference/line-graph/line-graph-4.png" alt="Ось ауқымын өңдеу" />
 
 ### Интегралдау және дифференциалдау {#integration-and-differentiation}
 

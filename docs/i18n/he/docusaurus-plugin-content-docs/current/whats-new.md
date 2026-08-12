@@ -54,7 +54,7 @@ AdvantageScope מתוכננת לספק את החוויה הטובה ביותר �
 
 _מידע נוסף על תמיכה ביחידות ניתן למצוא ב[תיעוד](/tab-reference/line-graph/units)._
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="Unit-aware graphing" />
+<img src="/img/tab-reference/line-graph/units-1.png" alt="גרפים מודעי-יחידות" />
 
 ## 🏁 הורדת יומנים מהירה יותר {#faster-log-downloads}
 
@@ -72,7 +72,7 @@ _מידע נוסף על תמיכה ביחידות ניתן למצוא ב[תיע�
 
 חלון ההורדה תומך כעת בשמירת יומנים המאוחסנים בתתי-תיקיות. כל תת-תיקייה של יומנים ניתנת להורדה כקבוצה, מה שמספק גישה יעילה להורדת יומנים שנוצרו על ידי גרסת 2026 של [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) מבית CTRE (המשתמשת בתתי-תיקיות כפתרון לעקיפת המגבלה של שמירת נתונים בקובץ יומן יחיד).
 
-<img src="/img/whats-new/subfolders.png" alt="Downloading log subfolders" height="450" />
+<img src="/img/whats-new/subfolders.png" alt="הורדת תת-תיקיות יומן" />
 
 ## 🌈 אפשרויות ויזואליזציה חדשות {#new-visualization-options}
 
@@ -82,7 +82,7 @@ _מידע נוסף על תמיכה ביחידות ניתן למצוא ב[תיע�
 - בעת [ויזואליזציית מנגנוני 2D במגרש ה-3D](/tab-reference/3d-field/#2d-mechanisms), ניתן כעת למקם מנגנונים במישור YZ בנוסף למישור XZ. דבר זה מאפשר ויזואליזציה קלה יותר של מנגנונים מורכבים עם תנועה בצירים מרובים.
 - מגרש ה-3D תומך כעת בהחלקת קצוות (anti-aliasing) אופציונלית לשיפור איכות הקצוות המרונדרים.
 
-<img src="/img/whats-new/field-viz.jpg" alt="New field visualizations" />
+<img src="/img/whats-new/field-viz.jpg" alt="הדמיות מגרש חדשות" />
 
 ## 🪵 תמיכה ביומן CAN של REV Robotics {#rev-robotics-can-log-support}
 
@@ -90,19 +90,19 @@ _מידע נוסף על תמיכה ביחידות ניתן למצוא ב[תיע�
 
 הן URCL והן `StatusLogger` הרשמי יישארו זמינים במהלך עונת 2026 כדי להבטיח מעבר חלק ולספק תאימות תכונות לעונות קודמות. יהיו לנו פרטים נוספים לשתף על אפשרויות רישום יומן ב-2027 ואילך במועד מאוחר יותר.
 
-<img src="/img/whats-new/revlog.png" alt="REVLOG visualization" />
+<img src="/img/whats-new/revlog.png" alt="הדמיית REVLOG" />
 
 ## 💿 ייבוא קובצי CSV {#csv-file-imports}
 
 לוויזואליזציה גמישה יותר של נתונים שנוצרו מחוץ למסגרות רישום היומנים של רובוטים, AdvantageScope כוללת כעת תמיכה בסיסית לייבוא קובצי CSV. ניתן לעיין ב[תיעוד](/overview/log-files/#csv-formatting) לפרטים נוספים על פורמטים נתמכים ומגבלות אחרות.
 
-<img src="/img/overview/log-files/export-2.png" alt="CSV data" />
+<img src="/img/overview/log-files/export-2.png" alt="נתוני CSV" />
 
 ## 🤩 שיפורים אסתטיים {#aesthetic-improvements}
 
 ממשק המשתמש של AdvantageScope ב-Windows 11 עודכן לתמיכה בסרגל צד חצי-שקוף, שהיה רכיב בלעדי לגרסאות macOS בגרסאות קודמות. סמל אפליקציה מעודכן זמין גם עבור macOS Tahoe בהתבסס על חומר Liquid Glass של Apple.
 
-<img src="/img/whats-new/windows-ui.png" alt="Windows UI" />
+<img src="/img/whats-new/windows-ui.png" alt="ממשק משתמש של Windows" />
 
 ## 📋 תפריטים יעילים {#streamlined-menus}
 

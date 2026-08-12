@@ -54,7 +54,7 @@ Aşağıdaki ekran görüntüsü tüm bu özellikleri çalışırken göstermekt
 
 _Birim desteği hakkında daha fazla bilgi [dokümantasyonda](/tab-reference/line-graph/units) bulunabilir._
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="Unit-aware graphing" />
+<img src="/img/tab-reference/line-graph/units-1.png" alt="Birim duyarlı grafikleme" />
 
 ## 🏁 Daha hızlı log indirmeleri {#faster-log-downloads}
 
@@ -72,7 +72,7 @@ Aşağıdaki tablo, Ethernet üzerinden bağlıyken (maksimum 100 Mb/s bant geni
 
 İndirme penceresi artık alt klasörlerde saklanan logların kaydedilmesini desteklemektedir. Log içeren her bir alt klasör bir grup olarak indirilebilir; bu da CTRE'nin [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) 2026 sürümü tarafından oluşturulan logları indirmek için kolaylaştırılmış bir yaklaşım sunar (bu sürüm, tek bir log dosyasında veri saklayamama sorununa çözüm olarak alt klasörleri kullanır).
 
-<img src="/img/whats-new/subfolders.png" alt="Downloading log subfolders" height="450" />
+<img src="/img/whats-new/subfolders.png" alt="Log alt klasörlerini indirme" />
 
 ## 🌈 Yeni görselleştirme seçenekleri {#new-visualization-options}
 
@@ -82,7 +82,7 @@ Aşağıdaki tablo, Ethernet üzerinden bağlıyken (maksimum 100 Mb/s bant geni
 - [3B sahada 2B mekanizmaları görselleştirirken](/tab-reference/3d-field#2d-mechanisms), mekanizmalar artık XZ düzleminin yanı sıra YZ düzlemine de yerleştirilebilir. Bu, birden fazla eksende harekete sahip karmaşık mekanizmaların daha kolay görselleştirilmesini sağlar.
 - 3B saha artık işlenen kenarların kalitesini artırmak için isteğe bağlı kenar yumuşatmayı desteklemektedir.
 
-<img src="/img/whats-new/field-viz.jpg" alt="New field visualizations" />
+<img src="/img/whats-new/field-viz.jpg" alt="Yeni saha görselleştirmeleri" />
 
 ## 🪵 REV Robotics CAN log desteği {#rev-robotics-can-log-support}
 
@@ -90,19 +90,19 @@ REV Robotics'in [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revro
 
 Hem URCL hem de resmi `StatusLogger`, sorunsuz bir geçiş sağlamak ve önceki sezonlarla özellik eşitliğini korumak için 2026 sezonu boyunca mevcut kalacaktır. 2027 ve sonrasındaki loglama seçenekleri hakkında paylaşacak daha fazla ayrıntıya daha sonra sahip olacağız.
 
-<img src="/img/whats-new/revlog.png" alt="REVLOG visualization" />
+<img src="/img/whats-new/revlog.png" alt="REVLOG görselleştirmesi" />
 
 ## 💿 CSV dosyası içe aktarmaları {#csv-file-imports}
 
 Robot loglama çerçevelerinin dışında üretilen verilerin daha esnek görselleştirilmesi için AdvantageScope artık CSV dosyalarını içe aktarmak için temel destek içeriyor. Desteklenen formatlar ve diğer sınırlamalar hakkında daha fazla ayrıntı için [dokümantasyonu](/overview/log-files/#csv-formatting) kontrol edin.
 
-<img src="/img/overview/log-files/export-2.png" alt="CSV data" />
+<img src="/img/overview/log-files/export-2.png" alt="CSV verileri" />
 
 ## 🤩 Estetik iyileştirmeler {#aesthetic-improvements}
 
 Windows 11'deki AdvantageScope UI, daha önce yalnızca macOS sürümlerine özel olan yarı saydam bir kenar çubuğunu destekleyecek şekilde güncellendi. macOS Tahoe için Apple'ın Sıvı Cam (Liquid Glass) malzemesini temel alan güncellenmiş bir uygulama simgesi de mevcuttur.
 
-<img src="/img/whats-new/windows-ui.png" alt="Windows UI" />
+<img src="/img/whats-new/windows-ui.png" alt="Windows kullanıcı arayüzü" />
 
 ## 📋 Yalınlaştırılmış menüler {#streamlined-menus}
 

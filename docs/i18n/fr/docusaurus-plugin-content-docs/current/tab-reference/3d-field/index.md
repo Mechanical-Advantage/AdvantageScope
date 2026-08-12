@@ -137,7 +137,7 @@ Le projet d'exemple KitBot 2024 d'AdvantageKit comprend un exemple simple d'une 
 
 </details>
 
-<img src="/img/tab-reference/3d-field/3d-field-4.png" alt="Visualisation de note KitBot 2024" />
+<img src="/img/tab-reference/3d-field/3d-field-4.png" alt="Visualisation de la note du KitBot 2024" />
 
 ## Options de caméra {#camera-options}
 
@@ -199,4 +199,4 @@ Le terrain 3D prend en charge trois modes de rendu :
 
 Pour configurer le mode de rendu, ouvrez la fenêtre des préférences en appuyant sur `Application` > `Afficher les préférences...` (Windows/Linux) ou `AdvantageScope` > `Paramètres...` (macOS). Le paramètre « Mode 3D (batterie) » peut être remplacé de la valeur par défaut pour ignorer le mode de rendu utilisé sur un ordinateur portable lorsqu'il n'est pas en charge. Par exemple, cela peut être utilisé pour préserver la batterie lors d'une compétition.
 
-<img src="/img/prefs.png" alt="Schéma des préférences" height="350" />
+<img src="/img/prefs.png" alt="Schéma des préférences" />

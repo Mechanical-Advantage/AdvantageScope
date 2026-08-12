@@ -54,7 +54,7 @@ sidebar_position: 2
 
 _يمكن العثور على مزيد من المعلومات حول دعم الوحدات في [الوثائق](/tab-reference/line-graph/units)._
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="Unit-aware graphing" />
+<img src="/img/tab-reference/line-graph/units-1.png" alt="رسم بياني مدرك للوحدات" />
 
 ## 🏁 تنزيل سجلات أسرع {#faster-log-downloads}
 
@@ -72,7 +72,7 @@ _يمكن العثور على مزيد من المعلومات حول دعم ا�
 
 تدعم نافذة التنزيل الآن حفظ السجلات المخزنة في مجلدات فرعية. يمكن تنزيل كل مجلد فرعي من السجلات كمجموعة، مما يوفر نهجاً مبسطاً لتنزيل السجلات المُنشأة بواسطة إصدار 2026 من [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) لـ CTRE (الذي يستخدم المجلدات الفرعية كحل بديل لعدم القدرة على تخزين البيانات في ملف سجل واحد).
 
-<img src="/img/whats-new/subfolders.png" alt="Downloading log subfolders" height="450" />
+<img src="/img/whats-new/subfolders.png" alt="تنزيل المجلدات الفرعية للسجل" />
 
 ## 🌈 خيارات عرض مرئي جديدة {#new-visualization-options}
 
@@ -82,7 +82,7 @@ _يمكن العثور على مزيد من المعلومات حول دعم ا�
 - عند [عرض الآليات ثنائية الأبعاد على الملعب ثلاثي الأبعاد](/tab-reference/3d-field/#2d-mechanisms)، يمكن الآن وضع الآليات على المستوى YZ بالإضافة إلى المستوى XZ. يتيح ذلك عرضاً أسهل للآليات المعقدة ذات الحركة في محاور متعددة.
 - يدعم الملعب ثلاثي الأبعاد الآن تنعيماً اختيارياً ثلاثي الأبعاد لتحسين جودة الحواف المعروضة.
 
-<img src="/img/whats-new/field-viz.jpg" alt="New field visualizations" />
+<img src="/img/whats-new/field-viz.jpg" alt="مرئيات ملعب جديدة" />
 
 ## 🪵 دعم سجلات CAN من REV Robotics {#rev-robotics-can-log-support}
 
@@ -90,19 +90,19 @@ _يمكن العثور على مزيد من المعلومات حول دعم ا�
 
 سيتظل كل من URCL و `StatusLogger` الرسمي متاحين خلال موسم 2026 لضمان انتقال سلس وتوفير تكافؤ الميزات مع المواسم السابقة. سيكون لدينا المزيد من التفاصيل لمشاركتها حول خيارات التسجيل في عام 2027 وما بعده في وقت لاحق.
 
-<img src="/img/whats-new/revlog.png" alt="REVLOG visualization" />
+<img src="/img/whats-new/revlog.png" alt="مرئيات REVLOG" />
 
 ## 💿 استيراد ملفات CSV {#csv-file-imports}
 
 للحصول على عرض مرئي أكثر مرونة للبيانات المُنتجة خارج أطر عمل تسجيل بيانات الروبوت، يتضمن AdvantageScope الآن دعماً أساسياً لاستيراد ملفات CSV. تحقق من [الوثائق](/overview/log-files/#csv-formatting) للحصول على مزيد من التفاصيل حول التنسيقات المدعومة والقيود الأخرى.
 
-<img src="/img/overview/log-files/export-2.png" alt="CSV data" />
+<img src="/img/overview/log-files/export-2.png" alt="بيانات CSV" />
 
 ## 🤩 تحسينات جمالية {#aesthetic-improvements}
 
 تم تحديث واجهة المستخدم لـ AdvantageScope على Windows 11 لدعم شريط جانبي شبه شفاف، والذي كان حصرياً في السابق لإصدارات macOS. تتوفر أيضاً أيقونة تطبيق محدثة لـ macOS Tahoe استناداً إلى خامة Liquid Glass من Apple.
 
-<img src="/img/whats-new/windows-ui.png" alt="Windows UI" />
+<img src="/img/whats-new/windows-ui.png" alt="واجهة المستخدم لـ Windows" />
 
 ## 📋 قوائم مبسطة {#streamlined-menus}
 

@@ -2,7 +2,7 @@
 
 На скриншоте ниже показаны важные элементы главного окна AdvantageScope. Точный внешний вид различается в зависимости от операционной системы.
 
-<img src="/img/overview/navigation/navigation-1.png" alt="Navigation diagram" />
+<img src="/img/overview/navigation/navigation-1.png" alt="Диаграмма навигации" />
 
 :::tip
 Чтобы просматривать несколько файлов логов одновременно, нажмите **Файл > Новое окно**.

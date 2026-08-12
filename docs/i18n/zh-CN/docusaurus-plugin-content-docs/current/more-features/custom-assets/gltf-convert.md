@@ -8,11 +8,11 @@ AdvantageScope 的 [👀 3D 场地](/tab-reference/3d-field) 接收用于场地�
 
 1. 打开 Onshape 文件后，右键单击主装配体并选择 "Export..."：
 
-<img src="/img/more-features/custom-assets/gltf-convert-1.png" alt="选择 &quot;Export...&quot; 选项" />
+<img src="/img/more-features/custom-assets/gltf-convert-1.png" alt="选择“Export...”选项" />
 
 2. 在选项弹出窗口中，确保导出格式为 "STEP"，然后点击 "Export"：
 
-<img src="/img/more-features/custom-assets/gltf-convert-2.png" alt="导出选项弹出框" />
+<img src="/img/more-features/custom-assets/gltf-convert-2.png" alt="导出选项弹出窗口" />
 
 3. 等待文件转换并下载。这可能需要几分钟时间。
 
@@ -36,7 +36,7 @@ AdvantageScope 的 [👀 3D 场地](/tab-reference/3d-field) 接收用于场地�
 
 6. 点击齿轮图标，然后启用 "Merge faces within the same part"（合并同一零件内的面）：
 
-<img src="/img/more-features/custom-assets/gltf-convert-6.png" alt="启用 &quot;Merge faces within the same part&quot;" />
+<img src="/img/more-features/custom-assets/gltf-convert-6.png" alt="启用“Merge faces within the same part”" />
 
 7. 点击“保存”图标并等待导出完成：
 

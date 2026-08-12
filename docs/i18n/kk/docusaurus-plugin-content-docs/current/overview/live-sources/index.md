@@ -37,7 +37,7 @@ AdvantageScope қолданбасы DS қолданбасы сияқты бір 
 
 Таңдаулар терезесін `Қолданба` > `Қалауларды көрсету...` (Windows/Linux) немесе `AdvantageScope` > `Параметрлер...` (macOS) басу арқылы ашыңыз.
 
-<img src="/img/prefs.png" alt="Таңдаулар диаграммасы" height="350" />
+<img src="/img/prefs.png" alt="Параметрлер диаграммасы" />
 
 ### Робот мекенжайы {#robot-address}
 

@@ -6,7 +6,7 @@ sidebar_position: 6
 
 统计选项卡允许对数值字段进行深入的统计分析，分析总体趋势而非随时间推移的变化。所选字段使用直方图和各种标准统计测量指标进行分析。
 
-<img src="/img/tab-reference/statistics-1.png" alt="统计选项卡概述" />
+<img src="/img/tab-reference/statistics-1.png" alt="统计数据标签页概述" />
 
 ## 控制面板 {#control-pane}
 

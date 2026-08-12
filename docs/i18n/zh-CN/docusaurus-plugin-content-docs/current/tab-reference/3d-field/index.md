@@ -5,7 +5,7 @@ import TabItem from '@theme/TabItem';
 
 3D 场地展示机器人和场地的 3D 可视化效果。它可以用于常规 2D 位姿，但在处理 3D 计算（例如利用 AprilTag 定位）时特别有用。提供多种相机视图，包括场地相对、机器人相对和固定视图。[AdvantageScope XR](advantagescope-xr) 允许使用增强现实来可视化此选项卡。时间轴显示机器人何时处于启用状态，并可用于在日志数据中进行导航。
 
-<img src="/img/tab-reference/3d-field/3d-field-1.png" alt="3D 场地选项卡示例" />
+<img src="/img/tab-reference/3d-field/3d-field-1.png" alt="3D 场地标签页示例" />
 
 <details>
 <summary>时间轴控制</summary>
@@ -137,7 +137,7 @@ AdvantageKit KitBot 2024 示例项目包含一个 [命令](https://github.com/Me
 
 </details>
 
-<img src="/img/tab-reference/3d-field/3d-field-4.png" alt="2024 KitBot Note 可视化" />
+<img src="/img/tab-reference/3d-field/3d-field-4.png" alt="2024 KitBot 音符可视化" />
 
 ## 相机选项 {#camera-options}
 
@@ -195,8 +195,8 @@ AdvantageKit KitBot 2024 示例项目包含一个 [命令](https://github.com/Me
 - **标准（默认）：** 使用最小限度的照明和简化的 3D 模型进行渲染。在大多数设备上运行良好。
 - **低功耗：** 降低帧率、分辨率和模型细节，以减少电池消耗，并在低端设备上提供更一致的性能。
 
-<img src="/img/tab-reference/3d-field/3d-field-6.png" alt="渲染模式对比" />
+<img src="/img/tab-reference/3d-field/3d-field-6.png" alt="渲染模式比较" />
 
 要配置渲染模式，请按点击 `应用程序` > `显示首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。“3D 模式（电池供电）”设置可以从默认值切换，以覆盖笔记本电脑未充电时使用的渲染模式。例如，这可用于在比赛现场节省电量。
 
-<img src="/img/prefs.png" alt="首选项图解" height="350" />
+<img src="/img/prefs.png" alt="偏好设置图解" />

@@ -13,7 +13,7 @@ sidebar_position: 5
 
 יש לגרור את השדה הרצוי לתצוגה הראשית כדי להתחיל. כל שורה מייצגת עדכון לשדה. עבור יומנים של WPILib, נוצרת שורה חדשה עבור כל שורה שנשמרה. עבור יומנים של AdvantageKit, נוצרת שורה חדשה עבור כל מחזור לולאה.
 
-<img src="/img/tab-reference/console-1.png" alt="Console view" />
+<img src="/img/tab-reference/console-1.png" alt="תצוגת מסוף" />
 
 :::info
 יש ללחוץ על סמל פלטת הצבעים להפעלה/כיבוי של הדגשת הודעות אזהרה ושגיאה. עבור יומנים של WPILib ו-AdvantageKit, הודעות מודגשות אם הן מכילות את הטקסט "warning" או "error".

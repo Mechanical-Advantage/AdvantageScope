@@ -14,7 +14,7 @@ AdvantageScope oferă trei opțiuni pentru încărcarea unui videoclip:
 2. **YouTube:** Copiați un link YouTube în clipboard, apoi dați clic pe pictograma clipboard roșie. După câteva secunde, videoclipul va începe să se descarce.
 3. **The Blue Alliance:** Dați clic pe pictograma albastră TBA pentru a încărca automat videoclipul meciului pe baza fișierului log. Dacă sunt disponibile mai multe videoclipuri, alegeți videoclipul de descărcat din meniul pop-up. Această caracteristică necesită o cheie API pentru TBA, care ar trebui obținută de la [thebluealliance.com/account](https://www.thebluealliance.com/account) și copiată în pagina de preferințe AdvantageScope la „Cheie API TBA”.
 
-<img src="/img/tab-reference/video-1.png" alt="Source chooser" />
+<img src="/img/tab-reference/video-1.png" alt="Selector de sursă" />
 
 După alegerea unui videoclip, cronologia din dreapta jos începe să devină albastră pentru a indica cadrele care au fost salvate în cache (acest pas este necesar pentru o redare fluidă). Această caracteristică este destinată doar videoclipurilor de lungimea unui meci, din cauza conversiei cadrelor necesare.
 
@@ -36,7 +36,7 @@ Când un videoclip este încărcat inițial și nu a fost încă sincronizat cu 
 - \> = sari înainte cinci secunde
 - < = sari înapoi cinci secunde
 
-<img src="/img/tab-reference/video-2.png" alt="Video controls" />
+<img src="/img/tab-reference/video-2.png" alt="Comenzi video" />
 
 ## Sincronizare automată {#automatic-synchronization}
 
@@ -56,7 +56,7 @@ Cursorul de pe cronologie se fixează (snaps) la începutul și sfârșitul peri
 
 Odată ce videoclipul și logul sunt aliniate, dați clic pe pictograma lacăt de lângă cronologia video (sau apăsați **↑ sau ↓**). Controalele video sunt acum dezactivate. Dați clic pe pictograma lacăt din nou pentru a debloca redarea video.
 
-<img src="/img/tab-reference/video-3.png" alt="Lock button" />
+<img src="/img/tab-reference/video-3.png" alt="Buton de blocare" />
 
 ## Redare {#playback}
 
@@ -71,7 +71,7 @@ Secțiunile galbene indică momentul în care robotul este în modul autonom, se
 
 Pentru a mări, plasați cursorul peste cronologie și derulați în sus sau în jos. Un interval poate fi de asemenea selectat prin clic și tragere în timp ce țineți apăsată tasta `Shift`. Mutați-vă la stânga și la dreapta prin derulare orizontală (pe dispozitivele suportate) sau prin clic și tragere pe cronologie. Când sunteți conectat live, derularea spre stânga deblochează timpul curent, iar derularea până la capăt în dreapta blochează din nou timpul curent. Apăsați `Ctrl+\` pentru a mări la perioada în care robotul este activat.
 
-<img src="/img/tab-reference/timeline.png" alt="Timeline" />
+<img src="/img/tab-reference/timeline.png" alt="Cronologie" />
 
 </details>
 
@@ -79,4 +79,4 @@ Pentru a mări, plasați cursorul peste cronologie și derulați în sus sau în
 Dacă se dorește, FOV-ul camerei poate fi ajustat în vizualizarea terenului 3D pentru a se potrivi cu aspectul videoclipului. Pentru detalii, consultați „Opțiuni cameră” pe pagina 👀 [Teren 3D](/tab-reference/3d-field).
 :::
 
-<img src="/img/tab-reference/video-4.png" alt="Video snapshot with odometry" />
+<img src="/img/tab-reference/video-4.png" alt="Instantaneu video cu odometrie" />

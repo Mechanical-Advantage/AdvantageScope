@@ -27,7 +27,7 @@ AdvantageScope יכולה להתחבר ל-FIRST Driver Station כדי להציג
 
 בעת התחברות למקור חי, AdvantageScope נועלת את כל הכרטיסיות לזמן הנוכחי כברירת מחדל. תצוגות כמו 📉 [גרף קווי](/tab-reference/line-graph) ו-🔢 [טבלה](/tab-reference/table) נגללות באופן אוטומטי, ותצוגות כמו מגרש ובקרים מציגות את הערכים הנוכחיים של כל שדה. לחיצה על לחצן החץ האדום בסרגל הניווט תפעיל/תבטל נעילה זו, ותאפשר צפייה וסנכרון של נתוני עבר.
 
-<img src="/img/overview/live-sources/open-live-1.png" alt="Live lock/unlock button" />
+<img src="/img/overview/live-sources/open-live-1.png" alt="לחצן נעילה/שחרור בשידור חי" />
 
 :::tip
 גלילה שמאלה בגרף הקווי או בציר הזמן מבטלת את הנעילה מהזמן הנוכחי, וגלילה עד הסוף ימינה נועלת שוב לזמן הנוכחי.
@@ -37,7 +37,7 @@ AdvantageScope יכולה להתחבר ל-FIRST Driver Station כדי להציג
 
 יש לפתוח את חלון ההעדפות על ידי לחיצה על `אפליקציה` > `הצגת העדפות...` (Windows/Linux) או `AdvantageScope` > `הגדרות...` (macOS).
 
-<img src="/img/prefs.png" alt="Diagram of preferences" height="350" />
+<img src="/img/prefs.png" alt="תרשים העדפות" />
 
 ### כתובת הרובוט {#robot-address}
 

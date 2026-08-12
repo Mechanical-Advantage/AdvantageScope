@@ -135,7 +135,7 @@ El proyecto de ejemplo KitBot 2024 de AdvantageKit incluye un ejemplo simple de 
 
 </details>
 
-<img src="/img/tab-reference/3d-field/3d-field-4.png" alt="Visualización de la nota del KitBot 2024" />
+<img src="/img/tab-reference/3d-field/3d-field-4.png" alt="Visualización de la nota de KitBot 2024" />
 
 ## Opciones de cámara {#camera-options}
 
@@ -197,4 +197,4 @@ El campo 3D admite tres modos de renderizado:
 
 Para configurar el modo de renderizado, abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS). La configuración "Modo 3D (batería)" se puede cambiar desde la predeterminada para anular el modo de renderizado utilizado en una computadora portátil cuando no se está cargando. Por ejemplo, esto se puede usar para preservar la batería durante la competencia.
 
-<img src="/img/prefs.png" alt="Diagram of preferences" height="350" />
+<img src="/img/prefs.png" alt="Diagrama de preferencias" />

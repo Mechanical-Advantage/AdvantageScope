@@ -32,11 +32,11 @@ O AdvantageScope XR é suportado apenas no iOS e iPadOS. Não há planos imediat
 
 1. No sistema hospedeiro, **clique no botão "XR"** em qualquer guia de campo 3D. Apenas uma sessão hospedeira de XR pode estar ativa ao mesmo tempo, portanto, clicar neste botão interromperá quaisquer outras sessões ativas.
 
-<img src="/img/tab-reference/3d-field/xr-1.png" alt="XR button" height="450" />
+<img src="/img/tab-reference/3d-field/xr-1.png" alt="Botão XR" />
 
 2. A **janela de controles do XR** será aberta, com um código QR e [opções](#options) para personalizar a experiência de AR. Para cancelar a sessão de XR e desconectar quaisquer clientes, feche a janela de controles.
 
-<img src="/img/tab-reference/3d-field/xr-2.png" alt="XR window" height="350" />
+<img src="/img/tab-reference/3d-field/xr-2.png" alt="Janela XR" />
 
 3. Escaneie o código QR usando o **aplicativo de câmera integrado** no dispositivo cliente. Nenhuma instalação de aplicativo é necessária.
 4. Toque em "AdvantageScope XR" e depois em "Abrir" para **iniciar a experiência** e se conectar ao hospedeiro. Se solicitado, permita que o AdvantageScope XR acesse a **câmera e a rede local**.
@@ -70,7 +70,7 @@ A janela de controles do XR apresenta várias opções que controlam como o mode
 
 O AdvantageScope XR não requer uma conexão com a internet. Para garantir que o aplicativo esteja disponível offline, baixe o AdvantageScope XR da App Store usando o link abaixo. Para se conectar ao aplicativo de desktop do AdvantageScope, escaneie o código QR usando o aplicativo de câmera do iOS ou toque no botão "Escanear" no aplicativo AdvantageScope XR.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />
 
 :::note
 Mesmo ao executar sem uma conexão com a internet, os dispositivos hospedeiro e cliente **devem estar conectados à mesma rede** (como um robô, rede Wi-Fi personalizada ou via ancoragem USB).

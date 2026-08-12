@@ -32,11 +32,11 @@ AdvantageScope XR este suportat doar pe iOS și iPadOS. Nu există planuri imedi
 
 1. Pe sistemul gazdă, **dați clic pe butonul „XR”** pe orice filă de teren 3D. Doar o singură sesiune gazdă XR poate fi activă în același timp, astfel încât dând clic pe acest buton se vor întrerupe orice alte sesiuni active.
 
-<img src="/img/tab-reference/3d-field/xr-1.png" alt="XR button" height="450" />
+<img src="/img/tab-reference/3d-field/xr-1.png" alt="Buton XR" />
 
 2. Fereastra de **controale XR** se va deschide, având un cod QR și [opțiuni](#options) pentru a personaliza experiența AR. Pentru a anula sesiunea XR și a deconecta orice clienți, închideți fereastra de controale.
 
-<img src="/img/tab-reference/3d-field/xr-2.png" alt="XR window" height="350" />
+<img src="/img/tab-reference/3d-field/xr-2.png" alt="Fereastră XR" />
 
 3. Scanați codul QR folosind **aplicația de cameră integrată** pe dispozitivul client. Nu este necesară instalarea unei aplicații.
 4. Atingeți „AdvantageScope XR” și apoi „Open” pentru a **începe experiența** și a vă conecta la gazdă. Dacă vi se solicită, permiteți AdvantageScope XR să acceseze **camera și rețeaua locală**.
@@ -70,7 +70,7 @@ Fereastra de controale XR prezintă câteva opțiuni care controlează modul în
 
 AdvantageScope XR nu necesită o conexiune la internet. Pentru a vă asigura că aplicația este disponibilă offline, descărcați AdvantageScope XR din App Store folosind linkul de mai jos. Pentru a vă conecta la aplicația desktop AdvantageScope, scanați codul QR folosind aplicația de cameră iOS sau atingeți butonul „Scan” în aplicația AdvantageScope XR.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />
 
 :::note
 Chiar și când rulează fără o conexiune la internet, dispozitivele gazdă și client **trebuie să fie conectate la aceeași rețea** (cum ar fi un robot, o rețea Wi-Fi personalizată sau prin partajare internet USB).

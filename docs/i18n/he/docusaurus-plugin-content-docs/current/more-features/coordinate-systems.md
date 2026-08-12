@@ -18,22 +18,22 @@ AdvantageScope כוללת תמיכה במספר מערכות צירים נפוצ
 
 המקור נמצא במרכז המגרש כאשר ציר ה-+X פונה הרחק מקיר הברית האדומה, כפי שמוצג למטה. **זוהי מערכת הצירים כברירת מחדל עבור מגרשי FRC החל מ-2027 ומגרשי FTC החל מ-2027-2028.**
 
-<img src="/img/more-features/coordinate-system-center-red.png" alt="Center/red coordinate system" />
+<img src="/img/more-features/coordinate-system-center-red.png" alt="מערכת צירים מרכז/אדום" />
 
 ## קיר כחול {#blue-wall}
 
 המקור נמצא בפינה הימנית ביותר של קיר הברית הכחולה כאשר ציר ה-+X פונה לקיר הברית האדומה, כפי שמוצג למטה. **זוהי מערכת הצירים כברירת מחדל עבור מגרשי FRC מ-2023 עד 2026.**
 
-<img src="/img/more-features/coordinate-system-blue-wall.png" alt="Blue wall coordinate system" />
+<img src="/img/more-features/coordinate-system-blue-wall.png" alt="מערכת צירים קיר כחول" />
 
 ## קיר הברית {#alliance-wall}
 
 המקור נמצא בפינה הימנית ביותר של קיר הברית עבור _הברית הנוכחית של הרובוט_ כאשר ציר ה-+X פונה לקיר הברית הנגדית, כפי שמוצג למטה. **זוהי מערכת הצירים כברירת מחדל עבור FRC ב-2022.**
 
-<img src="/img/more-features/coordinate-system-alliance-wall.png" alt="Alliance wall coordinate system" />
+<img src="/img/more-features/coordinate-system-alliance-wall.png" alt="מערכת צירים קיר ברית" />
 
 ## מרכז/מסובב {#center-rotated}
 
 המקור נמצא במרכז המגרש כאשר ציר ה-+X פונה ימינה מזווית הראייה של קיר הברית האדומה, כפי שמוצג למטה. **זוהי מערכת הצירים כברירת מחדל עבור מגרשי FTC מ-2024-2025 עד 2026-2027.**
 
-<img src="/img/more-features/coordinate-system-center-rotated.png" alt="Center/rotated coordinate system" height="400" />
+<img src="/img/more-features/coordinate-system-center-rotated.png" alt="מערכת צירים מרכז/מסובב" />

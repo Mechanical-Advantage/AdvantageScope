@@ -19,11 +19,11 @@ sidebar_position: 2
 للاتصال، حدد "تشخيصات Phoenix" عند الاتصال بالروبوت أو المحاكي من شريط القوائم.
 :::
 
-<img src="/img/overview/live-sources/phoenix-1.png" alt="Line graph screenshot" />
+<img src="/img/overview/live-sources/phoenix-1.png" alt="لقطة شاشة للرسم البياني الخطي" />
 
 تتيح علامة تبويب 📊 [إحصائيات](/tab-reference/statistics) في AdvantageScope أيضاً تحليلاً متقدماً لإشارات Phoenix، مع دعم المدرجات التكرارية، والنطاقات المخصصة، والحقول المشتقة لقياسات الخطأ النسبي والمطلق:
 
-<img src="/img/overview/live-sources/phoenix-2.png" alt="Statistics screenshot" />
+<img src="/img/overview/live-sources/phoenix-2.png" alt="لقطة شاشة للإحصائيات" />
 
 :::note
 قد تواجه هذه الميزة مشكلات أحياناً نتيجة لتحديثات Phoenix. نوصي باستخدام أحدث إصدار من AdvantageScope لتقليل المشكلات. بخلاف ذلك، يرجى [فتح مشكلة (issue)](https://github.com/Mechanical-Advantage/AdvantageScope/issues) لإعلامنا بأي مشاكل.

@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 2D 场地选项卡展示了叠加在场地地图上的机器人 2D 可视化效果。它还可以显示诸如视觉目标状态和参考位姿等额外数据。
 
-<img src="/img/tab-reference/2d-field-1.png" alt="2D 场地选项卡概述" />
+<img src="/img/tab-reference/2d-field-1.png" alt="2D 场地标签页概述" />
 
 <details>
 <summary>时间轴控制</summary>
@@ -34,7 +34,7 @@ import TabItem from '@theme/TabItem';
 要查看受支持对象类型的完整列表，请点击 `?` 图标。该列表还包含受支持的数据类型以及对象是否必须作为子项添加。
 :::
 
-<img src="/img/tab-reference/2d-field-2.png" alt="包含对象的 2D 场地" />
+<img src="/img/tab-reference/2d-field-2.png" alt="带有对象的 2D 场地" />
 
 ## 数据格式 {#data-format}
 

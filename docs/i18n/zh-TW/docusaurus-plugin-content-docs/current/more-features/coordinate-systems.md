@@ -36,4 +36,4 @@ AdvantageScope 在 [🗺️ 2D 場地](/tab-reference/2d-field) 與 [👀 3D 場
 
 原點位於場地中心，從紅方聯盟牆的視角來看，+X 軸面向右側，如下圖所示。**這是 2024-2025 年至 2026-2027 年 FTC 場地的預設座標系。**
 
-<img src="/img/more-features/coordinate-system-center-rotated.png" alt="中心/旋轉座標系" height="400" />
+<img src="/img/more-features/coordinate-system-center-rotated.png" alt="中心/旋轉座標系" />

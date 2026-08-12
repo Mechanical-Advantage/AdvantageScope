@@ -6,7 +6,7 @@ sidebar_position: 8
 
 A guia de joysticks mostra o estado de até seis controles conectados. A imagem abaixo mostra um exemplo de layout, com dois controles de Xbox e um joystick genérico. Cada botão é destacado quando pressionado, e os estados dos joysticks e outros eixos são exibidos.
 
-<img src="/img/tab-reference/joysticks-1.png" alt="Overview of joystick tab" />
+<img src="/img/tab-reference/joysticks-1.png" alt="Visão geral da aba de joysticks" />
 
 <details>
 <summary>Controles da linha do tempo</summary>
@@ -17,7 +17,7 @@ Seções amarelas indicam quando o robô está em autônomo, seções azuis indi
 
 Para dar zoom, posicione o cursor sobre a linha do tempo e role para cima ou para baixo. Um intervalo também pode ser selecionado clicando e arrastando enquanto mantém `Shift` pressionado. Mova para a esquerda e para a direita rolando horizontalmente (em dispositivos suportados) ou clicando e arrastando na linha do tempo. Quando conectado ao vivo, rolar para a esquerda desbloqueia do tempo atual, e rolar totalmente para a direita bloqueia no tempo atual novamente. Pressione `Ctrl+\` para dar zoom no período em que o robô está habilitado.
 
-<img src="/img/tab-reference/timeline.png" alt="Timeline" />
+<img src="/img/tab-reference/timeline.png" alt="Linha do tempo" />
 
 </details>
 

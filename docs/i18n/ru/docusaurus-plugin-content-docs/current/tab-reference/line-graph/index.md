@@ -2,7 +2,7 @@
 
 Линейный график является видом по умолчанию в AdvantageScope. Он поддерживает как непрерывные (числовые), так и дискретные поля.
 
-<img src="/img/tab-reference/line-graph/line-graph-1.png" alt="Line graph demo" />
+<img src="/img/tab-reference/line-graph/line-graph-1.png" alt="Демонстрация линейного графика" />
 
 ## Панель просмотра {#viewer-pane}
 
@@ -20,19 +20,19 @@
 
 Цвет и стиль линии каждого поля можно настроить, нажав на цветную иконку или щелкнув правой кнопкой мыши по имени поля. Данные из API [постоянных оповещений (persistent alerts)](https://docs.wpilib.org/en/latest/docs/software/telemetry/persistent-alerts.html) WPILib можно визуализировать, добавив группу оповещений в качестве дискретного поля. Пример визуализации показан ниже.
 
-<img src="/img/tab-reference/line-graph/line-graph-2.png" alt="Alerts visualization" />
+<img src="/img/tab-reference/line-graph/line-graph-2.png" alt="Визуализация предупреждений" />
 
 :::tip
 Чтобы наложить режим робота (автономный, телеуправляемый или служебный), нажмите три точки рядом с «Дискретные поля» и нажмите «Показывать режим робота».
 
-<img src="/img/tab-reference/line-graph/line-graph-3.png" alt="Robot mode overlay" />
+<img src="/img/tab-reference/line-graph/line-graph-3.png" alt="Наложение режима робота" />
 :::
 
 ### Настройка осей {#adjusting-axes}
 
 По умолчанию каждая ось настраивает свой диапазон на основе видимых данных. Чтобы отключить автонастройку диапазонов и заблокировать диапазон на текущих минимуме и максимуме, нажмите три точки рядом с заголовком оси, а затем `Заблокировать ось`. Чтобы настроить диапазон вручную, выберите `Изменить диапазон...` и введите желаемые значения.
 
-<img src="/img/tab-reference/line-graph/line-graph-4.png" alt="Editing axis range" height="250" />
+<img src="/img/tab-reference/line-graph/line-graph-4.png" alt="Редактирование диапазона оси" />
 
 ### Интегрирование и дифференцирование {#integration-and-differentiation}
 

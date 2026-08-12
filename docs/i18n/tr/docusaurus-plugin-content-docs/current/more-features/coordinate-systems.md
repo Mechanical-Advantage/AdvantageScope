@@ -18,22 +18,22 @@ Tüm koordinat sistemi seçenekleri hem FRC hem de FTC sahaları ile uyumludur.
 
 Orijin, aşağıda gösterildiği gibi +X ekseni kırmızı ittifak duvarından uzağa bakacak şekilde sahanın merkezindedir. **Bu, 2027'den itibaren FRC sahaları ve 2027-2028'den itibaren FTC sahaları için varsayılan koordinat sistemidir.**
 
-<img src="/img/more-features/coordinate-system-center-red.png" alt="Center/red coordinate system" />
+<img src="/img/more-features/coordinate-system-center-red.png" alt="Merkez/kırmızı koordinat sistemi" />
 
 ## Mavi duvar {#blue-wall}
 
 Orijin, aşağıda gösterildiği gibi +X ekseni kırmızı ittifak duvarına bakacak şekilde mavi ittifak duvarının en sağ köşesindedir. **Bu, 2023'ten 2026'ya kadar FRC sahaları için varsayılan koordinat sistemidir.**
 
-<img src="/img/more-features/coordinate-system-blue-wall.png" alt="Blue wall coordinate system" />
+<img src="/img/more-features/coordinate-system-blue-wall.png" alt="Mavi duvar koordinat sistemi" />
 
 ## İttifak duvarı {#alliance-wall}
 
 Orijin, aşağıda gösterildiği gibi +X ekseni karşı ittifak duvarına bakacak şekilde _robotun mevcut ittifakı_ için ittifak duvarının en sağ köşesindedir. **Bu, 2022'de FRC için varsayılan koordinat sistemidir.**
 
-<img src="/img/more-features/coordinate-system-alliance-wall.png" alt="Alliance wall coordinate system" />
+<img src="/img/more-features/coordinate-system-alliance-wall.png" alt="İttifak duvarı koordinat sistemi" />
 
 ## Merkez/Döndürülmüş {#center-rotated}
 
 Orijin, aşağıda gösterildiği gibi +X ekseni kırmızı ittifak duvarının perspektifinden sağa bakacak şekilde sahanın merkezindedir. **Bu, 2024-2025'ten 2026-2027'ye kadar FTC sahaları için varsayılan koordinat sistemidir.**
 
-<img src="/img/more-features/coordinate-system-center-rotated.png" alt="Center/rotated coordinate system" height="400" />
+<img src="/img/more-features/coordinate-system-center-rotated.png" alt="Merkez/döndürülmüş坐标系" />

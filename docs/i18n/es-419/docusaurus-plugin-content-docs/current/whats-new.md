@@ -72,7 +72,7 @@ La siguiente tabla muestra la velocidad de transferencia medida en los lanzamien
 
 La ventana de descarga ahora admite guardar registros que están almacenados en subcarpetas. Cada subcarpeta de registros se puede descargar como grupo, lo que proporciona un enfoque simplificado para descargar registros generados por la versión 2026 del [registrador de señales](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) de CTRE (que usa subcarpetas como solución alternativa por no poder almacenar datos en un solo archivo de registro).
 
-<img src="/img/whats-new/subfolders.png" alt="Descargando subcarpetas de registro" height="450" />
+<img src="/img/whats-new/subfolders.png" alt="Descarga de subcarpetas de registro" />
 
 ## 🌈 Nuevas opciones de visualización {#new-visualization-options}
 

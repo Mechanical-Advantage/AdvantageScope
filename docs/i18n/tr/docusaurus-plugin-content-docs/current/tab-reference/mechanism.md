@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 Mekanizma sekmesi, bir veya daha fazla [Mechanism2d](https://docs.wpilib.org/tr/stable/docs/software/dashboards/glass/mech2d-widget.html) nesnesi ile oluşturulmuş eklemli bir mekanizmayı görüntüler.
 
-<img src="/img/tab-reference/mechanism-1.png" alt="Overview of mechanism tab" />
+<img src="/img/tab-reference/mechanism-1.png" alt="Mekanizma sekmesine genel bakış" />
 
 <details>
 <summary>Zaman Çizelgesi Kontrolleri</summary>
@@ -20,7 +20,7 @@ Sarı bölümler robotun otonomda olduğu zamanları, mavi bölümler robotun te
 
 Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı veya aşağı kaydırın. `Shift` tuşunu basılı tutarken tıklayıp sürükleyerek bir aralık da seçilebilir. Yatay olarak kaydırarak (desteklenen cihazlarda) veya zaman çizelgesinde tıklayıp sürükleyerek sola ve sağa hareket edin. Canlı bağlandığında sola kaydırmak mevcut zamandan kilidi kaldırır ve en sağa kadar kaydırmak tekrar mevcut zamana kilitler. Robotun etkin olduğu periyoda yakınlaştırmak için `Ctrl+\` tuşlarına basın.
 
-<img src="/img/tab-reference/timeline.png" alt="Timeline" />
+<img src="/img/tab-reference/timeline.png" alt="Zaman çizelgesi" />
 
 </details>
 

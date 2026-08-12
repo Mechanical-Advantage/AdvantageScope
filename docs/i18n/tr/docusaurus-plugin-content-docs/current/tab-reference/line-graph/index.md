@@ -2,7 +2,7 @@
 
 Çizgi grafiği, AdvantageScope'taki varsayılan görünümdür. Hem sürekli (sayısal) hem de ayrık alanları destekler.
 
-<img src="/img/tab-reference/line-graph/line-graph-1.png" alt="Line graph demo" />
+<img src="/img/tab-reference/line-graph/line-graph-1.png" alt="Çizgi grafiği gösterimi" />
 
 ## Görüntüleyici paneli {#viewer-pane}
 
@@ -20,19 +20,19 @@ Başlamak için bir alanı üç bölümden birine (sol, sağ veya ayrık) sürü
 
 Her alanın rengi ve çizgi stili, renkli simgeye tıklanarak veya alan adına sağ tıklanarak özelleştirilebilir. WPILib [kalıcı uyarılar](https://docs.wpilib.org/tr/latest/docs/software/telemetry/persistent-alerts.html) API'sinden gelen veriler, uyarı grubu ayrık bir alan olarak eklenerek görselleştirilebilir. Örnek bir görselleştirme aşağıda gösterilmiştir.
 
-<img src="/img/tab-reference/line-graph/line-graph-2.png" alt="Alerts visualization" />
+<img src="/img/tab-reference/line-graph/line-graph-2.png" alt="Uyarılar görselleştirmesi" />
 
 :::tip
 Robot modunu (otonom, teleoperasyon veya test) çakıştırmak için "Ayrık Alanlar"ın yanındaki üç noktaya tıklayın ve "Robot Modunu Göster" seçeneğine tıklayın.
 
-<img src="/img/tab-reference/line-graph/line-graph-3.png" alt="Robot mode overlay" />
+<img src="/img/tab-reference/line-graph/line-graph-3.png" alt="Robot modu katmanı" />
 :::
 
 ### Eksenleri ayarlama {#adjusting-axes}
 
 Varsayılan olarak her eksen aralığını görünür verilere göre ayarlar. Otomatik aralık belirlemeyi devre dışı bırakmak ve aralığı mevcut minimum ve maksimum değerlerine kilitlemek için eksen başlığının yanındaki üç noktaya ve ardından `Ekseni Kilitle` seçeneğine tıklayın. Aralığı manuel olarak ayarlamak için `Aralığı Düzenle...` seçin ve istenen değerleri girin.
 
-<img src="/img/tab-reference/line-graph/line-graph-4.png" alt="Editing axis range" height="250" />
+<img src="/img/tab-reference/line-graph/line-graph-4.png" alt="Eksen aralığını düzenleme" />
 
 ### İntegral & türev {#integration-and-differentiation}
 

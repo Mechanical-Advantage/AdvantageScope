@@ -54,4 +54,4 @@ AdvantageKit 在记录输入和输出（包括注解日志记录）时包含对�
 要快速启用或禁用单位转换，请点击轴标题附近的三个点，然后选择 `近期预设` 或 `重置单位`。
 :::
 
-<img src="/img/tab-reference/line-graph/units-2.png" alt="编辑单位转换" height="250" />
+<img src="/img/tab-reference/line-graph/units-2.png" alt="编辑单位转换" />

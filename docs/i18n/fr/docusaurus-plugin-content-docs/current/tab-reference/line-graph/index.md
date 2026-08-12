@@ -32,7 +32,7 @@ Pour superposer le mode du robot (autonome, téléopéré ou utilitaire), clique
 
 Par défaut, chaque axe ajuste sa plage en fonction des données visibles. Pour désactiver l'ajustement automatique de la plage et verrouiller la plage à ses valeurs minimale et maximale actuelles, cliquez sur les trois points près du titre de l'axe, puis sur `Verrouiller l'axe`. Pour ajuster manuellement la plage, choisissez `Modifier la plage...` et saisissez les valeurs souhaitées.
 
-<img src="/img/tab-reference/line-graph/line-graph-4.png" alt="Modification de la plage de l'axe" height="250" />
+<img src="/img/tab-reference/line-graph/line-graph-4.png" alt="Édition de la plage de l'axe" />
 
 ### Intégration et différenciation {#integration-and-differentiation}
 

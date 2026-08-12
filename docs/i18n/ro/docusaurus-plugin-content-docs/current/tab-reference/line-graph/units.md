@@ -6,7 +6,7 @@ Fila grafic liniar este conștientă de unități, ceea ce înseamnă că valori
 - Dați clic pe cele trei puncte de lângă titlul axei pentru a **comuta rapid la unități alternative**. Această listă include cele mai comune unități care sunt compatibile cu câmpurile selectate.
 - Activați **integrarea sau diferențierea** ([docs](/tab-reference/line-graph/#integration-and-differentiation)) pentru a vedea unitățile exacte ale integralei sau derivatei. Unitatea de bază poate fi ajustată folosind meniul pentru a suporta filtrarea în unități non-native.
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="Unit-aware graphing" />
+<img src="/img/tab-reference/line-graph/units-1.png" alt="Grafice bazate pe unități" />
 
 ## Formate suportate {#supported-formats}
 
@@ -54,4 +54,4 @@ Pentru a configura conversia manuală, dați clic pe cele trei puncte de lângă
 Pentru a activa sau dezactiva rapid conversia unităților, dați clic pe cele trei puncte de lângă titlul axei și alegeți `Presetări recente` sau `Resetează unitățile`.
 :::
 
-<img src="/img/tab-reference/line-graph/units-2.png" alt="Editing unit conversion" height="250" />
+<img src="/img/tab-reference/line-graph/units-2.png" alt="Editarea conversiei unităților" />

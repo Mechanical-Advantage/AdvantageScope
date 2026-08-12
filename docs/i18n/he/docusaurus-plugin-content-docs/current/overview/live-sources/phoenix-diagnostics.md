@@ -19,11 +19,11 @@ AdvantageScope תומכת בהזרמה חיה של אותות ממכשירי Pho
 להתחברות, יש לבחור "דיאגנוסטיקה Phoenix" בעת התחברות לרובוט או לסימולטור מסרגל התפריטים.
 :::
 
-<img src="/img/overview/live-sources/phoenix-1.png" alt="Line graph screenshot" />
+<img src="/img/overview/live-sources/phoenix-1.png" alt="צילום מסך של גרף קווי" />
 
 כרטיסיית 📊 [סטטיסטיקה](/tab-reference/statistics) ב-AdvantageScope מאפשרת גם ניתוח מתקדם של אותות Phoenix, עם תמיכה בהיסטוגרמות, טווחים מותאמים אישית ושדות מיוצרים עבור מדידות שגיאה יחסית ומוחלטת:
 
-<img src="/img/overview/live-sources/phoenix-2.png" alt="Statistics screenshot" />
+<img src="/img/overview/live-sources/phoenix-2.png" alt="צילום מסך של סטטיסטיקה" />
 
 :::note
 תכונה זו עשויה להיתקל לעיתים בבעיות כתוצאה מעדכוני Phoenix. אנו ממליצים להשתמש בגרסה החדשה ביותר של AdvantageScope כדי למזער בעיות. אחרת, אנא [פתחו issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues) כדי להודיע לנו על בעיות כלשהן.

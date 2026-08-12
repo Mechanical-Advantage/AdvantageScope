@@ -27,14 +27,14 @@ Los datos de la API de [alertas persistentes](https://docs.wpilib.org/es/latest/
 :::tip
 Para superponer el modo del robot (autónomo, teleop o utilidad), haz clic en los tres puntos al lado de "Campos discretos" y haz clic en "Mostrar modo del robot".
 
-<img src="/img/tab-reference/line-graph/line-graph-3.png" alt="Superposición de modo de robot" />
+<img src="/img/tab-reference/line-graph/line-graph-3.png" alt="Superposición del modo del robot" />
 :::
 
 ### Ajuste de ejes {#adjusting-axes}
 
 Por defecto, cada eje ajusta su rango en función de los datos visibles. Para deshabilitar el rango automático y bloquear el rango a su mínimo y máximo actuales, haz clic en los tres puntos cerca del título del eje y luego en `Bloquear eje`. Para ajustar manualmente el rango, elige `Editar rango...` e ingresa los valores deseados.
 
-<img src="/img/tab-reference/line-graph/line-graph-4.png" alt="Editar rango de eje" height="250" />
+<img src="/img/tab-reference/line-graph/line-graph-4.png" alt="Edición del rango del eje" />
 
 ### Integración y diferenciación {#integration-and-differentiation}
 

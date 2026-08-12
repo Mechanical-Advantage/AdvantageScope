@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 点位选项卡展示任意点的 2D 可视化。这是一个非常灵活的工具，允许对视觉数据/管道、机构状态等进行自定义可视化。
 
-<img src="/img/tab-reference/points-1.png" alt="点位选项卡示例" />
+<img src="/img/tab-reference/points-1.png" alt="点标签页示例" />
 
 <details>
 <summary>时间轴控制</summary>

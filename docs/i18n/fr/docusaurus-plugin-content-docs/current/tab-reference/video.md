@@ -36,7 +36,7 @@ Lorsqu'une vidéo est initialement chargée et n'a pas encore été synchronisé
 - \> = avancer de cinq secondes
 - < = reculer de cinq secondes
 
-<img src="/img/tab-reference/video-2.png" alt="Contrôles vidéo" />
+<img src="/img/tab-reference/video-2.png" alt="Commandes vidéo" />
 
 ## Synchronisation automatique {#automatic-synchronization}
 
@@ -79,4 +79,4 @@ Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le hau
 Si vous le souhaitez, le champ de vision de la caméra peut être ajusté dans la vue du terrain 3D pour correspondre à l'apparence de la vidéo. Pour plus de détails, consultez « Options de caméra » sur la page 👀 [Terrain 3D](/tab-reference/3d-field).
 :::
 
-<img src="/img/tab-reference/video-4.png" alt="Instantane vidéo avec odométrie" />
+<img src="/img/tab-reference/video-4.png" alt="Instantané vidéo avec odométrie" />

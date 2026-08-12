@@ -23,7 +23,7 @@ AdvantageScope 支持从 Phoenix 6 设备实时串流信号，**无需在用户�
 
 AdvantageScope 的 📊 [统计](/tab-reference/statistics) 选项卡还支持对 Phoenix 信号进行高级分析，支持直方图、自定义范围以及用于相对和绝对误差测量的派生字段：
 
-<img src="/img/overview/live-sources/phoenix-2.png" alt="统计截图" />
+<img src="/img/overview/live-sources/phoenix-2.png" alt="统计数据截图" />
 
 :::note
 由于 Phoenix 更新，此功能偶尔可能会遇到问题。我们建议使用最新版本的 AdvantageScope 以最大程度减少问题。否则，请 [提交 issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues) 以告知我们遇到的任何问题。

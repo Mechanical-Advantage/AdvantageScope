@@ -14,7 +14,7 @@ AdvantageScope proporciona tres opciones para cargar un video:
 2. **YouTube:** Copia un enlace de YouTube al portapapeles, luego haz clic en el icono rojo del portapapeles. Después de unos segundos, el video comenzará a descargarse.
 3. **The Blue Alliance:** Haz clic en el icono azul de TBA para cargar automáticamente el video del partido en función del archivo de registro. Si hay varios videos disponibles, elige el video a descargar en el menú emergente. Esta función requiere una clave API para TBA, que debe obtenerse en [thebluealliance.com/account](https://www.thebluealliance.com/account) y copiarse en la página de preferencias de AdvantageScope en "Clave API de TBA" (TBA API Key).
 
-<img src="/img/tab-reference/video-1.png" alt="Selector de origen" />
+<img src="/img/tab-reference/video-1.png" alt="Selector de fuente" />
 
 Después de elegir un video, la línea de tiempo en la parte inferior derecha comienza a volverse azul para indicar los fotogramas que se han almacenado en caché (este paso es necesario para una reproducción fluida). Esta función está diseñada solo para videos de la longitud de un partido debido a la conversión de fotogramas requerida.
 
@@ -79,4 +79,4 @@ Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia 
 Si se desea, el FOV de la cámara se puede ajustar en la vista de campo 3D para que coincida con el aspecto del video. Para más detalles, consulta "Opciones de cámara" en la página 👀 [Campo 3D](/tab-reference/3d-field).
 :::
 
-<img src="/img/tab-reference/video-4.png" alt="Captura de pantalla de video con odometría" />
+<img src="/img/tab-reference/video-4.png" alt="Captura de video con odometría" />

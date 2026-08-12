@@ -54,4 +54,4 @@ Pour configurer la conversion manuelle, cliquez sur les trois points près du ti
 Pour activer ou désactiver rapidement la conversion d'unités, cliquez sur les trois points près du titre de l'axe et choisissez `Préréglages récents` ou `Réinitialiser les unités`.
 :::
 
-<img src="/img/tab-reference/line-graph/units-2.png" alt="Modification de la conversion d'unités" height="250" />
+<img src="/img/tab-reference/line-graph/units-2.png" alt="Édition de la conversion d'unités" />

@@ -84,5 +84,5 @@ AdvantageScope тезірек навигация жасауға мүмкінді
 
 Қолдау көрсетілетін MacBook үлгілерінде Touch Bar панелін журналды шарлау және жаңа қойындыларды қосу үшін пайдалануға болады.
 
-<img src="/img/overview/navigation/keyboard-1.png" alt="Touch Bar scrubbing interface" />
-<img src="/img/overview/navigation/keyboard-2.png" alt="Touch Bar new tab interface" />
+<img src="/img/overview/navigation/keyboard-1.png" alt="Touch Bar өткізу интерфейсі" />
+<img src="/img/overview/navigation/keyboard-2.png" alt="Touch Bar жаңа қойынды интерфейсі" />

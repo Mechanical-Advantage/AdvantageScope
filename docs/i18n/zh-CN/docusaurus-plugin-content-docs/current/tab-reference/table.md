@@ -14,4 +14,4 @@ sidebar_position: 4
 
 表格中选中的时间将在所有选项卡中同步。点击某行即可选中它，或者将鼠标悬停在某行上可在任何可见的弹出窗口中进行预览。点击 ↓ 按钮可跳转到所选时间（或在框中输入的指定时间）。
 
-<img src="/img/tab-reference/table-3.png" alt="跳转到时间" />
+<img src="/img/tab-reference/table-3.png" alt="跳至某一时间" />

@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 Swerve 选项卡显示四个 Swerve 模块的状态，包括速度矢量、空闲位置、机器人旋转和底盘速度。
 
-<img src="/img/tab-reference/swerve-1.png" alt="Swerve 选项卡概述" />
+<img src="/img/tab-reference/swerve-1.png" alt="Swerve 标签页概述" />
 
 <details>
 <summary>时间轴控制</summary>

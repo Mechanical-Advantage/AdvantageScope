@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 A guia de metadados mostra valores publicados na tabela oculta "/Metadata" ou através do AdvantageKit. As chaves de metadados são exibidas à esquerda, e as colunas separam dados de diferentes fontes (por exemplo, real e repetição ao usar o AdvantageKit).
 
-<img src="/img/tab-reference/metadata-1.png" alt="Overview of metadata tab" />
+<img src="/img/tab-reference/metadata-1.png" alt="Visão geral da aba de metadados" />
 
 O código de exemplo abaixo mostra como registrar metadados usando Java.
 

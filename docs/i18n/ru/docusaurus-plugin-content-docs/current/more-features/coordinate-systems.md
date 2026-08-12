@@ -18,22 +18,22 @@ AdvantageScope включает поддержку нескольких расп
 
 Начало координат находится в центре поля, причем ось +X направлена в сторону от стены красного альянса, как показано ниже. **Это система координат по умолчанию для полей FRC начиная с 2027 года и полей FTC начиная с сезона 2027–2028 годов.**
 
-<img src="/img/more-features/coordinate-system-center-red.png" alt="Center/red coordinate system" />
+<img src="/img/more-features/coordinate-system-center-red.png" alt="Система координат центр/красный" />
 
 ## Синяя стена {#blue-wall}
 
 Начало координат находится в крайнем правом углу стены синего альянса, причем ось +X направлена в сторону стены красного альянса, как показано ниже. **Это система координат по умолчанию для полей FRC с 2023 по 2026 год.**
 
-<img src="/img/more-features/coordinate-system-blue-wall.png" alt="Blue wall coordinate system" />
+<img src="/img/more-features/coordinate-system-blue-wall.png" alt="Система координат синяя стена" />
 
 ## Стена альянса {#alliance-wall}
 
 Начало координат находится в крайнем правом углу стены альянса для _текущего альянса робота_, причем ось +X направлена к противоположной стене альянса, как показано ниже. **Это система координат по умолчанию для FRC в 2022 году.**
 
-<img src="/img/more-features/coordinate-system-alliance-wall.png" alt="Alliance wall coordinate system" />
+<img src="/img/more-features/coordinate-system-alliance-wall.png" alt="Система координат стена альянса" />
 
 ## Центр/повернутый {#center-rotated}
 
 Начало координат находится в центре поля, причем ось +X направлена вправо с точки зрения стены красного альянса, как показано ниже. **Это система координат по умолчанию для полей FTC с сезона 2024–2025 по 2026–2027 годы.**
 
-<img src="/img/more-features/coordinate-system-center-rotated.png" alt="Center/rotated coordinate system" height="400" />
+<img src="/img/more-features/coordinate-system-center-rotated.png" alt="Система координат центр/повернутый" />

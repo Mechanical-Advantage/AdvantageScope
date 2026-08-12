@@ -2,7 +2,7 @@
 
 הגרף הקווי הוא תצוגת ברירת המחדל ב-AdvantageScope. הוא תומך הן בשדות רציפים (נומריים) והן בשדות בדידים.
 
-<img src="/img/tab-reference/line-graph/line-graph-1.png" alt="Line graph demo" />
+<img src="/img/tab-reference/line-graph/line-graph-1.png" alt="הדגמת גרף קווי" />
 
 ## חלונית תצוגה {#viewer-pane}
 
@@ -20,19 +20,19 @@
 
 הצבע וסגנון הקו של כל שדה ניתנים להתאמה אישית על ידי לחיצה על הסמל הצבעוני או לחיצה ימנית על שם השדה. נתונים מ-API של [התראות מתמשכות (persistent alerts)](https://docs.wpilib.org/he/latest/docs/software/telemetry/persistent-alerts.html) ב-WPILib ניתנים לוויזואליזציה על ידי הוספת קבוצת ההתראות כשדה בדיד. דוגמה לוויזואליזציה מוצגת למטה.
 
-<img src="/img/tab-reference/line-graph/line-graph-2.png" alt="Alerts visualization" />
+<img src="/img/tab-reference/line-graph/line-graph-2.png" alt="הדמיית התראות" />
 
 :::tip
 להצגת מצב הרובוט (אוטונומי, טלאופ, או שירות) כתרשים רקע, יש ללחוץ על שלוש הנקודות ליד "שדות בדידים" וללחוץ על "הצגת מצב רובוט".
 
-<img src="/img/tab-reference/line-graph/line-graph-3.png" alt="Robot mode overlay" />
+<img src="/img/tab-reference/line-graph/line-graph-3.png" alt="שכבת-על של מצב רובוט" />
 :::
 
 ### התאמת צירים {#adjusting-axes}
 
 כברירת מחדל, כל ציר מתאים את הטווח שלו בהתבסס על הנתונים הגלויים. לביטול הטווח האוטומטי ונעילת הטווח לערכי המינימום והמקסימום הנוכחיים שלו, יש ללחוץ על שלוש הנקודות ליד כותרת הציר ולאחר מכן על `נעילת ציר`. להתאמה ידנית של הטווח, יש לבחור `עריכת טווח...` ולהזין את הערכים הרצויים.
 
-<img src="/img/tab-reference/line-graph/line-graph-4.png" alt="Editing axis range" height="250" />
+<img src="/img/tab-reference/line-graph/line-graph-4.png" alt="עריכת טווח הציר" />
 
 ### אינטגרציה וגזירה {#integration-and-differentiation}
 

@@ -8,7 +8,7 @@ O AdvantageScope inclui um sistema flexível para exportar dados de log como um 
 
 Para ver as opções de exportação, clique em `Arquivo` > `Exportar dados...`.
 
-<img src="/img/overview/log-files/export-1.png" alt="Export options" height="250" />
+<img src="/img/overview/log-files/export-1.png" alt="Opções de exportação" />
 
 :::tip
 Além da exportação completa do log descrita aqui, a guia 💬 [Console](/tab-reference/console) permite que dados do console sejam exportados para um arquivo de texto.
@@ -46,4 +46,4 @@ As seguintes opções são fornecidas ao exportar:
 
 Um exemplo de arquivo CSV exportado do AdvantageScope é mostrado abaixo, no formato "CSV (Tabela)" com timestamps definidos como "Todas as alterações":
 
-<img src="/img/overview/log-files/export-2.png" alt="CSV table" />
+<img src="/img/overview/log-files/export-2.png" alt="Tabela CSV" />

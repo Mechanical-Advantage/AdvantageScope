@@ -18,22 +18,22 @@ Toutes les options de système de coordonnées sont compatibles avec les terrain
 
 L'origine se trouve au centre du terrain avec l'axe +X pointé à l'opposé du mur d'alliance rouge, comme illustré ci-dessous. **Il s'agit du système de coordonnées par défaut pour les terrains FRC à partir de 2027 et les terrains FTC à partir de 2027-2028.**
 
-<img src="/img/more-features/coordinate-system-center-red.png" alt="Système de coordonnées Centre/rouge" />
+<img src="/img/more-features/coordinate-system-center-red.png" alt="Système de coordonnées centre/rouge" />
 
 ## Mur bleu {#blue-wall}
 
 L'origine se trouve dans le coin le plus à droite du mur d'alliance bleue avec l'axe +X faisant face au mur d'alliance rouge, comme illustré ci-dessous. **Il s'agit du système de coordonnées par défaut pour les terrains FRC de 2023 à 2026.**
 
-<img src="/img/more-features/coordinate-system-blue-wall.png" alt="Système de coordonnées Mur bleu" />
+<img src="/img/more-features/coordinate-system-blue-wall.png" alt="Système de coordonnées mur bleu" />
 
 ## Mur d'alliance {#alliance-wall}
 
 L'origine se trouve dans le coin le plus à droite du mur d'alliance pour l'_alliance actuelle du robot_ avec l'axe +X faisant face au mur d'alliance opposé, comme illustré ci-dessous. **Il s'agit du système de coordonnées par défaut pour la FRC en 2022.**
 
-<img src="/img/more-features/coordinate-system-alliance-wall.png" alt="Système de coordonnées Mur d'alliance" />
+<img src="/img/more-features/coordinate-system-alliance-wall.png" alt="Système de coordonnées mur d'alliance" />
 
 ## Centre/pivoté {#center-rotated}
 
 L'origine se trouve au centre du terrain avec l'axe +X pointé vers la droite du point de vue du mur d'alliance rouge, comme illustré ci-dessous. **Il s'agit du système de coordonnées par défaut pour les terrains FTC de 2024-2025 à 2026-2027.**
 
-<img src="/img/more-features/coordinate-system-center-rotated.png" alt="Système de coordonnées Centre/pivoté" height="400" />
+<img src="/img/more-features/coordinate-system-center-rotated.png" alt="Système de coordonnées centre/pivoté" />

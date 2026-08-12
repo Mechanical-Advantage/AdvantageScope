@@ -54,7 +54,7 @@ AdvantageScope қолданбасының барлық мүмкіндіктер�
 
 _Өлшем бірліктерін қолдау туралы қосымша ақпаратты [құжаттамадан](/tab-reference/line-graph/units) табуға болады._
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="Unit-aware graphing" />
+<img src="/img/tab-reference/line-graph/units-1.png" alt="Өлшем бірлігін ескеретін график" />
 
 ## 🏁 Журналдарды жылдам жүктеп алу {#faster-log-downloads}
 
@@ -72,7 +72,7 @@ _Өлшем бірліктерін қолдау туралы қосымша ақ
 
 Жүктеп алу терезесі енді ішкі қалталарда сақталған журналдарды сақтауды қолдайды. Журналдардың әрбір ішкі қалтасын топ ретінде жүктеп алуға болады, бұл CTRE компаниясының [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) (деректерді бір журнал файлында сақтай алмау мәселесін шешу үшін ішкі қалталарды пайдаланатын) 2026 жылғы шығарылымы арқылы жасалған журналдарды жүктеп алудың оңтайландырылған тәсілін ұсынады.
 
-<img src="/img/whats-new/subfolders.png" alt="Downloading log subfolders" height="450" />
+<img src="/img/whats-new/subfolders.png" alt="Журнал ішкі қалталарын жүктеу" />
 
 ## 🌈 Жаңа визуализация опциялары {#new-visualization-options}
 
@@ -82,7 +82,7 @@ _Өлшем бірліктерін қолдау туралы қосымша ақ
 - [3D алаңында 2D механизмдерді визуализациялау](/tab-reference/3d-field/#2d-mechanisms) кезінде механизмдерді енді XZ жазықтығынан бөлек YZ жазықтығына да орналастыруға болады. Бұл бірнеше осьтерде қозғалатын күрделі механизмдерді визуализациялауды жеңілдетеді.
 - 3D алаңы енді рендерингтелген жиектердің сапасын жақсарту үшін міндетті емес антиалиасингті қолдайды.
 
-<img src="/img/whats-new/field-viz.jpg" alt="New field visualizations" />
+<img src="/img/whats-new/field-viz.jpg" alt="Жаңа алаң визуализациялары" />
 
 ## 🪵 REV Robotics CAN журналын қолдау {#rev-robotics-can-log-support}
 
@@ -90,19 +90,19 @@ _Өлшем бірліктерін қолдау туралы қосымша ақ
 
 Бірқалыпты өтуді қамтамасыз ету және алдыңғы маусымдармен мүмкіндіктер паритетін қамтамасыз ету үшін URCL да, ресми `StatusLogger` да 2026 маусымы бойы қолжетімді болып қала береді. 2027 жылы және одан кейінгі жылдардағы журналдау опциялары туралы қосымша мәліметтерді кейінірек бөлісеміз.
 
-<img src="/img/whats-new/revlog.png" alt="REVLOG visualization" />
+<img src="/img/whats-new/revlog.png" alt="REVLOG визуализациясы" />
 
 ## 💿 CSV файлдарын импорттау {#csv-file-imports}
 
 Роботтың журналдау фреймворктерінен тыс өндірілген деректерді икемдірек визуализациялау үшін AdvantageScope енді CSV файлдарын импорттаудың негізгі қолдауын қамтиды. Қолдау көрсетілетін пішімдер мен басқа шектеулер туралы қосымша мәліметтерді [құжаттамадан](/overview/log-files/#csv-formatting) қараңыз.
 
-<img src="/img/overview/log-files/export-2.png" alt="CSV data" />
+<img src="/img/overview/log-files/export-2.png" alt="CSV деректері" />
 
 ## 🤩 Эстетикалық жақсартулар {#aesthetic-improvements}
 
 Windows 11 жүйесіндегі AdvantageScope пайдаланушы интерфейсі бұрын тек macOS шығарылымдарына ғана тән болған мөлдір бүйірлік тақтаны қолдау үшін жаңартылды. Сонымен қатар macOS Tahoe жүйесіне арналған Apple компаниясының Liquid Glass материалына негізделген жаңартылған қолданба белгішесі қолжетімді.
 
-<img src="/img/whats-new/windows-ui.png" alt="Windows UI" />
+<img src="/img/whats-new/windows-ui.png" alt="Windows пайдаланушы интерфейсі" />
 
 ## 📋 Оңтайландырылған мәзірлер {#streamlined-menus}
 
