@@ -553,6 +553,7 @@ div.field-item-label {
 
   display: flex;
   align-items: center;
+  padding-inline-end: 0.25em;
 }
 
 div.field-item-label > span {
