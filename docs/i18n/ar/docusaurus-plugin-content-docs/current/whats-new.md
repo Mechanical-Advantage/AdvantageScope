@@ -1,6 +1,7 @@
 ---
 title: ما الجديد في عام 2026؟
 sidebar_position: 2
+draft: true
 ---
 
 #

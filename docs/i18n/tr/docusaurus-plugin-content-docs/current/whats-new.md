@@ -1,6 +1,7 @@
 ---
 title: 2026'da neler yeni?
 sidebar_position: 2
+draft: true
 ---
 
 #

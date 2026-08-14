@@ -1,6 +1,7 @@
 ---
 title: O que há de novo em 2026?
 sidebar_position: 2
+draft: true
 ---
 
 #

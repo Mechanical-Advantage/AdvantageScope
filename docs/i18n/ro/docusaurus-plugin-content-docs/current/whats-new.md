@@ -1,6 +1,7 @@
 ---
 title: Ce este nou în 2026?
 sidebar_position: 2
+draft: true
 ---
 
 #

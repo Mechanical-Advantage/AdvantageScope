@@ -1,6 +1,7 @@
 ---
 title: 2026 жылы не жаңалық бар?
 sidebar_position: 2
+draft: true
 ---
 
 #
