@@ -128,7 +128,7 @@ AdvantageScope assets are stored in multiple locations:
 
 Please email software@team6328.org if you are interested in contributing to the set of built-in AdvantageScope assets, including the files stored in the `AdvantageScopeAssets` repository.
 
-## Coding Guidelines & Formatting
+## Formatting
 
 AdvantageScope enforces code formatting using **Prettier**.
 
@@ -149,6 +149,19 @@ npm run format
 ```
 
 It is highly recommended to run `npm run format` before every commit.
+
+## Localization
+
+AdvantageScope is used by teams around the world, so both the documentation and application are published in multiple languages. All features of AdvantageScope also support both a left-to-right and right-to-left application layout.
+
+Contributors are not expected to translate their work to multiple languages. However, please follow the guidelines below to streamline the translation process. If you aren't sure where to start, please ask us for help on GitHub or email software@team6328.org.
+
+- **English Reference:** All contributions should support English (US), as this serves as the reference language for all translations.
+- **Clear Writing:** Use language that is simple and clear, in line with Apple's [Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/writing).
+- **Support Localization:** Design features with support for localization. The `t` function is provided for string localization in all contexts, and further information about best practices can be found in the [i18next documentation](https://www.i18next.com/translation-function/essentials). Utilize features like interpolation, list formatting, and pluralization whenever possible.
+- **Regional Formatting:** Utilize standard features (e.g. `toLocaleString`) to support region-specific formatting. Consider using formats that will be universally understood where possible (e.g. `YYYYMMDD` for date-formatting in filenames), as many region-specific nuances are not captured by AdvantageScope's language options (e.g. US vs UK formatting).
+- **Multiple Layouts:** Test changes using both left-to-right (LTR) and right-to-left (RTL) layouts. Set the language in the AdvantageScope preferences to Hebrew or Arabic to test the RTL layout, or any other language to test the LTR layout.
+- **New Languages:** If you wish to add support for a new language, please open an issue or email software@team6328.org before starting work.
 
 ## Submitting Changes
 
