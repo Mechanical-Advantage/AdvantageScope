@@ -52,7 +52,7 @@ Logger.recordOutput("驱动/右电机速度", "快");
 </Tabs>
 
 :::tip Unit support
-See the page on [unit support](/tab-reference/line-graph/units) for more details on communicating unit metadata. Unit names must be provided using SI symbols or American English, regardless of the language selected in AdvantageScope.
+See the page on [unit support](/tab-reference/line-graph/units) for more details on communicating unit metadata. Unit names must be provided using SI symbols or English (American or British spelling), regardless of the language selected in AdvantageScope.
 :::
 
 ## Development {#development}

@@ -22,7 +22,7 @@ export namespace Units {
     length: {
       meters: {
         value: 1,
-        names: ["m", "meter", "meters"]
+        names: ["m", "meter", "meters", "metre", "metres"]
       },
       inches: {
         value: 1 / 0.0254,
@@ -30,15 +30,15 @@ export namespace Units {
       },
       millimeters: {
         value: 1000,
-        names: ["mm", "millimeter", "millimeters"]
+        names: ["mm", "millimeter", "millimeters", "millimetre", "millimetres"]
       },
       centimeters: {
         value: 100,
-        names: ["cm", "centimeter", "centimeters"]
+        names: ["cm", "centimeter", "centimeters", "centimetre", "centimetres"]
       },
       kilometers: {
         value: 0.001,
-        names: ["km", "kilometer", "kilometers"]
+        names: ["km", "kilometer", "kilometers", "kilometre", "kilometres"]
       },
       feet: {
         value: 1 / (0.0254 * 12),
@@ -79,7 +79,15 @@ export namespace Units {
           "meterpersecond",
           "meter per second",
           "meterspersecond",
-          "meters per second"
+          "meters per second",
+          "metrepersec",
+          "metre per sec",
+          "metrespersec",
+          "metres per sec",
+          "metrepersecond",
+          "metre per second",
+          "metrespersecond",
+          "metres per second"
         ]
       },
       inchesPerSecond: {
@@ -105,7 +113,14 @@ export namespace Units {
       },
       kilometersPerHour: {
         value: 3600 / 1000,
-        names: ["kph", "kilometer per hour", "kilometers per hour", "ki per hour"]
+        names: [
+          "kph",
+          "kilometer per hour",
+          "kilometers per hour",
+          "ki per hour",
+          "kilometre per hour",
+          "kilometres per hour"
+        ]
       }
     },
     angularVelocity: {
@@ -191,7 +206,27 @@ export namespace Units {
           "meter per second squared",
           "meters per second squared",
           "meter per second per second",
-          "meters per second per second"
+          "meters per second per second",
+          "metre per sec 2",
+          "metres per sec 2",
+          "metre per sec2",
+          "metres per sec2",
+          "metre per sec²",
+          "metres per sec²",
+          "metre per sec squared",
+          "metres per sec squared",
+          "metre per sec per sec",
+          "metres per sec per sec",
+          "metre per second 2",
+          "metres per second 2",
+          "metre per second2",
+          "metres per second2",
+          "metre per second²",
+          "metres per second²",
+          "metre per second squared",
+          "metres per second squared",
+          "metre per second per second",
+          "metres per second per second"
         ]
       },
       inchesPerSecondSquared: {
