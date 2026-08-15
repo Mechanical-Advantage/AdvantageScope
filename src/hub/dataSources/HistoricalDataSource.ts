@@ -29,10 +29,10 @@ export class HistoricalDataSource {
     ".wpilogxz": "wpilogWorker.js", // Decompressed by main process
     ".hoot": "wpilogWorker.js", // Converted to WPILOG by main process
     ".revlog": "wpilogWorker.js", // Converted to WPILOG by main process
-    ".dslog": "dsLogWorker.js",
-    ".dsevents": "dsLogWorker.js",
     ".log": "roadRunnerWorker.js",
-    ".csv": "csvWorker.js"
+    ".csv": "csvWorker.js",
+    ".dslog": "dsLogWorker.js",
+    ".dsevents": "dsLogWorker.js"
   };
 
   private path = "";
