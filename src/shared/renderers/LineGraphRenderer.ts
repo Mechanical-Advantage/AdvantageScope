@@ -231,7 +231,12 @@ export default class LineGraphRenderer implements TabRenderer {
     if (graphWidth < 1) graphWidth = 1;
 
     // Calculate X step size
-    let timeStepSize = calcAxisStepSize(command.timeRange, graphWidth, this.X_STEP_TARGET_PX);
+    let maxTime = Math.max(Math.abs(command.timeRange[0]), Math.abs(command.timeRange[1]));
+    let intDigits = maxTime > 0 ? Math.log10(maxTime) + 1 : 1;
+    let timeSpan = command.timeRange[1] - command.timeRange[0];
+    let decDigits = timeSpan < 1 && timeSpan > 0 ? -Math.log10(timeSpan) : 0;
+    let extraDigits = Math.max(0, intDigits + decDigits - 3);
+    let timeStepSize = calcAxisStepSize(command.timeRange, graphWidth, this.X_STEP_TARGET_PX + extraDigits * 12);
 
     // Update scroll layout
     this.SCROLL_OVERLAY.style.left = graphLeft.toString() + "px";

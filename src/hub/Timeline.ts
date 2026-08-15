@@ -127,7 +127,12 @@ export default class Timeline {
     let labelFont = "200 12px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
 
     // Calculate step size
-    let stepSize = calcAxisStepSize(timeRange, width, this.STEP_TARGET_PX);
+    let maxTime = Math.max(Math.abs(timeRange[0]), Math.abs(timeRange[1]));
+    let intDigits = maxTime > 0 ? Math.log10(maxTime) + 1 : 1;
+    let timeSpan = timeRange[1] - timeRange[0];
+    let decDigits = timeSpan < 1 && timeSpan > 0 ? -Math.log10(timeSpan) : 0;
+    let extraDigits = Math.max(0, intDigits + decDigits - 3);
+    let stepSize = calcAxisStepSize(timeRange, width, this.STEP_TARGET_PX + extraDigits * 12);
 
     // Draw state ranges
     context.lineWidth = 1;
