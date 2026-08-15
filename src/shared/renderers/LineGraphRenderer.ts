@@ -174,7 +174,13 @@ export default class LineGraphRenderer implements TabRenderer {
       command.priorityAxis,
       this.lastCursorX,
       command.leftFields.map((field) => [field.values.length, field.color, field.type, field.size]),
-      command.discreteFields.map((field) => [field.values.length, field.color, field.type, field.toggleReference]),
+      command.discreteFields.map((field) => [
+        field.values.length,
+        field.color,
+        field.type,
+        field.toggleReference,
+        field.colorMap ? field.values : null // Specific values affect color-mapped fields so serialize full state
+      ]),
       command.rightFields.map((field) => [field.values.length, field.color, field.type, field.size]),
       command.alerts.map((row) => row.map((alert) => [alert.type, alert.text, alert.range]))
     ];
