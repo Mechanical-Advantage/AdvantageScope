@@ -276,7 +276,7 @@ export default class Timeline {
 
       let text = cleanFloat(stepPos).toString() + "s";
       if (isStartAt0) {
-        text = "(" + text + ")";
+        text = "+" + text;
       }
       context.font = labelFont;
       let textWidth = context.measureText(text).width;

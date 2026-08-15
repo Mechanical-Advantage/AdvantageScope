@@ -510,7 +510,7 @@ export default class LineGraphRenderer implements TabRenderer {
       let fractionDigits = Math.max(0, -Math.floor(Math.log10(timeStepSize / 10)));
       let text = displayTime.toFixed(fractionDigits) + "s";
       if (isStartAt0 && !isDelta) {
-        text = "(" + text + ")";
+        text = "+" + text;
       }
       return text;
     };
@@ -727,7 +727,7 @@ export default class LineGraphRenderer implements TabRenderer {
 
       let text = cleanFloat(stepPos).toString() + "s";
       if (isStartAt0) {
-        text = "(" + text + ")";
+        text = "+" + text;
       }
 
       context.globalAlpha = 1;

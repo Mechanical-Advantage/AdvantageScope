@@ -198,7 +198,7 @@ export default class ConsoleRenderer implements TabRenderer {
     let displayPlaceholder = placeholder + command.displayOffset;
     let placeholderText = formatTimeWithMS(displayPlaceholder);
     if (isStartAt0) {
-      placeholderText = "(" + placeholderText + ")";
+      placeholderText = "+" + placeholderText;
     }
     this.JUMP_INPUT.placeholder = placeholderText;
 
@@ -351,7 +351,7 @@ export default class ConsoleRenderer implements TabRenderer {
       let displayTime = timestamp + this.displayOffset;
       let text = formatTimeWithMS(displayTime);
       if (isStartAt0) {
-        text = "(" + text + ")";
+        text = "+" + text;
       }
       if ((row.children[0] as HTMLElement).textContent !== text) {
         (row.children[0] as HTMLElement).textContent = text;

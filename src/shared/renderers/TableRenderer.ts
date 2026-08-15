@@ -306,7 +306,7 @@ export default class TableRenderer implements TabRenderer {
       let displayTime = this.timestamps[i] + displayOffset;
       let text = formatTimeWithMS(displayTime);
       if (isStartAt0) {
-        text = "(" + text + ")";
+        text = "+" + text;
       }
       cellText.push([text]);
     }
@@ -390,7 +390,7 @@ export default class TableRenderer implements TabRenderer {
     let displayPlaceholder = placeholder + displayOffset;
     let placeholderText = formatTimeWithMS(displayPlaceholder);
     if (isStartAt0) {
-      placeholderText = "(" + placeholderText + ")";
+      placeholderText = "+" + placeholderText;
     }
     this.INPUT_FIELD.placeholder = placeholderText;
   }
