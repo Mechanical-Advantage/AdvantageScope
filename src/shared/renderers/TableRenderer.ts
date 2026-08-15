@@ -42,6 +42,7 @@ export default class TableRenderer implements TabRenderer {
   private selectionMode: SelectionMode = SelectionMode.Idle;
   private selectedTime: number | null = null;
   private hoveredTime: number | null = null;
+  private displayOffset = 0;
 
   constructor(root: HTMLElement, hasController: boolean) {
     this.ROOT = root;
@@ -68,7 +69,6 @@ export default class TableRenderer implements TabRenderer {
 
     // Jump input handling
     let jump = () => {
-      let displayOffset = window.log.getTimestampDisplayOffset();
       let targetTime = Number(this.INPUT_FIELD.value);
       if (this.INPUT_FIELD.value === "") {
         if (this.selectionMode !== SelectionMode.Idle) {
@@ -78,7 +78,7 @@ export default class TableRenderer implements TabRenderer {
           window.selection.setSelectedTime(0);
         }
       } else {
-        targetTime = targetTime - displayOffset;
+        targetTime = targetTime - this.displayOffset;
         window.selection.setSelectedTime(targetTime);
       }
       this.selectedTime = targetTime;
@@ -209,6 +209,7 @@ export default class TableRenderer implements TabRenderer {
 
   render(command: TableRendererCommand): void {
     let initialScrollPosition = this.TABLE_CONTAINER.scrollTop;
+    this.displayOffset = command.displayOffset;
     this.selectionMode = command.selectionMode;
     this.selectedTime = command.selectedTime;
     this.hoveredTime = command.hoveredTime;

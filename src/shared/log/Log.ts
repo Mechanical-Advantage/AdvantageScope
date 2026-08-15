@@ -418,10 +418,15 @@ export default class Log {
 
   /** Returns the value to add to timestamps before displaying them. */
   getTimestampDisplayOffset(): number {
-    if (typeof window !== "undefined" && window.preferences && window.preferences.timestamps === "original") {
-      return 0;
+    if (window.preferences) {
+      switch (window.preferences.timestamps) {
+        case "start-zero":
+          return -this.getTimestampRange()[0];
+        case "original":
+          return 0;
+      }
     }
-    return -this.getTimestampRange()[0];
+    return 0;
   }
 
   /** Returns the most recent timestamp across all fields. */

@@ -64,7 +64,6 @@ export default class ConsoleRenderer implements TabRenderer {
 
     // Jump input handling
     let jump = () => {
-      let displayOffset = window.log ? window.log.getTimestampDisplayOffset() : 0;
       let targetTime = Number(this.JUMP_INPUT.value);
       if (this.JUMP_INPUT.value === "") {
         if (this.selectionMode !== SelectionMode.Idle) {
@@ -73,7 +72,7 @@ export default class ConsoleRenderer implements TabRenderer {
           targetTime = 0;
         }
       } else {
-        targetTime = targetTime - displayOffset;
+        targetTime = targetTime - this.displayOffset;
       }
 
       // Find target row
@@ -217,9 +216,6 @@ export default class ConsoleRenderer implements TabRenderer {
   /** Updates the field text and data. */
   updateData() {
     let isStartAt0 = window.preferences?.timestamps !== "original";
-    let formatChanged = this.displayOffset !== this.lastDisplayOffset || isStartAt0 !== this.lastIsStartAt0;
-    this.lastDisplayOffset = this.displayOffset;
-    this.lastIsStartAt0 = isStartAt0;
 
     // Update field text
     if (this.key === null) {
@@ -352,15 +348,13 @@ export default class ConsoleRenderer implements TabRenderer {
       }
 
       // Update cell contents
-      if (hasChanged || formatChanged) {
-        let displayTime = timestamp + this.displayOffset;
-        let text = formatTimeWithMS(displayTime);
-        if (isStartAt0) {
-          text = "(" + text + ")";
-        }
-        if ((row.children[0] as HTMLElement).innerText !== text) {
-          (row.children[0] as HTMLElement).innerText = text;
-        }
+      let displayTime = timestamp + this.displayOffset;
+      let text = formatTimeWithMS(displayTime);
+      if (isStartAt0) {
+        text = "(" + text + ")";
+      }
+      if ((row.children[0] as HTMLElement).textContent !== text) {
+        (row.children[0] as HTMLElement).textContent = text;
       }
       if (hasChanged) {
         (row.children[1] as HTMLElement).innerHTML = valueFormatted;

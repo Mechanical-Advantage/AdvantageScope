@@ -100,8 +100,8 @@ window.addEventListener("message", (event) => {
           if (FIELD_3D_MODE_BATTERY.value === "standard") field3dModeBattery = "standard";
           if (FIELD_3D_MODE_BATTERY.value === "low-power") field3dModeBattery = "low-power";
 
-          let timestamps: "start-0" | "original" = "start-0";
-          if (TIMESTAMPS.value === "start-0") timestamps = "start-0";
+          let timestamps: "start-zero" | "original" = "start-zero";
+          if (TIMESTAMPS.value === "start-zero") timestamps = "start-zero";
           if (TIMESTAMPS.value === "original") timestamps = "original";
 
           let newPrefs: Preferences = {
