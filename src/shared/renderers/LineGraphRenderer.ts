@@ -176,7 +176,13 @@ export default class LineGraphRenderer implements TabRenderer {
       window.preferences?.timestamps,
       command.displayOffset,
       command.leftFields.map((field) => [field.values.length, field.color, field.type, field.size]),
-      command.discreteFields.map((field) => [field.values.length, field.color, field.type, field.toggleReference]),
+      command.discreteFields.map((field) => [
+        field.values.length,
+        field.color,
+        field.type,
+        field.toggleReference,
+        field.colorMap ? field.values : null // Specific values affect color-mapped fields so serialize full state
+      ]),
       command.rightFields.map((field) => [field.values.length, field.color, field.type, field.size]),
       command.alerts.map((row) => row.map((alert) => [alert.type, alert.text, alert.range]))
     ];
@@ -238,7 +244,12 @@ export default class LineGraphRenderer implements TabRenderer {
       command.timeRange[0] + displayOffset,
       command.timeRange[1] + displayOffset
     ];
-    let timeStepSize = calcAxisStepSize(displayTimeRange, graphWidth, this.X_STEP_TARGET_PX);
+    let maxTime = Math.max(Math.abs(displayTimeRange[0]), Math.abs(displayTimeRange[1]));
+    let intDigits = maxTime > 0 ? Math.log10(maxTime) + 1 : 1;
+    let timeSpan = displayTimeRange[1] - displayTimeRange[0];
+    let decDigits = timeSpan < 1 && timeSpan > 0 ? -Math.log10(timeSpan) : 0;
+    let extraDigits = Math.max(0, intDigits + decDigits - 3);
+    let timeStepSize = calcAxisStepSize(displayTimeRange, graphWidth, this.X_STEP_TARGET_PX + extraDigits * 12);
 
     // Update scroll layout
     this.SCROLL_OVERLAY.style.left = graphLeft.toString() + "px";

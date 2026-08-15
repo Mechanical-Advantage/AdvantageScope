@@ -268,7 +268,7 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
   let enabledData: LogValueSetBoolean | null = null;
   if (enabledKey.endsWith("FMSControlData") || enabledKey.endsWith("ControlWord")) {
     let tempEnabledData = log.getNumber(enabledKey, -Infinity, Infinity);
-    if (tempEnabledData) {
+    if (tempEnabledData && tempEnabledData.timestamps.length > 0) {
       enabledData = {
         timestamps: tempEnabledData.timestamps,
         values: tempEnabledData.values.map((controlWord) => controlWord % 2 === 1)
@@ -276,7 +276,7 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
     }
   } else {
     let tempEnabledData = log.getBoolean(enabledKey, -Infinity, Infinity);
-    if (!tempEnabledData) return null;
+    if (!tempEnabledData || tempEnabledData.timestamps.length === 0) return null;
     enabledData = tempEnabledData;
     if (enabledKey.endsWith("DSDisabled")) {
       enabledData = {
@@ -298,7 +298,7 @@ export function getAutonomousData(log: Log): LogValueSetBoolean | null {
   let autonomousData: LogValueSetBoolean | null = null;
   if (autonomousKey.endsWith("FMSControlData")) {
     let tempAutoData = log.getNumber(autonomousKey, -Infinity, Infinity);
-    if (tempAutoData) {
+    if (tempAutoData && tempAutoData.timestamps.length > 0) {
       autonomousData = {
         timestamps: tempAutoData.timestamps,
         values: tempAutoData.values.map((controlWord) => ((controlWord >> 1) & 1) !== 0)
@@ -306,7 +306,7 @@ export function getAutonomousData(log: Log): LogValueSetBoolean | null {
     }
   } else if (autonomousKey.endsWith("ControlWord")) {
     let tempAutoData = log.getNumber(autonomousKey, -Infinity, Infinity);
-    if (tempAutoData) {
+    if (tempAutoData && tempAutoData.timestamps.length > 0) {
       autonomousData = {
         timestamps: tempAutoData.timestamps,
         values: tempAutoData.values.map((controlWord) => ((controlWord >> 1) & 3) === 1)
@@ -314,7 +314,7 @@ export function getAutonomousData(log: Log): LogValueSetBoolean | null {
     }
   } else if (autonomousKey.toLowerCase().endsWith("robotmode")) {
     let tempAutoData = log.getString(autonomousKey, -Infinity, Infinity);
-    if (tempAutoData) {
+    if (tempAutoData && tempAutoData.timestamps.length > 0) {
       autonomousData = {
         timestamps: tempAutoData.timestamps,
         values: tempAutoData.values.map((text) => text.toLowerCase() === "autonomous")
@@ -322,7 +322,7 @@ export function getAutonomousData(log: Log): LogValueSetBoolean | null {
     }
   } else {
     let tempAutoData = log.getBoolean(autonomousKey, -Infinity, Infinity);
-    if (!tempAutoData) return null;
+    if (!tempAutoData || tempAutoData.timestamps.length === 0) return null;
     autonomousData = tempAutoData;
     if (autonomousKey.endsWith("DSTeleop")) {
       autonomousData = {
@@ -344,7 +344,7 @@ export function getUtilityData(log: Log): LogValueSetBoolean | null {
   let utilityData: LogValueSetBoolean | null = null;
   if (utilityKey.endsWith("FMSControlData")) {
     let tempUtilityData = log.getNumber(utilityKey, -Infinity, Infinity);
-    if (tempUtilityData) {
+    if (tempUtilityData && tempUtilityData.timestamps.length > 0) {
       utilityData = {
         timestamps: tempUtilityData.timestamps,
         values: tempUtilityData.values.map((controlWord) => ((controlWord >> 2) & 1) !== 0)
@@ -352,7 +352,7 @@ export function getUtilityData(log: Log): LogValueSetBoolean | null {
     }
   } else if (utilityKey.endsWith("ControlWord")) {
     let tempUtilityData = log.getNumber(utilityKey, -Infinity, Infinity);
-    if (tempUtilityData) {
+    if (tempUtilityData && tempUtilityData.timestamps.length > 0) {
       utilityData = {
         timestamps: tempUtilityData.timestamps,
         values: tempUtilityData.values.map((controlWord) => ((controlWord >> 1) & 3) === 3)
@@ -360,7 +360,7 @@ export function getUtilityData(log: Log): LogValueSetBoolean | null {
     }
   } else if (utilityKey.toLowerCase().endsWith("robotmode")) {
     let tempUtilityData = log.getString(utilityKey, -Infinity, Infinity);
-    if (tempUtilityData) {
+    if (tempUtilityData && tempUtilityData.timestamps.length > 0) {
       utilityData = {
         timestamps: tempUtilityData.timestamps,
         values: tempUtilityData.values.map((text) => text.toLowerCase() === "utility" || text.toLowerCase() === "test")
@@ -368,7 +368,7 @@ export function getUtilityData(log: Log): LogValueSetBoolean | null {
     }
   } else {
     let tempUtilityData = log.getBoolean(utilityKey, -Infinity, Infinity);
-    if (!tempUtilityData) return null;
+    if (!tempUtilityData || tempUtilityData.timestamps.length === 0) return null;
     utilityData = tempUtilityData;
   }
   return utilityData;
@@ -381,6 +381,8 @@ export function getRobotStateRanges(
   let autoData = getAutonomousData(log);
   let utilityData = getUtilityData(log);
   if (enabledData === null) return [];
+  if (getAutonomousKey(log) !== undefined && autoData === null) return [];
+  if (getUtilityKey(log) !== undefined && utilityData === null) return [];
   if (autoData === null) {
     autoData = {
       timestamps: [],

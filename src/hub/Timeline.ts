@@ -129,7 +129,12 @@ export default class Timeline {
     // Calculate step size
     let displayOffset = window.log.getTimestampDisplayOffset();
     let displayTimeRange: [number, number] = [timeRange[0] + displayOffset, timeRange[1] + displayOffset];
-    let stepSize = calcAxisStepSize(displayTimeRange, width, this.STEP_TARGET_PX);
+    let maxTime = Math.max(Math.abs(displayTimeRange[0]), Math.abs(displayTimeRange[1]));
+    let intDigits = maxTime > 0 ? Math.log10(maxTime) + 1 : 1;
+    let timeSpan = displayTimeRange[1] - displayTimeRange[0];
+    let decDigits = timeSpan < 1 && timeSpan > 0 ? -Math.log10(timeSpan) : 0;
+    let extraDigits = Math.max(0, intDigits + decDigits - 3);
+    let stepSize = calcAxisStepSize(displayTimeRange, width, this.STEP_TARGET_PX + extraDigits * 12);
 
     // Draw state ranges
     context.lineWidth = 1;
@@ -302,8 +307,7 @@ export default class Timeline {
       }
 
       let minDistance = Math.min(markDistance, adjustedHelpDistance);
-      let minAlpha = 0.5 - 0.45 * (helpTextOpacity / 0.5);
-      context.globalAlpha = clampValue(scaleValue(minDistance, [0, 30], [minAlpha, 0.5]), 0, 1);
+      context.globalAlpha = clampValue(scaleValue(minDistance, [0, 20], [0.2, 0.5]), 0, 1);
       context.fillText(text, textX, height / 2);
 
       context.beginPath();
