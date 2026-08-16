@@ -958,7 +958,6 @@ units:
   deltaValue: "Δ {{value}}" # Text indicating a change in value, with the delta symbol (Δ) and the value
   relativeValue: "+{{value}}" # Text indicating a relative value offset with a plus sign prefix
 
-
   presetFormatting:
     fromTo: "{{from}} → {{to}}" # A preset converting from one unit to another
     factor: "x{{factor}}" # Text indicating an additional factor applied during unit conversion
