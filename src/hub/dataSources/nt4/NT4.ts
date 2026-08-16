@@ -462,7 +462,7 @@ export class NT4_Client {
   private ws_sendBinary(data: Uint8Array, rttWs = false) {
     let ws = rttWs ? this.rttWs : this.ws;
     if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(data);
+      ws.send(data.buffer as ArrayBuffer);
     }
   }
 
