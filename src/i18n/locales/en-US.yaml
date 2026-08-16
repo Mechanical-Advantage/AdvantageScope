@@ -90,6 +90,10 @@ preferences:
   coordinateSystemWallBlue: "Blue Wall (FRC 2023-2026)" # Dropdown option for blue wall coordinate system
   coordinateSystemWallAlliance: "Alliance Wall (FRC 2022)" # Dropdown option for alliance wall coordinate system
   coordinateSystemCenterRotated: "Center/Rotated (FTC Traditional)" # Dropdown option for center/rotated coordinate system
+  timestamps: "Timestamps" # Field label for timestamps display preference
+  timestampsSelectTitle: "Select how timestamps are displayed" # Dropdown tooltip for timestamps display preference
+  timestampsStartZero: "Start at Zero" # Dropdown option to display timestamps starting at zero
+  timestampsOriginal: "Original" # Dropdown option to display original timestamps
   tbaApiKey: "TBA API Key" # Field label for The Blue Alliance API Key
   tbaApiKeyInputTitle: "Enter your API key for The Blue Alliance" # Input tooltip for TBA API key
   networkingTitle: "Networking Options" # Section heading for network preferences
@@ -952,6 +956,8 @@ main:
 units:
   defaultLabel: "{{unit}} (Default)" # Label for the default unit in a list of units
   deltaValue: "Δ {{value}}" # Text indicating a change in value, with the delta symbol (Δ) and the value
+  relativeValue: "+{{value}}" # Text indicating a relative value offset with a plus sign prefix
+
 
   presetFormatting:
     fromTo: "{{from}} → {{to}}" # A preset converting from one unit to another

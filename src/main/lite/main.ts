@@ -412,6 +412,7 @@ async function handleHubMessage(message: NamedMessage) {
 
     case "save-state":
       localStorage.setItem(LocalStorageKeys.STATE, JSON.stringify(message.data));
+      localStorage.setItem(LocalStorageKeys.SIDEBAR_WIDTH, JSON.stringify(message.data.sidebar.width));
       break;
 
     case "save-type-memory":

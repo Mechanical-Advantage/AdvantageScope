@@ -258,6 +258,7 @@ export default class TableController implements TabController {
 
     return {
       timestamps: window.log.getTimestamps(this.fields, this.UUID),
+      displayOffset: window.log.getTimestampDisplayOffset(),
       fields: fieldData,
       selectionMode: window.selection.getMode(),
       selectedTime: window.selection.getSelectedTime(),

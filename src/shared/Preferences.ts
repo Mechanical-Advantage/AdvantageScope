@@ -30,6 +30,7 @@ export default interface Preferences {
   systemcoreStaticAddress: "" | "usb" | "wifi";
   hasScrolledLineGraph: boolean;
   hasScrolledTimeline: boolean;
+  timestamps: "start-zero" | "original";
 }
 
 export const SUPPORTED_LANGS = ["en-US", "es-419", "fr", "pt-BR", "tr", "ro", "he", "kk", "ru", "ar", "zh-CN", "zh-TW"];
@@ -55,7 +56,8 @@ export const DEFAULT_PREFS: Preferences = {
   ctreLicenseAccepted: false,
   systemcoreStaticAddress: "",
   hasScrolledLineGraph: false,
-  hasScrolledTimeline: false
+  hasScrolledTimeline: false,
+  timestamps: "start-zero"
 };
 
 export const DEFAULT_PREFS_LITEDS: Preferences = Object.assign({}, DEFAULT_PREFS, {
@@ -214,6 +216,9 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   }
   if ("hasScrolledTimeline" in newPrefs && typeof newPrefs.hasScrolledTimeline === "boolean") {
     basePrefs.hasScrolledTimeline = newPrefs.hasScrolledTimeline;
+  }
+  if ("timestamps" in newPrefs && (newPrefs.timestamps === "start-zero" || newPrefs.timestamps === "original")) {
+    basePrefs.timestamps = newPrefs.timestamps;
   }
 }
 

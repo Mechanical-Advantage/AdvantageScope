@@ -34,6 +34,9 @@ export default class ConsoleRenderer implements TabRenderer {
   private selectionMode: SelectionMode = SelectionMode.Idle;
   private selectedTime: number | null = null;
   private hoveredTime: number | null = null;
+  private lastDisplayOffset: number | null = null;
+  private lastIsStartAt0: boolean | null = null;
+  private displayOffset = 0;
 
   constructor(root: HTMLElement, hasController: boolean) {
     this.hasController = hasController;
@@ -62,7 +65,6 @@ export default class ConsoleRenderer implements TabRenderer {
 
     // Jump input handling
     let jump = () => {
-      // Determine target time
       let targetTime = Number(this.JUMP_INPUT.value);
       if (this.JUMP_INPUT.value === "") {
         if (this.selectionMode !== SelectionMode.Idle) {
@@ -70,6 +72,8 @@ export default class ConsoleRenderer implements TabRenderer {
         } else {
           targetTime = 0;
         }
+      } else {
+        targetTime = targetTime - this.displayOffset;
       }
 
       // Find target row
@@ -176,10 +180,16 @@ export default class ConsoleRenderer implements TabRenderer {
     }
 
     // Update values
-    if (command.key !== this.key || command.keyAvailable !== this.keyAvailable || dataChanged) {
+    let isStartAt0 = window.preferences?.timestamps !== "original";
+    let formatChanged = command.displayOffset !== this.lastDisplayOffset || isStartAt0 !== this.lastIsStartAt0;
+    this.lastDisplayOffset = command.displayOffset;
+    this.lastIsStartAt0 = isStartAt0;
+
+    if (command.key !== this.key || command.keyAvailable !== this.keyAvailable || dataChanged || formatChanged) {
       this.key = command.key;
       this.keyAvailable = command.keyAvailable;
       this.lines = command.lines;
+      this.displayOffset = command.displayOffset;
       this.updateData();
     }
 
@@ -189,7 +199,12 @@ export default class ConsoleRenderer implements TabRenderer {
     // Update placeholder for jump input
     let selectedTime = this.selectedTime;
     let placeholder = selectedTime === null ? 0 : selectedTime;
-    this.JUMP_INPUT.placeholder = formatTimeWithMS(placeholder);
+    let displayPlaceholder = placeholder + command.displayOffset;
+    let placeholderText = formatTimeWithMS(displayPlaceholder);
+    if (isStartAt0) {
+      placeholderText = t("units.relativeValue", { value: placeholderText });
+    }
+    this.JUMP_INPUT.placeholder = placeholderText;
 
     // Scroll to bottom if locked
     if (this.selectionMode === SelectionMode.Locked) {
@@ -204,6 +219,8 @@ export default class ConsoleRenderer implements TabRenderer {
 
   /** Updates the field text and data. */
   updateData() {
+    let isStartAt0 = window.preferences?.timestamps !== "original";
+
     // Update field text
     if (this.key === null) {
       this.FIELD_TEXT.innerText = "";
@@ -335,8 +352,15 @@ export default class ConsoleRenderer implements TabRenderer {
       }
 
       // Update cell contents
+      let displayTime = timestamp + this.displayOffset;
+      let text = formatTimeWithMS(displayTime);
+      if (isStartAt0) {
+        text = t("units.relativeValue", { value: text });
+      }
+      if ((row.children[0] as HTMLElement).textContent !== text) {
+        (row.children[0] as HTMLElement).textContent = text;
+      }
       if (hasChanged) {
-        (row.children[0] as HTMLElement).innerText = formatTimeWithMS(timestamp);
         (row.children[1] as HTMLElement).innerHTML = valueFormatted;
       }
     }
@@ -382,6 +406,7 @@ export type ConsoleRendererCommand = {
     isError: boolean;
     isWarning: boolean;
   }[];
+  displayOffset: number;
 
   selectionMode: SelectionMode;
   selectedTime: number | null;

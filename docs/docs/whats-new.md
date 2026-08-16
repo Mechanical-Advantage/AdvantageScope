@@ -4,6 +4,7 @@ sidebar_position: 2
 draft: true
 ---
 
+
 #
 
 <img src="/img/whats-new/banner-light.webp" className="light-only" />
@@ -27,11 +28,11 @@ FTC teams should exercise caution when using experimental software during the of
 :::
 
 <div className="image-gallery">
-  <img src="/img/whats-new/ftc-1.jpg" />
-  <img src="/img/whats-new/ftc-2.jpg" />
-  <img src="/img/whats-new/ftc-3.webp" />
-  <img src="/img/whats-new/ftc-4.webp" />
-  <img src="/img/whats-new/ftc-5.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-2.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-3.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-4.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
 </div>
 
 Several third-party FTC logging/telemetry libraries support other formats compatible with AdvantageScope, such as WPILOG and RLOG. Documentation of these libraries can be found in the respective projects; the AdvantageScope developers do not endorse/recommend any particular FTC logging solution for use with AdvantageScope.

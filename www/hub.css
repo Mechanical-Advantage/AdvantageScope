@@ -193,12 +193,14 @@ div.side-bar-background {
   background-color: #e9e9e9;
 }
 
-body.fancy-side-bar-mac div.side-bar-background {
-  display: none;
-}
+@media (prefers-reduced-transparency: no-preference) {
+  body.fancy-side-bar-mac div.side-bar-background {
+    display: none;
+  }
 
-body.fancy-side-bar-win div.side-bar-background {
-  opacity: 0.5;
+  body.fancy-side-bar-win div.side-bar-background {
+    opacity: 0.5;
+  }
 }
 
 @media (prefers-color-scheme: dark) {

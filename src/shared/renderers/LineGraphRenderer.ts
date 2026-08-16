@@ -175,8 +175,16 @@ export default class LineGraphRenderer implements TabRenderer {
       command.rightUnits,
       command.priorityAxis,
       this.lastCursorX,
+      window.preferences?.timestamps,
+      command.displayOffset,
       command.leftFields.map((field) => [field.values.length, field.color, field.type, field.size]),
-      command.discreteFields.map((field) => [field.values.length, field.color, field.type, field.toggleReference]),
+      command.discreteFields.map((field) => [
+        field.values.length,
+        field.color,
+        field.type,
+        field.toggleReference,
+        field.colorMap ? field.values : null // Specific values affect color-mapped fields so serialize full state
+      ]),
       command.rightFields.map((field) => [field.values.length, field.color, field.type, field.size]),
       command.alerts.map((row) => row.map((alert) => [alert.type, alert.text, alert.range]))
     ];
@@ -233,7 +241,17 @@ export default class LineGraphRenderer implements TabRenderer {
     if (graphWidth < 1) graphWidth = 1;
 
     // Calculate X step size
-    let timeStepSize = calcAxisStepSize(command.timeRange, graphWidth, this.X_STEP_TARGET_PX);
+    let displayOffset = command.displayOffset;
+    let displayTimeRange: [number, number] = [
+      command.timeRange[0] + displayOffset,
+      command.timeRange[1] + displayOffset
+    ];
+    let maxTime = Math.max(Math.abs(displayTimeRange[0]), Math.abs(displayTimeRange[1]));
+    let intDigits = maxTime > 0 ? Math.log10(maxTime) + 1 : 1;
+    let timeSpan = displayTimeRange[1] - displayTimeRange[0];
+    let decDigits = timeSpan < 1 && timeSpan > 0 ? -Math.log10(timeSpan) : 0;
+    let extraDigits = Math.max(0, intDigits + decDigits - 3);
+    let timeStepSize = calcAxisStepSize(displayTimeRange, graphWidth, this.X_STEP_TARGET_PX + extraDigits * 12);
 
     // Update scroll layout
     this.SCROLL_OVERLAY.style.left = graphLeft.toString() + "px";
@@ -488,12 +506,18 @@ export default class LineGraphRenderer implements TabRenderer {
     }
 
     // Use similar logic as main axes but with an extra decimal point of precision to format the popup timestamps
-    let formatMarkedTimestampText = (time: number): string => {
+    let isStartAt0 = window.preferences?.timestamps !== "original";
+    let formatMarkedTimestampText = (time: number, isDelta: boolean = false): string => {
+      let displayTime = isDelta ? time : time + displayOffset;
       let fractionDigits = Math.max(0, -Math.floor(Math.log10(timeStepSize / 10)));
+      let formattedValue = formatNumber(displayTime, fractionDigits);
+      if (isStartAt0 && !isDelta) {
+        formattedValue = t("units.relativeValue", { value: formattedValue });
+      }
       return isolateValue(
         t("units.values.seconds", {
-          value: formatNumber(time, fractionDigits),
-          count: time
+          value: formattedValue,
+          count: displayTime
         })
       );
     };
@@ -569,7 +593,7 @@ export default class LineGraphRenderer implements TabRenderer {
         hoveredText = hoveredText as string;
 
         let deltaText = t("units.deltaValue", {
-          value: formatMarkedTimestampText(command.hoveredTime - command.selectedTime)
+          value: formatMarkedTimestampText(command.hoveredTime - command.selectedTime, true)
         });
         let xSpace = clampValue(selectedX, graphLeft, graphLeft + graphWidth) - hoveredX;
         let textHalfWidths =
@@ -698,10 +722,10 @@ export default class LineGraphRenderer implements TabRenderer {
 
     // Render x axis
     context.textAlign = "center";
-    let stepPos = Math.ceil(cleanFloat(timeRange[0] / timeStepSize)) * timeStepSize;
+    let stepPos = Math.ceil(cleanFloat(displayTimeRange[0] / timeStepSize)) * timeStepSize;
     let iterCount = 0;
     while (iterCount++ < 100) {
-      let x = scaleValue(stepPos, timeRange, [graphLeft, graphLeft + graphWidth]);
+      let x = scaleValue(stepPos, displayTimeRange, [graphLeft, graphLeft + graphWidth]);
 
       // Clean up final x (scroll can cause rounding problems)
       if (x - graphLeft - graphWidth > 1) {
@@ -711,9 +735,13 @@ export default class LineGraphRenderer implements TabRenderer {
       }
 
       let value = cleanFloat(stepPos);
+      let formattedValue = value.toLocaleString(undefined, { useGrouping: false });
+      if (isStartAt0) {
+        formattedValue = t("units.relativeValue", { value: formattedValue });
+      }
       let text = isolateValue(
         t("units.values.seconds", {
-          value: value.toLocaleString(undefined, { useGrouping: false }),
+          value: formattedValue,
           count: value
         })
       );
@@ -744,6 +772,7 @@ export default class LineGraphRenderer implements TabRenderer {
 
 export type LineGraphRendererCommand = {
   timeRange: [number, number];
+  displayOffset: number;
   selectionMode: SelectionMode;
   selectedTime: number | null;
   hoveredTime: number | null;

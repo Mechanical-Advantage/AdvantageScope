@@ -81,6 +81,10 @@ const config: Config = {
       {
         redirects: [
           {
+            to: "/more-features/ftc-compatibility",
+            from: "/ftc"
+          },
+          {
             to: "/tab-reference/3d-field/advantagescope-xr",
             from: "/xr"
           },

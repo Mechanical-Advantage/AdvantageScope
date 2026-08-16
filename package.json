@@ -165,22 +165,6 @@
         "icon": "icons/app/rlog-icon"
       },
       {
-        "ext": "dslog",
-        "name": "FRC Driver Station log",
-        "description": "FRC Driver Station log",
-        "mimeType": "application/x-dslog",
-        "role": "Viewer",
-        "icon": "icons/app/dslog-icon"
-      },
-      {
-        "ext": "dsevents",
-        "name": "FRC Driver Station events",
-        "description": "FRC Driver Station events",
-        "mimeType": "application/x-dsevents",
-        "role": "Viewer",
-        "icon": "icons/app/dsevents-icon"
-      },
-      {
         "ext": "hoot",
         "name": "Hoot robot log",
         "description": "Hoot robot log",
@@ -202,6 +186,22 @@
         "description": "Comma-separated values",
         "mimeType": "text/csv",
         "role": "Viewer"
+      },
+      {
+        "ext": "dslog",
+        "name": "NI Driver Station log",
+        "description": "NI Driver Station log",
+        "mimeType": "application/x-dslog",
+        "role": "Viewer",
+        "icon": "icons/app/dslog-icon"
+      },
+      {
+        "ext": "dsevents",
+        "name": "NI Driver Station events",
+        "description": "NI Driver Station events",
+        "mimeType": "application/x-dsevents",
+        "role": "Viewer",
+        "icon": "icons/app/dsevents-icon"
       }
     ],
     "mac": {

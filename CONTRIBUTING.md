@@ -36,7 +36,7 @@ cd AdvantageScope
 npm install
 ```
 
-_Note: The `postinstall` script will automatically handle downloading supplemental resources, including Tesseract language support, Owlet binaries, and bundled assets for AdvantageScope Lite.._
+_Note: The `postinstall` script will automatically handle downloading supplemental resources, including Tesseract language support, Owlet binaries, and bundled assets for AdvantageScope Lite._
 
 ## Building Distributions
 
