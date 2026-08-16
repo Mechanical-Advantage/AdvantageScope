@@ -6,8 +6,9 @@
 // at the root directory of this project.
 
 import * as THREE from "three";
-import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { Config3dRobot } from "../../../AdvantageScopeAssets";
+import createGLTFLoader from "../../createGLTFLoader";
 import { rotationSequenceToQuaternion } from "../../../geometry";
 import optimizeGeometries from "../OptimizeGeometries";
 import { prepareTransfer } from "./prepareTransfer";
@@ -31,7 +32,7 @@ self.onmessage = (event) => {
 
   let meshes: THREE.MeshJSON[][] = [];
 
-  const gltfLoader = new GLTFLoader();
+  const gltfLoader = createGLTFLoader();
   Promise.all([
     new Promise((resolve) => {
       gltfLoader.load(robotConfig.path, resolve);
