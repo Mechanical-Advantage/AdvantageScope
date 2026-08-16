@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import { Encoder } from "@msgpack/msgpack";
+import { app } from "electron";
 import fs from "fs";
 import http from "http";
 import { networkInterfaces } from "os";
@@ -51,6 +52,18 @@ export namespace XRServer {
             response.end("Bad request");
             return;
           }
+          // If in dev mode, host the raw TS source so that sourcemaps can be used from other devices (like VR headsets)
+          if ((!app.isPackaged && url.pathname.startsWith("/src")) || url.pathname.startsWith("/node_modules")) {
+            // Try to sanitize/prevent obvious path escapes using path.normalize here
+            let filePath = path.join(__dirname, "../" + path.normalize(url.pathname));
+            if (fs.existsSync(filePath)) {
+              response.writeHead(200, { "Content-Type": "text" });
+              response.end(fs.readFileSync(filePath));
+            } else {
+              response.writeHead(404);
+              response.end("File not found");
+            }
+          }
           switch (url.pathname) {
             case "/":
               response.writeHead(200, { "Content-Type": "text/html" });
@@ -63,6 +76,10 @@ export namespace XRServer {
             case "/index.js":
               response.writeHead(200, { "Content-Type": "text/javascript" });
               response.end(fs.readFileSync(path.join(__dirname, "../bundles/xrClient.js"), { encoding: "utf-8" }));
+              return;
+            case "/xrClient.js.map":
+              response.writeHead(200, { "Content-Type": "text/javascript" });
+              response.end(fs.readFileSync(path.join(__dirname, "../bundles/xrClient.js.map"), { encoding: "utf-8" }));
               return;
             case "/apriltag":
               let family = url.searchParams.get("family");
