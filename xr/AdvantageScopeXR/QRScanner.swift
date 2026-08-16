@@ -35,9 +35,7 @@ class QRScanner {
                 !request.results!.isEmpty &&
                 request.results![0].payloadStringValue != nil) {
                 let value = request.results![0].payloadStringValue!
-                if (value.starts(with: Constants.qrPrefix)) {
-                    self.parseURL(value)
-                }
+                self.parseURL(value) // TODO Jonah please test, I can't get this to build locally
             }
             self.processing = false
         }

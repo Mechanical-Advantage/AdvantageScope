@@ -3,7 +3,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "esModuleInterop": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler", // Required for three.js type imports without file extensions
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "removeComments": true,

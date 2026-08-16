@@ -13,14 +13,17 @@ const QR_CONTAINER = document.getElementsByClassName("qr-container")[0] as HTMLE
 const QR_DIV = document.getElementsByClassName("qr")[0] as HTMLElement;
 const CONTROLS_DIV = document.getElementsByClassName("controls")[0] as HTMLElement;
 const CALIBRATION_MODE = document.getElementsByName("calibration-mode")[0] as HTMLSelectElement;
-const STREAMING_MDOE = document.getElementsByName("streaming-mode")[0] as HTMLSelectElement;
+const STREAMING_MODE = document.getElementsByName("streaming-mode")[0] as HTMLSelectElement;
+const HOST_IP = document.getElementsByName("host-ip")[0] as HTMLSelectElement;
 const SHOW_FLOOR = document.getElementsByName("show-floor")[0] as HTMLInputElement;
 const SHOW_FIELD = document.getElementsByName("show-field")[0] as HTMLInputElement;
 const SHOW_ROBOTS = document.getElementsByName("show-robots")[0] as HTMLInputElement;
+const SEND_TO_META_QUEST = document.getElementById("send-to-meta-quest") as HTMLLinkElement;
 
 let messagePort: MessagePort | null = null;
 let lastQRText = "";
 let lastIsDark: boolean | null = null;
+let ips: Set<string>;
 
 // Render QR code
 function makeQRcode(text: string) {
@@ -58,14 +61,19 @@ function makeQRcode(text: string) {
 function sendSettings() {
   let settings: XRSettings = {
     calibration: Number(CALIBRATION_MODE.value),
-    streaming: Number(STREAMING_MDOE.value),
+    streaming: Number(STREAMING_MODE.value),
     showCarpet: SHOW_FLOOR.checked,
     showField: SHOW_FIELD.checked,
-    showRobots: SHOW_ROBOTS.checked
+    showRobots: SHOW_ROBOTS.checked,
+    selectedIp: HOST_IP.value
   };
   sendMainMessage("xr-settings", settings);
 }
-[CALIBRATION_MODE, STREAMING_MDOE, SHOW_FLOOR, SHOW_FIELD, SHOW_ROBOTS].forEach((input) =>
+
+SEND_TO_META_QUEST.addEventListener("click", () => {
+  sendMainMessage("send-to-meta-quest");
+});
+[CALIBRATION_MODE, STREAMING_MODE, SHOW_FLOOR, SHOW_FIELD, SHOW_ROBOTS, HOST_IP].forEach((input) =>
   input.addEventListener("change", sendSettings)
 );
 
@@ -110,5 +118,15 @@ function handleMainMessage(message: NamedMessage) {
         makeQRcode(newQRText);
       }
       break;
+    case "ips-list":
+      ips = message.data.list;
+      let selectedIp = message.data.selected;
+      ips.forEach((ip) => {
+        const option = new Option("http://" + ip + ":56328", ip);
+        option.selected = ip === selectedIp;
+        HOST_IP.add(option);
+      });
+      HOST_IP.value = selectedIp;
+      sendSettings();
   }
 }

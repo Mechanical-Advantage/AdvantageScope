@@ -5,10 +5,10 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { BrowserWindow, dialog, MessageChannelMain, MessagePortMain } from "electron";
+import { BrowserWindow, dialog, MessageChannelMain, MessagePortMain, shell } from "electron";
 import path from "path";
 import NamedMessage from "../../shared/NamedMessage";
-import { WINDOW_ICON } from "./ElectronConstants";
+import { HTTPS_XR_SERVER_PORT, WINDOW_ICON } from "./ElectronConstants";
 import { XRServer } from "./XRServer";
 
 export namespace XRControls {
@@ -38,6 +38,16 @@ export namespace XRControls {
       let message: NamedMessage = {
         name: "qr-text",
         data: XRServer.getQRText()
+      };
+      windowPort.postMessage(message);
+    }
+  }
+
+  function sendIPs() {
+    if (windowPort !== null) {
+      let message: NamedMessage = {
+        name: "ips-list",
+        data: { list: XRServer.ipAddresses, selected: XRServer.selectedIp }
       };
       windowPort.postMessage(message);
     }
@@ -80,11 +90,17 @@ export namespace XRControls {
         switch (message.name) {
           case "xr-settings":
             XRServer.setXRSettings(message.data);
+            sendQRText();
             break;
+          case "send-to-meta-quest":
+            const selfSignedUri = "https://" + XRServer.selectedIp + ":" + HTTPS_XR_SERVER_PORT;
+            const oculusUri = "https://oculus.com/open_url/?url=" + encodeURI(selfSignedUri);
+            shell.openExternal(oculusUri);
         }
       });
       port2.start();
       sendQRText();
+      sendIPs();
     });
 
     // Start periodic QR code send

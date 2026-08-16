@@ -18,16 +18,14 @@ export default class XRCamera extends THREE.Camera {
 
   updateMatrixWorld(_: boolean): void {}
 
-  copy(object: THREE.Object3D, recursive?: boolean) {
+  copy(object: THREE.Camera, recursive?: boolean) {
     super.copy(object, recursive);
-    if (object.type === "Camera") {
-      this.matrixWorldInverse.copy((object as THREE.Camera).matrixWorldInverse);
-      this.projectionMatrix.copy((object as THREE.Camera).projectionMatrix);
-    }
+    this.matrixWorldInverse.copy(object.matrixWorldInverse);
+    this.projectionMatrix.copy(object.projectionMatrix);
     return this;
   }
 
-  clone(_: boolean): any {
+  clone(): any {
     return new XRCamera().copy(this);
   }
 }
