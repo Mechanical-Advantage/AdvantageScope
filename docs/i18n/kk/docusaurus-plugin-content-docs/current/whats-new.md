@@ -27,11 +27,11 @@ FTC командалары ресми маусымда эксперимента�
 :::
 
 <div className="image-gallery">
-  <img src="/img/whats-new/ftc-1.jpg" />
-  <img src="/img/whats-new/ftc-2.jpg" />
-  <img src="/img/whats-new/ftc-3.webp" />
-  <img src="/img/whats-new/ftc-4.webp" />
-  <img src="/img/whats-new/ftc-5.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-2.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-3.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-4.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
 </div>
 
 FTC журналын жүргізу/телеметрия бойынша бірнеше үшінші тарап кітапханалары AdvantageScope қолданбасымен үйлесімді WPILOG және RLOG сияқты басқа пішімдерді қолдайды. Бұл кітапханалардың құжаттамасын тиісті жобалардан табуға болады; AdvantageScope әзірлеушілері AdvantageScope қолданбасымен пайдалану үшін белгілі бір FTC журналдау шешімін қолдамайды/ұсынмайды.

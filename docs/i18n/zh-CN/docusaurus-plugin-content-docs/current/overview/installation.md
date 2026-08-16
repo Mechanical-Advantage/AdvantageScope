@@ -21,7 +21,7 @@ sidebar_position: 1
 :::
 
 :::info
-AdvantageScope 的每个主版本都会在每年 1 月 FRC kickoff 之前发布，版本号与年份对应（例如 v26.0.0 将于 2026 年 1 月发布）。在每次正式发布前的几个月内，可能会面向希望体验新功能并提供反馈的队伍提供 AdvantageScope 的 Beta 和 Alpha 版本。**使用这些预发布版本的队伍可能会遇到稳定版本中不存在的问题和 Bug。**
+AdvantageScope 的每个主版本都会在每年 1 月 FRC kickoff 之前发布，版本号与年份对应（例如 v26.0.0 已于 2026 年 1 月发布）。在每次正式发布前的几个月内，可能会面向希望体验新功能并提供反馈的队伍提供 AdvantageScope 的 Beta 和 Alpha 版本。**使用这些预发布版本的队伍可能会遇到稳定版本中不存在的问题和 Bug。**
 :::
 
 ## WPILib {#wpilib}

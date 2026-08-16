@@ -90,6 +90,10 @@ preferences:
   coordinateSystemWallBlue: "Parede azul (FRC 2023-2026)"
   coordinateSystemWallAlliance: "Parede da aliança (FRC 2022)"
   coordinateSystemCenterRotated: "Centro/rotacionado (FTC tradicional)"
+  timestamps: "Timestamps"
+  timestampsSelectTitle: "Selecionar como os timestamps são exibidos"
+  timestampsStartZero: "Iniciar no zero"
+  timestampsOriginal: "Original"
   tbaApiKey: "Chave de API do TBA"
   tbaApiKeyInputTitle: "Inserir sua chave de API para o The Blue Alliance"
   networkingTitle: "Opções de rede"
@@ -941,6 +945,7 @@ main:
 units:
   defaultLabel: "{{unit}} (Padrão)"
   deltaValue: "Δ {{value}}"
+  relativeValue: "+{{value}}"
 
   presetFormatting:
     fromTo: "{{from}} → {{to}}"

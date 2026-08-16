@@ -3,11 +3,11 @@
 ## Formatos compatibles {#supported-formats}
 
 - **WPILOG (.wpilog)** - Producido por el [registro de datos integrado](https://docs.wpilib.org/es/stable/docs/software/telemetry/datalog.html) de WPILib y AdvantageKit. [URCL](/more-features/urcl) se puede utilizar para capturar señales de los controladores de motores REV a un archivo WPILOG.
-- **Registros de Driver Station (.dslog y .dsevents)** - Producido por la [Driver Station de FRC](https://docs.wpilib.org/es/stable/docs/software/driverstation/driver-station.html). AdvantageScope busca automáticamente el archivo de registro correspondiente al abrir cualquier tipo de registro.
 - **Hoot (.hoot)** - Producido por el [registrador de señales](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) Phoenix 6 de CTRE.
 - **REVLOG (.revlog)** - Producido por el [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) de REV Robotics.
 - **Road Runner (.log)** - Producido por la biblioteca [Road Runner](https://github.com/acmerobotics/road-runner) para FTC.
 - **CSV (.csv)** - Valores separados por comas, que coinciden con el formato [exportado](/overview/log-files/export) por AdvantageScope en los modos "CSV (Tabla)" o "CSV (Lista)". Consulta [aquí](#csv-formatting) para obtener más detalles.
+- **Registros de Driver Station de NI (.dslog y .dsevents)** - Heredado, producido por la [Driver Station de FRC](https://docs.wpilib.org/es/stable/docs/software/driverstation/driver-station.html) de NI (2010-2026). AdvantageScope busca automáticamente el archivo de registro correspondiente al abrir cualquier tipo de registro.
 - **RLOG (.rlog)** - Heredado, producido por AdvantageKit 2022.
 
 :::info

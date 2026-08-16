@@ -90,6 +90,10 @@ preferences:
   coordinateSystemWallBlue: "Peretele albastru (FRC 2023-2026)"
   coordinateSystemWallAlliance: "Peretele alianței (FRC 2022)"
   coordinateSystemCenterRotated: "Centru/rotit (FTC tradițional)"
+  timestamps: "Marcaje de timp"
+  timestampsSelectTitle: "Selectează modul de afișare a marcajelor de timp"
+  timestampsStartZero: "Începe de la zero"
+  timestampsOriginal: "Original"
   tbaApiKey: "Cheie API TBA"
   tbaApiKeyInputTitle: "Introdu cheia ta API pentru The Blue Alliance"
   networkingTitle: "Opțiuni de rețea"
@@ -954,6 +958,7 @@ main:
 units:
   defaultLabel: "{{unit}} (Implicit)"
   deltaValue: "Δ {{value}}"
+  relativeValue: "+{{value}}"
 
   presetFormatting:
     fromTo: "{{from}} → {{to}}"

@@ -90,6 +90,10 @@ preferences:
   coordinateSystemWallBlue: "קיר כחול (FRC 2023-2026)"
   coordinateSystemWallAlliance: "קיר הברית (FRC 2022)"
   coordinateSystemCenterRotated: "מרכז/מסובב (FTC מסורתי)"
+  timestamps: "חותמות זמן"
+  timestampsSelectTitle: "בחירה כיצד מוצגות חותמות הזמן"
+  timestampsStartZero: "התחלה מאפס"
+  timestampsOriginal: "מקורי"
   tbaApiKey: "מפתח API של The Blue Alliance"
   tbaApiKeyInputTitle: "הזנת מפתח API עבור The Blue Alliance"
   networkingTitle: "אפשרויות רשת"
@@ -954,6 +958,7 @@ main:
 units:
   defaultLabel: "{{unit}} (ברירת מחדל)"
   deltaValue: "Δ {{value}}"
+  relativeValue: "+{{value}}"
 
   presetFormatting:
     fromTo: "{{from}} ← {{to}}"

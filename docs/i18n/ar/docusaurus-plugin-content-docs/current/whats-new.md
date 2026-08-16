@@ -27,11 +27,11 @@ draft: true
 :::
 
 <div className="image-gallery">
-  <img src="/img/whats-new/ftc-1.jpg" />
-  <img src="/img/whats-new/ftc-2.jpg" />
-  <img src="/img/whats-new/ftc-3.webp" />
-  <img src="/img/whats-new/ftc-4.webp" />
-  <img src="/img/whats-new/ftc-5.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-2.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-3.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-4.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
 </div>
 
 تدعم العديد من مكتبات التسجيل/القياس عن بعد لـ FTC من طرف ثالث التنسيقات الأخرى المتوافقة مع AdvantageScope، مثل WPILOG و RLOG. يمكن العثور على وثائق هذه المكتبات في المشاريع الخاصة بها؛ لا يوصي مطورو AdvantageScope بأي حل معين لتسجيل بيانات FTC للاستخدام مع AdvantageScope.

@@ -27,11 +27,11 @@ draft: true
 :::
 
 <div className="image-gallery">
-  <img src="/img/whats-new/ftc-1.jpg" />
-  <img src="/img/whats-new/ftc-2.jpg" />
-  <img src="/img/whats-new/ftc-3.webp" />
-  <img src="/img/whats-new/ftc-4.webp" />
-  <img src="/img/whats-new/ftc-5.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-2.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-3.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-4.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
 </div>
 
 Несколько сторонних библиотек логирования/телеметрии FTC поддерживают другие форматы, совместимые с AdvantageScope, такие как WPILOG и RLOG. Документацию по этим библиотекам можно найти в соответствующих проектах; разработчики AdvantageScope не рекламируют и не рекомендуют какое-либо конкретное решение для логирования FTC для использования с AdvantageScope.

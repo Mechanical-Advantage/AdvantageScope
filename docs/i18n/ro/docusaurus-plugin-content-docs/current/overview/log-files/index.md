@@ -3,11 +3,11 @@
 ## Formate suportate {#supported-formats}
 
 - **WPILOG (.wpilog)** - Produs de [înregistrarea de date integrată](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) din WPILib și AdvantageKit. [URCL](/more-features/urcl) poate fi utilizat pentru a captura semnale de la motoarele REV într-un fișier WPILOG.
-- **Loguri Driver Station (.dslog și .dsevents)** - Produse de [FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html). AdvantageScope caută automat fișierul log corespunzător la deschiderea oricărui tip de log.
 - **Hoot (.hoot)** - Produs de [înregistratorul de semnale](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) Phoenix 6 de la CTRE.
 - **REVLOG (.revlog)** - Produs de [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) de la REV Robotics.
 - **Road Runner (.log)** - Produs de biblioteca [Road Runner](https://github.com/acmerobotics/road-runner) pentru FTC.
 - **CSV (.csv)** - Valori separate prin virgulă, care se potrivesc cu formatul [exportat](/overview/log-files/export) de AdvantageScope în modurile „CSV (tabel)” sau „CSV (listă)”. Consultați [aici](#csv-formatting) pentru detalii.
+- **Loguri NI Driver Station (.dslog și .dsevents)** - Moștenit, produse de [FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html) de la NI (2010-2026). AdvantageScope caută automat fișierul log corespunzător la deschiderea oricărui tip de log.
 - **RLOG (.rlog)** - Moștenit, produs de AdvantageKit 2022.
 
 :::info

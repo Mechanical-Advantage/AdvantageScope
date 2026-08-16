@@ -21,7 +21,7 @@ Ubuntu 23.10 veya sonraki sürümlerde AppImage derlemelerini çalıştırmadan 
 :::
 
 :::info
-AdvantageScope'un her bir ana sürümü, FRC başlangıcından (kickoff) önce Ocak ayında, yıla karşılık gelen bir sürüm numarasıyla yayınlanır (örneğin v26.0.0, Ocak 2026'da yayınlanacaktır). AdvantageScope'un beta ve alfa sürümleri, yeni özellikleri denemek ve geri bildirim sağlamak isteyen takımlar için her sürüm öncesindeki aylarda mevcut olabilir. **Bu ön sürümleri kullanan takımlar, kararlı sürümlerde bulunmayan sorunlar ve hatalarla karşılaşmayı beklemelidir.**
+AdvantageScope'un her bir ana sürümü, FRC başlangıcından (kickoff) önce Ocak ayında, yıla karşılık gelen bir sürüm numarasıyla yayınlanır (örneğin v26.0.0, Ocak 2026'da yayınlandı). AdvantageScope'un beta ve alfa sürümleri, yeni özellikleri denemek ve geri bildirim sağlamak isteyen takımlar için her sürüm öncesindeki aylarda mevcut olabilir. **Bu ön sürümleri kullanan takımlar, kararlı sürümlerde bulunmayan sorunlar ve hatalarla karşılaşmayı beklemelidir.**
 :::
 
 ## WPILib {#wpilib}

@@ -21,7 +21,7 @@ Antes de ejecutar compilaciones de AppImage en Ubuntu 23.10 o posterior, debes d
 :::
 
 :::info
-Cada versión principal de AdvantageScope se lanza en enero antes del inicio de FRC, con un número de versión correspondiente al año (por ejemplo, v26.0.0 se lanzará en enero de 2026). Las versiones beta y alfa de AdvantageScope pueden estar disponibles en los meses previos a cada lanzamiento, para los equipos que deseen experimentar con nuevas funciones y brindar comentarios. **Los equipos que utilicen estas versiones preliminares deben esperar ver problemas y errores que no están presentes en las versiones estables.**
+Cada versión principal de AdvantageScope se lanza en enero antes del inicio de FRC, con un número de versión correspondiente al año (por ejemplo, v26.0.0 se lanzó en enero de 2026). Las versiones beta y alfa de AdvantageScope pueden estar disponibles en los meses previos a cada lanzamiento, para los equipos que deseen experimentar con nuevas funciones y brindar comentarios. **Los equipos que utilicen estas versiones preliminares deben esperar ver problemas y errores que no están presentes en las versiones estables.**
 :::
 
 ## WPILib {#wpilib}

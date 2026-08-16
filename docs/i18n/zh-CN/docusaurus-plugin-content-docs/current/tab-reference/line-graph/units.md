@@ -12,7 +12,7 @@
 
 AdvantageScope 支持多种提供每个字段单位信息的方法。支持大多数常见单位；有关完整列表，请在配置 [手动转换](#manual-conversion) 时查看弹出菜单。
 
-对于 (2) 和 (3)，单位类型使用字符串进行解析。AdvantageScope 支持每个单位的多个名称，包括常见的缩写（例如 `ft` 和 `feet` 均可）。请注意，无论 AdvantageScope 中选择了什么语言，单位名称都必须使用国际单位制 (SI) 符号或美式英语提供。如果单位名称没有按预期被解析，请 [提交 issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues)。
+对于 (2) 和 (3)，单位类型使用字符串进行解析。AdvantageScope 支持每个单位的多个名称，包括常见的缩写（例如 `ft` 和 `feet` 均可）以及美式和英式英语拼写（例如 `meters` 和 `metres`）。请注意，无论 AdvantageScope 中选择了什么语言，单位名称都必须使用国际单位制 (SI) 符号或英语提供。如果单位名称没有按预期被解析，请 [提交 issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues)。
 
 :::tip
 不确定单位是否被正确解析？请检查将字段添加到折线图时 Y 轴上是否显示了单位类型。

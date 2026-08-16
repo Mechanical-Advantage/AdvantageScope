@@ -3,11 +3,11 @@
 ## Қолдау көрсетілетін форматтар {#supported-formats}
 
 - **WPILOG (.wpilog)** - WPILib [кірістірілген деректерді тіркеу](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) функциясы және AdvantageKit арқылы өндіріледі. REV мотор контроллерлерінен сигналдарды WPILOG файлына түсіру үшін [URCL](/more-features/urcl) қолданылуы мүмкін.
-- **Driver Station журналдары (.dslog және .dsevents)** - [FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html) арқылы өндіріледі. AdvantageScope екі журнал түрінің кез келгенін ашқан кезде тиісті журнал файлын автоматты түрде іздейді.
 - **Hoot (.hoot)** - CTRE Phoenix 6 [сигнал тіркеушісі](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) арқылы өндіріледі.
 - **REVLOG (.revlog)** - REV Robotics компаниясының [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) өнімі арқылы өндіріледі.
 - **Road Runner (.log)** - FTC жарысына арналған [Road Runner](https://github.com/acmerobotics/road-runner) кітапханасы арқылы өндіріледі.
 - **CSV (.csv)** - AdvantageScope «CSV (Кесте)» немесе «CSV (Тізім)» режимдерінде [экспортталған](/overview/log-files/export) форматына сәйкес келетін үтірмен бөлінген мәндер. Толығырақ [осы жерден](#csv-formatting) қараңыз.
+- **NI Driver Station журналдары (.dslog және .dsevents)** - Ескі формат, NI компаниясының [FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html) құралы арқылы өндірілген (2010-2026). AdvantageScope екі журнал түрінің кез келгенін ашқан кезде тиісті журнал файлын автоматты түрде іздейді.
 - **RLOG (.rlog)** - Ескі формат, AdvantageKit 2022 арқылы өндірілген.
 
 :::info

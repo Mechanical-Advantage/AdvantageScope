@@ -3,11 +3,11 @@
 ## Поддерживаемые форматы {#supported-formats}
 
 - **WPILOG (.wpilog)** - Создаются встроенным [логированием данных](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) WPILib и AdvantageKit. [URCL](/more-features/urcl) можно использовать для захвата сигналов от контроллеров двигателей REV в файл WPILOG.
-- **Логи Driver Station (.dslog и .dsevents)** - Создаются [FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html). AdvantageScope автоматически ищет соответствующий файл лога при открытии любого типа лога.
 - **Hoot (.hoot)** - Создаются [сигнальным логированием](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) Phoenix 6 от CTRE.
 - **REVLOG (.revlog)** - Создаются [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) от REV Robotics.
 - **Road Runner (.log)** - Создаются библиотекой [Road Runner](https://github.com/acmerobotics/road-runner) для FTC.
 - **CSV (.csv)** - Значения, разделенные запятыми, соответствующие формату, [экспортируемому](/overview/log-files/export) AdvantageScope в режимах «CSV (таблица)» или «CSV (список)». Подробности см. [здесь](#csv-formatting).
+- **Логи NI Driver Station (.dslog и .dsevents)** - Устаревший формат, создаваемый [FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html) от NI (2010-2026). AdvantageScope автоматически ищет соответствующий файл лога при открытии любого типа лога.
 - **RLOG (.rlog)** - Устаревший формат, создаваемый AdvantageKit 2022.
 
 :::info

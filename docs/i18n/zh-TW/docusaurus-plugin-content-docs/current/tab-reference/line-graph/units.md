@@ -12,7 +12,7 @@
 
 AdvantageScope 支援幾種方法來提供每個欄位的單位資訊。支援大多數常見單位；有關完整清單，請在設定[手動轉換](#manual-conversion)時查看快顯選單。
 
-對於 (2) 和 (3)，單位類型使用字串進行解析。AdvantageScope 支援每種單位的多個名稱，包括常見縮寫（例如 `ft` 和 `feet` 都可以）。請注意，無論在 AdvantageScope 中選擇哪種語言，單位名稱必須使用 SI 符號或美式英語提供。如果單位名稱未按預期進行解析，請[建立一個 issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues)。
+對於 (2) 和 (3)，單位類型使用字串進行解析。AdvantageScope 支援每種單位的多個名稱，包括常見縮寫（例如 `ft` 和 `feet` 都可以）以及美式與英式英語拼寫（例如 `meters` 和 `metres`）。請注意，無論在 AdvantageScope 中選擇哪種語言，單位名稱必須使用 SI 符號或英語提供。如果單位名稱未按預期進行解析，請[建立一個 issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues)。
 
 :::tip
 不確定單位是否正確解析？請在將欄位新增至折線圖時，確認 Y 軸上是否顯示了單位類型。

@@ -27,11 +27,11 @@ FTC 队伍在官方赛季期间使用实验性软件时应保持谨慎。Advanta
 :::
 
 <div className="image-gallery">
-  <img src="/img/whats-new/ftc-1.jpg" />
-  <img src="/img/whats-new/ftc-2.jpg" />
-  <img src="/img/whats-new/ftc-3.webp" />
-  <img src="/img/whats-new/ftc-4.webp" />
-  <img src="/img/whats-new/ftc-5.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-2.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-3.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-4.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
 </div>
 
 某些第三方 FTC 日志/遥测库支持与 AdvantageScope 兼容的其他格式，例如 WPILOG 和 RLOG。这些库的文档可以在各自的项目中找到；AdvantageScope 开发者不特别赞同/推荐任何用于 AdvantageScope 的特定 FTC 日志解决方案。

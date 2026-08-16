@@ -27,11 +27,11 @@ Los equipos de FTC deben tener precaución al utilizar software experimental dur
 :::
 
 <div className="image-gallery">
-  <img src="/img/whats-new/ftc-1.jpg" />
-  <img src="/img/whats-new/ftc-2.jpg" />
-  <img src="/img/whats-new/ftc-3.webp" />
-  <img src="/img/whats-new/ftc-4.webp" />
-  <img src="/img/whats-new/ftc-5.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-2.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-3.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-4.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
 </div>
 
 Varias bibliotecas de telemetría/registro de FTC de terceros admiten otros formatos compatibles con AdvantageScope, como WPILOG y RLOG. La documentación de estas bibliotecas se puede encontrar en los proyectos respectivos; los desarrolladores de AdvantageScope no avalan/recomiendan ninguna solución de registro particular de FTC para su uso con AdvantageScope.

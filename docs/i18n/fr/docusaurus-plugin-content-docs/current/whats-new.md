@@ -27,11 +27,11 @@ Les équipes FTC doivent faire preuve de prudence lors de l'utilisation de logic
 :::
 
 <div className="image-gallery">
-  <img src="/img/whats-new/ftc-1.jpg" />
-  <img src="/img/whats-new/ftc-2.jpg" />
-  <img src="/img/whats-new/ftc-3.webp" />
-  <img src="/img/whats-new/ftc-4.webp" />
-  <img src="/img/whats-new/ftc-5.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-2.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-3.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-4.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
 </div>
 
 Plusieurs bibliothèques de journalisation/télémesure FTC tierces prennent en charge d'autres formats compatibles avec AdvantageScope, tels que WPILOG et RLOG. La documentation de ces bibliothèques se trouve dans les projets respectifs; les développeurs d'AdvantageScope n'approuvent ni ne recommandent aucune solution de journalisation FTC particulière pour une utilisation avec AdvantageScope.

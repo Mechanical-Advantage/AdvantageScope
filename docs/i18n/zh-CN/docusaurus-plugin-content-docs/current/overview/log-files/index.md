@@ -3,11 +3,11 @@
 ## 受支持的格式 {#supported-formats}
 
 - **WPILOG (.wpilog)** - 由 WPILib 的 [内置数据日志记录](https://docs.wpilib.org/zh-cn/stable/docs/software/telemetry/datalog.html) 和 AdvantageKit 生成。[URCL](/more-features/urcl) 可用于将来自 REV 电机控制器的信号捕获到 WPILOG 文件中。
-- **操控站日志 (.dslog 和 .dsevents)** - 由 [FRC Driver Station](https://docs.wpilib.org/zh-cn/stable/docs/software/driverstation/driver-station.html) 生成。打开任何一种日志类型时，AdvantageScope 都会自动搜索相应的日志文件。
 - **Hoot (.hoot)** - 由 CTRE 的 Phoenix 6 [信号日志记录器](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) 生成。
 - **REVLOG (.revlog)** - 由 REV Robotics 的 [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) 生成。
 - **Road Runner (.log)** - 由 FTC 的 [Road Runner](https://github.com/acmerobotics/road-runner) 库生成。
 - **CSV (.csv)** - 逗号分隔值，与 AdvantageScope 在“CSV（表格）”或“CSV（列表）”模式下 [导出](/overview/log-files/export) 的格式匹配。有关详细信息，请参阅 [此处](#csv-formatting)。
+- **NI 操控站日志 (.dslog 和 .dsevents)** - 旧版格式，由 NI 的 [FRC Driver Station](https://docs.wpilib.org/zh-cn/stable/docs/software/driverstation/driver-station.html) (2010-2026) 生成。打开任何一种日志类型时，AdvantageScope 都会自动搜索相应的日志文件。
 - **RLOG (.rlog)** - 旧版格式，由 AdvantageKit 2022 生成。
 
 :::info

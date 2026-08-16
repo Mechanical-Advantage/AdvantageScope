@@ -27,11 +27,11 @@ FTC takımları resmi sezon boyunca deneysel yazılımları kullanırken dikkatl
 :::
 
 <div className="image-gallery">
-  <img src="/img/whats-new/ftc-1.jpg" />
-  <img src="/img/whats-new/ftc-2.jpg" />
-  <img src="/img/whats-new/ftc-3.webp" />
-  <img src="/img/whats-new/ftc-4.webp" />
-  <img src="/img/whats-new/ftc-5.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-2.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-3.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-4.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
 </div>
 
 Birkaç üçüncü taraf FTC loglama/telemetri kütüphanesi, AdvantageScope ile uyumlu WPILOG ve RLOG gibi diğer formatları destekler. Bu kütüphanelerin belgeleri ilgili projelerde bulunabilir; AdvantageScope geliştiricileri, AdvantageScope ile kullanım için özel bir FTC loglama çözümünü önermemekte/tavsiye etmemektedir.

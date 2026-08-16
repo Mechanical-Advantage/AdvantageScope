@@ -10,7 +10,7 @@ import DocCardList from "@theme/DocCardList";
 
 <img src="/img/banner-rtl.webp" alt="AdvantageScope" />
 
-AdvantageScope هو تطبيق لتشخيص الروبوت، ومراجعة/تحليل السجلات، وعرض البيانات مخصص لفرق FIRST تم تطويره بواسطة [فريق 6328](https://littletonrobotics.org). يقرأ التطبيق السجلات بتنسيقات WPILOG، وسجل DS، و Hoot (CTRE)، و REVLOG (REV Robotics)، و Road Runner، و CSV، و RLOG، بالإضافة إلى عرض بيانات الروبوت المباشرة باستخدام بث NT4، أو Phoenix، أو RLOG، أو FTC Dashboard. يمكن استخدام AdvantageScope مع أي مشروع WPILib، ولكنه محسّن أيضًا للاستخدام مع إطار عمل إعادة تشغيل السجلات [AdvantageKit](https://docs.advantagekit.org). يرجى ملاحظة أن **AdvantageKit ليس مطلوبًا لاستخدام AdvantageScope**.
+AdvantageScope هو تطبيق لتشخيص الروبوت، ومراجعة/تحليل السجلات، وعرض البيانات مخصص لفرق FIRST تم تطويره بواسطة [فريق 6328](https://littletonrobotics.org). يقرأ التطبيق السجلات بتنسيقات WPILOG، و Hoot (CTRE)، و REVLOG (REV Robotics)، و Road Runner، و CSV، وسجل NI DS، و RLOG، بالإضافة إلى عرض بيانات الروبوت المباشرة باستخدام بث NT4، أو Phoenix، أو RLOG، أو FTC Dashboard. يمكن استخدام AdvantageScope مع أي مشروع WPILib، ولكنه محسّن أيضًا للاستخدام مع إطار عمل إعادة تشغيل السجلات [AdvantageKit](https://docs.advantagekit.org). يرجى ملاحظة أن **AdvantageKit ليس مطلوبًا لاستخدام AdvantageScope**.
 
 <DocCardList
 items={[

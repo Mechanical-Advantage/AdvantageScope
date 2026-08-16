@@ -12,7 +12,7 @@ Fila grafic liniar este conștientă de unități, ceea ce înseamnă că valori
 
 AdvantageScope suportă mai multe metode de furnizare a informațiilor despre unități pentru fiecare câmp. Majoritatea unităților comune sunt suportate; pentru o listă completă, verificați meniul pop-up la configurarea [conversiei manuale](#manual-conversion).
 
-Pentru (2) și (3), tipurile de unități sunt parsate folosind șiruri de caractere. AdvantageScope suportă mai multe nume pentru fiecare unitate, inclusiv abrevieri comune (de exemplu, `ft` și `feet` sunt ambele OK). Notez că numele unităților trebuie furnizate folosind simboluri SI sau engleză americană, indiferent de limba selectată în AdvantageScope. Dacă un nume de unitate nu este parsat așa cum vă așteptați, vă rugăm să [deschideți o problemă](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
+Pentru (2) și (3), tipurile de unități sunt parsate folosind șiruri de caractere. AdvantageScope suportă mai multe nume pentru fiecare unitate, inclusiv abrevieri comune (de exemplu, `ft` și `feet` sunt ambele OK) și atât ortografierea americană, cât și cea britanică (de exemplu, `meters` și `metres`). Reține că numele unităților trebuie furnizate folosind simboluri SI sau engleză, indiferent de limba selectată în AdvantageScope. Dacă un nume de unitate nu este parsat așa cum te aștepți, te rugăm să [deschizi o problemă](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
 
 :::tip
 Nu sunteți sigur dacă unitățile sunt parsează corect? Verificați dacă un tip de unitate este afișat pe axa Y când adăugați un câmp la graficul liniar.

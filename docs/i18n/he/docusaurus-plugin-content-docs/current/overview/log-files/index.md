@@ -3,11 +3,11 @@
 ## פורמטים נתמכים {#supported-formats}
 
 - **WPILOG (.wpilog)** - מופק על ידי [תיעוד הנתונים המובנה](https://docs.wpilib.org/he/stable/docs/software/telemetry/datalog.html) של WPILib ו-AdvantageKit. ניתן להשתמש ב-[URCL](/more-features/urcl) כדי ללכוד אותות מבקרי המנוע של REV לקובץ WPILOG.
-- **יומנים של Driver Station (.dslog ו-.dsevents)** - מופקים על ידי ה-[FRC Driver Station](https://docs.wpilib.org/he/stable/docs/software/driverstation/driver-station.html). AdvantageScope מחפשת באופן אוטומטי את קובץ היומן התואם בעת פתיחת כל אחד מסוגי היומנים.
 - **Hoot (.hoot)** - מופק על ידי [מקליט האותות](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) Phoenix 6 של CTRE.
 - **REVLOG (.revlog)** - מופק על ידי [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) של REV Robotics.
 - **Road Runner (.log)** - מופק על ידי ספריית [Road Runner](https://github.com/acmerobotics/road-runner) עבור FTC.
 - **CSV (.csv)** - ערכים מופרדים בפסיקים, התואמים לפורמט [שמיוצא](/overview/log-files/export) על ידי AdvantageScope במצבים "CSV (טבלה)" או "CSV (רשימה)". לעיון בפרטים, ראו [כאן](#csv-formatting).
+- **יומנים של NI Driver Station (.dslog ו-.dsevents)** - פורמט ישן, מופקים על ידי ה-[FRC Driver Station](https://docs.wpilib.org/he/stable/docs/software/driverstation/driver-station.html) של NI (2010-2026). AdvantageScope מחפשת באופן אוטומטי את קובץ היומן התואם בעת פתיחת כל אחד מסוגי היומנים.
 - **RLOG (.rlog)** - פורמט ישן, מופק על ידי AdvantageKit 2022.
 
 :::info

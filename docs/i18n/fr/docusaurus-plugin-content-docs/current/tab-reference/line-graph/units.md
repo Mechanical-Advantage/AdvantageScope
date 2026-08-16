@@ -12,7 +12,7 @@ L'onglet graphique linéaire prend en compte les unités, ce qui signifie que le
 
 AdvantageScope prend en charge plusieurs méthodes pour fournir des informations d'unité sur chaque champ. La plupart des unités courantes sont prises en charge; pour une liste complète, consultez le menu surgissant lors de la configuration de la [conversion manuelle](#manual-conversion).
 
-Pour (2) et (3), les types d'unités sont analysés à l'aide de chaînes. AdvantageScope prend en charge plusieurs noms pour chaque unité, y compris les abréviations courantes (par ex. `ft` et `feet` sont tous deux acceptés). Notez que les noms d'unités doivent être fournis à l'aide de symboles SI ou de l'anglais américain, quelle que soit la langue sélectionnée dans AdvantageScope. Si un nom d'unité n'est pas analysé comme prévu, veuillez [ouvrir un problème](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
+Pour (2) et (3), les types d'unités sont analysés à l'aide de chaînes. AdvantageScope prend en charge plusieurs noms pour chaque unité, y compris les abréviations courantes (par ex. `ft` et `feet` sont tous deux acceptés) ainsi que les orthographes américaine et britannique (par ex. `meters` et `metres`). Notez que les noms d'unités doivent être fournis à l'aide de symboles SI ou de l'anglais, quelle que soit la langue sélectionnée dans AdvantageScope. Si un nom d'unité n'est pas analysé comme prévu, veuillez [ouvrir un problème](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
 
 :::tip
 Vous ne savez pas si les unités sont correctement analysées? Vérifiez si un type d'unité est affiché sur l'axe Y lors de l'ajout d'un champ au graphique linéaire.

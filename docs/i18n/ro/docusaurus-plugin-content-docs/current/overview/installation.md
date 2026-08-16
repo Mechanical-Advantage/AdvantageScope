@@ -21,7 +21,7 @@ Descărcarea AdvantageScope direct de la Echipa 6328 oferă:
 :::
 
 :::info
-Fiecare versiune majoră a AdvantageScope este lansată în ianuarie înainte de lansarea sezonului FRC, cu un număr de versiune corespunzător anului (de ex. v26.0.0 va fi lansată în ianuarie 2026). Versiunile beta și alpha ale AdvantageScope pot fi disponibile în lunile premergătoare fiecărei lansări, pentru echipele care doresc să experimenteze caracteristici noi și să ofere feedback. **Echipele care utilizează aceste versiuni prealabile ar trebui să se aștepte să întâmpine probleme și erori care nu sunt prezente în versiunile stabile.**
+Fiecare versiune majoră a AdvantageScope este lansată în ianuarie înainte de lansarea sezonului FRC, cu un număr de versiune corespunzător anului (de ex. v26.0.0 a fost lansată în ianuarie 2026). Versiunile beta și alpha ale AdvantageScope pot fi disponibile în lunile premergătoare fiecărei lansări, pentru echipele care doresc să experimenteze caracteristici noi și să ofere feedback. **Echipele care utilizează aceste versiuni prealabile ar trebui să se aștepte să întâmpine probleme și erori care nu sunt prezente în versiunile stabile.**
 :::
 
 ## WPILib {#wpilib}

@@ -27,11 +27,11 @@ Echipele FTC ar trebui să fie prudente atunci când utilizează software experi
 :::
 
 <div className="image-gallery">
-  <img src="/img/whats-new/ftc-1.jpg" />
-  <img src="/img/whats-new/ftc-2.jpg" />
-  <img src="/img/whats-new/ftc-3.webp" />
-  <img src="/img/whats-new/ftc-4.webp" />
-  <img src="/img/whats-new/ftc-5.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-2.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-3.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-4.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
 </div>
 
 Mai multe biblioteci terțe de înregistrare/telemetrie FTC acceptă alte formate compatibile cu AdvantageScope, cum ar fi WPILOG și RLOG. Documentația acestor biblioteci poate fi găsită în proiectele respective; dezvoltatorii AdvantageScope nu susțin/recomandă o anumită soluție de logare FTC pentru utilizarea cu AdvantageScope.

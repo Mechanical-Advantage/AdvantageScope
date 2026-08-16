@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 6
 ---
 
 # 📽️ 锦标赛研讨会 {#championship-conference}

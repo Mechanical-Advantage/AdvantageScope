@@ -90,6 +90,10 @@ preferences:
   coordinateSystemWallBlue: "الجدار الأزرق (FRC 2023-2026)"
   coordinateSystemWallAlliance: "جدار التحالف (FRC 2022)"
   coordinateSystemCenterRotated: "المركز/مُدار (FTC تقليدي)"
+  timestamps: "الطوابع الزمنية"
+  timestampsSelectTitle: "تحديد كيفية عرض الطوابع الزمنية"
+  timestampsStartZero: "البدء من الصفر"
+  timestampsOriginal: "الأصل"
   tbaApiKey: "مفتاح واجهة برمجة تطبيقات TBA"
   tbaApiKeyInputTitle: "أدخل مفتاح واجهة برمجة التطبيقات الخاص بك لـ The Blue Alliance"
   networkingTitle: "خيارات الشبكة"
@@ -989,6 +993,7 @@ main:
 units:
   defaultLabel: "{{unit}} (الافتراضي)"
   deltaValue: "Δ {{value}}"
+  relativeValue: "+{{value}}"
 
   presetFormatting:
     fromTo: "{{from}} ← {{to}}"

@@ -90,6 +90,10 @@ preferences:
   coordinateSystemWallBlue: "Mavi duvar (FRC 2023-2026)"
   coordinateSystemWallAlliance: "İttifak duvarı (FRC 2022)"
   coordinateSystemCenterRotated: "Merkez/döndürülmüş (FTC geleneksel)"
+  timestamps: "Zaman damgaları"
+  timestampsSelectTitle: "Zaman damgalarının nasıl görüntüleneceğini seçin"
+  timestampsStartZero: "Sıfırdan başlat"
+  timestampsOriginal: "Orijinal"
   tbaApiKey: "TBA API anahtarı"
   tbaApiKeyInputTitle: "The Blue Alliance için API anahtarınızı girin"
   networkingTitle: "Ağ seçenekleri"
@@ -933,6 +937,7 @@ main:
 units:
   defaultLabel: "{{unit}} (Varsayılan)"
   deltaValue: "Δ {{value}}"
+  relativeValue: "+{{value}}"
 
   presetFormatting:
     fromTo: "{{from}} → {{to}}"

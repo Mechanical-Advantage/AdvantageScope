@@ -27,11 +27,11 @@ draft: true
 :::
 
 <div className="image-gallery">
-  <img src="/img/whats-new/ftc-1.jpg" />
-  <img src="/img/whats-new/ftc-2.jpg" />
-  <img src="/img/whats-new/ftc-3.webp" />
-  <img src="/img/whats-new/ftc-4.webp" />
-  <img src="/img/whats-new/ftc-5.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-2.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-3.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-4.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
 </div>
 
 מספר ספריות תיעוד/טלמטריה של צד שלישי ב-FTC תומכות בפורמטים אחרים התואמים ל-AdvantageScope, כגון WPILOG ו-RLOG. תיעוד של ספריות אלה ניתן למצוא בפרויקטים הרלוונטיים; מפתחי AdvantageScope אינם ממליצים על פתרון רישום יומן מסוים עבור FTC לשימוש עם AdvantageScope.

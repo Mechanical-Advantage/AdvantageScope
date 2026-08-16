@@ -90,6 +90,10 @@ preferences:
   coordinateSystemWallBlue: "藍方牆 (FRC 2023-2026)"
   coordinateSystemWallAlliance: "聯盟牆 (FRC 2022)"
   coordinateSystemCenterRotated: "中心/旋轉 (FTC 傳統)"
+  timestamps: "時間戳記"
+  timestampsSelectTitle: "選擇時間戳記顯示方式"
+  timestampsStartZero: "從零開始"
+  timestampsOriginal: "原始時間"
   tbaApiKey: "TBA API 金鑰"
   tbaApiKeyInputTitle: "輸入你的 The Blue Alliance API 金鑰"
   networkingTitle: "網路選項"
@@ -931,6 +935,7 @@ main:
 units:
   defaultLabel: "{{unit}} (預設)"
   deltaValue: "Δ {{value}}"
+  relativeValue: "+{{value}}"
 
   presetFormatting:
     fromTo: "{{from}} → {{to}}"

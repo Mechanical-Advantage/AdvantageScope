@@ -90,6 +90,10 @@ preferences:
   coordinateSystemWallBlue: "Синяя стена (FRC 2023-2026)"
   coordinateSystemWallAlliance: "Стена альянса (FRC 2022)"
   coordinateSystemCenterRotated: "Центр/повернутый (FTC традиционная)"
+  timestamps: "Временные метки"
+  timestampsSelectTitle: "Выбрать отображение временных меток"
+  timestampsStartZero: "С нуля"
+  timestampsOriginal: "Исходное"
   tbaApiKey: "API-ключ TBA"
   tbaApiKeyInputTitle: "Введите Ваш API-ключ для The Blue Alliance"
   networkingTitle: "Сетевые опции"
@@ -966,6 +970,7 @@ main:
 units:
   defaultLabel: "{{unit}} (по умолчанию)"
   deltaValue: "Δ {{value}}"
+  relativeValue: "+{{value}}"
 
   presetFormatting:
     fromTo: "{{from}} → {{to}}"

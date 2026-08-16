@@ -90,6 +90,10 @@ preferences:
   coordinateSystemWallBlue: "Көк қабырға (FRC 2023-2026)"
   coordinateSystemWallAlliance: "Альянс қабырғасы (FRC 2022)"
   coordinateSystemCenterRotated: "Орталық/бұрылған (Дәстүрлі FTC)"
+  timestamps: "Уақыт белгілері"
+  timestampsSelectTitle: "Уақыт белгілерінің қалай көрсетілетінін таңдау"
+  timestampsStartZero: "Нөлден бастау"
+  timestampsOriginal: "Бастапқы"
   tbaApiKey: "TBA API кілті"
   tbaApiKeyInputTitle: "The Blue Alliance үшін API кілтін енгізу"
   networkingTitle: "Желі параметрлері"
@@ -940,6 +944,7 @@ main:
 units:
   defaultLabel: "{{unit}} (Әдепкі)"
   deltaValue: "Δ {{value}}"
+  relativeValue: "+{{value}}"
 
   presetFormatting:
     fromTo: "{{from}} → {{to}}"

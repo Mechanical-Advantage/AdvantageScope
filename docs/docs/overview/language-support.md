@@ -34,6 +34,8 @@ All formats supported by AdvantageScope feature full Unicode compatibility when 
 
 Here is an example of logging a string with a Simplified Chinese key:
 
+<!-- Note for translators: This example should be updated based on the target language for translation. The key and value should use non-ASCII characters and be written in the target language. Do not include this comment in the translated page. -->
+
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 

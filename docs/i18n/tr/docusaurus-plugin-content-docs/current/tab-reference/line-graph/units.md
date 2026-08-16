@@ -12,7 +12,7 @@
 
 AdvantageScope, her alan hakkında birim bilgisi sağlamak için birkaç yöntemi destekler. En yaygın birimler desteklenmektedir; tam bir liste için [manuel dönüştürmeyi](#manual-conversion) yapılandırırken açılır menüyü kontrol edin.
 
-(2) ve (3) için birim türleri dizeler kullanılarak ayrıştırılır. AdvantageScope, yaygın kısaltmalar dahil olmak üzere her birim için birden fazla adı destekler (örneğin `ft` ve `feet` ifadelerinin ikisi de uygundur). AdvantageScope'ta seçilen dilden bağımsız olarak birim adlarının SI simgeleri veya Amerikan İngilizcesi kullanılarak sağlanması gerektiğini unutmayın. Bir birim adı beklendiği gibi ayrıştırılmıyorsa lütfen [bir sorun açın](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
+(2) ve (3) için birim türleri dizeler kullanılarak ayrıştırılır. AdvantageScope, yaygın kısaltmalar dahil olmak üzere her birim için birden fazla adı (örneğin `ft` ve `feet` ifadelerinin ikisi de uygundur) ve hem Amerikan hem de İngiliz İngilizcesi yazımlarını (örneğin `meters` ve `metres`) destekler. AdvantageScope'ta seçilen dilden bağımsız olarak birim adlarının SI simgeleri veya İngilizce kullanılarak sağlanması gerektiğini unutmayın. Bir birim adı beklendiği gibi ayrıştırılmıyorsa lütfen [bir sorun açın](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
 
 :::tip
 Birimlerin doğru şekilde ayrıştırılıp ayrıştırılmadığından emin değil misiniz? Çizgi grafiğine bir alan eklerken Y ekseninde bir birim türünün görüntülenip görüntülenmediğini kontrol edin.
