@@ -75,6 +75,8 @@ export default class ConsoleController implements TabController {
       let structuredType = window.log.getStructuredType(this.field);
       if (structuredType === "Console") {
         return [this.field + "/ConsoleLine", this.field + "/ErrorInfo", this.field + "/ProgramCrashInfo"];
+      } else if (structuredType === "ConsoleData") {
+        return [this.field + "/index", this.field + "/data"];
       } else {
         return [this.field];
       }
