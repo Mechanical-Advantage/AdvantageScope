@@ -1949,7 +1949,7 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Robot logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "revlog", "log", "csv"]
+                    extensions: ["rlog", "wpilog", "wpilogxz", "hoot", "revlog", "log", "csv", "dslog", "dsevents"]
                   }
                 ]
               })
@@ -1973,7 +1973,7 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Robot logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "revlog", "log", "csv"]
+                    extensions: ["rlog", "wpilog", "wpilogxz", "hoot", "revlog", "log", "csv", "dslog", "dsevents"]
                   }
                 ]
               })
@@ -3204,7 +3204,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
   }
 
   const width = 400;
-  const optionRows = 12;
+  const optionRows = 13;
   const titleRows = 2;
   const height = optionRows * 27 + titleRows * 34 + 54;
   prefsWindow = new BrowserWindow({
@@ -3506,12 +3506,12 @@ app.whenReady().then(() => {
       x.endsWith(".wpilog") ||
       x.endsWith(".wpilogxz") ||
       x.endsWith(".rlog") ||
-      x.endsWith(".dslog") ||
-      x.endsWith(".dsevents") ||
       x.endsWith(".hoot") ||
       x.endsWith(".revlog") ||
       x.endsWith(".log") ||
-      x.endsWith(".csv")
+      x.endsWith(".csv") ||
+      x.endsWith(".dslog") ||
+      x.endsWith(".dsevents")
   );
   if (fileArgs.length > 0) {
     firstOpenPath = fileArgs[0];

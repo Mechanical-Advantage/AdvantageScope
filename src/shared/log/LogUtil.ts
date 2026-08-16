@@ -31,10 +31,10 @@ export const ENABLED_KEYS = [
   "NT:/AdvantageKit/DriverStation/Enabled", // AdvantageKit
   "DS:controlWord/enabled", // DataLog, post-2027
   "DS:enabled", // DataLog, pre-2027
-  "DS:/Dscomm/Control/ControlData/ControlWord", // FIRST DS
+  "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
   "/DSLog/Status/DSDisabled", // NI DS
   "RobotEnable", // Phoenix
-  "NT:/FMSInfo/ControlWord/enabled", // NT, post-2027
+  "NT:/DriverStation/ControlWord/enabled", // NT, post-2027
   "NT:/FMSInfo/FMSControlData", // NT, pre-2027
   "RUNNING" // Roadrunner
 ];
@@ -45,10 +45,10 @@ export const AUTONOMOUS_KEYS = [
   "NT:/AdvantageKit/DriverStation/Autonomous", // AdvantageKit, pre-2027
   "DS:controlWord/robotMode", // DataLog, post-2027
   "DS:autonomous", // DataLog, pre-2027
-  "DS:/Dscomm/Control/ControlData/ControlWord", // FIRST DS
+  "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
   "/DSLog/Status/DSTeleop", // NI DS
   "RobotMode", // Phoenix
-  "NT:/FMSInfo/ControlWord/robotMode", // NT, post-2027
+  "NT:/DriverStation/ControlWord/robotMode", // NT, post-2027
   "NT:/FMSInfo/FMSControlData" // NT, pre-2027
 ];
 export const UTILITY_KEYS = [
@@ -58,30 +58,32 @@ export const UTILITY_KEYS = [
   "NT:/AdvantageKit/DriverStation/Test", // AdvantageKit, pre-2027
   "DS:controlWord/robotMode", // DataLog, post-2027
   "DS:test", // DataLog, pre-2027
-  "DS:/Dscomm/Control/ControlData/ControlWord", // FIRST DS
+  "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
   "RobotMode", // Phoenix
-  "NT:/FMSInfo/ControlWord/robotMode", // NT, post-2027
+  "NT:/DriverStation/ControlWord/robotMode", // NT, post-2027
   "NT:/FMSInfo/FMSControlData" // NT, pre-2027
 ];
 export const ALLIANCE_KEYS = [
   "/DriverStation/AllianceStation", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/AllianceStation", // AdvantageKit
-  "DS:/Dscomm/Control/ControlData/ControlWord", // FIRST DS
-  "NT:/FMSInfo/IsRedAlliance", // NT
+  "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
+  "NT:/DriverStation/IsRedAlliance", // NT, post-2027
+  "NT:/FMSInfo/IsRedAlliance", // NT, pre-2027
   "AllianceStation" // Phoenix
 ];
 export const DRIVER_STATION_KEYS = [
   "/DriverStation/AllianceStation", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/AllianceStation", // AdvantageKit
-  "DS:/Dscomm/Control/ControlData/ControlWord", // FIRST DS
-  "NT:/FMSInfo/StationNumber", // NT
+  "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
+  "NT:/DriverStation/StationNumber", // NT, post-2027
+  "NT:/FMSInfo/StationNumber", // NT, pre-2027
   "AllianceStation" // Phoenix
 ];
 export const JOYSTICK_KEYS = [
   "/DriverStation/Joystick", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/Joystick", // AdvantageKit
   "DS:joystick", // DataLog
-  "DS:/Dscomm/Control/ControlData/Joysticks/" // FIRST DS
+  "DS:/Dscomm/Control/Robot/ControlData/Joysticks/" // FIRST DS
 ];
 export const SYSTEM_TIME_KEYS = [
   "/SystemStats/EpochTimeMicros", // AdvantageKit
@@ -100,22 +102,25 @@ export const METADATA_KEYS = [
 export const EVENT_KEYS = [
   "/DriverStation/EventName", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/EventName", // AdvantageKit
-  "DS:/Dscomm/Control/MatchInfo/EventName", // FIRST DS
-  "NT:/FMSInfo/EventName", // NT
+  "DS:/Dscomm/Control/Robot/MatchInfo/EventName", // FIRST DS
+  "NT:/DriverStation/EventName", // NT, post-2027
+  "NT:/FMSInfo/EventName", // NT, pre-2027
   "NT:/Netcomm/Control/MatchInfo/EventName" // Systemcore
 ];
 export const MATCH_TYPE_KEYS = [
   "/DriverStation/MatchType", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/MatchType", // AdvantageKit
-  "DS:/Dscomm/Control/MatchInfo/MatchType", // FIRST DS
-  "NT:/FMSInfo/MatchType", // NT
+  "DS:/Dscomm/Control/Robot/MatchInfo/MatchType", // FIRST DS
+  "NT:/DriverStation/MatchType", // NT, post-2027
+  "NT:/FMSInfo/MatchType", // NT, pre-2027
   "NT:/Netcomm/Control/MatchInfo/MatchType" // Systemcore
 ];
 export const MATCH_NUMBER_KEYS = [
   "/DriverStation/MatchNumber", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/MatchNumber", // AdvantageKit
-  "DS:/Dscomm/Control/MatchInfo/MatchNumber", // FIRST DS
-  "NT:/FMSInfo/MatchNumber", // NT
+  "DS:/Dscomm/Control/Robot/MatchInfo/MatchNumber", // FIRST DS
+  "NT:/DriverStation/MatchNumber", // NT, post-2027
+  "NT:/FMSInfo/MatchNumber", // NT, pre-2027
   "NT:/Netcomm/Control/MatchInfo/MatchNumber" // Systemcore
 ];
 
@@ -263,7 +268,7 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
   let enabledData: LogValueSetBoolean | null = null;
   if (enabledKey.endsWith("FMSControlData") || enabledKey.endsWith("ControlWord")) {
     let tempEnabledData = log.getNumber(enabledKey, -Infinity, Infinity);
-    if (tempEnabledData) {
+    if (tempEnabledData && tempEnabledData.timestamps.length > 0) {
       enabledData = {
         timestamps: tempEnabledData.timestamps,
         values: tempEnabledData.values.map((controlWord) => controlWord % 2 === 1)
@@ -271,7 +276,7 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
     }
   } else {
     let tempEnabledData = log.getBoolean(enabledKey, -Infinity, Infinity);
-    if (!tempEnabledData) return null;
+    if (!tempEnabledData || tempEnabledData.timestamps.length === 0) return null;
     enabledData = tempEnabledData;
     if (enabledKey.endsWith("DSDisabled")) {
       enabledData = {
@@ -293,7 +298,7 @@ export function getAutonomousData(log: Log): LogValueSetBoolean | null {
   let autonomousData: LogValueSetBoolean | null = null;
   if (autonomousKey.endsWith("FMSControlData")) {
     let tempAutoData = log.getNumber(autonomousKey, -Infinity, Infinity);
-    if (tempAutoData) {
+    if (tempAutoData && tempAutoData.timestamps.length > 0) {
       autonomousData = {
         timestamps: tempAutoData.timestamps,
         values: tempAutoData.values.map((controlWord) => ((controlWord >> 1) & 1) !== 0)
@@ -301,7 +306,7 @@ export function getAutonomousData(log: Log): LogValueSetBoolean | null {
     }
   } else if (autonomousKey.endsWith("ControlWord")) {
     let tempAutoData = log.getNumber(autonomousKey, -Infinity, Infinity);
-    if (tempAutoData) {
+    if (tempAutoData && tempAutoData.timestamps.length > 0) {
       autonomousData = {
         timestamps: tempAutoData.timestamps,
         values: tempAutoData.values.map((controlWord) => ((controlWord >> 1) & 3) === 1)
@@ -309,7 +314,7 @@ export function getAutonomousData(log: Log): LogValueSetBoolean | null {
     }
   } else if (autonomousKey.toLowerCase().endsWith("robotmode")) {
     let tempAutoData = log.getString(autonomousKey, -Infinity, Infinity);
-    if (tempAutoData) {
+    if (tempAutoData && tempAutoData.timestamps.length > 0) {
       autonomousData = {
         timestamps: tempAutoData.timestamps,
         values: tempAutoData.values.map((text) => text.toLowerCase() === "autonomous")
@@ -317,7 +322,7 @@ export function getAutonomousData(log: Log): LogValueSetBoolean | null {
     }
   } else {
     let tempAutoData = log.getBoolean(autonomousKey, -Infinity, Infinity);
-    if (!tempAutoData) return null;
+    if (!tempAutoData || tempAutoData.timestamps.length === 0) return null;
     autonomousData = tempAutoData;
     if (autonomousKey.endsWith("DSTeleop")) {
       autonomousData = {
@@ -339,7 +344,7 @@ export function getUtilityData(log: Log): LogValueSetBoolean | null {
   let utilityData: LogValueSetBoolean | null = null;
   if (utilityKey.endsWith("FMSControlData")) {
     let tempUtilityData = log.getNumber(utilityKey, -Infinity, Infinity);
-    if (tempUtilityData) {
+    if (tempUtilityData && tempUtilityData.timestamps.length > 0) {
       utilityData = {
         timestamps: tempUtilityData.timestamps,
         values: tempUtilityData.values.map((controlWord) => ((controlWord >> 2) & 1) !== 0)
@@ -347,7 +352,7 @@ export function getUtilityData(log: Log): LogValueSetBoolean | null {
     }
   } else if (utilityKey.endsWith("ControlWord")) {
     let tempUtilityData = log.getNumber(utilityKey, -Infinity, Infinity);
-    if (tempUtilityData) {
+    if (tempUtilityData && tempUtilityData.timestamps.length > 0) {
       utilityData = {
         timestamps: tempUtilityData.timestamps,
         values: tempUtilityData.values.map((controlWord) => ((controlWord >> 1) & 3) === 3)
@@ -355,7 +360,7 @@ export function getUtilityData(log: Log): LogValueSetBoolean | null {
     }
   } else if (utilityKey.toLowerCase().endsWith("robotmode")) {
     let tempUtilityData = log.getString(utilityKey, -Infinity, Infinity);
-    if (tempUtilityData) {
+    if (tempUtilityData && tempUtilityData.timestamps.length > 0) {
       utilityData = {
         timestamps: tempUtilityData.timestamps,
         values: tempUtilityData.values.map((text) => text.toLowerCase() === "utility" || text.toLowerCase() === "test")
@@ -363,7 +368,7 @@ export function getUtilityData(log: Log): LogValueSetBoolean | null {
     }
   } else {
     let tempUtilityData = log.getBoolean(utilityKey, -Infinity, Infinity);
-    if (!tempUtilityData) return null;
+    if (!tempUtilityData || tempUtilityData.timestamps.length === 0) return null;
     utilityData = tempUtilityData;
   }
   return utilityData;
@@ -376,6 +381,8 @@ export function getRobotStateRanges(
   let autoData = getAutonomousData(log);
   let utilityData = getUtilityData(log);
   if (enabledData === null) return [];
+  if (getAutonomousKey(log) !== undefined && autoData === null) return [];
+  if (getUtilityKey(log) !== undefined && utilityData === null) return [];
   if (autoData === null) {
     autoData = {
       timestamps: [],
@@ -640,7 +647,7 @@ export function getJoystickState(log: Log, joystickId: number, time: number): Jo
           } else {
             mapping = "sdl";
           }
-        } else if (joystickKey.endsWith("DS:/Dscomm/Control/ControlData/Joysticks/")) {
+        } else if (joystickKey.endsWith("DS:/Dscomm/Control/Robot/ControlData/Joysticks/")) {
           sourceType = "ds";
           mapping = "sdl";
         }

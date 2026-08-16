@@ -41,10 +41,11 @@
     "@types/download": "^8.0.2",
     "@types/heatmap.js": "2.0.38",
     "@types/jsonfile": "^6.1.2",
+    "@types/lzma-native": "^4.0.4",
     "@types/pngjs": "^6.0.5",
     "@types/ssh2": "^1.11.13",
-    "@types/lzma-native": "^4.0.4",
     "@types/three": "^0.168.0",
+    "ansi_up": "^6.0.6",
     "bignumber.js": "^9.1.2",
     "buffer": "^6.0.3",
     "camera-controls": "^2.9.0",
@@ -78,9 +79,9 @@
     "check-disk-space": "^3.4.0",
     "download": "^8.0.0",
     "jsonfile": "^6.1.0",
+    "lzma-native": "^8.0.6",
     "pngjs": "^7.0.0",
     "ssh2": "^1.14.0",
-    "lzma-native": "^8.0.6",
     "tesseract.js": "^6.0.0",
     "ws": "^8.18.0",
     "youtube-dl-exec": "github:jwbonner/youtube-dl-exec#708fe6410c4c9fa22cf09ab424b15546b178bdbe"
@@ -152,22 +153,6 @@
         "icon": "icons/app/rlog-icon"
       },
       {
-        "ext": "dslog",
-        "name": "FRC Driver Station log",
-        "description": "FRC Driver Station log",
-        "mimeType": "application/x-dslog",
-        "role": "Viewer",
-        "icon": "icons/app/dslog-icon"
-      },
-      {
-        "ext": "dsevents",
-        "name": "FRC Driver Station events",
-        "description": "FRC Driver Station events",
-        "mimeType": "application/x-dsevents",
-        "role": "Viewer",
-        "icon": "icons/app/dsevents-icon"
-      },
-      {
         "ext": "hoot",
         "name": "Hoot robot log",
         "description": "Hoot robot log",
@@ -189,6 +174,22 @@
         "description": "Comma-separated values",
         "mimeType": "text/csv",
         "role": "Viewer"
+      },
+      {
+        "ext": "dslog",
+        "name": "NI Driver Station log",
+        "description": "NI Driver Station log",
+        "mimeType": "application/x-dslog",
+        "role": "Viewer",
+        "icon": "icons/app/dslog-icon"
+      },
+      {
+        "ext": "dsevents",
+        "name": "NI Driver Station events",
+        "description": "NI Driver Station events",
+        "mimeType": "application/x-dsevents",
+        "role": "Viewer",
+        "icon": "icons/app/dsevents-icon"
       }
     ],
     "mac": {

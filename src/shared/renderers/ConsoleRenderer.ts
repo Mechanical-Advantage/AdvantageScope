@@ -5,9 +5,10 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { AnsiUp } from "ansi_up";
 import { SelectionMode } from "../Selection";
 import { IS_LITE } from "../buildConstants";
-import { formatTimeWithMS, htmlEncode } from "../util";
+import { formatTimeWithMS } from "../util";
 import TabRenderer from "./TabRenderer";
 
 export default class ConsoleRenderer implements TabRenderer {
@@ -29,10 +30,15 @@ export default class ConsoleRenderer implements TabRenderer {
   private lines: { timestamp: number; value: string; isError: boolean; isWarning: boolean }[] = [];
   private renderedTimestamps: number[] = [];
   private renderedValues: string[] = [];
+  private renderedRawValues: string[] = [];
+  private lastFilter: string = "";
   private lastScrollPosition: number | null = null;
   private selectionMode: SelectionMode = SelectionMode.Idle;
   private selectedTime: number | null = null;
   private hoveredTime: number | null = null;
+  private lastDisplayOffset: number | null = null;
+  private lastIsStartAt0: boolean | null = null;
+  private displayOffset = 0;
 
   constructor(root: HTMLElement, hasController: boolean) {
     this.hasController = hasController;
@@ -61,7 +67,6 @@ export default class ConsoleRenderer implements TabRenderer {
 
     // Jump input handling
     let jump = () => {
-      // Determine target time
       let targetTime = Number(this.JUMP_INPUT.value);
       if (this.JUMP_INPUT.value === "") {
         if (this.selectionMode !== SelectionMode.Idle) {
@@ -69,6 +74,8 @@ export default class ConsoleRenderer implements TabRenderer {
         } else {
           targetTime = 0;
         }
+      } else {
+        targetTime = targetTime - this.displayOffset;
       }
 
       // Find target row
@@ -172,10 +179,16 @@ export default class ConsoleRenderer implements TabRenderer {
     }
 
     // Update values
-    if (command.key !== this.key || command.keyAvailable !== this.keyAvailable || dataChanged) {
+    let isStartAt0 = window.preferences?.timestamps !== "original";
+    let formatChanged = command.displayOffset !== this.lastDisplayOffset || isStartAt0 !== this.lastIsStartAt0;
+    this.lastDisplayOffset = command.displayOffset;
+    this.lastIsStartAt0 = isStartAt0;
+
+    if (command.key !== this.key || command.keyAvailable !== this.keyAvailable || dataChanged || formatChanged) {
       this.key = command.key;
       this.keyAvailable = command.keyAvailable;
       this.lines = command.lines;
+      this.displayOffset = command.displayOffset;
       this.updateData();
     }
 
@@ -185,7 +198,12 @@ export default class ConsoleRenderer implements TabRenderer {
     // Update placeholder for jump input
     let selectedTime = this.selectedTime;
     let placeholder = selectedTime === null ? 0 : selectedTime;
-    this.JUMP_INPUT.placeholder = formatTimeWithMS(placeholder);
+    let displayPlaceholder = placeholder + command.displayOffset;
+    let placeholderText = formatTimeWithMS(displayPlaceholder);
+    if (isStartAt0) {
+      placeholderText = "+" + placeholderText;
+    }
+    this.JUMP_INPUT.placeholder = placeholderText;
 
     // Scroll to bottom if locked
     if (this.selectionMode === SelectionMode.Locked) {
@@ -200,6 +218,8 @@ export default class ConsoleRenderer implements TabRenderer {
 
   /** Updates the field text and data. */
   updateData() {
+    let isStartAt0 = window.preferences?.timestamps !== "original";
+
     // Update field text
     if (this.key === null) {
       this.FIELD_TEXT.innerText = "";
@@ -275,32 +295,17 @@ export default class ConsoleRenderer implements TabRenderer {
       let timestamp = lines[i].timestamp;
 
       // Format value
-      let valueFormatted = "";
-      if (filter.length > 0 && !filter.startsWith("!")) {
-        let lastPosition = -1;
-        let position = -1;
-        while (
-          position + filter.length < value.length &&
-          (position = value
-            .toLowerCase()
-            .indexOf(filter.toLowerCase(), position === -1 ? 0 : position + filter.length)) > -1
-        ) {
-          if (lastPosition === -1) {
-            valueFormatted += htmlEncode(value.substring(0, position));
-          } else {
-            valueFormatted += htmlEncode(value.substring(lastPosition + filter.length, position));
-          }
-          valueFormatted +=
-            '<span class="highlight">' + htmlEncode(value.substring(position, position + filter.length)) + "</span>";
-          lastPosition = position;
-        }
-        if (lastPosition !== -1) {
-          valueFormatted += value.substring(lastPosition + filter.length);
-        }
+      let valueFormatted: string;
+      if (
+        this.lastFilter === filter &&
+        i < this.renderedRawValues.length &&
+        this.renderedRawValues[i] === value &&
+        this.renderedTimestamps[i] === timestamp
+      ) {
+        valueFormatted = this.renderedValues[i];
       } else {
-        valueFormatted = htmlEncode(value);
+        valueFormatted = this.formatValue(value, this.FILTER_INPUT.value);
       }
-      valueFormatted = valueFormatted.replaceAll("\n", "<br />");
 
       // Update highlight
       let row = this.TABLE_BODY.children[i + 1];
@@ -322,21 +327,32 @@ export default class ConsoleRenderer implements TabRenderer {
 
       // Check if value has changed
       let hasChanged = false;
-      if (i > this.renderedTimestamps.length) {
+      if (i >= this.renderedTimestamps.length) {
         hasChanged = true; // New row
         this.renderedValues.push(valueFormatted);
+        this.renderedRawValues.push(value);
       } else if (this.renderedTimestamps[i] !== timestamp || this.renderedValues[i] !== valueFormatted) {
         hasChanged = true; // Data has changed
         this.renderedValues[i] = valueFormatted;
+        this.renderedRawValues[i] = value;
       }
 
       // Update cell contents
+      let displayTime = timestamp + this.displayOffset;
+      let text = formatTimeWithMS(displayTime);
+      if (isStartAt0) {
+        text = "+" + text;
+      }
+      if ((row.children[0] as HTMLElement).textContent !== text) {
+        (row.children[0] as HTMLElement).textContent = text;
+      }
       if (hasChanged) {
-        (row.children[0] as HTMLElement).innerText = formatTimeWithMS(timestamp);
         (row.children[1] as HTMLElement).innerHTML = valueFormatted;
       }
     }
     this.renderedTimestamps = lines.map((l) => l.timestamp);
+    this.renderedRawValues = lines.map((l) => l.value);
+    this.lastFilter = filter;
   }
 
   /** Updates highlighted times (selected & hovered). */
@@ -367,6 +383,49 @@ export default class ConsoleRenderer implements TabRenderer {
         break;
     }
   }
+
+  /** Formats a console log line containing ANSI escape sequences to HTML with filter highlighting. */
+  private formatValue(value: string, filter: string): string {
+    let normalized = value.replace(/\\(?:033|x1b|x1B|e)(?=\[[0-9;:]*[a-zA-Z])/g, "\x1b");
+    normalized = normalized.replace(/\\r\\n|\\n/g, "\n");
+
+    const ansiUp = new AnsiUp();
+    let html = ansiUp.ansi_to_html(normalized);
+
+    if (filter.length > 0 && !filter.startsWith("!")) {
+      const parts = html.split(/(<[^>]*>)/g);
+      const filterLower = filter.toLowerCase();
+      html = parts
+        .map((part) => {
+          if (part.startsWith("<") && part.endsWith(">")) {
+            return part;
+          }
+          let formatted = "";
+          let lastPosition = -1;
+          let position = -1;
+          while (
+            position + filter.length < part.length &&
+            (position = part.toLowerCase().indexOf(filterLower, position === -1 ? 0 : position + filter.length)) > -1
+          ) {
+            if (lastPosition === -1) {
+              formatted += part.substring(0, position);
+            } else {
+              formatted += part.substring(lastPosition + filter.length, position);
+            }
+            formatted += '<span class="highlight">' + part.substring(position, position + filter.length) + "</span>";
+            lastPosition = position;
+          }
+          if (lastPosition !== -1) {
+            formatted += part.substring(lastPosition + filter.length);
+          } else {
+            formatted = part;
+          }
+          return formatted;
+        })
+        .join("");
+    }
+    return html.replaceAll("\n", "<br />");
+  }
 }
 
 export type ConsoleRendererCommand = {
@@ -378,6 +437,7 @@ export type ConsoleRendererCommand = {
     isError: boolean;
     isWarning: boolean;
   }[];
+  displayOffset: number;
 
   selectionMode: SelectionMode;
   selectedTime: number | null;

@@ -339,6 +339,7 @@ export default class Field3dRendererImpl implements TabRenderer {
 
   /** Resets the camera position and controls target. */
   private resetCamera(command: Field3dRendererCommand, isFTC: boolean, animate = true) {
+    animate = animate && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     this.controls.minDistance = isFTC ? this.CONTROLS_MIN_DISTANCE_FTC : this.CONTROLS_MIN_DISTANCE_FRC;
     if (this.cameraIndex === -1) {
       // Orbit field
