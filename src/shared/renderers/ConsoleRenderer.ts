@@ -5,9 +5,10 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { AnsiUp } from "ansi_up";
 import { SelectionMode } from "../Selection";
 import { IS_LITE } from "../buildConstants";
-import { formatTimeWithMS, htmlEncode } from "../util";
+import { formatTimeWithMS } from "../util";
 import TabRenderer from "./TabRenderer";
 
 export default class ConsoleRenderer implements TabRenderer {
@@ -29,6 +30,8 @@ export default class ConsoleRenderer implements TabRenderer {
   private lines: { timestamp: number; value: string; isError: boolean; isWarning: boolean }[] = [];
   private renderedTimestamps: number[] = [];
   private renderedValues: string[] = [];
+  private renderedRawValues: string[] = [];
+  private lastFilter: string = "";
   private lastScrollPosition: number | null = null;
   private selectionMode: SelectionMode = SelectionMode.Idle;
   private selectedTime: number | null = null;
@@ -292,32 +295,17 @@ export default class ConsoleRenderer implements TabRenderer {
       let timestamp = lines[i].timestamp;
 
       // Format value
-      let valueFormatted = "";
-      if (filter.length > 0 && !filter.startsWith("!")) {
-        let lastPosition = -1;
-        let position = -1;
-        while (
-          position + filter.length < value.length &&
-          (position = value
-            .toLowerCase()
-            .indexOf(filter.toLowerCase(), position === -1 ? 0 : position + filter.length)) > -1
-        ) {
-          if (lastPosition === -1) {
-            valueFormatted += htmlEncode(value.substring(0, position));
-          } else {
-            valueFormatted += htmlEncode(value.substring(lastPosition + filter.length, position));
-          }
-          valueFormatted +=
-            '<span class="highlight">' + htmlEncode(value.substring(position, position + filter.length)) + "</span>";
-          lastPosition = position;
-        }
-        if (lastPosition !== -1) {
-          valueFormatted += value.substring(lastPosition + filter.length);
-        }
+      let valueFormatted: string;
+      if (
+        this.lastFilter === filter &&
+        i < this.renderedRawValues.length &&
+        this.renderedRawValues[i] === value &&
+        this.renderedTimestamps[i] === timestamp
+      ) {
+        valueFormatted = this.renderedValues[i];
       } else {
-        valueFormatted = htmlEncode(value);
+        valueFormatted = this.formatValue(value, this.FILTER_INPUT.value);
       }
-      valueFormatted = valueFormatted.replaceAll("\n", "<br />");
 
       // Update highlight
       let row = this.TABLE_BODY.children[i + 1];
@@ -339,12 +327,14 @@ export default class ConsoleRenderer implements TabRenderer {
 
       // Check if value has changed
       let hasChanged = false;
-      if (i > this.renderedTimestamps.length) {
+      if (i >= this.renderedTimestamps.length) {
         hasChanged = true; // New row
         this.renderedValues.push(valueFormatted);
+        this.renderedRawValues.push(value);
       } else if (this.renderedTimestamps[i] !== timestamp || this.renderedValues[i] !== valueFormatted) {
         hasChanged = true; // Data has changed
         this.renderedValues[i] = valueFormatted;
+        this.renderedRawValues[i] = value;
       }
 
       // Update cell contents
@@ -361,6 +351,8 @@ export default class ConsoleRenderer implements TabRenderer {
       }
     }
     this.renderedTimestamps = lines.map((l) => l.timestamp);
+    this.renderedRawValues = lines.map((l) => l.value);
+    this.lastFilter = filter;
   }
 
   /** Updates highlighted times (selected & hovered). */
@@ -390,6 +382,49 @@ export default class ConsoleRenderer implements TabRenderer {
         Array.from(this.TABLE_BODY.children).forEach((row) => row.classList.remove("hovered"));
         break;
     }
+  }
+
+  /** Formats a console log line containing ANSI escape sequences to HTML with filter highlighting. */
+  private formatValue(value: string, filter: string): string {
+    let normalized = value.replace(/\\(?:033|x1b|x1B|e)(?=\[[0-9;:]*[a-zA-Z])/g, "\x1b");
+    normalized = normalized.replace(/\\r\\n|\\n/g, "\n");
+
+    const ansiUp = new AnsiUp();
+    let html = ansiUp.ansi_to_html(normalized);
+
+    if (filter.length > 0 && !filter.startsWith("!")) {
+      const parts = html.split(/(<[^>]*>)/g);
+      const filterLower = filter.toLowerCase();
+      html = parts
+        .map((part) => {
+          if (part.startsWith("<") && part.endsWith(">")) {
+            return part;
+          }
+          let formatted = "";
+          let lastPosition = -1;
+          let position = -1;
+          while (
+            position + filter.length < part.length &&
+            (position = part.toLowerCase().indexOf(filterLower, position === -1 ? 0 : position + filter.length)) > -1
+          ) {
+            if (lastPosition === -1) {
+              formatted += part.substring(0, position);
+            } else {
+              formatted += part.substring(lastPosition + filter.length, position);
+            }
+            formatted += '<span class="highlight">' + part.substring(position, position + filter.length) + "</span>";
+            lastPosition = position;
+          }
+          if (lastPosition !== -1) {
+            formatted += part.substring(lastPosition + filter.length);
+          } else {
+            formatted = part;
+          }
+          return formatted;
+        })
+        .join("");
+    }
+    return html.replaceAll("\n", "<br />");
   }
 }
 
