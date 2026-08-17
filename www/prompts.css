@@ -92,8 +92,7 @@ input[type="file"] {
   text-align: center;
 }
 
-button,
-div.help-div {
+button {
   position: absolute;
   bottom: 8px;
   width: 30px;
@@ -109,15 +108,16 @@ div.help-div {
 }
 
 div.help-div {
+  position: absolute;
+  bottom: 8px;
   inset-inline-end: 78px;
-  width: 50px;
+  height: 30px;
+  display: flex;
+  align-items: center;
 }
 
 div.help-div > a {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  white-space: nowrap;
 }
 
 #tbaApiKey,
