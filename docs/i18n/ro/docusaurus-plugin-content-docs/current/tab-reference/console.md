@@ -19,9 +19,18 @@ Trageți câmpul dorit în vizualizarea principală pentru a începe. Fiecare r�
 Dați clic pe pictograma paletă de culori pentru a comuta evidențierea mesajelor de avertisment și eroare. Pentru logurile WPILib și AdvantageKit, mesajele sunt evidențiate dacă conțin textul „warning” sau „error”.
 :::
 
-Controalele sunt similare cu cele de pe fila 🔢 [Tabel](../tab-reference/table). Timpul selectat este sincronizat în toate filele. Dați clic pe un rând pentru a-l selecta sau treceți cu cursorul peste un rând pentru a-l previzualiza în orice ferestre pop-up vizibile. Dând clic pe butonul ↓ se trece la timpul selectat (sau timpul introdus în casetă).
+Controalele sunt similare cu cele de pe fila 🔢 [Tabel](../tab-reference/table). Timpul selectat este sincronizat în toate filele. Dați clic pe un rând pentru a-l selecta sau treceți cu cursorul peste un rând pentru a-l previzualiza în orice ferestre pop-up vizibile. Dând clic pe butonul ↓ se trece la timpul selectat (sau timpul introdus în casetă). Marcajele de timp și intrările de salt sunt formatate conform preferinței [Marcaje de timp](/more-features/timestamps).
 
 Introduceți text în câmpul de intrare „Filtru” pentru a afișa doar rândurile care conțin textul de filtrare. Apăsați `Ctrl+F` pentru a selecta rapid câmpul de intrare „Filtru”. Adăugați un „!” la începutul textului de filtrare pentru a _exclude_ mesajele care se potrivesc din vizualizarea principală.
+
+## Formatare ANSI {#ansi-formatting}
+
+Rendererul de consolă acceptă coduri de formatare și culori folosind secvențe de evacuare ANSI standard:
+
+- **Stiluri de text:** Îngroșat (bold), estompat (dim), cursiv (italic) și subliniat (underline)
+- **Culori de prim-plan și fundal:** 16 culori standard (standard și intensitate ridicată)
+- **Culori pe 8 biți și 24 de biți:** Paletă de căutare de 256 de culori și RGB pe 24 de biți
+- **Resetări selective:** Resetarea stilurilor sau culorilor specifice păstrându-le pe celelalte
 
 :::tip
 Dați clic pe pictograma de salvare pentru a exporta datele de consolă într-un fișier text.

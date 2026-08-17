@@ -19,7 +19,7 @@ Fișierele log Hoot pot fi deschise numai după ce sunteți de acord cu [acordul
 În bara de meniu, dați clic pe `Fișier` > `Deschidere log(uri)...`, apoi alegeți unul sau mai multe fișiere log de pe discul local. Tragerea unui fișier log din managerul de fișiere al sistemului pe pictograma sau fereastra AdvantageScope determină de asemenea deschiderea acestuia.
 
 :::info
-Dacă sunt deschise mai multe fișiere simultan, marcajele de timp vor fi aliniate automat. Acest lucru permite compararea ușoară a fișierelor log din mai multe surse.
+Dacă sunt deschise mai multe fișiere simultan, marcajele de timp vor fi aliniate automat. Acest lucru permite compararea ușoară a fișierelor log din mai multe surse. Consultă pagina despre [Marcaje de timp](/more-features/timestamps) pentru detalii despre opțiunile de afișare a marcajelor de timp.
 :::
 
 <img src="/img/overview/log-files/open-file-1.webp" alt="Deschiderea unui log salvat" />

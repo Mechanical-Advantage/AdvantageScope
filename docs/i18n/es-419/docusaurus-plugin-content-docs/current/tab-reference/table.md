@@ -12,6 +12,6 @@ La vista de tabla está diseñada para mostrar en detalle los cambios de valores
 
 <img src="/img/tab-reference/table-2.webp" alt="Tabla de estado del robot" />
 
-El tiempo seleccionado en la tabla se sincroniza en todas las pestañas. Haz clic en una fila para seleccionarla, o pasa el cursor sobre una fila para previsualizarla en cualquier ventana emergente visible. Al hacer clic en el botón ↓, se salta al tiempo seleccionado (o al tiempo ingresado en el cuadro).
+El tiempo seleccionado en la tabla se sincroniza en todas las pestañas. Haz clic en una fila para seleccionarla, o pasa el cursor sobre una fila para previsualizarla en cualquier ventana emergente visible. Al hacer clic en el botón ↓, se salta al tiempo seleccionado (o al tiempo ingresado en el cuadro). Las marcas de tiempo y las entradas de salto se formatean según la preferencia de [Marcas de tiempo](/more-features/timestamps).
 
 <img src="/img/tab-reference/table-3.webp" alt="Salto a un tiempo" />

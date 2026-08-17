@@ -76,6 +76,11 @@ Logger.recordOutput("MyStates", states);
 </TabItem>
 </Tabs>
 
+:::note
+בשנת 2027, מבנה נתונים זה שונה מ-`SwerveModuleState` ל-`SwerveModuleVelocity`.
+עבור קובצי יומן שנוצרו לפני WPILib 2027 ו-Systemcore, סוגי `SwerveModuleState` הישנים עדיין נתמכים לצורך ויזואליזציה.
+:::
+
 ## תצורה {#configuration}
 
 אפשרויות התצורה הבאות זמינות:

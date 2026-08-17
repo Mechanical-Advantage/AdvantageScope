@@ -19,9 +19,18 @@ Arrastra el campo deseado a la vista principal para comenzar. Cada fila represen
 Haz clic en el icono de la paleta de colores para alternar el resaltado de los mensajes de advertencia y error. Para los registros de WPILib y AdvantageKit, los mensajes se resaltan si contienen el texto "warning" o "error".
 :::
 
-Los controles son similares a los de la pestaña 🔢 [Tabla](../tab-reference/table). El tiempo seleccionado se sincroniza en todas las pestañas. Haz clic en una fila para seleccionarla, o desplaza el cursor sobre una fila para ver una vista previa en cualquier ventana emergente visible. Al hacer clic en el botón ↓, se salta al tiempo seleccionado (o al tiempo ingresado en el cuadro).
+Los controles son similares a los de la pestaña 🔢 [Tabla](../tab-reference/table). El tiempo seleccionado se sincroniza en todas las pestañas. Haz clic en una fila para seleccionarla, o desplaza el cursor sobre una fila para ver una vista previa en cualquier ventana emergente visible. Al hacer clic en el botón ↓, se salta al tiempo seleccionado (o al tiempo ingresado en el cuadro). Las marcas de tiempo y las entradas de salto se formatean según la preferencia de [Marcas de tiempo](/more-features/timestamps).
 
 Ingresa texto en la entrada "Filtro" para mostrar solo las filas que contienen el texto del filtro. Presiona `Ctrl+F` para seleccionar rápidamente la entrada "Filtro". Agrega un "!" al comienzo del texto del filtro para _excluir_ los mensajes coincidentes de la vista principal.
+
+## Formato ANSI {#ansi-formatting}
+
+El renderizador de la consola admite códigos de formato y colores mediante secuencias de escape ANSI estándar:
+
+- **Estilos de texto:** Negrita, atenuado, cursiva y subrayado
+- **Colores de primer plano y fondo:** 16 colores estándar (estándar y de alta intensidad)
+- **Colores de 8 bits y 24 bits:** Paleta de búsqueda de 256 colores y RGB de 24 bits
+- **Restablecimientos selectivos:** Restablecer estilos o colores específicos manteniendo otros
 
 :::tip
 Haz clic en el ícono de guardar para exportar los datos de la consola a un archivo de texto.

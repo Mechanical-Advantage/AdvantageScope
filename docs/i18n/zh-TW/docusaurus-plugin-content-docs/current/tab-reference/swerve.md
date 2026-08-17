@@ -76,6 +76,11 @@ Logger.recordOutput("MyStates", states);
 </TabItem>
 </Tabs>
 
+:::note
+在 2027 年，此資料結構已從 `SwerveModuleState` 重新命名為 `SwerveModuleVelocity`。
+對於在 WPILib 2027 和 Systemcore 之前建立的日誌檔案，仍支援使用舊的 `SwerveModuleState` 類型進行視覺化。
+:::
+
 ## 設定 {#configuration}
 
 以下是可用的設定選項：

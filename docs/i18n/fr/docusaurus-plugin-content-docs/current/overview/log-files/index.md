@@ -19,7 +19,7 @@ Les fichiers journaux Hoot ne peuvent être ouverts qu'après avoir accepté le 
 Dans la barre de menu, cliquez sur `Fichier` > `Ouvrir un ou plusieurs journaux...`, puis choisissez un ou plusieurs fichiers journaux sur le disque local. Faire glisser un fichier journal depuis le navigateur de fichiers du système vers l'icône ou la fenêtre d'AdvantageScope provoque également son ouverture.
 
 :::info
-Si plusieurs fichiers sont ouverts simultanément, les horodatages seront alignés automatiquement. Cela permet une comparaison facile des fichiers journaux provenant de plusieurs sources.
+Si plusieurs fichiers sont ouverts simultanément, les horodatages seront alignés automatiquement. Cela permet une comparaison facile des fichiers journaux provenant de plusieurs sources. Consultez la page [Horodatages](/more-features/timestamps) pour plus de détails sur les options d'affichage des horodatages.
 :::
 
 <img src="/img/overview/log-files/open-file-1.webp" alt="Ouverture d'un journal enregistré" />

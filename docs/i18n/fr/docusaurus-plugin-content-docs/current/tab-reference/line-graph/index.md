@@ -11,7 +11,7 @@ Pour zoomer, placez le curseur sur le graphique principal et faites défiler ver
 Cliquer sur le graphique sélectionne un moment, et faire un clic droit le désélectionne. La valeur de chaque champ à ce moment est affichée dans la légende. L'heure sélectionnée est synchronisée sur tous les onglets, ce qui permet de trouver rapidement cet emplacement dans d'autres vues.
 
 :::tip
-Le delta entre l'heure sélectionnée et l'heure survolée est affiché sous forme de superposition sur le graphique, ce qui permet de mesurer facilement les plages de temps.
+Le delta entre l'heure sélectionnée et l'heure survolée est affiché sous forme de superposition sur le graphique, ce qui permet de mesurer facilement les plages de temps. Les horodatages sont formatés selon la préférence [Horodatages](/more-features/timestamps).
 :::
 
 ## Panneau de contrôle {#control-pane}

@@ -19,9 +19,18 @@ Faites glisser le champ souhaité vers la vue principale pour commencer. Chaque 
 Cliquez sur l'icône de palette de couleurs pour activer ou désactiver la mise en surbrillance des messages d'avertissement et d'erreur. Pour les journaux WPILib et AdvantageKit, les messages sont mis en surbrillance s'ils contiennent le texte « warning » ou « error ».
 :::
 
-Les contrôles sont similaires à l'onglet 🔢 [Tableau](../tab-reference/table). L'heure sélectionnée est synchronisée sur tous les onglets. Cliquez sur une ligne pour la sélectionner, ou survolez une ligne pour prévisualiser ce moment dans n'importe quelle fenêtre détachée visible. Cliquer sur le bouton ↓ permet d'aller à l'heure sélectionnée (ou à l'heure saisie dans la zone).
+Les contrôles sont similaires à l'onglet 🔢 [Tableau](../tab-reference/table). L'heure sélectionnée est synchronisée sur tous les onglets. Cliquez sur une ligne pour la sélectionner, ou survolez une ligne pour prévisualiser ce moment dans n'importe quelle fenêtre détachée visible. Cliquer sur le bouton ↓ permet d'aller à l'heure sélectionnée (ou à l'heure saisie dans la zone). Les horodatages et les saisies de saut sont formatés selon la préférence [Horodatages](/more-features/timestamps).
 
 Saisissez du texte dans la zone « Filtrer » pour n'afficher que les lignes qui contiennent le texte du filtre. Appuyez sur `Ctrl+F` pour sélectionner rapidement la zone « Filtrer ». Ajoutez un « ! » au début du texte du filtre pour _exclure_ les messages correspondants de la vue principale.
+
+## Formatage ANSI {#ansi-formatting}
+
+Le moteur de rendu de la console prend en charge le formatage et les codes couleur à l'aide des séquences d'échappement ANSI standard :
+
+- **Styles de texte :** Gras, atténué, italique et souligné
+- **Couleurs de premier plan et d'arrière-plan :** 16 couleurs standard (standard et haute intensité)
+- **Couleurs 8 bits et 24 bits :** Palette de recherche de 256 couleurs et RVB 24 bits
+- **Réinitialisations sélectives :** Réinitialiser des styles ou des couleurs spécifiques tout en conservant les autres
 
 :::tip
 Cliquez sur l'icône d'enregistrement pour exporter les données de la console vers un fichier texte.

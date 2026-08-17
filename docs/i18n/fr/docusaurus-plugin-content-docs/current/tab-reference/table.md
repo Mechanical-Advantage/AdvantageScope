@@ -12,6 +12,6 @@ La vue en tableau est conçue pour afficher en détail les changements de valeur
 
 <img src="/img/tab-reference/table-2.webp" alt="Tableau d'état du robot" />
 
-L'heure sélectionnée dans le tableau est synchronisée sur tous les onglets. Cliquez sur une ligne pour la sélectionner, ou survolez une ligne pour prévisualiser ce moment dans n'importe quelle fenêtre détachée visible. Cliquer sur le bouton ↓ permet d'aller à l'heure sélectionnée (ou à l'heure saisie dans la zone).
+L'heure sélectionnée dans le tableau est synchronisée sur tous les onglets. Cliquez sur une ligne pour la sélectionner, ou survolez une ligne pour prévisualiser ce moment dans n'importe quelle fenêtre détachée visible. Cliquer sur le bouton ↓ permet d'aller à l'heure sélectionnée (ou à l'heure saisie dans la zone). Les horodatages et les saisies de saut sont formatés selon la préférence [Horodatages](/more-features/timestamps).
 
 <img src="/img/tab-reference/table-3.webp" alt="Sauter à un moment" />

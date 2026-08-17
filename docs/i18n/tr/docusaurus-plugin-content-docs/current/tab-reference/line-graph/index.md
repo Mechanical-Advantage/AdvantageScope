@@ -11,7 +11,7 @@ Yakınlaştırmak için imleci ana grafiğin üzerine getirin ve yukarı veya a�
 Grafiğe tıklamak bir zaman seçer ve sağ tıklamak seçimi kaldırır. O zamandaki her alanın değeri göstergede görüntülenir. Seçilen zaman tüm sekmeler arasında senkronize edilir, bu da bu konumu diğer görünümlerde hızlıca bulmayı kolaylaştırır.
 
 :::tip
-Seçilen zaman ile üzerine gelinen zaman arasındaki fark grafik üzerinde bir kaplama olarak görüntülenir, bu da zaman aralıklarını ölçmeyi kolaylaştırır.
+Seçilen zaman ile üzerine gelinen zaman arasındaki fark grafik üzerinde bir kaplama olarak görüntülenir, bu da zaman aralıklarını ölçmeyi kolaylaştırır. Zaman damgaları [Zaman Damgaları](/more-features/timestamps) tercihine göre biçimlendirilir.
 :::
 
 ## Kontrol paneli {#control-pane}

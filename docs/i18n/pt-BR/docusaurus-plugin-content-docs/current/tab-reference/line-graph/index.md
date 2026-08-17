@@ -11,7 +11,7 @@ Para dar zoom, posicione o cursor sobre o gráfico principal e role para cima ou
 Clicar no gráfico seleciona um tempo, e clicar com o botão direito desmarca. O valor de cada campo naquele tempo é exibido na legenda. O tempo selecionado é sincronizado em todas as guias, tornando fácil encontrar rapidamente esse local em outras visualizações.
 
 :::tip
-A variação (delta) entre o tempo selecionado e o tempo sob o ponteiro é exibida como uma sobreposição no gráfico, tornando fácil medir intervalos de tempo.
+A variação (delta) entre o tempo selecionado e o tempo sob o ponteiro é exibida como uma sobreposição no gráfico, tornando fácil medir intervalos de tempo. Os timestamps são formatados de acordo com a preferência de [Timestamps](/more-features/timestamps).
 :::
 
 ## Painel de controle {#control-pane}

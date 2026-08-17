@@ -76,6 +76,11 @@ Logger.recordOutput("MyStates", states);
 </TabItem>
 </Tabs>
 
+:::note
+2027 жылы бұл деректер құрылымы `SwerveModuleState`-тен `SwerveModuleVelocity` болып өзгертілді.
+WPILib 2027 және Systemcore-ге дейін жасалған журнал файлдары үшін бұрынғы `SwerveModuleState` түрлері визуализация үшін әлі де қолдау табады.
+:::
+
 ## Конфигурация {#configuration}
 
 Келесі конфигурация параметрлері қолжетімді:

@@ -12,6 +12,6 @@ Vizualizarea sub formă de tabel este concepută pentru a afișa în detaliu mod
 
 <img src="/img/tab-reference/table-2.webp" alt="Tabel cu starea robotului" />
 
-Timpul selectat în tabel este sincronizat în toate filele. Dați clic pe un rând pentru a-l selecta sau treceți cu cursorul peste un rând pentru a-l previzualiza în orice ferestre pop-up vizibile. Dând clic pe butonul ↓ se trece la timpul selectat (sau timpul introdus în casetă).
+Timpul selectat în tabel este sincronizat în toate filele. Dați clic pe un rând pentru a-l selecta sau treceți cu cursorul peste un rând pentru a-l previzualiza în orice ferestre pop-up vizibile. Dând clic pe butonul ↓ se trece la timpul selectat (sau timpul introdus în casetă). Marcajele de timp și intrările de salt sunt formatate conform preferinței [Marcaje de timp](/more-features/timestamps).
 
 <img src="/img/tab-reference/table-3.webp" alt="Săritură la un moment de timp" />

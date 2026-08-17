@@ -19,7 +19,7 @@ Los archivos de registro de Hoot solo se pueden abrir después de aceptar el [ac
 En la barra de menú, haz clic en `Archivo` > `Abrir registro(s)...` (File > Open Log(s)...), luego elige uno o más archivos de registro del disco local. Arrastrar un archivo de registro desde el explorador de archivos del sistema al ícono o a la ventana de AdvantageScope también hace que se abra.
 
 :::info
-Si se abren varios archivos simultáneamente, las marcas de tiempo se alinearán automáticamente. Esto permite una fácil comparación de archivos de registro de múltiples fuentes.
+Si se abren varios archivos simultáneamente, las marcas de tiempo se alinearán automáticamente. Esto permite una fácil comparación de archivos de registro de múltiples fuentes. Consulta la página de [Marcas de tiempo](/more-features/timestamps) para obtener detalles sobre las opciones de visualización de marcas de tiempo.
 :::
 
 <img src="/img/overview/log-files/open-file-1.webp" alt="Apertura de un registro guardado" />

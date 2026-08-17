@@ -11,7 +11,7 @@ Pentru a mări, plasați cursorul peste graficul principal și derulați în sus
 Dând clic pe grafic se selectează un timp, iar dând clic dreapta se deselectează. Valoarea fiecărui câmp la acel timp este afișată în legendă. Timpul selectat este sincronizat în toate filele, făcând ușoară găsirea rapidă a acestei locații în alte vizualizări.
 
 :::tip
-Diferența (delta) dintre timpul selectat și timpul survolat este afișată ca o suprapunere pe grafic, făcând ușoară măsurarea intervalelor de timp.
+Diferența (delta) dintre timpul selectat și timpul survolat este afișată ca o suprapunere pe grafic, făcând ușoară măsurarea intervalelor de timp. Marcajele de timp sunt formatate conform preferinței [Marcaje de timp](/more-features/timestamps).
 :::
 
 ## Panoul de control {#control-pane}

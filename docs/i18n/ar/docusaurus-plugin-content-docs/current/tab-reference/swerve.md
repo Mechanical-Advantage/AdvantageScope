@@ -76,6 +76,11 @@ Logger.recordOutput("MyStates", states);
 </TabItem>
 </Tabs>
 
+:::note
+في عام 2027، تمت إعادة تسمية هيكل البيانات هذا من `SwerveModuleState` إلى `SwerveModuleVelocity`.
+بالنسبة لملفات السجلات التي تم إنشاؤها قبل WPILib 2027 وSystemcore، لا تزال أنواع `SwerveModuleState` القديمة مدعومة للعرض المرئي.
+:::
+
 ## التكوين {#configuration}
 
 تتوفر خيارات التكوين التالية:

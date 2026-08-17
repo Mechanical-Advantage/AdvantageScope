@@ -19,9 +19,18 @@ Başlamak için istenen alanı ana görünüme sürükleyin. Her satır alandaki
 Uyarı ve hata mesajları için vurgulamayı açıp kapatmak üzere renk paleti simgesine tıklayın. WPILib ve AdvantageKit logları için "warning" veya "error" metnini içeren mesajlar vurgulanır.
 :::
 
-Kontroller 🔢 [Tablo](../tab-reference/table) sekmesine benzer. Seçilen zaman tüm sekmeler arasında senkronize edilir. Bir satırı seçmek için tıklayın veya görünür herhangi bir ayrılmış pencerede önizlemek için bir satırın üzerine gelin. ↓ düğmesine tıklamak seçilen zamana (veya kutuya girilen zamana) atlar.
+Kontroller 🔢 [Tablo](../tab-reference/table) sekmesine benzer. Seçilen zaman tüm sekmeler arasında senkronize edilir. Bir satırı seçmek için tıklayın veya görünür herhangi bir ayrılmış pencerede önizlemek için bir satırın üzerine gelin. ↓ düğmesine tıklamak seçilen zamana (veya kutuya girilen zamana) atlar. Zaman damgaları ve atlama girişleri [Zaman Damgaları](/more-features/timestamps) tercihine göre biçimlendirilir.
 
 Yalnızca filtre metnini içeren satırları görüntülemek için "Filtre" girdisine metin girin. "Filtre" girdisini hızlıca seçmek için `Ctrl+F` tuşlarına basın. Eşleşen mesajları ana görünümden _hariç tutmak_ için filtre metninin başına bir "!" ekleyin.
+
+## ANSI Biçimlendirme {#ansi-formatting}
+
+Konsol oluşturucu, standart ANSI kaçış dizilerini kullanarak biçimlendirme ve renk kodlarını destekler:
+
+- **Metin Stilleri:** Kalın, soluk, italik ve altı çizili
+- **Ön Plan ve Arka Plan Renkleri:** Standart 16 renk (standart ve yüksek yoğunluklu)
+- **8 Bit ve 24 Bit Renkler:** 256 renk arama paleti ve 24 bit RGB
+- **Seçici Sıfırlamalar:** Diğerlerini korurken belirli stilleri veya renkleri sıfırlama
 
 :::tip
 Konsol verilerini bir metin dosyasına dışa aktarmak için kaydet simgesine tıklayın.

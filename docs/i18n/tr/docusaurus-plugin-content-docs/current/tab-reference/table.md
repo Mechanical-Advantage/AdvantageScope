@@ -12,6 +12,6 @@ Tablo görünümü, bir dizi alandaki belirli değer değişikliklerini ayrınt�
 
 <img src="/img/tab-reference/table-2.webp" alt="Robot durumu tablosu" />
 
-Tabloda seçilen zaman tüm sekmeler arasında senkronize edilir. Bir satırı seçmek için tıklayın veya görünür herhangi bir ayrılmış pencerede önizlemek için bir satırın üzerine gelin. ↓ düğmesine tıklamak seçilen zamana (veya kutuya girilen zamana) atlar.
+Tabloda seçilen zaman tüm sekmeler arasında senkronize edilir. Bir satırı seçmek için tıklayın veya görünür herhangi bir ayrılmış pencerede önizlemek için bir satırın üzerine gelin. ↓ düğmesine tıklamak seçilen zamana (veya kutuya girilen zamana) atlar. Zaman damgaları ve atlama girişleri [Zaman Damgaları](/more-features/timestamps) tercihine göre biçimlendirilir.
 
 <img src="/img/tab-reference/table-3.webp" alt="Bir zamana atlama" />

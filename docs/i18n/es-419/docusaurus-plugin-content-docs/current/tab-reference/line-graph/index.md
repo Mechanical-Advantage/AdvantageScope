@@ -11,7 +11,7 @@ Para hacer zoom, coloca el cursor sobre el gráfico principal y desplázate haci
 Al hacer clic en el gráfico se selecciona un tiempo, y al hacer clic derecho se anula la selección. El valor de cada campo en ese momento se muestra en la leyenda. El tiempo seleccionado se sincroniza en todas las pestañas, lo que facilita encontrar rápidamente esta ubicación en otras vistas.
 
 :::tip
-El delta entre los tiempos seleccionados y los tiempos en los que se encuentra el cursor se muestra como una superposición en el gráfico, lo que facilita la medición de rangos de tiempo.
+El delta entre los tiempos seleccionados y los tiempos en los que se encuentra el cursor se muestra como una superposición en el gráfico, lo que facilita la medición de rangos de tiempo. Las marcas de tiempo se formatean según la preferencia de [Marcas de tiempo](/more-features/timestamps).
 :::
 
 ## Panel de control {#control-pane}

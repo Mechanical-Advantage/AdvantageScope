@@ -76,6 +76,11 @@ Logger.recordOutput("MyStates", states);
 </TabItem>
 </Tabs>
 
+:::note
+2027'de bu veri yapısı `SwerveModuleState`ten `SwerveModuleVelocity` olarak yeniden adlandırıldı.
+WPILib 2027 ve Systemcore'dan önce oluşturulan log dosyaları için eski `SwerveModuleState` türleri görselleştirme amacıyla hala desteklenmektedir.
+:::
+
 ## Yapılandırma {#configuration}
 
 Aşağıdaki yapılandırma seçenekleri mevcuttur:

@@ -19,7 +19,7 @@ Arquivos de log Hoot só podem ser abertos após concordar com o [contrato de li
 Na barra de menus, clique em `Arquivo` > `Abrir log(s)...`, depois escolha um ou mais arquivos de log do disco local. Arrastar um arquivo de log do navegador de arquivos do sistema para o ícone ou janela do AdvantageScope também faz com que ele seja aberto.
 
 :::info
-Se múltiplos arquivos forem abertos simultaneamente, os timestamps serão alinhados automaticamente. Isso permite uma comparação fácil de arquivos de log de múltiplas fontes.
+Se múltiplos arquivos forem abertos simultaneamente, os timestamps serão alinhados automaticamente. Isso permite uma comparação fácil de arquivos de log de múltiplas fontes. Consulte a página de [Timestamps](/more-features/timestamps) para obter detalhes sobre as opções de exibição de timestamps.
 :::
 
 <img src="/img/overview/log-files/open-file-1.webp" alt="Abrindo um log salvo" />

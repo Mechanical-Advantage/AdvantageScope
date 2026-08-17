@@ -12,6 +12,6 @@ A visualização em tabela foi projetada para mostrar as alterações de valores
 
 <img src="/img/tab-reference/table-2.webp" alt="Tabela de estado do robô" />
 
-O tempo selecionado na tabela é sincronizado em todas as guias. Clique em uma linha para selecioná-la ou passe o mouse sobre uma linha para pré-visualizá-la em quaisquer janelas pop-up visíveis. Clicar no botão ↓ pula para o tempo selecionado (ou o tempo inserido na caixa).
+O tempo selecionado na tabela é sincronizado em todas as guias. Clique em uma linha para selecioná-la ou passe o mouse sobre uma linha para pré-visualizá-la em quaisquer janelas pop-up visíveis. Clicar no botão ↓ pula para o tempo selecionado (ou o tempo inserido na caixa). Os timestamps e as entradas de salto são formatados de acordo com a preferência de [Timestamps](/more-features/timestamps).
 
 <img src="/img/tab-reference/table-3.webp" alt="Saltando para um tempo" />
