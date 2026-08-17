@@ -26,7 +26,7 @@ AdvantageScope supports multiple languages to provide a localized experience for
 
 To change the display language in AdvantageScope, open the preferences window by clicking `App` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS). Under the "Language" setting, you can choose from the list of supported languages or select "System Default" to automatically match your operating system's language.
 
-<img src="/img/prefs_en-US.webp" alt="Diagram of preferences" height="350" />
+<img src="/img/prefs_en-US.webp" alt="Diagram of preferences" height="450" />
 
 ## Logging Keys {#logging-keys}
 

@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/metadata-1.webp" alt="Üst veri sekmesine genel bakış" />
 
+_Yukarıda İngilizce arayüz gösterilmektedir._
+
 Aşağıdaki örnek kod Java kullanarak üst verilerin nasıl loglanacağını göstermektedir.
 
 <Tabs groupId="library">

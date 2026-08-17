@@ -11,6 +11,8 @@ L'onglet terrain 2D montre une visualisation 2D du robot superposée sur une car
 
 <img src="/img/tab-reference/2d-field-1.webp" alt="Aperçu de l'onglet terrain 2D" />
 
+_L'interface en anglais est illustrée ci-dessus._
+
 <details>
 <summary>Contrôles de la chronologie</summary>
 

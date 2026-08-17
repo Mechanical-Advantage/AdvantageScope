@@ -57,6 +57,8 @@ _Se puede encontrar más información sobre el soporte de unidades en la [docume
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="Gráficos con reconocimiento de unidades" />
 
+_En la imagen de arriba se muestra la interfaz en inglés._
+
 ## 🏁 Descargas de registros más rápidas {#faster-log-downloads}
 
 [La descarga de registros del roboRIO](/overview/log-files/#downloading-from-the-robot) ahora es **2-4 veces más rápida** que las versiones anteriores. Esto se logra cambiando a un nuevo protocolo (FTP) que permite al roboRIO transferir datos de registro con menos sobrecarga de CPU.

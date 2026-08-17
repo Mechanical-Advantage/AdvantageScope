@@ -8,6 +8,8 @@ La vue en tableau est conçue pour afficher en détail les changements de valeur
 
 <img src="/img/tab-reference/table-1.webp" alt="Aperçu" />
 
+_L'interface en anglais est illustrée ci-dessus._
+
 **Une nouvelle ligne est créée pour chaque changement dans l'un des champs affichés.** Les lignes en double ne sont pas affichées. Par exemple, un tableau montrant l'état du robot pendant un match ressemblerait à ceci :
 
 <img src="/img/tab-reference/table-2.webp" alt="Tableau d'état du robot" />

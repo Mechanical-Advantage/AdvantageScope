@@ -11,6 +11,8 @@ Swerve 分頁顯示四個 Swerve 模組的狀態，包括速度向量、空閒�
 
 <img src="/img/tab-reference/swerve-1.webp" alt="Swerve 分頁概述" />
 
+_上圖所示為英文介面。_
+
 <details>
 <summary>時間軸控制項</summary>
 

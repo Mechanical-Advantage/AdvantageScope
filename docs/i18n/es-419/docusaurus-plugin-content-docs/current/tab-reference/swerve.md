@@ -11,6 +11,8 @@ La pestaña swerve muestra el estado de cuatro módulos swerve, incluidos los ve
 
 <img src="/img/tab-reference/swerve-1.webp" alt="Descripción general de la pestaña de swerve" />
 
+_En la imagen de arriba se muestra la interfaz en inglés._
+
 <details>
 <summary>Controles de la línea de tiempo</summary>
 

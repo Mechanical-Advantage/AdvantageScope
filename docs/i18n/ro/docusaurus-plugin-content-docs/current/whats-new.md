@@ -57,6 +57,8 @@ _Mai multe informații despre suportul pentru unități pot fi găsite în [docu
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="Grafice bazate pe unități" />
 
+_Interfața în limba engleză este ilustrată mai sus._
+
 ## 🏁 Descărcări mai rapide de loguri {#faster-log-downloads}
 
 [Descărcarea logurilor de pe roboRIO](/overview/log-files/#downloading-from-the-robot) este acum de **2-4x mai rapidă** decât în versiunile anterioare. Acest lucru se realizează prin trecerea la un nou protocol (FTP) care permite roboRIO să transfere date de log cu o încărcare mai mică a CPU-ului.

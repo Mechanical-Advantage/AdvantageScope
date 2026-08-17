@@ -24,6 +24,8 @@ Se múltiplos arquivos forem abertos simultaneamente, os timestamps serão alinh
 
 <img src="/img/overview/log-files/open-file-1.webp" alt="Abrindo um log salvo" />
 
+_A interface em inglês é exibida acima._
+
 ## Adicionando novos logs {#adding-new-logs}
 
 Após abrir um arquivo de log, logs adicionais podem ser facilmente adicionados à visualização. Os timestamps serão realinhados automaticamente para sincronização com os dados existentes.
@@ -33,24 +35,26 @@ Na barra de menus, clique em `Arquivo` > `Adicionar novo(s) log(s)...`, depois e
 ## Baixando do robô {#downloading-from-the-robot}
 
 <details>
-<summary>Configuração</summary>
+<summary>Configurações</summary>
 
-Abra a janela de preferências clicando em `App` > `Mostrar preferências...` (Windows/Linux) ou `AdvantageScope` > `Configurações...` (macOS). Atualize o endereço do robô e a pasta de logs.
+Abra a janela de preferências clicando em `App` > `Mostrar Preferências...` (Windows/Linux) ou `AdvantageScope` > `Configurações...` (macOS). Atualize o endereço do robô e a pasta de logs.
 
-<img src="/img/prefs_pt-BR.webp" alt="Diagrama de preferências" height="350" />
+<img src="/img/prefs_pt-BR.webp" alt="Diagrama de preferências" height="450" />
 </details>
 
-Clique em `Arquivo` > `Baixar logs...` para abrir a janela de download. Assim que conectado ao robô, os logs disponíveis são exibidos com o mais recente no topo. Selecione um ou mais arquivos de log para baixar (shift-clique para selecionar um intervalo ou **cmd/ctrl + A** para selecionar todos). Em seguida, clique no símbolo ↓ e selecione um local de salvamento.
+Clique em `Arquivo` > `Baixar logs...` para abrir a janela de download. Uma vez conectado ao robô, os logs disponíveis são exibidos com o mais recente no topo. Selecione um ou mais arquivos de log para baixar (clique com shift para selecionar um intervalo ou **cmd/ctrl + A** para selecionar todos). Em seguida, clique no símbolo ↓ e selecione um local de salvamento.
 
 :::info
-O [signal logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) da CTRE usa um formato não padrão que agrupa logs em subpastas. Selecione uma ou mais pastas na lista para baixar os arquivos de log como um grupo.
+O [registrador de sinais](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) da CTRE usa um formato não padrão que agrupa os logs em subpastas. Selecione uma ou mais pastas na lista para baixar os arquivos de log como um grupo.
 :::
 
 :::tip
-Ao baixar múltiplos arquivos, o AdvantageScope ignora qualquer um que já exista na pasta de destino.
+Ao baixar vários arquivos, o AdvantageScope ignora qualquer um que já exista na pasta de destino.
 :::
 
 <img src="/img/overview/log-files/open-file-2.webp" alt="Baixando arquivos de log" height="350" />
+
+_A interface em inglês é exibida acima._
 
 ## Formatação CSV {#csv-formatting}
 

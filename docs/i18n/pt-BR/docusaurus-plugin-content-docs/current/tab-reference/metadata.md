@@ -11,6 +11,8 @@ A guia de metadados mostra valores publicados na tabela oculta "/Metadata" ou at
 
 <img src="/img/tab-reference/metadata-1.webp" alt="Visão geral da aba de metadados" />
 
+_A interface em inglês é exibida acima._
+
 O código de exemplo abaixo mostra como registrar metadados usando Java.
 
 <Tabs groupId="library">

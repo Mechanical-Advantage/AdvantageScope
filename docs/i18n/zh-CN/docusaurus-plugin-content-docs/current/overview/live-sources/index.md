@@ -37,7 +37,7 @@ AdvantageScope 中的所有可视化功能除了处理日志文件外，均旨�
 
 点击 `应用程序` > `显示首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。
 
-<img src="/img/prefs_zh-CN.webp" alt="偏好设置图解" height="350" />
+<img src="/img/prefs_zh-CN.webp" alt="偏好设置图解" height="450" />
 
 ### 机器人地址 {#robot-address}
 

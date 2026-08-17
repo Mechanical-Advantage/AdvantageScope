@@ -11,6 +11,8 @@ Swerve sekmesi; vektör hızları, boşta olma konumları, robot rotasyonu ve ş
 
 <img src="/img/tab-reference/swerve-1.webp" alt="Swerve sekmesine genel bakış" />
 
+_Yukarıda İngilizce arayüz gösterilmektedir._
+
 <details>
 <summary>Zaman Çizelgesi Kontrolleri</summary>
 

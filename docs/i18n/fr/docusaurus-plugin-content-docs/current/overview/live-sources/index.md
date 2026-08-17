@@ -37,7 +37,7 @@ Faire défiler vers la gauche dans le graphique linéaire ou la chronologie dév
 
 Ouvrez la fenêtre des préférences en cliquant sur `Application` > `Afficher les préférences...` (Windows/Linux) ou `AdvantageScope` > `Paramètres...` (macOS).
 
-<img src="/img/prefs_fr.webp" alt="Schéma des préférences" height="350" />
+<img src="/img/prefs_fr.webp" alt="Schéma des préférences" height="450" />
 
 ### Adresse du robot {#robot-address}
 

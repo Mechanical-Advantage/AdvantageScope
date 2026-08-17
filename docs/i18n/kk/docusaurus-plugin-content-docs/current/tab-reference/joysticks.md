@@ -8,6 +8,8 @@ sidebar_position: 8
 
 <img src="/img/tab-reference/joysticks-1.webp" alt="Джойстиктер қойындысының шолуы" />
 
+_Жоғарыда ағылшын тіліндегі интерфейс көрсетілген._
+
 <details>
 <summary>Хронологияны басқару элементтері</summary>
 

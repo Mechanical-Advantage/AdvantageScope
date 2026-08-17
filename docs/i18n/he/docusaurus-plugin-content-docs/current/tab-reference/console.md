@@ -15,6 +15,8 @@ sidebar_position: 5
 
 <img src="/img/tab-reference/console-1.webp" alt="תצוגת מסוף" />
 
+_ממשק באנגלית מוצג למעלה._
+
 :::info
 יש ללחוץ על סמל פלטת הצבעים להפעלה/כיבוי של הדגשת הודעות אזהרה ושגיאה. עבור יומנים של WPILib ו-AdvantageKit, הודעות מודגשות אם הן מכילות את הטקסט "warning" או "error".
 :::

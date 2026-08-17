@@ -57,6 +57,8 @@ _Birim desteği hakkında daha fazla bilgi [dokümantasyonda](/tab-reference/lin
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="Birim duyarlı grafikleme" />
 
+_Yukarıda İngilizce arayüz gösterilmektedir._
+
 ## 🏁 Daha hızlı log indirmeleri {#faster-log-downloads}
 
 [roboRIO'dan log indirme](/overview/log-files/#downloading-from-the-robot) işlemi artık önceki sürümlere göre **2-4 kat daha hızlı**. Bu, roboRIO'nun daha az CPU yükü ile log verilerini aktarmasına olanak tanıyan yeni bir protokole (FTP) geçilerek sağlandı.

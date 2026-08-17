@@ -25,6 +25,8 @@ L'onglet 📊 [Statistiques](/tab-reference/statistics) d'AdvantageScope permet 
 
 <img src="/img/overview/live-sources/phoenix-2.webp" alt="Capture d'écran des statistiques" />
 
+_L'interface en anglais est illustrée ci-dessus._
+
 :::note
 Cette fonctionnalité peut occasionnellement rencontrer des problèmes en raison des mises à jour de Phoenix. Nous vous recommandons d'utiliser la dernière version d'AdvantageScope pour minimiser les problèmes. Sinon, veuillez [ouvrir un problème](https://github.com/Mechanical-Advantage/AdvantageScope/issues) pour nous informer de tout problème.
 :::

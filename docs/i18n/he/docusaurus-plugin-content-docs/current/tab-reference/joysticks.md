@@ -8,6 +8,8 @@ sidebar_position: 8
 
 <img src="/img/tab-reference/joysticks-1.webp" alt="סקירה כללית של כרטיסיית ג'ויסטיקים" />
 
+_ממשק באנגלית מוצג למעלה._
+
 <details>
 <summary>בקרות ציר זמן</summary>
 

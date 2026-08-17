@@ -7,6 +7,8 @@ Le terrain 3D montre une visualisation 3D du robot et du terrain. Il peut être 
 
 <img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="Exemple d'onglet terrain 3D" />
 
+_L'interface en anglais est illustrée ci-dessus._
+
 <details>
 <summary>Contrôles de la chronologie</summary>
 
@@ -191,12 +193,12 @@ Le système de coordonnées utilisé sur cet onglet est personnalisable. Consult
 
 Le terrain 3D prend en charge trois modes de rendu :
 
-- **Cinématique :** Rendu avec ombres, éclairage, réflexions et modèles 3D hautement détaillés pour un aspect plus réaliste. Nécessite un GPU assez puissant.
-- **Standard (Par défaut) :** Rendu avec un éclairage minimal et des modèles 3D simplifiés. S'exécute bien sur la plupart des appareils.
-- **Basse consommation :** Diminue la fréquence d'images, la résolution et les détails du modèle pour réduire la consommation de la batterie et offrir des performances plus cohérentes sur les appareils bas de gamme.
+- **Cinématique (Gauche) :** Rendu avec ombres, éclairage, réflexions et modèles 3D hautement détaillés pour un aspect plus réaliste. Nécessite un GPU assez puissant.
+- **Standard (Centre) :** Par défaut, rendu avec un éclairage minimal et des modèles 3D simplifiés. S'exécute bien sur la plupart des appareils.
+- **Basse consommation (Droite) :** Diminue la fréquence d'images, la résolution et les détails du modèle pour réduire la consommation de la batterie et offrir des performances plus cohérentes sur les appareils bas de gamme.
 
 <img src="/img/tab-reference/3d-field/3d-field-6.webp" alt="Comparaison des modes de rendu" />
 
 Pour configurer le mode de rendu, ouvrez la fenêtre des préférences en appuyant sur `Application` > `Afficher les préférences...` (Windows/Linux) ou `AdvantageScope` > `Paramètres...` (macOS). Le paramètre « Mode 3D (batterie) » peut être remplacé de la valeur par défaut pour ignorer le mode de rendu utilisé sur un ordinateur portable lorsqu'il n'est pas en charge. Par exemple, cela peut être utilisé pour préserver la batterie lors d'une compétition.
 
-<img src="/img/prefs_fr.webp" alt="Schéma des préférences" height="350" />
+<img src="/img/prefs_fr.webp" alt="Schéma des préférences" height="450" />

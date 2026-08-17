@@ -8,6 +8,8 @@ A guia de gráfico de linha é consciente de unidades, o que significa que valor
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="Gráficos cientes de unidade" />
 
+_A interface em inglês é exibida acima._
+
 ## Formatos suportados {#supported-formats}
 
 O AdvantageScope suporta vários métodos para fornecer informações de unidade sobre cada campo. As unidades mais comuns são suportadas; para uma lista completa, consulte o menu pop-up ao configurar a [conversão manual](#manual-conversion).
@@ -55,3 +57,5 @@ Para habilitar ou desabilitar rapidamente a conversão de unidades, clique nos t
 :::
 
 <img src="/img/tab-reference/line-graph/units-2.webp" alt="Editando conversão de unidades" height="250" />
+
+_A interface em inglês é exibida acima._

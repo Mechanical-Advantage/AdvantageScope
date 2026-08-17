@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/metadata-1.webp" alt="Метадеректер қойындысының шолуы" />
 
+_Жоғарыда ағылшын тіліндегі интерфейс көрсетілген._
+
 Төмендегі мысал коды Java арқылы метадеректерді қалай журналдау керектігін көрсетеді.
 
 <Tabs groupId="library">

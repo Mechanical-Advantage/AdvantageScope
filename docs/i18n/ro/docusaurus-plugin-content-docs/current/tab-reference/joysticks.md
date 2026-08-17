@@ -8,6 +8,8 @@ Fila joystick-uri afișează starea a până la șase controlere conectate. Imag
 
 <img src="/img/tab-reference/joysticks-1.webp" alt="Prezentare generală a filei joystick-uri" />
 
+_Interfața în limba engleză este ilustrată mai sus._
+
 <details>
 <summary>Controale cronologie</summary>
 

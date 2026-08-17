@@ -11,6 +11,8 @@ Fila metadate afișează valorile publicate în tabelul ascuns „/Metadata” s
 
 <img src="/img/tab-reference/metadata-1.webp" alt="Prezentare generală a filei metadate" />
 
+_Interfața în limba engleză este ilustrată mai sus._
+
 Codul de exemplu de mai jos arată cum se înregistrează metadatele folosind Java.
 
 <Tabs groupId="library">

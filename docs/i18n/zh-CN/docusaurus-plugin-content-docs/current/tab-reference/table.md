@@ -8,6 +8,8 @@ sidebar_position: 4
 
 <img src="/img/tab-reference/table-1.webp" alt="概述" />
 
+_上图所示为英文界面。_
+
 **任何所显示的字段发生变化时，都会创建一个新的行。** 不会显示重复的行。例如，显示比赛期间机器人状态的表格将如下所示：
 
 <img src="/img/tab-reference/table-2.webp" alt="机器人状态表格" />

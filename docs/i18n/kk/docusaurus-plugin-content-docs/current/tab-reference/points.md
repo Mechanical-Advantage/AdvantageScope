@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/points-1.webp" alt="Нүктелер қойындысының мысалы" />
 
+_Жоғарыда ағылшын тіліндегі интерфейс көрсетілген._
+
 <details>
 <summary>Хронологияны басқару элементтері</summary>
 

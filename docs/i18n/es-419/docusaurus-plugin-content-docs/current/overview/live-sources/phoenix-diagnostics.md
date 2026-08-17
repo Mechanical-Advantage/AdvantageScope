@@ -25,6 +25,8 @@ La pestaña 📊 [Estadísticas](/tab-reference/statistics) de AdvantageScope ta
 
 <img src="/img/overview/live-sources/phoenix-2.webp" alt="Captura de pantalla de estadísticas" />
 
+_En la imagen de arriba se muestra la interfaz en inglés._
+
 :::note
 Esta función puede experimentar ocasionalmente problemas como resultado de las actualizaciones de Phoenix. Recomendamos usar la última versión de AdvantageScope para minimizar los problemas. De lo contrario, [abre un issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues) para informarnos de cualquier problema.
 :::

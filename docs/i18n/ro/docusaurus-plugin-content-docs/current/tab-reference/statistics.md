@@ -8,6 +8,8 @@ Fila statistici permite analiza statistică aprofundată a câmpurilor numerice,
 
 <img src="/img/tab-reference/statistics-1.webp" alt="Prezentare generală a filei statistici" />
 
+_Interfața în limba engleză este ilustrată mai sus._
+
 ## Panoul de control {#control-pane}
 
 Pentru a începe, trageți un câmp în secțiunea „Măsurători”. Ștergeți un câmp folosind butonul X sau ascundeți-l temporar dând clic pe pictograma ochi sau dând dublu clic pe numele câmpului. Pentru a elimina toate câmpurile, dați clic pe cele trei puncte de lângă titlul axei și apoi pe `Șterge tot`. Câmpurile pot fi reorganizate în listă prin clic și tragere.

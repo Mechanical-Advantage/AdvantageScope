@@ -8,7 +8,9 @@ AdvantageScope כוללת מערכת גמישה לייצוא נתוני יומן
 
 לצפייה באפשרויות הייצוא, יש ללחוץ על `קובץ` > `ייצוא נתונים...`.
 
-<img src="/img/overview/log-files/export-1.webp" alt="אפשرويات ייصוא" height="250" />
+<img src="/img/overview/log-files/export-1.webp" alt="אפשרויות ייצוא" />
+
+_ממשק באנגלית מוצג למעלה._
 
 :::tip
 בנוסף לייצוא היומן המלא המתואר כאן, כרטיסיית 💬 [מסוף](/tab-reference/console) מאפשרת ייצוא נתוני מסוף לקובץ טקסט.

@@ -34,9 +34,13 @@ O AdvantageScope XR é suportado apenas no iOS e iPadOS. Não há planos imediat
 
 <img src="/img/tab-reference/3d-field/xr-1.webp" alt="Botão XR" height="450" />
 
+_A interface em inglês é exibida acima._
+
 2. A **janela de controles do XR** será aberta, com um código QR e [opções](#options) para personalizar a experiência de AR. Para cancelar a sessão de XR e desconectar quaisquer clientes, feche a janela de controles.
 
 <img src="/img/tab-reference/3d-field/xr-2.webp" alt="Janela XR" height="350" />
+
+_A interface em inglês é exibida acima._
 
 3. Escaneie o código QR usando o **aplicativo de câmera integrado** no dispositivo cliente. Nenhuma instalação de aplicativo é necessária.
 4. Toque em "AdvantageScope XR" e depois em "Abrir" para **iniciar a experiência** e se conectar ao hospedeiro. Se solicitado, permita que o AdvantageScope XR acesse a **câmera e a rede local**.

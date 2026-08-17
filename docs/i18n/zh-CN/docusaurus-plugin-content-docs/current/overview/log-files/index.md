@@ -24,6 +24,8 @@
 
 <img src="/img/overview/log-files/open-file-1.webp" alt="打开保存的日志" />
 
+_上图所示为英文界面。_
+
 ## 追加日志 {#adding-new-logs}
 
 打开日志文件后，可以轻松地将其他日志添加到可视化中。时间戳将自动重新对齐，以与现有数据保持同步。
@@ -37,7 +39,7 @@
 
 点击 `应用程序` > `显示首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。更新机器人地址和日志文件夹。
 
-<img src="/img/prefs_zh-CN.webp" alt="偏好设置图解" height="350" />
+<img src="/img/prefs_zh-CN.webp" alt="偏好设置图解" height="450" />
 </details>
 
 点击 `文件` > `下载日志...` 打开下载窗口。连接到机器人后，可用的日志将显示在列表中，最新日志位于顶部。选择一个或多个要下载的日志文件（按住 shift 点击选择范围或使用 **cmd/ctrl + A** 全选）。然后点击 ↓ 符号并选择保存位置。
@@ -51,6 +53,8 @@ CTRE 的 [信号日志记录器](https://v6.docs.ctr-electronics.com/en/stable/d
 :::
 
 <img src="/img/overview/log-files/open-file-2.webp" alt="下载日志文件" height="350" />
+
+_上图所示为英文界面。_
 
 ## CSV 格式化 {#csv-formatting}
 

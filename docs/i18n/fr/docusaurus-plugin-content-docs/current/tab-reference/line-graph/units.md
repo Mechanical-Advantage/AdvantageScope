@@ -8,6 +8,8 @@ L'onglet graphique linéaire prend en compte les unités, ce qui signifie que le
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="Graphiques avec unités" />
 
+_L'interface en anglais est illustrée ci-dessus._
+
 ## Formats pris en charge {#supported-formats}
 
 AdvantageScope prend en charge plusieurs méthodes pour fournir des informations d'unité sur chaque champ. La plupart des unités courantes sont prises en charge; pour une liste complète, consultez le menu surgissant lors de la configuration de la [conversion manuelle](#manual-conversion).
@@ -55,3 +57,5 @@ Pour activer ou désactiver rapidement la conversion d'unités, cliquez sur les 
 :::
 
 <img src="/img/tab-reference/line-graph/units-2.webp" alt="Édition de la conversion d'unités" height="250" />
+
+_L'interface en anglais est illustrée ci-dessus._

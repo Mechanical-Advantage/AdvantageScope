@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/2d-field-1.webp" alt="2D saha sekmesine genel bakış" />
 
+_Yukarıda İngilizce arayüz gösterilmektedir._
+
 <details>
 <summary>Zaman Çizelgesi Kontrolleri</summary>
 

@@ -57,6 +57,8 @@ _מידע נוסף על תמיכה ביחידות ניתן למצוא ב[תיע�
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="גרפים מודעי-יחידות" />
 
+_ממשק באנגלית מוצג למעלה._
+
 ## 🏁 הורדת יומנים מהירה יותר {#faster-log-downloads}
 
 [הורדת יומנים מ-roboRIO](/overview/log-files/#downloading-from-the-robot) מהירה כעת **פי 2-4** בהשוואה לגרסאות קודמות. דבר זה מושג על ידי מעבר לפרוטוקול חדש (FTP) המאפשר ל-roboRIO להעביר נתוני יומן עם פחות עומס מעבד (CPU).

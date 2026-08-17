@@ -8,6 +8,8 @@ sidebar_position: 8
 
 <img src="/img/tab-reference/joysticks-1.webp" alt="控制器标签页概述" />
 
+_上图所示为英文界面。_
+
 <details>
 <summary>时间轴控制</summary>
 

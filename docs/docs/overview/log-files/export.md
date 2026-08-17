@@ -8,7 +8,7 @@ AdvantageScope includes a flexible system for exporting log data as a CSV, WPILO
 
 To view options for exporting, click `File` > `Export Data...`.
 
-<img src="/img/overview/log-files/export-1.webp" alt="Export options" height="250" />
+<img src="/img/overview/log-files/export-1.webp" alt="Export options" />
 
 :::tip
 In addition to the full-log export described here, the 💬 [Console](/tab-reference/console) tab allows console data to be exported to a text file.

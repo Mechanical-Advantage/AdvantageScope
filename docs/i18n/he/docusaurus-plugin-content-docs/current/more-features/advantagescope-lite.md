@@ -8,6 +8,8 @@ AdvantageScope Lite היא גרסה מבוססת דפדפן של AdvantageScope 
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="AdvantageScope Lite Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+_ממשק באנגלית מוצג למעלה._
+
 ## התקנה ונכסים {#installation-and-assets}
 
 AdvantageScope Lite עבור Systemcore ניתנת להתקנה ולעדכון על ידי הורדת גרסת "Systemcore" של AdvantageScope מדף ההפצות ב-GitHub. יש לבחור את כרטיס ה-"Add Package" בממשק ה-Web של Systemcore להעלאת החבילה לרובוט.

@@ -25,4 +25,4 @@ Lorsque [plusieurs fichiers journaux sont ouverts simultanément](/overview/log-
 
 Pour modifier le mode d'affichage des horodatages, ouvrez la fenêtre des préférences en cliquant sur `App` > `Afficher les préférences...` (Windows/Linux) ou `AdvantageScope` > `Paramètres...` (macOS), ou en appuyant sur `Ctrl+,` / `Cmd+,`. Mettez à jour le paramètre **Horodatages** vers l'option souhaitée.
 
-<img src="/img/prefs_fr.webp" alt="Diagramme des préférences" height="350" />
+<img src="/img/prefs_fr.webp" alt="Diagramme des préférences" height="450" />

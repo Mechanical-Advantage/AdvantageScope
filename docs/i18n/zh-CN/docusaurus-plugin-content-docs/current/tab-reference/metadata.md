@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/metadata-1.webp" alt="元数据标签页概述" />
 
+_上图所示为英文界面。_
+
 下面的示例代码展示了如何使用 Java 记录元数据。
 
 <Tabs groupId="library">

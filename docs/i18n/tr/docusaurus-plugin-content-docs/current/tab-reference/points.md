@@ -11,6 +11,8 @@ Noktalar sekmesi keyfi noktaların 2B görselleştirmesini gösterir. Bu, görü
 
 <img src="/img/tab-reference/points-1.webp" alt="Nokta sekmesi örneği" />
 
+_Yukarıda İngilizce arayüz gösterilmektedir._
+
 <details>
 <summary>Zaman Çizelgesi Kontrolleri</summary>
 

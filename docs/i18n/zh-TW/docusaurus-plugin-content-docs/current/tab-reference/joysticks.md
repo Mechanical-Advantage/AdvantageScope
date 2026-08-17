@@ -8,6 +8,8 @@ sidebar_position: 8
 
 <img src="/img/tab-reference/joysticks-1.webp" alt="搖桿分頁概述" />
 
+_上圖所示為英文介面。_
+
 <details>
 <summary>時間軸控制項</summary>
 

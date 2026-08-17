@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/metadata-1.webp" alt="סקירה כללית של כרטיסיית מטא-דאטה" />
 
+_ממשק באנגלית מוצג למעלה._
+
 קוד הדוגמה למטה מציג כיצד לתעד מטא-דאטה ב-Java.
 
 <Tabs groupId="library">

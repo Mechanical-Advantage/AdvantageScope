@@ -8,6 +8,8 @@ La pestaña de joysticks muestra el estado de hasta seis controladores conectado
 
 <img src="/img/tab-reference/joysticks-1.webp" alt="Descripción general de la pestaña de joysticks" />
 
+_En la imagen de arriba se muestra la interfaz en inglés._
+
 <details>
 <summary>Controles de la línea de tiempo</summary>
 

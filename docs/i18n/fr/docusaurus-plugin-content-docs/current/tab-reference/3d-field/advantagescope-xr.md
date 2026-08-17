@@ -34,9 +34,13 @@ AdvantageScope XR n'est prise en charge que sur iOS et iPadOS. Il n'y a pas de p
 
 <img src="/img/tab-reference/3d-field/xr-1.webp" alt="Bouton XR" height="450" />
 
+_L'interface en anglais est illustrée ci-dessus._
+
 2. La **fenêtre de contrôles XR** s'ouvrira, avec un code QR et des [options](#options) pour personnaliser l'expérience RA. Pour annuler la session XR et déconnecter tous les clients, fermez la fenêtre de contrôles.
 
 <img src="/img/tab-reference/3d-field/xr-2.webp" alt="Fenêtre XR" height="350" />
+
+_L'interface en anglais est illustrée ci-dessus._
 
 3. Scannez le code QR à l'aide de l'**application appareil photo intégrée** sur l'appareil client. Aucune installation d'application n'est requise.
 4. Appuyez sur « AdvantageScope XR » puis sur « Ouvrir » pour **démarrer l'expérience** et vous connecter à l'hôte. Si vous y êtes invité, autorisez AdvantageScope XR à accéder à l'**appareil photo et au réseau local**.

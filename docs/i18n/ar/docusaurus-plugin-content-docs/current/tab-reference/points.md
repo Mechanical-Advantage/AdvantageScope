@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/points-1.webp" alt="مثال على علامة تبويب النقاط" />
 
+_تظهر في الصورة أعلاه الواجهة باللغة الإنجليزية._
+
 <details>
 <summary>عناصر تحكم المخطط الزمني</summary>
 

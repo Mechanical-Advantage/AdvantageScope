@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/swerve-1.webp" alt="סקירה כללית של כרטיסיית סווארב" />
 
+_ממשק באנגלית מוצג למעלה._
+
 <details>
 <summary>בקרות ציר זמן</summary>
 

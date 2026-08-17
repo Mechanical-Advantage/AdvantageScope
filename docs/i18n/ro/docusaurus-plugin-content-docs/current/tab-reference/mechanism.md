@@ -11,6 +11,8 @@ Fila mecanism afișează un mecanism articulat creat cu unul sau mai multe obiec
 
 <img src="/img/tab-reference/mechanism-1.webp" alt="Prezentare generală a filei mecanism" />
 
+_Interfața în limba engleză este ilustrată mai sus._
+
 <details>
 <summary>Controale cronologie</summary>
 

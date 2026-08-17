@@ -8,6 +8,8 @@ Vizualizarea sub formă de tabel este concepută pentru a afișa în detaliu mod
 
 <img src="/img/tab-reference/table-1.webp" alt="Prezentare generală" />
 
+_Interfața în limba engleză este ilustrată mai sus._
+
 **Un rând nou este creat pentru fiecare modificare în oricare dintre câmpurile afișate.** Rândurile duplicate nu sunt afișate. De exemplu, un tabel care arată starea robotului în timpul unui meci ar arăta astfel:
 
 <img src="/img/tab-reference/table-2.webp" alt="Tabel cu starea robotului" />

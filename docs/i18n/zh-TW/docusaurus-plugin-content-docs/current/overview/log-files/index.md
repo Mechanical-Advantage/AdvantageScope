@@ -24,6 +24,8 @@
 
 <img src="/img/overview/log-files/open-file-1.webp" alt="開啟儲存的日誌" />
 
+_上圖所示為英文介面。_
+
 ## 新增新日誌 {#adding-new-logs}
 
 開啟日誌檔案後，可以輕鬆將額外的日誌新增到視覺化中。時間戳記將自動重新對齊以與現有資料同步。
@@ -37,7 +39,7 @@
 
 點擊 `應用程式` > `顯示偏好設定...` (Windows/Linux) 或 `AdvantageScope` > `設定...` (macOS) 開啟偏好設定視窗。更新機器人位址與日誌資料夾。
 
-<img src="/img/prefs_zh-TW.webp" alt="偏好設定圖解" height="350" />
+<img src="/img/prefs_zh-TW.webp" alt="偏好設定圖解" height="450" />
 </details>
 
 點擊 `檔案` > `下載日誌...` 開啟下載視窗。連線到機器人後，可用的日誌會顯示在清單中，最新的位於頂部。選擇一個或多個要下載的日誌檔案（Shift + 點擊可選擇範圍，或 **Cmd/Ctrl + A** 全選）。然後點擊 ↓ 符號並選擇儲存位置。
@@ -51,6 +53,8 @@ CTRE 的[訊號記錄器](https://v6.docs.ctr-electronics.com/en/stable/docs/api
 :::
 
 <img src="/img/overview/log-files/open-file-2.webp" alt="下載日誌檔案" height="350" />
+
+_上圖所示為英文介面。_
 
 ## CSV 格式化 {#csv-formatting}
 

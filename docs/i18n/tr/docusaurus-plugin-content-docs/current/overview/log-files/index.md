@@ -24,6 +24,8 @@ Birden fazla dosya aynı anda açılırsa, zaman damgaları otomatik olarak hiza
 
 <img src="/img/overview/log-files/open-file-1.webp" alt="Kaydedilmiş bir logu açma" />
 
+_Yukarıda İngilizce arayüz gösterilmektedir._
+
 ## Yeni loglar ekleme {#adding-new-logs}
 
 Bir log dosyası açtıktan sonra görselleştirmeye kolayca ek loglar eklenebilir. Zaman damgaları mevcut verilerle senkronize edilmek üzere otomatik olarak yeniden hizalanacaktır.
@@ -37,7 +39,7 @@ Menü çubuğunda `Dosya` > `Yeni log ekle...` seçeneğine tıklayın, ardında
 
 `Uygulama` > `Tercihleri göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) seçeneğine tıklayarak tercihler penceresini açın. Robot adresini ve log klasörünü güncelleyin.
 
-<img src="/img/prefs_tr.webp" alt="Tercihler diyagramı" height="350" />
+<img src="/img/prefs_tr.webp" alt="Tercihler diyagramı" height="450" />
 </details>
 
 `Dosya` > `Logları indir...` seçeneğine tıklayarak indirme penceresini açın. Robota bağlandıktan sonra mevcut loglar en yenisi en üstte olacak şekilde gösterilir. İndirmek için bir veya daha fazla log dosyası seçin (bir aralık seçmek için shift-tıkla veya tümünü seçmek için **cmd/ctrl + A** kullanın). Ardından ↓ simgesine tıklayın ve bir kaydetme konumu seçin.
@@ -51,6 +53,8 @@ Birden fazla dosya indirirken AdvantageScope, hedef klasörde zaten mevcut olan 
 :::
 
 <img src="/img/overview/log-files/open-file-2.webp" alt="Log dosyalarını indirme" height="350" />
+
+_Yukarıda İngilizce arayüz gösterilmektedir._
 
 ## CSV biçimlendirme {#csv-formatting}
 

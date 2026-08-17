@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/metadata-1.webp" alt="نظرة عامة على علامة تبويب البيانات الوصفية" />
 
+_تظهر في الصورة أعلاه الواجهة باللغة الإنجليزية._
+
 يظهر كود المثال أدناه كيفية تسجيل البيانات الوصفية باستخدام Java.
 
 <Tabs groupId="library">

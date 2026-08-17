@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/points-1.webp" alt="点标签页示例" />
 
+_上图所示为英文界面。_
+
 <details>
 <summary>时间轴控制</summary>
 

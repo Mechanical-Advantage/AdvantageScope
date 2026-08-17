@@ -4,6 +4,11 @@ The screenshot below shows the important elements of the main AdvantageScope win
 
 <img src="/img/overview/navigation/navigation-1.webp" alt="Navigation diagram" />
 
+- The red section is the [sidebar](#sidebar), which lists available fields.
+- The brown section is the [tab bar](#tab-bar), which controls the app and is used for switching between views.
+- The blue section is the [viewer pane](#viewer-pane), which displays data.
+- The green section is the [control pane](#control-pane), which is used to adjust the visualization.
+
 :::tip
 To view multiple log files simultaneously, click `File` > `New Window`.
 :::

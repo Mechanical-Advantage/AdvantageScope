@@ -57,6 +57,8 @@ _Plus d'informations sur la prise en charge des unités se trouvent dans la [doc
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="Graphiques avec unités" />
 
+_L'interface en anglais est illustrée ci-dessus._
+
 ## 🏁 Téléchargements de journaux plus rapides {#faster-log-downloads}
 
 Le [téléchargement des journaux depuis la roboRIO](/overview/log-files/#downloading-from-the-robot) est maintenant **2 à 4 fois plus rapide** que dans les versions précédentes. Cela est réalisé en passant à un nouveau protocole (FTP) qui permet à la roboRIO de transférer des données de journal avec moins de charge CPU.

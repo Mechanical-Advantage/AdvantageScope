@@ -15,6 +15,8 @@ Başlamak için istenen alanı ana görünüme sürükleyin. Her satır alandaki
 
 <img src="/img/tab-reference/console-1.webp" alt="Konsol görünümü" />
 
+_Yukarıda İngilizce arayüz gösterilmektedir._
+
 :::info
 Uyarı ve hata mesajları için vurgulamayı açıp kapatmak üzere renk paleti simgesine tıklayın. WPILib ve AdvantageKit logları için "warning" veya "error" metnini içeren mesajlar vurgulanır.
 :::

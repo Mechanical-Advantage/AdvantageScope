@@ -37,7 +37,7 @@ AdvantageScope יכולה להתחבר ל-FIRST Driver Station כדי להציג
 
 יש לפתוח את חלון ההעדפות על ידי לחיצה על `אפליקציה` > `הצגת העדפות...` (Windows/Linux) או `AdvantageScope` > `הגדרות...` (macOS).
 
-<img src="/img/prefs_he.webp" alt="תרשים העדפות" height="350" />
+<img src="/img/prefs_he.webp" alt="תרשים העדפות" height="450" />
 
 ### כתובת הרובוט {#robot-address}
 

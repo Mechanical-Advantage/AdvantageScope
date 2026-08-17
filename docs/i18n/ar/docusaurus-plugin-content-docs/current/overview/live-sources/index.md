@@ -37,7 +37,7 @@
 
 افتح نافذة التفضيلات بالنقر فوق `التطبيق` > `إظهار التفضيلات...` (Windows/Linux) أو `AdvantageScope` > `الإعدادات...` (macOS).
 
-<img src="/img/prefs_ar.webp" alt="مخطط تفضيلي" height="350" />
+<img src="/img/prefs_ar.webp" alt="مخطط تفضيلي" height="450" />
 
 ### عنوان الروبوت {#robot-address}
 

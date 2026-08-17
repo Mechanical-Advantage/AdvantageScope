@@ -4,6 +4,13 @@ La capture d'écran ci-dessous montre les éléments importants de la fenêtre p
 
 <img src="/img/overview/navigation/navigation-1.webp" alt="Schéma de navigation" />
 
+_L'interface en anglais est illustrée ci-dessus._
+
+- La section rouge est la [barre latérale](#sidebar), qui liste les champs disponibles.
+- La section marron est la [barre d'onglets](#tab-bar), qui contrôle l'application et sert à basculer entre les vues.
+- La section bleue est le [volet de visualisation](#viewer-pane), qui affiche les données.
+- La section verte est le [panneau de contrôle](#control-pane), qui est utilisé pour ajuster la visualisation.
+
 :::tip
 Pour visualiser plusieurs fichiers journaux simultanément, cliquez sur `Fichier` > `Nouvelle fenêtre`.
 :::

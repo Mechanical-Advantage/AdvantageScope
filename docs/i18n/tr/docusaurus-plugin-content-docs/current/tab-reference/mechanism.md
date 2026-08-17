@@ -11,6 +11,8 @@ Mekanizma sekmesi, bir veya daha fazla [Mechanism2d](https://docs.wpilib.org/tr/
 
 <img src="/img/tab-reference/mechanism-1.webp" alt="Mekanizma sekmesine genel bakış" />
 
+_Yukarıda İngilizce arayüz gösterilmektedir._
+
 <details>
 <summary>Zaman Çizelgesi Kontrolleri</summary>
 

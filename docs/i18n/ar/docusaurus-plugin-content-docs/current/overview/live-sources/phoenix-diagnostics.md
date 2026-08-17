@@ -25,6 +25,8 @@ sidebar_position: 2
 
 <img src="/img/overview/live-sources/phoenix-2.webp" alt="لقطة شاشة للإحصائيات" />
 
+_تظهر في الصورة أعلاه الواجهة باللغة الإنجليزية._
+
 :::note
 قد تواجه هذه الميزة مشكلات أحياناً نتيجة لتحديثات Phoenix. نوصي باستخدام أحدث إصدار من AdvantageScope لتقليل المشكلات. بخلاف ذلك، يرجى [فتح مشكلة (issue)](https://github.com/Mechanical-Advantage/AdvantageScope/issues) لإعلامنا بأي مشاكل.
 :::

@@ -25,6 +25,8 @@ Fila 📊 [Statistici](/tab-reference/statistics) a AdvantageScope permite de as
 
 <img src="/img/overview/live-sources/phoenix-2.webp" alt="Captură de ecran cu statistici" />
 
+_Interfața în limba engleză este ilustrată mai sus._
+
 :::note
 Această caracteristică poate întâmpina ocazional probleme ca urmare a actualizărilor Phoenix. Vă recomandăm să utilizați cea mai recentă versiune de AdvantageScope pentru a minimiza problemele. În caz contrar, vă rugăm să [deschideți o problemă](https://github.com/Mechanical-Advantage/AdvantageScope/issues) pentru a ne anunța despre eventualele probleme.
 :::

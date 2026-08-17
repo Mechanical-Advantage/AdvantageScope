@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/2d-field-1.webp" alt="Обзор вкладки 2D поля" />
 
+_Выше показан интерфейс на английском языке._
+
 <details>
 <summary>Элементы управления шкалой времени</summary>
 

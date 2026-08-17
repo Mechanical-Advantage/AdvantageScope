@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/mechanism-1.webp" alt="סקירה כללית של כרטיסיית מנגנון" />
 
+_ממשק באנגלית מוצג למעלה._
+
 <details>
 <summary>בקרות ציר זמן</summary>
 

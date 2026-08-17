@@ -34,9 +34,13 @@ AdvantageScope XR este suportat doar pe iOS și iPadOS. Nu există planuri imedi
 
 <img src="/img/tab-reference/3d-field/xr-1.webp" alt="Buton XR" height="450" />
 
+_Interfața în limba engleză este ilustrată mai sus._
+
 2. Fereastra de **controale XR** se va deschide, având un cod QR și [opțiuni](#options) pentru a personaliza experiența AR. Pentru a anula sesiunea XR și a deconecta orice clienți, închideți fereastra de controale.
 
 <img src="/img/tab-reference/3d-field/xr-2.webp" alt="Fereastră XR" height="350" />
+
+_Interfața în limba engleză este ilustrată mai sus._
 
 3. Scanați codul QR folosind **aplicația de cameră integrată** pe dispozitivul client. Nu este necesară instalarea unei aplicații.
 4. Atingeți „AdvantageScope XR” și apoi „Open” pentru a **începe experiența** și a vă conecta la gazdă. Dacă vi se solicită, permiteți AdvantageScope XR să acceseze **camera și rețeaua locală**.

@@ -25,4 +25,4 @@ WPILib 2027'den başlayarak, zaman damgaları Systemcore'da ve simülasyonda cih
 
 Zaman damgası görüntüleme modunu değiştirmek için `App` > `Tercihleri Göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) seçeneğine tıklayarak ya da `Ctrl+,` / `Cmd+,` tuşlarına basarak tercihler penceresini açın. **Zaman damgaları** ayarını istediğiniz seçeneğe güncelleyin.
 
-<img src="/img/prefs_tr.webp" alt="Tercihler diyagramı" height="350" />
+<img src="/img/prefs_tr.webp" alt="Tercihler diyagramı" height="450" />

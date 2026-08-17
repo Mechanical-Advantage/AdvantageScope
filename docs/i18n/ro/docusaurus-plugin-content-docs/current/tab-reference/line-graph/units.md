@@ -8,6 +8,8 @@ Fila grafic liniar este conștientă de unități, ceea ce înseamnă că valori
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="Grafice bazate pe unități" />
 
+_Interfața în limba engleză este ilustrată mai sus._
+
 ## Formate suportate {#supported-formats}
 
 AdvantageScope suportă mai multe metode de furnizare a informațiilor despre unități pentru fiecare câmp. Majoritatea unităților comune sunt suportate; pentru o listă completă, verificați meniul pop-up la configurarea [conversiei manuale](#manual-conversion).
@@ -55,3 +57,5 @@ Pentru a activa sau dezactiva rapid conversia unităților, dați clic pe cele t
 :::
 
 <img src="/img/tab-reference/line-graph/units-2.webp" alt="Editarea conversiei unităților" height="250" />
+
+_Interfața în limba engleză este ilustrată mai sus._

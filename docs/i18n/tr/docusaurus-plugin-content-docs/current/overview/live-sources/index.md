@@ -37,7 +37,7 @@ Canlı bir kaynağa bağlandığında AdvantageScope, varsayılan olarak tüm se
 
 `Uygulama` > `Tercihleri göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) seçeneğine tıklayarak tercihler penceresini açın.
 
-<img src="/img/prefs_tr.webp" alt="Tercihler diyagramı" height="350" />
+<img src="/img/prefs_tr.webp" alt="Tercihler diyagramı" height="450" />
 
 ### Robot adresi {#robot-address}
 

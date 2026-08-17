@@ -8,6 +8,8 @@
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="Birim duyarlı grafikleme" />
 
+_Yukarıda İngilizce arayüz gösterilmektedir._
+
 ## Desteklenen formatlar {#supported-formats}
 
 AdvantageScope, her alan hakkında birim bilgisi sağlamak için birkaç yöntemi destekler. En yaygın birimler desteklenmektedir; tam bir liste için [manuel dönüştürmeyi](#manual-conversion) yapılandırırken açılır menüyü kontrol edin.
@@ -55,3 +57,5 @@ Birim dönüştürmeyi hızlıca etkinleştirmek veya devre dışı bırakmak i�
 :::
 
 <img src="/img/tab-reference/line-graph/units-2.webp" alt="Birim dönüşümünü düzenleme" height="250" />
+
+_Yukarıda İngilizce arayüz gösterilmektedir._

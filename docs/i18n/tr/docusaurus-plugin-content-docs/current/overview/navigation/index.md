@@ -4,6 +4,13 @@ Aşağıdaki ekran görüntüsü, ana AdvantageScope penceresinin önemli öğel
 
 <img src="/img/overview/navigation/navigation-1.webp" alt="Gezinme diyagramı" />
 
+_Yukarıda İngilizce arayüz gösterilmektedir._
+
+- Kırmızı bölüm, mevcut alanları listeleyen [kenar çubuğudur](#sidebar).
+- Kahverengi bölüm, uygulamayı kontrol eden ve görünümler arasında geçiş yapmak için kullanılan [sekme çubuğudur](#tab-bar).
+- Mavi bölüm, verileri gösteren [görüntüleyici panelidir](#viewer-pane).
+- Yeşil bölüm, görselleştirmeyi ayarlamak için kullanılan [kontrol panelidir](#control-pane).
+
 :::tip
 Birden fazla log dosyasını eş zamanlı olarak görüntülemek için `Dosya` > `Yeni Pencere` seçeneğine tıklayın.
 :::

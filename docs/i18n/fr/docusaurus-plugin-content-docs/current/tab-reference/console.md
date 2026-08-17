@@ -15,6 +15,8 @@ Faites glisser le champ souhaité vers la vue principale pour commencer. Chaque 
 
 <img src="/img/tab-reference/console-1.webp" alt="Vue de la console" />
 
+_L'interface en anglais est illustrée ci-dessus._
+
 :::info
 Cliquez sur l'icône de palette de couleurs pour activer ou désactiver la mise en surbrillance des messages d'avertissement et d'erreur. Pour les journaux WPILib et AdvantageKit, les messages sont mis en surbrillance s'ils contiennent le texte « warning » ou « error ».
 :::

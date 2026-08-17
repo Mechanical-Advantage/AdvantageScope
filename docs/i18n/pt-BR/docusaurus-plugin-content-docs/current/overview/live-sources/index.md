@@ -37,7 +37,7 @@ Rolar para a esquerda no gráfico de linha ou na linha do tempo desbloqueia do h
 
 Abra a janela de preferências clicando em `App` > `Mostrar preferências...` (Windows/Linux) ou `AdvantageScope` > `Configurações...` (macOS).
 
-<img src="/img/prefs_pt-BR.webp" alt="Diagrama de preferências" height="350" />
+<img src="/img/prefs_pt-BR.webp" alt="Diagrama de preferências" height="450" />
 
 ### Endereço do robô {#robot-address}
 

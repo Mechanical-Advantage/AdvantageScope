@@ -8,6 +8,8 @@
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="גרפים מודעי-יחידות" />
 
+_ממשק באנגלית מוצג למעלה._
+
 ## פורמטים נתמכים {#supported-formats}
 
 AdvantageScope תומכת במספר שיטות לספק מידע על יחידות עבור כל שדה. רוב היחידות הנפוצות נתמכות; לרשימה מלאה, ניתן לבדוק בתפריט הקופץ בעת הגדרת [המרה ידנית](#manual-conversion).
@@ -55,3 +57,5 @@ AdvantageKit כוללת תמיכה במטא-דאטה של יחידות בעת ת
 :::
 
 <img src="/img/tab-reference/line-graph/units-2.webp" alt="עריכת המרת יחידות" height="250" />
+
+_ממשק באנגלית מוצג למעלה._

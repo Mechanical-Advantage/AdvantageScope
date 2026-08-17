@@ -15,6 +15,8 @@ sidebar_position: 5
 
 <img src="/img/tab-reference/console-1.webp" alt="控制台视图" />
 
+_上图所示为英文界面。_
+
 :::info
 点击调色板图标可切换警告和错误消息的高亮显示。对于 WPILib 和 AdvantageKit 日志，包含文本“warning”或“error”的消息将被高亮显示。
 :::

@@ -4,6 +4,8 @@ O gráfico de linha é a visualização padrão no AdvantageScope. Ele suporta t
 
 <img src="/img/tab-reference/line-graph/line-graph-1.webp" alt="Demonstração de gráfico de linhas" />
 
+_A interface em inglês é exibida acima._
+
 ## Painel de visualização {#viewer-pane}
 
 Para dar zoom, posicione o cursor sobre o gráfico principal e role para cima ou para baixo. Um intervalo também pode ser selecionado clicando e arrastando enquanto mantém `Shift` pressionado. Mova para a esquerda e para a direita rolando horizontalmente (em dispositivos suportados) ou clicando e arrastando no gráfico. Quando conectado ao vivo, rolar para a esquerda desbloqueia do tempo atual, e rolar totalmente para a direita bloqueia no tempo atual novamente.
@@ -26,6 +28,8 @@ A cor e o estilo da linha de cada campo podem ser personalizados clicando no íc
 Para sobrepor o modo do robô (autônomo, teleoperado ou utility), clique nos três pontos ao lado de "Campos discretos" e clique em "Mostrar modo do robô".
 
 <img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="Sobreposição do modo do robô" />
+
+_A interface em inglês é exibida acima._
 :::
 
 ### Ajustando eixos {#adjusting-axes}
@@ -33,6 +37,8 @@ Para sobrepor o modo do robô (autônomo, teleoperado ou utility), clique nos tr
 Por padrão, cada eixo ajusta seu intervalo com base nos dados visíveis. Para desativar o ajuste automático de escala e bloquear o intervalo em seus mínimo e máximo atuais, clique nos três pontos perto do título do eixo e depois em `Bloquear eixo`. Para ajustar manualmente o intervalo, escolha `Editar intervalo...` e insira os valores desejados.
 
 <img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="Editando o intervalo do eixo" height="250" />
+
+_A interface em inglês é exibida acima._
 
 ### Integração e diferenciação {#integration-and-differentiation}
 

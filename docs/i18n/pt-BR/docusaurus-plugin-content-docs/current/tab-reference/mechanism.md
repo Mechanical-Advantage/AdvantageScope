@@ -11,6 +11,8 @@ A guia de mecanismo exibe um mecanismo articulado criado com um ou mais objetos 
 
 <img src="/img/tab-reference/mechanism-1.webp" alt="Visão geral da aba de mecanismo" />
 
+_A interface em inglês é exibida acima._
+
 <details>
 <summary>Controles da linha do tempo</summary>
 

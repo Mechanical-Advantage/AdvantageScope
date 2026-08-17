@@ -25,6 +25,8 @@ A guia 📊 [Estatísticas](/tab-reference/statistics) do AdvantageScope também
 
 <img src="/img/overview/live-sources/phoenix-2.webp" alt="Captura de tela de estatísticas" />
 
+_A interface em inglês é exibida acima._
+
 :::note
 Este recurso pode ocasionalmente apresentar problemas como resultado de atualizações do Phoenix. Recomendamos usar a versão mais recente do AdvantageScope para minimizar problemas. Caso contrário, por favor [abra um problema](https://github.com/Mechanical-Advantage/AdvantageScope/issues) para nos informar sobre quaisquer problemas.
 :::

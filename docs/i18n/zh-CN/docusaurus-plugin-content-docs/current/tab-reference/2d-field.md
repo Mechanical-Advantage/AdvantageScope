@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/2d-field-1.webp" alt="2D 场地标签页概述" />
 
+_上图所示为英文界面。_
+
 <details>
 <summary>时间轴控制</summary>
 

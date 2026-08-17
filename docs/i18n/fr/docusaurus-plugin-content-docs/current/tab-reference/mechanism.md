@@ -11,6 +11,8 @@ L'onglet mécanisme affiche un mécanisme articulé créé avec un ou plusieurs 
 
 <img src="/img/tab-reference/mechanism-1.webp" alt="Aperçu de l'onglet mécanisme" />
 
+_L'interface en anglais est illustrée ci-dessus._
+
 <details>
 <summary>Contrôles de la chronologie</summary>
 

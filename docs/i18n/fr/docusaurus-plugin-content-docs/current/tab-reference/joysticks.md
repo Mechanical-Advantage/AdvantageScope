@@ -8,6 +8,8 @@ L'onglet manettes montre l'état de jusqu'à six manettes connectées. L'image c
 
 <img src="/img/tab-reference/joysticks-1.webp" alt="Aperçu de l'onglet manettes" />
 
+_L'interface en anglais est illustrée ci-dessus._
+
 <details>
 <summary>Contrôles de la chronologie</summary>
 

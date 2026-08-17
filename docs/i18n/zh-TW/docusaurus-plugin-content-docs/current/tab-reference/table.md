@@ -8,6 +8,8 @@ sidebar_position: 4
 
 <img src="/img/tab-reference/table-1.webp" alt="概述" />
 
+_上圖所示為英文介面。_
+
 **會為任何顯示欄位中的每次變更建立一個新列。** 重複列不會顯示。例如，顯示比賽期間機器人狀態的表格如下所示：
 
 <img src="/img/tab-reference/table-2.webp" alt="機器人狀態表格" />

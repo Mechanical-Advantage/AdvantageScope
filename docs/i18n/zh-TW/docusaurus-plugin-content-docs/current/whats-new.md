@@ -57,6 +57,8 @@ _有關單位支援的更多資訊可以在[文件](/tab-reference/line-graph/un
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="感知單位的圖表繪製" />
 
+_上圖所示為英文介面。_
+
 ## 🏁 更快速的日誌下載 {#faster-log-downloads}
 
 從 roboRIO [下載日誌](/overview/log-files/#downloading-from-the-robot)現在比先前版本**快 2 到 4 倍**。這是透過切換到新協定 (FTP) 來實現的，該協定允許 roboRIO 以更少的 CPU 開銷傳輸日誌資料。

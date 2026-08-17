@@ -4,6 +4,13 @@ Captura de ecran de mai jos prezintă elementele importante ale ferestrei princi
 
 <img src="/img/overview/navigation/navigation-1.webp" alt="Diagramă de navigare" />
 
+_Interfața în limba engleză este ilustrată mai sus._
+
+- Secțiunea roșie este [bara laterală](#sidebar), care listează câmpurile disponibile.
+- Secțiunea maro este [bara de file](#tab-bar), care controlează aplicația și este utilizată pentru comutarea între vizualizări.
+- Secțiunea albastră este [panoul de vizualizare](#viewer-pane), care afișează datele.
+- Secțiunea verde este [panoul de control](#control-pane), care este utilizat pentru a ajusta vizualizarea.
+
 :::tip
 Pentru a vizualiza mai multe fișiere log simultan, dați clic pe `Fișier` > `Fereastră nouă`.
 :::

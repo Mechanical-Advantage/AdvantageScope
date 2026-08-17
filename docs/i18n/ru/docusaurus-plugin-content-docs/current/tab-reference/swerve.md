@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/swerve-1.webp" alt="Обзор вкладки Swerve" />
 
+_Выше показан интерфейс на английском языке._
+
 <details>
 <summary>Элементы управления шкалой времени</summary>
 

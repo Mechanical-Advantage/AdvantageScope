@@ -8,6 +8,8 @@ La vista de tabla está diseñada para mostrar en detalle los cambios de valores
 
 <img src="/img/tab-reference/table-1.webp" alt="Descripción general" />
 
+_En la imagen de arriba se muestra la interfaz en inglés._
+
 **Se crea una nueva fila para cada cambio en cualquiera de los campos mostrados.** Las filas duplicadas no se muestran. Por ejemplo, una tabla que muestre el estado del robot durante un partido se vería así:
 
 <img src="/img/tab-reference/table-2.webp" alt="Tabla de estado del robot" />

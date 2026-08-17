@@ -8,6 +8,8 @@ AdvantageScope Lite est une version basée sur le navigateur d'AdvantageScope ac
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="AdvantageScope Lite Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+_L'interface en anglais est illustrée ci-dessus._
+
 ## Installation et actifs {#installation-and-assets}
 
 AdvantageScope Lite pour Systemcore peut être installée et mise à jour en téléchargeant la version « Systemcore » d'AdvantageScope depuis la page des versions de GitHub. Sélectionnez la carte « Add Package » sur l'interface web Systemcore pour téléverser le paquet sur le robot.

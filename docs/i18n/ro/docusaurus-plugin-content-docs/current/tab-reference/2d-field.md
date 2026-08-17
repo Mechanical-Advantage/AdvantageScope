@@ -11,6 +11,8 @@ Fila teren 2D prezintă o vizualizare 2D a robotului suprapusă pe o hartă a te
 
 <img src="/img/tab-reference/2d-field-1.webp" alt="Prezentare generală a filei teren 2D" />
 
+_Interfața în limba engleză este ilustrată mai sus._
+
 <details>
 <summary>Controale cronologie</summary>
 

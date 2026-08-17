@@ -4,6 +4,8 @@ Graficul liniar este vizualizarea implicită în AdvantageScope. Acesta suportă
 
 <img src="/img/tab-reference/line-graph/line-graph-1.webp" alt="Demonstrație grafic liniar" />
 
+_Interfața în limba engleză este ilustrată mai sus._
+
 ## Panoul de vizualizare {#viewer-pane}
 
 Pentru a mări, plasați cursorul peste graficul principal și derulați în sus sau în jos. Un interval poate fi de asemenea selectat prin clic și tragere în timp ce țineți apăsată tasta `Shift`. Mutați-vă la stânga și la dreapta prin derulare orizontală (pe dispozitivele suportate) sau prin clic și tragere pe grafic. Când sunteți conectat live, derularea spre stânga deblochează timpul curent, iar derularea până la capăt în dreapta blochează din nou timpul curent.
@@ -26,6 +28,8 @@ Culoarea și stilul liniei fiecărui câmp pot fi personalizate dând clic pe pi
 Pentru a suprapune modul robotului (autonom, teleoperat sau utilitar), dați clic pe cele trei puncte de lângă „Câmpuri discrete” și dați clic pe „Afișează modul robotului”.
 
 <img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="Suprapunere mod robot" />
+
+_Interfața în limba engleză este ilustrată mai sus._
 :::
 
 ### Ajustarea axelor {#adjusting-axes}
@@ -33,6 +37,8 @@ Pentru a suprapune modul robotului (autonom, teleoperat sau utilitar), dați cli
 În mod implicit, fiecare axă își ajustează intervalul pe baza datelor vizibile. Pentru a dezactiva ajustarea automată și a bloca intervalul la valorile curente minimă și maximă, dați clic pe cele trei puncte de lângă titlul axei și apoi pe `Blochează axa`. Pentru a ajusta manual intervalul, alegeți `Editează intervalul...` și introduceți valorile dorite.
 
 <img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="Editarea intervalului axei" height="250" />
+
+_Interfața în limba engleză este ilustrată mai sus._
 
 ### Integrare și diferențiere {#integration-and-differentiation}
 

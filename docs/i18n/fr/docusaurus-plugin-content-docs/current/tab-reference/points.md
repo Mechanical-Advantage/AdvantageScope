@@ -11,6 +11,8 @@ L'onglet points montre une visualisation 2D de points arbitraires. Il s'agit d'u
 
 <img src="/img/tab-reference/points-1.webp" alt="Exemple d'onglet points" />
 
+_L'interface en anglais est illustrée ci-dessus._
+
 <details>
 <summary>Contrôles de la chronologie</summary>
 

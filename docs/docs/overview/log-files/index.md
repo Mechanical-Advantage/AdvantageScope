@@ -37,7 +37,7 @@ In the menu bar, click `File` > `Add News Log(s)...`, then choose a one or more 
 
 Open the preferences window by clicking `App` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS). Update the robot address and log folder.
 
-<img src="/img/prefs_en-US.webp" alt="Diagram of preferences" height="350" />
+<img src="/img/prefs_en-US.webp" alt="Diagram of preferences" height="450" />
 </details>
 
 Click `File` > `Download Logs...` to open the download window. Once connected to the robot, available logs are shown with the newest at the top. Select one or more log files to download (shift-click to select a range or **cmd/ctrl + A** to select all). Then click the ↓ symbol and select a save location.

@@ -25,6 +25,8 @@ AdvantageScope қолданбасының 📊 [Статистика](/tab-refer
 
 <img src="/img/overview/live-sources/phoenix-2.webp" alt="Статистика скриншоты" />
 
+_Жоғарыда ағылшын тіліндегі интерфейс көрсетілген._
+
 :::note
 Бұл мүмкіндікте Phoenix жаңартуларының нәтижесінде кейде мәселелер туындауы мүмкін. Мәселелерді азайту үшін AdvantageScope соңғы нұсқасын пайдалануды ұсынамыз. Әйтпесе, кез келген мәселелер туралы хабарлау үшін [мәселені ашыңыз](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
 :::

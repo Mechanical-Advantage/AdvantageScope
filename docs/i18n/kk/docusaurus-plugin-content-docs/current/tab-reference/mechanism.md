@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/mechanism-1.webp" alt="Механизм қойындысының шолуы" />
 
+_Жоғарыда ағылшын тіліндегі интерфейс көрсетілген._
+
 <details>
 <summary>Хронологияны басқару элементтері</summary>
 

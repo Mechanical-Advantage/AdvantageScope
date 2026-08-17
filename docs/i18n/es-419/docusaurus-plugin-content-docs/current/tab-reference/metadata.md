@@ -11,6 +11,8 @@ La pestaña de metadatos muestra los valores publicados en la tabla oculta "/Met
 
 <img src="/img/tab-reference/metadata-1.webp" alt="Descripción general de la pestaña de metadatos" />
 
+_En la imagen de arriba se muestra la interfaz en inglés._
+
 El código de ejemplo a continuación muestra cómo registrar metadatos usando Java.
 
 <Tabs groupId="library">

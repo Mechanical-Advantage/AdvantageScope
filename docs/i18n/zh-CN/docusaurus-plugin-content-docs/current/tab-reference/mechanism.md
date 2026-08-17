@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/mechanism-1.webp" alt="机构标签页概述" />
 
+_上图所示为英文界面。_
+
 <details>
 <summary>时间轴控制</summary>
 

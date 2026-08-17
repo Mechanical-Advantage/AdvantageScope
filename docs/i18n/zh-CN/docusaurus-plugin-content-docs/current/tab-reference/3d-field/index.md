@@ -7,6 +7,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="3D 场地标签页示例" />
 
+_上图所示为英文界面。_
+
 <details>
 <summary>时间轴控制</summary>
 
@@ -191,12 +193,12 @@ AdvantageKit KitBot 2024 示例项目包含一个 [命令](https://github.com/Me
 
 3D 场地支持三种渲染模式：
 
-- **电影级：** 使用阴影、照明、反射和高细节 3D 模型进行渲染，以获得更逼真的外观。需要相当强大的 GPU。
-- **标准（默认）：** 使用最小限度的照明和简化的 3D 模型进行渲染。在大多数设备上运行良好。
-- **低功耗：** 降低帧率、分辨率和模型细节，以减少电池消耗，并在低端设备上提供更一致的性能。
+- **电影级（左）：** 使用阴影、照明、反射和高细节 3D 模型进行渲染，以获得更逼真的外观。需要相当强大的 GPU。
+- **标准（中）：** 默认，使用最小限度的照明和简化的 3D 模型进行渲染。在大多数设备上运行良好。
+- **低功耗（右）：** 降低帧率、分辨率和模型细节，以减少电池消耗，并在低端设备上提供更一致的性能。
 
 <img src="/img/tab-reference/3d-field/3d-field-6.webp" alt="渲染模式比较" />
 
 要配置渲染模式，请按点击 `应用程序` > `显示首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。“3D 模式（电池供电）”设置可以从默认值切换，以覆盖笔记本电脑未充电时使用的渲染模式。例如，这可用于在比赛现场节省电量。
 
-<img src="/img/prefs_zh-CN.webp" alt="偏好设置图解" height="350" />
+<img src="/img/prefs_zh-CN.webp" alt="偏好设置图解" height="450" />

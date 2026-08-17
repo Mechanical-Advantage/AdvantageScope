@@ -11,6 +11,8 @@ A guia de pontos mostra uma visualização 2D de pontos arbitrários. Esta é um
 
 <img src="/img/tab-reference/points-1.webp" alt="Exemplo de aba de pontos" />
 
+_A interface em inglês é exibida acima._
+
 <details>
 <summary>Controles da linha do tempo</summary>
 

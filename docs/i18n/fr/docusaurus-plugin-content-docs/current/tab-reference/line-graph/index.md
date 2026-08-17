@@ -4,6 +4,8 @@ Le graphique linéaire est la vue par défaut dans AdvantageScope. Il prend en c
 
 <img src="/img/tab-reference/line-graph/line-graph-1.webp" alt="Démonstration du graphique linéaire" />
 
+_L'interface en anglais est illustrée ci-dessus._
+
 ## Volet de visualisation {#viewer-pane}
 
 Pour zoomer, placez le curseur sur le graphique principal et faites défiler vers le haut ou vers le bas. Une plage peut également être sélectionnée en cliquant et en faisant glisser tout en maintenant la touche `Shift` enfoncée. Déplacez-vous vers la gauche et la droite en faisant défiler horizontalement (sur les appareils pris en charge), ou en cliquant et en faisant glisser sur le graphique. Lors d'une connexion en direct, le défilement vers la gauche déverrouille à partir de l'heure actuelle, et le défilement tout à fait vers la droite verrouille à nouveau à l'heure actuelle.
@@ -26,6 +28,8 @@ La couleur et le style de ligne de chaque champ peuvent être personnalisés en 
 Pour superposer le mode du robot (autonome, téléopéré ou utilitaire), cliquez sur les trois points à côté de « Champs discrets » et cliquez sur « Afficher le mode du robot ».
 
 <img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="Superposition du mode robot" />
+
+_L'interface en anglais est illustrée ci-dessus._
 :::
 
 ### Réglage des axes {#adjusting-axes}
@@ -33,6 +37,8 @@ Pour superposer le mode du robot (autonome, téléopéré ou utilitaire), clique
 Par défaut, chaque axe ajuste sa plage en fonction des données visibles. Pour désactiver l'ajustement automatique de la plage et verrouiller la plage à ses valeurs minimale et maximale actuelles, cliquez sur les trois points près du titre de l'axe, puis sur `Verrouiller l'axe`. Pour ajuster manuellement la plage, choisissez `Modifier la plage...` et saisissez les valeurs souhaitées.
 
 <img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="Édition de la plage de l'axe" height="250" />
+
+_L'interface en anglais est illustrée ci-dessus._
 
 ### Intégration et différenciation {#integration-and-differentiation}
 

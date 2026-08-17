@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/points-1.webp" alt="דוגמה לכרטיסיית נקודות" />
 
+_ממשק באנגלית מוצג למעלה._
+
 <details>
 <summary>בקרות ציר זמן</summary>
 

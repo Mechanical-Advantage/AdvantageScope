@@ -25,4 +25,4 @@ sidebar_position: 5
 
 כדי לשנות את מצב תצוגת חותמות הזמן, פתח את חלון ההעדפות על ידי לחיצה על `App` > `Show Preferences...` (ב-Windows/Linux) או `AdvantageScope` > `הגדרות...` (ב-macOS), או על ידי לחיצה על `Ctrl+,` / `Cmd+,`. עדכן את ההגדרה **חותמות זמן** לאפשרות הרצויה.
 
-<img src="/img/prefs_he.webp" alt="תרשים העדפות" height="350" />
+<img src="/img/prefs_he.webp" alt="תרשים העדפות" height="450" />

@@ -11,6 +11,8 @@ A guia de campo 2D mostra uma visualização 2D do robô sobreposta em um mapa d
 
 <img src="/img/tab-reference/2d-field-1.webp" alt="Visão geral da aba de campo 2D" />
 
+_A interface em inglês é exibida acima._
+
 <details>
 <summary>Controles da linha do tempo</summary>
 

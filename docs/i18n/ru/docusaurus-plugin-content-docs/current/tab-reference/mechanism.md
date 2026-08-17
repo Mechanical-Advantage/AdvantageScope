@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/mechanism-1.webp" alt="Обзор вкладки механизма" />
 
+_Выше показан интерфейс на английском языке._
+
 <details>
 <summary>Элементы управления шкалой времени</summary>
 

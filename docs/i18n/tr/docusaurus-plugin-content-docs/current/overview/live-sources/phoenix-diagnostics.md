@@ -25,6 +25,8 @@ AdvantageScope'un 📊 [İstatistikler](/tab-reference/statistics) sekmesi de hi
 
 <img src="/img/overview/live-sources/phoenix-2.webp" alt="İstatistikler ekran görüntüsü" />
 
+_Yukarıda İngilizce arayüz gösterilmektedir._
+
 :::note
 Bu özellik, Phoenix güncellemelerinin bir sonucu olarak zaman zaman sorunlar yaşayabilir. Sorunları en aza indirmek için AdvantageScope'un en son sürümünü kullanmanızı öneririz. Aksi takdirde, herhangi bir sorunu bize bildirmek için lütfen [bir sorun açın](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
 :::

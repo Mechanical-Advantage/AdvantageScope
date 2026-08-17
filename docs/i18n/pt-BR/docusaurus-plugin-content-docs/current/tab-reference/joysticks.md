@@ -8,6 +8,8 @@ A guia de joysticks mostra o estado de até seis controles conectados. A imagem 
 
 <img src="/img/tab-reference/joysticks-1.webp" alt="Visão geral da aba de joysticks" />
 
+_A interface em inglês é exibida acima._
+
 <details>
 <summary>Controles da linha do tempo</summary>
 

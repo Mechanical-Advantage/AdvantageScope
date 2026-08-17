@@ -24,6 +24,8 @@ Si plusieurs fichiers sont ouverts simultanément, les horodatages seront align�
 
 <img src="/img/overview/log-files/open-file-1.webp" alt="Ouverture d'un journal enregistré" />
 
+_L'interface en anglais est illustrée ci-dessus._
+
 ## Ajout de nouveaux journaux {#adding-new-logs}
 
 Après avoir ouvert un fichier journal, des journaux supplémentaires peuvent être facilement ajoutés à la visualisation. Les horodatages seront réalignés automatiquement pour se synchroniser avec les données existantes.
@@ -37,7 +39,7 @@ Dans la barre de menu, cliquez sur `Fichier` > `Ajouter de nouveaux journaux...`
 
 Ouvrez la fenêtre des préférences en cliquant sur `Application` > `Afficher les préférences...` (Windows/Linux) ou `AdvantageScope` > `Paramètres...` (macOS). Mettez à jour l'adresse du robot et le dossier des journaux.
 
-<img src="/img/prefs_fr.webp" alt="Schéma des préférences" height="350" />
+<img src="/img/prefs_fr.webp" alt="Schéma des préférences" height="450" />
 </details>
 
 Cliquez sur `Fichier` > `Télécharger les journaux...` pour ouvrir la fenêtre de téléchargement. Une fois connecté au robot, les journaux disponibles sont affichés avec le plus récent en haut. Sélectionnez un ou plusieurs fichiers journaux à télécharger (Maj-clic pour sélectionner une plage ou **cmd/ctrl + A** pour tout sélectionner). Cliquez ensuite sur le symbole ↓ et sélectionnez un emplacement d'enregistrement.
@@ -51,6 +53,8 @@ Lors du téléchargement de plusieurs fichiers, AdvantageScope ignore ceux qui e
 :::
 
 <img src="/img/overview/log-files/open-file-2.webp" alt="Téléchargement des fichiers journaux" height="350" />
+
+_L'interface en anglais est illustrée ci-dessus._
 
 ## Formatage CSV {#csv-formatting}
 

@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/points-1.webp" alt="Пример вкладки точек" />
 
+_Выше показан интерфейс на английском языке._
+
 <details>
 <summary>Элементы управления шкалой времени</summary>
 

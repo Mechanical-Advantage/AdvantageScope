@@ -25,6 +25,8 @@ AdvantageScope תומכת בהזרמה חיה של אותות ממכשירי Pho
 
 <img src="/img/overview/live-sources/phoenix-2.webp" alt="צילום מסך של סטטיסטיקה" />
 
+_ממשק באנגלית מוצג למעלה._
+
 :::note
 תכונה זו עשויה להיתקל לעיתים בבעיות כתוצאה מעדכוני Phoenix. אנו ממליצים להשתמש בגרסה החדשה ביותר של AdvantageScope כדי למזער בעיות. אחרת, אנא [פתחו issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues) כדי להודיע לנו על בעיות כלשהן.
 :::

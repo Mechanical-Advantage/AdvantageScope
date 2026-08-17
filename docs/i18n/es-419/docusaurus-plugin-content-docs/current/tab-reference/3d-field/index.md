@@ -7,6 +7,8 @@ El campo 3D muestra una visualización 3D del robot y del campo. Se puede utiliz
 
 <img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="Ejemplo de pestaña de campo 3D" />
 
+_En la imagen de arriba se muestra la interfaz en inglés._
+
 <details>
 <summary>Controles de la línea de tiempo</summary>
 
@@ -189,12 +191,12 @@ El sistema de coordenadas utilizado en esta pestaña es personalizable. Consulta
 
 El campo 3D admite tres modos de renderizado:
 
-- **Cinemático:** Renderiza usando sombras, iluminación, reflejos y modelos 3D de gran detalle para un aspecto más realista. Requiere una GPU decentemente potente.
-- **Estándar:** Renderiza con iluminación mínima y modelos 3D simplificados. Funciona bien en la mayoría de los dispositivos.
-- **Baja potencia:** Reduce la velocidad de fotogramas, la resolución y el detalle del modelo para reducir el consumo de la batería y proporcionar un rendimiento más consistente en dispositivos de gama baja.
+- **Cinemático (Izquierda):** Renderiza usando sombras, iluminación, reflejos y modelos 3D de gran detalle para un aspecto más realista. Requiere una GPU decentemente potente.
+- **Estándar (Centro):** Predeterminado, renderiza con iluminación mínima y modelos 3D simplificados. Funciona bien en la mayoría de los dispositivos.
+- **Baja potencia (Derecha):** Reduce la velocidad de fotogramas, la resolución y el detalle del modelo para reducir el consumo de la batería y proporcionar un rendimiento más consistente en dispositivos de gama baja.
 
 <img src="/img/tab-reference/3d-field/3d-field-6.webp" alt="Comparación de modos de renderizado" />
 
 Para configurar el modo de renderizado, abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS). La configuración "Modo 3D (batería)" se puede cambiar desde la predeterminada para anular el modo de renderizado utilizado en una computadora portátil cuando no se está cargando. Por ejemplo, esto se puede usar para preservar la batería durante la competencia.
 
-<img src="/img/prefs_es-419.webp" alt="Diagrama de preferencias" height="350" />
+<img src="/img/prefs_es-419.webp" alt="Diagrama de preferencias" height="450" />

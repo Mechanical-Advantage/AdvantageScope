@@ -7,6 +7,8 @@ O campo 3D mostra uma visualização 3D do robô e do campo. Ele pode ser usado 
 
 <img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="Exemplo de aba de campo 3D" />
 
+_A interface em inglês é exibida acima._
+
 <details>
 <summary>Controles da linha do tempo</summary>
 
@@ -191,12 +193,12 @@ O sistema de coordenadas usado nesta guia é personalizável. Consulte a página
 
 O campo 3D suporta três modos de renderização:
 
-- **Cinematográfico:** Renderiza usando sombras, iluminação, reflexos e modelos 3D de alto detalhamento para uma aparência mais realista. Requer uma GPU razoavelmente potente.
-- **Padrão (Padrão):** Renderiza com iluminação mínima e modelos 3D simplificados. Executa bem na maioria dos dispositivos.
-- **Baixo consumo:** Reduz a taxa de quadros, a resolução e o detalhamento do modelo para reduzir o consumo de bateria e fornecer um desempenho mais consistente em dispositivos de ponta baixa.
+- **Cinematográfico (Esquerda):** Renderiza usando sombras, iluminação, reflexos e modelos 3D de alto detalhamento para uma aparência mais realista. Requer uma GPU razoavelmente potente.
+- **Padrão (Centro):** Padrão, renderiza com iluminação mínima e modelos 3D simplificados. Executa bem na maioria dos dispositivos.
+- **Baixo consumo (Direita):** Reduz a taxa de quadros, a resolução e o detalhamento do modelo para reduzir o consumo de bateria e fornecer um desempenho mais consistente em dispositivos de ponta baixa.
 
 <img src="/img/tab-reference/3d-field/3d-field-6.webp" alt="Comparação de modos de renderização" />
 
 Para configurar o modo de renderização, abra a janela de preferências clicando em `App` > `Mostrar preferências...` (Windows/Linux) ou `AdvantageScope` > `Configurações...` (macOS). A configuração "Modo 3D (na bateria)" pode ser alterada a partir do padrão para sobrescrever o modo de renderização usado em um notebook quando não estiver carregando. Por exemplo, isso pode ser usado para preservar a bateria durante competições.
 
-<img src="/img/prefs_pt-BR.webp" alt="Diagrama de preferências" height="350" />
+<img src="/img/prefs_pt-BR.webp" alt="Diagrama de preferências" height="450" />

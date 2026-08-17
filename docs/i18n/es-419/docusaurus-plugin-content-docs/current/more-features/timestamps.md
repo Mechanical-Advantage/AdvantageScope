@@ -25,4 +25,4 @@ Cuando [se abren varios archivos de registro simultáneamente](/overview/log-fil
 
 Para cambiar el modo de visualización de marcas de tiempo, abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS), o presionando `Ctrl+,` / `Cmd+,`. Actualiza la opción **Marcas de tiempo** a la opción deseada.
 
-<img src="/img/prefs_es-419.webp" alt="Diagrama de preferencias" height="350" />
+<img src="/img/prefs_es-419.webp" alt="Diagrama de preferencias" height="450" />

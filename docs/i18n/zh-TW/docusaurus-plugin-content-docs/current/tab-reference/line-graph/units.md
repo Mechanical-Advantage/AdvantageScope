@@ -8,6 +8,8 @@
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="單位感知圖表" />
 
+_上圖所示為英文介面。_
+
 ## 支援的格式 {#supported-formats}
 
 AdvantageScope 支援幾種方法來提供每個欄位的單位資訊。支援大多數常見單位；有關完整清單，請在設定[手動轉換](#manual-conversion)時查看快顯選單。
@@ -55,3 +57,5 @@ AdvantageKit 在記錄輸入與輸出（包括注釋記錄）時支援單位中�
 :::
 
 <img src="/img/tab-reference/line-graph/units-2.webp" alt="編輯單位轉換" height="250" />
+
+_上圖所示為英文介面。_

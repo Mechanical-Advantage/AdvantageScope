@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/2d-field-1.webp" alt="2D алаң қойындысының шолуы" />
 
+_Жоғарыда ағылшын тіліндегі интерфейс көрсетілген._
+
 <details>
 <summary>Хронологияны басқару элементтері</summary>
 

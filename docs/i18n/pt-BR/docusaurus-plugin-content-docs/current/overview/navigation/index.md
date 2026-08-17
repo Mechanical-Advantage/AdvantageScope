@@ -4,6 +4,13 @@ A captura de tela abaixo mostra os elementos importantes da janela principal do 
 
 <img src="/img/overview/navigation/navigation-1.webp" alt="Diagrama de navegação" />
 
+_A interface em inglês é exibida acima._
+
+- A seção vermelha é a [barra lateral](#sidebar), que lista os campos disponíveis.
+- A seção marrom é a [barra de guias](#tab-bar), que controla o aplicativo e é usada para alternar entre as visualizações.
+- A seção azul é o [painel de visualização](#viewer-pane), que exibe os dados.
+- A seção verde é o [painel de controle](#control-pane), que é usado para ajustar a visualização.
+
 :::tip
 Para visualizar múltiplos arquivos de log simultaneamente, clique em `Arquivo` > `Nova janela`.
 :::

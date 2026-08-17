@@ -25,4 +25,4 @@ sidebar_position: 5
 
 لتغيير وضع عرض الطابع الزمني، افتح نافذة التفضيلات بالنقر فوق `App` > `إظهار التفضيلات...` (Windows/Linux) أو `AdvantageScope` > `الإعدادات...` (macOS)، أو بالضغط على `Ctrl+,` / `Cmd+,`. قم بتحديث إعداد **الطوابع الزمنية** إلى الخيار المطلوب.
 
-<img src="/img/prefs_ar.webp" alt="مخطط التفضيلات" height="350" />
+<img src="/img/prefs_ar.webp" alt="مخطط التفضيلات" height="450" />

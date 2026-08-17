@@ -11,6 +11,8 @@ L'onglet Swerve montre l'état de quatre modules Swerve, y compris les vecteurs 
 
 <img src="/img/tab-reference/swerve-1.webp" alt="Aperçu de l'onglet swerve" />
 
+_L'interface en anglais est illustrée ci-dessus._
+
 <details>
 <summary>Contrôles de la chronologie</summary>
 

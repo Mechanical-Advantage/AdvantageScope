@@ -26,7 +26,7 @@ AdvantageScope admite múltiples idiomas para brindar una experiencia localizada
 
 Para cambiar el idioma de visualización en AdvantageScope, abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS). En la configuración de "Idioma", puedes elegir entre la lista de idiomas compatibles o seleccionar "Predeterminado del sistema" para que coincida automáticamente con el idioma de tu sistema operativo.
 
-<img src="/img/prefs_es-419.webp" alt="Diagrama de preferencias" height="350" />
+<img src="/img/prefs_es-419.webp" alt="Diagrama de preferencias" height="450" />
 
 ## Claves de registro {#logging-keys}
 

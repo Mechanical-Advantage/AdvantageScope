@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/swerve-1.webp" alt="نظرة عامة على علامة تبويب سويرف" />
 
+_تظهر في الصورة أعلاه الواجهة باللغة الإنجليزية._
+
 <details>
 <summary>عناصر تحكم المخطط الزمني</summary>
 

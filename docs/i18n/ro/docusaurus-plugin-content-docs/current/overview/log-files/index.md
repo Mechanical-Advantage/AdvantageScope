@@ -24,6 +24,8 @@ Dacă sunt deschise mai multe fișiere simultan, marcajele de timp vor fi alinia
 
 <img src="/img/overview/log-files/open-file-1.webp" alt="Deschiderea unui log salvat" />
 
+_Interfața în limba engleză este ilustrată mai sus._
+
 ## Adăugarea de loguri noi {#adding-new-logs}
 
 După deschiderea unui fișier log, loguri suplimentare pot fi adăugate cu ușurință în vizualizare. Marcajele de timp vor fi realiniate automat pentru a se sincroniza cu datele existente.
@@ -37,7 +39,7 @@ După deschiderea unui fișier log, loguri suplimentare pot fi adăugate cu ușu
 
 Deschideți fereastra de preferințe dând clic pe `Aplicație` > `Afișează preferințele...` (Windows/Linux) sau `AdvantageScope` > `Setări...` (macOS). Actualizați adresa robotului și folderul de loguri.
 
-<img src="/img/prefs_ro.webp" alt="Diagramă de preferințe" height="350" />
+<img src="/img/prefs_ro.webp" alt="Diagramă de preferințe" height="450" />
 </details>
 
 Dați clic pe `Fișier` > `Descărcare loguri...` pentru a deschide fereastra de descărcare. Odată conectat la robot, logurile disponibile sunt afișate cu cele mai noi în partea de sus. Selectați unul sau mai multe fișiere log de descărcat (shift-clic pentru a selecta un interval sau **cmd/ctrl + A** pentru a selecta tot). Apoi dați clic pe simbolul ↓ și selectați o locație de salvare.
@@ -51,6 +53,8 @@ La descărcarea mai multor fișiere, AdvantageScope omite orice fișiere care ex
 :::
 
 <img src="/img/overview/log-files/open-file-2.webp" alt="Descărcarea fișierelor log" height="350" />
+
+_Interfața în limba engleză este ilustrată mai sus._
 
 ## Formatarea CSV {#csv-formatting}
 

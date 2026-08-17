@@ -8,6 +8,8 @@ Joystickler sekmesi altı adede kadar bağlı kontrolcünün durumunu gösterir.
 
 <img src="/img/tab-reference/joysticks-1.webp" alt="Joystickler sekmesine genel bakış" />
 
+_Yukarıda İngilizce arayüz gösterilmektedir._
+
 <details>
 <summary>Zaman Çizelgesi Kontrolleri</summary>
 

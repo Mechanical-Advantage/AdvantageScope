@@ -25,6 +25,8 @@ AdvantageScope 的 📊 [统计](/tab-reference/statistics) 选项卡还支持�
 
 <img src="/img/overview/live-sources/phoenix-2.webp" alt="统计数据截图" />
 
+_上图所示为英文界面。_
+
 :::note
 由于 Phoenix 更新，此功能偶尔可能会遇到问题。我们建议使用最新版本的 AdvantageScope 以最大程度减少问题。否则，请 [提交 issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues) 以告知我们遇到的任何问题。
 :::

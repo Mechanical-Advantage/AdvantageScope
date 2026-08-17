@@ -25,4 +25,4 @@ Quando [vários arquivos de log são abertos simultaneamente](/overview/log-file
 
 Para alterar o modo de exibição de timestamps, abra a janela de preferências clicando em `App` > `Mostrar Preferências...` (Windows/Linux) ou `AdvantageScope` > `Configurações...` (macOS), ou pressionando `Ctrl+,` / `Cmd+,`. Atualize a configuração **Timestamps** para a opção desejada.
 
-<img src="/img/prefs_pt-BR.webp" alt="Diagrama de preferências" height="350" />
+<img src="/img/prefs_pt-BR.webp" alt="Diagrama de preferências" height="450" />

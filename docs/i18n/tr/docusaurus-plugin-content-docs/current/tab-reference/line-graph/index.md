@@ -4,6 +4,8 @@
 
 <img src="/img/tab-reference/line-graph/line-graph-1.webp" alt="Çizgi grafiği gösterimi" />
 
+_Yukarıda İngilizce arayüz gösterilmektedir._
+
 ## Görüntüleyici paneli {#viewer-pane}
 
 Yakınlaştırmak için imleci ana grafiğin üzerine getirin ve yukarı veya aşağı kaydırın. `Shift` tuşunu basılı tutarken tıklayıp sürükleyerek bir aralık da seçilebilir. Yatay olarak kaydırarak (desteklenen cihazlarda) veya grafik üzerinde tıklayıp sürükleyerek sola ve sağa hareket edin. Canlı bağlandığında sola kaydırmak mevcut zamandan kilidi kaldırır ve en sağa kadar kaydırmak tekrar mevcut zamana kilitler.
@@ -26,6 +28,8 @@ Her alanın rengi ve çizgi stili, renkli simgeye tıklanarak veya alan adına s
 Robot modunu (otonom, teleoperasyon veya test) çakıştırmak için "Ayrık Alanlar"ın yanındaki üç noktaya tıklayın ve "Robot Modunu Göster" seçeneğine tıklayın.
 
 <img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="Robot modu katmanı" />
+
+_Yukarıda İngilizce arayüz gösterilmektedir._
 :::
 
 ### Eksenleri ayarlama {#adjusting-axes}
@@ -33,6 +37,8 @@ Robot modunu (otonom, teleoperasyon veya test) çakıştırmak için "Ayrık Ala
 Varsayılan olarak her eksen aralığını görünür verilere göre ayarlar. Otomatik aralık belirlemeyi devre dışı bırakmak ve aralığı mevcut minimum ve maksimum değerlerine kilitlemek için eksen başlığının yanındaki üç noktaya ve ardından `Ekseni Kilitle` seçeneğine tıklayın. Aralığı manuel olarak ayarlamak için `Aralığı Düzenle...` seçin ve istenen değerleri girin.
 
 <img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="Eksen aralığını düzenleme" height="250" />
+
+_Yukarıda İngilizce arayüz gösterilmektedir._
 
 ### İntegral & türev {#integration-and-differentiation}
 

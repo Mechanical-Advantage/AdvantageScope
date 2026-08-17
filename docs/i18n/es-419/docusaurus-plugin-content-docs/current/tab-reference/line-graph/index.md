@@ -4,6 +4,8 @@ El gráfico de líneas es la vista predeterminada en AdvantageScope. Admite camp
 
 <img src="/img/tab-reference/line-graph/line-graph-1.webp" alt="Demostración de gráfico de líneas" />
 
+_En la imagen de arriba se muestra la interfaz en inglés._
+
 ## Panel del visor {#viewer-pane}
 
 Para hacer zoom, coloca el cursor sobre el gráfico principal y desplázate hacia arriba o hacia abajo. También se puede seleccionar un rango haciendo clic y arrastrando mientras se mantiene presionada la tecla `Shift`. Muévete hacia la izquierda y hacia la derecha desplazándote horizontalmente (en dispositivos compatibles) o haciendo clic y arrastrando en el gráfico. Cuando estás conectado en vivo, desplazarte hacia la izquierda desbloquea del tiempo actual, y desplazarte hasta la derecha vuelve a bloquear al tiempo actual.
@@ -28,6 +30,8 @@ Los datos de la API de [alertas persistentes](https://docs.wpilib.org/es/latest/
 Para superponer el modo del robot (autónomo, teleop o utilidad), haz clic en los tres puntos al lado de "Campos discretos" y haz clic en "Mostrar modo del robot".
 
 <img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="Superposición del modo del robot" />
+
+_En la imagen de arriba se muestra la interfaz en inglés._
 :::
 
 ### Ajuste de ejes {#adjusting-axes}
@@ -35,6 +39,8 @@ Para superponer el modo del robot (autónomo, teleop o utilidad), haz clic en lo
 Por defecto, cada eje ajusta su rango en función de los datos visibles. Para deshabilitar el rango automático y bloquear el rango a su mínimo y máximo actuales, haz clic en los tres puntos cerca del título del eje y luego en `Bloquear eje`. Para ajustar manualmente el rango, elige `Editar rango...` e ingresa los valores deseados.
 
 <img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="Edición del rango del eje" height="250" />
+
+_En la imagen de arriba se muestra la interfaz en inglés._
 
 ### Integración y diferenciación {#integration-and-differentiation}
 

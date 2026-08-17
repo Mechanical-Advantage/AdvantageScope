@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/metadata-1.webp" alt="中繼資料分頁概述" />
 
+_上圖所示為英文介面。_
+
 下面的範例程式碼展示了如何使用 Java 記錄中繼資料。
 
 <Tabs groupId="library">

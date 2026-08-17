@@ -25,4 +25,4 @@ Când [sunt deschise mai multe fișiere log simultan](/overview/log-files/#openi
 
 Pentru a schimba modul de afișare a marcajelor de timp, deschide fereastra de preferințe făcând clic pe `App` > `Arată preferințele...` (Windows/Linux) sau `AdvantageScope` > `Setări...` (macOS), sau apăsând `Ctrl+,` / `Cmd+,`. Actualizează setarea **Marcaje de timp** la opțiunea dorită.
 
-<img src="/img/prefs_ro.webp" alt="Diagrama preferințelor" height="350" />
+<img src="/img/prefs_ro.webp" alt="Diagrama preferințelor" height="450" />

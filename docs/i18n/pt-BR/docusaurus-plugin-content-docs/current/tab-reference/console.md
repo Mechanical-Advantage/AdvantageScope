@@ -15,6 +15,8 @@ Arraste o campo desejado para a visualização principal para começar. Cada lin
 
 <img src="/img/tab-reference/console-1.webp" alt="Visualização do console" />
 
+_A interface em inglês é exibida acima._
+
 :::info
 Clique no ícone de paleta de cores para alternar o destaque de mensagens de aviso e erro. Para logs da WPILib e do AdvantageKit, as mensagens são destacadas se contiverem o texto "warning" ou "error".
 :::

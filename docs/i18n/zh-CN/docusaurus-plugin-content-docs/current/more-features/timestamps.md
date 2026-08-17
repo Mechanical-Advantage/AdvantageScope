@@ -25,4 +25,4 @@ AdvantageScope 支持在所有视图中自定义时间戳的显示选项，包�
 
 要更改时间戳显示模式，请通过点击 `App` > `显示偏好设置...`（Windows/Linux）或 `AdvantageScope` > `设置...`（macOS），或按下 `Ctrl+,` / `Cmd+,` 打开偏好设置窗口。将 **时间戳** 设置更新为所需选项。
 
-<img src="/img/prefs_zh-CN.webp" alt="偏好设置图表" height="350" />
+<img src="/img/prefs_zh-CN.webp" alt="偏好设置图表" height="450" />

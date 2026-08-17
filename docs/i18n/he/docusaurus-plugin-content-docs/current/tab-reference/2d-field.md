@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/2d-field-1.webp" alt="סקירה כללית של כרטיסיית מגרש 2D" />
 
+_ממשק באנגלית מוצג למעלה._
+
 <details>
 <summary>בקרות ציר זמן</summary>
 

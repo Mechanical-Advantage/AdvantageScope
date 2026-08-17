@@ -8,6 +8,8 @@ sidebar_position: 8
 
 <img src="/img/tab-reference/joysticks-1.webp" alt="Обзор вкладки джойстиков" />
 
+_Выше показан интерфейс на английском языке._
+
 <details>
 <summary>Элементы управления шкалой времени</summary>
 

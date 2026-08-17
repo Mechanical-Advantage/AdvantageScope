@@ -8,6 +8,8 @@ sidebar_position: 6
 
 <img src="/img/tab-reference/statistics-1.webp" alt="İstatistikler sekmesine genel bakış" />
 
+_Yukarıda İngilizce arayüz gösterilmektedir._
+
 ## Kontrol paneli {#control-pane}
 
 Başlamak için bir alanı "Ölçümler" bölümüne sürükleyin. X düğmesini kullanarak bir alanı silin veya göz simgesine tıklayarak ya da alan adına çift tıklayarak geçici olarak gizleyin. Tüm alanları kaldırmak için eksen başlığının yanındaki üç noktaya ve ardından `Tümünü Temizle` seçeneğine tıklayın. Alanlar listede tıklanıp sürüklenerek yeniden düzenlenebilir.

@@ -4,6 +4,13 @@ La captura de pantalla a continuación muestra los elementos importantes de la v
 
 <img src="/img/overview/navigation/navigation-1.webp" alt="Diagrama de navegación" />
 
+_En la imagen de arriba se muestra la interfaz en inglés._
+
+- La sección roja es la [barra lateral](#sidebar), que enumera los campos disponibles.
+- La sección marrón es la [barra de pestañas](#tab-bar), que controla la aplicación y se utiliza para cambiar entre vistas.
+- La sección azul es el [panel del visor](#viewer-pane), que muestra los datos.
+- La sección verde es el [panel de control](#control-pane), que se utiliza para ajustar la visualización.
+
 :::tip
 Para ver varios archivos de registro simultáneamente, haz clic en `Archivo` > `Nueva ventana`.
 :::

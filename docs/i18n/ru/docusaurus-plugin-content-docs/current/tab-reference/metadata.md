@@ -11,6 +11,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/metadata-1.webp" alt="Обзор вкладки метаданных" />
 
+_Выше показан интерфейс на английском языке._
+
 Пример кода ниже показывает, как логировать метаданные на Java.
 
 <Tabs groupId="library">

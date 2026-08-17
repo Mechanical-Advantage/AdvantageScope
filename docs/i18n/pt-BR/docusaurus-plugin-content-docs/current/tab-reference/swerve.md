@@ -11,6 +11,8 @@ A guia Swerve mostra o estado de quatro módulos Swerve, incluindo os vetores de
 
 <img src="/img/tab-reference/swerve-1.webp" alt="Visão geral da aba de swerve" />
 
+_A interface em inglês é exibida acima._
+
 <details>
 <summary>Controles da linha do tempo</summary>
 

@@ -25,4 +25,4 @@ AdvantageScope 支援在所有檢視中自訂時間戳記的顯示選項，包�
 
 要變更時間戳記顯示模式，請透過點擊 `App` > `顯示偏好設定...` (Windows/Linux) 或 `AdvantageScope` > `設定...` (macOS)，或按下 `Ctrl+,` / `Cmd+,` 開啟偏好設定視窗。將 **時間戳記** 設定更新為所需選項。
 
-<img src="/img/prefs_zh-TW.webp" alt="偏好設定圖表" height="350" />
+<img src="/img/prefs_zh-TW.webp" alt="偏好設定圖表" height="450" />

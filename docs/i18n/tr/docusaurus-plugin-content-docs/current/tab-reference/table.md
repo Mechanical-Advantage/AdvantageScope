@@ -8,6 +8,8 @@ Tablo görünümü, bir dizi alandaki belirli değer değişikliklerini ayrınt�
 
 <img src="/img/tab-reference/table-1.webp" alt="Genel bakış" />
 
+_Yukarıda İngilizce arayüz gösterilmektedir._
+
 **Görüntülenen alanların herhangi birindeki her değişiklik için yeni bir satır oluşturulur.** Yinelenen satırlar görüntülenmez. Örneğin bir maç sırasında robot durumunu gösteren bir tablo şu şekilde görünür:
 
 <img src="/img/tab-reference/table-2.webp" alt="Robot durumu tablosu" />

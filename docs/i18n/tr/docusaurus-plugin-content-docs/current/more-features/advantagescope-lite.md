@@ -8,6 +8,8 @@ AdvantageScope Lite, FIRST Sürücü İstasyonundan ve Systemcore web arayüzün
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="AdvantageScope Lite Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+_Yukarıda İngilizce arayüz gösterilmektedir._
+
 ## Kurulum & varlıklar {#installation-and-assets}
 
 Systemcore için AdvantageScope Lite, GitHub sürümler sayfasından AdvantageScope'un "Systemcore" sürümü indirilerek kurulabilir ve güncellenebilir. Paketi robota yüklemek için Systemcore web arayüzündeki "Paket Ekle" kartını seçin.

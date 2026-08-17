@@ -8,6 +8,8 @@ La pestaña de gráfico de líneas tiene reconocimiento de unidades, lo que sign
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="Gráficos con reconocimiento de unidades" />
 
+_En la imagen de arriba se muestra la interfaz en inglés._
+
 ## Formatos compatibles {#supported-formats}
 
 AdvantageScope admite varios métodos para proporcionar información sobre la unidad para cada campo. Se admiten las unidades más comunes; para obtener una lista completa, consulta el menú emergente al configurar la [conversión manual](#manual-conversion).
@@ -55,3 +57,5 @@ Para habilitar o deshabilitar rápidamente la conversión de unidades, haz clic 
 :::
 
 <img src="/img/tab-reference/line-graph/units-2.webp" alt="Edición de conversión de unidades" height="250" />
+
+_En la imagen de arriba se muestra la interfaz en inglés._

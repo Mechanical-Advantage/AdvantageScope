@@ -7,6 +7,8 @@ Terenul 3D prezintă o vizualizare 3D a robotului și a terenului. Poate fi util
 
 <img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="Exemplu de filă teren 3D" />
 
+_Interfața în limba engleză este ilustrată mai sus._
+
 <details>
 <summary>Controale cronologie</summary>
 
@@ -191,12 +193,12 @@ Sistemul de coordonate utilizat pe această filă este personalizabil. Consulta�
 
 Terenul 3D suportă trei moduri de randare:
 
-- **Cinematic:** Randează folosind umbre, iluminare, reflexii și modele 3D de înaltă detaliere pentru un aspect mai realist. Necesită un GPU destul de puternic.
-- **Standard (implicit):** Randează cu iluminare minimă și modele 3D simplificate. Rulează bine pe majoritatea dispozitivelor.
-- **Consum redus:** Reduce frecvența cadrelor, rezoluția și detaliile modelului pentru a reduce consumul bateriei și a oferi o performanță mai consecventă pe dispozitivele mai slabe.
+- **Cinematic (Stânga):** Randează folosind umbre, iluminare, reflexii și modele 3D de înaltă detaliere pentru un aspect mai realist. Necesită un GPU destul de puternic.
+- **Standard (Centru):** Implicit, randează cu iluminare minimă și modele 3D simplificate. Rulează bine pe majoritatea dispozitivelor.
+- **Consum redus (Dreapta):** Reduce frecvența cadrelor, rezoluția și detaliile modelului pentru a reduce consumul bateriei și a oferi o performanță mai consecventă pe dispozitivele mai slabe.
 
 <img src="/img/tab-reference/3d-field/3d-field-6.webp" alt="Compararea modurilor de randare" />
 
 Pentru a configura modul de randare, deschideți fereastra de preferințe dând clic pe `Aplicație` > `Afișează preferințele...` (Windows/Linux) sau `AdvantageScope` > `Setări...` (macOS). Setarea „Mod 3D (baterie)” poate fi comutată de la valoarea implicită pentru a suprascrie modul de randare utilizat pe un laptop când nu se încarcă. De exemplu, aceasta poate fi utilizată pentru a economisi bateria în timpul competiției.
 
-<img src="/img/prefs_ro.webp" alt="Diagramă de preferințe" height="350" />
+<img src="/img/prefs_ro.webp" alt="Diagramă de preferințe" height="450" />

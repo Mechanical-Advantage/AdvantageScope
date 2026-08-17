@@ -11,6 +11,8 @@ L'onglet métadonnées montre les valeurs publiées dans la table cachée « /M
 
 <img src="/img/tab-reference/metadata-1.webp" alt="Aperçu de l'onglet métadonnées" />
 
+_L'interface en anglais est illustrée ci-dessus._
+
 L'exemple de code ci-dessous montre comment enregistrer des métadonnées en utilisant Java.
 
 <Tabs groupId="library">

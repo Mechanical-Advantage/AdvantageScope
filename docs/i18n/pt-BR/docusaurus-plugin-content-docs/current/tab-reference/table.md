@@ -8,6 +8,8 @@ A visualização em tabela foi projetada para mostrar as alterações de valores
 
 <img src="/img/tab-reference/table-1.webp" alt="Visão geral" />
 
+_A interface em inglês é exibida acima._
+
 **Uma nova linha é criada para cada alteração em qualquer um dos campos exibidos.** Linhas duplicadas não são exibidas. Por exemplo, uma tabela mostrando o estado do robô durante uma partida seria parecida com esta:
 
 <img src="/img/tab-reference/table-2.webp" alt="Tabela de estado do robô" />

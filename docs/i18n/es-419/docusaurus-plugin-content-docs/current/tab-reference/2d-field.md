@@ -11,6 +11,8 @@ La pestaña de campo 2D muestra una visualización 2D del robot superpuesta en u
 
 <img src="/img/tab-reference/2d-field-1.webp" alt="Descripción general de la pestaña de campo 2D" />
 
+_En la imagen de arriba se muestra la interfaz en inglés._
+
 <details>
 <summary>Controles de la línea de tiempo</summary>
 

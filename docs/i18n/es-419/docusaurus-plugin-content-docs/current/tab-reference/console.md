@@ -15,6 +15,8 @@ Arrastra el campo deseado a la vista principal para comenzar. Cada fila represen
 
 <img src="/img/tab-reference/console-1.webp" alt="Vista de consola" />
 
+_En la imagen de arriba se muestra la interfaz en inglés._
+
 :::info
 Haz clic en el icono de la paleta de colores para alternar el resaltado de los mensajes de advertencia y error. Para los registros de WPILib y AdvantageKit, los mensajes se resaltan si contienen el texto "warning" o "error".
 :::

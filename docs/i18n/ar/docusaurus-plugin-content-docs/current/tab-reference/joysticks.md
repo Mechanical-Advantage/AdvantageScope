@@ -8,6 +8,8 @@ sidebar_position: 8
 
 <img src="/img/tab-reference/joysticks-1.webp" alt="نظرة عامة على علامة تبويب أذرع التحكم" />
 
+_تظهر في الصورة أعلاه الواجهة باللغة الإنجليزية._
+
 <details>
 <summary>عناصر تحكم المخطط الزمني</summary>
 

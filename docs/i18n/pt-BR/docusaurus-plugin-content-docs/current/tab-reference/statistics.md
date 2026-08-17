@@ -8,6 +8,8 @@ A guia de estatísticas permite uma análise estatística profunda de campos num
 
 <img src="/img/tab-reference/statistics-1.webp" alt="Visão geral da aba de estatísticas" />
 
+_A interface em inglês é exibida acima._
+
 ## Painel de controle {#control-pane}
 
 Para começar, arraste um campo para a seção "Medições". Exclua um campo usando o botão X ou oculte-o temporariamente clicando no ícone de olho ou dando um duplo clique no nome do campo. Para remover todos os campos, clique nos três pontos perto do título do eixo e depois em `Limpar tudo`. Os campos podem ser reorganizados na lista clicando e arrastando.

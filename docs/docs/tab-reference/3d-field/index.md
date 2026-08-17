@@ -191,12 +191,12 @@ The coordinate system used on the this tab is customizable. See the [coordinate 
 
 The 3D field supports three rendering modes:
 
-- **Cinematic:** Render using shadows, lighting, reflections, and high-detail 3D models for a more realistic look. Requires a decently powerful GPU.
-- **Standard (Default):** Render with minimal lighting and simplified 3D models. Runs well on most devices.
-- **Low Power:** Lower the framerate, resolution, and model detail to reduce battery consumption and provide more consistent performance on low-end devices.
+- **Cinematic (Left):** Render using shadows, lighting, reflections, and high-detail 3D models for a more realistic look. Requires a decently powerful GPU.
+- **Standard (Center):** Default, render with minimal lighting and simplified 3D models. Runs well on most devices.
+- **Low Power (Right):** Lower the framerate, resolution, and model detail to reduce battery consumption and provide more consistent performance on low-end devices.
 
 <img src="/img/tab-reference/3d-field/3d-field-6.webp" alt="Comparion of rendering modes" />
 
 To configure the rendering mode, open the preferences window by pressing clicking `App` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS). The "3D Mode (Battery)" setting can be switched from the default to override the rendering mode used on a laptop when not charging. For example, this can be used to preserve battery while at competition.
 
-<img src="/img/prefs_en-US.webp" alt="Diagram of preferences" height="350" />
+<img src="/img/prefs_en-US.webp" alt="Diagram of preferences" height="450" />

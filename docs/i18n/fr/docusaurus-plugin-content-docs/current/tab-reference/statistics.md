@@ -8,6 +8,8 @@ L'onglet statistiques permet une analyse statistique approfondie des champs num�
 
 <img src="/img/tab-reference/statistics-1.webp" alt="Aperçu de l'onglet statistiques" />
 
+_L'interface en anglais est illustrée ci-dessus._
+
 ## Panneau de contrôle {#control-pane}
 
 Pour commencer, faites glisser un champ vers la section « Mesures ». Supprimez un champ à l'aide du bouton X, ou masquez-le temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer tous les champs, cliquez sur les trois points près du titre de l'axe, puis sur `Tout effacer`. Les champs peuvent être réorganisés dans la liste en les faisant glisser.

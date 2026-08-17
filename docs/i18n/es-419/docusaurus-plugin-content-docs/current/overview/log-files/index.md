@@ -24,6 +24,8 @@ Si se abren varios archivos simultáneamente, las marcas de tiempo se alinearán
 
 <img src="/img/overview/log-files/open-file-1.webp" alt="Apertura de un registro guardado" />
 
+_En la imagen de arriba se muestra la interfaz en inglés._
+
 ## Agregar nuevos registros {#adding-new-logs}
 
 Después de abrir un archivo de registro, se pueden agregar fácilmente registros adicionales a la visualización. Las marcas de tiempo se realinearán automáticamente para sincronizarse con los datos existentes.
@@ -37,7 +39,7 @@ En la barra de menú, haz clic en `Archivo` > `Agregar nuevo(s) registro(s)...`,
 
 Abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS). Actualiza la dirección del robot y la carpeta de registro.
 
-<img src="/img/prefs_es-419.webp" alt="Diagrama de preferencias" height="350" />
+<img src="/img/prefs_es-419.webp" alt="Diagrama de preferencias" height="450" />
 </details>
 
 Haz clic en `Archivo` > `Descargar registros...` para abrir la ventana de descarga. Una vez conectado al robot, los registros disponibles se muestran con el más reciente en la parte superior. Selecciona uno o más archivos de registro para descargar (haz clic y presiona shift para seleccionar un rango o **cmd/ctrl + A** para seleccionar todos). Luego haz clic en el símbolo ↓ y selecciona una ubicación de guardado.
@@ -51,6 +53,8 @@ Al descargar varios archivos, AdvantageScope omite cualquiera que ya exista en l
 :::
 
 <img src="/img/overview/log-files/open-file-2.webp" alt="Descarga de archivos de registro" height="350" />
+
+_En la imagen de arriba se muestra la interfaz en inglés._
 
 ## Formato CSV {#csv-formatting}
 

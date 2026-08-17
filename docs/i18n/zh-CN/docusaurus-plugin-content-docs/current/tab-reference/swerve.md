@@ -11,6 +11,8 @@ Swerve 选项卡显示四个 Swerve 模块的状态，包括速度矢量、空�
 
 <img src="/img/tab-reference/swerve-1.webp" alt="Swerve 标签页概述" />
 
+_上图所示为英文界面。_
+
 <details>
 <summary>时间轴控制</summary>
 

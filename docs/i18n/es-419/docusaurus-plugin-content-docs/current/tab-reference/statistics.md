@@ -8,6 +8,8 @@ La pestaña de estadísticas permite un análisis estadístico profundo de campo
 
 <img src="/img/tab-reference/statistics-1.webp" alt="Descripción general de la pestaña de estadísticas" />
 
+_En la imagen de arriba se muestra la interfaz en inglés._
+
 ## Panel de control {#control-pane}
 
 Para comenzar, arrastra un campo a la sección "Mediciones". Elimina un campo usando el botón X, u ocúltalo temporalmente haciendo clic en el ícono del ojo o haciendo doble clic en el nombre del campo. Para eliminar todos los campos, haz clic en los tres puntos cerca del título del eje y luego en `Borrar todo`.

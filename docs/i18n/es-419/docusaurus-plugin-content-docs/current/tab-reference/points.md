@@ -11,6 +11,8 @@ La pestaña de puntos muestra una visualización 2D de puntos arbitrarios. Esta 
 
 <img src="/img/tab-reference/points-1.webp" alt="Ejemplo de pestaña de puntos" />
 
+_En la imagen de arriba se muestra la interfaz en inglés._
+
 <details>
 <summary>Controles de la línea de tiempo</summary>
 

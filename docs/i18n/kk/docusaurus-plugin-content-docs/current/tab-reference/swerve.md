@@ -11,6 +11,8 @@ Swerve қойындысы төрт swerve модулінің күйін, сон�
 
 <img src="/img/tab-reference/swerve-1.webp" alt="Swerve қойындысының шолуы" />
 
+_Жоғарыда ағылшын тіліндегі интерфейс көрсетілген._
+
 <details>
 <summary>Хронологияны басқару элементтері</summary>
 

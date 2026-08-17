@@ -7,6 +7,8 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="3D saha sekmesi örneği" />
 
+_Yukarıda İngilizce arayüz gösterilmektedir._
+
 <details>
 <summary>Zaman Çizelgesi Kontrolleri</summary>
 
@@ -191,12 +193,12 @@ Bu sekmede kullanılan koordinat sistemi özelleştirilebilir. Ayrıntılar içi
 
 3B saha üç işleme modunu destekler:
 
-- **Sinematik:** Daha gerçekçi bir görünüm için gölgeler, aydınlatma, yansımalar ve yüksek detaylı 3B modeller kullanarak işleyin. Oldukça güçlü bir GPU gerektirir.
-- **Standart (Varsayılan):** Minimum aydınlatma ve basitleştirilmiş 3B modellerle işleyin. Çoğu cihazda iyi çalışır.
-- **Düşük Güç:** Pil tüketimini azaltmak ve alt seviye cihazlarda daha tutarlı performans sağlamak için kare hızını, çözünürlüğü ve model detayını düşürün.
+- **Sinematik (Sol):** Daha gerçekçi bir görünüm için gölgeler, aydınlatma, yansımalar ve yüksek detaylı 3B modeller kullanarak işleyin. Oldukça güçlü bir GPU gerektirir.
+- **Standart (Orta):** Varsayılan, minimum aydınlatma ve basitleştirilmiş 3B modellerle işleyin. Çoğu cihazda iyi çalışır.
+- **Düşük Güç (Sağ):** Pil tüketimini azaltmak ve alt seviye cihazlarda daha tutarlı performans sağlamak için kare hızını, çözünürlüğü ve model detayını düşürün.
 
 <img src="/img/tab-reference/3d-field/3d-field-6.webp" alt="İşleme modlarının karşılaştırılması" />
 
 İşleme modunu yapılandırmak için `Uygulama` > `Tercihleri göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) seçeneğine tıklayarak tercihler penceresini açın. "3B modu (Pil)" ayarı, şarj olmuyorken bir dizüstü bilgisayarda kullanılan işleme modunu geçersiz kılmak için varsayılandan değiştirilebilir. Örneğin bu, yarışmadayken pili korumak için kullanılabilir.
 
-<img src="/img/prefs_tr.webp" alt="Tercihler diyagramı" height="350" />
+<img src="/img/prefs_tr.webp" alt="Tercihler diyagramı" height="450" />

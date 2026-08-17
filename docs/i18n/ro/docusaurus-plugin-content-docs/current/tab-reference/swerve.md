@@ -11,6 +11,8 @@ Fila swerve afișează starea a patru module swerve, inclusiv vectorii de vitez�
 
 <img src="/img/tab-reference/swerve-1.webp" alt="Prezentare generală a filei swerve" />
 
+_Interfața în limba engleză este ilustrată mai sus._
+
 <details>
 <summary>Controale cronologie</summary>
 

@@ -11,6 +11,8 @@ La pestaña del mecanismo muestra un mecanismo articulado creado con uno o más 
 
 <img src="/img/tab-reference/mechanism-1.webp" alt="Descripción general de la pestaña de mecanismo" />
 
+_En la imagen de arriba se muestra la interfaz en inglés._
+
 <details>
 <summary>Controles de la línea de tiempo</summary>
 
