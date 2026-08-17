@@ -1079,7 +1079,7 @@ export default class SourceList {
                 moduleVelocities.forEach((state) => {
                   poseStrings.push(
                     "\u03bd: " +
-                      state.speed.toFixed(2) +
+                      state.velocity.toFixed(2) +
                       "m/s, \u03b8: " +
                       Units.convert(state.angle, "radians", "degrees").toFixed(2) +
                       "\u00b0"

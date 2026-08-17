@@ -224,10 +224,10 @@ export default class Field2dRenderer implements TabRenderer {
           context.strokeStyle = color;
 
           // Draw speed
-          if (Math.abs(state.speed) <= 0.001) return;
-          let vectorSpeed = state.speed / 5;
+          if (Math.abs(state.velocity) <= 0.001) return;
+          let vectorSpeed = state.velocity / 5;
           let vectorRotation = fullRotation;
-          if (state.speed < 0) {
+          if (state.velocity < 0) {
             vectorSpeed *= -1;
             vectorRotation += Math.PI;
           }
