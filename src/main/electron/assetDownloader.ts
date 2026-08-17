@@ -30,6 +30,7 @@ export async function startAssetDownloadLoop(updateCallback: () => Promise<void>
     } catch {
       statusText = "Not enough disk space. Trying again soon.";
       setTimeout(() => check(), FAILURE_TIMEOUT_MS);
+      return;
     }
     try {
       const assetInfo = await getAssetInfo();
@@ -38,7 +39,7 @@ export async function startAssetDownloadLoop(updateCallback: () => Promise<void>
         new Date().toLocaleTimeString() +
         ". Please wait a few minutes for the download to complete.";
       try {
-        updateLocalAssets(assetInfo);
+        await updateLocalAssets(assetInfo);
         statusText = "All assets downloaded. AdvantageScope will check for updates periodically.";
         await updateCallback();
         setTimeout(() => check(), SUCCESS_TIMEOUT_MS);

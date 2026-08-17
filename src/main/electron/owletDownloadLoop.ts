@@ -33,9 +33,10 @@ export async function startOwletDownloadLoop() {
     } catch {
       statusText = "Not enough disk space. Trying again soon.";
       setTimeout(() => check(), FAILURE_TIMEOUT_MS);
+      return;
     }
     try {
-      downloadOwletInternal(OWLET_STORAGE, getElectronPlatform());
+      await downloadOwletInternal(OWLET_STORAGE, getElectronPlatform());
       statusText = "Owlet is up-to-date. AdvantageScope will check for updates periodically.";
       setTimeout(() => check(), SUCCESS_TIMEOUT_MS);
     } catch {

@@ -304,7 +304,8 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         const uuid: string = message.data.uuid;
         const logPath: string = message.data.path;
         app.addRecentDocument(logPath);
-        await fs.promises.writeFile(AKIT_PATH_OUTPUT, logPath);
+        // Writing this file is a supplemental task, so we don't need to block/ensure success
+        fs.writeFile(AKIT_PATH_OUTPUT, logPath, () => {});
 
         // Send data if all file reads finished
         let completedCount = 0;
