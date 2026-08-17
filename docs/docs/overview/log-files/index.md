@@ -19,7 +19,7 @@ Hoot log files can only be opened after agreeing to CTRE's [end user license agr
 In the menu bar, click `File` > `Open Log(s)...`, then choose a one or more log files from the local disk. Dragging a log file from the system file browser to the AdvantageScope icon or window also causes it to open.
 
 :::info
-If multiple files are opened simultaneously, the timestamps will be aligned automatically. This enables easy comparison of log files from multiple sources.
+If multiple files are opened simultaneously, the timestamps will be aligned automatically. This enables easy comparison of log files from multiple sources. See the [Timestamps](/more-features/timestamps) page for details on timestamp display options.
 :::
 
 <img src="/img/overview/log-files/open-file-1.webp" alt="Opening a saved log" />

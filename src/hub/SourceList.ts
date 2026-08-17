@@ -1108,7 +1108,7 @@ export default class SourceList {
                 moduleVelocities.forEach((state) => {
                   poseStrings.push(
                     t("sourceList.previews.moduleVelocities", {
-                      speed: metersPerSecondText(state.speed),
+                      speed: metersPerSecondText(state.velocity),
                       angle: degreesText(state.angle)
                     })
                   );

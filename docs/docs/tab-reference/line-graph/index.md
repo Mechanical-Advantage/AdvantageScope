@@ -11,7 +11,7 @@ To zoom, place the cursor over the main graph and scroll up or down. A range can
 Clicking on the graph selects a time, and right-clicking deselects it. The value of each field at that time is displayed in the legend. The selected time is synchronized across all tabs, making it easy to quickly find this location in other views.
 
 :::tip
-The delta between the selected and hovered times is displayed as an overlay on the graph, making it easy to measure time ranges.
+The delta between the selected and hovered times is displayed as an overlay on the graph, making it easy to measure time ranges. Timestamps are formatted according to the [Timestamps](/more-features/timestamps) preference.
 :::
 
 ## Control Pane {#control-pane}

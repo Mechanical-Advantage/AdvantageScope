@@ -161,10 +161,10 @@ export default class SwerveRenderer implements TabRenderer {
         context.fill();
 
         // Draw speed
-        if (Math.abs(state.speed) <= 0.001) return;
-        let vectorSpeed = state.speed;
+        if (Math.abs(state.velocity) <= 0.001) return;
+        let vectorSpeed = state.velocity;
         let vectorRotation = fullRotation;
-        if (state.speed < 0) {
+        if (state.velocity < 0) {
           vectorSpeed *= -1;
           vectorRotation += Math.PI;
         }

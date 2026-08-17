@@ -12,6 +12,6 @@ The table view is designed to show the specific value changes for a set of field
 
 <img src="/img/tab-reference/table-2.webp" alt="Robot state table" />
 
-The selected time in the table is synchronized across all tabs. Click a row to select it, or hover over a row to preview it in any visible pop-up windows. Clicking the ↓ button jumps to the selected time (or the time entered in the box).
+The selected time in the table is synchronized across all tabs. Click a row to select it, or hover over a row to preview it in any visible pop-up windows. Clicking the ↓ button jumps to the selected time (or the time entered in the box). Timestamps and jump inputs are formatted according to the [Timestamps](/more-features/timestamps) preference.
 
 <img src="/img/tab-reference/table-3.webp" alt="Jumping to a time" />
