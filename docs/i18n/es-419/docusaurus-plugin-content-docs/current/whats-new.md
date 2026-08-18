@@ -44,7 +44,7 @@ Todas las funciones de AdvantageScope serán oficialmente compatibles con FTC de
 
 ## 🧮 Gráficos con reconocimiento de unidades {#unit-aware-graphing}
 
-La pestaña del 📉 [Gráfico de líneas](/tab-reference/line-graph/) ha sido rediseñada para ser completamente consciente de las unidades (unit-aware). Esto permite varias funciones nuevas al graficar campos numéricos:
+La pestaña del 📉 [Gráfico de líneas](/tab-reference/line-graph/) ha sido rediseñada para contar con reconocimiento de unidades (unit-aware). Esto permite varias funciones nuevas al graficar campos numéricos:
 
 - Etiquetado preciso de los ejes Y y pantallas de valores
 - Conversión rápida a unidades compatibles (sin ventanas emergentes)
@@ -87,7 +87,7 @@ Se admiten varias opciones nuevas de visualización en el 🗺️ [Campo 2D](/ta
 
 <img src="/img/whats-new/field-viz.jpg" alt="Nuevas visualizaciones de campo" />
 
-## 🪵 Soporte de Log de REV Robotics CAN {#rev-robotics-can-log-support}
+## 🪵 Soporte de registros CAN de REV Robotics {#rev-robotics-can-log-support}
 
 Ahora puedes abrir archivos `.revlog` producidos por el [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) de REV Robotics directamente en AdvantageScope. Estos archivos registran las señales CAN de los dispositivos Spark Max y Spark Flex, ofreciendo una alternativa oficial a la biblioteca [URCL](/more-features/urcl) de AdvantageScope.
 

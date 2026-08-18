@@ -90,7 +90,7 @@ packet.put("Pose x", 6.3); // Pulgadas
 packet.put("Pose y", 2.8); // Pulgadas
 packet.put("Pose heading", 3.14); // Radianes
 
-// Alternativamente, los encabezados (headings) se pueden publicar en grados
+// Alternativamente, la orientación (heading) se puede publicar en grados
 packet.put("Pose heading (deg)", 180.0); // Grados
 ```
 
@@ -181,7 +181,7 @@ De acuerdo con otros datos de poses, la pose "Anulación de cámara" debe ser _r
 
 ## Configuración {#configuration}
 
-El modelo de campo se puede configurar utilizando el menú desplegable. Se admiten todos los juegos recientes de FRC y FTC. Recomendamos usar los campos "Evergreen" (hoja perenne) para dispositivos con rendimiento gráfico limitado. Los campos "Ejes" muestran solo los ejes XYZ en el origen con un contorno de campo para la escala.
+El modelo de campo se puede configurar utilizando el menú desplegable. Se admiten todos los juegos recientes de FRC y FTC. Recomendamos usar los campos "Perenne" (Evergreen) para dispositivos con rendimiento gráfico limitado. Los campos "Ejes" muestran solo los ejes XYZ en el origen con un contorno de campo para la escala.
 
 :::info
 El sistema de coordenadas utilizado en esta pestaña es personalizable. Consulta la página de [sistemas de coordenadas](/more-features/coordinate-systems) para obtener detalles.

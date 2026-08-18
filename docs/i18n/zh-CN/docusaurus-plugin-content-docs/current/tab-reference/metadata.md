@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 🔍 元数据 {#metadata}
 
-元数据选项卡显示发布到隐藏的 "/Metadata" 表或通过 AdvantageKit 发布的值。元数据键显示在左侧，列分隔来自不同来源的数据（例如在使用 AdvantageKit 时的真实数据和重放数据）。
+元数据选项卡显示发布到隐藏的 “/Metadata” 表或通过 AdvantageKit 发布的值。元数据键显示在左侧，列分隔来自不同来源的数据（例如在使用 AdvantageKit 时的真实数据和重放数据）。
 
 <img src="/img/tab-reference/metadata-1.webp" alt="元数据标签页概述" />
 
@@ -18,7 +18,7 @@ _上图所示为英文界面。_
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-在 WPILib 中，这些值必须作为字符串记录到 "/Metadata" 表中。
+在 WPILib 中，这些值必须作为字符串记录到 “/Metadata” 表中。
 
 ```java
 // NetworkTables (默认情况下也保存到 DataLog)

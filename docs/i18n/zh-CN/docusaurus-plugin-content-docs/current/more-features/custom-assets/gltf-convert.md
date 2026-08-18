@@ -6,11 +6,11 @@ AdvantageScope 的 [👀 3D 场地](/tab-reference/3d-field) 接收用于场地�
 
 虽然 Onshape 包含 glTF 的导出选项，但这通常会生成非常大且难以管理的拆分文件。相反，建议从 Onshape 导出为 STEP，然后按照下一节中的说明转换为 glTF。
 
-1. 打开 Onshape 文件后，右键单击主装配体并选择 "Export..."：
+1. 打开 Onshape 文件后，右键单击主装配体并选择 “Export...”：
 
 <img src="/img/more-features/custom-assets/gltf-convert-1.webp" alt="选择“Export...”选项" />
 
-2. 在选项弹出窗口中，确保导出格式为 "STEP"，然后点击 "Export"：
+2. 在选项弹出窗口中，确保导出格式为 “STEP”，然后点击 “Export”：
 
 <img src="/img/more-features/custom-assets/gltf-convert-2.webp" alt="导出选项弹出窗口" />
 
@@ -30,11 +30,11 @@ AdvantageScope 的 [👀 3D 场地](/tab-reference/3d-field) 接收用于场地�
 
 <img src="/img/more-features/custom-assets/gltf-convert-4.webp" alt="点击“保存”图标" />
 
-5. 选择保存位置，然后使用下拉菜单将导出格式切换为 "glb"：
+5. 选择保存位置，然后使用下拉菜单将导出格式切换为 “glb”：
 
 <img src="/img/more-features/custom-assets/gltf-convert-5.webp" alt="切换导出格式" />
 
-6. 点击齿轮图标，然后启用 "Merge faces within the same part"（合并同一零件内的面）：
+6. 点击齿轮图标，然后启用 “Merge faces within the same part”（合并同一零件内的面）：
 
 <img src="/img/more-features/custom-assets/gltf-convert-6.webp" alt="启用“Merge faces within the same part”" />
 

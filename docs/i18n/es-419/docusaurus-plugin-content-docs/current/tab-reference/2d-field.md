@@ -90,7 +90,7 @@ packet.put("Pose x", 6.3); // Pulgadas
 packet.put("Pose y", 2.8); // Pulgadas
 packet.put("Pose heading", 3.14); // Radianes
 
-// Alternativamente, los encabezados (headings) se pueden publicar en grados
+// Alternativamente, la orientación (heading) se puede publicar en grados
 packet.put("Pose heading (deg)", 180.0); // Grados
 
 // Agrega otros valores de telemetría aquí...

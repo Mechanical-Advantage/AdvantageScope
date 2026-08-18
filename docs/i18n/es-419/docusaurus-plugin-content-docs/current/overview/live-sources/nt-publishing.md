@@ -16,14 +16,14 @@ Esta función requiere un archivo de registro con una captura completa de datos 
 
 Para comenzar a publicar, debe haber un archivo de registro abierto que contenga datos de NetworkTables. Luego, sigue estos pasos:
 
-- **Publicar en robot:** Haz clic en `Archivo` > `Publicar datos NT` > `Conectarse a robot`.
-- **Publicar en simulador:** Haz clic en `Archivo` > `Publicar datos NT` > `Conectarse al simulador`.
+- **Publicar en robot:** Haz clic en `Archivo` > `Publicar datos de NT` > `Conectar con el robot`.
+- **Publicar en simulador:** Haz clic en `Archivo` > `Publicar datos de NT` > `Conectar con el simulador`.
 
 La parte superior de la ventana muestra el texto "Buscando" (Searching) o "Publicando" (Publishing) para indicar el estado de publicación de los datos. AdvantageScope intenta volver a conectarse automáticamente usando la misma configuración después de una desconexión.
 
 Todos los campos se publicarán utilizando sus valores almacenados en la _marca de tiempo seleccionada_ utilizada por muchas pestañas de AdvantageScope. Esto permite la reproducción de red en tiempo real a través del mismo mecanismo que la reproducción dentro de AdvantageScope. Consulta [Navegación en la aplicación](/overview/navigation) para obtener más detalles. Si no se selecciona ninguna marca de tiempo, los campos se publican utilizando sus valores almacenados en la _marca de tiempo sobre la que se pasa el cursor_ (hovered timestamp).
 
-Para dejar de publicar, haz clic en `Archivo` > `Publicar datos NT` > `Detener publicación`.
+Para dejar de publicar, haz clic en `Archivo` > `Publicar datos de NT` > `Detener publicación`.
 
 ## Filtrado de campos {#filtering-fields}
 

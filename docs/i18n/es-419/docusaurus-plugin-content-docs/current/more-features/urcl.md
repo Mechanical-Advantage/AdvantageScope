@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 # 📝 URCL {#unofficial-rev-compatible-logger}
 
 :::info
-Nuevo en 2026, REVLib incluye una solución de registro oficial para guardar datos del Spark Max y Spark Flex a un log de REV CAN (`.revlog`). Consulta [aquí](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) para obtener más detalles. Estos archivos se pueden abrir directamente en AdvantageScope, pero no se pueden sincronizar con precisión con otras fuentes de datos.
+Nuevo en 2026, REVLib incluye una solución de registro oficial para guardar datos del Spark Max y Spark Flex a un registro de REV CAN (`.revlog`). Consulta [aquí](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) para obtener más detalles. Estos archivos se pueden abrir directamente en AdvantageScope, pero no se pueden sincronizar con precisión con otras fuentes de datos.
 
 El Registrador no oficial compatible con REV (URCL) de AdvantageScope también permanecerá disponible para los equipos en 2026 para garantizar una transición sin problemas y proporcionar paridad de funciones con las temporadas anteriores. Tendremos más detalles para compartir sobre las opciones de registro en 2027 y más allá en una fecha posterior.
 :::

@@ -173,7 +173,7 @@ unitConversion:
   toUnit: "目標單位"
   toUnitSelectTitle: "選擇要轉換的目標單位"
   extraFactor: "額外係數"
-  extraFactorInputTitle: "輸入自訂縮放係數 (乘數)"
+  extraFactorInputTitle: "輸入額外係數 (乘數)"
   cancel: "取消"
   confirm: "確認"
   notAvailable: "無"

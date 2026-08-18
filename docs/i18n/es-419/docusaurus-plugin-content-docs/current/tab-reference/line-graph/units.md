@@ -40,7 +40,7 @@ Como respaldo, AdvantageScope intenta determinar el tipo de unidad correcto anal
 - **Snake-case**, como `position_meters`, `velocity_rad_per_sec`, y `timestamp_s`
 - **Separadores de espacio**, como `position meters`, `velocity rad per sec`, y `timestamp s`
 
-La denominación _not_ distingue entre mayúsculas y minúsculas cuando se usa snake-case o separadores de espacio.
+La denominación _no_ distingue entre mayúsculas y minúsculas cuando se usa snake-case o separadores de espacio.
 
 :::tip
 Si las unidades se analizan incorrectamente, haz clic en `Unidades manuales` > `Deshabilitar unidades automáticas` para ignorar la información de la unidad. La conversión manual se puede utilizar luego para cambiar a unidades alternativas.

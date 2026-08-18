@@ -52,4 +52,4 @@ Cuando se utiliza NetworkTables como fuente en vivo, se pueden seleccionar los s
 
 ### Descartar datos en vivo {#discard-live-data}
 
-Durante una conexión en vivo, los datos se almacenan localmente para permitir la reproducción de datos pasados (consulta "Visualización de datos en vivo" a continuación). Para evitar un uso de memoria muy alto, los datos se descartan después de 20 minutos de forma predeterminada. Se puede seleccionar un período más corto para reducir el uso de la memoria, o se puede seleccionar "Nunca" (Never) para almacenar datos en vivo de forma indefinida.
+Durante una conexión en vivo, los datos se almacenan localmente para permitir la reproducción de datos pasados (consulta "Visualización de datos en vivo" más arriba). Para evitar un uso de memoria muy alto, los datos se descartan después de 20 minutos de forma predeterminada. Se puede seleccionar un período más corto para reducir el uso de la memoria, o se puede seleccionar "Nunca" (Never) para almacenar datos en vivo de forma indefinida.

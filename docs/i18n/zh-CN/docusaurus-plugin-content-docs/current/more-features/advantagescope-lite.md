@@ -12,7 +12,7 @@ _上图所示为英文界面。_
 
 ## 安装与资源 {#installation-and-assets}
 
-适用于 Systemcore 的 AdvantageScope Lite 可以通过从 GitHub releases 页面下载 "Systemcore" 版本的 AdvantageScope 来进行安装和更新。在 Systemcore Web 界面上选择 "Add Package" 卡片，将软件包上传到机器人。
+适用于 Systemcore 的 AdvantageScope Lite 可以通过从 GitHub releases 页面下载 “Systemcore” 版本的 AdvantageScope 来进行安装和更新。在 Systemcore Web 界面上选择 “Add Package” 卡片，将软件包上传到机器人。
 
 可以通过选择 `文件` > `上传资源` 来上传资源文件（例如场地/机器人模型）。选定的文件可以是单个资源的 zip 文件，也可以是包含多个资源 zip 文件的压缩包。有关资源格式的更多信息，请参阅 [自定义资源](/more-features/custom-assets/) 页面。
 

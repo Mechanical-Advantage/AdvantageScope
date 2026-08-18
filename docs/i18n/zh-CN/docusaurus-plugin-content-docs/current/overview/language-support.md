@@ -24,9 +24,9 @@ AdvantageScope 支持多种语言，为全球队伍提供本地化体验。目�
 
 ## 配置 {#configuration}
 
-要在 AdvantageScope 中更改显示语言，请点击 `App` > `显示偏好设置...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开偏好设置窗口。在“语言”设置下，你可以从受支持的语言列表中进行选择，或选择“系统默认”以自动匹配操作系统的语言。
+要在 AdvantageScope 中更改显示语言，请点击 `应用程序` > `显示首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。在“语言”设置下，你可以从受支持的语言列表中进行选择，或选择“系统默认”以自动匹配操作系统的语言。
 
-<img src="/img/prefs_zh-CN.webp" alt="偏好设置图解" height="450" />
+<img src="/img/prefs_zh-CN.webp" alt="首选项图解" height="450" />
 
 ## 日志键名 {#logging-keys}
 

@@ -4,9 +4,9 @@ AdvantageScope 中的所有可视化功能除了处理日志文件外，均旨�
 
 - **NetworkTables:** 这是 WPILib 的主要网络协议。有关更多详细信息，请参阅 [WPILib 文档](https://docs.wpilib.org/zh-cn/stable/docs/software/networktables/index.html)。
 - **NetworkTables (AdvantageKit):** 此模式专为运行 AdvantageKit 的机器人代码设计，该代码发布到 NetworkTables 中的 `AdvantageKit` 表。
-- **Systemcore Diagnostics:** 此模式连接到 Systemcore OS 使用的内置 NetworkTables 服务器，其中包括机器人状态和设备 IO 等诊断数据。
-- **Phoenix Diagnostics:** 此模式使用 HTTP 连接到 Phoenix [诊断服务器](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html)，允许通过 [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/) 从 CTRE CAN 设备串流数据。这类似于 Phoenix Tuner 中的 [绘图功能](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html)。有关更多信息，请参阅 [此页面](/overview/live-sources/phoenix-diagnostics)。
-- **RLOG Server:** 该协议由 AdvantageKit 支持，作为 NetworkTables 的替代方案。默认在 5800 端口发起连接。
+- **Systemcore 诊断:** 此模式连接到 Systemcore OS 使用的内置 NetworkTables 服务器，其中包括机器人状态和设备 IO 等诊断数据。
+- **Phoenix 诊断:** 此模式使用 HTTP 连接到 Phoenix [诊断服务器](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html)，允许通过 [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/) 从 CTRE CAN 设备串流数据。这类似于 Phoenix Tuner 中的 [绘图功能](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html)。有关更多信息，请参阅 [此页面](/overview/live-sources/phoenix-diagnostics)。
+- **RLOG 服务器:** 该协议由 AdvantageKit 支持，作为 NetworkTables 的替代方案。默认在 5800 端口发起连接。
 - **FTC Dashboard:** 此模式集成了发布数据到 [FTC Dashboard](https://acmerobotics.github.io/ftc-dashboard) 的 FTC 机器人。
 
 :::info

@@ -14,7 +14,7 @@ AdvantageScope 在 [🗺️ 2D 场地](/tab-reference/2d-field) 和 [👀 3D 场
 所有坐标系选项均兼容 FRC 和 FTC 场地。
 :::
 
-## 中心 / 红色 (Systemcore) {#center-red}
+## 中心 / 红方 (Systemcore) {#center-red}
 
 原点位于场地中心，+X 轴背向红方联盟墙，如下图所示。**这是自 2027 年起的 FRC 场地以及自 2027-2028 赛季起的 FTC 场地的默认坐标系。**
 

@@ -5,7 +5,7 @@ sidebar_position: 3
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📝 非官方 REV 相容記錄器 {#unofficial-rev-compatible-logger}
+# 📝 URCL (非官方 REV 相容記錄器) {#unofficial-rev-compatible-logger}
 
 :::info
 2026 年最新功能，REVLib 包含官方記錄解決方案，用於將來自 Spark Max 與 Spark Flex 的資料儲存至 REV CAN 日誌 (`.revlog`)。有關詳細資訊，請參閱[此處](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger)。這些檔案可以直接在 AdvantageScope 中開啟，但無法與其他資料來源精確同步。
@@ -29,7 +29,7 @@ URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger，非官方 REV 相容記
 
 ## 設定 {#setup}
 
-按照在 VSCode 中使用依賴項管理員安裝[第三方函式庫](https://docs.wpilib.org/zh-cn/stable/docs/software/vscode-overview/3rd-party-libraries.html)的說明安裝 URCL vendordep。或者，您可以使用以下廠商 JSON URL：
+按照在 VSCode 中使用依賴項管理員安裝[第三方函式庫](https://docs.wpilib.org/zh-cn/stable/docs/software/vscode-overview/3rd-party-libraries.html)的說明安裝 URCL 第三方函式庫 (vendordep)。或者，您可以使用以下廠商 JSON URL：
 
 ```
 https://raw.githubusercontent.com/Mechanical-Advantage/URCL/main/URCL.json

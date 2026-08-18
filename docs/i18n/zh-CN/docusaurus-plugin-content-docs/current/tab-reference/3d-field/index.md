@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # 👀 3D 场地 {#3d-field}
 
-3D 场地展示机器人和场地的 3D 可视化效果。它可以用于常规 2D 位姿，但在处理 3D 计算（例如利用 AprilTag 定位）时特别有用。提供多种相机视图，包括场地相对、机器人相对和固定视图。[AdvantageScope XR](advantagescope-xr) 允许使用增强现实来可视化此选项卡。时间轴显示机器人何时处于启用状态，并可用于在日志数据中进行导航。
+3D 场地展示机器人和场地的 3D 可视化效果。它可以用于常规 2D 位姿，但在处理 3D 计算（例如利用 AprilTag 定位）时特别有用。提供多种相机视图，包括相对场地、相对机器人和固定视图。[AdvantageScope XR](advantagescope-xr) 允许使用增强现实来可视化此选项卡。时间轴显示机器人何时处于启用状态，并可用于在日志数据中进行导航。
 
 <img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="3D 场地标签页示例" />
 
@@ -101,7 +101,7 @@ packet.put("Pose heading (deg)", 180.0); // 度
 
 ## 机构与组件 {#mechanisms-and-components}
 
-机构数据可以使用 2D 机构或铰接的 3D 组件进行可视化。
+机构数据可以使用 2D 机构或 3D 关节组件进行可视化。
 
 ### 2D 机构 {#2d-mechanisms}
 
@@ -115,7 +115,7 @@ packet.put("Pose heading (deg)", 180.0); // 度
 设置 3D 组件可能非常复杂且耗时。可考虑使用如上所述的 AdvantageScope 的 `Mechanism2d` 支持，它提供了在 3D 场地上可视化机构的更简化方法。
 :::
 
-机构可以通过记录代表每个组件相对于机器人的位置的一组 3D 位姿，使用铰接组件进行可视化。将这些位姿添加到现有的机器人或幽灵模型对象中，并将对象类型设置为 "Component"。
+机构可以通过记录代表每个组件相对于机器人的位置的一组 3D 位姿，使用关节组件进行可视化。将这些位姿添加到现有的机器人或幽灵模型对象中，并将对象类型设置为 “Component”。
 
 每个组件都可以独立移动（例如升降机滑台、机械臂或末端执行器）。AdvantageKit 用户应考虑使用 [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) 方法将 Mechanism2d 转换为 Pose3d 对象数组。有关配置带有组件的机器人的更多信息，请参阅 [自定义资源](/more-features/custom-assets)。
 
@@ -175,10 +175,10 @@ AdvantageKit KitBot 2024 示例项目包含一个 [命令](https://github.com/Me
 
 <img src="/img/tab-reference/3d-field/3d-field-5.webp" alt="固定相机" />
 
-如果提供了“相机覆盖”位姿，它将在保留其配置的 FOV 和宽高比的同时替换所有固定相机的默认位姿。这允许机器人代码提供移动相机的姿态，例如安装在转塔或发射罩上的相机。
+如果提供了“相机覆盖”位姿，它将在保留其配置的 FOV 和宽高比的同时替换所有固定相机的默认位姿。这允许机器人代码提供移动相机的位姿，例如安装在转塔或发射罩上的相机。
 
 :::info
-与其它位姿数据一致，“相机覆盖”位姿必须是 _场地相对_ 的，而不是机器人相对的。
+与其它位姿数据一致，“相机覆盖”位姿必须是 _相对场地_ 的，而不是相对机器人的。
 :::
 
 ## 配置 {#configuration}

@@ -577,10 +577,10 @@ hub:
   points:
     sources: "Fuentes"
     types:
-      plus: "Suma"
+      plus: "Signo más"
       cross: "Cruz"
       circle: "Círculo"
-      plusSplit: "Suma"
+      plusSplit: "Signo más"
       crossSplit: "Cruz"
       circleSplit: "Círculo"
       component: "Componente"
@@ -1117,7 +1117,7 @@ units:
     potatoes_other: "{{value}} papas"
 
     metersSeconds: "{{value}} m·s"
-    inchesSeconds: "{{value}} pulg·s"
+    inchesSeconds: "{{value}} pulg.·s"
     millimetersPerSecond: "{{value}} mm/s"
     millimetersSeconds: "{{value}} mm·s"
     centimetersPerSecond: "{{value}} cm/s"
