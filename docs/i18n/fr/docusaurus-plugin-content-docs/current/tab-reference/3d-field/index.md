@@ -121,21 +121,21 @@ Chaque composant peut être déplacé indépendamment (comme un chariot d'élév
 
 <img src="/img/tab-reference/3d-field/3d-field-3.webp" alt="Mécanisme 3D" />
 
-## Objets d'éléments de pointage {#game-piece-objects}
+## Objets d'éléments de jeu {#game-piece-objects}
 
-Chaque terrain comprend un ensemble de types d'objets d'éléments de pointage, permettant de rendre des éléments de pointage à n'importe quelle position sur le terrain à l'aide de données publiées par le code robot. Cela présente une variété d'applications, notamment :
+Chaque terrain comprend un ensemble de types d'objets d'éléments de jeu, permettant de rendre des éléments de jeu à n'importe quelle position sur le terrain à l'aide de données publiées par le code robot. Cela présente une variété d'applications, notamment :
 
 - La visualisation des actions des routines autonomes simulées à l'aide d'animations simples
-- L'affichage des emplacements détectés des éléments de pointage sur le terrain
-- L'indication de l'emplacement des éléments de pointage dans un robot
+- L'affichage des emplacements détectés des éléments de jeu sur le terrain
+- L'indication de l'emplacement des éléments de jeu dans un robot
 - La visualisation des trajectoires de tir basées sur des calculs physiques
 
-Un autre cas d'utilisation simple consiste à afficher l'état des éléments de pointage dans le robot en fonction des données de capteur. Par exemple, un capteur de coupure de faisceau dans le chemin des notes pour un robot 2024 pourrait faire apparaître une note (comme illustré ci-dessous).
+Un autre cas d'utilisation simple consiste à afficher l'état des éléments de jeu dans le robot en fonction des données de capteur. Par exemple, un capteur de coupure de faisceau dans le chemin des notes pour un robot 2024 pourrait faire apparaître une note (comme illustré ci-dessous).
 
 <details>
 <summary>Exemple de code</summary>
 
-Le projet d'exemple KitBot 2024 d'AdvantageKit comprend un exemple simple d'une [commande](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) qui anime une note se déplaçant du robot vers le haut-parleur. Cette commande est intégrée dans la [séquence de lancement](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73) standard, déclenchant l'animation chaque fois qu'une note est relâchée. [Cette vidéo](https://youtube.com/shorts/-HxfDo9f19U?feature=share) montre comment les animations d'éléments de pointage peuvent être utilisées pour visualiser des routines autonomes pour plusieurs jeux différents.
+Le projet d'exemple KitBot 2024 d'AdvantageKit comprend un exemple simple d'une [commande](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) qui anime une note se déplaçant du robot vers le haut-parleur. Cette commande est intégrée dans la [séquence de lancement](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73) standard, déclenchant l'animation chaque fois qu'une note est relâchée. [Cette vidéo](https://youtube.com/shorts/-HxfDo9f19U?feature=share) montre comment les animations d'éléments de jeu peuvent être utilisées pour visualiser des routines autonomes pour plusieurs jeux différents.
 
 </details>
 

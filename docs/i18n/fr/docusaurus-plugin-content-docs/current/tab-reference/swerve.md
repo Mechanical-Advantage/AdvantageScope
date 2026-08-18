@@ -38,7 +38,7 @@ Pour commencer, faites glisser un champ vers la section « Sources ». Supprim
 
 ## Format des données {#data-format}
 
-Data should be published as a byte-encoded struct or protobuf, using the `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d`, or `Rotation3d` types.
+Les données doivent être publiées sous forme de struct ou protobuf codé en octets, en utilisant les types `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d` ou `Rotation3d`.
 
 De nombreuses bibliothèques prennent en charge le format struct, notamment WPILib et AdvantageKit. L'exemple de code ci-dessous montre comment enregistrer les états des modules Swerve en Java.
 

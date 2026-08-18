@@ -67,7 +67,7 @@ La fenêtre de contrôles XR présente plusieurs options qui contrôlent la faç
   - Choisissez _Fluide_ pour les applications où une certaine latence est acceptable en échange d'une diffusion plus fiable, comme la simulation de routines autonomes ou la lecture de fichiers journaux.
   - Choisissez _Faible latence_ pour les applications en temps réel où une certaine gigue est acceptable, comme la superposition de données sur un vrai robot ou le pilotage d'un robot simulé en téléopéré.
 - **Afficher le sol :** Affiche le modèle de tapis/sol plat sous le terrain au lieu de le superposer sur une vraie surface.
-- **Afficher le terrain :** Affiche le modèle de terrain, y compris la balustrade du terrain et les éléments spécifiques au jeu. Les [objets d'éléments de pointage](/tab-reference/3d-field#game-piece-objects) personnalisés sont toujours affichés.
+- **Afficher le terrain :** Affiche le modèle de terrain, y compris la balustrade du terrain et les éléments spécifiques au jeu. Les [objets d'éléments de jeu](/tab-reference/3d-field#game-piece-objects) personnalisés sont toujours affichés.
 - **Afficher les robots :** Affiche les modèles de robot, peut être désactivé lors de la superposition de données sur un vrai robot (comme des cibles de vision ou des mécanismes 2D).
 
 ## Utilisation hors ligne {#offline-usage}

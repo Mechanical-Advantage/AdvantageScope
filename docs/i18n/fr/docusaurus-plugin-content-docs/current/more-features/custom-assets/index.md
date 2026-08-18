@@ -220,7 +220,7 @@ Une image doit être incluse dans le dossier avec le nom « image.webp ». Ell
 
 ## Modèles 3D de terrain {#3d-field-models}
 
-Un modèle doit être inclus dans le dossier avec le nom « model.glb ». Une fois toutes les rotations appliquées, le terrain doit être orienté avec l'alliance rouge sur la gauche. Les fichiers CAO doivent être convertis en glTF; voir [cette page](gltf-convert) pour plus de détails. Les modèles d'éléments de pointage suivent la convention de nommage « model_INDEX.glb » basée sur l'ordre dans lequel ils apparaissent dans le tableau « gamePieces ». Les AprilTags déclarés ici sont toujours positionnés en utilisant un système de coordonnées [centre/rouge](/more-features/coordinate-systems#center-red), quelles que soient les autres options de configuration.
+Un modèle doit être inclus dans le dossier avec le nom « model.glb ». Une fois toutes les rotations appliquées, le terrain doit être orienté avec l'alliance rouge sur la gauche. Les fichiers CAO doivent être convertis en glTF; voir [cette page](gltf-convert) pour plus de détails. Les modèles d'éléments de jeu suivent la convention de nommage « model_INDEX.glb » basée sur l'ordre dans lequel ils apparaissent dans le tableau « gamePieces ». Les AprilTags déclarés ici sont toujours positionnés en utilisant un système de coordonnées [centre/rouge](/more-features/coordinate-systems#center-red), quelles que soient les autres options de configuration.
 
 Le fichier de configuration doit être au format suivant :
 
@@ -242,12 +242,12 @@ Le fichier de configuration doit être au format suivant :
     [number, number] // Positions des postes de pilotage (X et Y en mètres par rapport au centre du terrain)
     ...              // Pour la FRC, 6 éléments ordonnés [B1, B2, B3, R1, R2, R3]. Pour le FTC, 4 éléments ordonnés [BL, BR, RL, RR].
   ]
-  "gamePieces": [ // Liste des types d'éléments de pointage
+  "gamePieces": [ // Liste des types d'éléments de jeu
     {
-      "name": string // Nom de l'élément de pointage
+      "name": string // Nom de l'élément de jeu
       "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Séquence de rotations le long des axes x, y et z
       "position": [number, number, number] // Décalage de position en mètres, appliqué après rotation
-      "stagedObjects": string[] // Noms des objets d'éléments de pointage placés, à masquer si des poses utilisateur sont fournies
+      "stagedObjects": string[] // Noms des objets d'éléments de jeu placés, à masquer si des poses utilisateur sont fournies
     },
     ...
   ],

@@ -390,7 +390,7 @@ hub:
       arrow: "Flèche"
       component: "Composant"
       mechanism: "Mécanisme"
-      gamePiece: "Élément de pointage"
+      gamePiece: "Élément de jeu"
       aprilTag: "AprilTag"
       aprilTagIDs: "ID AprilTag"
       axes: "Axes"
@@ -527,8 +527,8 @@ hub:
     noApiKeyContent: "Veuillez saisir une clé API pour The Blue Alliance dans les préférences d'AdvantageScope. Une clé API peut être obtenue depuis la page de compte sur le site Web de The Blue Alliance."
     noMatchInfoTitle: "Aucune info de match"
     noMatchInfoContent: "Échec de la lecture des informations sur l'événement et le match depuis le journal. Veuillez charger la vidéo en utilisant une URL YouTube ou un fichier local à la place."
-    noPracticeTitle: "Aucune vidéo pour le match de pratique"
-    noPracticeContent: "Il s'agit d'un match de pratique. Aucune donnée n'est disponible sur The Blue Alliance pour les matchs de pratique. Veuillez charger la vidéo en utilisant une URL YouTube ou un fichier local à la place."
+    noPracticeTitle: "Aucune vidéo pour le match d'entraînement"
+    noPracticeContent: "Il s'agit d'un match d'entraînement. Aucune donnée n'est disponible sur The Blue Alliance pour les matchs d'entraînement. Veuillez charger la vidéo en utilisant une URL YouTube ou un fichier local à la place."
 
   joysticks:
     selectTitle: "Sélectionner la source de données des manettes"

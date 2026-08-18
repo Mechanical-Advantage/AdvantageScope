@@ -48,7 +48,7 @@ Si les unités sont mal analysées, cliquez sur `Unités manuelles` > `Désactiv
 
 ## Conversion manuelle {#manual-conversion}
 
-Lorsque les métadonnées d'unité ne sont pas disponibles ou sont inexactes, les axes peuvent également être configurés manuellement pour convertir entre les unités (or ignorer complètement les métadonnées d'unité).
+Lorsque les métadonnées d'unité ne sont pas disponibles ou sont inexactes, les axes peuvent également être configurés manuellement pour convertir entre les unités (ou ignorer complètement les métadonnées d'unité).
 
 Pour configurer la conversion manuelle, cliquez sur les trois points près du titre de l'axe, puis sur `Unités manuelles` > `Modifier la conversion...`. Sélectionnez le type d'unité, l'unité source et l'unité de destination. Chaque valeur est également multipliée par le « Facteur supplémentaire », permettant des conversions personnalisées (comme les rapports de démultiplication, les conversions angulaires en linéaires, ou d'autres unités non fournies par AdvantageScope). Le facteur peut également être saisi à l'aide d'une expression mathématique telle que `1.5*pi`.
 
