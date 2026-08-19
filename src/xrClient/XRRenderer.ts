@@ -584,14 +584,9 @@ export default class XRRenderer {
         const loader = new GLTFLoader();
         const urlTransformer: (path: string) => string = (url) => "/asset?path=" + encodeURIComponent(url);
         Promise.all([
-          new Promise((resolve) => {
-            loader.load(urlTransformer(fieldConfig.path), resolve);
-          }),
-          ...fieldConfig.gamePieces.map(
-            (_, index) =>
-              new Promise((resolve) => {
-                loader.load(urlTransformer(fieldConfig.path.slice(0, -4) + "_" + index.toString() + ".glb"), resolve);
-              })
+          loader.loadAsync(urlTransformer(fieldConfig.path)),
+          ...fieldConfig.gamePieces.map((_, index) =>
+            loader.loadAsync(urlTransformer(fieldConfig.path.slice(0, -4) + "_" + index.toString() + ".glb"))
           )
         ]).then((gltfs) => {
           let gltfScenes = (gltfs as GLTF[]).map((gltf) => gltf.scene);
@@ -685,8 +680,12 @@ export default class XRRenderer {
               let gamePieceConfig = fieldConfig.gamePieces[index - 1];
               scene.rotation.setFromQuaternion(rotationSequenceToQuaternion(gamePieceConfig.rotations));
               scene.position.set(...gamePieceConfig.position);
-              let meshes = (
-                await optimizeGeometries(scene, "standard", this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS, false)
+              let meshes = optimizeGeometries(
+                scene,
+                "standard",
+                this.MATERIAL_SPECULAR,
+                this.MATERIAL_SHININESS,
+                false
               ).normal;
               if (meshes.length > 0) {
                 newFieldPieces[gamePieceConfig.name] = meshes[0];
