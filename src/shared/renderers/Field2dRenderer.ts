@@ -5,6 +5,8 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import ScrollSensor, { ScrollSensorMouseControl } from "../../hub/ScrollSensor";
+import { Field2dCameraMode } from "../Field2dCameraMode";
 import { AnnotatedPose2d, ModuleVelocity, Pose2d, Translation2d } from "../geometry";
 import { Units } from "../units";
 import { scaleValue, transformPx } from "../util";
@@ -16,12 +18,23 @@ export default class Field2dRenderer implements TabRenderer {
   private CANVAS: HTMLCanvasElement;
   private IMAGE: HTMLImageElement;
   private HEATMAP_CONTAINER: HTMLElement;
+  private SCROLL_CONTAINER: HTMLElement;
+  private scrollSensor: ScrollSensor;
 
   private heatmap: Heatmap;
   private lastImageSource = "";
   private aspectRatio = 1;
   private lastRenderState = "";
   private imageLoadCount = 0;
+
+  private zoom = 1;
+  private pan: [number, number] = [0, 0];
+  private trackingMode: Field2dCameraMode = Field2dCameraMode.Unlocked;
+  private jumpToRobot = false;
+  private lastTrackingMode: Field2dCameraMode = Field2dCameraMode.Unlocked;
+  private lastFieldCenter?: [number, number];
+  private isFTC = false;
+  private lastCommand: Field2dRendererCommand | null = null;
 
   constructor(root: HTMLElement) {
     this.CONTAINER = root.getElementsByClassName("field-2d-canvas-container")[0] as HTMLElement;
@@ -30,27 +43,188 @@ export default class Field2dRenderer implements TabRenderer {
     this.HEATMAP_CONTAINER = root.getElementsByClassName("field-2d-heatmap-container")[0] as HTMLElement;
     this.heatmap = new Heatmap(this.HEATMAP_CONTAINER);
     this.IMAGE.addEventListener("load", () => this.imageLoadCount++);
+
+    this.SCROLL_CONTAINER = root.getElementsByClassName("field-2d-scroll")[0] as HTMLElement;
+    this.scrollSensor = new ScrollSensor(
+      this.SCROLL_CONTAINER,
+      (dx: number, dy: number, isPan: boolean, cursorX: number, cursorY: number) => {
+        if (!this.lastCommand) return;
+        let isVertical =
+          this.lastCommand.orientation === Orientation.DEG_90 || this.lastCommand.orientation === Orientation.DEG_270;
+        let containerWidth = this.CONTAINER.clientWidth;
+        let containerHeight = this.CONTAINER.clientHeight;
+
+        let isSatellite = document.body.classList.contains("satellite");
+        let visibleYOffset = isSatellite ? 0 : -13;
+        let boundingWidth = isVertical ? containerHeight - Math.abs(visibleYOffset * 2) : containerWidth;
+        let boundingHeight = isVertical ? containerWidth : containerHeight - Math.abs(visibleYOffset * 2);
+
+        let fieldData = window.assets?.field2ds.find((field) => field.id === this.lastCommand?.field);
+        if (!fieldData) return;
+
+        let fieldWidth = fieldData.bottomRight[0] - fieldData.topLeft[0];
+        let fieldHeight = fieldData.bottomRight[1] - fieldData.topLeft[1];
+        let topMargin = fieldData.topLeft[1];
+        let bottomMargin = this.IMAGE.height - fieldData.bottomRight[1];
+        let leftMargin = fieldData.topLeft[0];
+        let rightMargin = this.IMAGE.width - fieldData.bottomRight[0];
+        let margin = Math.min(topMargin, bottomMargin, leftMargin, rightMargin);
+        let extendedFieldWidth = fieldWidth + margin * 2;
+        let extendedFieldHeight = fieldHeight + margin * 2;
+
+        let constrainHeight = boundingWidth / boundingHeight > extendedFieldWidth / extendedFieldHeight;
+        let baseImageScalar = constrainHeight
+          ? boundingHeight / extendedFieldHeight
+          : boundingWidth / extendedFieldWidth;
+
+        let canvasCenterX = cursorX - containerWidth / 2;
+        let canvasCenterY = cursorY - containerHeight / 2;
+
+        if (isPan) {
+          this.pan[0] += dx / (baseImageScalar * this.zoom);
+          this.pan[1] += dy / (baseImageScalar * this.zoom);
+        } else {
+          // Zoom
+          let zoomChange = dy * -0.005;
+          let oldZoom = this.zoom;
+          this.zoom = Math.min(10, Math.max(1, this.zoom + zoomChange));
+
+          if (this.zoom !== oldZoom) {
+            this.pan[0] += (canvasCenterX / baseImageScalar) * (1 / oldZoom - 1 / this.zoom);
+            this.pan[1] += (canvasCenterY / baseImageScalar) * (1 / oldZoom - 1 / this.zoom);
+          }
+        }
+
+        window.requestAnimationFrame(() => {
+          if (this.lastCommand) this.render(this.lastCommand);
+        });
+      },
+      ScrollSensorMouseControl.PanXY
+    );
+
+    // Context menu for camera mode
+    let startPx: [number, number] | null = null;
+    this.SCROLL_CONTAINER.addEventListener("mousedown", (event) => {
+      if (event.button === 2) {
+        startPx = [event.clientX, event.clientY];
+      }
+    });
+    this.SCROLL_CONTAINER.addEventListener("mouseup", (event) => {
+      if (startPx && event.clientX === startPx[0] && event.clientY === startPx[1]) {
+        window.sendMainMessage("ask-2d-camera", {
+          position: [event.clientX, event.clientY],
+          selectedIndex: this.trackingMode
+        });
+      }
+      startPx = null;
+    });
+  }
+
+  set2DCamera(index: number) {
+    if (index >= 0 && index <= 2) {
+      this.setTrackingMode(index as Field2dCameraMode);
+      if (this.lastCommand) {
+        this.render(this.lastCommand);
+      }
+    }
   }
 
   saveState(): unknown {
-    return null;
+    return {
+      zoom: this.zoom,
+      pan: this.pan,
+      trackingMode: this.trackingMode,
+      isFTC: this.isFTC
+    };
   }
 
-  restoreState(state: unknown): void {}
+  restoreState(state: unknown): void {
+    if (typeof state !== "object" || state === null) return;
+
+    if ("zoom" in state && typeof state.zoom === "number") {
+      this.zoom = state.zoom;
+    }
+    if ("pan" in state && Array.isArray(state.pan) && state.pan.length === 2) {
+      this.pan = state.pan as [number, number];
+    }
+    if ("trackingMode" in state && typeof state.trackingMode === "number") {
+      this.setTrackingMode(state.trackingMode as Field2dCameraMode);
+    }
+    if ("isFTC" in state && typeof state.isFTC === "boolean") {
+      this.isFTC = state.isFTC;
+    }
+  }
+
+  setTrackingMode(mode: Field2dCameraMode) {
+    if (mode !== Field2dCameraMode.Unlocked) {
+      this.jumpToRobot = true;
+    }
+    this.trackingMode = mode;
+  }
 
   getAspectRatio(): number | null {
     return this.aspectRatio;
   }
 
   render(command: Field2dRendererCommand): void {
+    this.scrollSensor.periodic();
+    this.lastCommand = command;
+
+    // Get field data
+    let fieldData = window.assets?.field2ds.find((field) => field.id === command.field);
+    if (!fieldData) return;
+
+    if (fieldData.isFTC !== this.isFTC) {
+      this.isFTC = fieldData.isFTC;
+      this.zoom = 1;
+      this.pan = [0, 0];
+      this.trackingMode = 0;
+    }
+
+    // Find primary robot pose
+    let primaryRobotPose: Pose2d | null = null;
+    let primaryRobotObj = command.objects.find((obj) => obj.type === "robot") as Field2dRendererCommand_RobotObj;
+    if (primaryRobotObj && primaryRobotObj.poses.length > 0) {
+      primaryRobotPose = primaryRobotObj.poses[0].pose;
+    }
+
     // Get setup
     let context = this.CANVAS.getContext("2d") as CanvasRenderingContext2D;
+
     let isVertical = command.orientation === Orientation.DEG_90 || command.orientation === Orientation.DEG_270;
+    let isSatellite = document.body.classList.contains("satellite");
+    let visibleYOffset = isSatellite ? 0 : -13;
+
     let width = isVertical ? this.CONTAINER.clientHeight : this.CONTAINER.clientWidth;
     let height = isVertical ? this.CONTAINER.clientWidth : this.CONTAINER.clientHeight;
 
+    let boundingWidth = isVertical
+      ? this.CONTAINER.clientHeight - Math.abs(visibleYOffset * 2)
+      : this.CONTAINER.clientWidth;
+    let boundingHeight = isVertical
+      ? this.CONTAINER.clientWidth
+      : this.CONTAINER.clientHeight - Math.abs(visibleYOffset * 2);
+
+    if (this.trackingMode === Field2dCameraMode.RobotAndRotation) {
+      let maxDim = Math.hypot(this.CONTAINER.clientWidth, this.CONTAINER.clientHeight);
+      width = maxDim;
+      height = maxDim;
+      boundingWidth = maxDim;
+      boundingHeight = maxDim;
+    }
+
     // Exit if render state unchanged
-    let renderState: any[] = [width, height, window.devicePixelRatio, command, this.imageLoadCount];
+    let renderState: any[] = [
+      width,
+      height,
+      window.devicePixelRatio,
+      command,
+      this.imageLoadCount,
+      this.zoom,
+      this.pan[0],
+      this.pan[1],
+      this.trackingMode
+    ];
     let renderStateString = JSON.stringify(renderState);
     if (renderStateString === this.lastRenderState) {
       return;
@@ -68,24 +242,29 @@ export default class Field2dRenderer implements TabRenderer {
     context.lineJoin = "round";
 
     // Set canvas transform
+    let canvasRotation = 0;
     switch (command.orientation) {
       case Orientation.DEG_0:
-        this.CANVAS.style.transform = "translate(-50%, -50%) rotate(0deg)";
+        canvasRotation = 0;
         break;
       case Orientation.DEG_90:
-        this.CANVAS.style.transform = "translate(-50%, -50%) rotate(-90deg)";
+        canvasRotation = -Math.PI / 2;
         break;
       case Orientation.DEG_180:
-        this.CANVAS.style.transform = "translate(-50%, -50%) rotate(180deg)";
+        canvasRotation = Math.PI;
         break;
       case Orientation.DEG_270:
-        this.CANVAS.style.transform = "translate(-50%, -50%) rotate(90deg)";
+        canvasRotation = Math.PI / 2;
         break;
     }
 
-    // Get field data and update image element
-    let fieldData = window.assets?.field2ds.find((field) => field.id === command.field);
-    if (!fieldData) return;
+    if (this.trackingMode === Field2dCameraMode.RobotAndRotation && primaryRobotPose) {
+      canvasRotation += primaryRobotPose.rotation;
+    }
+
+    this.CANVAS.style.transform = `translate(-50%, -50%) rotate(${canvasRotation}rad)`;
+
+    // Update image element
     if (fieldData.path !== this.lastImageSource) {
       this.lastImageSource = fieldData.path;
       this.IMAGE.src = fieldData.path;
@@ -95,6 +274,47 @@ export default class Field2dRenderer implements TabRenderer {
     // Render background
     let fieldWidth = fieldData.bottomRight[0] - fieldData.topLeft[0];
     let fieldHeight = fieldData.bottomRight[1] - fieldData.topLeft[1];
+    let fieldCenterX = fieldWidth * 0.5 + fieldData.topLeft[0];
+    let fieldCenterY = fieldHeight * 0.5 + fieldData.topLeft[1];
+
+    let targetFieldX = fieldCenterX;
+    let targetFieldY = fieldCenterY;
+    if (this.trackingMode > Field2dCameraMode.Unlocked && primaryRobotPose) {
+      let positionInches = [
+        Units.convert(primaryRobotPose.translation[0], "meters", "inches"),
+        Units.convert(primaryRobotPose.translation[1], "meters", "inches")
+      ];
+      targetFieldX = scaleValue(
+        positionInches[0],
+        [-fieldData.widthInches / 2, fieldData.widthInches / 2],
+        [fieldData.topLeft[0], fieldData.topLeft[0] + fieldWidth]
+      );
+      targetFieldY = scaleValue(
+        positionInches[1],
+        [-fieldData.heightInches / 2, fieldData.heightInches / 2],
+        [fieldData.topLeft[1] + fieldHeight, fieldData.topLeft[1]]
+      );
+    }
+
+    if (this.jumpToRobot) {
+      this.pan = [0, 0];
+      this.jumpToRobot = false;
+    } else if (
+      this.lastTrackingMode !== this.trackingMode &&
+      this.trackingMode === Field2dCameraMode.Unlocked &&
+      this.lastFieldCenter
+    ) {
+      let dx = this.lastFieldCenter[0] - targetFieldX;
+      let dy = this.lastFieldCenter[1] - targetFieldY;
+      this.pan[0] = dx * Math.cos(canvasRotation) - dy * Math.sin(canvasRotation);
+      this.pan[1] = dx * Math.sin(canvasRotation) + dy * Math.cos(canvasRotation);
+    }
+    this.lastTrackingMode = this.trackingMode;
+
+    let panFieldX = this.pan[0] * Math.cos(-canvasRotation) - this.pan[1] * Math.sin(-canvasRotation);
+    let panFieldY = this.pan[0] * Math.sin(-canvasRotation) + this.pan[1] * Math.cos(-canvasRotation);
+    fieldCenterX = targetFieldX + panFieldX;
+    fieldCenterY = targetFieldY + panFieldY;
 
     let topMargin = fieldData.topLeft[1];
     let bottomMargin = this.IMAGE.height - fieldData.bottomRight[1];
@@ -104,24 +324,62 @@ export default class Field2dRenderer implements TabRenderer {
     let margin = Math.min(topMargin, bottomMargin, leftMargin, rightMargin);
     let extendedFieldWidth = fieldWidth + margin * 2;
     let extendedFieldHeight = fieldHeight + margin * 2;
-    let constrainHeight = width / height > extendedFieldWidth / extendedFieldHeight;
-    let imageScalar: number;
-    if (constrainHeight) {
-      imageScalar = height / extendedFieldHeight;
-    } else {
-      imageScalar = width / extendedFieldWidth;
+    let constrainHeight = boundingWidth / boundingHeight > extendedFieldWidth / extendedFieldHeight;
+    let baseImageScalar = constrainHeight ? boundingHeight / extendedFieldHeight : boundingWidth / extendedFieldWidth;
+    let imageScalar = baseImageScalar * this.zoom;
+
+    if (this.trackingMode === Field2dCameraMode.Unlocked) {
+      let fieldDisplayWidth = extendedFieldWidth * imageScalar;
+      let fieldDisplayHeight = extendedFieldHeight * imageScalar;
+
+      let panOffsetX = (Math.sin(canvasRotation) * visibleYOffset) / imageScalar;
+      let panOffsetY = (Math.cos(canvasRotation) * visibleYOffset) / imageScalar;
+
+      let marginX = Math.max(0, (fieldDisplayWidth - boundingWidth) * 0.5) / imageScalar;
+      let minPanX = -marginX + panOffsetX;
+      let maxPanX = marginX + panOffsetX;
+
+      let marginY = Math.max(0, (fieldDisplayHeight - boundingHeight) * 0.5) / imageScalar;
+      let minPanY = -marginY + panOffsetY;
+      let maxPanY = marginY + panOffsetY;
+
+      panFieldX = Math.max(minPanX, Math.min(maxPanX, panFieldX));
+      panFieldY = Math.max(minPanY, Math.min(maxPanY, panFieldY));
+
+      fieldCenterX = targetFieldX + panFieldX;
+      fieldCenterY = targetFieldY + panFieldY;
+
+      this.pan[0] = panFieldX * Math.cos(canvasRotation) - panFieldY * Math.sin(canvasRotation);
+      this.pan[1] = panFieldX * Math.sin(canvasRotation) + panFieldY * Math.cos(canvasRotation);
     }
-    let fieldCenterX = fieldWidth * 0.5 + fieldData.topLeft[0];
-    let fieldCenterY = fieldHeight * 0.5 + fieldData.topLeft[1];
-    let renderValues = [
-      Math.floor(width * 0.5 - fieldCenterX * imageScalar), // X (normal)
-      Math.floor(height * 0.5 - fieldCenterY * imageScalar), // Y (normal)
-      Math.ceil(width * -0.5 - fieldCenterX * imageScalar), // X (flipped)
-      Math.ceil(height * -0.5 - fieldCenterY * imageScalar), // Y (flipped)
-      this.IMAGE.width * imageScalar, // Width
-      this.IMAGE.height * imageScalar // Height
+
+    this.lastFieldCenter = [fieldCenterX, fieldCenterY];
+
+    let renderValues: [number, number, number, number] = [
+      width * 0.5 - fieldCenterX * imageScalar,
+      height * 0.5 - fieldCenterY * imageScalar,
+      this.IMAGE.width * imageScalar,
+      this.IMAGE.height * imageScalar
     ];
-    context.drawImage(this.IMAGE, renderValues[0], renderValues[1], renderValues[4], renderValues[5]);
+
+    // Draw field image
+    {
+      let imgDx = renderValues[0];
+      let imgDy = renderValues[1];
+      let imgDw = renderValues[2];
+      let imgDh = renderValues[3];
+      let drawL = Math.max(imgDx, 0);
+      let drawT = Math.max(imgDy, 0);
+      let drawR = Math.min(imgDx + imgDw, width);
+      let drawB = Math.min(imgDy + imgDh, height);
+      if (drawR > drawL && drawB > drawT) {
+        let sx = ((drawL - imgDx) / imgDw) * this.IMAGE.width;
+        let sy = ((drawT - imgDy) / imgDh) * this.IMAGE.height;
+        let sWidth = ((drawR - drawL) / imgDw) * this.IMAGE.width;
+        let sHeight = ((drawB - drawT) / imgDh) * this.IMAGE.height;
+        context.drawImage(this.IMAGE, sx, sy, sWidth, sHeight, drawL, drawT, drawR - drawL, drawB - drawT);
+      }
+    }
     this.aspectRatio = isVertical ? fieldHeight / fieldWidth : fieldWidth / fieldHeight;
 
     // Calculate field edges
@@ -291,7 +549,7 @@ export default class Field2dRenderer implements TabRenderer {
       });
     this.heatmap.update(
       heatmapTranslations,
-      [canvasFieldWidth, canvasFieldHeight],
+      [fieldWidth, fieldHeight],
       [
         Units.convert(fieldData.widthInches, "inches", "meters"),
         Units.convert(fieldData.heightInches, "inches", "meters")
@@ -299,7 +557,7 @@ export default class Field2dRenderer implements TabRenderer {
     );
     let heatmapCanvas = this.heatmap.getCanvas();
     if (heatmapCanvas !== null) {
-      context.drawImage(heatmapCanvas, canvasFieldLeft, canvasFieldTop);
+      context.drawImage(heatmapCanvas, canvasFieldLeft, canvasFieldTop, canvasFieldWidth, canvasFieldHeight);
     }
 
     // Draw objects

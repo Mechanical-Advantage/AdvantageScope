@@ -37,6 +37,7 @@ import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
 import ExportOptions from "../../shared/ExportOptions";
+import { Field2dCameraMode } from "../../shared/Field2dCameraMode";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import NamedMessage from "../../shared/NamedMessage";
 import Preferences, { DEFAULT_PREFS, getLiveModeName, LiveMode, mergePreferences } from "../../shared/Preferences";
@@ -1207,6 +1208,10 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       );
       break;
 
+    case "ask-2d-camera":
+      select2DCameraPopup(window, message.data.position, message.data.selectedIndex);
+      break;
+
     case "export-console":
       dialog
         .showSaveDialog(window, {
@@ -1505,6 +1510,45 @@ function select3DCameraPopup(
       })
     );
   });
+  cameraMenu.popup({
+    window: window,
+    x: Math.round(position[0]),
+    y: Math.round(position[1])
+  });
+}
+
+function select2DCameraPopup(window: BrowserWindow, position: [number, number], selectedIndex: Field2dCameraMode) {
+  const cameraMenu = new Menu();
+  cameraMenu.append(
+    new MenuItem({
+      label: "Unlocked",
+      type: "checkbox",
+      checked: selectedIndex === Field2dCameraMode.Unlocked,
+      click() {
+        sendMessage(window, "set-2d-camera", Field2dCameraMode.Unlocked);
+      }
+    })
+  );
+  cameraMenu.append(
+    new MenuItem({
+      label: "Locked to Robot",
+      type: "checkbox",
+      checked: selectedIndex === Field2dCameraMode.Robot,
+      click() {
+        sendMessage(window, "set-2d-camera", Field2dCameraMode.Robot);
+      }
+    })
+  );
+  cameraMenu.append(
+    new MenuItem({
+      label: "Locked to Robot && Rotation",
+      type: "checkbox",
+      checked: selectedIndex === Field2dCameraMode.RobotAndRotation,
+      click() {
+        sendMessage(window, "set-2d-camera", Field2dCameraMode.RobotAndRotation);
+      }
+    })
+  );
   cameraMenu.popup({
     window: window,
     x: Math.round(position[0]),
@@ -3087,7 +3131,8 @@ function createSatellite(
       let message: NamedMessage = event.data;
       switch (message.name) {
         case "set-aspect-ratio":
-          let aspectRatio = message.data;
+          let aspectRatio = message.data.aspectRatio;
+          let lock = message.data.lock;
           if (aspectRatio === null) {
             satellite.setAspectRatio(0);
           } else {
@@ -3095,7 +3140,11 @@ function createSatellite(
             let originalArea = originalSize[0] * originalSize[1];
             let newY = Math.sqrt(originalArea / aspectRatio);
             let newX = aspectRatio * newY;
-            satellite.setAspectRatio(aspectRatio);
+            if (lock) {
+              satellite.setAspectRatio(aspectRatio);
+            } else {
+              satellite.setAspectRatio(0);
+            }
             satellite.setContentSize(Math.round(newX), Math.round(newY));
           }
           break;
@@ -3109,6 +3158,10 @@ function createSatellite(
             message.data.fov,
             message.data.isFTC
           );
+          break;
+
+        case "ask-2d-camera":
+          select2DCameraPopup(satellite, message.data.position, message.data.selectedIndex);
           break;
 
         case "add-table-range":

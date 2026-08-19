@@ -10,6 +10,7 @@ import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import { BUILD_DATE, COPYRIGHT, Distribution, DISTRIBUTION, LITE_VERSION } from "../../shared/buildConstants";
 import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
+import { Field2dCameraMode } from "../../shared/Field2dCameraMode";
 import { HubState } from "../../shared/HubState";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import NamedMessage from "../../shared/NamedMessage";
@@ -1201,6 +1202,35 @@ async function handleHubMessage(message: NamedMessage) {
             }
           });
         });
+        openMenu({ x: position[0], y: position[1], width: 0, height: 0 }, menuItems);
+      }
+      break;
+
+    case "ask-2d-camera":
+      {
+        let position: [number, number] = message.data.position;
+        let selectedIndex: Field2dCameraMode = message.data.selectedIndex;
+        let menuItems: (MenuItem | Submenu | "-")[] = [
+          {
+            content: (selectedIndex === Field2dCameraMode.Unlocked ? "\u2714 " : "") + "Unlocked",
+            callback() {
+              sendMessage(hubPort, "set-2d-camera", Field2dCameraMode.Unlocked);
+            }
+          },
+          {
+            content: (selectedIndex === Field2dCameraMode.Robot ? "\u2714 " : "") + "Locked to Robot",
+            callback() {
+              sendMessage(hubPort, "set-2d-camera", Field2dCameraMode.Robot);
+            }
+          },
+          {
+            content:
+              (selectedIndex === Field2dCameraMode.RobotAndRotation ? "\u2714 " : "") + "Locked to Robot && Rotation",
+            callback() {
+              sendMessage(hubPort, "set-2d-camera", Field2dCameraMode.RobotAndRotation);
+            }
+          }
+        ];
         openMenu({ x: position[0], y: position[1], width: 0, height: 0 }, menuItems);
       }
       break;

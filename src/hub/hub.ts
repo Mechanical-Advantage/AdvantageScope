@@ -906,6 +906,10 @@ async function handleMainMessage(message: NamedMessage) {
       window.tabs.set3DCamera(message.data);
       break;
 
+    case "set-2d-camera":
+      window.tabs.set2DCamera(message.data);
+      break;
+
     case "edit-fov":
       window.tabs.setFov(message.data);
       break;
