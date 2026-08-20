@@ -1,6 +1,6 @@
 # AdvantageScope XR {#advantagescope-xr}
 
-AdvantageScope XR 將 👀 [3D 場地](/tab-reference/3d-field)視圖帶入擴增實境，讓您能以全新的方式視覺化資料。以實際尺寸觀看模擬自動程序、用桌面場地模型複習比賽策略、在真實機器人上疊加診斷資訊等等！下面的影片展示了此功能的幾個使用案例：
+AdvantageScope XR 將 👀 [3D 場地](/tab-reference/3d-field)視圖帶入擴增實境，讓你能以全新的方式視覺化資料。以實際尺寸觀看模擬自動程序、用桌面場地模型複習比賽策略、在真實機器人上疊加診斷資訊等等！下面的影片展示了此功能的幾個使用案例：
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/gWPhQyB66DQ" title="AdvantageScope XR: Feature Overview" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -65,7 +65,7 @@ XR 控制視窗提供了幾個選項，用於控制模型在擴增實境中的�
   - 選擇*實際大小*以按精確比例視覺化場地，根據真實場地護欄進行定位。在*藍方聯盟*與*紅方聯盟*之間切換可控制哪一側的場地用於校準，但在所有情況下都會視覺化完整場地。
 - **串流：**
   - 對於延遲可接受以換取更可靠串流的應用程式，選擇*平滑*，例如模擬自動程序或播放日誌檔案。
-  - 對於即時應用程式，輕微的抖動可接受的情況，選擇*低延遲*，例如在真實機器人上疊加資料或在遙控中駕駛模擬機器人。
+  - 對於即時應用程式，輕微的抖動可接受的情況，選擇*低延遲*，例如在真實機器人上疊加資料或在遙控階段中駕駛模擬機器人。
 - **顯示地板：** 在場地下方顯示平坦的地毯/地磚模型，而非疊加在真實表面上。
 - **顯示場地：** 顯示場地模型，包括場地護欄與特定遊戲物件。自訂[遊戲物件](/tab-reference/3d-field#game-piece-objects)始終顯示。
 - **顯示機器人：** 顯示機器人模型，在真實機器人上疊加資料時可停用（例如視覺目標或 2D 機構）。

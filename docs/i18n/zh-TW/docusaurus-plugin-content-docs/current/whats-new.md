@@ -89,7 +89,7 @@ _上圖所示為英文介面。_
 
 ## 🪵 REV Robotics CAN 日誌支援 {#rev-robotics-can-log-support}
 
-您現在可以直接在 AdvantageScope 中開啟由 REV Robotics [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) 產生的 `.revlog` 檔案。這些檔案記錄了 Spark Max 與 Spark Flex 裝置的 CAN 訊號，提供了 AdvantageScope [URCL](/more-features/urcl) 函式庫的官方替代方案。
+你現在可以直接在 AdvantageScope 中開啟由 REV Robotics [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) 產生的 `.revlog` 檔案。這些檔案記錄了 Spark Max 與 Spark Flex 裝置的 CAN 訊號，提供了 AdvantageScope [URCL](/more-features/urcl) 函式庫的官方替代方案。
 
 URCL 和官方 `StatusLogger` 將在 2026 賽季期間繼續提供，以確保順暢過渡並提供與先前賽季同等的功能。我們將在稍後日期分享有關 2027 年及以後日誌記錄選項的更多詳細資訊。
 

@@ -17,7 +17,7 @@ sidebar_position: 1
 - 內建一系列近期 6328 機器人模型，可用於 👀 [3D 場地](/tab-reference/3d-field) 分頁。
 
 :::note
-在 Ubuntu 23.10 或更高版本上執行 AppImage 版本之前，您必須從 releases 頁面下載 AppArmor 設定檔並將其複製到 /etc/apparmor.d。
+在 Ubuntu 23.10 或更高版本上執行 AppImage 版本之前，你必須從 releases 頁面下載 AppArmor 設定檔並將其複製到 /etc/apparmor.d。
 :::
 
 :::info

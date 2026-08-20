@@ -29,7 +29,7 @@ URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger，非官方 REV 相容記
 
 ## 設定 {#setup}
 
-按照在 VSCode 中使用依賴項管理員安裝[第三方函式庫](https://docs.wpilib.org/zh-cn/stable/docs/software/vscode-overview/3rd-party-libraries.html)的說明安裝 URCL 第三方函式庫 (vendordep)。或者，您可以使用以下廠商 JSON URL：
+按照在 VSCode 中使用依賴項管理員安裝[第三方函式庫](https://docs.wpilib.org/zh-cn/stable/docs/software/vscode-overview/3rd-party-libraries.html)的說明安裝 URCL 第三方函式庫 (vendordep)。或者，你可以使用以下廠商 JSON URL：
 
 ```
 https://raw.githubusercontent.com/Mechanical-Advantage/URCL/main/URCL.json
