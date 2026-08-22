@@ -1630,6 +1630,7 @@ function downloadStart() {
       // Start connection
       host: downloadAddress,
       port: 22,
+      forceIPv4: true,
       readyTimeout: DOWNLOAD_CONNECT_TIMEOUT_MS,
       username: downloadDevice === "systemcore" ? DOWNLOAD_SYSTEMCORE_USERNAME : DOWNLOAD_ROBORIO_USERNAME,
       password: downloadDevice === "systemcore" ? DOWNLOAD_SYSTEMCORE_PASSWORD : DOWNLOAD_ROBORIO_PASSWORD
