@@ -50,14 +50,24 @@ export function setupI18n(lang: string): TFunction {
 
 /** Given a set of preferred languages, returns the best language to use. */
 export function getBestLanguage(preferredLangs: readonly string[]): string {
+  const supportedLower = SUPPORTED_LANGS.map((l) => l.toLowerCase());
   for (const lang of preferredLangs) {
-    if (SUPPORTED_LANGS.includes(lang)) {
-      return lang;
+    const langLower = lang.toLowerCase();
+
+    // Exact match (e.g., "tr" -> "tr")
+    const exactIndex = supportedLower.indexOf(langLower);
+    if (exactIndex !== -1) {
+      return SUPPORTED_LANGS[exactIndex];
     }
-    const primaryLang = lang.split("-")[0];
-    if (SUPPORTED_LANGS.includes(primaryLang)) {
-      return primaryLang;
+
+    // Primary language exact match (e.g., "fr-CA" -> "fr")
+    const primaryLang = langLower.split("-")[0];
+    const primaryIndex = supportedLower.indexOf(primaryLang);
+    if (primaryIndex !== -1) {
+      return SUPPORTED_LANGS[primaryIndex];
     }
+
+    // Custom region fallbacks (e.g., "en-GB" -> "en-US")
     switch (primaryLang) {
       case "en":
         return "en-US";
@@ -66,7 +76,13 @@ export function getBestLanguage(preferredLangs: readonly string[]): string {
       case "pt":
         return "pt-BR";
       case "zh":
-        return "zh-CN";
+        if (langLower.includes("hant") || langLower.includes("-hk") || langLower.includes("-mo")) {
+          // Use Traditional Chinese for Hong Kong (zh-HK), Macau (zh-MO), and generic "Hant"
+          return "zh-TW";
+        } else {
+          // Use Simplified Chinese for all other cases, including Singapore (zh-SG), Malaysia (zh-MY), and generic "Hans"
+          return "zh-CN";
+        }
     }
   }
   return "en-US";

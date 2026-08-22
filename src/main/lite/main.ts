@@ -83,7 +83,7 @@ function getLocale(prefs: Preferences | null = null): string {
   if (prefs !== null && prefs.language !== "") {
     return prefs.language;
   }
-  return getBestLanguage(navigator.languages);
+  return getBestLanguage(navigator.languages || (navigator.language ? [navigator.language] : []));
 }
 
 window.t = setupI18n(lang);

@@ -30,18 +30,28 @@
     // Get stored manual preference or detect browser language
     var targetLocale = localStorage.getItem("AdvantageScopeDocs/lang");
     if (!targetLocale) {
+      var supportedLower = supportedLangs.map((l) => l.toLowerCase());
       var preferredLangs = navigator.languages || (navigator.language ? [navigator.language] : []);
       for (var i = 0; i < preferredLangs.length; i++) {
         var lang = preferredLangs[i];
-        if (supportedLangs.indexOf(lang) !== -1) {
-          targetLocale = lang;
+        var langLower = lang.toLowerCase();
+
+        // Exact match (e.g., "tr" -> "tr")
+        var exactIndex = supportedLower.indexOf(langLower);
+        if (exactIndex !== -1) {
+          targetLocale = supportedLangs[exactIndex];
           break;
         }
-        var primaryLang = lang.split("-")[0];
-        if (supportedLangs.indexOf(primaryLang) !== -1) {
-          targetLocale = primaryLang;
+
+        // Primary language exact match (e.g., "fr-CA" -> "fr")
+        var primaryLang = langLower.split("-")[0];
+        var primaryIndex = supportedLower.indexOf(primaryLang);
+        if (primaryIndex !== -1) {
+          targetLocale = supportedLangs[primaryIndex];
           break;
         }
+
+        // Custom region fallbacks (e.g., "en-GB" -> "en-US")
         switch (primaryLang) {
           case "en":
             targetLocale = "en-US";
@@ -53,7 +63,13 @@
             targetLocale = "pt-BR";
             break;
           case "zh":
-            targetLocale = "zh-CN";
+            if (langLower.includes("hant") || langLower.includes("-hk") || langLower.includes("-mo")) {
+              // Use Traditional Chinese for Hong Kong (zh-HK), Macau (zh-MO), and generic "Hant"
+              targetLocale = "zh-TW";
+            } else {
+              // Use Simplified Chinese for all other cases, including Singapore (zh-SG), Malaysia (zh-MY), and generic "Hans"
+              targetLocale = "zh-CN";
+            }
             break;
         }
         if (targetLocale) break;

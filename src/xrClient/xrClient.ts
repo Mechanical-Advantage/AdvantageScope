@@ -23,7 +23,7 @@ let assets: AdvantageScopeAssets | null = null;
 let isRendering = false;
 let serverTimeOffset: number | null = null;
 
-window.t = setupI18n(getBestLanguage(navigator.languages));
+window.t = setupI18n(getBestLanguage(navigator.languages || (navigator.language ? [navigator.language] : [])));
 
 window.addEventListener("load", () => {
   renderer = new XRRenderer();
