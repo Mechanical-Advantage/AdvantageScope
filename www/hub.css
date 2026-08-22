@@ -483,6 +483,11 @@ div.field-value {
   white-space: nowrap;
 }
 
+div.field-value svg {
+  border-radius: 50%;
+  clip-path: circle(50% at 50% 50%);
+}
+
 div.field-value svg.tunable {
   transform: scale(175%);
 }

@@ -52,10 +52,12 @@ import {
   AKIT_PATH_OUTPUT,
   APP_VERSION,
   DOWNLOAD_CONNECT_TIMEOUT_MS,
-  DOWNLOAD_PASSWORD,
   DOWNLOAD_REFRESH_INTERVAL_MS,
   DOWNLOAD_RETRY_DELAY_MS,
-  DOWNLOAD_USERNAME,
+  DOWNLOAD_ROBORIO_PASSWORD,
+  DOWNLOAD_ROBORIO_USERNAME,
+  DOWNLOAD_SYSTEMCORE_PASSWORD,
+  DOWNLOAD_SYSTEMCORE_USERNAME,
   HUB_DEFAULT_HEIGHT,
   HUB_DEFAULT_WIDTH,
   PREFS_FILENAME,
@@ -131,6 +133,8 @@ let downloadRefreshInterval: NodeJS.Timeout | null = null;
 let downloadAddress: string = "";
 let downloadPath: string = "";
 let downloadFileSizeCache: { [id: string]: number } = {};
+let downloadDevice: "systemcore" | "roborio" = "systemcore";
+let downloadAuthFailedOnce: boolean = false;
 
 // WINDOW MESSAGE HANDLING
 
@@ -277,7 +281,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       });
       let newTypeMemoryStr = JSON.stringify(typeMemory);
       if (originalTypeMemoryStr !== newTypeMemoryStr) {
-        jsonfile.writeFileSync(TYPE_MEMORY_FILENAME, typeMemory);
+        await jsonfile.writeFile(TYPE_MEMORY_FILENAME, typeMemory);
       }
       break;
 
@@ -304,6 +308,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         const uuid: string = message.data.uuid;
         const logPath: string = message.data.path;
         app.addRecentDocument(logPath);
+        // Writing this file is a supplemental task, so we don't need to block/ensure success
         fs.writeFile(AKIT_PATH_OUTPUT, logPath, () => {});
 
         // Send data if all file reads finished
@@ -377,21 +382,17 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             if (ctreLicensePrompt === null) {
               ctreLicensePrompt = new Promise(async (resolve) => {
                 while (true) {
-                  let response = await new Promise<Electron.MessageBoxReturnValue>((resolve) =>
-                    dialog
-                      .showMessageBox(window, {
-                        type: "question",
-                        title: "Alert",
-                        message: "CTRE License Agreement",
-                        detail:
-                          "Hoot log file decoding requires agreement to CTRE's end user license agreement. Please click the button below to view the full license agreement, then check the box if you agree to the terms.",
-                        checkboxLabel: "I Agree",
-                        buttons: ["View License", "OK"],
-                        defaultId: 1,
-                        icon: WINDOW_ICON
-                      })
-                      .then((response) => resolve(response))
-                  );
+                  let response = await dialog.showMessageBox(window, {
+                    type: "question",
+                    title: "Alert",
+                    message: "CTRE License Agreement",
+                    detail:
+                      "Hoot log file decoding requires agreement to CTRE's end user license agreement. Please click the button below to view the full license agreement, then check the box if you agree to the terms.",
+                    checkboxLabel: "I Agree",
+                    buttons: ["View License", "OK"],
+                    defaultId: 1,
+                    icon: WINDOW_ICON
+                  });
                   if (response.response === 1) {
                     if (response.checkboxChecked) {
                       prefs.ctreLicenseAccepted = true;
@@ -446,18 +447,17 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
           // Save WPILOG in temporary folder
           let wpilogPath = path.join(app.getPath("temp"), "revlog_" + createUUID() + ".wpilog");
-          parseREVLOG(logPath, wpilogPath)
-            .then(() => {
-              openPath(wpilogPath, (buffer) => {
-                results[0] = buffer;
-                fs.rmSync(wpilogPath);
-              });
-            })
-            .catch((err) => {
-              errorMessage = err.message;
-              completedCount++;
-              sendIfReady();
+          try {
+            await parseREVLOG(logPath, wpilogPath);
+            openPath(wpilogPath, (buffer) => {
+              results[0] = buffer;
+              fs.rmSync(wpilogPath);
             });
+          } catch (err: any) {
+            errorMessage = err.message;
+            completedCount++;
+            sendIfReady();
+          }
         } else if (logPath.endsWith(".wpilogxz")) {
           // Externally compressed WPILOG, decompress
           targetCount += 1;
@@ -1527,6 +1527,8 @@ function handleDownloadMessage(message: NamedMessage) {
 
   switch (message.name) {
     case "start":
+      downloadDevice = "systemcore";
+      downloadAuthFailedOnce = false;
       downloadAddress = message.data.address;
       downloadPath = message.data.path;
       if (!downloadPath.endsWith("/")) downloadPath += "/";
@@ -1553,6 +1555,7 @@ function downloadStart() {
   downloadClient = new Client()
     .once("ready", () => {
       // Successful SSH connection
+      downloadAuthFailedOnce = false;
       downloadClient?.sftp((error, sftp) => {
         if (error) {
           // Failed to start SFTP
@@ -1608,21 +1611,38 @@ function downloadStart() {
     })
     .on("error", (error) => {
       // Failed SSH connection
-      downloadError(error.message);
+      if (error.message === "All configured authentication methods failed") {
+        downloadDevice = downloadDevice === "systemcore" ? "roborio" : "systemcore";
+        if (downloadAuthFailedOnce) {
+          downloadAuthFailedOnce = false;
+          downloadError(error.message);
+        } else {
+          downloadAuthFailedOnce = true;
+          if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
+          downloadStart();
+        }
+      } else {
+        downloadDevice = "systemcore";
+        downloadAuthFailedOnce = false;
+        downloadError(error.message);
+      }
     })
     .connect({
       // Start connection
       host: downloadAddress,
       port: 22,
+      forceIPv4: true,
       readyTimeout: DOWNLOAD_CONNECT_TIMEOUT_MS,
-      username: DOWNLOAD_USERNAME,
-      password: DOWNLOAD_PASSWORD
+      username: downloadDevice === "systemcore" ? DOWNLOAD_SYSTEMCORE_USERNAME : DOWNLOAD_ROBORIO_USERNAME,
+      password: downloadDevice === "systemcore" ? DOWNLOAD_SYSTEMCORE_PASSWORD : DOWNLOAD_ROBORIO_PASSWORD
     });
 }
 
 /** Closes the FTP connection. */
 function downloadStop() {
   downloadClient?.end();
+  downloadDevice = "systemcore";
+  downloadAuthFailedOnce = false;
   if (downloadRetryTimeout) clearTimeout(downloadRetryTimeout);
   if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
 }
@@ -1630,6 +1650,8 @@ function downloadStop() {
 /** Problem connecting or reading data, restart after a delay. */
 function downloadError(errorMessage: string) {
   if (!downloadWindow) return;
+  downloadDevice = "systemcore";
+  downloadAuthFailedOnce = false;
   sendMessage(downloadWindow, "show-error", errorMessage);
   if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
   downloadRetryTimeout = setTimeout(downloadStart, DOWNLOAD_RETRY_DELAY_MS);
@@ -1874,7 +1896,7 @@ function setupMenu() {
           type: "checkbox",
           async click(item) {
             const isCustom = item.checked;
-            let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+            let prefs: Preferences = await jsonfile.readFile(PREFS_FILENAME);
             if (isCustom) {
               let result = await dialog.showOpenDialog({
                 title: "Select folder containing custom AdvantageScope assets",
@@ -1887,8 +1909,8 @@ function setupMenu() {
             } else {
               prefs.userAssetsFolder = null;
             }
-            jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-            advantageScopeAssets = loadAssets();
+            await jsonfile.writeFile(PREFS_FILENAME, prefs);
+            advantageScopeAssets = await loadAssets();
             sendAllPreferences();
             sendAssets();
           }
@@ -3451,7 +3473,7 @@ if (process.platform === "linux") {
   }
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   // Check preferences and set theme
   let prefs = DEFAULT_PREFS;
   if (process.platform === "linux") {
@@ -3471,16 +3493,16 @@ app.whenReady().then(() => {
 
   // Load assets
   createAssetFolders();
-  startAssetDownloadLoop(() => {
-    advantageScopeAssets = loadAssets();
+  startAssetDownloadLoop(async () => {
+    advantageScopeAssets = await loadAssets();
     sendAssets();
   });
-  setInterval(() => {
+  setInterval(async () => {
     // Periodically load assets in case they are updated
-    advantageScopeAssets = loadAssets();
+    advantageScopeAssets = await loadAssets();
     sendAssets();
   }, 5000);
-  advantageScopeAssets = loadAssets();
+  advantageScopeAssets = await loadAssets();
 
   // Start owlet download
   startOwletDownloadLoop();
