@@ -52,10 +52,12 @@ import {
   AKIT_PATH_OUTPUT,
   APP_VERSION,
   DOWNLOAD_CONNECT_TIMEOUT_MS,
-  DOWNLOAD_PASSWORD,
   DOWNLOAD_REFRESH_INTERVAL_MS,
   DOWNLOAD_RETRY_DELAY_MS,
-  DOWNLOAD_USERNAME,
+  DOWNLOAD_ROBORIO_PASSWORD,
+  DOWNLOAD_ROBORIO_USERNAME,
+  DOWNLOAD_SYSTEMCORE_PASSWORD,
+  DOWNLOAD_SYSTEMCORE_USERNAME,
   HUB_DEFAULT_HEIGHT,
   HUB_DEFAULT_WIDTH,
   PREFS_FILENAME,
@@ -131,6 +133,8 @@ let downloadRefreshInterval: NodeJS.Timeout | null = null;
 let downloadAddress: string = "";
 let downloadPath: string = "";
 let downloadFileSizeCache: { [id: string]: number } = {};
+let downloadDevice: "systemcore" | "roborio" = "systemcore";
+let downloadAuthFailedOnce: boolean = false;
 
 // WINDOW MESSAGE HANDLING
 
@@ -1522,6 +1526,8 @@ function handleDownloadMessage(message: NamedMessage) {
 
   switch (message.name) {
     case "start":
+      downloadDevice = "systemcore";
+      downloadAuthFailedOnce = false;
       downloadAddress = message.data.address;
       downloadPath = message.data.path;
       if (!downloadPath.endsWith("/")) downloadPath += "/";
@@ -1548,6 +1554,7 @@ function downloadStart() {
   downloadClient = new Client()
     .once("ready", () => {
       // Successful SSH connection
+      downloadAuthFailedOnce = false;
       downloadClient?.sftp((error, sftp) => {
         if (error) {
           // Failed to start SFTP
@@ -1603,21 +1610,37 @@ function downloadStart() {
     })
     .on("error", (error) => {
       // Failed SSH connection
-      downloadError(error.message);
+      if (error.message === "All configured authentication methods failed") {
+        downloadDevice = downloadDevice === "systemcore" ? "roborio" : "systemcore";
+        if (downloadAuthFailedOnce) {
+          downloadAuthFailedOnce = false;
+          downloadError(error.message);
+        } else {
+          downloadAuthFailedOnce = true;
+          if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
+          downloadStart();
+        }
+      } else {
+        downloadDevice = "systemcore";
+        downloadAuthFailedOnce = false;
+        downloadError(error.message);
+      }
     })
     .connect({
       // Start connection
       host: downloadAddress,
       port: 22,
       readyTimeout: DOWNLOAD_CONNECT_TIMEOUT_MS,
-      username: DOWNLOAD_USERNAME,
-      password: DOWNLOAD_PASSWORD
+      username: downloadDevice === "systemcore" ? DOWNLOAD_SYSTEMCORE_USERNAME : DOWNLOAD_ROBORIO_USERNAME,
+      password: downloadDevice === "systemcore" ? DOWNLOAD_SYSTEMCORE_PASSWORD : DOWNLOAD_ROBORIO_PASSWORD
     });
 }
 
 /** Closes the FTP connection. */
 function downloadStop() {
   downloadClient?.end();
+  downloadDevice = "systemcore";
+  downloadAuthFailedOnce = false;
   if (downloadRetryTimeout) clearTimeout(downloadRetryTimeout);
   if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
 }
@@ -1625,6 +1648,8 @@ function downloadStop() {
 /** Problem connecting or reading data, restart after a delay. */
 function downloadError(errorMessage: string) {
   if (!downloadWindow) return;
+  downloadDevice = "systemcore";
+  downloadAuthFailedOnce = false;
   sendMessage(downloadWindow, "show-error", errorMessage);
   if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
   downloadRetryTimeout = setTimeout(downloadStart, DOWNLOAD_RETRY_DELAY_MS);
