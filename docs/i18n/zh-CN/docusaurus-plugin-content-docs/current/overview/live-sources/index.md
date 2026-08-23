@@ -41,7 +41,7 @@ AdvantageScope 中的所有可视化功能除了处理日志文件外，均旨�
 
 ### 机器人地址 {#robot-address}
 
-按照 [WPILib 文档](https://docs.wpilib.org/zh-cn/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation) 中所述，使用 10.TE.AM.2 格式的 IP 地址输入机器人地址。通过 USB 或内置 Wi-Fi 热点连接到 Systemcore 时，点击 `文件` > `使用 Systemcore USB 地址`/`使用 Systemcore Wi-Fi 地址` 以临时使用正确的静态 IP 地址。
+按照 [WPILib 文档](https://docs.wpilib.org/zh-cn/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation) 中所述，使用主机名（例如 `robot.local`）或 IP 地址（例如 `10.TE.AM.2`）输入机器人地址。通过 USB 或内置 Wi-Fi 热点连接到 Systemcore 时，点击 `文件` > `使用 Systemcore USB 地址`/`使用 Systemcore Wi-Fi 地址` 以临时使用正确的静态 IP 地址。
 
 ### 实时模式 {#live-mode}
 

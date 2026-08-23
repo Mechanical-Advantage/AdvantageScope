@@ -41,7 +41,7 @@ AdvantageScope 中的所有視覺化除了支援日誌檔案外，還被設計�
 
 ### 機器人位址 {#robot-address}
 
-如 [WPILib 文件](https://docs.wpilib.org/zh-cn/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation) 中所述，使用 10.TE.AM.2 IP 位址輸入機器人位址。當透過 USB 或內建 Wi-Fi 無線基地台連線到 Systemcore 時，點擊 `檔案` > `使用 Systemcore USB 位址`/`使用 Systemcore Wi-Fi 位址` 以暫時使用正確的靜態 IP 位址。
+如 [WPILib 文件](https://docs.wpilib.org/zh-cn/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation) 中所述，使用主機名稱（例如 `robot.local`）或 IP 位址（例如 `10.TE.AM.2`）輸入機器人位址。當透過 USB 或內建 Wi-Fi 無線基地台連線到 Systemcore 時，點擊 `檔案` > `使用 Systemcore USB 位址`/`使用 Systemcore Wi-Fi 位址` 以暫時使用正確的靜態 IP 位址。
 
 ### 即時模式 {#live-mode}
 

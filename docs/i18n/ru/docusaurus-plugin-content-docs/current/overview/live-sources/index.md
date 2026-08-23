@@ -41,7 +41,7 @@ AdvantageScope может подключаться к FIRST Driver Station дл�
 
 ### Адрес робота {#robot-address}
 
-Введите адрес робота, используя IP-адрес вида 10.TE.AM.2, как описано в [документации WPILib](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). При подключении к Systemcore через USB или встроенную точку доступа Wi-Fi нажмите **Файл > Использовать USB-адрес Systemcore** / **Использовать Wi-Fi-адрес Systemcore**, чтобы временно использовать правильный статический IP-адрес.
+Введите адрес робота, используя имя хоста (например, `robot.local`) или IP-адрес (например, `10.TE.AM.2`), как описано в [документации WPILib](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). При подключении к Systemcore через USB или встроенную точку доступа Wi-Fi нажмите **Файл > Использовать USB-адрес Systemcore** / **Использовать Wi-Fi-адрес Systemcore**, чтобы временно использовать правильный статический IP-адрес.
 
 ### Режим реального времени {#live-mode}
 

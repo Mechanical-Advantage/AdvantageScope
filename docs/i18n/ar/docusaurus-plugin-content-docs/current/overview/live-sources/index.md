@@ -41,7 +41,7 @@
 
 ### عنوان الروبوت {#robot-address}
 
-أدخل عنوان الروبوت باستخدام عنوان IP بتنسيق 10.TE.AM.2 كما هو موضح في [وثائق WPILib](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). عند الاتصال بـ Systemcore عبر USB أو نقطة وصول Wi-Fi المدمجة، انقر فوق `ملف` > `استخدام عنوان USB لـ Systemcore`/`استخدام عنوان Wi-Fi لـ Systemcore` لاستخدام عنوان IP الثابت الصحيح مؤقتاً.
+أدخل عنوان الروبوت باستخدام اسم مضيف (على سبيل المثال `robot.local`) أو عنوان IP (على سبيل المثال <span dir="ltr">`10.TE.AM.2`</span>) كما هو موضح في [وثائق WPILib](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). عند الاتصال بـ Systemcore عبر USB أو نقطة وصول Wi-Fi المدمجة، انقر فوق `ملف` > `استخدام عنوان USB لـ Systemcore`/`استخدام عنوان Wi-Fi لـ Systemcore` لاستخدام عنوان IP الثابت الصحيح مؤقتاً.
 
 ### الوضع المباشر {#live-mode}
 

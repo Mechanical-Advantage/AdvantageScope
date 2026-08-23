@@ -41,7 +41,7 @@ AdvantageScope қолданбасы DS қолданбасы сияқты бір 
 
 ### Робот мекенжайы {#robot-address}
 
-[WPILib құжаттамасында](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation) сипатталғандай 10.TE.AM.2 IP мекенжайын пайдаланып, робот мекенжайын енгізіңіз. Systemcore жүйесіне USB немесе кірістірілген Wi-Fi кіру нүктесі арқылы қосылғанда, дұрыс статикалық IP мекенжайын уақытша пайдалану үшін `Файл` > `Systemcore USB мекенжайын пайдалану`/`Systemcore Wi-Fi мекенжайын пайдалану` басыңыз.
+[WPILib құжаттамасында](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation) сипатталғандай хост атауын (мысалы, `robot.local`) немесе IP мекенжайын (мысалы, `10.TE.AM.2`) пайдаланып, робот мекенжайын енгізіңіз. Systemcore жүйесіне USB немесе кірістірілген Wi-Fi кіру нүктесі арқылы қосылғанда, дұрыс статикалық IP мекенжайын уақытша пайдалану үшін `Файл` > `Systemcore USB мекенжайын пайдалану`/`Systemcore Wi-Fi мекенжайын пайдалану` басыңыз.
 
 ### Тікелей режим {#live-mode}
 

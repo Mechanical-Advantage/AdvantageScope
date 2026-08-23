@@ -41,7 +41,7 @@ AdvantageScope יכולה להתחבר ל-FIRST Driver Station כדי להציג
 
 ### כתובת הרובוט {#robot-address}
 
-יש להזין את כתובת הרובוט תוך שימוש בכתובת IP בפורמט 10.TE.AM.2 כמתואר ב[תיעוד WPILib](https://docs.wpilib.org/he/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). בעת התחברות ל-Systemcore דרך USB או נקודת הגישה המובנית של ה-Wi-Fi, יש ללחוץ על `קובץ` > `שימוש בכתובת Systemcore USB`/`שימוש בכתובת Systemcore Wi-Fi` כדי להשתמש זמנית בכתובת ה-IP הסטטית הנכונה.
+יש להזין את כתובת הרובוט תוך שימוש בשם מארח (למשל `robot.local`) או כתובת IP (למשל <span dir="ltr">`10.TE.AM.2`</span>) כמתואר ב[תיעוד WPILib](https://docs.wpilib.org/he/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). בעת התחברות ל-Systemcore דרך USB או נקודת הגישה המובנית של ה-Wi-Fi, יש ללחוץ על `קובץ` > `שימוש בכתובת Systemcore USB`/`שימוש בכתובת Systemcore Wi-Fi` כדי להשתמש זמנית בכתובת ה-IP הסטטית הנכונה.
 
 ### מצב חי {#live-mode}
 

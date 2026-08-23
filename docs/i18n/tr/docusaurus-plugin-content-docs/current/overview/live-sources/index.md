@@ -41,7 +41,7 @@ Canlı bir kaynağa bağlandığında AdvantageScope, varsayılan olarak tüm se
 
 ### Robot adresi {#robot-address}
 
-[WPILib dokümantasyonunda](https://docs.wpilib.org/tr/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation) açıklandığı şekilde bir 10.TE.AM.2 IP adresi kullanarak robot adresini girin. Systemcore'a USB veya yerleşik Wi-Fi erişim noktası aracılığıyla bağlanırken, doğru statik IP adresini geçici olarak kullanmak için `Dosya` > `Systemcore USB Adresini Kullan`/`Systemcore Wi-Fi Adresini Kullan` seçeneğine tıklayın.
+[WPILib dokümantasyonunda](https://docs.wpilib.org/tr/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation) açıklandığı şekilde bir ana bilgisayar adı (örneğin `robot.local`) veya IP adresi (örneğin `10.TE.AM.2`) kullanarak robot adresini girin. Systemcore'a USB veya yerleşik Wi-Fi erişim noktası aracılığıyla bağlanırken, doğru statik IP adresini geçici olarak kullanmak için `Dosya` > `Systemcore USB Adresini Kullan`/`Systemcore Wi-Fi Adresini Kullan` seçeneğine tıklayın.
 
 ### Canlı mod {#live-mode}
 

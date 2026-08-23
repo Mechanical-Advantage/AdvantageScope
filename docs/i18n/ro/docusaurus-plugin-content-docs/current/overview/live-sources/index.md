@@ -41,7 +41,7 @@ Deschideți fereastra de preferințe dând clic pe `Aplicație` > `Afișează pr
 
 ### Adresă robot {#robot-address}
 
-Introduceți adresa robotului folosind o adresă IP 10.TE.AM.2, așa cum este descris în [documentația WPILib](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). Când vă conectați la Systemcore prin USB sau prin punctul de acces Wi-Fi integrat, dați clic pe `Fișier` > `Utilizează adresa USB Systemcore`/`Utilizează adresa Wi-Fi Systemcore` pentru a utiliza temporar adresa IP statică corectă.
+Introduceți adresa robotului folosind un hostname (de ex. `robot.local`) sau o adresă IP (de ex. `10.TE.AM.2`), așa cum este descris în [documentația WPILib](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). Când vă conectați la Systemcore prin USB sau prin punctul de acces Wi-Fi integrat, dați clic pe `Fișier` > `Utilizează adresa USB Systemcore`/`Utilizează adresa Wi-Fi Systemcore` pentru a utiliza temporar adresa IP statică corectă.
 
 ### Mod live {#live-mode}
 

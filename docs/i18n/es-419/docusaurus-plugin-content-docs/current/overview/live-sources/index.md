@@ -41,7 +41,7 @@ Abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias..
 
 ### Dirección del robot {#robot-address}
 
-Ingresa la dirección del robot usando una dirección IP 10.TE.AM.2 como se describe en la [documentación de WPILib](https://docs.wpilib.org/es/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). Cuando te conectes a Systemcore por USB o al punto de acceso Wi-Fi incorporado, haz clic en `Archivo` > `Usar dirección USB de Systemcore`/`Usar dirección Wi-Fi de Systemcore` para usar temporalmente la dirección IP estática correcta.
+Ingresa la dirección del robot usando un nombre de host (por ejemplo, `robot.local`) o una dirección IP (por ejemplo, `10.TE.AM.2`) como se describe en la [documentación de WPILib](https://docs.wpilib.org/es/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). Cuando te conectes a Systemcore por USB o al punto de acceso Wi-Fi incorporado, haz clic en `Archivo` > `Usar dirección USB de Systemcore`/`Usar dirección Wi-Fi de Systemcore` para usar temporalmente la dirección IP estática correcta.
 
 ### Modo en vivo {#live-mode}
 
