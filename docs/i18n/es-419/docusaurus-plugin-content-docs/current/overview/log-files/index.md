@@ -42,7 +42,7 @@ Abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias..
 <img src="/img/prefs_es-419.webp" alt="Diagrama de preferencias" height="450" />
 </details>
 
-Haz clic en `Archivo` > `Descargar registros...` para abrir la ventana de descarga. Una vez conectado al robot, los registros disponibles se muestran con el más reciente en la parte superior. Selecciona uno o más archivos de registro para descargar (haz clic y presiona shift para seleccionar un rango o **cmd/ctrl + A** para seleccionar todos). Luego haz clic en el símbolo ↓ y selecciona una ubicación de guardado.
+Haz clic en `Archivo` > `Descargar registros...` para abrir la ventana de descarga. La descarga de registros es compatible con Systemcore y el roboRIO. Una vez conectado al robot, los registros disponibles se muestran con el más reciente en la parte superior. Selecciona uno o más archivos de registro para descargar (haz clic y presiona shift para seleccionar un rango o **cmd/ctrl + A** para seleccionar todos). Luego haz clic en el símbolo ↓ y selecciona una ubicación de guardado.
 
 :::info
 El [registrador de señales](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) de CTRE utiliza un formato no estándar que agrupa los registros en subcarpetas. Selecciona una o más carpetas en la lista para descargar los archivos de registro como grupo.

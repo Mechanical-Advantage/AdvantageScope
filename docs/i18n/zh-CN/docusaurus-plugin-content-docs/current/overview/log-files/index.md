@@ -42,7 +42,7 @@ _上图所示为英文界面。_
 <img src="/img/prefs_zh-CN.webp" alt="偏好设置图解" height="450" />
 </details>
 
-点击 `文件` > `下载日志...` 打开下载窗口。连接到机器人后，可用的日志将显示在列表中，最新日志位于顶部。选择一个或多个要下载的日志文件（按住 shift 点击选择范围或使用 **cmd/ctrl + A** 全选）。然后点击 ↓ 符号并选择保存位置。
+点击 `文件` > `下载日志...` 打开下载窗口。Systemcore 和 roboRIO 支持日志下载。连接到机器人后，可用的日志将显示在列表中，最新日志位于顶部。选择一个或多个要下载的日志文件（按住 shift 点击选择范围或使用 **cmd/ctrl + A** 全选）。然后点击 ↓ 符号并选择保存位置。
 
 :::info
 CTRE 的 [信号日志记录器](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) 使用非标准格式，将日志分组在子文件夹中。在列表中选择一个或多个文件夹可以组形式下载日志文件。

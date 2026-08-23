@@ -42,7 +42,7 @@ _上圖所示為英文介面。_
 <img src="/img/prefs_zh-TW.webp" alt="偏好設定圖解" height="450" />
 </details>
 
-點擊 `檔案` > `下載日誌...` 開啟下載視窗。連線到機器人後，可用的日誌會顯示在清單中，最新的位於頂部。選擇一個或多個要下載的日誌檔案（Shift + 點擊可選擇範圍，或 **Cmd/Ctrl + A** 全選）。然後點擊 ↓ 符號並選擇儲存位置。
+點擊 `檔案` > `下載日誌...` 開啟下載視窗。Systemcore 與 roboRIO 支援日誌下載。連線到機器人後，可用的日誌會顯示在清單中，最新的位於頂部。選擇一個或多個要下載的日誌檔案（Shift + 點擊可選擇範圍，或 **Cmd/Ctrl + A** 全選）。然後點擊 ↓ 符號並選擇儲存位置。
 
 :::info
 CTRE 的[訊號記錄器](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html)使用將日誌分組在子資料夾中的非標準格式。在清單中選擇一個或多個資料夾以將日誌檔案作為一組下載。

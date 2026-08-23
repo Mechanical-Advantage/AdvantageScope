@@ -42,7 +42,7 @@ Menü çubuğunda `Dosya` > `Yeni log ekle...` seçeneğine tıklayın, ardında
 <img src="/img/prefs_tr.webp" alt="Tercihler diyagramı" height="450" />
 </details>
 
-`Dosya` > `Logları indir...` seçeneğine tıklayarak indirme penceresini açın. Robota bağlandıktan sonra mevcut loglar en yenisi en üstte olacak şekilde gösterilir. İndirmek için bir veya daha fazla log dosyası seçin (bir aralık seçmek için shift-tıkla veya tümünü seçmek için **cmd/ctrl + A** kullanın). Ardından ↓ simgesine tıklayın ve bir kaydetme konumu seçin.
+`Dosya` > `Logları indir...` seçeneğine tıklayarak indirme penceresini açın. Log indirme Systemcore ve roboRIO üzerinde desteklenmektedir. Robota bağlandıktan sonra mevcut loglar en yenisi en üstte olacak şekilde gösterilir. İndirmek için bir veya daha fazla log dosyası seçin (bir aralık seçmek için shift-tıkla veya tümünü seçmek için **cmd/ctrl + A** kullanın). Ardından ↓ simgesine tıklayın ve bir kaydetme konumu seçin.
 
 :::info
 CTRE'nin [sinyal loglayıcısı](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html), logları alt klasörlerde gruplayan standart olmayan bir format kullanır. Log dosyalarını bir grup olarak indirmek için listedeki bir veya daha fazla klasörü seçin.

@@ -42,7 +42,7 @@ Deschideți fereastra de preferințe dând clic pe `Aplicație` > `Afișează pr
 <img src="/img/prefs_ro.webp" alt="Diagramă de preferințe" height="450" />
 </details>
 
-Dați clic pe `Fișier` > `Descărcare loguri...` pentru a deschide fereastra de descărcare. Odată conectat la robot, logurile disponibile sunt afișate cu cele mai noi în partea de sus. Selectați unul sau mai multe fișiere log de descărcat (shift-clic pentru a selecta un interval sau **cmd/ctrl + A** pentru a selecta tot). Apoi dați clic pe simbolul ↓ și selectați o locație de salvare.
+Dați clic pe `Fișier` > `Descărcare loguri...` pentru a deschide fereastra de descărcare. Descărcarea logurilor este suportată pe Systemcore și roboRIO. Odată conectat la robot, logurile disponibile sunt afișate cu cele mai noi în partea de sus. Selectați unul sau mai multe fișiere log de descărcat (shift-clic pentru a selecta un interval sau **cmd/ctrl + A** pentru a selecta tot). Apoi dați clic pe simbolul ↓ și selectați o locație de salvare.
 
 :::info
 [Înregistratorul de semnale](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) de la CTRE utilizează un format nestandardizat care grupează logurile în subfoldere. Selectați unul sau mai multe foldere din listă pentru a descărca fișierele log ca un grup.

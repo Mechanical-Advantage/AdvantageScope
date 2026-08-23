@@ -42,7 +42,7 @@ Ouvrez la fenêtre des préférences en cliquant sur `Application` > `Afficher l
 <img src="/img/prefs_fr.webp" alt="Schéma des préférences" height="450" />
 </details>
 
-Cliquez sur `Fichier` > `Télécharger les journaux...` pour ouvrir la fenêtre de téléchargement. Une fois connecté au robot, les journaux disponibles sont affichés avec le plus récent en haut. Sélectionnez un ou plusieurs fichiers journaux à télécharger (Maj-clic pour sélectionner une plage ou **cmd/ctrl + A** pour tout sélectionner). Cliquez ensuite sur le symbole ↓ et sélectionnez un emplacement d'enregistrement.
+Cliquez sur `Fichier` > `Télécharger les journaux...` pour ouvrir la fenêtre de téléchargement. Le téléchargement des journaux est pris en charge sur Systemcore et le roboRIO. Une fois connecté au robot, les journaux disponibles sont affichés avec le plus récent en haut. Sélectionnez un ou plusieurs fichiers journaux à télécharger (Maj-clic pour sélectionner une plage ou **cmd/ctrl + A** pour tout sélectionner). Cliquez ensuite sur le symbole ↓ et sélectionnez un emplacement d'enregistrement.
 
 :::info
 Le [signal logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) de CTRE utilise un format non standard qui regroupe les journaux dans des sous-dossiers. Sélectionnez un ou plusieurs dossiers dans la liste pour télécharger les fichiers journaux sous forme de groupe.

@@ -42,7 +42,7 @@ Abra a janela de preferências clicando em `App` > `Mostrar Preferências...` (W
 <img src="/img/prefs_pt-BR.webp" alt="Diagrama de preferências" height="450" />
 </details>
 
-Clique em `Arquivo` > `Baixar logs...` para abrir a janela de download. Uma vez conectado ao robô, os logs disponíveis são exibidos com o mais recente no topo. Selecione um ou mais arquivos de log para baixar (clique com shift para selecionar um intervalo ou **cmd/ctrl + A** para selecionar todos). Em seguida, clique no símbolo ↓ e selecione um local de salvamento.
+Clique em `Arquivo` > `Baixar logs...` para abrir a janela de download. O download de logs é suportado no Systemcore e no roboRIO. Uma vez conectado ao robô, os logs disponíveis são exibidos com o mais recente no topo. Selecione um ou mais arquivos de log para baixar (clique com shift para selecionar um intervalo ou **cmd/ctrl + A** para selecionar todos). Em seguida, clique no símbolo ↓ e selecione um local de salvamento.
 
 :::info
 O [registrador de sinais](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) da CTRE usa um formato não padrão que agrupa os logs em subpastas. Selecione uma ou mais pastas na lista para baixar os arquivos de log como um grupo.
