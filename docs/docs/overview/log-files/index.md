@@ -40,7 +40,7 @@ Open the preferences window by clicking `App` > `Show Preferences...` (Windows/L
 <img src="/img/prefs_en-US.webp" alt="Diagram of preferences" height="450" />
 </details>
 
-Click `File` > `Download Logs...` to open the download window. Once connected to the robot, available logs are shown with the newest at the top. Select one or more log files to download (shift-click to select a range or **cmd/ctrl + A** to select all). Then click the ↓ symbol and select a save location.
+Click `File` > `Download Logs...` to open the download window. Log downloading is supported on Systemcore and the roboRIO. Once connected to the robot, available logs are shown with the newest at the top. Select one or more log files to download (shift-click to select a range or **cmd/ctrl + A** to select all). Then click the ↓ symbol and select a save location.
 
 :::info
 CTRE's [signal logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) uses a nonstandard format that groups logs in subfolders. Select one or more folders in the list to download the log files as a group.

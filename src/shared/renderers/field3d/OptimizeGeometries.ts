@@ -16,7 +16,7 @@ export const STANDARD_MAX_RADIUS = 0.04;
 export const CINEMATIC_MAX_RADIUS = 0.02;
 export const FTC_MULTIPLIER = 0.25; // FTC components are smaller, adjust appropriately to avoid cutting too agressively
 
-export default async function optimizeGeometries(
+export default function optimizeGeometries(
   object: THREE.Object3D,
   mode: "low-power" | "standard" | "cinematic",
   materialSpecular: THREE.Color,
@@ -24,93 +24,91 @@ export default async function optimizeGeometries(
   enableSimplification = true,
   isFTC: boolean = false,
   slicingSize?: number
-): Promise<{
+): {
   normal: THREE.Mesh[];
   transparent: THREE.Mesh[];
   carpet: THREE.Mesh[];
-}> {
-  return new Promise(async (resolve) => {
-    let geometries = getGeometries(object, mode, enableSimplification, isFTC, slicingSize);
+} {
+  let geometries = getGeometries(object, mode, enableSimplification, isFTC, slicingSize);
 
-    let normalMeshes: THREE.Mesh[] = [];
-    let transparentMeshes: THREE.Mesh[] = [];
-    let carpetMeshes: THREE.Mesh[] = [];
-    geometries.normal.forEach((group) => {
-      if (group.length > 0) {
-        let geometry = BufferGeometryUtils.mergeGeometries(group, false);
-        if (geometry !== null) {
-          let mesh = new THREE.Mesh(
-            geometry,
-            new THREE.MeshPhongMaterial({
-              vertexColors: true,
-              side: THREE.DoubleSide,
-              specular: materialSpecular,
-              shininess: materialShininess
-            })
-          );
-          normalMeshes.push(mesh);
-          if (mode === "cinematic") {
-            mesh.castShadow = true;
-            mesh.receiveShadow = false;
-          }
-          mesh.name = "normal";
+  let normalMeshes: THREE.Mesh[] = [];
+  let transparentMeshes: THREE.Mesh[] = [];
+  let carpetMeshes: THREE.Mesh[] = [];
+  geometries.normal.forEach((group) => {
+    if (group.length > 0) {
+      let geometry = BufferGeometryUtils.mergeGeometries(group, false);
+      if (geometry !== null) {
+        let mesh = new THREE.Mesh(
+          geometry,
+          new THREE.MeshPhongMaterial({
+            vertexColors: true,
+            side: THREE.DoubleSide,
+            specular: materialSpecular,
+            shininess: materialShininess
+          })
+        );
+        normalMeshes.push(mesh);
+        if (mode === "cinematic") {
+          mesh.castShadow = true;
+          mesh.receiveShadow = false;
         }
+        mesh.name = "normal";
       }
-    });
-    geometries.transparent.forEach((group) => {
-      if (group.length > 0) {
-        let geometry = BufferGeometryUtils.mergeGeometries(group, false);
-        if (geometry !== null) {
-          let mesh = new THREE.Mesh(
-            geometry,
-            new THREE.MeshPhongMaterial({
-              vertexColors: true,
-              side: THREE.DoubleSide,
-              specular: materialSpecular,
-              shininess: materialShininess,
-              transparent: true,
-              opacity: 0.2,
-              depthWrite: false
-            })
-          );
-          transparentMeshes.push(mesh);
-          if (mode === "cinematic") {
-            mesh.castShadow = true;
-            mesh.receiveShadow = false;
-          }
-          mesh.name = "transparent";
-        }
-      }
-    });
-    geometries.carpet.forEach((group) => {
-      if (group.length > 0) {
-        let geometry = BufferGeometryUtils.mergeGeometries(group, false);
-        if (geometry !== null) {
-          let mesh = new THREE.Mesh(
-            geometry,
-            new THREE.MeshPhongMaterial({
-              vertexColors: true,
-              side: THREE.DoubleSide,
-              specular: materialSpecular,
-              shininess: 0
-            })
-          );
-          carpetMeshes.push(mesh);
-          if (mode === "cinematic") {
-            mesh.castShadow = false;
-            mesh.receiveShadow = true;
-          }
-          mesh.name = "carpet";
-        }
-      }
-    });
-    disposeObject(object);
-    resolve({
-      normal: normalMeshes,
-      transparent: transparentMeshes,
-      carpet: carpetMeshes
-    });
+    }
   });
+  geometries.transparent.forEach((group) => {
+    if (group.length > 0) {
+      let geometry = BufferGeometryUtils.mergeGeometries(group, false);
+      if (geometry !== null) {
+        let mesh = new THREE.Mesh(
+          geometry,
+          new THREE.MeshPhongMaterial({
+            vertexColors: true,
+            side: THREE.DoubleSide,
+            specular: materialSpecular,
+            shininess: materialShininess,
+            transparent: true,
+            opacity: 0.2,
+            depthWrite: false
+          })
+        );
+        transparentMeshes.push(mesh);
+        if (mode === "cinematic") {
+          mesh.castShadow = true;
+          mesh.receiveShadow = false;
+        }
+        mesh.name = "transparent";
+      }
+    }
+  });
+  geometries.carpet.forEach((group) => {
+    if (group.length > 0) {
+      let geometry = BufferGeometryUtils.mergeGeometries(group, false);
+      if (geometry !== null) {
+        let mesh = new THREE.Mesh(
+          geometry,
+          new THREE.MeshPhongMaterial({
+            vertexColors: true,
+            side: THREE.DoubleSide,
+            specular: materialSpecular,
+            shininess: 0
+          })
+        );
+        carpetMeshes.push(mesh);
+        if (mode === "cinematic") {
+          mesh.castShadow = false;
+          mesh.receiveShadow = true;
+        }
+        mesh.name = "carpet";
+      }
+    }
+  });
+  disposeObject(object);
+  return {
+    normal: normalMeshes,
+    transparent: transparentMeshes,
+    carpet: carpetMeshes
+  };
 }
 
 function getGeometries(

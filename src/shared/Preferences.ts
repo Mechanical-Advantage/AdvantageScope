@@ -38,7 +38,7 @@ export const SUPPORTED_LANGS = ["en-US", "es-419", "fr", "pt-BR", "tr", "ro", "h
 export const DEFAULT_PREFS: Preferences = {
   language: "",
   theme: "system",
-  robotAddress: "10.00.00.2",
+  robotAddress: "robot.local",
   remotePath: "/U/logs",
   liveMode: "nt4",
   liveSubscribeMode: "low-bandwidth",

@@ -20,38 +20,36 @@ const SUCCESS_TIMEOUT_MS = 6 * 60 * 60 * 1000; // 6 hours
 let statusText = "No status available.";
 
 /** Updates the local set of automatic assets and retries periodically in case of network issues. */
-export function startAssetDownloadLoop(updateCallback: () => void) {
-  let check: () => void = () => {
-    checkDiskSpace(AUTO_ASSETS)
-      .then((diskSpace) => {
-        if (diskSpace.free / 1e9 < REQUIRED_SPACE_GB) {
-          throw new Error();
-        }
-        getAssetInfo()
-          .then((assetInfo) => {
-            statusText = t("main.assets.downloadStarted", { time: new Date().toLocaleTimeString() });
-            updateLocalAssets(assetInfo)
-              .then(() => {
-                statusText = t("main.assets.downloadFinished");
-                updateCallback();
-                setTimeout(() => check(), SUCCESS_TIMEOUT_MS);
-              })
-              .catch(() => {
-                statusText = t("main.assets.connectFailed");
-                setTimeout(() => check(), FAILURE_TIMEOUT_MS);
-              });
-          })
-          .catch(() => {
-            statusText = t("main.assets.connectFailed");
-            setTimeout(() => check(), FAILURE_TIMEOUT_MS);
-          });
-      })
-      .catch(() => {
-        statusText = t("main.assets.noDiskSpace");
+export async function startAssetDownloadLoop(updateCallback: () => Promise<void>) {
+  let check: () => Promise<void> = async () => {
+    try {
+      const diskSpace = await checkDiskSpace(AUTO_ASSETS);
+      if (diskSpace.free / 1e9 < REQUIRED_SPACE_GB) {
+        throw new Error();
+      }
+    } catch {
+      statusText = t("main.assets.noDiskSpace");
+      setTimeout(() => check(), FAILURE_TIMEOUT_MS);
+      return;
+    }
+    try {
+      const assetInfo = await getAssetInfo();
+      statusText = t("main.assets.downloadStarted", { time: new Date().toLocaleTimeString() });
+      try {
+        await updateLocalAssets(assetInfo);
+        statusText = t("main.assets.downloadFinished");
+        await updateCallback();
+        setTimeout(() => check(), SUCCESS_TIMEOUT_MS);
+      } catch {
+        statusText = t("main.assets.connectFailed");
         setTimeout(() => check(), FAILURE_TIMEOUT_MS);
-      });
+      }
+    } catch {
+      statusText = t("main.assets.connectFailed");
+      setTimeout(() => check(), FAILURE_TIMEOUT_MS);
+    }
   };
-  check();
+  await check();
 }
 
 /** Returns a string for the current status of the download. */
@@ -117,7 +115,7 @@ async function updateLocalAssets(downloadInfo: AssetDownloadInfo[]) {
   );
 
   // Delete old assets
-  fs.readdirSync(AUTO_ASSETS).forEach((folder) => {
+  (await fs.promises.readdir(AUTO_ASSETS)).forEach((folder) => {
     let folderPath = path.join(AUTO_ASSETS, folder);
     if (!downloadInfo.some((assetInfo) => assetInfo.target === folderPath)) {
       fs.rmSync(folderPath, { recursive: true });
