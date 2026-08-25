@@ -22,7 +22,9 @@ const configEmbed: Config = Object.assign(config, {
         docs: {
           routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
-          sidebarCollapsed: true
+          sidebarCollapsed: true,
+          editUrl: "https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/docs/",
+          editLocalizedFiles: true
         },
         blog: false,
         sitemap: false, // Sitemap not supported by hash router
