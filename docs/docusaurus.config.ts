@@ -27,7 +27,16 @@ const config: Config = {
 
   onBrokenLinks: "throw",
   markdown: {
-    hooks: { onBrokenMarkdownLinks: "throw", onBrokenMarkdownImages: "throw" }
+    hooks: { onBrokenMarkdownLinks: "throw", onBrokenMarkdownImages: "throw" },
+    mdx1Compat: {
+      comments: true,
+      admonitions: true,
+      headingIds: true
+    }
+  },
+  future: {
+    v4: true,
+    faster: true
   },
 
   i18n: {
@@ -68,6 +77,7 @@ const config: Config = {
           sidebarCollapsed: true,
           rehypePlugins: [youtubeLocaleRehypePlugin]
         },
+        blog: false,
         theme: {
           customCss: "./src/css/custom.css"
         }

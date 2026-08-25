@@ -5,17 +5,40 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import type * as Preset from "@docusaurus/preset-classic";
+import type { Config } from "@docusaurus/types";
 import { liteWarningAnnouncement } from "./announcements";
 import config from "./docusaurus.config";
 
 const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE" || process.env.ASCOPE_DISTRIBUTION === "LITEDS";
 const locale = process.env.DOCUSAURUS_CURRENT_LOCALE || "en-US";
 
-const configEmbed = Object.assign(config, {
-  future: {
+const configEmbed: Config = Object.assign(config, {
+  future: Object.assign({}, config.future, {
     experimental_router: "hash"
-  },
+  }),
   headTags: [],
+
+  presets: [
+    [
+      "classic",
+      {
+        docs: {
+          routeBasePath: "/",
+          sidebarPath: "./sidebars.ts",
+          sidebarCollapsed: true
+        },
+        blog: false,
+        sitemap: false, // Sitemap not supported by hash router
+        theme: {
+          customCss: "./src/css/custom.css"
+        }
+      } satisfies Preset.Options
+    ]
+  ],
+
+  plugins: [],
+
   themeConfig: Object.assign(config.themeConfig!, {
     navbar: Object.assign(config.themeConfig!.navbar!, { items: undefined }),
     footer: undefined,
