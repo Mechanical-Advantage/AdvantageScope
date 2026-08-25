@@ -8,6 +8,7 @@
 import type * as Preset from "@docusaurus/preset-classic";
 import type { Config } from "@docusaurus/types";
 import config from "./docusaurus.config";
+import minisearchPlugin from "./plugins/docusaurus-minisearch-plugin";
 
 const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE" || process.env.ASCOPE_DISTRIBUTION === "LITEDS";
 const configEmbed: Config = Object.assign(config, {
@@ -35,7 +36,7 @@ const configEmbed: Config = Object.assign(config, {
     ]
   ],
 
-  plugins: [],
+  plugins: [minisearchPlugin],
 
   themeConfig: Object.assign(config.themeConfig!, {
     navbar: Object.assign(config.themeConfig!.navbar!, { items: undefined }),
