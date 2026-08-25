@@ -490,6 +490,8 @@ jobs:
         env:
           ASCOPE_DISTRIBUTION: WPILIB
           NODE_OPTIONS: --max-old-space-size=4096
+      - name: Generate file associations
+        run: node generateFileAssociations.mjs dist/win*
       - name: Prepare artifact
         run: |
           Set-Location -Path "dist\win*"
@@ -609,6 +611,8 @@ jobs:
         env:
           ASCOPE_DISTRIBUTION: WPILIB
           NODE_OPTIONS: --max-old-space-size=4096
+      - name: Generate file associations
+        run: node generateFileAssociations.mjs dist/linux*
       - name: Prepare artifact
         run: |
           cd dist/linux*
