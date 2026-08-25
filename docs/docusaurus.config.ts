@@ -48,7 +48,9 @@ const config: Config = {
         docs: {
           routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
-          sidebarCollapsed: true
+          sidebarCollapsed: true,
+          editUrl: "https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/docs/",
+          editLocalizedFiles: true
         },
         blog: false,
         theme: {
