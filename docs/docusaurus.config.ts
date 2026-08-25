@@ -75,7 +75,9 @@ const config: Config = {
           routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
           sidebarCollapsed: true,
-          rehypePlugins: [youtubeLocaleRehypePlugin]
+          rehypePlugins: [youtubeLocaleRehypePlugin],
+          editUrl: "https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/docs/",
+          editLocalizedFiles: true
         },
         blog: false,
         theme: {
