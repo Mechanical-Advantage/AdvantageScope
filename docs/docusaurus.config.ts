@@ -21,7 +21,16 @@ const config: Config = {
 
   onBrokenLinks: "throw",
   markdown: {
-    hooks: { onBrokenMarkdownLinks: "throw", onBrokenMarkdownImages: "throw" }
+    hooks: { onBrokenMarkdownLinks: "throw", onBrokenMarkdownImages: "throw" },
+    mdx1Compat: {
+      comments: true,
+      admonitions: true,
+      headingIds: true
+    }
+  },
+  future: {
+    v4: true,
+    faster: true
   },
 
   // Even if you don't use internationalization, you can use this field to set
@@ -41,6 +50,7 @@ const config: Config = {
           sidebarPath: "./sidebars.ts",
           sidebarCollapsed: true
         },
+        blog: false,
         theme: {
           customCss: "./src/css/custom.css"
         }
