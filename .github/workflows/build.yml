@@ -491,7 +491,12 @@ jobs:
           ASCOPE_DISTRIBUTION: WPILIB
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Generate file associations
-        run: node generateFileAssociations.mjs dist/win*
+        run: |
+          if ("${{ matrix.arch }}" -eq "arm64") {
+            node generateFileAssociations.mjs dist/win-arm64-unpacked
+          } else {
+            node generateFileAssociations.mjs dist/win-unpacked
+          }
       - name: Prepare artifact
         run: |
           Set-Location -Path "dist\win*"
