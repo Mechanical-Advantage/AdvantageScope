@@ -101,7 +101,7 @@ export default class SourceList {
     this.CLEAR_BUTTON.title = "Clear all fields";
     let clearButton = document.createElement("img");
     this.CLEAR_BUTTON.appendChild(clearButton);
-    clearButton.src = "symbols/trash.fill.svg";
+    clearButton.src = "symbols/delete.svg";
     this.CLEAR_BUTTON.hidden = editButtonCallback !== undefined;
 
     this.HELP_BUTTON = document.createElement("button");

@@ -67,7 +67,7 @@ const StatisticsController_Config: SourceListConfig = {
     {
       key: "absoluteError",
       display: "Absolute Error",
-      symbol: "arrow.down.to.line",
+      symbol: "verticalalignbottom",
       showInTypeName: true,
       color: "color",
       sourceTypes: ["Number"],
