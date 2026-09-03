@@ -1016,6 +1016,7 @@ units:
     current: "التيار"
     power: "القدرة"
     energy: "الطاقة"
+    ratio: "النسبة"
     none: "لا شيء"
 
   names:
@@ -1086,6 +1087,8 @@ units:
     wattHours: "واط ساعة"
     calories: "سعرات حرارية"
     potatoes: "بطاطس"
+    ratio: "نسبة"
+    percent: "نسبة مئوية"
 
   values:
     meters: "{{value}} م"
@@ -1305,6 +1308,8 @@ units:
     potatoes_few: "{{value}} حبات بطاطس"
     potatoes_many: "{{value}} حبة بطاطس"
     potatoes_other: "{{value}} بطاطس"
+    ratio: "{{value}}"
+    percent: "{{value}}%"
 
     metersSeconds: "{{value}} م·ث"
     inchesSeconds_zero: "{{value}} بوصة·ث"
@@ -1541,3 +1546,7 @@ units:
     potatoesSeconds_few: "{{value}} حبات بطاطس·ث"
     potatoesSeconds_many: "{{value}} حبة بطاطس·ث"
     potatoesSeconds_other: "{{value}} بطاطس·ث"
+    ratioPerSecond: "{{value}} 1/ث"
+    ratioSeconds: "{{value}} ث"
+    percentPerSecond: "{{value}}%/ث"
+    percentSeconds: "{{value}}%·ث"

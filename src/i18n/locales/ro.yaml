@@ -981,6 +981,7 @@ units:
     current: "Curent"
     power: "Putere"
     energy: "Energie"
+    ratio: "Raport"
     none: "Niciunul"
 
   names:
@@ -1051,6 +1052,8 @@ units:
     wattHours: "Wați-oră"
     calories: "Calorii"
     potatoes: "Cartofi"
+    ratio: "Raport"
+    percent: "Procent"
 
   values:
     meters: "{{value}} m"
@@ -1124,6 +1127,8 @@ units:
     potatoes_one: "{{value}} cartof"
     potatoes_few: "{{value}} cartofi"
     potatoes_other: "{{value}} de cartofi"
+    ratio: "{{value}}"
+    percent: "{{value}}%"
 
     metersSeconds: "{{value}} m·s"
     inchesSeconds: "{{value}} in·s"
@@ -1233,3 +1238,7 @@ units:
     potatoesSeconds_one: "{{value}} cartof·s"
     potatoesSeconds_few: "{{value}} cartofi·s"
     potatoesSeconds_other: "{{value}} de cartofi·s"
+    ratioPerSecond: "{{value}} 1/s"
+    ratioSeconds: "{{value}} s"
+    percentPerSecond: "{{value}}%/s"
+    percentSeconds: "{{value}}%·s"

@@ -956,6 +956,7 @@ units:
     current: "电流"
     power: "功率"
     energy: "能量"
+    ratio: "比率"
     none: "无"
 
   names:
@@ -1026,6 +1027,8 @@ units:
     wattHours: "瓦特小时"
     calories: "卡路里"
     potatoes: "土豆"
+    ratio: "比率"
+    percent: "百分比"
 
   values:
     meters: "{{value}} 米"
@@ -1095,6 +1098,8 @@ units:
     wattHours: "{{value}} 瓦特小时"
     calories: "{{value}} 卡路里"
     potatoes: "{{value}} 个土豆"
+    ratio: "{{value}}"
+    percent: "{{value}}%"
     metersSeconds: "{{value}} 米·秒"
     inchesSeconds: "{{value}} 英寸·秒"
     millimetersPerSecond: "{{value}} 毫米/秒"
@@ -1195,3 +1200,7 @@ units:
     caloriesSeconds: "{{value}} 卡路里·秒"
     potatoesPerSecond: "{{value}} 个土豆/秒"
     potatoesSeconds: "{{value}} 个土豆·秒"
+    ratioPerSecond: "{{value}} 1/秒"
+    ratioSeconds: "{{value}} 秒"
+    percentPerSecond: "{{value}}%/秒"
+    percentSeconds: "{{value}}%·秒"

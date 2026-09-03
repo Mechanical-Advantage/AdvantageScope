@@ -969,6 +969,7 @@ units:
     current: "Corriente"
     power: "Potencia"
     energy: "Energía"
+    ratio: "Relación"
     none: "Ninguno"
 
   names:
@@ -1039,6 +1040,8 @@ units:
     wattHours: "Watt horas"
     calories: "Calorías"
     potatoes: "Papas"
+    ratio: "Relación"
+    percent: "Porcentaje"
 
   values:
     meters: "{{value}} m"
@@ -1115,6 +1118,8 @@ units:
     calories: "{{value}} cal"
     potatoes_one: "{{value}} papa"
     potatoes_other: "{{value}} papas"
+    ratio: "{{value}}"
+    percent: "{{value}}%"
 
     metersSeconds: "{{value}} m·s"
     inchesSeconds: "{{value}} pulg.·s"
@@ -1226,3 +1231,7 @@ units:
     potatoesPerSecond_other: "{{value}} papas/s"
     potatoesSeconds_one: "{{value}} papa·s"
     potatoesSeconds_other: "{{value}} papas·s"
+    ratioPerSecond: "{{value}} 1/s"
+    ratioSeconds: "{{value}} s"
+    percentPerSecond: "{{value}}%/s"
+    percentSeconds: "{{value}}%·s"

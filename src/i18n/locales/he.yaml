@@ -981,6 +981,7 @@ units:
     current: "זרם"
     power: "הספק"
     energy: "אנרגיה"
+    ratio: "יחס"
     none: "ללא"
 
   names:
@@ -1051,6 +1052,8 @@ units:
     wattHours: "וואט-שעה"
     calories: "קלוריות"
     potatoes: "תפוחי אדמה"
+    ratio: "יחס"
+    percent: "אחוז"
 
   values:
     meters: "{{value}} מ'"
@@ -1136,6 +1139,8 @@ units:
     potatoes_one: "{{value}} תפוח אדמה"
     potatoes_two: "{{value}} תפוחי אדמה"
     potatoes_other: "{{value}} תפוחי אדמה"
+    ratio: "{{value}}"
+    percent: "{{value}}%"
 
     metersSeconds: "{{value}} מ'·שנ'"
     inchesSeconds: "{{value}} אינץ'·שנ'"
@@ -1257,3 +1262,7 @@ units:
     potatoesSeconds_one: "{{value}} תפוח אדמה·שנ'"
     potatoesSeconds_two: "{{value}} תפוחי אדמה·שנ'"
     potatoesSeconds_other: "{{value}} תפוחי אדמה·שנ'"
+    ratioPerSecond: "{{value}} 1/שנ'"
+    ratioSeconds: "{{value}} שנ'"
+    percentPerSecond: "{{value}}%/שנ'"
+    percentSeconds: "{{value}}%·שנ'"

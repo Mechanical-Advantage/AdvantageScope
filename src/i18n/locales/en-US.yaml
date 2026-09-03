@@ -980,6 +980,7 @@ units:
     current: "Current"
     power: "Power"
     energy: "Energy"
+    ratio: "Ratio"
     none: "None" # Dropdown choice name for no unit type
 
   # Full names of units in dictionary form, displayed to the user in a dropdown. Always title case. Use a slash ("/") where applicable for compound units.
@@ -1051,8 +1052,10 @@ units:
     wattHours: "Watt Hours"
     calories: "Calories"
     potatoes: "Potatoes"
+    ratio: "Ratio"
+    percent: "Percent"
 
-  # Numeric values with units. Values with full unit names must include appropriate i18next keys to support pluralization (DO NOT match the original set of keys unless required, ALWAYS add or remove pluralization keys if needed). Always include a space between the value and symbol, except for ° (angles), ', and "
+  # Numeric values with units. Values with full unit names must include appropriate i18next keys to support pluralization (DO NOT match the original set of keys unless required, ALWAYS add or remove pluralization keys if needed). Always include a space between the value and symbol, except for %, ° (angles), ', and "
   values:
     meters: "{{value}} m"
     inches: '{{value}}"'
@@ -1122,6 +1125,8 @@ units:
     wattHours: "{{value}} Wh"
     calories: "{{value}} cal"
     potatoes: "{{value}} pot"
+    ratio: "{{value}}"
+    percent: "{{value}}%"
 
     # Additional differentiated and integrated units
     metersSeconds: "{{value}} m·s"
@@ -1226,3 +1231,7 @@ units:
     caloriesSeconds: "{{value}} cal·s"
     potatoesPerSecond: "{{value}} pot/s"
     potatoesSeconds: "{{value}} pot·s"
+    ratioPerSecond: "{{value}} 1/s"
+    ratioSeconds: "{{value}} s"
+    percentPerSecond: "{{value}}%/s"
+    percentSeconds: "{{value}}%·s"

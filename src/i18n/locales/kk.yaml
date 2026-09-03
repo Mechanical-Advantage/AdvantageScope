@@ -967,6 +967,7 @@ units:
     current: "Ток"
     power: "Қуат"
     energy: "Энергия"
+    ratio: "Қатынас"
     none: "Жоқ"
 
   names:
@@ -1037,6 +1038,8 @@ units:
     wattHours: "Ватт-сағат"
     calories: "Калория"
     potatoes: "Картоп"
+    ratio: "Қатынас"
+    percent: "Пайыз"
 
   values:
     meters: "{{value}} м"
@@ -1106,6 +1109,8 @@ units:
     wattHours: "{{value}} Вт·сағ"
     calories: "{{value}} кал"
     potatoes: "{{value}} карт"
+    ratio: "{{value}}"
+    percent: "{{value}}%"
 
     metersSeconds: "{{value}} м·с"
     inchesSeconds: "{{value}} дюйм·с"
@@ -1207,3 +1212,7 @@ units:
     caloriesSeconds: "{{value}} кал·с"
     potatoesPerSecond: "{{value}} карт/с"
     potatoesSeconds: "{{value}} карт·с"
+    ratioPerSecond: "{{value}} 1/с"
+    ratioSeconds: "{{value}} с"
+    percentPerSecond: "{{value}}%/с"
+    percentSeconds: "{{value}}%·с"

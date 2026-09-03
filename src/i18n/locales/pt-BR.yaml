@@ -968,6 +968,7 @@ units:
     current: "Corrente"
     power: "Potência"
     energy: "Energia"
+    ratio: "Proporção"
     none: "Nenhum"
 
   names:
@@ -1038,6 +1039,8 @@ units:
     wattHours: "Watt-hora"
     calories: "Calorias"
     potatoes: "Batatas"
+    ratio: "Proporção"
+    percent: "Porcentagem"
 
   values:
     meters: "{{value}} m"
@@ -1116,6 +1119,8 @@ units:
     wattHours: "{{value}} Wh"
     calories: "{{value}} cal"
     potatoes: "{{value}} bat"
+    ratio: "{{value}}"
+    percent: "{{value}}%"
 
     metersSeconds: "{{value}} m·s"
     inchesSeconds_one: "{{value}} polegada·s"
@@ -1227,3 +1232,7 @@ units:
     caloriesSeconds: "{{value}} cal·s"
     potatoesPerSecond: "{{value}} bat/s"
     potatoesSeconds: "{{value}} bat·s"
+    ratioPerSecond: "{{value}} 1/s"
+    ratioSeconds: "{{value}} s"
+    percentPerSecond: "{{value}}%/s"
+    percentSeconds: "{{value}}%·s"

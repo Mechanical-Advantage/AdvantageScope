@@ -969,6 +969,7 @@ units:
     current: "Courant"
     power: "Puissance"
     energy: "Énergie"
+    ratio: "Rapport"
     none: "Aucune"
 
   names:
@@ -1039,6 +1040,8 @@ units:
     wattHours: "Wattheures"
     calories: "Calories"
     potatoes: "Patates"
+    ratio: "Rapport"
+    percent: "Pourcentage"
 
   values:
     meters: "{{value}} m"
@@ -1110,6 +1113,8 @@ units:
     calories: "{{value}} cal"
     potatoes_one: "{{value}} patate"
     potatoes_other: "{{value}} patates"
+    ratio: "{{value}}"
+    percent: "{{value}}%"
 
     metersSeconds: "{{value}} m·s"
     inchesSeconds: "{{value}} po·s"
@@ -1215,3 +1220,7 @@ units:
     potatoesPerSecond_other: "{{value}} patates/s"
     potatoesSeconds_one: "{{value}} patate·s"
     potatoesSeconds_other: "{{value}} patates·s"
+    ratioPerSecond: "{{value}} 1/s"
+    ratioSeconds: "{{value}} s"
+    percentPerSecond: "{{value}}%/s"
+    percentSeconds: "{{value}}%·s"

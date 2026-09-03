@@ -993,6 +993,7 @@ units:
     current: "Ток"
     power: "Мощность"
     energy: "Энергия"
+    ratio: "Отношение"
     none: "Нет"
 
   names:
@@ -1063,6 +1064,8 @@ units:
     wattHours: "Ватт-часы"
     calories: "Калории"
     potatoes: "Картофелины"
+    ratio: "Отношение"
+    percent: "Проценты"
 
   values:
     meters: "{{value}} м"
@@ -1195,6 +1198,8 @@ units:
     potatoes_few: "{{value}} картофелины"
     potatoes_many: "{{value}} картофелин"
     potatoes_other: "{{value}} картофелины"
+    ratio: "{{value}}"
+    percent: "{{value}}%"
 
     metersSeconds: "{{value}} м·с"
     inchesSeconds_one: "{{value}} дюйм·с"
@@ -1374,3 +1379,7 @@ units:
     potatoesSeconds_few: "{{value}} картофелины·с"
     potatoesSeconds_many: "{{value}} картофелин·с"
     potatoesSeconds_other: "{{value}} картофелины·с"
+    ratioPerSecond: "{{value}} 1/с"
+    ratioSeconds: "{{value}} с"
+    percentPerSecond: "{{value}}%/с"
+    percentSeconds: "{{value}}%·с"

@@ -561,6 +561,16 @@ export namespace Units {
         names: ["mhz", "megahertz"]
       }
     },
+    ratio: {
+      ratio: {
+        value: 1,
+        names: ["ratio", "ratios", "fraction", "proportion", "duty cycle", "dutycycle"]
+      },
+      percent: {
+        value: 100,
+        names: ["%", "pct", "pcts", "percent", "percentage", "percents", "percentages"]
+      }
+    },
     temperature: {
       celsius: {
         value: 1,

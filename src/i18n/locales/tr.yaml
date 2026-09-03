@@ -960,6 +960,7 @@ units:
     current: "Akım"
     power: "Güç"
     energy: "Enerji"
+    ratio: "Oran"
     none: "Yok"
 
   names:
@@ -1030,6 +1031,8 @@ units:
     wattHours: "Watt saat"
     calories: "Kalori"
     potatoes: "Patates"
+    ratio: "Oran"
+    percent: "Yüzde"
 
   values:
     meters: "{{value}} m"
@@ -1099,6 +1102,8 @@ units:
     wattHours: "{{value}} Wh"
     calories: "{{value}} cal"
     potatoes: "{{value}} patates"
+    ratio: "{{value}}"
+    percent: "{{value}}%"
 
     metersSeconds: "{{value}} m·s"
     inchesSeconds: "{{value}} inç·s"
@@ -1200,3 +1205,7 @@ units:
     caloriesSeconds: "{{value}} cal·s"
     potatoesPerSecond: "{{value}} patates/s"
     potatoesSeconds: "{{value}} patates·s"
+    ratioPerSecond: "{{value}} 1/s"
+    ratioSeconds: "{{value}} s"
+    percentPerSecond: "{{value}}%/s"
+    percentSeconds: "{{value}}%·s"
