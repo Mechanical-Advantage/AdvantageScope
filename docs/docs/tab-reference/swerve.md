@@ -49,14 +49,9 @@ SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
   new SwerveModuleVelocity(),
   new SwerveModuleVelocity(),
   new SwerveModuleVelocity()
-}
+};
 
-StructArrayPublisher<SwerveModuleVelocity> publisher = NetworkTableInstance.getDefault()
-.getStructArrayTopic("MyStates", SwerveModuleVelocity.struct).publish();
-
-periodic() {
-  publisher.set(states);
-}
+Telemetry.log("MyStates", states);
 ```
 
 </TabItem>

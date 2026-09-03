@@ -49,20 +49,9 @@ Many libraries support the struct format, including WPILib and AdvantageKit. The
 Pose2d poseA = new Pose2d();
 Pose2d poseB = new Pose2d();
 
-StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
-  .getStructTopic("MyPose", Pose2d.struct).publish();
-StructArrayPublisher<Pose2d> arrayPublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
-
-periodic() {
-  publisher.set(poseA);
-  arrayPublisher.set(new Pose2d[] {poseA, poseB});
-}
+Telemetry.log("MyPose", poseA);
+Telemetry.log("MyPoseArray", new Pose2d[] {poseA, poseB});
 ```
-
-:::tip
-WPILib's [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) class can also be used to log several sets of 2D pose data together.
-:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
