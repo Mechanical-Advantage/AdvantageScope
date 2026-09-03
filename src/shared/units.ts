@@ -731,6 +731,20 @@ export namespace Units {
         pluralizeSuffix: false,
         names: ["pot", "potato", "potatoes"]
       }
+    },
+    ratio: {
+      ratio: {
+        value: 1,
+        suffix: "",
+        pluralizeSuffix: false,
+        names: ["ratio", "ratios", "fraction", "proportion", "duty cycle", "dutycycle"]
+      },
+      percent: {
+        value: 100,
+        suffix: "%",
+        pluralizeSuffix: false,
+        names: ["%", "pct", "pcts", "percent", "percentage", "percents", "percentages"]
+      }
     }
   };
 
