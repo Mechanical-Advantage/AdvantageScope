@@ -443,14 +443,17 @@ export default class LineGraphRenderer implements TabRenderer {
             break;
 
           case "points":
-            let radius = field.size === "normal" ? 1 : 2;
+            let deltaX = graphWidth / Math.max(1, field.timestamps.length - 1);
+            console.log(deltaX);
+            let radius = clampValue(Math.log(deltaX * 3.0), 1.0, 5.0);
+            context.beginPath();
             for (let i = 0; i < field.timestamps.length; i++) {
               let x = xScaler.calculate(field.timestamps[i]);
               let y = yScaler.calculate(field.values[i]);
-              context.beginPath();
+              context.moveTo(x + radius, y);
               context.arc(x, y, radius, 0, Math.PI * 2);
-              context.fill();
             }
+            context.fill();
             break;
         }
       });
