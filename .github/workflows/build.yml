@@ -309,9 +309,9 @@ jobs:
       - name: Build documentation
         run: npm run docs:build-embed
       - name: Load Windows signing credentials
-        # if: |
-        #   github.repository == 'Mechanical-Advantage/AdvantageScope' &&
-        #   github.event_name == 'release'
+        if: |
+          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
+          github.event_name == 'release'
         shell: bash
         run: |
           echo "AZURE_TENANT_ID=${{ secrets.AZURE_SIGNING_TENANT_ID }}" >> $GITHUB_ENV
@@ -369,17 +369,17 @@ jobs:
       - name: Build documentation
         run: npm run docs:build-embed
       - name: Load macOS certificate
-        # if: |
-        #   github.repository == 'Mechanical-Advantage/AdvantageScope' &&
-        #   github.event_name != 'pull_request'
+        if: |
+          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
+          github.event_name != 'pull_request'
         uses: apple-actions/import-codesign-certs@v7
         with:
           p12-file-base64: ${{ secrets.APPLE_DEVELOPER_ID }}
           p12-password: ${{ secrets.APPLE_DEVELOPER_ID_PWD }}
       - name: Load macOS notarization credentials
-        # if: |
-        #   github.repository == 'Mechanical-Advantage/AdvantageScope' &&
-        #   github.event_name == 'release'
+        if: |
+          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
+          github.event_name == 'release'
         run: |
           echo "${{ secrets.APPLE_NOTARIZATION_API_KEY }}" | base64 --decode > apple_api_key.p8
           echo "APPLE_API_KEY=$PWD/apple_api_key.p8" >> $GITHUB_ENV
@@ -503,9 +503,9 @@ jobs:
       - name: Build documentation
         run: npm run docs:build-embed
       - name: Load Windows signing credentials
-        # if: |
-        #   github.repository == 'Mechanical-Advantage/AdvantageScope' &&
-        #   github.event_name == 'release'
+        if: |
+          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
+          github.event_name == 'release'
         shell: bash
         run: |
           echo "AZURE_TENANT_ID=${{ secrets.AZURE_SIGNING_TENANT_ID }}" >> $GITHUB_ENV
@@ -566,17 +566,17 @@ jobs:
       - name: Build documentation
         run: npm run docs:build-embed
       - name: Load macOS certificate
-        # if: |
-        #   github.repository == 'Mechanical-Advantage/AdvantageScope' &&
-        #   github.event_name != 'pull_request'
+        if: |
+          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
+          github.event_name != 'pull_request'
         uses: apple-actions/import-codesign-certs@v7
         with:
           p12-file-base64: ${{ secrets.APPLE_DEVELOPER_ID }}
           p12-password: ${{ secrets.APPLE_DEVELOPER_ID_PWD }}
       - name: Load macOS notarization credentials
-        # if: |
-        #   github.repository == 'Mechanical-Advantage/AdvantageScope' &&
-        #   github.event_name == 'release'
+        if: |
+          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
+          github.event_name == 'release'
         run: |
           echo "${{ secrets.APPLE_NOTARIZATION_API_KEY }}" | base64 --decode > apple_api_key.p8
           echo "APPLE_API_KEY=$PWD/apple_api_key.p8" >> $GITHUB_ENV
