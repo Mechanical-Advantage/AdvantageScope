@@ -383,6 +383,7 @@ export default class Field2dRenderer implements TabRenderer {
         let sy = ((drawT - imgDy) / imgDh) * this.IMAGE.height;
         let sWidth = ((drawR - drawL) / imgDw) * this.IMAGE.width;
         let sHeight = ((drawB - drawT) / imgDh) * this.IMAGE.height;
+        context.imageSmoothingEnabled = false;
         context.drawImage(this.IMAGE, sx, sy, sWidth, sHeight, drawL, drawT, drawR - drawL, drawB - drawT);
       }
     }
