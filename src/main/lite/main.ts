@@ -1225,7 +1225,7 @@ async function handleHubMessage(message: NamedMessage) {
           },
           {
             content:
-              (selectedIndex === Field2dCameraMode.RobotAndRotation ? "\u2714 " : "") + "Locked to Robot && Rotation",
+              (selectedIndex === Field2dCameraMode.RobotAndRotation ? "\u2714 " : "") + "Locked to Robot & Rotation",
             callback() {
               sendMessage(hubPort, "set-2d-camera", Field2dCameraMode.RobotAndRotation);
             }
