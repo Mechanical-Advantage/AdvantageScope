@@ -24,6 +24,16 @@ To zoom, place the cursor over the timeline and scroll up or down. A range can a
 
 </details>
 
+## Camera Controls
+
+Scroll up and down over the field to zoom in and out. Click and drag to pan across the field. Right-click anywhere on the field to open the camera menu with the following options:
+
+- **Unlocked**: Pan and zoom are manual.
+- **Locked to Robot**: The camera automatically pans to track the robot.
+- **Locked to Robot & Rotation**: The camera automatically pans and rotates to track the robot and its rotation.
+
+In either locked mode, the camera can be freely panned away from the robot. The orientation buttons in the control pane can be used to rotate the camera in any mode.
+
 ## Adding Objects
 
 To get started, drag a field to the "Poses" section. Delete an object using the X button, or hide it temporarily by clicking the eye icon or double-clicking the field name. To remove all objects, click the trash can near the axis title and then `Clear All`. Objects can be rearranged in the list by clicking and dragging.
@@ -49,20 +59,9 @@ Many libraries support the struct format, including WPILib and AdvantageKit. The
 Pose2d poseA = new Pose2d();
 Pose2d poseB = new Pose2d();
 
-StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
-  .getStructTopic("MyPose", Pose2d.struct).publish();
-StructArrayPublisher<Pose2d> arrayPublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
-
-periodic() {
-  publisher.set(poseA);
-  arrayPublisher.set(new Pose2d[] {poseA, poseB});
-}
+Telemetry.log("MyPose", poseA);
+Telemetry.log("MyPoseArray", new Pose2d[] {poseA, poseB});
 ```
-
-:::tip
-WPILib's [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) class can also be used to log several sets of 2D pose data together.
-:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">

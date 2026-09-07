@@ -181,7 +181,9 @@ export default class VideoController implements TabController {
       if (
         root === null ||
         root.hidden ||
-        event.target !== document.body ||
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement ||
+        (event.target instanceof HTMLElement && event.target.isContentEditable) ||
         (window.platform === "darwin" ? event.metaKey : event.ctrlKey)
       )
         return;
