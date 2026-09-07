@@ -323,6 +323,7 @@ jobs:
         run: npx electron-builder build --${{ matrix.arch }} --publish never ${{ env.WIN_SIGN_ARGS }}
         env:
           NODE_OPTIONS: --max-old-space-size=4096
+          ELECTRON_BUILDER_7Z_FILTER: BCJ
       - name: Prepare artifact
         run: |
           Move-Item -Path "dist\AdvantageScope*.exe" -Destination "advantagescope-win-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.exe"

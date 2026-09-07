@@ -26,7 +26,7 @@
     "docs:build-embed": "cd docs && npm run build-embed && cd ..",
     "docs:clear": "cd docs && npm run clear && cd ..",
     "docs:serve": "cd docs && npm run serve && cd ..",
-    "postinstall": "cd docs && npm install && cd .. && node getLicenses.mjs && node tesseractLangDownload.mjs && node bundleLiteAssets.mjs && npm run download-owlet && patch-package"
+    "postinstall": "cd docs && npm install && cd .. && node getLicenses.mjs && node tesseractLangDownload.mjs && node bundleLiteAssets.mjs && npm run download-owlet"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.26.0",
@@ -59,7 +59,6 @@
     "heatmap.js": "github:jwbonner/heatmap.js#24b4455c95f5e54cb50ab8bb06f9229d30426362",
     "license-check-and-add": "^4.0.5",
     "mathjs": "11.3.0",
-    "patch-package": "^8.0.1",
     "prettier": "3.0.3",
     "prettier-plugin-organize-imports": "^4.0.0",
     "protobufjs": "^8.3.0",
