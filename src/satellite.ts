@@ -226,7 +226,13 @@ window.addEventListener("beforeunload", () => {
 });
 
 window.addEventListener("keydown", (event) => {
-  if (event.target !== document.body) return;
+  if (
+    event.target instanceof HTMLInputElement ||
+    event.target instanceof HTMLTextAreaElement ||
+    (event.target instanceof HTMLElement && event.target.isContentEditable)
+  ) {
+    return;
+  }
   switch (event.code) {
     case "Space":
       event.preventDefault();
