@@ -309,7 +309,9 @@ jobs:
       - name: Build documentation
         run: npm run docs:build-embed
       - name: Load Windows signing credentials
-        if: github.event_name == 'release'
+        if: |
+          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
+          github.event_name == 'release'
         run: |
           echo "AZURE_TENANT_ID=${{ secrets.AZURE_SIGNING_TENANT_ID }}" >> $env:GITHUB_ENV
           echo "AZURE_CLIENT_ID=${{ secrets.AZURE_SIGNING_CLIENT_ID }}" >> $env:GITHUB_ENV
@@ -364,7 +366,9 @@ jobs:
           echo "CSC_LINK=${{ secrets.APPLE_DEVELOPER_ID }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.APPLE_DEVELOPER_ID_PWD }}" >> $GITHUB_ENV
       - name: Load macOS notarization credentials
-        if: github.event_name == 'release'
+        if: |
+          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
+          github.event_name == 'release'
         run: |
           echo "APPLE_API_KEY=${{ secrets.APPLE_NOTARIZATION_API_KEY }}" >> $GITHUB_ENV
           echo "APPLE_API_KEY_ID=${{ secrets.APPLE_NOTARIZATION_API_KEY_ID }}" >> $GITHUB_ENV
@@ -494,7 +498,9 @@ jobs:
       - name: Build documentation
         run: npm run docs:build-embed
       - name: Load Windows signing credentials
-        if: github.event_name == 'release'
+        if: |
+          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
+          github.event_name == 'release'
         run: |
           echo "AZURE_TENANT_ID=${{ secrets.AZURE_SIGNING_TENANT_ID }}" >> $env:GITHUB_ENV
           echo "AZURE_CLIENT_ID=${{ secrets.AZURE_SIGNING_CLIENT_ID }}" >> $env:GITHUB_ENV
@@ -553,7 +559,9 @@ jobs:
           echo "CSC_LINK=${{ secrets.APPLE_DEVELOPER_ID }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.APPLE_DEVELOPER_ID_PWD }}" >> $GITHUB_ENV
       - name: Load macOS notarization credentials
-        if: github.event_name == 'release'
+        if: |
+          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
+          github.event_name == 'release'
         run: |
           echo "APPLE_API_KEY=${{ secrets.APPLE_NOTARIZATION_API_KEY }}" >> $GITHUB_ENV
           echo "APPLE_API_KEY_ID=${{ secrets.APPLE_NOTARIZATION_API_KEY_ID }}" >> $GITHUB_ENV
