@@ -182,6 +182,12 @@ window.addEventListener("message", (event) => {
           }
           break;
 
+        case "set-2d-camera":
+          if (type === TabType.Field2d) {
+            (renderer as Field2dRenderer).set2DCamera(message.data);
+          }
+          break;
+
         case "edit-fov":
           if (type === TabType.Field3d) {
             (renderer as Field3dRenderer).setFov(message.data);
@@ -212,7 +218,7 @@ function processAspectRatio(aspectRatio: number | null) {
       if (aspectRatio > MAX_ASPECT_RATIO) aspectRatio = MAX_ASPECT_RATIO;
       if (aspectRatio < 1 / MAX_ASPECT_RATIO) aspectRatio = 1 / MAX_ASPECT_RATIO;
     }
-    window.sendMainMessage("set-aspect-ratio", aspectRatio);
+    window.sendMainMessage("set-aspect-ratio", { aspectRatio, lock: type !== TabType.Field2d });
   }
 }
 
@@ -227,7 +233,13 @@ window.addEventListener("beforeunload", () => {
 });
 
 window.addEventListener("keydown", (event) => {
-  if (event.target !== document.body) return;
+  if (
+    event.target instanceof HTMLInputElement ||
+    event.target instanceof HTMLTextAreaElement ||
+    (event.target instanceof HTMLElement && event.target.isContentEditable)
+  ) {
+    return;
+  }
   if (event.code === "Space") {
     event.preventDefault();
     window.selection.togglePlayback();

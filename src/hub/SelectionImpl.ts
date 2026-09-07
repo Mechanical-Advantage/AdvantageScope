@@ -60,7 +60,13 @@ export default class SelectionImpl implements Selection {
     });
 
     window.addEventListener("keydown", (event) => {
-      if (event.target !== document.body && event.target !== window) return;
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement ||
+        (event.target instanceof HTMLElement && event.target.isContentEditable)
+      ) {
+        return;
+      }
 
       if (event.code === "Space") {
         event.preventDefault();

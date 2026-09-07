@@ -176,7 +176,14 @@ export default class VideoController implements TabController {
     this.SKIP_BACK_BUTTON.addEventListener("click", () => skipTime(-5));
     this.SKIP_FORWARD_BUTTON.addEventListener("click", () => skipTime(5));
     window.addEventListener("keydown", (event) => {
-      if (root === null || root.hidden || event.target !== document.body || KeyboardUtil.isPrimaryModifier(event))
+      if (
+        root === null ||
+        root.hidden ||
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement ||
+        (event.target instanceof HTMLElement && event.target.isContentEditable) ||
+        KeyboardUtil.isPrimaryModifier(event)
+      )
         return;
 
       if (event.code === "ArrowUp" || event.code === "ArrowDown") {

@@ -280,12 +280,24 @@ export default class Field3dRendererImpl implements TabRenderer {
     // Create key bindings
     window.addEventListener("keydown", (event) => {
       if (KeyboardUtil.isPrimaryModifier(event)) return;
-      if (event.target !== document.body && event.target !== window) return;
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement ||
+        (event.target instanceof HTMLElement && event.target.isContentEditable)
+      ) {
+        return;
+      }
       if (canvasContainer.clientHeight === 0) return;
       this.keysPressed.add(event.code);
     });
     window.addEventListener("keyup", (event) => {
-      if (event.target !== document.body && event.target !== window) return;
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement ||
+        (event.target instanceof HTMLElement && event.target.isContentEditable)
+      ) {
+        return;
+      }
       this.keysPressed.delete(event.code);
     });
   }

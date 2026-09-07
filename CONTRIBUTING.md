@@ -118,6 +118,40 @@ npm run build -- --mac
 npm run build -- --linux
 ```
 
+## Signing & Notarization
+
+Windows, macOS, and iOS releases of AdvantageScope are signed by Littleton Robotics when distributing to users. Certificates are _not_ required for local development on Windows and macOS. See the section below on [iOS development](#ios-development) for details on AdvantageScope XR. Not all AdvantageScope development artifacts are signed in CI; please check the matrix below for details.
+
+| Platform | Release               | Upstream Push | Pull Requests & Forks |
+| -------- | --------------------- | ------------- | --------------------- |
+| Windows  | ✅ Signed             | ❌ Not Signed | ❌ Not Signed         |
+| macOS    | ✅ Signed & Notarized | ✅ Signed     | ❌ Not Signed         |
+| iOS      | ✅ Signed (App Store) | ❌ Not Signed | ❌ Not Signed         |
+
+## iOS Development
+
+AdvantageScope XR is located in the `xr/` directory and contains two targets in `xr/AdvantageScopeXR.xcodeproj`: `AdvantageScopeXR` (the full iOS/iPadOS app) and `AdvantageScopeXRClip` (the App Clip).
+
+### Testing in the iOS Simulator
+
+ARKit requires physical hardware, but the UI can be tested in the simulator. Simulator builds do not require code signing.
+
+1. Open `xr/AdvantageScopeXR.xcodeproj` in Xcode.
+2. Select the `AdvantageScopeXR` scheme and choose an iOS Simulator target (iPhone/iPad).
+3. Build and run.
+
+### Testing on a Physical iOS Device
+
+Free Apple Developer accounts (Personal Teams) cannot sign App Clip entitlements. To test on a physical device using a free account:
+
+1. In Xcode, select the `AdvantageScopeXR` project > `AdvantageScopeXR` target > `Signing & Capabilities`.
+2. Change the team to your personal Apple ID team and update the bundle identifier to a unique prefix (e.g., `com.<username>.advantagescopexr`).
+3. In the `AdvantageScopeXR` target > `Build Phases`:
+   - Under `Dependencies`, remove `AdvantageScopeXRClip`.
+   - Under `Embed App Clips`, remove `AdvantageScopeXRClip.app` (or delete the build phase).
+4. On your iOS device, enable developer (`Settings` > `Privacy & Security` > `Developer Mode`) and trust your developer certificate (`Settings` > `General` > `VPN & Device Management`).
+5. Build and run the app on your device using Xcode.
+
 ## Bundled Assets
 
 AdvantageScope assets are stored in multiple locations:
