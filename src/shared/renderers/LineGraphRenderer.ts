@@ -97,23 +97,26 @@ export default class LineGraphRenderer implements TabRenderer {
     this.HELP_OVERLAY = root.getElementsByClassName("line-graph-help")[0] as HTMLElement;
 
     // Scroll handling
-    this.scrollSensor = new ScrollSensor(this.SCROLL_OVERLAY, (dx: number, dy: number) => {
-      if (root.hidden) return;
-      window.selection.applyTimelineScroll(dx, dy, this.SCROLL_OVERLAY.clientWidth);
+    this.scrollSensor = new ScrollSensor(
+      this.SCROLL_OVERLAY,
+      (dx: number, dy: number, isPan: boolean, _cursorX: number, _cursorY: number) => {
+        if (root.hidden) return;
+        window.selection.applyTimelineScroll(dx, isPan ? 0 : dy, this.SCROLL_OVERLAY.clientWidth);
 
-      if (window.preferences && !window.preferences.hasScrolledLineGraph && !this.isFadingOut) {
-        if (dy < 0) {
-          this.zoomInAccumulator += dy;
-          if (this.zoomInAccumulator <= -200) {
-            this.isFadingOut = true;
-            this.HELP_OVERLAY.classList.add("fading-out");
-            setTimeout(() => {
-              window.sendMainMessage("update-preferences", { hasScrolledLineGraph: true });
-            }, 1000);
+        if (window.preferences && !window.preferences.hasScrolledLineGraph && !this.isFadingOut) {
+          if (dy < 0) {
+            this.zoomInAccumulator += dy;
+            if (this.zoomInAccumulator <= -200) {
+              this.isFadingOut = true;
+              this.HELP_OVERLAY.classList.add("fading-out");
+              setTimeout(() => {
+                window.sendMainMessage("update-preferences", { hasScrolledLineGraph: true });
+              }, 1000);
+            }
           }
         }
       }
-    });
+    );
   }
 
   getAspectRatio(): number | null {

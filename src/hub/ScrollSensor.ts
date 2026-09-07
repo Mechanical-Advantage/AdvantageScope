@@ -10,7 +10,7 @@ export default class ScrollSensor {
   private RESET_MS = 1000;
 
   private container: HTMLElement;
-  private callback: (x: number, y: number) => void;
+  private callback: (dx: number, dy: number, isPan: boolean, cursorX: number, cursorY: number) => void;
 
   private lastScrollUpdate = 0;
   private resetNext = false;
@@ -19,13 +19,22 @@ export default class ScrollSensor {
 
   private panActive = false;
   private panLastCursorX = 0;
+  private panLastCursorY = 0;
+
+  private lastCursorX = 0;
+  private lastCursorY = 0;
 
   /**
    * Creates a new ScrollSensor.
    * @param container The container element. The overflow should be "scroll" and the scrollbar should be hidden. The child element should have the dimensions 1000000x1000000px.
    * @param callback A function to be called after each scroll event, with the relative change in x and y.
+   * @param mouseControl The mouse control mode for drag-panning.
    */
-  constructor(container: HTMLElement, callback: (dx: number, dy: number) => void, enableMouseControls = true) {
+  constructor(
+    container: HTMLElement,
+    callback: (dx: number, dy: number, isPan: boolean, cursorX: number, cursorY: number) => void,
+    mouseControl: ScrollSensorMouseControl = ScrollSensorMouseControl.PanX
+  ) {
     this.container = container;
     this.callback = callback;
 
@@ -35,13 +44,22 @@ export default class ScrollSensor {
       this.update();
     });
 
+    // Prevent capturing spacebar
+    this.container.addEventListener("keydown", (event) => {
+      if (event.code === "Space") {
+        event.preventDefault();
+      }
+    });
+
     // Mouse controls
-    if (enableMouseControls) {
+    if (mouseControl !== ScrollSensorMouseControl.None) {
       container.addEventListener("mousedown", (event) => {
         if (event.shiftKey) return;
         this.panActive = true;
         let x = event.clientX - container.getBoundingClientRect().x;
+        let y = event.clientY - container.getBoundingClientRect().y;
         this.panLastCursorX = x;
+        this.panLastCursorY = y;
       });
       container.addEventListener("mouseleave", () => {
         this.panActive = false;
@@ -50,10 +68,17 @@ export default class ScrollSensor {
         this.panActive = false;
       });
       container.addEventListener("mousemove", (event) => {
+        let cursorX = event.clientX - container.getBoundingClientRect().x;
+        let cursorY = event.clientY - container.getBoundingClientRect().y;
+        this.lastCursorX = cursorX;
+        this.lastCursorY = cursorY;
+
         if (this.panActive) {
-          let cursorX = event.clientX - container.getBoundingClientRect().x;
-          callback(this.panLastCursorX - cursorX, 0);
+          let dx = this.panLastCursorX - cursorX;
+          let dy = mouseControl === ScrollSensorMouseControl.PanXY ? this.panLastCursorY - cursorY : 0;
+          callback(dx, dy, true, cursorX, cursorY);
           this.panLastCursorX = cursorX;
+          this.panLastCursorY = cursorY;
         }
       });
     }
@@ -89,7 +114,7 @@ export default class ScrollSensor {
     let dy = this.container.scrollTop - this.lastScrollTop;
     this.lastScrollLeft = this.container.scrollLeft;
     this.lastScrollTop = this.container.scrollTop;
-    this.callback(dx, dy);
+    this.callback(dx, dy, false, this.lastCursorX, this.lastCursorY);
   }
 
   /** Moves the scroll position to the center. */
@@ -100,4 +125,10 @@ export default class ScrollSensor {
     this.lastScrollLeft = middle;
     this.lastScrollTop = middle;
   }
+}
+
+export enum ScrollSensorMouseControl {
+  None,
+  PanX,
+  PanXY
 }
