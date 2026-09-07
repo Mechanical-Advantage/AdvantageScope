@@ -358,6 +358,13 @@ jobs:
         run: npm ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Download bundles
+        uses: actions/download-artifact@v8
+        with:
+          name: bundles
+          path: bundles
+      - name: Build documentation
+        run: npm run docs:build-embed
       - name: Load macOS certificate
         if: |
           github.repository == 'Mechanical-Advantage/AdvantageScope' &&
@@ -374,13 +381,6 @@ jobs:
           echo "APPLE_API_KEY_ID=${{ secrets.APPLE_NOTARIZATION_API_KEY_ID }}" >> $GITHUB_ENV
           echo "APPLE_API_ISSUER=${{ secrets.APPLE_NOTARIZATION_API_ISSUER }}" >> $GITHUB_ENV
           echo "APPLE_TEAM_ID=${{ secrets.APPLE_TEAM_ID }}" >> $GITHUB_ENV
-      - name: Download bundles
-        uses: actions/download-artifact@v8
-        with:
-          name: bundles
-          path: bundles
-      - name: Build documentation
-        run: npm run docs:build-embed
       - name: Build app
         run: npx electron-builder build --${{ matrix.arch }} --publish never
         env:
@@ -551,6 +551,13 @@ jobs:
         run: npm ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Download bundles
+        uses: actions/download-artifact@v8
+        with:
+          name: bundles-wpilib
+          path: bundles
+      - name: Build documentation
+        run: npm run docs:build-embed
       - name: Load macOS certificate
         if: |
           github.repository == 'Mechanical-Advantage/AdvantageScope' &&
@@ -567,13 +574,6 @@ jobs:
           echo "APPLE_API_KEY_ID=${{ secrets.APPLE_NOTARIZATION_API_KEY_ID }}" >> $GITHUB_ENV
           echo "APPLE_API_ISSUER=${{ secrets.APPLE_NOTARIZATION_API_ISSUER }}" >> $GITHUB_ENV
           echo "APPLE_TEAM_ID=${{ secrets.APPLE_TEAM_ID }}" >> $GITHUB_ENV
-      - name: Download bundles
-        uses: actions/download-artifact@v8
-        with:
-          name: bundles-wpilib
-          path: bundles
-      - name: Build documentation
-        run: npm run docs:build-embed
       - name: Build app
         run: npx electron-builder build --publish never --${{ matrix.arch }} -m dir
         env:
