@@ -25,22 +25,22 @@ export const offlineInfoAnnouncement: Record<string, string> = {
 
 export const localizationFeedbackAnnouncement: Record<string, string> = {
   "en-US":
-    "The English version of the AdvantageScope documentation is created with the support of AI. Click the link in the title bar to give us feedback.",
+    "Click the link in the title bar to give us feedback on the English version of the AdvantageScope documentation.",
   "es-419":
-    "La versión en español de la documentación de AdvantageScope se ha creado con el apoyo de IA. Haz clic en el enlace de la barra de título para darnos tu opinión.",
-  fr: "La version française de la documentation d'AdvantageScope est créée avec le soutien de l'IA. Cliquez sur le lien dans la barre de titre pour nous faire part de vos commentaires.",
-  nl: "De Nederlandse versie van de AdvantageScope-documentatie is gemaakt met ondersteuning van AI. Klik op de link in de titelbalk om ons feedback te geven.",
+    "Haz clic en el enlace de la barra de título para darnos tu opinión sobre la versión en español de la documentación de AdvantageScope.",
+  fr: "Cliquez sur le lien dans la barre de titre pour nous faire part de vos commentaires sur la version française de la documentation d'AdvantageScope.",
+  nl: "Klik op de link in de titelbalk om ons feedback te geven over de Nederlandse versie van de AdvantageScope-documentatie.",
   "pt-BR":
-    "A versão em português da documentação do AdvantageScope é criada com o suporte de IA. Clique no link na barra de título para nos enviar seus comentários.",
-  ro: "Versiunea în limba română a documentației AdvantageScope este creată cu sprijinul IA. Fă clic pe linkul din bara de titlu pentru a ne oferi feedback.",
-  tr: "AdvantageScope belgelerinin Türkçe sürümü yapay zeka desteğiyle oluşturulmuştur. Bize geri bildirimde bulunmak için başlık çubuğundaki bağlantıya tıklayın.",
-  ru: "Русская версия документации AdvantageScope создана при поддержке ИИ. Нажмите на ссылку в строке заголовка, чтобы оставить отзыв.",
-  kk: "AdvantageScope құжаттамасының қазақ тіліндегі нұсқасы жасанды интеллект қолдауымен жасалған. Бізге пікір қалдыру үшін тақырып жолағындағы сілтемені басыңыз.",
-  he: "הגרסה בעברית של תיעוד AdvantageScope נוצרה בתמיכת בינה מלאכותית. לחצו על הקישור בשורת הכותרת כדי לתת לנו משוב.",
-  ar: "تم إنشاء النسخة العربية من وثائق AdvantageScope بدعم من الذكاء الاصطناعي. انقر على الرابط في شريط العنوان لتزويدنا بملاحظاتك.",
-  hi: "AdvantageScope डॉक्यूमेंटेशन का हिंदी संस्करण AI के समर्थन से बनाया गया है। हमें फ़ीडबैक देने के लिए टाइटल बार में लिंक पर क्लिक करें।",
-  "zh-CN": "AdvantageScope 文档的中文版本是在 AI 的支持下创建的。点击标题栏中的链接向我们提供反馈。",
-  "zh-TW": "AdvantageScope 文件的中文版本是在 AI 的支援下建立的。點擊標題列中的連結向我們提供回饋。"
+    "Clique no link na barra de título para nos enviar seus comentários sobre a versão em português da documentação do AdvantageScope.",
+  ro: "Fă clic pe linkul din bara de titlu pentru a ne oferi feedback despre versiunea în limba română a documentației AdvantageScope.",
+  tr: "AdvantageScope belgelerinin Türkçe sürümü hakkında bize geri bildirimde bulunmak için başlık çubuğundaki bağlantıya tıklayın.",
+  ru: "Нажмите на ссылку в строке заголовка, чтобы оставить отзыв о русской версии документации AdvantageScope.",
+  kk: "AdvantageScope құжаттамасының қазақ тіліндегі нұсқасы бойынша пікір қалдыру үшін тақырып жолағындағы сілтемені басыңыз.",
+  he: "לחצו על הקישור בשורת הכותרת כדי לתת לנו משוב על הגרסה העברית של תיעוד AdvantageScope.",
+  ar: "انقر على الرابط في شريط العنوان لتزويدنا بملاحظاتك حول النسخة العربية من وثائق AdvantageScope.",
+  hi: "AdvantageScope डॉक्यूमेंटेशन के हिंदी संस्करण पर हमें फ़ीडबैक देने के लिए टाइटल बार में लिंक पर क्लिक करें।",
+  "zh-CN": "点击标题栏中的链接向我们提供关于 AdvantageScope 中文版文档的反馈。",
+  "zh-TW": "點擊標題列中的連結向我們提供關於 AdvantageScope 文件繁體中文版本的回饋。"
 };
 
 export const liteWarningAnnouncement: Record<string, string> = {

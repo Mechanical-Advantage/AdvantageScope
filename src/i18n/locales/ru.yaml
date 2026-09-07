@@ -815,7 +815,7 @@ menu:
 main:
   language:
     welcomeMessage: "Добро пожаловать"
-    welcomeDetail: "Русская версия AdvantageScope создана при поддержке ИИ. Нажмите на фиолетовую иконку в строке заголовка, чтобы сообщить нам о любых проблемах."
+    welcomeDetail: "Нажмите на фиолетовую иконку в строке заголовка, чтобы оставить отзыв о русской версии AdvantageScope."
     reloadLite: "AdvantageScope Lite необходимо перезагрузить для смены языка. Продолжить?"
     reloadResetLite: "AdvantageScope Lite необходимо сбросить и перезагрузить для смены языка. Продолжить?"
     restart: "AdvantageScope необходимо перезапустить для смены языка."

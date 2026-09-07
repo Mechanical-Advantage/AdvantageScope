@@ -803,7 +803,7 @@ menu:
 main:
   language:
     welcomeMessage: "ברוכים הבאים"
-    welcomeDetail: "הגרסה העברית של AdvantageScope נוצרה בסיוע בינה מלאכותית. יש ללחוץ על הסמל הסגול בשורת הכותרת כדי לדווח לנו על בעיות כלשהן."
+    welcomeDetail: "יש ללחוץ על הסמל הסגול בשורת הכותרת כדי לתת לנו משוב על הגרסה העברית של AdvantageScope."
     reloadLite: "AdvantageScope Lite צריך להיטען מחדש כדי להחליף שפה. להמשיך?"
     reloadResetLite: "AdvantageScope Lite צריך להתאפס ולהיטען מחדש כדי להחליף שפה. להמשיך?"
     restart: "AdvantageScope צריך לבצע הפעלה מחדש כדי להחליף שפה."

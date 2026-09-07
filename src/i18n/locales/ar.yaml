@@ -838,7 +838,7 @@ menu:
 main:
   language:
     welcomeMessage: "مرحبًا"
-    welcomeDetail: "تم إنشاء الإصدار العربي من AdvantageScope بدعم من الذكاء الاصطناعي. انقر فوق الأيقونة البنفسجية في شريط العنوان لإعلامنا بأي مشكلات."
+    welcomeDetail: "انقر فوق الأيقونة البنفسجية في شريط العنوان لتزويدنا بملاحظاتك حول الإصدار العربي من AdvantageScope."
     reloadLite: "يحتاج AdvantageScope Lite إلى إعادة التحميل لتبديل اللغات. هل ترغب في المتابعة؟"
     reloadResetLite: "يحتاج AdvantageScope Lite إلى إعادة التحميل وإعادة التعيين لتبديل اللغات. هل ترغب في المتابعة؟"
     restart: "يحتاج AdvantageScope إلى إعادة التشغيل لتبديل اللغات."

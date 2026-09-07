@@ -803,7 +803,7 @@ menu:
 main:
   language:
     welcomeMessage: "Bun venit"
-    welcomeDetail: "Versiunea în română a AdvantageScope este creată cu sprijinul inteligenței artificiale. Dă clic pe pictograma mov din bara de titlu pentru a ne semnala orice probleme."
+    welcomeDetail: "Dă clic pe pictograma mov din bara de titlu pentru a ne oferi feedback despre versiunea în română a AdvantageScope."
     reloadLite: "AdvantageScope Lite necesită reîncărcare pentru a schimba limba. Continui?"
     reloadResetLite: "AdvantageScope Lite necesită reîncărcare și resetare pentru a schimba limba. Continui?"
     restart: "AdvantageScope necesită repornire pentru a schimba limba."

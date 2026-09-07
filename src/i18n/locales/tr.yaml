@@ -782,7 +782,7 @@ menu:
 main:
   language:
     welcomeMessage: "Hoş geldiniz"
-    welcomeDetail: "AdvantageScope'un Türkçe versiyonu yapay zeka desteğiyle oluşturulmuştur. Herhangi bir sorunu bize bildirmek için başlık çubuğundaki mor simgeye tıklayın."
+    welcomeDetail: "AdvantageScope'un Türkçe sürümü hakkında bize geri bildirimde bulunmak için başlık çubuğundaki mor simgeye tıklayın."
     reloadLite: "Dilleri değiştirmek için AdvantageScope Lite'ın yeniden yüklenmesi gerekiyor. Devam edilsin mi?"
     reloadResetLite: "Dilleri değiştirmek için AdvantageScope Lite'ın düzeni sıfırlaması ve yeniden yüklenmesi gerekiyor. Devam edilsin mi?"
     restart: "Dilleri değiştirmek için AdvantageScope'un yeniden başlatılması gerekiyor."

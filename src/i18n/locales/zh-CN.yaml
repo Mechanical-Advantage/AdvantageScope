@@ -778,7 +778,7 @@ menu:
 main:
   language:
     welcomeMessage: "欢迎"
-    welcomeDetail: "中文版本的 AdvantageScope 是在 AI 的支持下创建的。点击标题栏中的紫色图标让我们了解任何问题。"
+    welcomeDetail: "点击标题栏中的紫色图标向我们提供关于 AdvantageScope 中文版本的反馈。"
     reloadLite: "AdvantageScope Lite 需要重新加载以切换语言。继续吗？"
     reloadResetLite: "AdvantageScope Lite 需要重新加载并重置以切换语言。继续吗？"
     restart: "AdvantageScope 需要重新启动以切换语言。"

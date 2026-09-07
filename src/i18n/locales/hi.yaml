@@ -791,7 +791,7 @@ menu:
 main:
   language:
     welcomeMessage: "स्वागत है"
-    welcomeDetail: "AdvantageScope का हिंदी संस्करण AI के समर्थन से बनाया गया है। किसी भी समस्या के बारे में हमें बताने के लिए टाइटल बार में बैंगनी आइकन पर क्लिक करें।"
+    welcomeDetail: "AdvantageScope के हिंदी संस्करण पर हमें फ़ीडबैक देने के लिए टाइटल बार में बैंगनी आइकन पर क्लिक करें।"
     reloadLite: "भाषा बदलने के लिए AdvantageScope लाइट को रीलोड करने की आवश्यकता है। जारी रखें?"
     reloadResetLite: "भाषा बदलने के लिए AdvantageScope लाइट को रीसेट और रीलोड करने की आवश्यकता है। जारी रखें?"
     restart: "भाषा बदलने के लिए AdvantageScope को पुनरारंभ करने की आवश्यकता है।"

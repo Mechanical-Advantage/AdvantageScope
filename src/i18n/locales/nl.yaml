@@ -791,7 +791,7 @@ menu:
 main:
   language:
     welcomeMessage: "Welkom"
-    welcomeDetail: "De Nederlandse versie van AdvantageScope is gemaakt met ondersteuning van AI. Klik op het paarse pictogram in de titelbalk om ons op de hoogte te stellen van eventuele problemen."
+    welcomeDetail: "Klik op het paarse pictogram in de titelbalk om ons feedback te geven over de Nederlandse versie van AdvantageScope."
     reloadLite: "AdvantageScope Lite moet opnieuw worden geladen om van taal te wisselen. Doorgaan?"
     reloadResetLite: "AdvantageScope Lite moet opnieuw worden geladen en gereset om van taal te wisselen. Doorgaan?"
     restart: "AdvantageScope moet opnieuw worden gestart om van taal te wisselen."

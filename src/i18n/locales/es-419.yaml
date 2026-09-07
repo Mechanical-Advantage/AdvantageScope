@@ -791,7 +791,7 @@ menu:
 main:
   language:
     welcomeMessage: "Bienvenida"
-    welcomeDetail: "La versión en español de AdvantageScope fue creada con el apoyo de IA. Haz clic en el ícono morado en la barra de título para informarnos sobre cualquier problema."
+    welcomeDetail: "Haz clic en el ícono morado en la barra de título para darnos tu opinión sobre la versión en español de AdvantageScope."
     reloadLite: "AdvantageScope Lite necesita recargarse para cambiar de idioma. ¿Continuar?"
     reloadResetLite: "AdvantageScope Lite necesita recargarse y restablecerse para cambiar de idioma. ¿Continuar?"
     restart: "AdvantageScope necesita reiniciarse para cambiar de idioma."
