@@ -29,7 +29,7 @@ AdvantageScope 自动对常见的结构化数据类型（如 `Rotation2d` 和 `T
 WPILOG 和 NetworkTables 格式支持为每个字段发布附加的“元数据”。AdvantageScope 会查找名为“unit”或“units”且包含单位类型字符串名称的 JSON 字段（使用空格、驼峰命名法、帕斯卡命名法或蛇形命名法）。要检查每个字段的元数据，请将光标悬停在侧边栏中的字段名称上。
 
 :::tip
-AdvantageKit 在记录输入和输出（包括注解日志记录）时包含对单位元数据的支持。有关细节，请参阅 [此处](https://docs.advantagekit.org/data-flow/supported-types#units) 的文档。
+WPILib 在记录 `Measure` 对象时会自动包含单位元数据。此外，AdvantageScope 支持显式设置的单位元数据（例如 `Telemetry.setProperty(key, "unit", "volts")`）。AdvantageKit 在记录输入和输出时包含对单位元数据的自动支持（有关细节，请参阅 [此处](https://docs.advantagekit.org/data-flow/supported-types#units) 的文档）。
 :::
 
 ### 🥉 字段命名 {#field-naming}

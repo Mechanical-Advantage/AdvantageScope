@@ -26,6 +26,16 @@ Pentru a mări, plasați cursorul peste cronologie și derulați în sus sau în
 
 </details>
 
+## Comenzi cameră {#camera-controls}
+
+Derulați în sus și în jos peste teren pentru a mări și micșora. Faceți clic și trageți pentru a naviga pe teren. Faceți clic dreapta oriunde pe teren pentru a deschide meniul camerei cu următoarele opțiuni:
+
+- **Deblocat**: Navigarea și zoomul sunt manuale.
+- **Blocat pe robot**: Camera navighează automat pentru a urmări robotul.
+- **Blocat pe robot și rotație**: Camera navighează și se rotește automat pentru a urmări robotul și rotația acestuia.
+
+În oricare dintre modurile blocate, camera poate fi deplasată liber departe de robot. Butoanele de orientare din panoul de control pot fi utilizate pentru a roti camera în orice mod.
+
 ## Adăugarea obiectelor {#adding-objects}
 
 Pentru a începe, trageți un câmp în secțiunea „Pose-uri”. Ștergeți un obiect folosind butonul X sau ascundeți-l temporar dând clic pe pictograma ochi sau dând dublu clic pe numele câmpului. Pentru a elimina toate obiectele, dați clic pe coșul de gunoi de lângă titlul axei și apoi pe `Șterge tot`. Obiectele pot fi reorganizate în listă prin clic și tragere.
@@ -51,20 +61,9 @@ Multe biblioteci suportă formatul struct, inclusiv WPILib și AdvantageKit. Cod
 Pose2d poseA = new Pose2d();
 Pose2d poseB = new Pose2d();
 
-StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
-  .getStructTopic("MyPose", Pose2d.struct).publish();
-StructArrayPublisher<Pose2d> arrayPublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
-
-periodic() {
-  publisher.set(poseA);
-  arrayPublisher.set(new Pose2d[] {poseA, poseB});
-}
+Telemetry.log("MyPose", poseA);
+Telemetry.log("MyPoseArray", new Pose2d[] {poseA, poseB});
 ```
-
-:::tip
-Clasa [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) din WPILib poate fi utilizată de asemenea pentru a înregistra mai multe seturi de date de pose 2D împreună.
-:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">

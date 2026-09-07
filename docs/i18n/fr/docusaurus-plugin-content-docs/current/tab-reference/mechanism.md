@@ -35,22 +35,32 @@ Pour commencer, faites glisser un `Mechanism2d` vers le panneau de contrôle. Su
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-Pour publier des données de mécanisme à l'aide de WPILib, envoyez un objet `Mechanism2d` à NetworkTables (illustré ci-dessous). Si la journalisation des données est activée, les mécanismes peuvent également être visualisés sur la base du fichier WPILOG généré.
+Pour publier des données de mécanisme à l'aide de WPILib, enregistrez un objet `Mechanism2d` périodiquement à l'aide de `Telemetry` (illustré ci-dessous). Notez que cet appel enregistre uniquement l'état actuel du `Mechanism2d`, il doit donc être appelé à chaque cycle de boucle après la mise à jour de l'objet.
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
-SmartDashboard.putData("MyMechanism", mechanism);
+
+periodic() {
+  Telemetry.log("MyMechanism", mechanism);
+}
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-Pour publier des données de mécanisme à l'aide d'AdvantageKit, enregistrez un `Mechanism2d` en tant que champ de sortie (illustré ci-dessous). Notez que cet appel enregistre uniquement l'état actuel du `Mechanism2d`, il doit donc être appelé à chaque cycle de boucle après la mise à jour de l'objet.
+Pour publier des données de mécanisme à l'aide d'AdvantageKit, enregistrez un `Mechanism2d` périodiquement en tant que champ de sortie (illustré ci-dessous). Notez que cet appel enregistre uniquement l'état actuel du `Mechanism2d`, il doit donc être appelé à chaque cycle de boucle après la mise à jour de l'objet.
 
 ```java
 LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);
-Logger.recordOutput("MyMechanism", mechanism);
+
+periodic() {
+  Logger.recordOutput("MyMechanism", mechanism);
+}
 ```
+
+:::tip
+L'annotation [@AutoLogOutput](https://docs.advantagekit.org/data-flow/recording-outputs/annotation-logging) d'AdvantageKit peut être utilisée pour enregistrer automatiquement l'état du mécanisme à chaque cycle de boucle sans appeler `Logger.recordOutput`.
+:::
 
 </TabItem>
 </Tabs>

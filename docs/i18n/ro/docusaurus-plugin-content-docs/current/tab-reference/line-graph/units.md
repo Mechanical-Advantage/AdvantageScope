@@ -29,7 +29,9 @@ AdvantageScope utilizează automat unitățile native pentru tipurile de date st
 Formatele WPILOG și NetworkTables suportă publicarea de „metadate” suplimentare pentru fiecare câmp. AdvantageScope caută câmpuri JSON numite „unit” sau „units” care conțin un nume de șir pentru tipul de unitate (folosind spații, camel-case, pascal-case sau snake-case). Pentru a verifica metadatele pentru fiecare câmp, treceți cursorul peste numele câmpului în bara laterală.
 
 :::tip
-AdvantageKit include suport pentru metadatele unităților la înregistrarea intrărilor și ieșirilor, inclusiv înregistrarea adnotărilor. Consultați documentația [aici](https://docs.advantagekit.org/data-flow/supported-types#units) pentru detalii.
+În WPILib, înregistrarea obiectelor `Measure` folosind `Telemetry.log()` atașează automat metadate pentru unități. Metadatele pentru unități pot fi de asemenea configurate explicit folosind `Telemetry.setProperty("fieldName", "unit", "\"volts\"")`.
+
+AdvantageKit include de asemenea suport pentru metadatele unităților la înregistrarea intrărilor și ieșirilor (consultați [aici](https://docs.advantagekit.org/data-flow/supported-types#units) pentru detalii).
 :::
 
 ### 🥉 Denumirea câmpurilor {#field-naming}

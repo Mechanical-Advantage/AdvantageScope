@@ -31,8 +31,8 @@ Varsayılan olarak AdvantageScope, log dosyasında saklanan tüm NetworkTables a
 
 "NT Yayınlama Ön ekleri" seçeneği, NetworkTables'a yayınlanan alanlar için izin verilen ön ekleri ayarlar. Boş bırakılırsa tüm alanlar dahil edilir. Aksi takdirde, virgülle ayrılmış bir ön ek veya alan listesi sağlanabilir. Aşağıdaki örneklere bakın.
 
-- "_SmartDashboard_": "SmartDashboard" tablosundaki tüm alanları dahil et.
-- "_SmartDashboard/Auto Selector_": Yalnızca "SmartDashboard/Auto Selector" tablosunu dahil et.
+- "_Telemetry_": "Telemetry" tablosundaki tüm alanları dahil et.
+- "_Telemetry/Drive_": Yalnızca "Telemetry/Drive" tablosunu dahil et.
 - "_limelight/tx,limelight/ty_": Yalnızca "limelight/tx" ve "limelight/ty" alanlarını dahil et.
 
 ## Sınırlamalar {#limitations}

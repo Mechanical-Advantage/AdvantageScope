@@ -26,6 +26,16 @@ Om te zoomen, plaats je de cursor op de tijdlijn en scrol je omhoog of omlaag. E
 
 </details>
 
+## Camerabediening {#camera-controls}
+
+Scrol omhoog en omlaag over het veld om in en uit te zoomen. Klik en sleep om over het veld te pannen. Klik met de rechtermuisknop ergens op het veld om het cameramenu te openen met de volgende opties:
+
+- **Ontgrendeld**: Pannen en zoomen zijn handmatig.
+- **Vergrendeld op robot**: De camera pant automatisch om de robot te volgen.
+- **Vergrendeld op robot en rotatie**: De camera pant en roteert automatisch om de robot en zijn rotatie te volgen.
+
+In beide vergrendelde modi kan de camera vrij van de robot weg worden gepand. De oriëntatieknoppen in het bedieningspaneel kunnen worden gebruikt om de camera in elke modus te roteren.
+
 ## Objecten toevoegen {#adding-objects}
 
 Om te beginnen sleep je een veld naar de sectie "Poses". Verwijder een object met de X-knop, of verberg het tijdelijk door op het oogpictogram te klikken of te dubbelklikken op de veldnaam. Om alle objecten te verwijderen, klik je op de prullenbak naast de astitel en vervolgens op `Alles wissen`. Objecten kunnen in de lijst opnieuw worden gerangschikt door te klikken en te slepen.
@@ -51,20 +61,9 @@ Veel bibliotheken ondersteunen het struct-formaat, waaronder WPILib en Advantage
 Pose2d poseA = new Pose2d();
 Pose2d poseB = new Pose2d();
 
-StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
-  .getStructTopic("MyPose", Pose2d.struct).publish();
-StructArrayPublisher<Pose2d> arrayPublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
-
-periodic() {
-  publisher.set(poseA);
-  arrayPublisher.set(new Pose2d[] {poseA, poseB});
-}
+Telemetry.log("MyPose", poseA);
+Telemetry.log("MyPoseArray", new Pose2d[] {poseA, poseB});
 ```
-
-:::tip
-De [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html)-klasse van WPILib kan ook worden gebruikt om meerdere sets 2D-posedata samen te loggen.
-:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">

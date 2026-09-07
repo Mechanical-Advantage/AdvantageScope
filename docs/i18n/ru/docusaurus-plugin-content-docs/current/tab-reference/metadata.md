@@ -18,17 +18,12 @@ _Выше показан интерфейс на английском языке
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-В WPILib значения должны логироваться в таблицу "/Metadata" в виде строк.
+В WPILib логируйте значения в таблицу "/Metadata" в виде строк с помощью класса `Telemetry`.
 
 ```java
-// NetworkTables (также сохраняется в DataLog по умолчанию)
-StringPublisher publisher = NetworkTableInstance.getDefault()
-    .getStringTopic("/Metadata/MyKey").publish();
-publisher.set("MyValue");
-
-// DataLog (не публикуется в NetworkTables)
-StringLogEntry entry = new StringLogEntry(DataLogManager.getLog(), "/Metadata/MyKey");
-entry.append("MyValue");
+TelemetryTable metadata = Telemetry.getTable("Metadata");
+metadata.log("RobotName", "Darwin");
+metadata.log("Platform", "macOS");
 ```
 
 </TabItem>
@@ -37,7 +32,8 @@ entry.append("MyValue");
 В AdvantageKit вызовите метод ниже перед запуском логгера. Метаданные сохраняются отдельно при работе в реальном режиме и режиме повтора для удобного сравнения.
 
 ```java
-Logger.recordMetadata("MyKey", "MyValue");
+Logger.recordMetadata("RobotName", "Darwin");
+Logger.recordMetadata("Platform", "macOS");
 ```
 
 </TabItem>

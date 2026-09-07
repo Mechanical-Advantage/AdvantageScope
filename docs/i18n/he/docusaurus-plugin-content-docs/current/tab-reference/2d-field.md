@@ -38,6 +38,14 @@ _ממשק באנגלית מוצג למעלה._
 
 <img src="/img/tab-reference/2d-field-2.webp" alt="מגרש 2D עם אובייקטים" />
 
+## בקרות מצלמה {#camera-controls}
+
+ניתן לגרור את התצוגה כדי להזיז את המגרש ולגלול כדי להתקרב או להתרחק. לחצו על מקש `Escape` או לחצו פעמיים כדי לאפס את המצלמה. לחצו על כפתור הנעילה כדי לבחור בין שלוש אפשרויות נעילה:
+
+- **לא נעול:** המצלמה ממוקמת באופן סטטי ומציגה את כל המגרש.
+- **נעול (רובוט):** המצלמה מתמקמת במרכז על הרובוט הראשי כשהוא נע סביב המגרש.
+- **נעול (רובוט וסיבוב):** המצלמה מתמקמת במרכז על הרובוט הראשי ומסתובבת כך שהרובוט תמיד פונה כלפי מעלה.
+
 ## פורמט נתונים {#data-format}
 
 נתוני גיאומטריה צריכים להיות מפורסמים כ-struct או protobuf בקידוד בייט. סוגי גיאומטריה 2D ו-3D שונים נתמכים, כולל `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, ועוד.
@@ -51,20 +59,10 @@ _ממשק באנגלית מוצג למעלה._
 Pose2d poseA = new Pose2d();
 Pose2d poseB = new Pose2d();
 
-StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
-  .getStructTopic("MyPose", Pose2d.struct).publish();
-StructArrayPublisher<Pose2d> arrayPublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
-
-periodic() {
-  publisher.set(poseA);
-  arrayPublisher.set(new Pose2d[] {poseA, poseB});
-}
+Telemetry.log("MyPose", poseA);
+Telemetry.log("MyPoseArray", poseA, poseB);
+Telemetry.log("MyPoseArray", new Pose2d[] {poseA, poseB});
 ```
-
-:::tip
-המחלקה [`Field2d`](https://docs.wpilib.org/he/stable/docs/software/dashboards/glass/field2d-widget.html) של WPILib יכולה לשמש גם לתיעוד של מספר סטים של נתוני תנוחת 2D יחד.
-:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">

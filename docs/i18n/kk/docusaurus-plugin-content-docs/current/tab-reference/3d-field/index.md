@@ -53,20 +53,10 @@ AdvantageScope FTC алаңдары үшін AprilTag тегінің бірне�
 Pose3d poseA = new Pose3d();
 Pose3d poseB = new Pose3d();
 
-StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
-  .getStructTopic("MyPose", Pose3d.struct).publish();
-StructArrayPublisher<Pose3d> arrayPublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyPoseArray", Pose3d.struct).publish();
-
-periodic() {
-  publisher.set(poseA);
-  arrayPublisher.set(new Pose3d[] {poseA, poseB});
-}
+Telemetry.log("MyPose", poseA);
+Telemetry.log("MyPoseArray", poseA, poseB);
+Telemetry.log("MyPoseArray", new Pose3d[] {poseA, poseB});
 ```
-
-:::tip
-WPILib кітапханасының [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) класы 2D поза деректерінің бірнеше жиынтығын бірге журналындау үшін де пайдаланылуы мүмкін.
-:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">

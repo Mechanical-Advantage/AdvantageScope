@@ -759,6 +759,11 @@ menu:
     differentiate: "微分"
     integrate: "積分"
 
+  field2d:
+    unlocked: "未鎖定"
+    lockedRobot: "鎖定到機器人"
+    lockedRobotRotation: "鎖定到機器人和旋轉"
+
   field3d:
     orbitField: "環繞場地"
     orbitRobot: "環繞機器人"

@@ -35,22 +35,36 @@ _ממשק באנגלית מוצג למעלה._
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-לפרסום נתוני מנגנון תוך שימוש ב-WPILib, יש לשלוח אובייקט `Mechanism2d` ל-NetworkTables (מוצג למטה). אם תיעוד נתונים מופעל, ניתן לצפות במנגנונים גם בהתבסס על קובץ ה-WPILOG שנוצר.
+לפרסום נתוני מנגנון תוך שימוש ב-WPILib, יש לפרסם אובייקט `Mechanism2d` (מוצג למטה). שימו לב כי קריאה זו מתעדת בלבד את המצב הנוכחי של ה-`Mechanism2d`, כך שיש לקרוא לה בכל מחזור לולאה לאחר עדכון האובייקט.
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
-SmartDashboard.putData("MyMechanism", mechanism);
+
+periodic() {
+  Telemetry.log("MyMechanism", mechanism);
+}
 ```
+
+:::tip
+בעת שימוש בהערות AdvantageKit, ניתן לתעד אובייקטי `Mechanism2d` ישירות כשדה (למשל `@AutoLogOutput private Mechanism2d mechanism = ...;`).
+:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-לפרסום נתוני מנגנון תוך שימוש ב-AdvantageKit, יש לתעד `Mechanism2d` כשדה פלט (מוצג למטה). שימו לב כי קריאה זו מתעדת בלבד את המצב הנוכחי של ה-`Mechanism2d`, כך שיש לקרוא לה בכל מחזור לולאה לאחר עדכון האובייקט.
+לפרסום נתוני מנגנון תוך שימוש ב-AdvantageKit, יש לתעד `Mechanism2d` כפלט (מוצג למטה). שימו לב כי קריאה זו מתעדת בלבד את המצב הנוכחי של ה-`Mechanism2d`, כך שיש לקרוא לה בכל מחזור לולאה לאחר עדכון האובייקט.
 
 ```java
-LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);
-Logger.recordOutput("MyMechanism", mechanism);
+Mechanism2d mechanism = new Mechanism2d(3, 3);
+
+periodic() {
+  Logger.recordOutput("MyMechanism", mechanism);
+}
 ```
+
+:::tip
+ניתן לתעד אובייקטי `Mechanism2d` ישירות כשדה (למשל `@AutoLogOutput private Mechanism2d mechanism = ...;`).
+:::
 
 </TabItem>
 </Tabs>

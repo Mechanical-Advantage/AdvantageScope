@@ -35,22 +35,36 @@ _ऊपर अंग्रेजी इंटरफ़ेस दिखाया 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-WPILib का उपयोग करके मैकेनिज्म डेटा पब्लिश करने के लिए, NetworkTables पर एक `Mechanism2d` ऑब्जेक्ट भेजें (नीचे दिखाया गया है)। यदि डेटा लॉगिंग सक्षम है, तो जनरेट की गई WPILOG फ़ाइल के आधार पर मैकेनिज्म भी देखे जा सकते हैं।
+WPILib का उपयोग करके मैकेनिज्म डेटा पब्लिश करने के लिए, `Mechanism2d` ऑब्जेक्ट पब्लिश करें (नीचे दिखाया गया है)। ध्यान दें कि यह कॉल केवल `Mechanism2d` की वर्तमान स्थिति को रिकॉर्ड करता है, इसलिए ऑब्जेक्ट अपडेट होने के बाद इसे प्रत्येक लूप चक्र में कॉल किया जाना चाहिए।
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
-SmartDashboard.putData("MyMechanism", mechanism);
+
+periodic() {
+  Telemetry.log("MyMechanism", mechanism);
+}
 ```
+
+:::tip
+AdvantageKit एनोटेशन का उपयोग करते समय, `Mechanism2d` ऑब्जेक्ट्स को सीधे एक फील्ड के रूप में भी लॉग किया जा सकता है (जैसे `@AutoLogOutput private Mechanism2d mechanism = ...;`)।
+:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-AdvantageKit का उपयोग करके मैकेनिज्म डेटा पब्लिश करने के लिए, एक आउटपुट फील्ड के रूप में `Mechanism2d` रिकॉर्ड करें (नीचे दिखाया गया है)। ध्यान दें कि यह कॉल केवल `Mechanism2d` की वर्तमान स्थिति को रिकॉर्ड करता है, इसलिए ऑब्जेक्ट अपडेट होने के बाद इसे प्रत्येक लूप चक्र में कॉल किया जाना चाहिए।
+AdvantageKit का उपयोग करके मैकेनिज्म डेटा पब्लिश करने के लिए, `Mechanism2d` को एक आउटपुट के रूप में रिकॉर्ड करें (नीचे दिखाया गया है)। ध्यान दें कि यह कॉल केवल `Mechanism2d` की वर्तमान स्थिति को रिकॉर्ड करता है, इसलिए ऑब्जेक्ट अपडेट होने के बाद इसे प्रत्येक लूप चक्र में कॉल किया जाना चाहिए।
 
 ```java
-LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);
-Logger.recordOutput("MyMechanism", mechanism);
+Mechanism2d mechanism = new Mechanism2d(3, 3);
+
+periodic() {
+  Logger.recordOutput("MyMechanism", mechanism);
+}
 ```
+
+:::tip
+`Mechanism2d` ऑब्जेक्ट्स को सीधे एक फील्ड के रूप में भी लॉग किया जा सकता है (जैसे `@AutoLogOutput private Mechanism2d mechanism = ...;`)।
+:::
 
 </TabItem>
 </Tabs>

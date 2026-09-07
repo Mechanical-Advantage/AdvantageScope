@@ -31,8 +31,8 @@ AdvantageScope журнал файлында сақталған NetworkTables д
 
 «NT жариялау префикстері» параметрі NetworkTables жүйесіне жарияланатын өрістер үшін рұқсат етілген префикстерді орнатады. Егер бос қалдырылса, барлық өрістер енгізіледі. Әйтпесе, үтірмен бөлінген префикстер немесе өрістер тізімін беруге болады. Төмендегі мысалдарды қараңыз.
 
-- «_SmartDashboard_»: «SmartDashboard» кестесіндегі барлық өрістерді енгізу.
-- «_SmartDashboard/Auto Selector_»: тек «SmartDashboard/Auto Selector» кестесін енгізу.
+- «_Telemetry_»: «Telemetry» кестесіндегі барлық өрістерді енгізу.
+- «_Telemetry/Drive_»: тек «Telemetry/Drive» кестесін енгізу.
 - «_limelight/tx,limelight/ty_»: тек «limelight/tx» және «limelight/ty» өрістерін енгізу.
 
 ## Шектеулер {#limitations}

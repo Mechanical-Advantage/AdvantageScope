@@ -31,8 +31,8 @@ AdvantageScope 支持将存储在日志文件中的 NetworkTables 数据发布�
 
 “NT 发布前缀”选项可设置发布到 NetworkTables 的字段的允许前缀。如果留空，则包含所有字段。否则，可以提供以逗号分隔的前缀或字段列表。请参阅以下示例：
 
-- “_SmartDashboard_”：包含“SmartDashboard”表中的所有字段。
-- “_SmartDashboard/Auto Selector_”：仅包含“SmartDashboard/Auto Selector”表。
+- “_Telemetry_”：包含“Telemetry”表中的所有字段。
+- “_Telemetry/Drive_”：仅包含“Telemetry/Drive”表。
 - “_limelight/tx,limelight/ty_”：仅包含“limelight/tx”和“limelight/ty”字段。
 
 ## 限制 {#limitations}

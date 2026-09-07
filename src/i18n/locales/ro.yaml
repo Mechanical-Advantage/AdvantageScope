@@ -782,6 +782,11 @@ menu:
     differentiate: "Diferențiază"
     integrate: "Integrează"
 
+  field2d:
+    unlocked: "Deblocat"
+    lockedRobot: "Blocat pe robot"
+    lockedRobotRotation: "Blocat pe robot și rotație"
+
   field3d:
     orbitField: "Orbitare teren"
     orbitRobot: "Orbitare robot"

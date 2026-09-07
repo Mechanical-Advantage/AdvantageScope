@@ -53,20 +53,10 @@ WPILib और AdvantageKit सहित कई लाइब्रेरी स�
 Pose3d poseA = new Pose3d();
 Pose3d poseB = new Pose3d();
 
-StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
-  .getStructTopic("MyPose", Pose3d.struct).publish();
-StructArrayPublisher<Pose3d> arrayPublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyPoseArray", Pose3d.struct).publish();
-
-periodic() {
-  publisher.set(poseA);
-  arrayPublisher.set(new Pose3d[] {poseA, poseB});
-}
+Telemetry.log("MyPose", poseA);
+Telemetry.log("MyPoseArray", poseA, poseB);
+Telemetry.log("MyPoseArray", new Pose3d[] {poseA, poseB});
 ```
-
-:::tip
-WPILib के [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) वर्ग का उपयोग 2D पोज़ डेटा के कई सेटों को एक साथ लॉग करने के लिए भी किया जा सकता है।
-:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">

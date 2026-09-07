@@ -35,22 +35,36 @@ _تظهر في الصورة أعلاه الواجهة باللغة الإنجل�
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-لنشر بيانات الآليات باستخدام WPILib، أرسل كائن `Mechanism2d` إلى NetworkTables (موضح أدناه). إذا كان تسجيل البيانات ممكّناً، يمكن أيضاً عرض الآليات بناءً على ملف WPILOG المُنشأ.
+لنشر بيانات الآليات باستخدام WPILib، انشر كائن `Mechanism2d` (موضح أدناه). لاحظ أن هذا الاستدعاء يسجل الحالة الحالية لـ `Mechanism2d` فقط، لذا يجب استدعاؤه في كل دورة حلقة بعد تحديث الكائن.
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
-SmartDashboard.putData("MyMechanism", mechanism);
+
+periodic() {
+  Telemetry.log("MyMechanism", mechanism);
+}
 ```
+
+:::tip
+عند استخدام تعليقات AdvantageKit التوضيحية، يمكن أيضاً تسجيل كائنات `Mechanism2d` مباشرة كحقل (مثل `@AutoLogOutput private Mechanism2d mechanism = ...;`).
+:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-لنشر بيانات الآليات باستخدام AdvantageKit، سجل `Mechanism2d` كحقل إخراج (موضح أدناه). لاحظ أن هذا الاستدعاء يسجل الحالة الحالية لـ `Mechanism2d` فقط، لذا يجب استدعاؤه في كل دورة حلقة بعد تحديث الكائن.
+لنشر بيانات الآليات باستخدام AdvantageKit، سجل `Mechanism2d` كإخراج (موضح أدناه). لاحظ أن هذا الاستدعاء يسجل الحالة الحالية لـ `Mechanism2d` فقط، لذا يجب استدعاؤه في كل دورة حلقة بعد تحديث الكائن.
 
 ```java
-LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);
-Logger.recordOutput("MyMechanism", mechanism);
+Mechanism2d mechanism = new Mechanism2d(3, 3);
+
+periodic() {
+  Logger.recordOutput("MyMechanism", mechanism);
+}
 ```
+
+:::tip
+يمكن أيضاً تسجيل كائنات `Mechanism2d` مباشرة كحقل (مثل `@AutoLogOutput private Mechanism2d mechanism = ...;`).
+:::
 
 </TabItem>
 </Tabs>

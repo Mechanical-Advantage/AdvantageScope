@@ -38,6 +38,14 @@ _上图所示为英文界面。_
 
 <img src="/img/tab-reference/2d-field-2.webp" alt="带有对象的 2D 场地" />
 
+## 相机控制 {#camera-controls}
+
+你可以拖动视图来平移场地，滚动来进行放大或缩小。按 `Escape` 键或双击可重置相机。点击锁定按钮可在三种锁定选项之间进行选择：
+
+- **未锁定：** 相机保持静止并显示整个场地。
+- **锁定（机器人）：** 相机在主机器人移动时保持居中于机器人。
+- **锁定（机器人和旋转）：** 相机保持居中于主机器人并随之旋转，使机器人始终朝上。
+
 ## 数据格式 {#data-format}
 
 几何数据应作为字节编码的结构体或 protobuf 进行发布。支持各种 2D 和 3D 几何类型，包括 `Pose2d`、`Pose3d`、`Translation2d`、`Translation3d` 等。
@@ -51,20 +59,10 @@ _上图所示为英文界面。_
 Pose2d poseA = new Pose2d();
 Pose2d poseB = new Pose2d();
 
-StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
-  .getStructTopic("MyPose", Pose2d.struct).publish();
-StructArrayPublisher<Pose2d> arrayPublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
-
-periodic() {
-  publisher.set(poseA);
-  arrayPublisher.set(new Pose2d[] {poseA, poseB});
-}
+Telemetry.log("MyPose", poseA);
+Telemetry.log("MyPoseArray", poseA, poseB);
+Telemetry.log("MyPoseArray", new Pose2d[] {poseA, poseB});
 ```
-
-:::tip
-WPILib 的 [`Field2d`](https://docs.wpilib.org/zh-cn/stable/docs/software/dashboards/glass/field2d-widget.html) 类也可以用于将多组 2D 位姿数据记录在一起。
-:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">

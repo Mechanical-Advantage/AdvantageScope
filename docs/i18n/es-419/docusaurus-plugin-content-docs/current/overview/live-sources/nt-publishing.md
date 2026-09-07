@@ -31,8 +31,8 @@ Por defecto, AdvantageScope publica todos los campos de NetworkTables almacenado
 
 Para ajustar el conjunto de prefijos de campos permitidos, abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS). La opción "Prefijos de publicación de NT" establece los prefijos permitidos para los campos publicados en NetworkTables. Si se deja en blanco, se incluirán todos los campos. De lo contrario, se puede proporcionar una lista de prefijos o campos separados por comas. A continuación se muestran algunos ejemplos.
 
-- "_SmartDashboard_": Incluye todos los campos en la tabla "SmartDashboard".
-- "_SmartDashboard/Auto Selector_": Incluye solo la tabla "SmartDashboard/Auto Selector".
+- "_Telemetry_": Incluye todos los campos en la tabla "Telemetry".
+- "_Telemetry/Drive_": Incluye solo la tabla "Telemetry/Drive".
 - "_limelight/tx,limelight/ty_": Incluye solo los campos "limelight/tx" y "limelight/ty".
 
 ## Limitaciones {#limitations}

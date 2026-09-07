@@ -44,15 +44,13 @@ _上圖所示為英文介面。_
 <TabItem value="wpilib" label="WPILib" default>
 
 ```java
-StructArrayPublisher<Translation2d> publisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyTranslations", Translation2d.struct).publish();
-
 periodic() {
-  publisher.set(new Translation2d[] {
-    new Translation2d(0.0, 1.0),
-    new Translation2d(2.0, 3.0)
-  });
-  publisher.set(
+  Telemetry.log("MyTranslations",
+    new Translation2d[] {
+      new Translation2d(0.0, 1.0),
+      new Translation2d(2.0, 3.0)
+    });
+  Telemetry.log("MyTranslations",
     new Translation2d(0.0, 1.0),
     new Translation2d(2.0, 3.0)
   );

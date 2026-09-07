@@ -29,7 +29,9 @@ AdvantageScope utilise automatiquement les unités natives pour les types de don
 Les formats WPILOG et NetworkTables prennent en charge la publication de « métadonnées » supplémentaires pour chaque champ. AdvantageScope recherche les champs JSON nommés « unit » ou « units » contenant un nom de chaîne pour le type d'unité (en utilisant des espaces, camel-case, pascal-case ou snake-case). Pour vérifier les métadonnées de chaque champ, survolez le nom du champ dans la barre latérale.
 
 :::tip
-AdvantageKit inclut la prise en charge des métadonnées d'unité lors de l'enregistrement des entrées et des sorties, y compris la journalisation des annotations. Consultez la documentation [ici](https://docs.advantagekit.org/data-flow/supported-types#units) pour plus de détails.
+Dans WPILib, l'enregistrement d'objets `Measure` à l'aide de `Telemetry.log()` associe automatiquement des métadonnées d'unité. Les métadonnées d'unité peuvent également être configurées explicitement à l'aide de `Telemetry.setProperty("fieldName", "unit", "\"volts\"")`.
+
+AdvantageKit inclut également la prise en charge des métadonnées d'unité lors de l'enregistrement des entrées et des sorties (voir [ici](https://docs.advantagekit.org/data-flow/supported-types#units) pour plus de détails).
 :::
 
 ### 🥉 Nommage des champs {#field-naming}

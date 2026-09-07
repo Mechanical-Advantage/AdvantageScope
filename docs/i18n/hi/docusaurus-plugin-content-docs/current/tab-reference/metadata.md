@@ -18,17 +18,10 @@ _ऊपर अंग्रेजी इंटरफ़ेस दिखाया 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-WPILib में, मानों को स्ट्रिंग्स के रूप में "/Metadata" तालिका में लॉग किया जाना चाहिए।
+WPILib में, मान "Metadata" तालिका में पब्लिश किए जाने चाहिए।
 
 ```java
-// NetworkTables (also saved to DataLog by default)
-StringPublisher publisher = NetworkTableInstance.getDefault()
-    .getStringTopic("/Metadata/MyKey").publish();
-publisher.set("MyValue");
-
-// DataLog (not published to NetworkTables)
-StringLogEntry entry = new StringLogEntry(DataLogManager.getLog(), "/Metadata/MyKey");
-entry.append("MyValue");
+Telemetry.getTable("Metadata").putString("Darwin", "macOS");
 ```
 
 </TabItem>
@@ -37,7 +30,7 @@ entry.append("MyValue");
 AdvantageKit में, लॉगर शुरू करने से पहले नीचे दी गई विधि को कॉल करें। आसान तुलना के लिए रियल और रीप्ले में चलते समय मेटाडेटा अलग से संग्रहीत किया जाता है।
 
 ```java
-Logger.recordMetadata("MyKey", "MyValue");
+Logger.recordMetadata("Darwin", "macOS");
 ```
 
 </TabItem>

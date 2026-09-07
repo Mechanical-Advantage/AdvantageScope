@@ -53,20 +53,9 @@ Multe biblioteci suportă formatul struct, inclusiv WPILib și AdvantageKit. Cod
 Pose3d poseA = new Pose3d();
 Pose3d poseB = new Pose3d();
 
-StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
-  .getStructTopic("MyPose", Pose3d.struct).publish();
-StructArrayPublisher<Pose3d> arrayPublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyPoseArray", Pose3d.struct).publish();
-
-periodic() {
-  publisher.set(poseA);
-  arrayPublisher.set(new Pose3d[] {poseA, poseB});
-}
+Telemetry.log("MyPose", poseA);
+Telemetry.log("MyPoseArray", new Pose3d[] {poseA, poseB});
 ```
-
-:::tip
-Clasa [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) din WPILib poate fi utilizată de asemenea pentru a înregistra mai multe seturi de date de pose 2D împreună.
-:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">

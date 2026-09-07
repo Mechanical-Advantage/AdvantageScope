@@ -29,7 +29,9 @@ AdvantageScope gebruikt automatisch de native eenheden voor veelvoorkomende gest
 De WPILOG- en NetworkTables-formaten ondersteunen het publiceren van aanvullende "metadata" voor elk veld. AdvantageScope zoekt naar JSON-velden met de naam "unit" of "units" die een stringnaam voor het eenheidstype bevatten (met spaties, camel-case, pascal-case of snake-case). Om de metadata voor elk veld te controleren, houd je de muisaanwijzer boven de veldnaam in de zijbalk.
 
 :::tip
-AdvantageKit bevat ondersteuning voor eenheidsmetadata bij het loggen van inputs en outputs, inclusief logging via annotaties. Raadpleeg de documentatie [hier](https://docs.advantagekit.org/data-flow/supported-types#units) voor details.
+In WPILib koppelt het loggen van `Measure`-objecten met behulp van `Telemetry.log()` automatisch eenheidsmetadata. Eenheidsmetadata kan ook expliciet worden geconfigureerd met behulp van `Telemetry.setProperty("fieldName", "unit", "\"volts\"")`.
+
+AdvantageKit bevat ook ondersteuning voor eenheidsmetadata bij het loggen van inputs en outputs (zie [hier](https://docs.advantagekit.org/data-flow/supported-types#units) voor details).
 :::
 
 ### 🥉 Veldnaamgeving {#field-naming}

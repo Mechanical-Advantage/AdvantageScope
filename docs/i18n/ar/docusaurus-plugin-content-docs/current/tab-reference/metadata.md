@@ -18,17 +18,10 @@ _تظهر في الصورة أعلاه الواجهة باللغة الإنجل�
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-في WPILib، يجب تسجيل القيم في جدول "/Metadata" كنصوص.
+في WPILib، يجب نشر القيم في جدول "Metadata".
 
 ```java
-// NetworkTables (also saved to DataLog by default)
-StringPublisher publisher = NetworkTableInstance.getDefault()
-    .getStringTopic("/Metadata/MyKey").publish();
-publisher.set("MyValue");
-
-// DataLog (not published to NetworkTables)
-StringLogEntry entry = new StringLogEntry(DataLogManager.getLog(), "/Metadata/MyKey");
-entry.append("MyValue");
+Telemetry.getTable("Metadata").putString("Darwin", "macOS");
 ```
 
 </TabItem>
@@ -37,7 +30,7 @@ entry.append("MyValue");
 في AdvantageKit، استدعِ الطريقة أدناه قبل بدء مسجل البيانات. يتم تخزين البيانات الوصفية بشكل منفصل عند التشغيل في الحقيقي وإعادة التشغيل لسلاسة المقارنة.
 
 ```java
-Logger.recordMetadata("MyKey", "MyValue");
+Logger.recordMetadata("Darwin", "macOS");
 ```
 
 </TabItem>

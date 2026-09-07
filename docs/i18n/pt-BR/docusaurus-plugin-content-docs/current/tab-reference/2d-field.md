@@ -26,6 +26,16 @@ Para dar zoom, posicione o cursor sobre a linha do tempo e role para cima ou par
 
 </details>
 
+## Controles da câmera {#camera-controls}
+
+Role para cima e para baixo sobre o campo para aumentar e diminuir o zoom. Clique e arraste para deslocar pelo campo. Clique com o botão direito em qualquer lugar do campo para abrir o menu da câmera com as seguintes opções:
+
+- **Desbloqueado**: O deslocamento e o zoom são manuais.
+- **Bloqueado ao robô**: A câmera se desloca automaticamente para rastrear o robô.
+- **Bloqueado ao robô e rotação**: A câmera se desloca e rotaciona automaticamente para rastrear o robô e sua rotação.
+
+Em qualquer um dos modos bloqueados, a câmera pode ser deslocada livremente para longe do robô. Os botões de orientação no painel de controle podem ser usados para rotacionar a câmera em qualquer modo.
+
 ## Adicionando objetos {#adding-objects}
 
 Para começar, arraste um campo para a seção "Poses". Exclua um objeto usando o botão X ou oculte-o temporariamente clicando no ícone de olho ou dando um duplo clique no nome do campo. Para remover todos os objetos, clique na lixeira perto do título do eixo e depois em `Limpar tudo`. Os objetos podem ser reorganizados na lista clicando e arrastando.
@@ -51,20 +61,9 @@ Muitas bibliotecas suportam o formato struct, incluindo WPILib e AdvantageKit. O
 Pose2d poseA = new Pose2d();
 Pose2d poseB = new Pose2d();
 
-StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
-  .getStructTopic("MyPose", Pose2d.struct).publish();
-StructArrayPublisher<Pose2d> arrayPublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
-
-periodic() {
-  publisher.set(poseA);
-  arrayPublisher.set(new Pose2d[] {poseA, poseB});
-}
+Telemetry.log("MyPose", poseA);
+Telemetry.log("MyPoseArray", new Pose2d[] {poseA, poseB});
 ```
-
-:::tip
-A classe [`Field2d`](https://docs.wpilib.org/pt/stable/docs/software/dashboards/glass/field2d-widget.html) da WPILib também pode ser usada para registrar vários conjuntos de dados de pose 2D juntos.
-:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">

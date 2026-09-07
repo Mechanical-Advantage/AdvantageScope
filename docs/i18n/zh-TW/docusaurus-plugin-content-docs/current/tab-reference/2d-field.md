@@ -38,6 +38,16 @@ _上圖所示為英文介面。_
 
 <img src="/img/tab-reference/2d-field-2.webp" alt="帶有物件的 2D 場地" />
 
+## 攝影機控制 {#camera-controls}
+
+可以使用滑鼠右鍵拖曳來旋轉攝影機。使用滑鼠左鍵或透過觸控板滾動來平移攝影機。可以使用滾輪進行縮放。
+
+要將攝影機視角重設為預設方向，請在場地上連按兩下。或者，點擊攝影機圖示以選擇攝影機模式：
+
+- **未鎖定：** 自由移動攝影機。
+- **鎖定到機器人：** 追蹤清單中第一個機器人的位置。
+- **鎖定到機器人和旋轉：** 追蹤清單中第一個機器人的位置與旋轉。
+
 ## 資料格式 {#data-format}
 
 幾何資料應作為位元組編碼的 struct 或 protobuf 發布。支援各種 2D 與 3D 幾何類型，包括 `Pose2d`、`Pose3d`、`Translation2d`、`Translation3d` 等。
@@ -51,20 +61,12 @@ _上圖所示為英文介面。_
 Pose2d poseA = new Pose2d();
 Pose2d poseB = new Pose2d();
 
-StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
-  .getStructTopic("MyPose", Pose2d.struct).publish();
-StructArrayPublisher<Pose2d> arrayPublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
-
 periodic() {
-  publisher.set(poseA);
-  arrayPublisher.set(new Pose2d[] {poseA, poseB});
+  Telemetry.log("MyPose", poseA);
+  Telemetry.log("MyPoseArray", poseA, poseB);
+  Telemetry.log("MyPoseArray", new Pose2d[] {poseA, poseB});
 }
 ```
-
-:::tip
-WPILib 的 [`Field2d`](https://docs.wpilib.org/zh-cn/stable/docs/software/dashboards/glass/field2d-widget.html) 類別也可以用於一起記錄數組 2D 姿態資料。
-:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">

@@ -794,6 +794,11 @@ menu:
     differentiate: "Дифференцировать"
     integrate: "Интегрировать"
 
+  field2d:
+    unlocked: "Разблокировано"
+    lockedRobot: "Привязано к роботу"
+    lockedRobotRotation: "Привязано к роботу и вращению"
+
   field3d:
     orbitField: "Облет поля"
     orbitRobot: "Облет робота"

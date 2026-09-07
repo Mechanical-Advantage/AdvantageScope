@@ -18,17 +18,12 @@ Codul de exemplu de mai jos arată cum se înregistrează metadatele folosind Ja
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-În WPILib, valorile trebuie înregistrate în tabelul „/Metadata” ca șiruri de caractere (strings).
+În WPILib, înregistrați valorile în tabelul „/Metadata” ca șiruri de caractere folosind clasa `Telemetry`.
 
 ```java
-// NetworkTables (also saved to DataLog by default)
-StringPublisher publisher = NetworkTableInstance.getDefault()
-    .getStringTopic("/Metadata/MyKey").publish();
-publisher.set("MyValue");
-
-// DataLog (not published to NetworkTables)
-StringLogEntry entry = new StringLogEntry(DataLogManager.getLog(), "/Metadata/MyKey");
-entry.append("MyValue");
+TelemetryTable metadata = Telemetry.getTable("Metadata");
+metadata.log("RobotName", "Darwin");
+metadata.log("Platform", "macOS");
 ```
 
 </TabItem>
@@ -37,7 +32,8 @@ entry.append("MyValue");
 În AdvantageKit, apelați metoda de mai jos înainte de a porni înregistratorul (logger). Metadatele sunt stocate separat când se rulează în modul real și reluare pentru o comparare ușoară.
 
 ```java
-Logger.recordMetadata("MyKey", "MyValue");
+Logger.recordMetadata("RobotName", "Darwin");
+Logger.recordMetadata("Platform", "macOS");
 ```
 
 </TabItem>

@@ -35,22 +35,32 @@ Pentru a începe, trageți un `Mechanism2d` în panoul de control. Ștergeți un
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-Pentru a publica date despre mecanism folosind WPILib, trimiteți un obiect `Mechanism2d` în NetworkTables (arătat mai jos). Dacă înregistrarea datelor este activată, mecanismele pot fi vizualizate de asemenea pe baza fișierului WPILOG generat.
+Pentru a publica date despre mecanism folosind WPILib, înregistrați periodic un obiect `Mechanism2d` folosind `Telemetry` (arătat mai jos). Rețineți că acest apel înregistrează doar starea curentă a `Mechanism2d`, astfel încât trebuie apelat în fiecare ciclu de buclă după ce obiectul este actualizat.
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
-SmartDashboard.putData("MyMechanism", mechanism);
+
+periodic() {
+  Telemetry.log("MyMechanism", mechanism);
+}
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-Pentru a publica date despre mecanism folosind AdvantageKit, înregistrați un `Mechanism2d` ca un câmp de ieșire (arătat mai jos). Rețineți că acest apel înregistrează doar starea curentă a `Mechanism2d`, astfel încât trebuie apelat în fiecare ciclu de buclă după ce obiectul este actualizat.
+Pentru a publica date despre mecanism folosind AdvantageKit, înregistrați periodic un `Mechanism2d` ca un câmp de ieșire (arătat mai jos). Rețineți că acest apel înregistrează doar starea curentă a `Mechanism2d`, astfel încât trebuie apelat în fiecare ciclu de buclă după ce obiectul este actualizat.
 
 ```java
 LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);
-Logger.recordOutput("MyMechanism", mechanism);
+
+periodic() {
+  Logger.recordOutput("MyMechanism", mechanism);
+}
 ```
+
+:::tip
+Adnotarea [@AutoLogOutput](https://docs.advantagekit.org/data-flow/recording-outputs/annotation-logging) din AdvantageKit poate fi utilizată pentru a înregistra automat starea mecanismului în fiecare ciclu de buclă fără a apela `Logger.recordOutput`.
+:::
 
 </TabItem>
 </Tabs>

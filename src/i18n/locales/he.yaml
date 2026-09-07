@@ -782,6 +782,11 @@ menu:
     differentiate: "גזירה"
     integrate: "אינטגרציה"
 
+  field2d:
+    unlocked: "לא נעול"
+    lockedRobot: "נעול (רובוט)"
+    lockedRobotRotation: "נעול (רובוט וסיבוב)"
+
   field3d:
     orbitField: "הקפת המגרש"
     orbitRobot: "הקפת הרובוט"

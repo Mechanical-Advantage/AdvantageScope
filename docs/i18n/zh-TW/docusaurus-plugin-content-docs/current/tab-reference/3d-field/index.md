@@ -53,20 +53,12 @@ AdvantageScope 支援 FTC 場地的多種尺寸 AprilTag。尺寸以 AprilTag **
 Pose3d poseA = new Pose3d();
 Pose3d poseB = new Pose3d();
 
-StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
-  .getStructTopic("MyPose", Pose3d.struct).publish();
-StructArrayPublisher<Pose3d> arrayPublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyPoseArray", Pose3d.struct).publish();
-
 periodic() {
-  publisher.set(poseA);
-  arrayPublisher.set(new Pose3d[] {poseA, poseB});
+  Telemetry.log("MyPose", poseA);
+  Telemetry.log("MyPoseArray", poseA, poseB);
+  Telemetry.log("MyPoseArray", new Pose3d[] {poseA, poseB});
 }
 ```
-
-:::tip
-WPILib 的 [`Field2d`](https://docs.wpilib.org/zh-cn/stable/docs/software/dashboards/glass/field2d-widget.html) 類別也可以用於一起記錄數組 2D 姿態資料。
-:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">

@@ -29,7 +29,7 @@ AdvantageScope स्वचालित रूप से `Rotation2d` और `Tr
 WPILOG और NetworkTables प्रारूप प्रत्येक फील्ड के लिए अतिरिक्त "मेटाडेटा" पब्लिश करने का समर्थन करते हैं। AdvantageScope "unit" या "units" नाम के JSON फील्ड्स की तलाश करता है जिसमें इकाई प्रकार के लिए एक स्ट्रिंग नाम होता है (स्पेस, camel-case, pascal-case, या snake-case का उपयोग करके)। प्रत्येक फील्ड के लिए मेटाडेटा जांचने के लिए, साइडबार में फील्ड नाम पर कर्सर घुमाएँ।
 
 :::tip
-AdvantageKit इनपुट और आउटपुट लॉग करते समय इकाई मेटाडेटा के लिए समर्थन शामिल करता है, जिसमें एनोटेशन लॉगिंग भी शामिल है। विवरण के लिए [यहाँ](https://docs.advantagekit.org/data-flow/supported-types#units) दस्तावेज़ देखें।
+WPILib `Measure` ऑब्जेक्ट्स को लॉग करते समय स्वचालित रूप से इकाई मेटाडेटा शामिल करता है। इसके अतिरिक्त, AdvantageScope स्पष्ट रूप से सेट किए गए इकाई मेटाडेटा (जैसे `Telemetry.setProperty(key, "unit", "volts")`) का समर्थन करता है। AdvantageKit इनपुट और आउटपुट लॉग करते समय इकाई मेटाडेटा के लिए स्वचालित समर्थन शामिल करता है (विवरण के लिए [यहाँ](https://docs.advantagekit.org/data-flow/supported-types#units) दस्तावेज़ देखें)।
 :::
 
 ### 🥉 फील्ड नामकरण {#field-naming}

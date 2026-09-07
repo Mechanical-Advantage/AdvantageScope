@@ -770,6 +770,11 @@ menu:
     differentiate: "Differentiëren"
     integrate: "Integreren"
 
+  field2d:
+    unlocked: "Ontgrendeld"
+    lockedRobot: "Vergrendeld op robot"
+    lockedRobotRotation: "Vergrendeld op robot en rotatie"
+
   field3d:
     orbitField: "Rond veld draaien"
     orbitRobot: "Rond robot draaien"

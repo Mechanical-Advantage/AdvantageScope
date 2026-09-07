@@ -26,6 +26,16 @@ Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le hau
 
 </details>
 
+## Contrôles de la caméra {#camera-controls}
+
+Faites défiler vers le haut et le bas sur le terrain pour zoomer et dézoomer. Cliquez et faites glisser pour vous déplacer sur le terrain. Faites un clic droit n'importe où sur le terrain pour ouvrir le menu de la caméra avec les options suivantes :
+
+- **Déverrouillé** : Le panoramique et le zoom sont manuels.
+- **Verrouillé sur le robot** : La caméra se déplace automatiquement pour suivre le robot.
+- **Verrouillé sur le robot et la rotation** : La caméra se déplace et pivote automatiquement pour suivre le robot et sa rotation.
+
+Dans l'un ou l'autre des modes verrouillés, la caméra peut être déplacée librement à l'écart du robot. Les boutons d'orientation dans le panneau de contrôle peuvent être utilisés pour faire pivoter la caméra dans n'importe quel mode.
+
 ## Ajout d'objets {#adding-objects}
 
 Pour commencer, faites glisser un champ vers la section « Poses ». Supprimez un objet à l'aide du bouton X, ou masquez-le temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer tous les objets, cliquez sur la corbeille près du titre de l'axe, puis sur `Tout effacer`. Les objets peuvent être réorganisés dans la liste en les faisant glisser.
@@ -51,20 +61,9 @@ De nombreuses bibliothèques prennent en charge le format struct, notamment WPIL
 Pose2d poseA = new Pose2d();
 Pose2d poseB = new Pose2d();
 
-StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
-  .getStructTopic("MyPose", Pose2d.struct).publish();
-StructArrayPublisher<Pose2d> arrayPublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
-
-periodic() {
-  publisher.set(poseA);
-  arrayPublisher.set(new Pose2d[] {poseA, poseB});
-}
+Telemetry.log("MyPose", poseA);
+Telemetry.log("MyPoseArray", new Pose2d[] {poseA, poseB});
 ```
-
-:::tip
-La classe [`Field2d`](https://docs.wpilib.org/fr/stable/docs/software/dashboards/glass/field2d-widget.html) de WPILib peut également être utilisée pour enregistrer plusieurs ensembles de données de pose 2D ensemble.
-:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">

@@ -35,22 +35,32 @@ Para comenzar, arrastra un `Mechanism2d` al panel de control. Elimina un mecanis
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-Para publicar datos del mecanismo utilizando WPILib, envía un objeto `Mechanism2d` a NetworkTables (como se muestra a continuación). Si el registro de datos está habilitado, los mecanismos también se pueden ver en función del archivo WPILOG generado.
+Para publicar datos del mecanismo utilizando WPILib, registra un objeto `Mechanism2d` periódicamente usando `Telemetry` (como se muestra a continuación). Ten en cuenta que esta llamada solo registra el estado actual del `Mechanism2d`, por lo que se debe llamar en cada ciclo del bucle después de actualizar el objeto.
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
-SmartDashboard.putData("MyMechanism", mechanism);
+
+periodic() {
+  Telemetry.log("MyMechanism", mechanism);
+}
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-Para publicar datos de mecanismos utilizando AdvantageKit, registra un `Mechanism2d` como un campo de salida (como se muestra a continuación). Ten en cuenta que esta llamada solo registra el estado actual del `Mechanism2d`, por lo que se debe llamar a cada ciclo de bucle después de actualizar el objeto.
+Para publicar datos de mecanismos utilizando AdvantageKit, registra un `Mechanism2d` periódicamente como un campo de salida (como se muestra a continuación). Ten en cuenta que esta llamada solo registra el estado actual del `Mechanism2d`, por lo que se debe llamar en cada ciclo del bucle después de actualizar el objeto.
 
 ```java
 LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);
-Logger.recordOutput("MyMechanism", mechanism);
+
+periodic() {
+  Logger.recordOutput("MyMechanism", mechanism);
+}
 ```
+
+:::tip
+La anotación [@AutoLogOutput](https://docs.advantagekit.org/data-flow/recording-outputs/annotation-logging) de AdvantageKit se puede utilizar para registrar automáticamente el estado del mecanismo en cada ciclo del bucle sin llamar a `Logger.recordOutput`.
+:::
 
 </TabItem>
 </Tabs>

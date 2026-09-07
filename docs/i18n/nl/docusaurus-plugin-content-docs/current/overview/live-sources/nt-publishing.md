@@ -31,8 +31,8 @@ Standaard publiceert AdvantageScope alle NetworkTables-velden die in het logbest
 
 De optie "NT-publicatieprefixes" stelt de toegestane prefixes in voor velden die naar NetworkTables worden gepubliceerd. Als dit veld leeg wordt gelaten, worden alle velden opgenomen. Anders kan een door komma's gescheiden lijst van prefixes of velden worden opgegeven. Zie de onderstaande voorbeelden:
 
-- "_SmartDashboard_": Alle velden in de tabel "SmartDashboard" opnemen.
-- "_SmartDashboard/Auto Selector_": Alleen de tabel "SmartDashboard/Auto Selector" opnemen.
+- "_Telemetry_": Alle velden in de tabel "Telemetry" opnemen.
+- "_Telemetry/Drive_": Alleen de tabel "Telemetry/Drive" opnemen.
 - "_limelight/tx,limelight/ty_": Alleen de velden "limelight/tx" en "limelight/ty" opnemen.
 
 ## Beperkingen {#limitations}

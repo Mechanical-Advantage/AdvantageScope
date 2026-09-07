@@ -44,19 +44,11 @@ Os dados de pontos devem ser publicados como um struct ou protobuf codificado em
 <TabItem value="wpilib" label="WPILib" default>
 
 ```java
-StructArrayPublisher<Translation2d> publisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyTranslations", Translation2d.struct).publish();
-
-periodic() {
-  publisher.set(new Translation2d[] {
+Telemetry.log("MyTranslations",
+  new Translation2d[] {
     new Translation2d(0.0, 1.0),
     new Translation2d(2.0, 3.0)
   });
-  publisher.set(
-    new Translation2d(0.0, 1.0),
-    new Translation2d(2.0, 3.0)
-  );
-}
 ```
 
 </TabItem>

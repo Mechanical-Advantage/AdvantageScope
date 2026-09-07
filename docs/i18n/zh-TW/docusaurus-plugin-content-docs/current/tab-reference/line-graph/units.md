@@ -29,7 +29,10 @@ AdvantageScope 自動使用常見結構化資料類型（如 `Rotation2d` 與 `T
 WPILOG 與 NetworkTables 格式支援為每個欄位發布額外的「中繼資料」。AdvantageScope 會尋找名為「unit」或「units」的 JSON 欄位，其中包含單位類型的字串名稱（使用空格、駝峰式大小寫、帕斯卡大小寫或下底線格式）。要檢查每個欄位的中繼資料，請將游標懸停於側邊欄中的欄位名稱上。
 
 :::tip
-AdvantageKit 在記錄輸入與輸出（包括注釋記錄）時支援單位中繼資料。請在[此處](https://docs.advantagekit.org/data-flow/supported-types#units)查看文件了解詳細資訊。
+WPILib 與 AdvantageKit 皆支援發布單位中繼資料：
+
+- **WPILib：** 使用 `Measure` 類別或 `Telemetry.setProperty()` 中的明確中繼資料支援
+- **AdvantageKit：** 請在[此處](https://docs.advantagekit.org/data-flow/supported-types#units)查看文件
 :::
 
 ### 🥉 欄位命名 {#field-naming}

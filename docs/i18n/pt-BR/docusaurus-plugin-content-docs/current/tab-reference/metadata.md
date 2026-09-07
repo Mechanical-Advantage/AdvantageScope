@@ -18,17 +18,12 @@ O código de exemplo abaixo mostra como registrar metadados usando Java.
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-Na WPILib, os valores devem ser registrados na tabela "/Metadata" como strings.
+Na WPILib, registre valores na tabela "/Metadata" como strings usando a classe `Telemetry`.
 
 ```java
-// NetworkTables (também salvo no DataLog por padrão)
-StringPublisher publisher = NetworkTableInstance.getDefault()
-    .getStringTopic("/Metadata/MyKey").publish();
-publisher.set("MyValue");
-
-// DataLog (não publicado no NetworkTables)
-StringLogEntry entry = new StringLogEntry(DataLogManager.getLog(), "/Metadata/MyKey");
-entry.append("MyValue");
+TelemetryTable metadata = Telemetry.getTable("Metadata");
+metadata.log("RobotName", "Darwin");
+metadata.log("Platform", "macOS");
 ```
 
 </TabItem>
@@ -37,7 +32,8 @@ entry.append("MyValue");
 No AdvantageKit, chame o método abaixo antes de iniciar o logger. Os metadados são armazenados separadamente ao executar em modo real e repetição para fácil comparação.
 
 ```java
-Logger.recordMetadata("MyKey", "MyValue");
+Logger.recordMetadata("RobotName", "Darwin");
+Logger.recordMetadata("Platform", "macOS");
 ```
 
 </TabItem>

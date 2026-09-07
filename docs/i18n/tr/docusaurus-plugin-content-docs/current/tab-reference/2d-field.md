@@ -26,6 +26,16 @@ Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı v
 
 </details>
 
+## Kamera kontrolleri {#camera-controls}
+
+Yakınlaştırmak ve uzaklaştırmak için sahanın üzerinde yukarı ve aşağı kaydırın. Saha boyunca kaydırmak için tıklayıp sürükleyin. Aşağıdaki seçenekleri içeren kamera menüsünü açmak için sahanın herhangi bir yerine sağ tıklayın:
+
+- **Kilitsiz**: Kaydırma ve yakınlaştırma manueldir.
+- **Robota kilitli**: Kamera, robotu takip etmek için otomatik olarak kaydırılır.
+- **Robota ve rotasyona kilitli**: Kamera, robotu ve rotasyonunu takip etmek için otomatik olarak kaydırılır ve döndürülür.
+
+Her iki kilitli modda da kamera robottan uzağa serbestçe kaydırılabilir. Kontrol panelindeki yönlendirme düğmeleri kamerayı herhangi bir modda döndürmek için kullanılabilir.
+
 ## Nesneler ekleme {#adding-objects}
 
 Başlamak için bir alanı "Pozlar" bölümüne sürükleyin. X düğmesini kullanarak bir nesneyi silin veya göz simgesine tıklayarak ya da alan adına çift tıklayarak geçici olarak gizleyin. Tüm nesneleri kaldırmak için eksen başlığının yanındaki çöp kutusuna ve ardından `Tümünü Temizle` seçeneğine tıklayın. Nesneler listede tıklanıp sürüklenerek yeniden düzenlenebilir.
@@ -51,20 +61,9 @@ WPILib ve AdvantageKit dahil olmak üzere birçok kütüphane struct formatını
 Pose2d poseA = new Pose2d();
 Pose2d poseB = new Pose2d();
 
-StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
-  .getStructTopic("MyPose", Pose2d.struct).publish();
-StructArrayPublisher<Pose2d> arrayPublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
-
-periodic() {
-  publisher.set(poseA);
-  arrayPublisher.set(new Pose2d[] {poseA, poseB});
-}
+Telemetry.log("MyPose", poseA);
+Telemetry.log("MyPoseArray", new Pose2d[] {poseA, poseB});
 ```
-
-:::tip
-WPILib'in [`Field2d`](https://docs.wpilib.org/tr/stable/docs/software/dashboards/glass/field2d-widget.html) sınıfı birden fazla 2B poz verisi kümesini birlikte loglamak için de kullanılabilir.
-:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">

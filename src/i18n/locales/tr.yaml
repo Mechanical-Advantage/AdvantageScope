@@ -761,6 +761,11 @@ menu:
     differentiate: "Türevini al"
     integrate: "İntegralini al"
 
+  field2d:
+    unlocked: "Kilitsiz"
+    lockedRobot: "Robota kilitli"
+    lockedRobotRotation: "Robota ve rotasyona kilitli"
+
   field3d:
     orbitField: "Saha yörüngesi"
     orbitRobot: "Robot yörüngesi"

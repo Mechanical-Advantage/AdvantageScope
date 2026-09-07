@@ -35,22 +35,36 @@ _上图所示为英文界面。_
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-要使用 WPILib 发布机构数据，请将 `Mechanism2d` 对象发送到 NetworkTables（如下所示）。如果启用了数据日志记录，还可以根据生成的 WPILOG 文件查看机构。
+要使用 WPILib 发布机构数据，请发布 `Mechanism2d` 对象（如下所示）。请注意，此调用仅记录 `Mechanism2d` 的当前状态，因此在更新对象后必须在每个循环周期调用它。
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
-SmartDashboard.putData("MyMechanism", mechanism);
+
+periodic() {
+  Telemetry.log("MyMechanism", mechanism);
+}
 ```
+
+:::tip
+如果使用 AdvantageKit 注解，也可以直接将 `Mechanism2d` 对象记录为字段（例如 `@AutoLogOutput private Mechanism2d mechanism = ...;`）。
+:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-要使用 AdvantageKit 发布机构数据，请将 `Mechanism2d` 记录为输出字段（如下所示）。请注意，此调用仅记录 `Mechanism2d` 的当前状态，因此在更新对象后必须在每个循环周期调用它。
+要使用 AdvantageKit 发布机构数据，请将 `Mechanism2d` 记录为输出（如下所示）。请注意，此调用仅记录 `Mechanism2d` 的当前状态，因此在更新对象后必须在每个循环周期调用它。
 
 ```java
-LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);
-Logger.recordOutput("MyMechanism", mechanism);
+Mechanism2d mechanism = new Mechanism2d(3, 3);
+
+periodic() {
+  Logger.recordOutput("MyMechanism", mechanism);
+}
 ```
+
+:::tip
+也可以直接将 `Mechanism2d` 对象记录为字段（例如 `@AutoLogOutput private Mechanism2d mechanism = ...;`）。
+:::
 
 </TabItem>
 </Tabs>

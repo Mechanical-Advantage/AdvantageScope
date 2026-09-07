@@ -29,7 +29,7 @@ AdvantageScope משתמשת באופן אוטומטי ביחידות המובנ�
 הפורמטים WPILOG ו-NetworkTables תומכים בפרסום "מטא-דאטה" נוסף עבור כל שדה. AdvantageScope מחפשת שדות JSON בשם "unit" או "units" המכילים שם מחרוזת עבור סוג היחידה (תוך שימוש ברווחים, camel-case, pascal-case, או snake-case). לבדיקת המטא-דאטה עבור כל שדה, יש להרחיף את הסמן מעל שם השדה בסרגל הצד.
 
 :::tip
-AdvantageKit כוללת תמיכה במטא-דאטה של יחידות בעת תיעוד קלטים ופלטים, כולל תיעוד הערות. ראו את התיעוד [כאן](https://docs.advantagekit.org/data-flow/supported-types#units) לפרטים.
+WPILib כוללת מטא-דאטה של יחידות באופן אוטומטי בעת תיעוד אובייקטי `Measure`. בנוסף, AdvantageScope תומכת במטא-דאטה של יחידות המוגדר במפורש (למשל `Telemetry.setProperty(key, "unit", "volts")`). AdvantageKit כוללת תמיכה אוטומטית במטא-דאטה של יחידות בעת תיעוד קלטים ופלטים (ראו את התיעוד [כאן](https://docs.advantagekit.org/data-flow/supported-types#units) לפרטים).
 :::
 
 ### 🥉 שמות שדות {#field-naming}

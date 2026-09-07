@@ -18,17 +18,10 @@ _ממשק באנגלית מוצג למעלה._
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-ב-WPILib, הערכים חייבים להיות מתועדים לטבלה "/Metadata" כמחרוזות.
+ב-WPILib, ערכים חייבים להיות מפורסמים בטבלה "Metadata".
 
 ```java
-// NetworkTables (נשמר ב-DataLog כברירת מחדל)
-StringPublisher publisher = NetworkTableInstance.getDefault()
-    .getStringTopic("/Metadata/MyKey").publish();
-publisher.set("MyValue");
-
-// DataLog (אינו מפורסם ל-NetworkTables)
-StringLogEntry entry = new StringLogEntry(DataLogManager.getLog(), "/Metadata/MyKey");
-entry.append("MyValue");
+Telemetry.getTable("Metadata").putString("Darwin", "macOS");
 ```
 
 </TabItem>
@@ -37,7 +30,7 @@ entry.append("MyValue");
 ב-AdvantageKit, יש לקרוא למתודה למטה לפני הפעלת מקליט היומנים (logger). מטא-דאטה מאוחסן בנפרד בעת הפעלה באמיתי ובשחזור להשוואה קלה.
 
 ```java
-Logger.recordMetadata("MyKey", "MyValue");
+Logger.recordMetadata("Darwin", "macOS");
 ```
 
 </TabItem>

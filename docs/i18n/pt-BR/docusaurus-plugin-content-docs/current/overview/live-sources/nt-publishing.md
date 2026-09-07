@@ -31,8 +31,8 @@ Por padrão, o AdvantageScope publica todos os campos do NetworkTables armazenad
 
 A opção "Prefixos de publicação NT" define os prefixos permitidos para campos publicados no NetworkTables. Se deixada em branco, todos os campos serão incluídos. Caso contrário, uma lista de prefixos ou campos separados por vírgulas pode ser fornecida. Veja os exemplos abaixo.
 
-- "_SmartDashboard_": Inclui todos os campos na tabela "SmartDashboard".
-- "_SmartDashboard/Auto Selector_": Inclui apenas a tabela "SmartDashboard/Auto Selector".
+- "_Telemetry_": Inclui todos os campos na tabela "Telemetry".
+- "_Telemetry/Drive_": Inclui apenas a tabela "Telemetry/Drive".
 - "_limelight/tx,limelight/ty_": Inclui apenas os campos "limelight/tx" e "limelight/ty".
 
 ## Limitações {#limitations}

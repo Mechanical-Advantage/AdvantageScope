@@ -53,20 +53,10 @@ _تظهر في الصورة أعلاه الواجهة باللغة الإنجل�
 Pose3d poseA = new Pose3d();
 Pose3d poseB = new Pose3d();
 
-StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
-  .getStructTopic("MyPose", Pose3d.struct).publish();
-StructArrayPublisher<Pose3d> arrayPublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyPoseArray", Pose3d.struct).publish();
-
-periodic() {
-  publisher.set(poseA);
-  arrayPublisher.set(new Pose3d[] {poseA, poseB});
-}
+Telemetry.log("MyPose", poseA);
+Telemetry.log("MyPoseArray", poseA, poseB);
+Telemetry.log("MyPoseArray", new Pose3d[] {poseA, poseB});
 ```
-
-:::tip
-يمكن أيضاً استخدام فئة [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) من WPILib لتسجيل مجموعات متعددة من بيانات الوضعيات ثنائية الأبعاد معاً.
-:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">

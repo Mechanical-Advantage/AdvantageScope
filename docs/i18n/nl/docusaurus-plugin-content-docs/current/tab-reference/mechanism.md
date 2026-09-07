@@ -35,22 +35,32 @@ Om te beginnen sleep je een `Mechanism2d` naar het bedieningspaneel. Verwijder e
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-Om mechanismedata te publiceren met behulp van WPILib, verzend je een `Mechanism2d`-object naar NetworkTables (hieronder weergegeven). Als datalogging is ingeschakeld, kunnen de mechanismen ook worden bekeken op basis van het gegenereerde WPILOG-bestand.
+Om mechanismedata te publiceren met behulp van WPILib, log je een `Mechanism2d`-object periodiek met behulp van `Telemetry` (hieronder weergegeven). Merk op dat deze aanroep alleen de huidige status van de `Mechanism2d` vastlegt, dus deze moet elke loop-cyclus worden aangeroepen nadat het object is bijgewerkt.
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
-SmartDashboard.putData("MyMechanism", mechanism);
+
+periodic() {
+  Telemetry.log("MyMechanism", mechanism);
+}
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-Om mechanismedata te publiceren met behulp van AdvantageKit, registreer je een `Mechanism2d` als een uitvoerveld (hieronder weergegeven). Merk op dat deze aanroep alleen de huidige status van de `Mechanism2d` vastlegt, dus deze moet elke loop-cyclus worden aangeroepen nadat het object is bijgewerkt.
+Om mechanismedata te publiceren met behulp van AdvantageKit, registreer je een `Mechanism2d` periodiek als een uitvoerveld (hieronder weergegeven). Merk op dat deze aanroep alleen de huidige status van de `Mechanism2d` vastlegt, dus deze moet elke loop-cyclus worden aangeroepen nadat het object is bijgewerkt.
 
 ```java
 LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);
-Logger.recordOutput("MyMechanism", mechanism);
+
+periodic() {
+  Logger.recordOutput("MyMechanism", mechanism);
+}
 ```
+
+:::tip
+De [@AutoLogOutput](https://docs.advantagekit.org/data-flow/recording-outputs/annotation-logging)-annotatie van AdvantageKit kan worden gebruikt om de status van het mechanisme automatisch elke loop-cyclus te loggen zonder `Logger.recordOutput` aan te roepen.
+:::
 
 </TabItem>
 </Tabs>

@@ -29,7 +29,9 @@ AdvantageScope, `Rotation2d` ve `Translation3d` gibi yaygın yapılandırılmı�
 WPILOG ve NetworkTables formatları, her alan için ek "üst veri" yayınlamayı destekler. AdvantageScope, birim türü için bir dize adı içeren "unit" veya "units" adlı JSON alanlarını arar (boşluklar, camel-case, pascal-case veya snake-case kullanarak). Her alanın üst verisini kontrol etmek için imleci kenar çubuğundaki alan adının üzerine getirin.
 
 :::tip
-AdvantageKit, açıklama loglaması dahil olmak üzere girdileri ve çıktıları loglarken birim üst verisi desteği içerir. Ayrıntılar için dokümantasyonu [buradan](https://docs.advantagekit.org/data-flow/supported-types#units) kontrol edin.
+WPILib'de `Telemetry.log()` kullanarak `Measure` nesnelerini loglamak, birim üst verilerini otomatik olarak ekler. Birim üst verileri `Telemetry.setProperty("fieldName", "unit", "\"volts\"")` kullanılarak açıkça da yapılandırılabilir.
+
+AdvantageKit ayrıca girdileri ve çıktıları loglarken birim üst verisi desteği de içerir (ayrıntılar için [buraya](https://docs.advantagekit.org/data-flow/supported-types#units) bakın).
 :::
 
 ### 🥉 Alan adlandırması {#field-naming}

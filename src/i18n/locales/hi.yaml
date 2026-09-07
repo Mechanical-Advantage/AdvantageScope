@@ -770,6 +770,11 @@ menu:
     differentiate: "डिफरेंशिएट करें"
     integrate: "इंटीग्रेट करें"
 
+  field2d:
+    unlocked: "अनलॉक्ड"
+    lockedRobot: "लॉक्ड (रोबोट)"
+    lockedRobotRotation: "लॉक्ड (रोबोट और रोटेशन)"
+
   field3d:
     orbitField: "ऑर्बिट फील्ड"
     orbitRobot: "ऑर्बिट रोबोट"

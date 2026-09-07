@@ -31,8 +31,8 @@ Pentru a opri publicarea, dați clic pe `Fișier` > `Publică datele NT` > `Opre
 
 Opțiunea „Prefixuri publicare NT” setează prefixurile permise pentru câmpurile publicate în NetworkTables. Dacă este lăsată necompletată, vor fi incluse toate câmpurile. În caz contrar, poate fi furnizată o listă de prefixuri sau câmpuri separate prin virgulă. Consultați exemplele de mai jos.
 
-- „_SmartDashboard_”: Include toate câmpurile din tabelul „SmartDashboard”.
-- „_SmartDashboard/Auto Selector_”: Include doar tabelul „SmartDashboard/Auto Selector”.
+- „_Telemetry_”: Include toate câmpurile din tabelul „Telemetry”.
+- „_Telemetry/Drive_”: Include doar tabelul „Telemetry/Drive”.
 - „_limelight/tx,limelight/ty_”: Include doar câmpurile „limelight/tx” și „limelight/ty”.
 
 ## Limitări {#limitations}

@@ -46,19 +46,14 @@ Multe biblioteci suportă formatul struct, inclusiv WPILib și AdvantageKit. Cod
 <TabItem value="wpilib" label="WPILib" default>
 
 ```java
-SwerveModuleState[] states = new SwerveModuleState[] {
-  new SwerveModuleState(),
-  new SwerveModuleState(),
-  new SwerveModuleState(),
-  new SwerveModuleState()
-}
+SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity()
+};
 
-StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
-.getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
-
-periodic() {
-  publisher.set(states);
-}
+Telemetry.log("MyStates", states);
 ```
 
 </TabItem>

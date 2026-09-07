@@ -35,22 +35,36 @@ _Жоғарыда ағылшын тіліндегі интерфейс көрс�
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-WPILib арқылы механизм деректерін жариялау үшін NetworkTables жүйесіне `Mechanism2d` объектісін жіберіңіз (төменде көрсетілген). Егер деректерді журналдау қосылған болса, механизмдерді жасалған WPILOG файлы негізінде де қарауға болады.
+WPILib арқылы механизм деректерін жариялау үшін `Mechanism2d` объектісін жариялаңыз (төменде көрсетілген). Бұл шақыру `Mechanism2d` объектісінің ағымдағы күйін тек жазып алатынын ескеріңіз, сондықтан оны объект жаңартылғаннан кейін әрбір цикл сайын шақыру керек.
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
-SmartDashboard.putData("MyMechanism", mechanism);
+
+periodic() {
+  Telemetry.log("MyMechanism", mechanism);
+}
 ```
+
+:::tip
+Егер сіз AdvantageKit аннотацияларын пайдаланып жатсаңыз, `Mechanism2d` объектілерін тікелей өріс ретінде де журналындауға болады (мысалы, `@AutoLogOutput private Mechanism2d mechanism = ...;`).
+:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-AdvantageKit арқылы механизм деректерін жариялау үшін `Mechanism2d` объектісін шығыс өрісі ретінде жазып алыңыз (төменде көрсетілген). Бұл шақыру `Mechanism2d` ағымдағы күйін тек жазып алатынын ескеріңіз, сондықтан оны объект жаңартылғаннан кейін әрбір цикл сайын шақыру керек.
+AdvantageKit арқылы механизм деректерін жариялау үшін `Mechanism2d` объектісін шығыс ретінде жазып алыңыз (төменде көрсетілген). Бұл шақыру `Mechanism2d` объектісінің ағымдағы күйін тек жазып алатынын ескеріңіз, сондықтан оны объект жаңартылғаннан кейін әрбір цикл сайын шақыру керек.
 
 ```java
-LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);
-Logger.recordOutput("MyMechanism", mechanism);
+Mechanism2d mechanism = new Mechanism2d(3, 3);
+
+periodic() {
+  Logger.recordOutput("MyMechanism", mechanism);
+}
 ```
+
+:::tip
+`Mechanism2d` объектілерін тікелей өріс ретінде де журналындауға болады (мысалы, `@AutoLogOutput private Mechanism2d mechanism = ...;`).
+:::
 
 </TabItem>
 </Tabs>

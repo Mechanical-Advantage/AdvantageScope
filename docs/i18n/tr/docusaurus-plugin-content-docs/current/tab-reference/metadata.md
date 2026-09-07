@@ -18,17 +18,12 @@ Aşağıdaki örnek kod Java kullanarak üst verilerin nasıl loglanacağını g
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-WPILib'de değerler dize olarak "/Metadata" tablosuna loglanmalıdır.
+WPILib'de `Telemetry` sınıfını kullanarak değerleri "/Metadata" tablosuna dize olarak loglayın.
 
 ```java
-// NetworkTables (aynı zamanda varsayılan olarak DataLog'a da kaydedilir)
-StringPublisher publisher = NetworkTableInstance.getDefault()
-    .getStringTopic("/Metadata/MyKey").publish();
-publisher.set("MyValue");
-
-// DataLog (NetworkTables'a yayınlanmaz)
-StringLogEntry entry = new StringLogEntry(DataLogManager.getLog(), "/Metadata/MyKey");
-entry.append("MyValue");
+TelemetryTable metadata = Telemetry.getTable("Metadata");
+metadata.log("RobotName", "Darwin");
+metadata.log("Platform", "macOS");
 ```
 
 </TabItem>
@@ -37,7 +32,8 @@ entry.append("MyValue");
 AdvantageKit'te loglayıcıyı başlatmadan önce aşağıdaki yöntemi çağırın. Üst veri, kolay karşılaştırma için gerçek ve yeniden oynatmada çalışırken ayrı olarak saklanır.
 
 ```java
-Logger.recordMetadata("MyKey", "MyValue");
+Logger.recordMetadata("RobotName", "Darwin");
+Logger.recordMetadata("Platform", "macOS");
 ```
 
 </TabItem>

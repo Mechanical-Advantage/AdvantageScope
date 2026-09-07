@@ -31,8 +31,8 @@ sidebar_position: 3
 
 يحدد خيار "بادئات نشر NT" البادئات المسموح بها للحقول المنشورة إلى NetworkTables. إذا تُرِك فارغاً، سيتم تضمين جميع الحقول. بخلاف ذلك، يمكن توفير قائمة مفصولة بفواصل من البادئات أو الحقول. راجع الأمثلة أدناه.
 
-- "_SmartDashboard_": تضمين جميع الحقول في جدول "SmartDashboard".
-- "_SmartDashboard/Auto Selector_": تضمين جدول "SmartDashboard/Auto Selector" فقط.
+- "_Telemetry_": تضمين جميع الحقول في جدول "Telemetry".
+- "_Telemetry/Drive_": تضمين جدول "Telemetry/Drive" فقط.
 - "_limelight/tx,limelight/ty_": تضمين الحقلين "limelight/tx« و »limelight/ty" فقط.
 
 ## القيود {#limitations}

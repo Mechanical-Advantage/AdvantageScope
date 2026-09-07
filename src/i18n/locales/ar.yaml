@@ -817,6 +817,11 @@ menu:
     differentiate: "تفاضل"
     integrate: "تكامل"
 
+  field2d:
+    unlocked: "غير مقفل"
+    lockedRobot: "مقفل (الروبوت)"
+    lockedRobotRotation: "مقفل (الروبوت والدوران)"
+
   field3d:
     orbitField: "دوران حول الملعب"
     orbitRobot: "دوران حول الروبوت"

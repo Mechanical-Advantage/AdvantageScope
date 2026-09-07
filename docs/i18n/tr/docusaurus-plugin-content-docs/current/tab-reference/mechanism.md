@@ -35,22 +35,32 @@ Başlamak için bir `Mechanism2d` nesnesini kontrol paneline sürükleyin. X dü
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-WPILib kullanarak mekanizma verilerini yayınlamak için NetworkTables'a bir `Mechanism2d` nesnesi gönderin (aşağıda gösterilmiştir). Veri loglaması etkinleştirilmişse, mekanizmalar oluşturulan WPILOG dosyasına dayalı olarak da görüntülenebilir.
+WPILib kullanarak mekanizma verilerini yayınlamak için `Telemetry` kullanarak periyodik olarak bir `Mechanism2d` nesnesi loglayın (aşağıda gösterilmiştir). Bu çağrının yalnızca `Mechanism2d` nesnesinin mevcut durumunu kaydettiğini unutmayın, bu nedenle nesne güncellendikten sonra her döngü periyodunda çağrılmalıdır.
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
-SmartDashboard.putData("MyMechanism", mechanism);
+
+periodic() {
+  Telemetry.log("MyMechanism", mechanism);
+}
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-AdvantageKit kullanarak mekanizma verilerini yayınlamak için bir `Mechanism2d` nesnesini bir çıktı alanı olarak kaydedin (aşağıda gösterilmiştir). Bu çağrının yalnızca `Mechanism2d` nesnesinin mevcut durumunu kaydettiğini unutmayın, bu nedenle nesne güncellendikten sonra her döngü periyodunda çağrılmalıdır.
+AdvantageKit kullanarak mekanizma verilerini yayınlamak için bir `Mechanism2d` nesnesini periyodik olarak bir çıktı alanı olarak kaydedin (aşağıda gösterilmiştir). Bu çağrının yalnızca `Mechanism2d` nesnesinin mevcut durumunu kaydettiğini unutmayın, bu nedenle nesne güncellendikten sonra her döngü periyodunda çağrılmalıdır.
 
 ```java
 LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);
-Logger.recordOutput("MyMechanism", mechanism);
+
+periodic() {
+  Logger.recordOutput("MyMechanism", mechanism);
+}
 ```
+
+:::tip
+AdvantageKit'in [@AutoLogOutput](https://docs.advantagekit.org/data-flow/recording-outputs/annotation-logging) notasyonu, `Logger.recordOutput` çağrılmadan her döngü periyodunda mekanizmanın durumunu otomatik olarak loglamak için kullanılabilir.
+:::
 
 </TabItem>
 </Tabs>

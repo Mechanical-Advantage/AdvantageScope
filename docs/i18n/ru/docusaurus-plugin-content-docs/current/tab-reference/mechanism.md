@@ -35,22 +35,32 @@ _Выше показан интерфейс на английском языке
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-Чтобы опубликовать данные механизма с использованием WPILib, отправьте объект `Mechanism2d` в NetworkTables (показано ниже). Если логирование данных включено, механизмы также можно просматривать на основе сгенерированного файла WPILOG.
+Чтобы опубликовать данные механизма с использованием WPILib, периодически логируйте объект `Mechanism2d` с помощью `Telemetry` (показано ниже). Обратите внимание, что этот вызов записывает только текущее состояние `Mechanism2d`, поэтому его нужно вызывать в каждом цикле после обновления объекта.
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
-SmartDashboard.putData("MyMechanism", mechanism);
+
+periodic() {
+  Telemetry.log("MyMechanism", mechanism);
+}
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-Чтобы опубликовать данные механизма с использованием AdvantageKit, запишите `Mechanism2d` в качестве поля вывода (показано ниже). Обратите внимание, что этот вызов записывает только текущее состояние `Mechanism2d`, поэтому его нужно вызывать в каждом цикле после обновления объекта.
+Чтобы опубликовать данные механизма с использованием AdvantageKit, периодически записывайте `Mechanism2d` в качестве поля вывода (показано ниже). Обратите внимание, что этот вызов записывает только текущее состояние `Mechanism2d`, поэтому его нужно вызывать в каждом цикле после обновления объекта.
 
 ```java
 LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);
-Logger.recordOutput("MyMechanism", mechanism);
+
+periodic() {
+  Logger.recordOutput("MyMechanism", mechanism);
+}
 ```
+
+:::tip
+Аннотацию AdvantageKit [@AutoLogOutput](https://docs.advantagekit.org/data-flow/recording-outputs/annotation-logging) можно использовать для автоматического логирования состояния механизма в каждом цикле без вызова `Logger.recordOutput`.
+:::
 
 </TabItem>
 </Tabs>

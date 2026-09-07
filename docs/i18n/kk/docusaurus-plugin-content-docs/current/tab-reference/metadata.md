@@ -18,17 +18,10 @@ _Жоғарыда ағылшын тіліндегі интерфейс көрс�
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-WPILib ішінде мәндер «/Metadata» кестесіне жолдар ретінде журналдануы тиіс.
+WPILib ішінде мәндер «Metadata» кестесінде жариялануы тиіс.
 
 ```java
-// NetworkTables (әдепкі бойынша DataLog жүйесіне де сақталады)
-StringPublisher publisher = NetworkTableInstance.getDefault()
-    .getStringTopic("/Metadata/MyKey").publish();
-publisher.set("MyValue");
-
-// DataLog (NetworkTables жүйесінде жарияланбайды)
-StringLogEntry entry = new StringLogEntry(DataLogManager.getLog(), "/Metadata/MyKey");
-entry.append("MyValue");
+Telemetry.getTable("Metadata").putString("Darwin", "macOS");
 ```
 
 </TabItem>
@@ -37,7 +30,7 @@ entry.append("MyValue");
 AdvantageKit ішінде журналдаушыны іске қоспас бұрын төмендегі әдісті шақырыңыз. Оңай салыстыру үшін метадеректер нақты және қайталау режимдерінде орындау кезінде бөлек сақталады.
 
 ```java
-Logger.recordMetadata("MyKey", "MyValue");
+Logger.recordMetadata("Darwin", "macOS");
 ```
 
 </TabItem>

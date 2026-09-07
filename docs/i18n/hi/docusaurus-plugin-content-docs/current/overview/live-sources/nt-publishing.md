@@ -31,8 +31,8 @@ AdvantageScope एक लॉग फ़ाइल में संग्रही�
 
 "NT पब्लिश प्रीफिक्सेस" विकल्प NetworkTables पर पब्लिश किए गए फील्ड के लिए स्वीकार्य प्रीफिक्स सेट करता है। यदि खाली छोड़ दिया जाता है, तो सभी फील्ड शामिल किए जाएंगे। अन्यथा, प्रीफिक्स या फील्ड की एक अल्पविराम से अलग की गई सूची प्रदान की जा सकती है। नीचे उदाहरण देखें।
 
-- "_SmartDashboard_": "SmartDashboard" तालिका के सभी फील्ड शामिल करें।
-- "_SmartDashboard/Auto Selector_": केवल "SmartDashboard/Auto Selector" तालिका शामिल करें।
+- "_Telemetry_": "Telemetry" तालिका के सभी फील्ड शामिल करें।
+- "_Telemetry/Drive_": केवल "Telemetry/Drive" तालिका शामिल करें।
 - "_limelight/tx,limelight/ty_": केवल "limelight/tx" और "limelight/ty" फील्ड शामिल करें।
 
 ## सीमाएँ {#limitations}

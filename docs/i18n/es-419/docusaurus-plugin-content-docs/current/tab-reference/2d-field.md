@@ -26,6 +26,16 @@ Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia 
 
 </details>
 
+## Controles de la cámara {#camera-controls}
+
+Desplázate hacia arriba y hacia abajo sobre el campo para acercar y alejar. Haz clic y arrastra para desplazarte por el campo. Haz clic derecho en cualquier lugar del campo para abrir el menú de la cámara con las siguientes opciones:
+
+- **Desbloqueado**: El desplazamiento y el zoom son manuales.
+- **Bloqueado al robot**: La cámara se desplaza automáticamente para seguir al robot.
+- **Bloqueado al robot y rotación**: La cámara se desplaza y rota automáticamente para seguir al robot y su rotación.
+
+En cualquiera de los modos bloqueados, la cámara se puede desplazar libremente lejos del robot. Los botones de orientación en el panel de control se pueden utilizar para rotar la cámara en cualquier modo.
+
 ## Agregar objetos {#adding-objects}
 
 Para comenzar, arrastra un campo a la sección "Poses". Elimina un objeto con el botón X, u ocúltalo temporalmente haciendo clic en el ícono del ojo o haciendo doble clic en el nombre del campo. Para eliminar todos los objetos, haz clic en la papelera cerca del título del eje y luego en `Borrar todo`.
@@ -51,20 +61,9 @@ Muchas bibliotecas admiten el formato struct, incluidas WPILib y AdvantageKit. E
 Pose2d poseA = new Pose2d();
 Pose2d poseB = new Pose2d();
 
-StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
-  .getStructTopic("MyPose", Pose2d.struct).publish();
-StructArrayPublisher<Pose2d> arrayPublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
-
-periodic() {
-  publisher.set(poseA);
-  arrayPublisher.set(new Pose2d[] {poseA, poseB});
-}
+Telemetry.log("MyPose", poseA);
+Telemetry.log("MyPoseArray", new Pose2d[] {poseA, poseB});
 ```
-
-:::tip
-La clase [`Field2d`](https://docs.wpilib.org/es/stable/docs/software/dashboards/glass/field2d-widget.html) de WPILib también se puede utilizar para registrar varios conjuntos de datos de pose 2D juntos.
-:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">

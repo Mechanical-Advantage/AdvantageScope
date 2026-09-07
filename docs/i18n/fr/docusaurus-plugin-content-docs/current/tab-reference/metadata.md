@@ -18,17 +18,12 @@ L'exemple de code ci-dessous montre comment enregistrer des métadonnées en uti
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-Dans WPILib, les valeurs doivent être enregistrées dans la table « /Metadata » sous forme de chaînes de caractères.
+Dans WPILib, enregistrez les valeurs dans la table « /Metadata » sous forme de chaînes de caractères à l'aide de la classe `Telemetry`.
 
 ```java
-// NetworkTables (also saved to DataLog by default)
-StringPublisher publisher = NetworkTableInstance.getDefault()
-    .getStringTopic("/Metadata/MyKey").publish();
-publisher.set("MyValue");
-
-// DataLog (not published to NetworkTables)
-StringLogEntry entry = new StringLogEntry(DataLogManager.getLog(), "/Metadata/MyKey");
-entry.append("MyValue");
+TelemetryTable metadata = Telemetry.getTable("Metadata");
+metadata.log("RobotName", "Darwin");
+metadata.log("Platform", "macOS");
 ```
 
 </TabItem>
@@ -37,7 +32,8 @@ entry.append("MyValue");
 Dans AdvantageKit, appelez la méthode ci-dessous avant de démarrer l'enregistreur. Les métadonnées sont stockées séparément lors de l'exécution en réel et en relecture pour une comparaison facile.
 
 ```java
-Logger.recordMetadata("MyKey", "MyValue");
+Logger.recordMetadata("RobotName", "Darwin");
+Logger.recordMetadata("Platform", "macOS");
 ```
 
 </TabItem>

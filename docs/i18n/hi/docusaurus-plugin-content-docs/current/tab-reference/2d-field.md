@@ -38,6 +38,14 @@ _ऊपर अंग्रेजी इंटरफ़ेस दिखाया 
 
 <img src="/img/tab-reference/2d-field-2.webp" alt="2D field with objects" />
 
+## कैमरा नियंत्रण {#camera-controls}
+
+आप फील्ड को पैन करने के लिए दृश्य को खींच सकते हैं और ज़ूम इन या आउट करने के लिए स्क्रॉल कर सकते हैं। कैमरा रीसेट करने के लिए `Escape` कुंजी दबाएँ या डबल-क्लिक करें। तीन लॉकिंग विकल्पों में से चुनने के लिए लॉक बटन पर क्लिक करें:
+
+- **अनलॉक्ड:** कैमरा स्थिर रहता है और पूरे फील्ड को प्रदर्शित करता है।
+- **लॉक्ड (रोबोट):** कैमरा प्राथमिक रोबोट पर केंद्रित रहता है क्योंकि यह फील्ड के चारों ओर घूमता है।
+- **लॉक्ड (रोबोट और रोटेशन):** कैमरा प्राथमिक रोबोट पर केंद्रित रहता है और घूमता है ताकि रोबोट हमेशा ऊपर की ओर रहे।
+
 ## डेटा प्रारूप {#data-format}
 
 ज्यामिति डेटा को बाइट-एन्कोडेड स्ट्रक्ट (struct) या प्रोटोबफ़ (protobuf) के रूप में पब्लिश किया जाना चाहिए। `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, और अन्य सहित विभिन्न 2D और 3D ज्यामिति प्रकार समर्थित हैं।
@@ -51,20 +59,10 @@ WPILib और AdvantageKit सहित कई लाइब्रेरी स�
 Pose2d poseA = new Pose2d();
 Pose2d poseB = new Pose2d();
 
-StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
-  .getStructTopic("MyPose", Pose2d.struct).publish();
-StructArrayPublisher<Pose2d> arrayPublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
-
-periodic() {
-  publisher.set(poseA);
-  arrayPublisher.set(new Pose2d[] {poseA, poseB});
-}
+Telemetry.log("MyPose", poseA);
+Telemetry.log("MyPoseArray", poseA, poseB);
+Telemetry.log("MyPoseArray", new Pose2d[] {poseA, poseB});
 ```
-
-:::tip
-WPILib के [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) वर्ग का उपयोग 2D पोज़ डेटा के कई सेटों को एक साथ लॉग करने के लिए भी किया जा सकता है।
-:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">

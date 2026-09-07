@@ -757,6 +757,11 @@ menu:
     differentiate: "求导"
     integrate: "积分"
 
+  field2d:
+    unlocked: "未锁定"
+    lockedRobot: "锁定（机器人）"
+    lockedRobotRotation: "锁定（机器人和旋转）"
+
   field3d:
     orbitField: "环绕场地"
     orbitRobot: "环绕机器人"

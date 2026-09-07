@@ -31,8 +31,8 @@ Par défaut, AdvantageScope publie tous les champs NetworkTables stockés dans l
 
 L'option « Préfixes de publication NT » définit les préfixes autorisés pour les champs publiés sur NetworkTables. Si cette option est laissée vide, tous les champs seront inclus. Sinon, une liste de préfixes ou de champs séparés par des virgules peut être fournie. Voir les exemples ci-dessous.
 
-- « *SmartDashboard* » : Inclut tous les champs de la table « SmartDashboard ».
-- « *SmartDashboard/Auto Selector* » : Inclut uniquement la table « SmartDashboard/Auto Selector ».
+- « *Telemetry* » : Inclut tous les champs de la table « Telemetry ».
+- « *Telemetry/Drive* » : Inclut uniquement la table « Telemetry/Drive ».
 - « *limelight/tx,limelight/ty* » : Inclut uniquement les champs « limelight/tx » et « limelight/ty ».
 
 ## Limitations {#limitations}

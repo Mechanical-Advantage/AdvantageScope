@@ -26,6 +26,16 @@ _Выше показан интерфейс на английском языке
 
 </details>
 
+## Управление камерой {#camera-controls}
+
+Прокручивайте вверх и вниз над полем для приближения и отдаления. Нажмите и перетащите, чтобы перемещаться по полю. Щелкните правой кнопкой мыши в любом месте поля, чтобы открыть меню камеры со следующими опциями:
+
+- **Разблокировано**: Панорамирование и масштаб настраиваются вручную.
+- **Привязано к роботу**: Камера автоматически перемещается для отслеживания робота.
+- **Привязано к роботу и вращению**: Камера автоматически перемещается и вращается для отслеживания робота и его ориентации.
+
+В любом из режимов привязки камеру можно свободно перемещать в сторону от робота. Кнопки ориентации на панели управления можно использовать для поворота камеры в любом режиме.
+
 ## Добавление объектов {#adding-objects}
 
 Чтобы начать работу, перетащите поле в раздел «Позы». Удалите объект с помощью кнопки X или временно скройте его, нажав иконку глаза или дважды щелкнув имя поля. Чтобы удалить все объекты, нажмите на мусорную корзину рядом с заголовком оси, а затем `Очистить все`. Объекты можно переупорядочивать в списке путем щелчка и перетаскивания.
@@ -51,20 +61,9 @@ _Выше показан интерфейс на английском языке
 Pose2d poseA = new Pose2d();
 Pose2d poseB = new Pose2d();
 
-StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
-  .getStructTopic("MyPose", Pose2d.struct).publish();
-StructArrayPublisher<Pose2d> arrayPublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
-
-periodic() {
-  publisher.set(poseA);
-  arrayPublisher.set(new Pose2d[] {poseA, poseB});
-}
+Telemetry.log("MyPose", poseA);
+Telemetry.log("MyPoseArray", new Pose2d[] {poseA, poseB});
 ```
-
-:::tip
-Класс WPILib [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) также может использоваться для совместного логирования нескольких наборов данных 2D-поз.
-:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">

@@ -768,6 +768,11 @@ menu:
     differentiate: "Дифференциалдау"
     integrate: "Интегралдау"
 
+  field2d:
+    unlocked: "Құлпы ашылған"
+    lockedRobot: "Роботқа құлыпталған"
+    lockedRobotRotation: "Робот пен айналуға құлыпталған"
+
   field3d:
     orbitField: "Алаң орбитасы"
     orbitRobot: "Робот орбитасы"

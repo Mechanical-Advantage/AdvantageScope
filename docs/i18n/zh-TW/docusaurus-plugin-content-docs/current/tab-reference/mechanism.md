@@ -35,22 +35,41 @@ _上圖所示為英文介面。_
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-要使用 WPILib 發布機構資料，請將 `Mechanism2d` 物件發送至 NetworkTables（如下所示）。如果啟用了資料記錄，還可以基於產生的 WPILOG 檔案檢視機構。
+要使用 WPILib 發布機構資料，請使用 `Telemetry.log()` 發送 `Mechanism2d` 物件（如下所示）。請注意，此呼叫僅記錄 `Mechanism2d` 的目前狀態，因此在物件更新後，必須在週期性迴圈中呼叫它。如果啟用了資料記錄，還可以基於產生的 WPILOG 檔案檢視機構。
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
-SmartDashboard.putData("MyMechanism", mechanism);
+
+periodic() {
+  Telemetry.log("MyMechanism", mechanism);
+}
 ```
+
+:::tip
+對於子表格或具有非預設屬性的 NT 發布，請使用 `Telemetry.log("MyMechanism", mechanism.getPublisher())`。
+:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-要使用 AdvantageKit 發布機構資料，請將 `Mechanism2d` 記錄為輸出欄位（如下所示）。請注意，此呼叫僅記錄 `Mechanism2d` 的目前狀態，因此在物件更新後，必須在每個迴圈週期呼叫它。
+要使用 AdvantageKit 發布機構資料，請將 `Mechanism2d` 記錄為輸出欄位（如下所示）。請注意，此呼叫僅記錄 `Mechanism2d` 的目前狀態，因此在物件更新後，必須在週期性迴圈中呼叫它。
 
 ```java
 LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);
-Logger.recordOutput("MyMechanism", mechanism);
+
+periodic() {
+  Logger.recordOutput("MyMechanism", mechanism);
+}
 ```
+
+:::tip
+機構也可以使用 [`@AutoLogOutput`](https://docs.advantagekit.org/data-flow/recording-outputs#autologoutput-annotation) 注釋來記錄：
+
+```java
+@AutoLogOutput
+Mechanism2d mechanism = new Mechanism2d(3, 3);
+```
+:::
 
 </TabItem>
 </Tabs>

@@ -38,6 +38,14 @@ _تظهر في الصورة أعلاه الواجهة باللغة الإنجل�
 
 <img src="/img/tab-reference/2d-field-2.webp" alt="ملعب 2D مع كائنات" />
 
+## عناصر التحكم في الكاميرا {#camera-controls}
+
+يمكنك سحب العرض لتحريك الملعب والتمرير للتكبير أو التصغير. اضغط على مفتاح `Escape` أو انقر نقرًا مزدوجًا لإعادة تعيين الكاميرا. انقر فوق زر القفل للاختيار من بين ثلاثة خيارات للقفل:
+
+- **غير مقفل:** تظل الكاميرا ثابتة وتعرض الملعب بأكمله.
+- **مقفل (الروبوت):** تتركز الكاميرا على الروبوت الأساسي أثناء تحركه في الملعب.
+- **مقفل (الروبوت والدوران):** تتركز الكاميرا على الروبوت الأساسي وتدور بحيث يكون اتجاه الروبوت لأعلى دائمًا.
+
 ## تنسيق البيانات {#data-format}
 
 يجب نشر بيانات الهندسة كـ struct أو protobuf مرمز بالبايت. يتم دعم أنواع هندسية مختلفة ثنائية وثلاثية الأبعاد، بما في ذلك `Pose2d` و `Pose3d` و `Translation2d` و `Translation3d` والمزيد.
@@ -51,20 +59,10 @@ _تظهر في الصورة أعلاه الواجهة باللغة الإنجل�
 Pose2d poseA = new Pose2d();
 Pose2d poseB = new Pose2d();
 
-StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
-  .getStructTopic("MyPose", Pose2d.struct).publish();
-StructArrayPublisher<Pose2d> arrayPublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
-
-periodic() {
-  publisher.set(poseA);
-  arrayPublisher.set(new Pose2d[] {poseA, poseB});
-}
+Telemetry.log("MyPose", poseA);
+Telemetry.log("MyPoseArray", poseA, poseB);
+Telemetry.log("MyPoseArray", new Pose2d[] {poseA, poseB});
 ```
-
-:::tip
-يمكن أيضاً استخدام فئة [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) من WPILib لتسجيل مجموعات متعددة من بيانات الوضعيات ثنائية الأبعاد معاً.
-:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">

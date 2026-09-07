@@ -18,17 +18,10 @@ _上图所示为英文界面。_
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-在 WPILib 中，这些值必须作为字符串记录到 “/Metadata” 表中。
+在 WPILib 中，值必须发布在 “Metadata” 表中。
 
 ```java
-// NetworkTables (默认情况下也保存到 DataLog)
-StringPublisher publisher = NetworkTableInstance.getDefault()
-    .getStringTopic("/Metadata/MyKey").publish();
-publisher.set("MyValue");
-
-// DataLog (不发布到 NetworkTables)
-StringLogEntry entry = new StringLogEntry(DataLogManager.getLog(), "/Metadata/MyKey");
-entry.append("MyValue");
+Telemetry.getTable("Metadata").putString("Darwin", "macOS");
 ```
 
 </TabItem>
@@ -37,7 +30,7 @@ entry.append("MyValue");
 在 AdvantageKit 中，在启动记录器之前调用以下方法。在运行真实数据和重放数据时，元数据被单独存储，以便于比较。
 
 ```java
-Logger.recordMetadata("MyKey", "MyValue");
+Logger.recordMetadata("Darwin", "macOS");
 ```
 
 </TabItem>

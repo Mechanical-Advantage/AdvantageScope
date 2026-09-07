@@ -769,6 +769,11 @@ menu:
     differentiate: "Diferenciar"
     integrate: "Integrar"
 
+  field2d:
+    unlocked: "Desbloqueado"
+    lockedRobot: "Bloqueado ao robô"
+    lockedRobotRotation: "Bloqueado ao robô e rotação"
+
   field3d:
     orbitField: "Orbitar campo"
     orbitRobot: "Orbitar robô"

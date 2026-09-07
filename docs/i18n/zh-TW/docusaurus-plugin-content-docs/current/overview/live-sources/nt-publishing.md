@@ -31,8 +31,8 @@ AdvantageScope 支援將儲存在日誌檔案中的 NetworkTables 資料發布�
 
 「NT 發布前綴」選項設定發布到 NetworkTables 的欄位之允許前綴。如果留空，將包含所有欄位。否則，可以提供以逗號分隔的前綴或欄位清單。請參閱下方範例。
 
-- 「_SmartDashboard_」：包含「SmartDashboard」表格中的所有欄位。
-- 「_SmartDashboard/Auto Selector_」：僅包含「SmartDashboard/Auto Selector」表格。
+- 「_Telemetry_」：包含「Telemetry」表格中的所有欄位。
+- 「_Telemetry/Drive_」：僅包含「Telemetry/Drive」表格。
 - 「_limelight/tx,limelight/ty_」：僅包含「limelight/tx」與「limelight/ty」欄位。
 
 ## 限制 {#limitations}

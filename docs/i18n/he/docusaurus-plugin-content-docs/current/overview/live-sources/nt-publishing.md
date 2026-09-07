@@ -31,8 +31,8 @@ AdvantageScope תומכת בפרסום נתוני NetworkTables המאוחסני
 
 האפשרות "קידומות פרסום ב-NetworkTables" קובעת את הקידומות המורשות עבור שדות שמפורסמים ל-NetworkTables. אם מושארת ריקה, כל השדות ייכללו. אחרת, ניתן לספק רשימה מופרדת בפסיקים של קידומות או שדות. ראו דוגמאות למטה.
 
-- "_SmartDashboard_": כולל את כל השדות בטבלה "SmartDashboard".
-- "_SmartDashboard/Auto Selector_": כולל רק את הטבלה "SmartDashboard/Auto Selector".
+- "_Telemetry_": כולל את כל השדות בטבלה "Telemetry".
+- "_Telemetry/Drive_": כולל רק את הטבלה "Telemetry/Drive".
 - "_limelight/tx,limelight/ty_": כולל רק את השדות "limelight/tx" ו-"limelight/ty".
 
 ## מגבלות {#limitations}

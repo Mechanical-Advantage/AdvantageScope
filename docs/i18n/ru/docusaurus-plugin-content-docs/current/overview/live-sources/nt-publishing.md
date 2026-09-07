@@ -31,8 +31,8 @@ AdvantageScope поддерживает публикацию данных Networ
 
 Опция «Префиксы публикации NT» задает допустимые префиксы для полей, публикуемых в NetworkTables. Если оставить поле пустым, будут включены все поля. В противном случае может быть предоставлен список префиксов или полей, разделенных запятыми. См. примеры ниже.
 
-- «_SmartDashboard_»: Включить все поля в таблице «SmartDashboard».
-- «_SmartDashboard/Auto Selector_»: Включить только таблицу «SmartDashboard/Auto Selector».
+- «_Telemetry_»: Включить все поля в таблице «Telemetry».
+- «_Telemetry/Drive_»: Включить только таблицу «Telemetry/Drive».
 - «_limelight/tx,limelight/ty_»: Включить только поля «limelight/tx» и «limelight/ty».
 
 ## Ограничения {#limitations}
