@@ -59,12 +59,6 @@ export default class Field2dRenderer implements TabRenderer {
         let boundingWidth = isVertical ? containerHeight - Math.abs(visibleYOffset * 2) : containerWidth;
         let boundingHeight = isVertical ? containerWidth : containerHeight - Math.abs(visibleYOffset * 2);
 
-        if (this.trackingMode === Field2dCameraMode.RobotAndRotation) {
-          let maxDim = Math.hypot(containerWidth, containerHeight);
-          boundingWidth = maxDim;
-          boundingHeight = maxDim;
-        }
-
         let fieldData = window.assets?.field2ds.find((field) => field.id === this.lastCommand?.field);
         if (!fieldData) return;
 
@@ -215,8 +209,6 @@ export default class Field2dRenderer implements TabRenderer {
       let maxDim = Math.hypot(this.CONTAINER.clientWidth, this.CONTAINER.clientHeight);
       width = maxDim;
       height = maxDim;
-      boundingWidth = maxDim;
-      boundingHeight = maxDim;
     }
 
     // Exit if render state unchanged
