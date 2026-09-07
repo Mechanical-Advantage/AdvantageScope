@@ -369,9 +369,10 @@ jobs:
         if: |
           github.repository == 'Mechanical-Advantage/AdvantageScope' &&
           github.event_name != 'pull_request'
-        run: |
-          echo "CSC_LINK=${{ secrets.APPLE_DEVELOPER_ID }}" >> $GITHUB_ENV
-          echo "CSC_KEY_PASSWORD=${{ secrets.APPLE_DEVELOPER_ID_PWD }}" >> $GITHUB_ENV
+        uses: apple-actions/import-codesign-certs@v3
+        with:
+          p12-file-base64: ${{ secrets.APPLE_DEVELOPER_ID }}
+          p12-password: ${{ secrets.APPLE_DEVELOPER_ID_PWD }}
       - name: Load macOS notarization credentials
         if: |
           github.repository == 'Mechanical-Advantage/AdvantageScope' &&
@@ -562,9 +563,10 @@ jobs:
         if: |
           github.repository == 'Mechanical-Advantage/AdvantageScope' &&
           github.event_name != 'pull_request'
-        run: |
-          echo "CSC_LINK=${{ secrets.APPLE_DEVELOPER_ID }}" >> $GITHUB_ENV
-          echo "CSC_KEY_PASSWORD=${{ secrets.APPLE_DEVELOPER_ID_PWD }}" >> $GITHUB_ENV
+        uses: apple-actions/import-codesign-certs@v3
+        with:
+          p12-file-base64: ${{ secrets.APPLE_DEVELOPER_ID }}
+          p12-password: ${{ secrets.APPLE_DEVELOPER_ID_PWD }}
       - name: Load macOS notarization credentials
         if: |
           github.repository == 'Mechanical-Advantage/AdvantageScope' &&
