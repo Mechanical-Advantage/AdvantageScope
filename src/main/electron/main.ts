@@ -1560,7 +1560,7 @@ function select2DCameraPopup(window: BrowserWindow, position: [number, number], 
   const cameraMenu = new Menu();
   cameraMenu.append(
     new MenuItem({
-      label: "Unlocked",
+      label: t("menu.field2d.unlocked"),
       type: "checkbox",
       checked: selectedIndex === Field2dCameraMode.Unlocked,
       click() {
@@ -1570,7 +1570,7 @@ function select2DCameraPopup(window: BrowserWindow, position: [number, number], 
   );
   cameraMenu.append(
     new MenuItem({
-      label: "Locked to Robot",
+      label: t("menu.field2d.lockedRobot"),
       type: "checkbox",
       checked: selectedIndex === Field2dCameraMode.Robot,
       click() {
@@ -1580,7 +1580,7 @@ function select2DCameraPopup(window: BrowserWindow, position: [number, number], 
   );
   cameraMenu.append(
     new MenuItem({
-      label: "Locked to Robot && Rotation",
+      label: t("menu.field2d.lockedRobotRotation"),
       type: "checkbox",
       checked: selectedIndex === Field2dCameraMode.RobotAndRotation,
       click() {

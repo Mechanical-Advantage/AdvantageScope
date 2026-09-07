@@ -780,6 +780,11 @@ menu:
     differentiate: "Differentiate" # Menu option to differentiate graph data
     integrate: "Integrate" # Menu option to integrate graph data
 
+  field2d:
+    unlocked: "Unlocked" # Menu option for 2D camera unlocked mode
+    lockedRobot: "Locked to Robot" # Menu option for 2D camera locked to robot
+    lockedRobotRotation: "Locked to Robot & Rotation" # Menu option for 2D camera locked to robot and rotation
+
   field3d:
     orbitField: "Orbit Field" # Menu option for 3D camera orbiting the field
     orbitRobot: "Orbit Robot" # Menu option for 3D camera orbiting the robot

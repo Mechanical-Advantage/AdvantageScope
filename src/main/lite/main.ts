@@ -1394,20 +1394,21 @@ async function handleHubMessage(message: NamedMessage) {
         let selectedIndex: Field2dCameraMode = message.data.selectedIndex;
         let menuItems: (MenuItem | Submenu | "-")[] = [
           {
-            content: (selectedIndex === Field2dCameraMode.Unlocked ? "\u2714 " : "") + "Unlocked",
+            content: (selectedIndex === Field2dCameraMode.Unlocked ? "\u2714 " : "") + t("menu.field2d.unlocked"),
             callback() {
               sendMessage(hubPort, "set-2d-camera", Field2dCameraMode.Unlocked);
             }
           },
           {
-            content: (selectedIndex === Field2dCameraMode.Robot ? "\u2714 " : "") + "Locked to Robot",
+            content: (selectedIndex === Field2dCameraMode.Robot ? "\u2714 " : "") + t("menu.field2d.lockedRobot"),
             callback() {
               sendMessage(hubPort, "set-2d-camera", Field2dCameraMode.Robot);
             }
           },
           {
             content:
-              (selectedIndex === Field2dCameraMode.RobotAndRotation ? "\u2714 " : "") + "Locked to Robot & Rotation",
+              (selectedIndex === Field2dCameraMode.RobotAndRotation ? "\u2714 " : "") +
+              t("menu.field2d.lockedRobotRotation"),
             callback() {
               sendMessage(hubPort, "set-2d-camera", Field2dCameraMode.RobotAndRotation);
             }
