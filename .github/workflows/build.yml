@@ -312,12 +312,15 @@ jobs:
         # if: |
         #   github.repository == 'Mechanical-Advantage/AdvantageScope' &&
         #   github.event_name == 'release'
+        shell: bash
         run: |
           echo "AZURE_TENANT_ID=${{ secrets.AZURE_SIGNING_TENANT_ID }}" >> $GITHUB_ENV
           echo "AZURE_CLIENT_ID=${{ secrets.AZURE_SIGNING_CLIENT_ID }}" >> $GITHUB_ENV
           echo "AZURE_CLIENT_SECRET=${{ secrets.AZURE_SIGNING_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "WIN_SIGN_ARGS=-c.win.azureSignOptions.endpoint=${{ vars.AZURE_SIGNING_ENDPOINT }} -c.win.azureSignOptions.codeSigningAccountName=${{ vars.AZURE_SIGNING_ACCOUNT_NAME }} -c.win.azureSignOptions.certificateProfileName=${{ vars.AZURE_SIGNING_CERTIFICATE_PROFILE }} -c.win.azureSignOptions.publisherName=\"${{ vars.AZURE_SIGNING_PUBLISHER_NAME }}\"" >> $GITHUB_ENV
       - name: Build app
-        run: npx electron-builder build --${{ matrix.arch }} --publish never -c.win.azureSignOptions.endpoint=${{ vars.AZURE_SIGNING_ENDPOINT }} -c.win.azureSignOptions.codeSigningAccountName=${{ vars.AZURE_SIGNING_ACCOUNT_NAME }} -c.win.azureSignOptions.certificateProfileName=${{ vars.AZURE_SIGNING_CERTIFICATE_PROFILE }} -c.win.azureSignOptions.publisherName="${{ vars.AZURE_SIGNING_PUBLISHER_NAME }}"
+        shell: bash
+        run: npx electron-builder build --${{ matrix.arch }} --publish never ${{ env.WIN_SIGN_ARGS }}
         env:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
@@ -502,12 +505,15 @@ jobs:
         # if: |
         #   github.repository == 'Mechanical-Advantage/AdvantageScope' &&
         #   github.event_name == 'release'
+        shell: bash
         run: |
           echo "AZURE_TENANT_ID=${{ secrets.AZURE_SIGNING_TENANT_ID }}" >> $GITHUB_ENV
           echo "AZURE_CLIENT_ID=${{ secrets.AZURE_SIGNING_CLIENT_ID }}" >> $GITHUB_ENV
           echo "AZURE_CLIENT_SECRET=${{ secrets.AZURE_SIGNING_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "WIN_SIGN_ARGS=-c.win.azureSignOptions.endpoint=${{ vars.AZURE_SIGNING_ENDPOINT }} -c.win.azureSignOptions.codeSigningAccountName=${{ vars.AZURE_SIGNING_ACCOUNT_NAME }} -c.win.azureSignOptions.certificateProfileName=${{ vars.AZURE_SIGNING_CERTIFICATE_PROFILE }} -c.win.azureSignOptions.publisherName=\"${{ vars.AZURE_SIGNING_PUBLISHER_NAME }}\"" >> $GITHUB_ENV
       - name: Build app
-        run: npx electron-builder build --publish never --${{ matrix.arch }} -w dir -c.win.azureSignOptions.endpoint=${{ vars.AZURE_SIGNING_ENDPOINT }} -c.win.azureSignOptions.codeSigningAccountName=${{ vars.AZURE_SIGNING_ACCOUNT_NAME }} -c.win.azureSignOptions.certificateProfileName=${{ vars.AZURE_SIGNING_CERTIFICATE_PROFILE }} -c.win.azureSignOptions.publisherName="${{ vars.AZURE_SIGNING_PUBLISHER_NAME }}"
+        shell: bash
+        run: npx electron-builder build --publish never --${{ matrix.arch }} -w dir ${{ env.WIN_SIGN_ARGS }}
         env:
           ASCOPE_DISTRIBUTION: WPILIB
           NODE_OPTIONS: --max-old-space-size=4096
