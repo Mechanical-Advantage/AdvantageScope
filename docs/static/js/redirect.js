@@ -6,7 +6,22 @@
 // at the root directory of this project.
 
 (function () {
-  var supportedLangs = ["en-US", "es-419", "fr", "pt-BR", "tr", "ro", "he", "kk", "ru", "ar", "zh-CN", "zh-TW"];
+  var supportedLangs = [
+    "en-US",
+    "es-419",
+    "fr",
+    "nl",
+    "pt-BR",
+    "ro",
+    "tr",
+    "ru",
+    "kk",
+    "he",
+    "ar",
+    "hi",
+    "zh-CN",
+    "zh-TW"
+  ];
   var defaultLocale = "en-US";
 
   // Listen for manual language changes (locale dropdown clicks)

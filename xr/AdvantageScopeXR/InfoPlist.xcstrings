@@ -61,10 +61,22 @@
             "value" : "AdvantageScope XR משתמש במצלמה כדי להציג תוכן מציאות רבודה."
           }
         },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AdvantageScope XR ऑगमेंटेड रियलिटी सामग्री दिखाने के लिए कैमरे का उपयोग करता है।"
+          }
+        },
         "kk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "AdvantageScope XR толықтырылған шынайылық контентін көрсету үшін камераны пайдаланады."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AdvantageScope XR gebruikt de camera om augmented reality-content te tonen."
           }
         },
         "pt-BR" : {
@@ -139,10 +151,22 @@
             "value" : "AdvantageScope XR משתמש ברשת המקומית כדי לתקשר עם אפליקציית שולחן העבודה של AdvantageScope."
           }
         },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AdvantageScope XR, AdvantageScope डेस्कटॉप ऐप के साथ संचार करने के लिए स्थानीय नेटवर्क का उपयोग करता है।"
+          }
+        },
         "kk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "AdvantageScope XR AdvantageScope жұмыс үстелі қолданбасымен байланысу үшін жергілікті желіні пайдаланады."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AdvantageScope XR gebruikt het lokale netwerk om te communiceren met de AdvantageScope-desktopapp."
           }
         },
         "pt-BR" : {

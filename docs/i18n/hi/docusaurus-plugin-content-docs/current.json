@@ -1,0 +1,54 @@
+{
+  "version.label": {
+    "message": "अगला",
+    "description": "The label for version current"
+  },
+  "sidebar.sidebar.category.Overview": {
+    "message": "अवलोकन",
+    "description": "The label for category 'Overview' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Overview.link.generated-index.description": {
+    "message": "ये पृष्ठ AdvantageScope में नेविगेट करने और डेटा तक पहुँचने की बुनियादी बातों को समझाते हैं।",
+    "description": "The generated-index page description for category 'Overview' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.🧭 App Navigation": {
+    "message": "🧭 ऐप नेविगेशन",
+    "description": "The label for category '🧭 App Navigation' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.📂 Log Files": {
+    "message": "📂 लॉग फ़ाइलें",
+    "description": "The label for category '📂 Log Files' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.🛜 Live Sources": {
+    "message": "🛜 लाइव स्रोत",
+    "description": "The label for category '🛜 Live Sources' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tab Reference": {
+    "message": "टैब संदर्भ",
+    "description": "The label for category 'Tab Reference' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tab Reference.link.generated-index.description": {
+    "message": "AdvantageScope डेटा देखने और विश्लेषण करने के कई तरीकों का समर्थन करता है, जिन्हें टैब्स में व्यवस्थित किया गया है। प्रत्येक नए खोले गए टैब के लिए विज़ुअलाइज़ेशन के प्रकार का चयन किया जा सकता है, और किसी दिए गए प्रकार के कई टैब्स एक साथ खुले हो सकते हैं। संगठन की आसानी के लिए टैब्स को नाम दिया जा सकता है और एक साथ, सिंक्रनाइज़ डेटा देखने के लिए अलग विंडो में पॉप-आउट किया जा सकता है।",
+    "description": "The generated-index page description for category 'Tab Reference' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.📉 Line Graph": {
+    "message": "📉 लाइन ग्राफ",
+    "description": "The label for category '📉 Line Graph' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.👀 3D Field": {
+    "message": "👀 3D फील्ड",
+    "description": "The label for category '👀 3D Field' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.More Features": {
+    "message": "अन्य फीचर्स",
+    "description": "The label for category 'More Features' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.⚙️ Custom Assets": {
+    "message": "⚙️ कस्टम एसेट्स",
+    "description": "The label for category '⚙️ Custom Assets' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Legal": {
+    "message": "कानूनी",
+    "description": "The label for category 'Legal' in sidebar 'sidebar'"
+  }
+}

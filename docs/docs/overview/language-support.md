@@ -12,13 +12,15 @@ AdvantageScope supports multiple languages to provide a localized experience for
 - English (US)
 - Spanish (Latin America)
 - French
+- Dutch
 - Portuguese (Brazil)
-- Turkish
 - Romanian
-- Hebrew
-- Kazakh
+- Turkish
 - Russian
+- Kazakh
+- Hebrew
 - Arabic
+- Hindi
 - Simplified Chinese
 - Traditional Chinese
 

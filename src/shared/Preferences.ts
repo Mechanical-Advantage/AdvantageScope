@@ -33,7 +33,22 @@ export default interface Preferences {
   timestamps: "start-zero" | "original";
 }
 
-export const SUPPORTED_LANGS = ["en-US", "es-419", "fr", "pt-BR", "tr", "ro", "he", "kk", "ru", "ar", "zh-CN", "zh-TW"];
+export const SUPPORTED_LANGS = [
+  "en-US",
+  "es-419",
+  "fr",
+  "nl",
+  "pt-BR",
+  "ro",
+  "tr",
+  "ru",
+  "kk",
+  "he",
+  "ar",
+  "hi",
+  "zh-CN",
+  "zh-TW"
+];
 
 export const DEFAULT_PREFS: Preferences = {
   language: "",

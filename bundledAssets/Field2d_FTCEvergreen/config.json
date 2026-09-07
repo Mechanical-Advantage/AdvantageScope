@@ -10,13 +10,15 @@
     "en-US": "Evergreen",
     "es-419": "Perenne",
     "fr": "Permanent",
+    "nl": "Permanent",
     "pt-BR": "Perene",
-    "tr": "Kalıcı",
     "ro": "Permanent",
-    "he": "רב-שנתי",
-    "kk": "Тұрақты",
+    "tr": "Kalıcı",
     "ru": "Постоянное",
+    "kk": "Тұрақты",
+    "he": "רב-שנתי",
     "ar": "دائم",
+    "hi": "सदाबहार",
     "zh-CN": "常青",
     "zh-TW": "常青"
   }

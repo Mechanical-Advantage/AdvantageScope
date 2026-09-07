@@ -289,6 +289,8 @@
 				ar,
 				"zh-Hans",
 				"zh-Hant",
+				nl,
+				hi,
 			);
 			mainGroup = 8CBFA6CF2BF8663C009AA8CD;
 			packageReferences = (

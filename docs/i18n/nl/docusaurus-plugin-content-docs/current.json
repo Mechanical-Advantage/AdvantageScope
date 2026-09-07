@@ -1,0 +1,54 @@
+{
+  "version.label": {
+    "message": "Volgende",
+    "description": "The label for version current"
+  },
+  "sidebar.sidebar.category.Overview": {
+    "message": "Overzicht",
+    "description": "The label for category 'Overview' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Overview.link.generated-index.description": {
+    "message": "Deze pagina's behandelen de basisprincipes van het navigeren in AdvantageScope en toegang krijgen tot data.",
+    "description": "The generated-index page description for category 'Overview' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.🧭 App Navigation": {
+    "message": "🧭 App-navigatie",
+    "description": "The label for category '🧭 App Navigation' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.📂 Log Files": {
+    "message": "📂 Logbestanden",
+    "description": "The label for category '📂 Log Files' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.🛜 Live Sources": {
+    "message": "🛜 Live-bronnen",
+    "description": "The label for category '🛜 Live Sources' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tab Reference": {
+    "message": "Tabbladreferentie",
+    "description": "The label for category 'Tab Reference' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tab Reference.link.generated-index.description": {
+    "message": "AdvantageScope ondersteunt vele manieren om data te bekijken en te analyseren, georganiseerd in tabbladen. Het type visualisatie kan worden geselecteerd voor elk nieuw geopend tabblad, en er kunnen meerdere tabbladen van een bepaald type tegelijk geopend zijn. Tabbladen kunnen van een naam worden voorzien voor eenvoudige organisatie en kunnen worden losgekoppeld naar aparte vensters voor gelijktijdige, gesynchroniseerde dataweergave.",
+    "description": "The generated-index page description for category 'Tab Reference' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.📉 Line Graph": {
+    "message": "📉 Lijngrafiek",
+    "description": "The label for category '📉 Line Graph' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.👀 3D Field": {
+    "message": "👀 3D-veld",
+    "description": "The label for category '👀 3D Field' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.More Features": {
+    "message": "Meer functies",
+    "description": "The label for category 'More Features' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.⚙️ Custom Assets": {
+    "message": "⚙️ Aangepaste assets",
+    "description": "The label for category '⚙️ Custom Assets' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Legal": {
+    "message": "Juridisch",
+    "description": "The label for category 'Legal' in sidebar 'sidebar'"
+  }
+}

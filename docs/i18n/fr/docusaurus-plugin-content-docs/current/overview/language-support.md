@@ -12,13 +12,15 @@ AdvantageScope prend en charge plusieurs langues pour offrir une expérience loc
 - Anglais (États-Unis)
 - Espagnol (Amérique latine)
 - Français
+- Néerlandais
 - Portugais (Brésil)
-- Turc
 - Roumain
-- Hébreu
-- Kazakh
+- Turc
 - Russe
+- Kazakh
+- Hébreu
 - Arabe
+- Hindi
 - Chinois simplifié
 - Chinois traditionnel
 

@@ -41,7 +41,7 @@ const config: Config = {
 
   i18n: {
     defaultLocale: "en-US",
-    locales: ["en-US", "es-419", "fr", "pt-BR", "tr", "ro", "he", "kk", "ru", "ar", "zh-CN", "zh-TW"],
+    locales: ["en-US", "es-419", "fr", "nl", "pt-BR", "ro", "tr", "ru", "kk", "he", "ar", "hi", "zh-CN", "zh-TW"],
     localeConfigs: {
       "en-US": {
         label: "English (US)"

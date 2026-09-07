@@ -28,10 +28,22 @@
             "value" : "לכייל"
           }
         },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कैलिब्रेट करें"
+          }
+        },
         "kk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Калибрлеу"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kalibreren"
           }
         },
         "pt-BR" : {
@@ -99,10 +111,22 @@
             "value" : "יש להזיז את %@ כדי לזהות את הסביבה."
           }
         },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "वातावरण का पता लगाने के लिए %@ को हिलाएँ।"
+          }
+        },
         "kk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ортаны анықтау үшін %@ құрылғысын жылжытыңыз."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beweeg %@ om de omgeving te detecteren."
           }
         },
         "pt-BR" : {
@@ -170,10 +194,22 @@
             "value" : "להקליט"
           }
         },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "रिकॉर्ड करें"
+          }
+        },
         "kk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Жазу"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opnemen"
           }
         },
         "pt-BR" : {
@@ -241,10 +277,22 @@
             "value" : "לסרוק"
           }
         },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "स्कैन करें"
+          }
+        },
         "kk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Сканерлеу"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scannen"
           }
         },
         "pt-BR" : {
@@ -312,10 +360,22 @@
             "value" : "יש לסרוק את קוד ה-QR שמוצג ב-AdvantageScope."
           }
         },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AdvantageScope में प्रदर्शित QR कोड स्कैन करें।"
+          }
+        },
         "kk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "AdvantageScope ішінде көрсетілген QR кодын сканерлеңіз."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan de QR-code die wordt weergegeven in AdvantageScope."
           }
         },
         "pt-BR" : {
@@ -383,10 +443,22 @@
             "value" : "חיפוש שרת..."
           }
         },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सर्वर खोजा जा रहा है..."
+          }
+        },
         "kk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Сервер ізделуде..."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoeken naar server..."
           }
         },
         "pt-BR" : {
@@ -454,10 +526,22 @@
             "value" : "יש לעדכן את AdvantageScope לגרסה העדכנית ביותר ואז לנסות שוב."
           }
         },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AdvantageScope को नवीनतम संस्करण में अपडेट करें, फिर पुनः प्रयास करें।"
+          }
+        },
         "kk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "AdvantageScope соңғы нұсқасына жаңартып, қайта көріңіз."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Werk AdvantageScope bij naar de nieuwste versie en probeer het opnieuw."
           }
         },
         "pt-BR" : {
@@ -525,10 +609,22 @@
             "value" : "יש לעדכן את AdvantageScope XR לגרסה העדכנית ביותר ואז לנסות שוב."
           }
         },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AdvantageScope XR को नवीनतम संस्करण में अपडेट करें, फिर पुनः प्रयास करें।"
+          }
+        },
         "kk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "AdvantageScope XR соңғы нұсқасына жаңартып, қайта көріңіз."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Werk AdvantageScope XR bij naar de nieuwste versie en probeer het opnieuw."
           }
         },
         "pt-BR" : {

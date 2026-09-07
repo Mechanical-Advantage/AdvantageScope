@@ -194,7 +194,7 @@ O sistema de coordenadas usado nesta guia é personalizável. Consulte a página
 O campo 3D suporta três modos de renderização:
 
 - **Cinematográfico (Esquerda):** Renderiza usando sombras, iluminação, reflexos e modelos 3D de alto detalhamento para uma aparência mais realista. Requer uma GPU razoavelmente potente.
-- **Padrão (Centro):** Padrão, renderiza com iluminação mínima e modelos 3D simplificados. Executa bem na maioria dos dispositivos.
+- **Normal (Centro):** Padrão, renderiza com iluminação mínima e modelos 3D simplificados. Executa bem na maioria dos dispositivos.
 - **Baixo consumo (Direita):** Reduz a taxa de quadros, a resolução e o detalhamento do modelo para reduzir o consumo de bateria e fornecer um desempenho mais consistente em dispositivos de ponta baixa.
 
 <img src="/img/tab-reference/3d-field/3d-field-6.webp" alt="Comparação de modos de renderização" />

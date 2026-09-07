@@ -519,13 +519,15 @@ async function handleHubMessage(message: NamedMessage) {
                           { name: "English (US)", value: "en-US" },
                           { name: "Español (Latinoamérica)", value: "es-419" },
                           { name: "Français", value: "fr" },
+                          { name: "Nederlands", value: "nl" },
                           { name: "Português (Brasil)", value: "pt-BR" },
-                          { name: "Türkçe", value: "tr" },
                           { name: "Românǎ", value: "ro" },
-                          { name: "עִברִית", value: "he" },
-                          { name: "Қазақ тілі", value: "kk" },
+                          { name: "Türkçe", value: "tr" },
                           { name: "Русский", value: "ru" },
+                          { name: "Қазақ тілі", value: "kk" },
+                          { name: "עִברִית", value: "he" },
                           { name: "العربية", value: "ar" },
+                          { name: "हिन्दी", value: "hi" },
                           { name: "简体中文", value: "zh-CN" },
                           { name: "繁體中文", value: "zh-TW" }
                         ].map((langOpt) => {

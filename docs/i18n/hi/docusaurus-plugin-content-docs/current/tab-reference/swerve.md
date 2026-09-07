@@ -1,0 +1,96 @@
+---
+sidebar_position: 9
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# 🦀 स्वर्व {#swerve}
+
+स्वर्व टैब चार स्वर्व मॉड्यूल की स्थिति दिखाता है, जिसमें वेग वेक्टर, निष्क्रिय स्थिति (idle positions), रोबोट रोटेशन, और चेसिस गति शामिल हैं।
+
+<img src="/img/tab-reference/swerve-1.webp" alt="Overview of swerve tab" />
+
+_ऊपर अंग्रेजी इंटरफ़ेस दिखाया गया है।_
+
+<details>
+<summary>टाइमलाइन नियंत्रण (Timeline Controls)</summary>
+
+टाइमलाइन का उपयोग प्लेबैक और विज़ुअलाइज़ेशन को नियंत्रित करने के लिए किया जाता है। टाइमलाइन पर क्लिक करने से एक समय चुना जाता है, और राइट-क्लिक करने से यह अचयनित (deselect) हो जाता है। चयनित समय सभी टैब में सिंक्रनाइज़ होता है, जिससे अन्य दृश्यों में इस स्थान को जल्दी से खोजना आसान हो जाता है।
+
+पीले भाग इंगित करते हैं कि रोबोट कब ऑटोनोमस है, नीले भाग इंगित करते हैं कि रोबोट कब टेलीऑपरेटेड है, और ग्रे भाग इंगित करते हैं कि रोबोट कब यूटिलिटी मोड में है।
+
+ज़ूम करने के लिए, कर्सर को टाइमलाइन पर रखें और ऊपर या नीचे स्क्रॉल करें। `Shift` दबाए रखते हुए क्लिक और ड्रैग करके भी एक रेंज का चयन किया जा सकता है। क्षैतिज रूप से स्क्रॉल करके (समर्थित उपकरणों पर), या टाइमलाइन पर क्लिक और ड्रैग करके बाएँ और दाएँ जाएँ। लाइव कनेक्ट होने पर, बाईं ओर स्क्रॉल करने से वर्तमान समय से अनलॉक हो जाता है, और पूरी तरह से दाईं ओर स्क्रॉल करने से फिर से वर्तमान समय पर लॉक हो जाता है। रोबोट सक्षम होने की अवधि में ज़ूम करने के लिए `Ctrl+\` दबाएँ।
+
+<img src="/img/tab-reference/timeline.webp" alt="Timeline" />
+
+</details>
+
+## स्रोत जोड़ना {#adding-sources}
+
+आरंभ करने के लिए, किसी फील्ड को "स्रोत" अनुभाग में खींचें। X बटन का उपयोग करके किसी स्रोत को हटाएँ, या आँख के आइकन पर क्लिक करके या फील्ड के नाम पर डबल-क्लिक करके इसे अस्थायी रूप से छिपाएँ। सभी स्रोतों को हटाने के लिए, अक्ष शीर्षक के पास रीसायकल बिन आइकन पर क्लिक करें और फिर `सभी साफ़ करें`। स्रोतों को क्लिक करके और खींचकर सूची में पुनर्व्यवस्थित किया जा सकता है।
+
+**प्रत्येक स्रोत को कस्टमाइज़ करने के लिए, रंगीन आइकन पर क्लिक करें या फील्ड नाम पर राइट-क्लिक करें।** AdvantageScope तीन स्रोत प्रकारों का समर्थन करता है:
+
+- **मॉड्यूल वेलोसिटीज़ (Module Velocities):** चार स्वर्व मॉड्यूल स्थितियों का एक सेट, आरेख पर वैक्टर के रूप में प्रदर्शित होता है।
+- **रोबोट वेलोसिटीज़ (Robot Velocities):** आरेख के केंद्र में प्रदर्शित रैखिक और कोणीय गति।
+- **रोटेशन (Rotation):** आरेख को घुमाने के लिए उपयोग की जाने वाली कोणीय स्थिति।
+
+## डेटा प्रारूप {#data-format}
+
+डेटा को `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d`, या `Rotation3d` प्रकारों का उपयोग करके बाइट-एन्कोडेड स्ट्रक्ट (struct) या प्रोटोबफ़ (protobuf) के रूप में पब्लिश किया जाना चाहिए।
+
+WPILib और AdvantageKit सहित कई लाइब्रेरी स्ट्रक्ट प्रारूप का समर्थन करती हैं। नीचे दिया गया उदाहरण कोड दिखाता है कि Java में स्वर्व मॉड्यूल स्थितियों को कैसे लॉग किया जाए।
+
+<Tabs groupId="library">
+<TabItem value="wpilib" label="WPILib" default>
+
+```java
+SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity()
+}
+
+StructArrayPublisher<SwerveModuleVelocity> publisher = NetworkTableInstance.getDefault()
+.getStructArrayTopic("MyStates", SwerveModuleVelocity.struct).publish();
+
+periodic() {
+  publisher.set(states);
+}
+```
+
+</TabItem>
+<TabItem value="advantagekit" label="AdvantageKit">
+
+```java
+SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity()
+}
+
+Logger.recordOutput("MyStates", states);
+```
+
+</TabItem>
+</Tabs>
+
+:::note
+2027 में, इस डेटा संरचना का नाम `SwerveModuleState` से बदलकर `SwerveModuleVelocity` कर दिया गया था।
+WPILib 2027 और Systemcore से पहले बनाई गई लॉग फ़ाइलों के लिए, विज़ुअलाइज़ेशन के लिए लेगेसी `SwerveModuleState` प्रकार अभी भी समर्थित हैं।
+:::
+
+## कॉन्फ़िगरेशन {#configuration}
+
+निम्नलिखित कॉन्फ़िगरेशन विकल्प उपलब्ध हैं:
+
+- **अधिकतम गति (Max Speed):** मॉड्यूल की अधिकतम प्राप्त करने योग्य गति, वैक्टर के आकार को समायोजित करने के लिए उपयोग की जाती है।
+- **फ्रेम साइज़ (Frame Size):** बाएँ-दाएँ और आगे-पीछे के स्वर्व मॉड्यूल के बीच की दूरियाँ। रोबोट आरेख के पहलू अनुपात को बदलता है।
+- **अभिविन्यास (Orientation):** रोबोट आरेख जिस दिशा में इंगित करता है उसे समायोजित करता है। यह विकल्प अक्सर पोज़ डेटा या मैच वीडियो के साथ संरेखित करने के लिए उपयोगी होता है।
+
+:::note
+[🦀 🦀 🦀 🦀 🦀 🦀 🦀 🦀 🦀](https://www.youtube.com/watch?v=IbbwtyM8Dxs)
+:::

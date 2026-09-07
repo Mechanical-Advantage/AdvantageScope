@@ -12,13 +12,15 @@ AdvantageScope admite múltiples idiomas para brindar una experiencia localizada
 - Inglés (EE. UU.)
 - Español (Latinoamérica)
 - Francés
+- Holandés
 - Portugués (Brasil)
-- Turco
 - Rumano
-- Hebreo
-- Kazajo
+- Turco
 - Ruso
+- Kazajo
+- Hebreo
 - Árabe
+- Hindi
 - Chino simplificado
 - Chino tradicional
 

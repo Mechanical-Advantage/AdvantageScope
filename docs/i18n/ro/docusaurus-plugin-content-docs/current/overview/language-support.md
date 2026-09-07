@@ -12,13 +12,15 @@ AdvantageScope suportă mai multe limbi pentru a oferi o experiență localizat�
 - Engleză (SUA)
 - Spaniolă (America Latină)
 - Franceză
+- Olandeză
 - Portugheză (Brazilia)
-- Turcă
 - Română
-- Ebraică
-- Kazahă
+- Turcă
 - Rusă
+- Kazahă
+- Ebraică
 - Arabă
+- Hindi
 - Chineză simplificată
 - Chineză tradițională
 

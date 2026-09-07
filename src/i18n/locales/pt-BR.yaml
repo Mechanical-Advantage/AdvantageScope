@@ -118,7 +118,7 @@ preferences:
   mode3dDefault: "Modo 3D (Padrão)"
   mode3dDefaultSelectTitle: "Selecionar o modo de renderização 3D padrão"
   mode3dCinematic: "Cinematográfico"
-  mode3dStandard: "Padrão"
+  mode3dStandard: "Normal"
   mode3dLowPower: "Baixo consumo"
   mode3dBattery: "Modo 3D (na bateria)"
   mode3dBatterySelectTitle: "Selecionar o modo de renderização 3D ao usar a bateria"

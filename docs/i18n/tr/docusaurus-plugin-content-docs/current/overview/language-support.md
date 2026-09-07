@@ -12,13 +12,15 @@ AdvantageScope, dünya çapındaki takımlara yerelleştirilmiş bir deneyim sun
 - İngilizce (ABD)
 - İspanyolca (Latin Amerika)
 - Fransızca
+- Felemenkçe
 - Portekizce (Brezilya)
-- Türkçe
 - Romence
-- İbranice
-- Kazakça
+- Türkçe
 - Rusça
+- Kazakça
+- İbranice
 - Arapça
+- Hintçe
 - Basitleştirilmiş Çince
 - Geleneksel Çince
 
