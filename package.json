@@ -98,7 +98,6 @@
     "copyright": "Copyright © 2021-2026 Littleton Robotics",
     "npmRebuild": false,
     "publish": [],
-    "afterSign": "notarize.js",
     "electronFuses": {
       "runAsNode": false,
       "enableEmbeddedAsarIntegrityValidation": true,
@@ -197,7 +196,6 @@
       "icon": "icons/app/app-icon.icns",
       "entitlements": "entitlements.mac.plist",
       "entitlementsInherit": "entitlements.mac.plist",
-      "notarize": false,
       "extendInfo": {
         "CFBundleIconName": "AppIcon",
         "CFBundleLocalizations": [
