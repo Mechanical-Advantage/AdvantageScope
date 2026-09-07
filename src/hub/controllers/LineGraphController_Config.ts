@@ -81,15 +81,6 @@ export const LineGraphController_NumericConfig: SourceListConfig = {
           display: "Color",
           showInTypeName: false,
           values: GraphColors
-        },
-        {
-          key: "size",
-          display: "Size",
-          showInTypeName: false,
-          values: [
-            { key: "normal", display: "Normal" },
-            { key: "bold", display: "Large" }
-          ]
         }
       ]
     }

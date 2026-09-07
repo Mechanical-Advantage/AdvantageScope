@@ -46,8 +46,10 @@ export const RLOG_HEARTBEAT_DELAY_MS = 500; // How long to wait between heartbea
 export const RLOG_HEARTBEAT_DATA = new Uint8Array([6, 3, 2, 8]);
 
 // Download
-export const DOWNLOAD_USERNAME = "systemcore";
-export const DOWNLOAD_PASSWORD = "systemcore";
+export const DOWNLOAD_SYSTEMCORE_USERNAME = "systemcore";
+export const DOWNLOAD_SYSTEMCORE_PASSWORD = "systemcore";
+export const DOWNLOAD_ROBORIO_USERNAME = "lvuser";
+export const DOWNLOAD_ROBORIO_PASSWORD = "";
 export const DOWNLOAD_CONNECT_TIMEOUT_MS = 3000; // How long to wait when connecting
 export const DOWNLOAD_RETRY_DELAY_MS = 1000; // How long to wait between connection attempts
 export const DOWNLOAD_REFRESH_INTERVAL_MS = 5000; // How often to refresh file list when connected

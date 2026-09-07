@@ -736,6 +736,15 @@ export default class Sidebar {
         circle.setAttributeNS(null, "cx", "4.5");
         circle.setAttributeNS(null, "cy", "4.5");
         circle.setAttributeNS(null, "r", "4.5");
+        let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        svg.appendChild(line);
+        line.setAttributeNS(null, "x1", "0");
+        line.setAttributeNS(null, "y1", "0");
+        line.setAttributeNS(null, "x2", "9");
+        line.setAttributeNS(null, "y2", "9");
+        line.setAttributeNS(null, "stroke-width", "2");
+        line.setAttributeNS(null, "stroke", "white");
+        line.setAttributeNS(null, "clip-path", "url(#booleanCircleClip)");
 
         // Update values periodically
         let firstUpdate = true;
@@ -756,6 +765,7 @@ export default class Sidebar {
           if (value !== null) {
             const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
             circle.setAttributeNS(null, "fill", value ? (darkMode ? "lightgreen" : "green") : "red");
+            line.style.display = value ? "none" : "initial";
           }
           let hidden = value === null;
           valueElement.hidden = hidden;

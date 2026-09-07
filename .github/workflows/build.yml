@@ -308,10 +308,22 @@ jobs:
           path: bundles
       - name: Build documentation
         run: npm run docs:build-embed
+      - name: Load Windows signing credentials
+        if: |
+          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
+          github.event_name == 'release'
+        shell: bash
+        run: |
+          echo "AZURE_TENANT_ID=${{ secrets.AZURE_SIGNING_TENANT_ID }}" >> $GITHUB_ENV
+          echo "AZURE_CLIENT_ID=${{ secrets.AZURE_SIGNING_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "AZURE_CLIENT_SECRET=${{ secrets.AZURE_SIGNING_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "WIN_SIGN_ARGS=-c.win.azureSignOptions.endpoint=${{ vars.AZURE_SIGNING_ENDPOINT }} -c.win.azureSignOptions.codeSigningAccountName=${{ vars.AZURE_SIGNING_ACCOUNT_NAME }} -c.win.azureSignOptions.certificateProfileName=${{ vars.AZURE_SIGNING_CERTIFICATE_PROFILE }} -c.win.azureSignOptions.publisherName=\"${{ vars.AZURE_SIGNING_PUBLISHER_NAME }}\"" >> $GITHUB_ENV
       - name: Build app
-        run: npx electron-builder build --${{ matrix.arch }} --publish never
+        shell: bash
+        run: npx electron-builder build --${{ matrix.arch }} --publish never ${{ env.WIN_SIGN_ARGS }}
         env:
           NODE_OPTIONS: --max-old-space-size=4096
+          ELECTRON_BUILDER_7Z_FILTER: BCJ # https://github.com/electron-userland/electron-builder/issues/9983
       - name: Prepare artifact
         run: |
           Move-Item -Path "dist\AdvantageScope*.exe" -Destination "advantagescope-win-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.exe"
@@ -349,19 +361,6 @@ jobs:
         run: npm ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Load macOS certificate
-        if: |
-          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
-          (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
-        run: |
-          echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
-          echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
-      - name: Load macOS notarization credentials
-        if: github.event_name == 'release'
-        run: |
-          echo "APPLE_ID=${{ secrets.MACOS_APPLE_ID }}" >> $GITHUB_ENV
-          echo "APPLE_ID_PWD=${{ secrets.MACOS_APPLE_ID_PWD }}" >> $GITHUB_ENV
-          echo "APPLE_ID_TEAM=${{ secrets.MACOS_APPLE_ID_TEAM }}" >> $GITHUB_ENV
       - name: Download bundles
         uses: actions/download-artifact@v8
         with:
@@ -369,6 +368,24 @@ jobs:
           path: bundles
       - name: Build documentation
         run: npm run docs:build-embed
+      - name: Load macOS certificate
+        if: |
+          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
+          github.event_name != 'pull_request'
+        uses: apple-actions/import-codesign-certs@v7
+        with:
+          p12-file-base64: ${{ secrets.APPLE_DEVELOPER_ID }}
+          p12-password: ${{ secrets.APPLE_DEVELOPER_ID_PWD }}
+      - name: Load macOS notarization credentials
+        if: |
+          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
+          github.event_name == 'release'
+        run: |
+          echo "${{ secrets.APPLE_NOTARIZATION_API_KEY }}" | base64 --decode > apple_api_key.p8
+          echo "APPLE_API_KEY=$PWD/apple_api_key.p8" >> $GITHUB_ENV
+          echo "APPLE_API_KEY_ID=${{ secrets.APPLE_NOTARIZATION_API_KEY_ID }}" >> $GITHUB_ENV
+          echo "APPLE_API_ISSUER=${{ secrets.APPLE_NOTARIZATION_API_ISSUER }}" >> $GITHUB_ENV
+          echo "APPLE_TEAM_ID=${{ vars.APPLE_TEAM_ID }}" >> $GITHUB_ENV
       - name: Build app
         run: npx electron-builder build --${{ matrix.arch }} --publish never
         env:
@@ -485,8 +502,19 @@ jobs:
           path: bundles
       - name: Build documentation
         run: npm run docs:build-embed
+      - name: Load Windows signing credentials
+        if: |
+          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
+          github.event_name == 'release'
+        shell: bash
+        run: |
+          echo "AZURE_TENANT_ID=${{ secrets.AZURE_SIGNING_TENANT_ID }}" >> $GITHUB_ENV
+          echo "AZURE_CLIENT_ID=${{ secrets.AZURE_SIGNING_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "AZURE_CLIENT_SECRET=${{ secrets.AZURE_SIGNING_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "WIN_SIGN_ARGS=-c.win.azureSignOptions.endpoint=${{ vars.AZURE_SIGNING_ENDPOINT }} -c.win.azureSignOptions.codeSigningAccountName=${{ vars.AZURE_SIGNING_ACCOUNT_NAME }} -c.win.azureSignOptions.certificateProfileName=${{ vars.AZURE_SIGNING_CERTIFICATE_PROFILE }} -c.win.azureSignOptions.publisherName=\"${{ vars.AZURE_SIGNING_PUBLISHER_NAME }}\"" >> $GITHUB_ENV
       - name: Build app
-        run: npx electron-builder build --publish never --${{ matrix.arch }} -w dir
+        shell: bash
+        run: npx electron-builder build --publish never --${{ matrix.arch }} -w dir ${{ env.WIN_SIGN_ARGS }}
         env:
           ASCOPE_DISTRIBUTION: WPILIB
           NODE_OPTIONS: --max-old-space-size=4096
@@ -530,19 +558,6 @@ jobs:
         run: npm ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Load macOS certificate
-        if: |
-          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
-          (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
-        run: |
-          echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
-          echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
-      - name: Load macOS notarization credentials
-        if: github.event_name == 'release'
-        run: |
-          echo "APPLE_ID=${{ secrets.MACOS_APPLE_ID }}" >> $GITHUB_ENV
-          echo "APPLE_ID_PWD=${{ secrets.MACOS_APPLE_ID_PWD }}" >> $GITHUB_ENV
-          echo "APPLE_ID_TEAM=${{ secrets.MACOS_APPLE_ID_TEAM }}" >> $GITHUB_ENV
       - name: Download bundles
         uses: actions/download-artifact@v8
         with:
@@ -550,6 +565,24 @@ jobs:
           path: bundles
       - name: Build documentation
         run: npm run docs:build-embed
+      - name: Load macOS certificate
+        if: |
+          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
+          github.event_name != 'pull_request'
+        uses: apple-actions/import-codesign-certs@v7
+        with:
+          p12-file-base64: ${{ secrets.APPLE_DEVELOPER_ID }}
+          p12-password: ${{ secrets.APPLE_DEVELOPER_ID_PWD }}
+      - name: Load macOS notarization credentials
+        if: |
+          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
+          github.event_name == 'release'
+        run: |
+          echo "${{ secrets.APPLE_NOTARIZATION_API_KEY }}" | base64 --decode > apple_api_key.p8
+          echo "APPLE_API_KEY=$PWD/apple_api_key.p8" >> $GITHUB_ENV
+          echo "APPLE_API_KEY_ID=${{ secrets.APPLE_NOTARIZATION_API_KEY_ID }}" >> $GITHUB_ENV
+          echo "APPLE_API_ISSUER=${{ secrets.APPLE_NOTARIZATION_API_ISSUER }}" >> $GITHUB_ENV
+          echo "APPLE_TEAM_ID=${{ vars.APPLE_TEAM_ID }}" >> $GITHUB_ENV
       - name: Build app
         run: npx electron-builder build --publish never --${{ matrix.arch }} -m dir
         env:

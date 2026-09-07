@@ -34,12 +34,26 @@ export default class NT4Tuner implements LiveDataTuner {
   isTunable(key: string): boolean {
     const remoteKey = this.getRemoteKey(key);
     const type = window.log.getType(key);
-    return (
-      (type === LoggableType.Number || type === LoggableType.Boolean) &&
-      !remoteKey.startsWith(AKIT_PREFIX) &&
-      (window.log.getField("NT:/Robot/DogLog/Options") === null || !remoteKey.startsWith("/Robot")) &&
-      !window.log.isGenerated(key)
-    );
+    if (
+      (type !== LoggableType.Number && type !== LoggableType.Boolean) ||
+      remoteKey.startsWith(AKIT_PREFIX) ||
+      (window.log.getField("NT:/Robot/DogLog/Options") !== null && remoteKey.startsWith("/Robot")) ||
+      window.log.isGenerated(key)
+    ) {
+      return false;
+    }
+
+    // If tuning is not separately disallowed, check for "mutable" metadata field
+    const metadata = window.log.getMetadataString(key);
+    if (metadata !== "") {
+      try {
+        const parsed = JSON.parse(metadata);
+        if (typeof parsed === "object" && parsed !== null && typeof parsed.mutable === "boolean") {
+          return parsed.mutable;
+        }
+      } catch {}
+    }
+    return true;
   }
 
   publish(key: string, value: number | boolean): void {

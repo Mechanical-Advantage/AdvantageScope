@@ -33,7 +33,7 @@ export default interface Preferences {
 
 export const DEFAULT_PREFS: Preferences = {
   theme: "system",
-  robotAddress: "10.00.00.2",
+  robotAddress: "robot.local",
   remotePath: "/U/logs",
   liveMode: "nt4",
   liveSubscribeMode: "low-bandwidth",
