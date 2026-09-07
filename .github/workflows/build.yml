@@ -369,7 +369,7 @@ jobs:
         if: |
           github.repository == 'Mechanical-Advantage/AdvantageScope' &&
           github.event_name != 'pull_request'
-        uses: apple-actions/import-codesign-certs@v3
+        uses: apple-actions/apple-actions/import-codesign-certs@v7
         with:
           p12-file-base64: ${{ secrets.APPLE_DEVELOPER_ID }}
           p12-password: ${{ secrets.APPLE_DEVELOPER_ID_PWD }}
@@ -563,7 +563,7 @@ jobs:
         if: |
           github.repository == 'Mechanical-Advantage/AdvantageScope' &&
           github.event_name != 'pull_request'
-        uses: apple-actions/import-codesign-certs@v3
+        uses: apple-actions/apple-actions/import-codesign-certs@v7
         with:
           p12-file-base64: ${{ secrets.APPLE_DEVELOPER_ID }}
           p12-password: ${{ secrets.APPLE_DEVELOPER_ID_PWD }}
