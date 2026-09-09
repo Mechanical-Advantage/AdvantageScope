@@ -27,12 +27,11 @@ export default class AxesManager extends ObjectManager<Field3dRendererCommand_Ax
 
     let axes = makeAxesTemplate(this.materialSpecular, this.materialShininess);
     axes.scale.set(0.25, 0.25, 0.25);
-    optimizeGeometries(axes, this.mode, this.materialSpecular, this.materialShininess, false).then((result) => {
-      let axesMerged = result.normal[0];
-      if (axesMerged !== null) {
-        this.instances = new ResizableInstancedMesh(root, [axesMerged]);
-      }
-    });
+    const result = optimizeGeometries(axes, this.mode, this.materialSpecular, this.materialShininess, false);
+    let axesMerged = result.normal[0];
+    if (axesMerged !== null) {
+      this.instances = new ResizableInstancedMesh(root, [axesMerged]);
+    }
   }
 
   dispose(): void {

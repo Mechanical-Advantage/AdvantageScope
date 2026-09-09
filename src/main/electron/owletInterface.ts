@@ -88,9 +88,7 @@ async function getOwletPath(hootPath: string): Promise<string> {
   }
 
   // Find owlet version for compliancy
-  let owletFilenames = await new Promise<string[]>((resolve) =>
-    fs.readdir(OWLET_STORAGE, (_, files) => resolve(files))
-  );
+  let owletFilenames = await fs.promises.readdir(OWLET_STORAGE);
   owletFilenames = owletFilenames.filter((filename) => filename.startsWith("owlet-"));
   let finalOwletFilename = owletFilenames.find((filename) => filename.includes("-C" + compliancy.toString()));
   if (finalOwletFilename === undefined) {

@@ -13,11 +13,11 @@
     <meta charset="UTF-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-eval'; connect-src ws: http: file: blob:"
+      content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src ws: http: file: blob:"
     />
     <meta
       http-equiv="X-Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-eval'; connect-src ws: http: file: blob:"
+      content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src ws: http: file: blob:"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="global.css" />
@@ -101,6 +101,13 @@
         </svg>
         <svg class="field-item-icon" height="12" width="12">
           <rect x="1" y="5" width="10" height="2"></rect>
+        </svg>
+        <svg width="0" height="0">
+          <defs>
+            <clipPath id="booleanCircleClip">
+              <circle cx="4.5" cy="4.5" r="4.5"></circle>
+            </clipPath>
+          </defs>
         </svg>
       </span>
 
@@ -512,6 +519,9 @@
       <div id="renderer2">
         <div class="field-2d-canvas-container">
           <canvas class="field-2d-canvas"></canvas>
+        </div>
+        <div class="field-2d-scroll" tabindex="-1">
+          <div class="field-2d-scroll-content"></div>
         </div>
         <div class="field-2d-heatmap-container" hidden></div>
       </div>

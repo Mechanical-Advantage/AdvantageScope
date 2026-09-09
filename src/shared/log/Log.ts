@@ -38,6 +38,7 @@ export default class Log {
   private fields: { [id: string]: LogField } = {};
   private generatedParents: Set<string> = new Set(); // Children of these fields are generated
   private timestampRange: [number, number] | null = null;
+  private timestampZero: number | null = null;
   private enableTimestampSetCache: boolean;
   private timestampSetCache: { [id: string]: { keys: string[]; timestamps: number[]; sourceCounts: number[] } } = {};
   private changedFields: Set<string> = new Set();
@@ -109,7 +110,7 @@ export default class Log {
   }
 
   /** Clears all data before the provided timestamp. */
-  clearBeforeTime(timestamp: number) {
+  clearBeforeTime(timestamp: number, updateZero = true) {
     if (this.timestampRange === null) {
       this.timestampRange = [timestamp, timestamp];
     } else if (this.timestampRange[0] < timestamp) {
@@ -117,6 +118,9 @@ export default class Log {
       if (this.timestampRange[1] < this.timestampRange[0]) {
         this.timestampRange[1] = this.timestampRange[0];
       }
+    }
+    if (updateZero && (this.timestampZero === null || this.timestampZero < timestamp)) {
+      this.timestampZero = timestamp;
     }
     Object.values(this.timestampSetCache).forEach((cache) => {
       while (cache.timestamps.length >= 2 && cache.timestamps[1] <= timestamp) {
@@ -139,6 +143,9 @@ export default class Log {
       this.timestampRange[0] = timestamp;
     } else if (timestamp > this.timestampRange[1]) {
       this.timestampRange[1] = timestamp;
+    }
+    if (this.timestampZero === null || timestamp < this.timestampZero) {
+      this.timestampZero = timestamp;
     }
   }
 
@@ -414,6 +421,19 @@ export default class Log {
     } else {
       return [...this.timestampRange];
     }
+  }
+
+  /** Returns the value to add to timestamps before displaying them. */
+  getTimestampDisplayOffset(): number {
+    if (window.preferences) {
+      switch (window.preferences.timestamps) {
+        case "start-zero":
+          return -(this.timestampZero ?? 0);
+        case "original":
+          return 0;
+      }
+    }
+    return 0;
   }
 
   /** Returns the most recent timestamp across all fields. */
@@ -975,6 +995,9 @@ export default class Log {
         (timestamp) => timestamp + offset
       );
     }
+    if (sourceSerialized.timestampZero !== null && sourceSerialized.timestampZero !== undefined) {
+      sourceSerialized.timestampZero += offset;
+    }
 
     // Merge fields
     Object.entries(sourceSerialized.fields).forEach(([key, value]) => {
@@ -995,6 +1018,13 @@ export default class Log {
           Math.min(this.timestampRange[0], sourceSerialized.timestampRange[0]),
           Math.max(this.timestampRange[1], sourceSerialized.timestampRange[1])
         ];
+      }
+    }
+    if (sourceSerialized.timestampZero !== null && sourceSerialized.timestampZero !== undefined) {
+      if (this.timestampZero === null) {
+        this.timestampZero = sourceSerialized.timestampZero;
+      } else {
+        this.timestampZero = Math.min(this.timestampZero, sourceSerialized.timestampZero);
       }
     }
 
@@ -1023,6 +1053,7 @@ export default class Log {
       fields: {},
       generatedParents: Array.from(this.generatedParents),
       timestampRange: this.timestampRange,
+      timestampZero: this.timestampZero,
       structDecoder: this.structDecoder.toSerialized(),
       protoDecoder: this.protoDecoder.toSerialized(),
       queuedStructs: this.queuedStructs,
@@ -1043,6 +1074,7 @@ export default class Log {
     });
     log.generatedParents = new Set(serializedData.generatedParents);
     log.timestampRange = serializedData.timestampRange;
+    log.timestampZero = serializedData.timestampZero !== undefined ? serializedData.timestampZero : null;
     log.structDecoder = StructDecoder.fromSerialized(serializedData.structDecoder);
     log.protoDecoder = ProtoDecoder.fromSerialized(serializedData.protoDecoder);
     log.queuedStructs = serializedData.queuedStructs;

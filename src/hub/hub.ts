@@ -906,6 +906,10 @@ async function handleMainMessage(message: NamedMessage) {
       window.tabs.set3DCamera(message.data);
       break;
 
+    case "set-2d-camera":
+      window.tabs.set2DCamera(message.data);
+      break;
+
     case "edit-fov":
       window.tabs.setFov(message.data);
       break;
@@ -960,34 +964,32 @@ async function handleMainMessage(message: NamedMessage) {
       // Load missing fields
       await Promise.all(historicalSources.map((entry) => entry.source.loadAllFields()));
 
-      // Convert to export format
-      WorkerManager.request(
-        "../bundles/exportWorker.js",
-        {
-          options: message.data.options,
-          log: window.log.toSerialized()
-        },
-        (progress: number) => {
-          clearInterval(mockProgressInterval);
-          setLoading(scaleValue(progress, [0, 1], [mockProgress, 1]));
-        }
-      )
-        .then((content) => {
-          window.sendMainMessage("write-export", {
-            path: message.data.path,
-            content: content
-          });
-        })
-        .catch(() => {
-          window.sendMainMessage("error", {
-            title: "Failed to export data",
-            content: "There was a problem while converting to the export format. Please try again."
-          });
-          setLoading(null);
-        })
-        .finally(() => {
-          setExporting(false);
+      try {
+        // Convert to export format
+        const content = await WorkerManager.request(
+          "../bundles/exportWorker.js",
+          {
+            options: message.data.options,
+            log: window.log.toSerialized()
+          },
+          (progress: number) => {
+            clearInterval(mockProgressInterval);
+            setLoading(scaleValue(progress, [0, 1], [mockProgress, 1]));
+          }
+        );
+        window.sendMainMessage("write-export", {
+          path: message.data.path,
+          content: content
         });
+      } catch {
+        window.sendMainMessage("error", {
+          title: "Failed to export data",
+          content: "There was a problem while converting to the export format. Please try again."
+        });
+        setLoading(null);
+      } finally {
+        setExporting(false);
+      }
       break;
 
     case "finish-export":

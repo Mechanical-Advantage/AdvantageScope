@@ -1,16 +1,17 @@
 ---
 title: What's New in 2026?
 sidebar_position: 2
+draft: true
 ---
 
 import BannerLight from "./img/whats-new/banner-light.png";
 import BannerDark from "./img/whats-new/banner-dark.png";
 
-import FTC1 from "./img/whats-new/ftc-1.jpg";
-import FTC2 from "./img/whats-new/ftc-2.jpg";
-import FTC3 from "./img/whats-new/ftc-3.png";
-import FTC4 from "./img/whats-new/ftc-4.png";
-import FTC5 from "./img/whats-new/ftc-5.png";
+import FTC1 from "./more-features/img/ftc-compatibility/ftc-1.jpg";
+import FTC2 from "./more-features/img/ftc-compatibility/ftc-2.jpg";
+import FTC3 from "./more-features/img/ftc-compatibility/ftc-3.png";
+import FTC4 from "./more-features/img/ftc-compatibility/ftc-4.png";
+import FTC5 from "./more-features/img/ftc-compatibility/ftc-5.png";
 import Subfolders from "./img/whats-new/subfolders.png";
 import Menus1 from "./img/whats-new/menus-1.png";
 import Menus2 from "./img/whats-new/menus-2.png";

@@ -170,19 +170,11 @@ export default class RobotManager extends ObjectManager<
           const urlTransformer: (path: string) => string = (url) => "/asset?path=" + encodeURIComponent(url);
           const gltfLoader = new GLTFLoader();
           Promise.all([
-            new Promise((resolve) => {
-              gltfLoader.load(urlTransformer(robotConfig.path), resolve);
-            }),
-            ...robotConfig.components.map(
-              (_, index) =>
-                new Promise((resolve) => {
-                  gltfLoader.load(
-                    urlTransformer(robotConfig.path.slice(0, -4) + "_" + index.toString() + ".glb"),
-                    resolve
-                  );
-                })
+            gltfLoader.loadAsync(urlTransformer(robotConfig.path)),
+            ...robotConfig.components.map((_, index) =>
+              gltfLoader.loadAsync(urlTransformer(robotConfig.path.slice(0, -4) + "_" + index.toString() + ".glb"))
             )
-          ]).then(async (gltfs) => {
+          ]).then((gltfs) => {
             if (loadingCounter !== this.loadingCounter) {
               // Model was switched, throw away the data :(
               return;
@@ -553,10 +545,10 @@ export default class RobotManager extends ObjectManager<
           context.lineJoin = "round";
 
           // Draw speed
-          if (Math.abs(state.speed) <= 0.001) return;
-          let vectorSpeed = state.speed / 5;
+          if (Math.abs(state.velocity) <= 0.001) return;
+          let vectorSpeed = state.velocity / 5;
           let vectorRotation = state.angle;
-          if (state.speed < 0) {
+          if (state.velocity < 0) {
             vectorSpeed *= -1;
             vectorRotation += Math.PI;
           }

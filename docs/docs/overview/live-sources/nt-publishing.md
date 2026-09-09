@@ -31,8 +31,8 @@ By default, AdvantageScope publishes all NetworkTables fields stored in the log 
 
 The "NT Publish Prefixes" option sets the allowable prefixes for fields published to NetworkTables. If left blank, all fields will be included. Otherwise, a command-separated list of prefixes or fields can be provided. See examples below.
 
-- "_SmartDashboard_": Include all fields in the "SmartDashboard" table.
-- "_SmartDashboard/Auto Selector_": Include only the "SmartDashboard/Auto Selector" table.
+- "_Telemetry_": Include all fields in the "Telemetry" table.
+- "_Telemetry/Drive_": Include only the "Telemetry/Drive" table.
 - "_limelight/tx,limelight/ty_": Include only the "limelight/tx" and "limelight/ty" fields.
 
 ## Limitations

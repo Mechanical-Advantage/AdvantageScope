@@ -627,7 +627,7 @@ export default class LineGraphController implements TabController {
           values: data.values,
           color: ensureThemeContrast(fieldItem.options.color),
           type: fieldItem.type as "smooth" | "stepped" | "points",
-          size: fieldItem.options.size as "normal" | "bold" | "verybold",
+          size: (fieldItem.options.size ?? "normal") as "normal" | "bold" | "verybold",
           hasUnit: hasUnit
         };
         if (fieldItem.visible) command.push(itemCommand);
@@ -833,6 +833,7 @@ export default class LineGraphController implements TabController {
     rightFieldsCommand.reverse();
     return {
       timeRange: timeRange,
+      displayOffset: window.log.getTimestampDisplayOffset(),
       selectionMode: window.selection.getMode(),
       selectedTime: window.selection.getSelectedTime(),
       hoveredTime: window.selection.getHoveredTime(),

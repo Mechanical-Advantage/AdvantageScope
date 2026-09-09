@@ -13,11 +13,11 @@
     <meta charset="UTF-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; connect-src file: blob:"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src file: blob:"
     />
     <meta
       http-equiv="X-Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; connect-src file: blob:"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src file: blob:"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="global.css" />
@@ -59,6 +59,9 @@
     <div id="renderer2" hidden>
       <div class="field-2d-canvas-container">
         <canvas class="field-2d-canvas"></canvas>
+      </div>
+      <div class="field-2d-scroll" tabindex="-1">
+        <div class="field-2d-scroll-content"></div>
       </div>
       <div class="field-2d-heatmap-container" hidden></div>
     </div>

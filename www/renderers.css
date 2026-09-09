@@ -126,9 +126,14 @@ img.line-graph-help-icon {
 
 div.field-2d-canvas-container {
   position: absolute;
-  top: 0%;
+  bottom: 0%;
   left: 0%;
   width: 100%;
+  height: calc(100% + 26px);
+  overflow: hidden;
+}
+
+body.satellite div.field-2d-canvas-container {
   height: 100%;
 }
 
@@ -137,6 +142,29 @@ canvas.field-2d-canvas {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+}
+
+div.field-2d-scroll {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  height: calc(100% + 26px);
+  overflow: scroll;
+  scrollbar-width: none; /* Required for Firefox */
+}
+
+body.satellite div.field-2d-scroll {
+  height: 100%;
+}
+
+div.field-2d-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+div.field-2d-scroll-content {
+  width: 1000000px;
+  height: 1000000px;
 }
 
 /* 3D Field */

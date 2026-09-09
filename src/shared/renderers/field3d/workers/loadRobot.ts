@@ -33,16 +33,11 @@ self.onmessage = (event) => {
 
   const gltfLoader = new GLTFLoader();
   Promise.all([
-    new Promise((resolve) => {
-      gltfLoader.load(robotConfig.path, resolve);
-    }),
-    ...robotConfig.components.map(
-      (_, index) =>
-        new Promise((resolve) => {
-          gltfLoader.load(robotConfig.path.slice(0, -4) + "_" + index.toString() + ".glb", resolve);
-        })
+    gltfLoader.loadAsync(robotConfig.path),
+    ...robotConfig.components.map((_, index) =>
+      gltfLoader.loadAsync(robotConfig.path.slice(0, -4) + "_" + index.toString() + ".glb")
     )
-  ]).then(async (gltfs) => {
+  ]).then((gltfs) => {
     let gltfScenes = (gltfs as GLTF[]).map((gltf) => gltf.scene);
     for (let index = 0; index < gltfScenes.length; index++) {
       let scene = gltfScenes[index];
@@ -51,7 +46,7 @@ self.onmessage = (event) => {
         scene.position.set(...robotConfig!.position);
       }
 
-      let optimized = await optimizeGeometries(
+      let optimized = optimizeGeometries(
         scene,
         mode,
         materialSpecular,

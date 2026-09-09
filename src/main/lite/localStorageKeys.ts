@@ -15,4 +15,5 @@ export namespace LocalStorageKeys {
   export const TYPE_MEMORY = PREFIX + "type-memory";
   export const RECENT_UNITS = PREFIX + "recent-units";
   export const BETA_STATE = PREFIX + "beta-" + (BETA_CONFIG === null ? "NA" : BETA_CONFIG.year);
+  export const SIDEBAR_WIDTH = "AdvantageScopeLite/sidebar-width"; // Shared with DS lite
 }

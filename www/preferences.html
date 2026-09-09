@@ -45,6 +45,15 @@
             </select>
           </td>
         </tr>
+        <tr>
+          <td class="label">Timestamps</td>
+          <td class="input">
+            <select id="timestamps" title="Select how timestamps are displayed">
+              <option value="start-zero">Start at Zero</option>
+              <option value="original">Original</option>
+            </select>
+          </td>
+        </tr>
         <tr class="hide-lite">
           <td class="label">TBA API Key</td>
           <td class="input">
@@ -66,7 +75,7 @@
             <input
               type="text"
               id="robotAddress"
-              placeholder="10.00.00.2"
+              placeholder="robot.local"
               title="Enter the IP address or hostname of the robot"
             />
           </td>
@@ -74,7 +83,7 @@
         <tr>
           <td class="label">Robot Log Path</td>
           <td class="input">
-            <input type="text" id="remotePath" title="Enter the path to log files on the robot" />
+            <input type="text" id="remotePath" placeholder="/U/logs" title="Enter the path to log files on the robot" />
           </td>
         </tr>
         <tr>

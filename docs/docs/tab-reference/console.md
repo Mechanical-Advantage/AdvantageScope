@@ -19,9 +19,18 @@ Drag the desired field to the main view to get started. Each row represents an u
 Click the color palette icon to toggle highlighting for warning and error messages. For WPILib and AdvantageKit logs, messages are highlighted if they contain the text "warning" or "error".
 :::
 
-The controls are similar to the 🔢 [Table](../tab-reference/table) tab. The selected time is synchronized across all tabs. Click a row to select it, or hover over a row to preview it in any visible pop-up windows. Clicking the ↓ button jumps to the selected time (or the time entered in the box).
+The controls are similar to the 🔢 [Table](../tab-reference/table) tab. The selected time is synchronized across all tabs. Click a row to select it, or hover over a row to preview it in any visible pop-up windows. Clicking the ↓ button jumps to the selected time (or the time entered in the box). Timestamps and jump inputs are formatted according to the [Timestamps](/more-features/timestamps) preference.
 
 Enter text in the "Filter" input to only display rows which contain the filter text. Press `Ctrl+F` to quickly select the "Filter" input. Add a "!" at the start of the filter text to _exclude_ matching messages from the main view.
+
+## ANSI Formatting
+
+The console renderer supports formatting and color codes using standard ANSI escape sequences:
+
+- **Text Styles:** Bold, dim, italic, and underline
+- **Foreground & Background Colors:** Standard 16 colors (standard and high-intensity)
+- **8-Bit and 24-Bit Colors:** 256-color lookup palette and 24-bit RGB
+- **Selective Resets:** Resetting specific styles or colors while maintaining others
 
 :::tip
 Click the save icon to export the console data to a text file.

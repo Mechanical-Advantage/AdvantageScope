@@ -5,6 +5,8 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-module.exports = {
-  presets: [require.resolve("@docusaurus/core/lib/babel/preset")]
-};
+export enum Field2dCameraMode {
+  Unlocked = 0,
+  Robot = 1,
+  RobotAndRotation = 2
+}

@@ -9,7 +9,7 @@ import { TabsState } from "../shared/HubState";
 import LineGraphFilter from "../shared/LineGraphFilter";
 import TabType, { getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import { Distribution, DISTRIBUTION } from "../shared/buildConstants";
-import { getAutonomousKey, getEnabledKey } from "../shared/log/LogUtil";
+import { getAutonomousKey, getEnabledKey, getUtilityKey } from "../shared/log/LogUtil";
 import ConsoleRenderer from "../shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
 import Field2dRenderer from "../shared/renderers/Field2dRenderer";
@@ -26,7 +26,7 @@ import TableRenderer from "../shared/renderers/TableRenderer";
 import VideoRenderer from "../shared/renderers/VideoRenderer";
 import { Units } from "../shared/units";
 import { clampValue } from "../shared/util";
-import ScrollSensor from "./ScrollSensor";
+import ScrollSensor, { ScrollSensorMouseControl } from "./ScrollSensor";
 import Timeline from "./Timeline";
 import ConsoleController from "./controllers/ConsoleController";
 import Field2dController from "./controllers/Field2dController";
@@ -325,7 +325,7 @@ export default class Tabs {
       (dx: number, dy: number) => {
         this.TAB_BAR.scrollLeft += dx + dy;
       },
-      false
+      ScrollSensorMouseControl.None
     );
 
     // Add timeline
@@ -477,6 +477,10 @@ export default class Tabs {
     let autonomousKey = getAutonomousKey(window.log);
     if (autonomousKey !== undefined) {
       activeFields.add(autonomousKey);
+    }
+    let utilityKey = getUtilityKey(window.log);
+    if (utilityKey !== undefined) {
+      activeFields.add(utilityKey);
     }
     return activeFields;
   }
@@ -740,6 +744,13 @@ export default class Tabs {
   set3DCamera(index: number) {
     if (this.tabList[this.selectedTab].type === TabType.Field3d) {
       (this.tabList[this.selectedTab].renderer as Field3dRenderer).set3DCamera(index);
+    }
+  }
+
+  /** Switches the selected camera mode for the selected 2D field. */
+  set2DCamera(index: number) {
+    if (this.tabList[this.selectedTab].type === TabType.Field2d) {
+      (this.tabList[this.selectedTab].renderer as Field2dRenderer).set2DCamera(index);
     }
   }
 

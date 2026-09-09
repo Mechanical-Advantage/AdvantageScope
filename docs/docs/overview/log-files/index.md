@@ -6,11 +6,11 @@ import Image2 from './img/open-file-2.png';
 ## Supported Formats
 
 - **WPILOG (.wpilog)** - Produced by WPILib's [built-in data logging](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) and AdvantageKit. [URCL](/more-features/urcl) can be used to capture signals from REV motor controllers to a WPILOG file.
-- **Driver Station logs (.dslog and .dsevents)** - Produced by the [FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html). AdvantageScope automatically searches for the corresponding log file when opening either log type.
 - **Hoot (.hoot)** - Produced by CTRE's Phoenix 6 [signal logger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html).
 - **REVLOG (.revlog)** - Produced by REV Robotics' [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger).
 - **Road Runner (.log)** - Produced by the [Road Runner](https://github.com/acmerobotics/road-runner) library for FTC.
 - **CSV (.csv)** - Comma separated values, matching the format [exported](/overview/log-files/export) by AdvantageScope in the "CSV (Table)" or "CSV (List)" modes. See [here](#csv-formatting) for details.
+- **NI Driver Station logs (.dslog and .dsevents)** - Legacy, produced by the NI [FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html) (2010-2026). AdvantageScope automatically searches for the corresponding log file when opening either log type.
 - **RLOG (.rlog)** - Legacy, produced by AdvantageKit 2022.
 
 :::info
@@ -22,7 +22,7 @@ Hoot log files can only be opened after agreeing to CTRE's [end user license agr
 In the menu bar, click `File` > `Open Log(s)...`, then choose a one or more log files from the local disk. Dragging a log file from the system file browser to the AdvantageScope icon or window also causes it to open.
 
 :::info
-If multiple files are opened simultaneously, the timestamps will be aligned automatically. This enables easy comparison of log files from multiple sources.
+If multiple files are opened simultaneously, the timestamps will be aligned automatically. This enables easy comparison of log files from multiple sources. See the [Timestamps](/more-features/timestamps) page for details on timestamp display options.
 :::
 
 ![Opening a saved log](./img/open-file-1.png)
@@ -43,7 +43,7 @@ Open the preferences window by clicking `App` > `Show Preferences...` (Windows/L
 <img src={PrefsImage} alt="Diagram of preferences" height="350" />
 </details>
 
-Click `File` > `Download Logs...` to open the download window. Once connected to the robot, available logs are shown with the newest at the top. Select one or more log files to download (shift-click to select a range or **cmd/ctrl + A** to select all). Then click the ↓ symbol and select a save location.
+Click `File` > `Download Logs...` to open the download window. Log downloading is supported on Systemcore and the roboRIO. Once connected to the robot, available logs are shown with the newest at the top. Select one or more log files to download (shift-click to select a range or **cmd/ctrl + A** to select all). Then click the ↓ symbol and select a save location.
 
 :::info
 CTRE's [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) uses a nonstandard format that groups logs in subfolders. Select one or more folders in the list to download the log files as a group.

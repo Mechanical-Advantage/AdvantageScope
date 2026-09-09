@@ -49,14 +49,9 @@ SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
   new SwerveModuleVelocity(),
   new SwerveModuleVelocity(),
   new SwerveModuleVelocity()
-}
+};
 
-StructArrayPublisher<SwerveModuleVelocity> publisher = NetworkTableInstance.getDefault()
-.getStructArrayTopic("MyStates", SwerveModuleVelocity.struct).publish();
-
-periodic() {
-  publisher.set(states);
-}
+Telemetry.log("MyStates", states);
 ```
 
 </TabItem>
@@ -75,6 +70,11 @@ Logger.recordOutput("MyStates", states);
 
 </TabItem>
 </Tabs>
+
+:::note
+In 2027, this data structure was renamed from `SwerveModuleState` to `SwerveModuleVelocity`.
+For log files created before WPILib 2027 and Systemcore, legacy `SwerveModuleState` types are still supported for visualization.
+:::
 
 ## Configuration
 

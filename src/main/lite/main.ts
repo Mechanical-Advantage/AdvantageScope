@@ -10,6 +10,7 @@ import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import { BUILD_DATE, COPYRIGHT, Distribution, DISTRIBUTION, LITE_VERSION } from "../../shared/buildConstants";
 import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
+import { Field2dCameraMode } from "../../shared/Field2dCameraMode";
 import { HubState } from "../../shared/HubState";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import NamedMessage from "../../shared/NamedMessage";
@@ -176,7 +177,7 @@ function openSourceListHelp(config: SourceListConfig) {
 /** Opens a popup window for preferences. */
 function openPreferences() {
   const width = 400;
-  const optionRows = 7;
+  const optionRows = 8;
   const titleRows = 2;
   const height = optionRows * 27 + titleRows * 34 + 54;
   openPopupWindow("www/preferences.html", [width, height], "pixels", (message) => {
@@ -319,6 +320,7 @@ async function handleHubMessage(message: NamedMessage) {
 
     case "save-state":
       localStorage.setItem(LocalStorageKeys.STATE, JSON.stringify(message.data));
+      localStorage.setItem(LocalStorageKeys.SIDEBAR_WIDTH, JSON.stringify(message.data.sidebar.width));
       break;
 
     case "save-type-memory":
@@ -1200,6 +1202,35 @@ async function handleHubMessage(message: NamedMessage) {
             }
           });
         });
+        openMenu({ x: position[0], y: position[1], width: 0, height: 0 }, menuItems);
+      }
+      break;
+
+    case "ask-2d-camera":
+      {
+        let position: [number, number] = message.data.position;
+        let selectedIndex: Field2dCameraMode = message.data.selectedIndex;
+        let menuItems: (MenuItem | Submenu | "-")[] = [
+          {
+            content: (selectedIndex === Field2dCameraMode.Unlocked ? "\u2714 " : "") + "Unlocked",
+            callback() {
+              sendMessage(hubPort, "set-2d-camera", Field2dCameraMode.Unlocked);
+            }
+          },
+          {
+            content: (selectedIndex === Field2dCameraMode.Robot ? "\u2714 " : "") + "Locked to Robot",
+            callback() {
+              sendMessage(hubPort, "set-2d-camera", Field2dCameraMode.Robot);
+            }
+          },
+          {
+            content:
+              (selectedIndex === Field2dCameraMode.RobotAndRotation ? "\u2714 " : "") + "Locked to Robot & Rotation",
+            callback() {
+              sendMessage(hubPort, "set-2d-camera", Field2dCameraMode.RobotAndRotation);
+            }
+          }
+        ];
         openMenu({ x: position[0], y: position[1], width: 0, height: 0 }, menuItems);
       }
       break;

@@ -14,7 +14,7 @@ function sendResponse(response: HistoricalDataSource_WorkerResponse) {
   self.postMessage(response);
 }
 
-self.onmessage = async (event) => {
+self.onmessage = (event) => {
   let request: HistoricalDataSource_WorkerRequest = event.data;
   if (request.type !== "start") return;
 

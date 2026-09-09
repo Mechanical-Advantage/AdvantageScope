@@ -272,12 +272,24 @@ export default class Field3dRendererImpl implements TabRenderer {
     // Create key bindings
     window.addEventListener("keydown", (event) => {
       if (window.platform === "darwin" ? event.metaKey : event.ctrlKey) return;
-      if (event.target !== document.body && event.target !== window) return;
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement ||
+        (event.target instanceof HTMLElement && event.target.isContentEditable)
+      ) {
+        return;
+      }
       if (canvasContainer.clientHeight === 0) return;
       this.keysPressed.add(event.code);
     });
     window.addEventListener("keyup", (event) => {
-      if (event.target !== document.body && event.target !== window) return;
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement ||
+        (event.target instanceof HTMLElement && event.target.isContentEditable)
+      ) {
+        return;
+      }
       this.keysPressed.delete(event.code);
     });
   }
@@ -339,6 +351,7 @@ export default class Field3dRendererImpl implements TabRenderer {
 
   /** Resets the camera position and controls target. */
   private resetCamera(command: Field3dRendererCommand, isFTC: boolean, animate = true) {
+    animate = animate && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     this.controls.minDistance = isFTC ? this.CONTROLS_MIN_DISTANCE_FTC : this.CONTROLS_MIN_DISTANCE_FRC;
     if (this.cameraIndex === -1) {
       // Orbit field

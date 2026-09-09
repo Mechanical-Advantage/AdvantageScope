@@ -138,7 +138,7 @@ export default class SwerveController implements TabController {
         );
         moduleVelocities.forEach((state) => {
           // Normalize
-          state.speed = clampValue(state.speed / Number(this.MAX_SPEED.value), -1, 1);
+          state.velocity = clampValue(state.velocity / Number(this.MAX_SPEED.value), -1, 1);
         });
         commandModuleVelocities.push({
           values: moduleVelocities,

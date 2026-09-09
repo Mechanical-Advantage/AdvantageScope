@@ -37,6 +37,7 @@ import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
 import ExportOptions from "../../shared/ExportOptions";
+import { Field2dCameraMode } from "../../shared/Field2dCameraMode";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import NamedMessage from "../../shared/NamedMessage";
 import Preferences, { DEFAULT_PREFS, getLiveModeName, LiveMode, mergePreferences } from "../../shared/Preferences";
@@ -52,10 +53,12 @@ import {
   AKIT_PATH_OUTPUT,
   APP_VERSION,
   DOWNLOAD_CONNECT_TIMEOUT_MS,
-  DOWNLOAD_PASSWORD,
   DOWNLOAD_REFRESH_INTERVAL_MS,
   DOWNLOAD_RETRY_DELAY_MS,
-  DOWNLOAD_USERNAME,
+  DOWNLOAD_ROBORIO_PASSWORD,
+  DOWNLOAD_ROBORIO_USERNAME,
+  DOWNLOAD_SYSTEMCORE_PASSWORD,
+  DOWNLOAD_SYSTEMCORE_USERNAME,
   HUB_DEFAULT_HEIGHT,
   HUB_DEFAULT_WIDTH,
   PREFS_FILENAME,
@@ -131,6 +134,8 @@ let downloadRefreshInterval: NodeJS.Timeout | null = null;
 let downloadAddress: string = "";
 let downloadPath: string = "";
 let downloadFileSizeCache: { [id: string]: number } = {};
+let downloadDevice: "systemcore" | "roborio" = "systemcore";
+let downloadAuthFailedOnce: boolean = false;
 
 // WINDOW MESSAGE HANDLING
 
@@ -277,7 +282,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       });
       let newTypeMemoryStr = JSON.stringify(typeMemory);
       if (originalTypeMemoryStr !== newTypeMemoryStr) {
-        jsonfile.writeFileSync(TYPE_MEMORY_FILENAME, typeMemory);
+        await jsonfile.writeFile(TYPE_MEMORY_FILENAME, typeMemory);
       }
       break;
 
@@ -304,6 +309,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         const uuid: string = message.data.uuid;
         const logPath: string = message.data.path;
         app.addRecentDocument(logPath);
+        // Writing this file is a supplemental task, so we don't need to block/ensure success
         fs.writeFile(AKIT_PATH_OUTPUT, logPath, () => {});
 
         // Send data if all file reads finished
@@ -377,21 +383,17 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             if (ctreLicensePrompt === null) {
               ctreLicensePrompt = new Promise(async (resolve) => {
                 while (true) {
-                  let response = await new Promise<Electron.MessageBoxReturnValue>((resolve) =>
-                    dialog
-                      .showMessageBox(window, {
-                        type: "question",
-                        title: "Alert",
-                        message: "CTRE License Agreement",
-                        detail:
-                          "Hoot log file decoding requires agreement to CTRE's end user license agreement. Please click the button below to view the full license agreement, then check the box if you agree to the terms.",
-                        checkboxLabel: "I Agree",
-                        buttons: ["View License", "OK"],
-                        defaultId: 1,
-                        icon: WINDOW_ICON
-                      })
-                      .then((response) => resolve(response))
-                  );
+                  let response = await dialog.showMessageBox(window, {
+                    type: "question",
+                    title: "Alert",
+                    message: "CTRE License Agreement",
+                    detail:
+                      "Hoot log file decoding requires agreement to CTRE's end user license agreement. Please click the button below to view the full license agreement, then check the box if you agree to the terms.",
+                    checkboxLabel: "I Agree",
+                    buttons: ["View License", "OK"],
+                    defaultId: 1,
+                    icon: WINDOW_ICON
+                  });
                   if (response.response === 1) {
                     if (response.checkboxChecked) {
                       prefs.ctreLicenseAccepted = true;
@@ -446,18 +448,17 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
           // Save WPILOG in temporary folder
           let wpilogPath = path.join(app.getPath("temp"), "revlog_" + createUUID() + ".wpilog");
-          parseREVLOG(logPath, wpilogPath)
-            .then(() => {
-              openPath(wpilogPath, (buffer) => {
-                results[0] = buffer;
-                fs.rmSync(wpilogPath);
-              });
-            })
-            .catch((err) => {
-              errorMessage = err.message;
-              completedCount++;
-              sendIfReady();
+          try {
+            await parseREVLOG(logPath, wpilogPath);
+            openPath(wpilogPath, (buffer) => {
+              results[0] = buffer;
+              fs.rmSync(wpilogPath);
             });
+          } catch (err: any) {
+            errorMessage = err.message;
+            completedCount++;
+            sendIfReady();
+          }
         } else if (logPath.endsWith(".wpilogxz")) {
           // Externally compressed WPILOG, decompress
           targetCount += 1;
@@ -1211,6 +1212,10 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       );
       break;
 
+    case "ask-2d-camera":
+      select2DCameraPopup(window, message.data.position, message.data.selectedIndex);
+      break;
+
     case "export-console":
       dialog
         .showSaveDialog(window, {
@@ -1516,6 +1521,45 @@ function select3DCameraPopup(
   });
 }
 
+function select2DCameraPopup(window: BrowserWindow, position: [number, number], selectedIndex: Field2dCameraMode) {
+  const cameraMenu = new Menu();
+  cameraMenu.append(
+    new MenuItem({
+      label: "Unlocked",
+      type: "checkbox",
+      checked: selectedIndex === Field2dCameraMode.Unlocked,
+      click() {
+        sendMessage(window, "set-2d-camera", Field2dCameraMode.Unlocked);
+      }
+    })
+  );
+  cameraMenu.append(
+    new MenuItem({
+      label: "Locked to Robot",
+      type: "checkbox",
+      checked: selectedIndex === Field2dCameraMode.Robot,
+      click() {
+        sendMessage(window, "set-2d-camera", Field2dCameraMode.Robot);
+      }
+    })
+  );
+  cameraMenu.append(
+    new MenuItem({
+      label: "Locked to Robot && Rotation",
+      type: "checkbox",
+      checked: selectedIndex === Field2dCameraMode.RobotAndRotation,
+      click() {
+        sendMessage(window, "set-2d-camera", Field2dCameraMode.RobotAndRotation);
+      }
+    })
+  );
+  cameraMenu.popup({
+    window: window,
+    x: Math.round(position[0]),
+    y: Math.round(position[1])
+  });
+}
+
 /**
  * Process a message from a download window.
  * @param message The received message
@@ -1526,6 +1570,8 @@ function handleDownloadMessage(message: NamedMessage) {
 
   switch (message.name) {
     case "start":
+      downloadDevice = "systemcore";
+      downloadAuthFailedOnce = false;
       downloadAddress = message.data.address;
       downloadPath = message.data.path;
       if (!downloadPath.endsWith("/")) downloadPath += "/";
@@ -1552,6 +1598,7 @@ function downloadStart() {
   downloadClient = new Client()
     .once("ready", () => {
       // Successful SSH connection
+      downloadAuthFailedOnce = false;
       downloadClient?.sftp((error, sftp) => {
         if (error) {
           // Failed to start SFTP
@@ -1607,21 +1654,38 @@ function downloadStart() {
     })
     .on("error", (error) => {
       // Failed SSH connection
-      downloadError(error.message);
+      if (error.message === "All configured authentication methods failed") {
+        downloadDevice = downloadDevice === "systemcore" ? "roborio" : "systemcore";
+        if (downloadAuthFailedOnce) {
+          downloadAuthFailedOnce = false;
+          downloadError(error.message);
+        } else {
+          downloadAuthFailedOnce = true;
+          if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
+          downloadStart();
+        }
+      } else {
+        downloadDevice = "systemcore";
+        downloadAuthFailedOnce = false;
+        downloadError(error.message);
+      }
     })
     .connect({
       // Start connection
       host: downloadAddress,
       port: 22,
+      forceIPv4: true,
       readyTimeout: DOWNLOAD_CONNECT_TIMEOUT_MS,
-      username: DOWNLOAD_USERNAME,
-      password: DOWNLOAD_PASSWORD
+      username: downloadDevice === "systemcore" ? DOWNLOAD_SYSTEMCORE_USERNAME : DOWNLOAD_ROBORIO_USERNAME,
+      password: downloadDevice === "systemcore" ? DOWNLOAD_SYSTEMCORE_PASSWORD : DOWNLOAD_ROBORIO_PASSWORD
     });
 }
 
 /** Closes the FTP connection. */
 function downloadStop() {
   downloadClient?.end();
+  downloadDevice = "systemcore";
+  downloadAuthFailedOnce = false;
   if (downloadRetryTimeout) clearTimeout(downloadRetryTimeout);
   if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
 }
@@ -1629,6 +1693,8 @@ function downloadStop() {
 /** Problem connecting or reading data, restart after a delay. */
 function downloadError(errorMessage: string) {
   if (!downloadWindow) return;
+  downloadDevice = "systemcore";
+  downloadAuthFailedOnce = false;
   sendMessage(downloadWindow, "show-error", errorMessage);
   if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
   downloadRetryTimeout = setTimeout(downloadStart, DOWNLOAD_RETRY_DELAY_MS);
@@ -1873,7 +1939,7 @@ function setupMenu() {
           type: "checkbox",
           async click(item) {
             const isCustom = item.checked;
-            let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+            let prefs: Preferences = await jsonfile.readFile(PREFS_FILENAME);
             if (isCustom) {
               let result = await dialog.showOpenDialog({
                 title: "Select folder containing custom AdvantageScope assets",
@@ -1886,8 +1952,8 @@ function setupMenu() {
             } else {
               prefs.userAssetsFolder = null;
             }
-            jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-            advantageScopeAssets = loadAssets();
+            await jsonfile.writeFile(PREFS_FILENAME, prefs);
+            advantageScopeAssets = await loadAssets();
             sendAllPreferences();
             sendAssets();
           }
@@ -1949,7 +2015,7 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Robot logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "revlog", "log", "csv"]
+                    extensions: ["rlog", "wpilog", "wpilogxz", "hoot", "revlog", "log", "csv", "dslog", "dsevents"]
                   }
                 ]
               })
@@ -1973,7 +2039,7 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Robot logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "revlog", "log", "csv"]
+                    extensions: ["rlog", "wpilog", "wpilogxz", "hoot", "revlog", "log", "csv", "dslog", "dsevents"]
                   }
                 ]
               })
@@ -3091,7 +3157,8 @@ function createSatellite(
       let message: NamedMessage = event.data;
       switch (message.name) {
         case "set-aspect-ratio":
-          let aspectRatio = message.data;
+          let aspectRatio = message.data.aspectRatio;
+          let lock = message.data.lock;
           if (aspectRatio === null) {
             satellite.setAspectRatio(0);
           } else {
@@ -3099,7 +3166,11 @@ function createSatellite(
             let originalArea = originalSize[0] * originalSize[1];
             let newY = Math.sqrt(originalArea / aspectRatio);
             let newX = aspectRatio * newY;
-            satellite.setAspectRatio(aspectRatio);
+            if (lock) {
+              satellite.setAspectRatio(aspectRatio);
+            } else {
+              satellite.setAspectRatio(0);
+            }
             satellite.setContentSize(Math.round(newX), Math.round(newY));
           }
           break;
@@ -3113,6 +3184,10 @@ function createSatellite(
             message.data.fov,
             message.data.isFTC
           );
+          break;
+
+        case "ask-2d-camera":
+          select2DCameraPopup(satellite, message.data.position, message.data.selectedIndex);
           break;
 
         case "add-table-range":
@@ -3204,7 +3279,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
   }
 
   const width = 400;
-  const optionRows = 12;
+  const optionRows = 13;
   const titleRows = 2;
   const height = optionRows * 27 + titleRows * 34 + 54;
   prefsWindow = new BrowserWindow({
@@ -3450,7 +3525,7 @@ if (process.platform === "linux") {
   }
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   // Check preferences and set theme
   let prefs = DEFAULT_PREFS;
   if (process.platform === "linux") {
@@ -3470,16 +3545,16 @@ app.whenReady().then(() => {
 
   // Load assets
   createAssetFolders();
-  startAssetDownloadLoop(() => {
-    advantageScopeAssets = loadAssets();
+  startAssetDownloadLoop(async () => {
+    advantageScopeAssets = await loadAssets();
     sendAssets();
   });
-  setInterval(() => {
+  setInterval(async () => {
     // Periodically load assets in case they are updated
-    advantageScopeAssets = loadAssets();
+    advantageScopeAssets = await loadAssets();
     sendAssets();
   }, 5000);
-  advantageScopeAssets = loadAssets();
+  advantageScopeAssets = await loadAssets();
 
   // Start owlet download
   startOwletDownloadLoop();
@@ -3506,12 +3581,12 @@ app.whenReady().then(() => {
       x.endsWith(".wpilog") ||
       x.endsWith(".wpilogxz") ||
       x.endsWith(".rlog") ||
-      x.endsWith(".dslog") ||
-      x.endsWith(".dsevents") ||
       x.endsWith(".hoot") ||
       x.endsWith(".revlog") ||
       x.endsWith(".log") ||
-      x.endsWith(".csv")
+      x.endsWith(".csv") ||
+      x.endsWith(".dslog") ||
+      x.endsWith(".dsevents")
   );
   if (fileArgs.length > 0) {
     firstOpenPath = fileArgs[0];
