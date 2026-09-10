@@ -8,10 +8,20 @@
 import { Pose2d } from "../../../shared/geometry";
 import Log from "../../../shared/log/Log";
 import { Units } from "../../../shared/units";
-import { ArraySchema, EnumSchema, MessageSchema, PrimitiveSchema, RRMessage, StructSchema } from "./RRLOGCommon";
+import {
+  ArraySchema,
+  EnumSchema,
+  MapSchema,
+  MessageSchema,
+  OptionalSchema,
+  PrimitiveSchema,
+  RRMessage,
+  StructSchema,
+  mapKeyToString
+} from "./RRLOGCommon";
 
 export default class RRLOGDecoder {
-  private SUPPORTED_LOG_REVISIONS = [0, 1];
+  private SUPPORTED_LOG_REVISIONS = [0, 1, 2];
   private STRING_DECODER = new TextDecoder("UTF-8");
 
   private magic: string | null = null;
@@ -22,22 +32,46 @@ export default class RRLOGDecoder {
   private keyIDs: { [id: number]: string } = {};
   private keySchemas: { [id: number]: MessageSchema } = {};
 
+  // Trailing bytes of an entry that was cut off by the end of the last chunk. Always empty when
+  // decoding a complete file in one call.
+  private pendingData: Uint8Array = new Uint8Array();
+
+  /**
+   * Decodes a chunk of log data, which does not need to end at an entry boundary. Bytes belonging
+   * to an incomplete trailing entry are saved and prepended to the next chunk, so a stream can be
+   * decoded by calling this repeatedly with the same decoder.
+   */
   decode(log: Log, dataArray: Uint8Array, progressCallback?: (progress: number) => void): boolean {
-    let dataBuffer = new DataView(dataArray.buffer);
+    if (this.pendingData.length > 0) {
+      let combined = new Uint8Array(this.pendingData.length + dataArray.length);
+      combined.set(this.pendingData);
+      combined.set(dataArray, this.pendingData.length);
+      dataArray = combined;
+      this.pendingData = new Uint8Array();
+    }
+    let dataBuffer = new DataView(dataArray.buffer, dataArray.byteOffset, dataArray.byteLength);
     let offset = 0;
 
     function shiftOffset(shift: number) {
       return (offset += shift) - shift;
     }
 
+    // Reads past the end of the chunk throw RangeError, which is how an incomplete entry is
+    // detected. DataView does that on its own; these two read raw bytes, so they check manually.
+    const readByte = (): number => {
+      if (offset >= dataArray.length) throw new RangeError("Incomplete byte");
+      return dataArray[shiftOffset(1)];
+    };
+
     const readString = (): string => {
       let len = dataBuffer.getInt32(shiftOffset(4));
+      if (len < 0 || offset + len > dataArray.length) throw new RangeError("Incomplete string");
       let string = this.STRING_DECODER.decode(dataArray.subarray(offset, offset + len));
       offset += len;
       return string;
     };
 
-    function readSchema(): MessageSchema {
+    const readSchema = (): MessageSchema => {
       let schemaType = dataBuffer.getInt32(shiftOffset(4));
       if (schemaType === 0) {
         let schema = new StructSchema();
@@ -65,10 +99,17 @@ export default class RRLOGDecoder {
         return schema;
       } else if (schemaType === 7) {
         return new ArraySchema(readSchema());
+      } else if (schemaType === 8) {
+        this.requireRevision2(schemaType);
+        let key = readSchema();
+        return new MapSchema(key, readSchema());
+      } else if (schemaType === 9) {
+        this.requireRevision2(schemaType);
+        return new OptionalSchema(readSchema());
       } else {
         throw "Unknown schema type: " + schemaType;
       }
-    }
+    };
 
     function arraySchemaCount(schema: MessageSchema): number {
       if (schema instanceof StructSchema) {
@@ -80,6 +121,10 @@ export default class RRLOGDecoder {
         return count;
       } else if (schema instanceof ArraySchema) {
         return 1 + arraySchemaCount(schema.schema);
+      } else if (schema instanceof MapSchema) {
+        return arraySchemaCount(schema.key) + arraySchemaCount(schema.value);
+      } else if (schema instanceof OptionalSchema) {
+        return arraySchemaCount(schema.schema);
       } else {
         return 0;
       }
@@ -101,7 +146,7 @@ export default class RRLOGDecoder {
       } else if (schema === PrimitiveSchema.STRING) {
         return readString();
       } else if (schema === PrimitiveSchema.BOOLEAN) {
-        return dataArray[shiftOffset(1)] !== 0;
+        return readByte() !== 0;
       } else if (schema instanceof EnumSchema) {
         let ordinal = dataBuffer.getInt32(shiftOffset(4));
         return schema.constants[ordinal];
@@ -112,6 +157,19 @@ export default class RRLOGDecoder {
           msg.push(readMsg(schema.schema)); // the schema of the array elements
         }
         return msg;
+      } else if (schema instanceof MapSchema) {
+        let size = dataBuffer.getInt32(shiftOffset(4));
+        let msg = new Map<string, RRMessage>();
+        for (let i = 0; i < size; ++i) {
+          let key = readMsg(schema.key); // key and value are always both present
+          msg.set(mapKeyToString(key), readMsg(schema.value));
+        }
+        return msg;
+      } else if (schema instanceof OptionalSchema) {
+        let present = readByte();
+        if (present === 0) return null; // Absent, nothing follows
+        if (present !== 1) throw "Invalid optional presence byte: " + present;
+        return readMsg(schema.schema);
       } else {
         throw "Unknown schema type: " + schema;
       }
@@ -127,6 +185,7 @@ export default class RRLOGDecoder {
     try {
       // Check magic beginning
       if (this.magic === null) {
+        if (dataArray.length - offset < 2) return this.retain(dataArray, offset);
         this.magic = this.STRING_DECODER.decode(dataArray.subarray(offset, offset + 2));
         shiftOffset(2);
         if (!(this.magic === "RR")) {
@@ -136,6 +195,7 @@ export default class RRLOGDecoder {
 
       // Check log revision
       if (this.logRevision === null) {
+        if (dataArray.length - offset < 2) return this.retain(dataArray, offset);
         this.logRevision = dataBuffer.getInt16(shiftOffset(2));
         if (!this.SUPPORTED_LOG_REVISIONS.includes(this.logRevision)) {
           return false;
@@ -143,31 +203,40 @@ export default class RRLOGDecoder {
       }
 
       while (true) {
-        // Check for the start of another log
-        // Allows users to concatenate auto and teleop logs for full match replays
-        if (this.STRING_DECODER.decode(dataArray.subarray(offset, offset + 2)) === "RR") {
-          shiftOffset(2);
-          // Check log revision again for completeness (probably not needed)
-          this.logRevision = dataBuffer.getInt16(shiftOffset(2));
-          if (!this.SUPPORTED_LOG_REVISIONS.includes(this.logRevision)) {
-            return false;
-          }
-          // Channels and keys are per-log
-          this.keyIDs = {};
-          this.keySchemas = {};
-        }
+        // Everything before this point is a complete entry, so this is where decoding resumes if
+        // the chunk runs out partway through the next one
+        let entryStart = offset;
+
+        if (offset >= dataArray.length) break; // No more entries in this chunk
 
         let type: number;
         try {
+          // Check for the start of another log
+          // Allows users to concatenate auto and teleop logs for full match replays
+          if (this.STRING_DECODER.decode(dataArray.subarray(offset, offset + 2)) === "RR") {
+            shiftOffset(2);
+            // Check log revision again for completeness (probably not needed)
+            this.logRevision = dataBuffer.getInt16(shiftOffset(2));
+            if (!this.SUPPORTED_LOG_REVISIONS.includes(this.logRevision)) {
+              return false;
+            }
+            // Channels and keys are per-log
+            this.keyIDs = {};
+            this.keySchemas = {};
+            if (offset >= dataArray.length) break; // Header was the end of this chunk
+          }
+
           type = dataBuffer.getInt32(shiftOffset(4));
-          if (type === undefined) break; // This was the last cycle, save the data
 
           let keyID: number;
           switch (type) {
             case 0: // New channel definition
+              // The name and schema are stored together, so a channel is never half-registered if
+              // the entry turns out to be incomplete (the ID is derived from the channel count)
               keyID = Object.keys(this.keyIDs).length;
-              this.keyIDs[keyID] = readString();
+              let newName = readString();
               let newSchema = readSchema();
+              this.keyIDs[keyID] = newName;
               this.keySchemas[keyID] = newSchema;
               if (this.logRevision === 0) {
                 // Workaround for https://github.com/acmerobotics/road-runner-ftc/issues/22
@@ -245,9 +314,11 @@ export default class RRLOGDecoder {
               break;
           }
         } catch (e) {
-          // Catch file ending
-          // Usually files should end at message breaks, but this handles corrupted or incorrectly saved logs ending early
-          if (e instanceof RangeError && e.message === "Offset is outside the bounds of the DataView") {
+          // The entry ran past the end of the chunk. For a stream that means the rest of it hasn't
+          // arrived yet, so keep the bytes and pick up here next time. For a file it means the log
+          // was truncated or corrupted, and the retained bytes are simply never used.
+          if (e instanceof RangeError) {
+            this.retain(dataArray, entryStart);
             break;
           } else {
             console.error(e);
@@ -268,6 +339,25 @@ export default class RRLOGDecoder {
     } catch (e) {
       console.error(e);
       return false;
+    }
+  }
+
+  /**
+   * Saves the bytes from the given offset onward to be decoded once the rest of the entry arrives.
+   * Returns true so callers can `return this.retain(...)` when a chunk is too short to act on.
+   */
+  private retain(dataArray: Uint8Array, from: number): boolean {
+    this.pendingData = from >= dataArray.length ? new Uint8Array() : dataArray.slice(from);
+    return true;
+  }
+
+  /**
+   * Rejects a schema tag that the declared log revision doesn't include; message types added in later versions can't
+   * be ignored because decoder doesn't know how many bytes to skip. Throws an error if the log revision is too low.
+   */
+  private requireRevision2(schemaType: number) {
+    if (this.logRevision !== null && this.logRevision < 2) {
+      throw "Schema type " + schemaType + " requires log revision 2, but the header declares " + this.logRevision;
     }
   }
 }

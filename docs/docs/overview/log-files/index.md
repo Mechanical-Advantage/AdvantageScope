@@ -9,6 +9,7 @@ import Image2 from './img/open-file-2.png';
 - **Hoot (.hoot)** - Produced by CTRE's Phoenix 6 [signal logger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html).
 - **REVLOG (.revlog)** - Produced by REV Robotics' [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger).
 - **Road Runner (.log)** - Produced by the [Road Runner](https://github.com/acmerobotics/road-runner) library for FTC.
+- **FateWeaver (.fate)** - Produced by the [FateWeaver](https://github.com/HermesFTC/FateWeaver) logging library for FTC. An extension of the Road Runner format.
 - **CSV (.csv)** - Comma separated values, matching the format [exported](/overview/log-files/export) by AdvantageScope in the "CSV (Table)" or "CSV (List)" modes. See [here](#csv-formatting) for details.
 - **NI Driver Station logs (.dslog and .dsevents)** - Legacy, produced by the NI [FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html) (2010-2026). AdvantageScope automatically searches for the corresponding log file when opening either log type.
 - **RLOG (.rlog)** - Legacy, produced by AdvantageKit 2022.

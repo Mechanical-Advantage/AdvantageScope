@@ -2015,7 +2015,18 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Robot logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "hoot", "revlog", "log", "csv", "dslog", "dsevents"]
+                    extensions: [
+                      "rlog",
+                      "wpilog",
+                      "wpilogxz",
+                      "hoot",
+                      "revlog",
+                      "log",
+                      "fate",
+                      "csv",
+                      "dslog",
+                      "dsevents"
+                    ]
                   }
                 ]
               })
@@ -2039,7 +2050,18 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Robot logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "hoot", "revlog", "log", "csv", "dslog", "dsevents"]
+                    extensions: [
+                      "rlog",
+                      "wpilog",
+                      "wpilogxz",
+                      "hoot",
+                      "revlog",
+                      "log",
+                      "fate",
+                      "csv",
+                      "dslog",
+                      "dsevents"
+                    ]
                   }
                 ]
               })
@@ -3584,6 +3606,7 @@ app.whenReady().then(async () => {
       x.endsWith(".hoot") ||
       x.endsWith(".revlog") ||
       x.endsWith(".log") ||
+      x.endsWith(".fate") ||
       x.endsWith(".csv") ||
       x.endsWith(".dslog") ||
       x.endsWith(".dsevents")

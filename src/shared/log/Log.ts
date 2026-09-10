@@ -715,6 +715,11 @@ export default class Log {
         if (!allowRootWrite) return;
         this.putNumber(key, timestamp, value);
         return;
+      case "bigint":
+        // Precision above 2^53 is lost, matching how 64-bit integers are stored elsewhere
+        if (!allowRootWrite) return;
+        this.putNumber(key, timestamp, Number(value));
+        return;
       case "string":
         if (!allowRootWrite) return;
         this.putString(key, timestamp, value);
@@ -745,6 +750,12 @@ export default class Log {
         (value.length > 0 ? checkArrayType(value, "number") : existingType === LoggableType.NumberArray)
       ) {
         this.putNumberArray(key, timestamp, value);
+      } else if (allowRootWrite && value.length > 0 && checkArrayType(value, "bigint")) {
+        this.putNumberArray(
+          key,
+          timestamp,
+          value.map((item) => Number(item))
+        );
       } else if (
         allowRootWrite &&
         (value.length > 0 ? checkArrayType(value, "string") : existingType === LoggableType.StringArray)
