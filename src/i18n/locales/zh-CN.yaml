@@ -172,7 +172,7 @@ unitConversion:
   fromUnitSelectTitle: "选择要转换的原单位"
   toUnit: "目标单位"
   toUnitSelectTitle: "选择要转换到的目标单位"
-  extraFactor: "额外因数"
+  extraFactor: "额外缩放系数"
   extraFactorInputTitle: "输入额外因数（乘数）"
   cancel: "取消"
   confirm: "确认"
@@ -464,9 +464,9 @@ hub:
       mode: "众数"
       geometricMean: "几何平均数"
       harmonicMean: "调和平均数"
-      quadraticMean: "平方平均数"
+      quadraticMean: "均方根 (RMS)"
       standardDeviation: "标准差"
-      medianAbsoluteDeviation: "绝对中位差"
+      medianAbsoluteDeviation: "中位数绝对偏差 (MAD)"
       interquartileRange: "四分位距"
       skewness: "偏度"
       percentile01: "第 1 百分位数"
@@ -571,30 +571,46 @@ hub:
       plusSplit: "加号"
       crossSplit: "叉号"
       circleSplit: "圆圈"
-      component: "组件"
+      component: "分量"
     options:
       size: "大小"
       groupSize: "组大小"
-      component: "组件"
+      component: "分量"
     optionValues:
       component_x: "X"
       component_y: "Y"
     width: "坐标系宽度（像素）"
     height: "坐标系高度（像素）"
     orientation: "坐标系方向"
+    orientationXrYd: "+X 向右，+Y 向下"
+    orientationXrYu: "+X 向右，+Y 向上"
+    orientationXuYl: "+X 向上，+Y 向左"
     origin: "坐标系原点"
+    originUpperLeft: "左上角"
+    originUpperRight: "右上角"
+    originLowerLeft: "左下角"
+    originLowerRight: "右下角"
+    originCenter: "中心"
     dimensions: "尺寸"
 
   metadata:
-    none: "未找到元数据。请查看文档以了解有关元数据发布的详细信息。"
+    none: "未找到元数据。有关发布元数据的详细信息，请查看文档。"
     value: "值"
-    real: "真实"
+    real: "原始运行"
     replay: "重放"
 
   console:
     exportLog: "导出控制台日志"
     cannotExportTitle: "无法导出控制台日志"
     addConsoleData: "请添加一个包含控制台数据的字段，然后重试。"
+    sources: "来源"
+    types:
+      console: "控制台"
+
+  table:
+    sources: "来源"
+    types:
+      table: "表格"
 
 xrClient:
   miniature:
@@ -612,7 +628,7 @@ xrClient:
     placeSecondFTCRed: "点击在红方联盟站区附近场地围挡的底部放置另一个点，距离上一个点至少 1 米。"
     placeSecondFTCBlue: "点击在蓝方联盟站区附近场地围挡的底部放置另一个点，距离上一个点至少 1 米。"
     placeThirdFRC: "点击选择一个长边场地围挡的底部。"
-    placeThirdFTC: "点击选择一个垂直场地围挡的底部。"
+    placeThirdFTC: "点击选择与前一面围挡垂直的另一面场地围挡的底部。"
 
 liveModeName:
   nt4: "NetworkTables"
@@ -771,7 +787,7 @@ menu:
     blueRight: "蓝方右侧"
     redLeft: "红方左侧"
     redRight: "红方右侧"
-    auto: "自动阶段"
+    auto: "自动选择"
     blue1: "蓝方 1"
     blue2: "蓝方 2"
     blue3: "蓝方 3"
@@ -988,7 +1004,7 @@ units:
     metersPerSecondSquared: "米/秒²"
     inchesPerSecondSquared: "英寸/秒²"
     feetPerSecondSquared: "英尺/秒²"
-    standardGravity: "标准重力"
+    standardGravity: "标准重力加速度"
     radiansPerSecondSquared: "弧度/秒²"
     degreesPerSecondSquared: "度/秒²"
     rotationsPerSecondSquared: "圈/秒²"
@@ -1059,7 +1075,7 @@ units:
     metersPerSecondSquared: "{{value}} 米/秒²"
     inchesPerSecondSquared: "{{value}} 英寸/秒²"
     feetPerSecondSquared: "{{value}} 英尺/秒²"
-    standardGravity: "{{value}} 重力"
+    standardGravity: "{{value}} g"
     radiansPerSecondSquared: "{{value}} 弧度/秒²"
     degreesPerSecondSquared: "{{value}} 度/秒²"
     rotationsPerSecondSquared: "{{value}} 圈/秒²"
@@ -1130,8 +1146,8 @@ units:
     metersPerSecondCubed: "{{value}} 米/秒³"
     inchesPerSecondCubed: "{{value}} 英寸/秒³"
     feetPerSecondCubed: "{{value}} 英尺/秒³"
-    standardGravityPerSecond: "{{value}} 重力/秒"
-    standardGravitySeconds: "{{value}} 重力·秒"
+    standardGravityPerSecond: "{{value}} g/s"
+    standardGravitySeconds: "{{value}} g·s"
     radiansPerSecondCubed: "{{value}} 弧度/秒³"
     degreesPerSecondCubed: "{{value}} 度/秒³"
     rotationsPerSecondCubed: "{{value}} 圈/秒³"

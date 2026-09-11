@@ -21,11 +21,12 @@
 أمثلة لأسماء المجلدات ستكون "Field2d_2023Field«، أو »Joystick_OperatorButtons«، أو »Robot_Dozer".
 :::
 
-يجب أن يحتوي هذا المجلد على ملف باسم "config.json" وملف أصل واحد أو أكثر، كما هو موضح أدناه. يتضمن ملف التكوين دائمًا اسم الأصل الذي سيتم عرضه بواسطة AdvantageScope. يجب أن يكون هذا الاسم فريدًا لكل نوع أصل.
+يجب أن يحتوي هذا المجلد على ملف باسم "config.json" وملف أصل واحد أو أكثر، كما هو موضح أدناه. يتضمن ملف التكوين دائمًا اسم الأصل الذي سيتم عرضه بواسطة AdvantageScope. يجب أن يكون هذا الاسم فريدًا لكل نوع أصل. يمكن أن تتضمن الأصول أيضًا اختياريًا كائن "locales" يربط رموز اللغات (مثل "en-US" و"es-419" و"fr") بالأسماء المترجمة. يتم التعامل مع "name" على مستوى الجذر كالاسم الافتراضي إذا لم يتم توفير اللغة المحددة أو تم حذف "locales".
 
 ```json
 {
-  "name": string // Unique name, required for all asset types
+  "name": string, // Unique default name, required for all asset types
+  "locales": { [locale: string]: string } // Optional localized names mapping language codes (e.g. "en-US", "fr") to translations
   ... // Type-dependent configuration, described below
 }
 ```
@@ -43,6 +44,7 @@
 ```json
 {
   "name": string // Unique name, required for all asset types
+  "locales": { [locale: string]: string } // Optional translations for the asset name
   "isFTC": boolean // Whether the model is intended for use on FTC fields instead of FRC fields (default "false")
   "disableSimplification": boolean // Whether to disable model simplification, optional
   "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
@@ -50,6 +52,7 @@
   "cameras": [ // Fixed camera positions, can be empty
     {
       "name": string // Camera name
+      "locales": { [locale: string]: string } // Optional translations for the camera name
       "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
       "position": [number, number, number] // Position offset in meters relative to the robot, applied after rotation
       "resolution": [number, number] // Resolution in pixels, used to set the fixed aspect ratio
@@ -116,6 +119,7 @@
 ```json
 {
   "name": string // Unique name, required for all asset types
+  "locales": { [locale: string]: string } // Optional translations for the asset name
   "components": [...] // Array of component configurations, see below
 }
 ```
@@ -203,6 +207,7 @@
 ```json
 {
   "name": string // Unique name, required for all asset types
+  "locales": { [locale: string]: string } // Optional translations for the asset name
   "isFTC": boolean // Whether this is an FTC field instead of an FRC field
   "coordinateSystem": // The default coordinate system to use (see below)
       "wall-alliance" |  // FRC 2022
@@ -227,6 +232,7 @@
 ```json
 {
   "name": string // Unique name, required for all asset types
+  "locales": { [locale: string]: string } // Optional translations for the asset name
   "isFTC": boolean // Whether this is an FTC field instead of an FRC field
   "coordinateSystem": // The default coordinate system to use (see below)
       "wall-alliance" |  // FRC 2022
@@ -245,6 +251,7 @@
   "gamePieces": [ // List of game piece types
     {
       "name": string // Game piece name
+      "locales": { [locale: string]: string } // Optional translations for the game piece name
       "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
       "position": [number, number, number] // Position offset in meters, applied after rotation
       "stagedObjects": string[] // Names of staged game piece objects, to hide if user poses are supplied

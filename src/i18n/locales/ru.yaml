@@ -618,7 +618,15 @@ hub:
     width: "Ширина системы координат (пиксели)"
     height: "Высота системы координат (пиксели)"
     orientation: "Ориентация системы координат"
+    orientationXrYd: "+X вправо, +Y вниз"
+    orientationXrYu: "+X вправо, +Y вверх"
+    orientationXuYl: "+X вверх, +Y влево"
     origin: "Начало системы координат"
+    originUpperLeft: "Сверху слева"
+    originUpperRight: "Сверху справа"
+    originLowerLeft: "Снизу слева"
+    originLowerRight: "Снизу справа"
+    originCenter: "Центр"
     dimensions: "Размеры"
 
   metadata:

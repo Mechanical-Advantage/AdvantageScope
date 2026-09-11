@@ -1,6 +1,6 @@
 # AdvantageScope XR {#advantagescope-xr}
 
-AdvantageScope XR 将 👀 [3D 场地](/tab-reference/3d-field) 视图在增强现实 (AR) 中生动呈现，让你能够以全新的方式可视化数据。看生命等大的模拟自动阶段、用桌面场地模型复盘比赛策略、在真实机器人上叠加诊断信息等等！下面的视频展示了此功能的多个使用场景：
+AdvantageScope XR 将 👀 [3D 场地](/tab-reference/3d-field) 视图在增强现实 (AR) 中生动呈现，让你能够以全新的方式可视化数据。以实物大小查看模拟的自动程序运行过程、用桌面场地模型复盘比赛策略、在真实机器人上叠加诊断信息等等！下面的视频展示了此功能的多个使用场景：
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/gWPhQyB66DQ" title="AdvantageScope XR: Feature Overview" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 

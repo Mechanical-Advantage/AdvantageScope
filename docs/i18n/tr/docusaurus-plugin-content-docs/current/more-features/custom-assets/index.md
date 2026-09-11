@@ -21,11 +21,12 @@ Tüm varlıklar "TÜR_AD" adlandırma kuralına sahip klasörlerde saklanır. Kl
 Örnek klasör adları "Field2d_2023Field", "Joystick_OperatorButtons" veya "Robot_Dozer" olabilir.
 :::
 
-Bu klasör aşağıda açıklandığı gibi "config.json" adlı bir dosya ve bir veya daha fazla varlık dosyası içermelidir. Yapılandırma dosyası her zaman AdvantageScope tarafından görüntülenecek varlığın adını içerir. Bu ad her varlık türü için benzersiz olmalıdır.
+Bu klasör, aşağıda açıklandığı gibi "config.json" adlı bir dosya ve bir veya daha fazla varlık dosyası içermelidir. Yapılandırma dosyası her zaman AdvantageScope tarafından görüntülenecek varlığın adını içerir. Bu ad her varlık türü için benzersiz olmalıdır. Varlıklar isteğe bağlı olarak dil kodlarını (örn. "en-US", "es-419", "fr") çevrilmiş adlarla eşleyen bir "locales" nesnesi de içerebilir. Seçilen dil sağlanmamışsa veya "locales" atlanmışsa kök düzeyindeki "name" varsayılan ad olarak kabul edilir.
 
 ```json
 {
-  "name": string // Benzersiz ad, tüm varlık türleri için gereklidir
+  "name": string, // Benzersiz varsayılan ad, tüm varlık türleri için gereklidir
+  "locales": { [locale: string]: string } // Dil kodlarını (örn. "en-US", "fr") çevirilere eşleyen isteğe bağlı yerelleştirilmiş adlar
   ... // Tür bağımlı yapılandırma, aşağıda açıklanmıştır
 }
 ```
@@ -43,6 +44,7 @@ Klasörde "model.glb" adında bir model bulunmalıdır. CAD dosyaları glTF form
 ```json
 {
   "name": string // Benzersiz ad, tüm varlık türleri için gereklidir
+  "locales": { [locale: string]: string } // Varlık adı için isteğe bağlı çeviriler
   "isFTC": boolean // Modelin FRC sahaları yerine FTC sahalarında kullanılmasının amaçlanıp amaçlanmadığı (varsayılan "false")
   "disableSimplification": boolean // Model basitleştirmesinin devre dışı bırakılıp bırakılmayacağı, isteğe bağlı
   "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // x, y ve z eksenleri boyunca rotasyon dizisi
@@ -50,6 +52,7 @@ Klasörde "model.glb" adında bir model bulunmalıdır. CAD dosyaları glTF form
   "cameras": [ // Sabit kamera konumları, boş olabilir
     {
       "name": string // Kamera adı
+      "locales": { [locale: string]: string } // Kamera adı için isteğe bağlı çeviriler
       "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // x, y ve z eksenleri boyunca rotasyon dizisi
       "position": [number, number, number] // Robota göre metre cinsinden konum offseti, rotasyondan sonra uygulanır
       "resolution": [number, number] // Piksel cinsinden çözünürlük, sabit en boy oranını ayarlamak için kullanılır
@@ -116,6 +119,7 @@ Klasörde "image.png" adında bir görsel bulunmalıdır. Yapılandırma dosyas�
 ```json
 {
   "name": string // Benzersiz ad, tüm varlık türleri için gereklidir
+  "locales": { [locale: string]: string } // Varlık adı için isteğe bağlı çeviriler
   "components": [...] // Bileşen yapılandırmaları dizisi, aşağıya bakın
 }
 ```
@@ -203,6 +207,7 @@ Klasörde "image.png" adında bir görsel bulunmalıdır. Kırmızı ittifak sol
 ```json
 {
   "name": string // Benzersiz ad, tüm varlık türleri için gereklidir
+  "locales": { [locale: string]: string } // Varlık adı için isteğe bağlı çeviriler
   "isFTC": boolean // Bunun bir FRC sahası yerine bir FTC sahası olup olmadığı
   "coordinateSystem": // Kullanılacak varsayılan koordinat sistemi (aşağıya bakın)
       "wall-alliance" |  // FRC 2022
@@ -227,6 +232,7 @@ Yapılandırma dosyası aşağıdaki formatta olmalıdır:
 ```json
 {
   "name": string // Benzersiz ad, tüm varlık türleri için gereklidir
+  "locales": { [locale: string]: string } // Varlık adı için isteğe bağlı çeviriler
   "isFTC": boolean // Bunun bir FRC sahası yerine bir FTC sahası olup olmadığı
   "coordinateSystem": // Kullanılacak varsayılan koordinat sistemi (aşağıya bakın)
       "wall-alliance" |  // FRC 2022
@@ -245,6 +251,7 @@ Yapılandırma dosyası aşağıdaki formatta olmalıdır:
   "gamePieces": [ // Oyun objesi türlerinin listesi
     {
       "name": string // Oyun objesi adı
+      "locales": { [locale: string]: string } // Oyun parçası adı için isteğe bağlı çeviriler
       "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // x, y ve z eksenleri boyunca rotasyon dizisi
       "position": [number, number, number] // Metre cinsinden konum offseti, rotasyondan sonra uygulanır
       "stagedObjects": string[] // Sahaya yerleştirilmiş oyun objesi nesnelerinin adları, kullanıcı pozları sağlanırsa gizlenecek

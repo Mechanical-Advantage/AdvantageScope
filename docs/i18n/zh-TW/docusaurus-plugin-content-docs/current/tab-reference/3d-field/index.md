@@ -107,7 +107,7 @@ packet.put("Pose heading (deg)", 180.0); // 度
 設定 3D 組件可能複雜且耗時。請考慮使用如上所述的 AdvantageScope `Mechanism2d` 支援，它提供了一種更簡化的方法來在 3D 場地上視覺化機構。
 :::
 
-機構可以透過記錄一組代表每個組件相對於機器人位置的 3D 姿態來使用關節組件進行視覺化。將姿態新增至現有的機器人或殘影物件，並將物件類型設定為「Component」。
+機構可以透過記錄一組代表每個組件相對於機器人位置的 3D 姿態來使用關節組件進行視覺化。將姿態新增至現有的機器人或殘影物件，並將物件類型設定為「組件」。
 
 每個組件都可以獨立移動（如升降車廂、手臂或末端執行器）。AdvantageKit 使用者應考慮使用 [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) 方法將 Mechanism2d 轉換為 Pose3d 物件陣列。有關設定帶有組件的機器人的更多資訊，請參閱[自訂資源](/more-features/custom-assets)。
 
@@ -138,7 +138,7 @@ AdvantageKit KitBot 2024 範例專案包含一個簡單的[命令](https://githu
 要切換選取的攝影機模式，請在渲染的場地視圖上按右鍵。每個快顯視窗的攝影機模式與位置都是獨立控制的，可以輕鬆建立多攝影機視圖。
 
 :::info
-在渲染的場地視圖上按右鍵，然後點擊「設定 FOV...」以調整環繞與駕駛站攝影機的 FOV。
+在渲染的場地視圖上按右鍵，然後點擊「設定視野」以調整環繞與駕駛站攝影機的視野 (FOV)。
 :::
 
 ### 環繞場地 {#orbit-field}
@@ -175,7 +175,7 @@ AdvantageKit KitBot 2024 範例專案包含一個簡單的[命令](https://githu
 
 ## 設定 {#configuration}
 
-可以使用下拉式選單設定場地模型。支援所有近期的 FRC 與 FTC 比賽。我們建議圖形效能有限的裝置使用「Evergreen」場地。「Axes」場地僅顯示原點處的 XYZ 軸以及用於縮放的場地輪廓。
+可以使用下拉式選單設定場地模型。支援所有近期的 FRC 與 FTC 比賽。我們建議圖形效能有限的裝置使用「Evergreen」場地。「座標軸」場地僅顯示原點處的 XYZ 軸以及用於縮放的場地輪廓。
 
 :::info
 在此分頁上使用的座標系是可自訂的。有關詳細資訊，請參閱[座標系](/more-features/coordinate-systems)頁面。

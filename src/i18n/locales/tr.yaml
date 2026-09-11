@@ -585,7 +585,15 @@ hub:
     width: "Koordinat sistemi genişliği (piksel)"
     height: "Koordinat sistemi yüksekliği (piksel)"
     orientation: "Koordinat sistemi yönelimi"
+    orientationXrYd: "+X sağa, +Y aşağı"
+    orientationXrYu: "+X sağa, +Y yukarı"
+    orientationXuYl: "+X yukarı, +Y sola"
     origin: "Koordinat sistemi orijini"
+    originUpperLeft: "Sol üst"
+    originUpperRight: "Sağ üst"
+    originLowerLeft: "Sol alt"
+    originLowerRight: "Sağ alt"
+    originCenter: "Merkez"
     dimensions: "Boyutlar"
 
   metadata:

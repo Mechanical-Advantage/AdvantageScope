@@ -594,7 +594,15 @@ hub:
     width: "Breedte coördinatenstelsel (pixels)"
     height: "Hoogte coördinatenstelsel (pixels)"
     orientation: "Oriëntatie coördinatenstelsel"
+    orientationXrYd: "+X naar rechts, +Y naar beneden"
+    orientationXrYu: "+X naar rechts, +Y naar boven"
+    orientationXuYl: "+X naar boven, +Y naar links"
     origin: "Oorsprong coördinatenstelsel"
+    originUpperLeft: "Linksboven"
+    originUpperRight: "Rechtsboven"
+    originLowerLeft: "Linksonder"
+    originLowerRight: "Rechtsonder"
+    originCenter: "Midden"
     dimensions: "Dimensies"
 
   metadata:

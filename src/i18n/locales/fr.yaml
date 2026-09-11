@@ -583,18 +583,26 @@ hub:
       plusSplit: "Plus"
       crossSplit: "Croix"
       circleSplit: "Cercle"
-      component: "Composant"
+      component: "Composante"
     options:
       size: "Taille"
       groupSize: "Taille du groupe"
-      component: "Composant"
+      component: "Composante"
     optionValues:
       component_x: "X"
       component_y: "Y"
     width: "Largeur du système de coordonnées (pixels)"
     height: "Hauteur du système de coordonnées (pixels)"
     orientation: "Orientation du système de coordonnées"
+    orientationXrYd: "+X vers la droite, +Y vers le bas"
+    orientationXrYu: "+X vers la droite, +Y vers le haut"
+    orientationXuYl: "+X vers le haut, +Y vers la gauche"
     origin: "Origine du système de coordonnées"
+    originUpperLeft: "En haut à gauche"
+    originUpperRight: "En haut à droite"
+    originLowerLeft: "En bas à gauche"
+    originLowerRight: "En bas à droite"
+    originCenter: "Centre"
     dimensions: "Dimensions"
 
   metadata:

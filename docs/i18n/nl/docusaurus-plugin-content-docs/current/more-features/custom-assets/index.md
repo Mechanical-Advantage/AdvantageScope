@@ -21,12 +21,12 @@ Alle assets worden opgeslagen in mappen met de naamconventie "TYPE_NAAM". De NAA
 Voorbeelden van mapnamen zijn "Field2d_2023Field", "Joystick_OperatorButtons" of "Robot_Dozer".
 :::
 
-Deze map moet een bestand met de naam "config.json" en een of meer assetbestanden bevatten, zoals hieronder beschreven. Het configuratiebestand bevat altijd de naam van de asset zoals deze door AdvantageScope moet worden weergegeven. Deze naam moet uniek zijn voor elk assettype. Assets kunnen optioneel ook een "locales"-object bevatten dat taalcodes (bijv. "es-419", "fr", "zh-CN", "nl") koppelt aan vertaalde namen. De "name" op het hoofdniveau wordt behandeld als de standaardnaam als de geselecteerde taal niet wordt vermeld of "locales" wordt weggelaten.
+Deze map moet een bestand met de naam "config.json" en een of meer assetbestanden bevatten, zoals hieronder beschreven. Het configuratiebestand bevat altijd de naam van de asset zoals deze door AdvantageScope moet worden weergegeven. Deze naam moet uniek zijn voor elk assettype. Assets kunnen optioneel ook een "locales"-object bevatten dat taalcodes (bijv. "en-US", "es-419", "fr") koppelt aan vertaalde namen. De "name" op het hoofdniveau wordt behandeld als de standaardnaam als de geselecteerde taal niet wordt vermeld of "locales" wordt weggelaten.
 
 ```json
 {
   "name": string, // Unieke standaardnaam, vereist voor alle assettypen
-  "locales": { [locale: string]: string } // Optionele gelokaliseerde namen die taalcodes (bijv. "es-419", "fr") koppelen aan vertalingen
+  "locales": { [locale: string]: string } // Optionele gelokaliseerde namen die taalcodes (bijv. "en-US", "fr") koppelen aan vertalingen
   ... // Type-afhankelijke configuratie, hieronder beschreven
 }
 ```

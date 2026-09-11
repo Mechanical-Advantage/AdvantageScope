@@ -606,7 +606,15 @@ hub:
     width: "רוחב מערכת הצירים (בפיקסלים)"
     height: "גובה מערכת הצירים (בפיקסלים)"
     orientation: "כיוון מערכת הצירים"
+    orientationXrYd: "+X ימינה, +Y למטה"
+    orientationXrYu: "+X ימינה, +Y למעלה"
+    orientationXuYl: "+X למעלה, +Y שמאלה"
     origin: "מקור מערכת הצירים"
+    originUpperLeft: "שמאל עליון"
+    originUpperRight: "ימין עליון"
+    originLowerLeft: "שמאל תחתון"
+    originLowerRight: "ימין תחתון"
+    originCenter: "מרכז"
     dimensions: "ממדים"
 
   metadata:

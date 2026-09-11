@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 🔍 中繼資料 {#metadata}
 
-中繼資料分頁顯示發布到隱藏的「/Metadata」表格或透過 AdvantageKit 發布的數值。中繼資料鍵名顯示在左側，各欄分隔來自不同來源的資料（例如使用 AdvantageKit 時的真實與重播資料）。
+中繼資料分頁顯示發布到隱藏的「/Metadata」表格或透過 AdvantageKit 發布的數值。中繼資料鍵名顯示在左側，各欄分隔來自不同來源的資料（例如使用 AdvantageKit 時的原始執行與重播資料）。
 
 <img src="/img/tab-reference/metadata-1.webp" alt="中繼資料分頁概述" />
 
@@ -27,7 +27,7 @@ Telemetry.getTable("Metadata").putString("Darwin", "macOS");
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-在 AdvantageKit 中，請在啟動記錄器之前呼叫下面的方法。在真實運作與重播中執行時，中繼資料會分開儲存以便於比較。
+在 AdvantageKit 中，請在啟動記錄器之前呼叫下面的方法。在原始執行與重播中執行時，中繼資料會分開儲存以便於比較。
 
 ```java
 Logger.recordMetadata("Darwin", "macOS");

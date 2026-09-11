@@ -69,6 +69,7 @@ periodic() {
 @AutoLogOutput
 Mechanism2d mechanism = new Mechanism2d(3, 3);
 ```
+
 :::
 
 </TabItem>

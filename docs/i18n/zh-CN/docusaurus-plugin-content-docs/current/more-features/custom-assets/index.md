@@ -21,11 +21,12 @@ AdvantageScope 使用一组默认的平面场地图像、场地模型、机器�
 文件夹名称示例包括 “Field2d_2023Field”、“Joystick_OperatorButtons”或“Robot_Dozer”。
 :::
 
-此文件夹应包含一个名为 “config.json” 的文件和一个或多个资源文件，如下所述。配置文件始终包含在 AdvantageScope 中显示的资源名称。此名称对于每种资源类型都必须是唯一的。
+此文件夹应包含一个名为 “config.json” 的文件和一个或多个资源文件，如下所述。配置文件始终包含在 AdvantageScope 中显示的资源名称。此名称对于每种资源类型都必须是唯一的。资源还可以选择性地包含一个 “locales” 对象，将语言代码（例如 “en-US”、“es-419”、“fr”）映射到翻译后的名称。如果未提供所选语言或省略了 “locales”，则根级别的 “name” 将被视为默认名称。
 
 ```json
 {
-  "name": string // 唯一名称，所有资源类型均需要
+  "name": string, // 唯一的默认名称，所有资源类型均需要
+  "locales": { [locale: string]: string } // 可选的本地化名称，将语言代码（例如 "en-US"、"fr"）映射到翻译
   ... // 依赖于类型的配置，如下所述
 }
 ```
@@ -43,6 +44,7 @@ AdvantageScope 使用一组默认的平面场地图像、场地模型、机器�
 ```json
 {
   "name": string // 唯一名称，所有资源类型均需要
+  "locales": { [locale: string]: string } // 资源名称的可选翻译
   "isFTC": boolean // 模型是否打算在 FTC 场地而非 FRC 场地上使用（默认为 "false"）
   "disableSimplification": boolean // 是否禁用模型简化，可选
   "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // 沿 x、y 和 z 轴的旋转序列
@@ -50,6 +52,7 @@ AdvantageScope 使用一组默认的平面场地图像、场地模型、机器�
   "cameras": [ // 固定相机位置，可以为空
     {
       "name": string // 相机名称
+      "locales": { [locale: string]: string } // 相机名称的可选翻译
       "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // 沿 x、y 和 z 轴的旋转序列
       "position": [number, number, number] // 相对于机器人的位置偏移量（以米为单位），在旋转后应用
       "resolution": [number, number] // 像素分辨率，用于设置固定宽高比
@@ -99,7 +102,7 @@ AdvantageScope 会自动简化模型几何形状以提高性能，其中细节�
 
 1. 在其正确的“默认”位置导出基础模型和组件。如果没有在 AdvantageScope 中提供组件位姿，它们就应该这样被渲染。
 
-2. 从机器人代码发布一个归零的 2D 位姿，然后在 AdvantageScope 中将其选择为机器人位姿。切换到显示场地原点的 “Axes” 3D 场地。
+2. 从机器人代码发布一个归零的 2D 位姿，然后在 AdvantageScope 中将其选择为机器人位姿。切换到显示场地原点的“坐标轴” 3D 场地。
 
 3. 调整机器人的整体旋转（而不是组件的旋转），直到整个机器人方向正确。然后，调整整体位置将整个机器人带到原点。在此过程中，组件应始终渲染在相同的默认位置。
 
@@ -116,6 +119,7 @@ AdvantageScope 会自动简化模型几何形状以提高性能，其中细节�
 ```json
 {
   "name": string // 唯一名称，所有资源类型均需要
+  "locales": { [locale: string]: string } // 资源名称的可选翻译
   "components": [...] // 组件配置数组，见下文
 }
 ```
@@ -203,6 +207,7 @@ AdvantageScope 会自动简化模型几何形状以提高性能，其中细节�
 ```json
 {
   "name": string // 唯一名称，所有资源类型均需要
+  "locales": { [locale: string]: string } // 资源名称的可选翻译
   "isFTC": boolean // 这是否是 FTC 场地而不是 FRC 场地
   "coordinateSystem": // 要使用的默认坐标系（见下文）
       "wall-alliance" |  // FRC 2022
@@ -227,6 +232,7 @@ AdvantageScope 会自动简化模型几何形状以提高性能，其中细节�
 ```json
 {
   "name": string // 唯一名称，所有资源类型均需要
+  "locales": { [locale: string]: string } // 资源名称的可选翻译
   "isFTC": boolean // 这是否是 FTC 场地而不是 FRC 场地
   "coordinateSystem": // 要使用的默认坐标系（见下文）
       "wall-alliance" |  // FRC 2022
@@ -245,6 +251,7 @@ AdvantageScope 会自动简化模型几何形状以提高性能，其中细节�
   "gamePieces": [ // 游戏元素类型列表
     {
       "name": string // 游戏元素名称
+      "locales": { [locale: string]: string } // 游戏元素名称的可选翻译
       "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // 沿 x、y 和 z 轴的旋转序列
       "position": [number, number, number] // 位置偏移量（以米为单位），在旋转后应用
       "stagedObjects": string[] // 暂存游戏元素对象的名称，如果提供了用户位姿则进行隐藏

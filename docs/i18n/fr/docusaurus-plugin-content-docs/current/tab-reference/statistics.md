@@ -12,9 +12,9 @@ _L'interface en anglais est illustrée ci-dessus._
 
 ## Panneau de contrôle {#control-pane}
 
-Pour commencer, faites glisser un champ vers la section « Mesures ». Supprimez un champ à l'aide du bouton X, ou masquez-le temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer tous les champs, cliquez sur les trois points près du titre de l'axe, puis sur `Tout effacer`. Les champs peuvent être réorganisés dans la liste en les faisant glisser.
+Pour commencer, faites glisser un champ vers la section « Mesures ». Supprimez un champ à l'aide du bouton X, ou masquez-le temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer tous les champs, cliquez sur la corbeille près du titre de l'axe, puis sur `Tout effacer`. Les champs peuvent être réorganisés dans la liste en les faisant glisser.
 
-Pour analyser la différence entre les champs, basculez un champ en mode « Référence » et ajoutez d'autres champs supplémentaires en tant qu'enfants. Les enfants peuvent être basculés entre les modes « Erreur relative » et « Erreur absolue ».
+Pour analyser la différence entre les champs, basculez un champ en mode « Référence » et ajoutez d'autres champs supplémentaires en tant qu'enfants. Les enfants peuvent être basculés entre les modes « Erreur relative » et « Erreur absolue ».
 
 :::info
 La couleur de chaque champ peut être personnalisée en cliquant sur l'icône colorée ou en faisant un clic droit sur le nom du champ.
@@ -22,15 +22,15 @@ La couleur de chaque champ peut être personnalisée en cliquant sur l'icône co
 
 ### Configuration {#configuration}
 
-L'option **Plage de temps** sélectionne les parties du journal utilisées pour l'analyse :
+L'option **Plage de temps** sélectionne les parties du journal utilisées pour l'analyse :
 
-- _Plage visible :_ Analyse la plage de temps visible sur la chronologie.
-- _Journal complet :_ Analyse la plage complète du fichier journal.
-- _Activé :_ Analyse les plages de temps où le robot est activé.
-- _Auto :_ Analyse les plages de temps où le robot est en mode autonome.
-- _Téléopéré :_ Analyse les plages de temps où le robot est en mode téléopéré.
-- _En direct : 30 secondes :_ Analyse les 30 secondes les plus récentes (lors d'une connexion à une source en direct).
-- _En direct : 10 secondes :_ Analyse les 10 secondes les plus récentes (lors d'une connexion à une source en direct).
+- _Plage visible :_ Analyse la plage de temps visible sur la chronologie.
+- _Journal complet :_ Analyse la plage complète du fichier journal.
+- _Activé :_ Analyse les plages de temps où le robot est activé.
+- _Auto :_ Analyse les plages de temps où le robot est en mode autonome.
+- _Téléopéré :_ Analyse les plages de temps où le robot est en mode téléopéré.
+- _En direct : 30 secondes :_ Analyse les 30 secondes les plus récentes (lors d'une connexion à une source en direct).
+- _En direct : 10 secondes :_ Analyse les 10 secondes les plus récentes (lors d'une connexion à une source en direct).
 
 L'option **Plage de données** sélectionne les valeurs minimale et maximale à afficher sur l'histogramme. Les données en dehors de cette plage ne sont pas affichées, mais elles continuent d'être utilisées pour les mesures statistiques.
 
@@ -48,25 +48,25 @@ Le tableau des mesures statistiques montre les valeurs calculées de chaque mesu
 
 #### Résumé {#summary}
 
-- **Nombre :** Le nombre d'échantillons discrets générés.
-- **Min :** La plus petite valeur dans les données.
-- **Max :** La plus grande valeur dans les données.
+- **Nombre :** Le nombre d'échantillons discrets générés.
+- **Min :** La plus petite valeur dans les données.
+- **Max :** La plus grande valeur dans les données.
 
 #### Centre {#center}
 
-- [**Moyenne :**](https://fr.wikipedia.org/wiki/Moyenne_arithm%C3%A9tique) La moyenne arithmétique (moyenne simple) des données.
-- [**Médiane :**](<https://fr.wikipedia.org/wiki/M%C3%A9diane_(statistiques)>) La valeur « du milieu » des données, ou le 50e centile.
-- [**Mode :**](<https://fr.wikipedia.org/wiki/Mode_(statistiques)>) La valeur la plus courante dans les données.
-- [**Moyenne géométrique :**](https://fr.wikipedia.org/wiki/Moyenne_g%C3%A9om%C3%A9trique) Une mesure du centre calculée en utilisant le produit des valeurs plutôt que la somme. Applicable lors de la mesure des _taux de croissance exponentiels_ (comme le pourcentage de changement entre les cycles).
-- [**Moyenne harmonique :**](https://fr.wikipedia.org/wiki/Moyenne_harmonique) Une mesure du centre calculée en utilisant la somme des inverses des valeurs. Applicable lors de la mesure de _taux ou de vitesses_.
-- [**Moyenne quadratique :**](https://fr.wikipedia.org/wiki/Moyenne_quadratique) Une mesure du centre calculée en utilisant les carrés des valeurs. Applicable lors de la mesure de données avec des _valeurs positives et négatives_, comme un mouvement périodique.
+- [**Moyenne :**](https://fr.wikipedia.org/wiki/Moyenne_arithm%C3%A9tique) La moyenne arithmétique (moyenne simple) des données.
+- [**Médiane :**](<https://fr.wikipedia.org/wiki/M%C3%A9diane_(statistiques)>) La valeur « du milieu » des données, ou le 50e centile.
+- [**Mode :**](<https://fr.wikipedia.org/wiki/Mode_(statistiques)>) La valeur la plus courante dans les données.
+- [**Moyenne géométrique :**](https://fr.wikipedia.org/wiki/Moyenne_g%C3%A9om%C3%A9trique) Une mesure du centre calculée en utilisant le produit des valeurs plutôt que la somme. Applicable lors de la mesure des _taux de croissance exponentiels_ (comme le pourcentage de changement entre les cycles).
+- [**Moyenne harmonique :**](https://fr.wikipedia.org/wiki/Moyenne_harmonique) Une mesure du centre calculée en utilisant la somme des inverses des valeurs. Applicable lors de la mesure de _taux ou de vitesses_.
+- [**Moyenne quadratique :**](https://fr.wikipedia.org/wiki/Moyenne_quadratique) Une mesure du centre calculée en utilisant les carrés des valeurs. Applicable lors de la mesure de données avec des _valeurs positives et négatives_, comme un mouvement périodique.
 
 #### Écart {#spread}
 
-- [**Écart-type :**](https://fr.wikipedia.org/wiki/%C3%89cart_type) La mesure statistique de variation la plus courante, où une valeur plus faible indique moins de variation. 68 % des données se situent à moins d'un écart-type de la moyenne.
-- [**Écart absolu moyen :**](https://fr.wikipedia.org/wiki/Valeur_absolue_des_%C3%A9carts) La distance moyenne entre chaque valeur et la moyenne. Il s'agit d'une alternative à l'écart-type.
-- [**Écart interquartile :**](https://fr.wikipedia.org/wiki/%C3%89cart_interquartile) La différence entre le troisième et le premier quartile (75e centile et 25e centile), moins affectée par les valeurs aberrantes que l'écart-type ou l'écart absolu moyen.
-- [**Asymétrie :**](<https://fr.wikipedia.org/wiki/Asym%C3%A9trie_(statistiques)>) Une mesure de l'asymétrie des données. Une valeur négative indique une queue vers la gauche, une valeur positive indique une queue vers la droite, et une valeur nulle suggère une distribution symétrique.
+- [**Écart-type :**](https://fr.wikipedia.org/wiki/%C3%89cart_type) La mesure statistique de variation la plus courante, où une valeur plus faible indique moins de variation. Pour des données normalement distribuées, environ 68 % des données se situent à moins d'un écart-type de la moyenne.
+- [**Écart absolu médian :**](https://fr.wikipedia.org/wiki/%C3%89cart_absolu_m%C3%A9dian) La médiane des écarts absolus par rapport à la médiane. Il s'agit d'une alternative robuste à l'écart-type.
+- [**Écart interquartile :**](https://fr.wikipedia.org/wiki/%C3%89cart_interquartile) La différence entre le troisième et le premier quartile (75e centile et 25e centile), moins affectée par les valeurs aberrantes que l'écart-type.
+- [**Asymétrie :**](<https://fr.wikipedia.org/wiki/Asym%C3%A9trie_(statistiques)>) Une mesure de l'asymétrie des données. Une valeur négative indique une queue vers la gauche, une valeur positive indique une queue vers la droite, et une valeur nulle suggère une distribution symétrique.
 
 #### Centiles {#percentiles}
 

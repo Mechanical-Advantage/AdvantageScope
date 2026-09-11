@@ -12,7 +12,7 @@ _Interfața în limba engleză este ilustrată mai sus._
 
 ## Panoul de control {#control-pane}
 
-Pentru a începe, trageți un câmp în secțiunea „Măsurători”. Ștergeți un câmp folosind butonul X sau ascundeți-l temporar dând clic pe pictograma ochi sau dând dublu clic pe numele câmpului. Pentru a elimina toate câmpurile, dați clic pe cele trei puncte de lângă titlul axei și apoi pe `Șterge tot`. Câmpurile pot fi reorganizate în listă prin clic și tragere.
+Pentru a începe, trageți un câmp în secțiunea „Măsurători”. Ștergeți un câmp folosind butonul X sau ascundeți-l temporar dând clic pe pictograma ochi sau dând dublu clic pe numele câmpului. Pentru a elimina toate câmpurile, dați clic pe coșul de gunoi de lângă titlul axei și apoi pe `Șterge tot`. Câmpurile pot fi reorganizate în listă prin clic și tragere.
 
 Pentru a analiza diferența dintre câmpuri, comutați un câmp în modul „Referință” și adăugați alte câmpuri ca obiecte copil. Obiectele copil pot fi comutate între modurile „Eroare relativă” și „Eroare absolută”.
 
@@ -63,9 +63,9 @@ Tabelul de măsurători statistice afișează valorile calculate pentru fiecare 
 
 #### Răspândire {#spread}
 
-- [**Deviație standard:**](https://ro.wikipedia.org/wiki/Abatere_standard) Cea mai comună măsurătoare statistică a variației, unde o valoare mai mică indică o variație mai mică. 68% din date se încadrează în limita unei deviații standard față de medie.
-- [**Deviație absolută medie:**](https://en.wikipedia.org/wiki/Average_absolute_deviation) Distanța medie dintre fiecare valoare și medie. Aceasta este o alternativă la deviația standard.
-- [**Interval intercuartilic:**](https://ro.wikipedia.org/wiki/Interval_intercuartilic) Diferența dintre cuartila a treia și prima cuartilă (percentila 75 și percentila 25), mai puțin afectată de valorile aberante (outliers) decât deviația standard sau deviația absolută medie.
+- [**Deviație standard:**](https://ro.wikipedia.org/wiki/Abatere_standard) Cea mai comună măsurătoare statistică a variației, unde o valoare mai mică indică o variație mai mică. Pentru date distribuite normal, aproximativ 68% din date se încadrează în limita unei deviații standard față de medie.
+- [**Deviație absolută mediană:**](https://en.wikipedia.org/wiki/Median_absolute_deviation) Mediana deviațiilor absolute față de mediana datelor. Aceasta este o măsurătoare a dispersiei statistice mai rezistentă la valorile aberante decât deviația standard.
+- [**Interval intercuartilic:**](https://ro.wikipedia.org/wiki/Interval_intercuartilic) Diferența dintre cuartila a treia și prima cuartilă (percentila 75 și percentila 25), mai puțin afectată de valorile aberante (outliers) decât deviația standard.
 - [**Asimetrie:**](https://ro.wikipedia.org/wiki/Asimetrie_statistic%C4%83) O măsurătoare a asimetriei datelor. O valoare negativă indică o coadă spre stânga, o valoare pozitivă indică o coadă spre dreapta, iar o valoare zero sugerează o distribuție simetrică.
 
 #### Percentile {#percentiles}

@@ -19,11 +19,12 @@ Todos los recursos se almacenan en carpetas con la convención de nomenclatura "
 Ejemplos de nombres de carpetas serían "Field2d_2023Field", "Joystick_OperatorButtons" o "Robot_Dozer".
 :::
 
-Esta carpeta debe contener un archivo llamado "config.json" y uno o más archivos de recursos, como se describe a continuación. El archivo de configuración siempre incluye el nombre del recurso que AdvantageScope mostrará. Este nombre debe ser único para cada tipo de recurso.
+Esta carpeta debe contener un archivo llamado "config.json" y uno o más archivos de recursos, como se describe a continuación. El archivo de configuración siempre incluye el nombre del recurso que AdvantageScope mostrará. Este nombre debe ser único para cada tipo de recurso. Los recursos también pueden incluir opcionalmente un objeto "locales" que asigna claves de idioma (p. ej., "en-US", "fr", "zh-CN") a nombres traducidos. El "name" a nivel raíz se trata como el nombre predeterminado si no se proporciona el idioma seleccionado o si se omite "locales".
 
 ```json
 {
-  "name": string // Nombre único, requerido para todos los tipos de recursos
+  "name": string, // Nombre predeterminado único, obligatorio para todos los tipos de recursos
+  "locales": { [locale: string]: string } // Nombres localizados opcionales que asignan códigos de idioma (p. ej., "en-US", "fr") a traducciones
   ... // Configuración dependiente del tipo, descrita a continuación
 }
 ```
@@ -41,6 +42,7 @@ Se debe incluir un modelo en la carpeta con el nombre "model.glb". Los archivos 
 ```json
 {
   "name": string // Nombre único, requerido para todos los tipos de recursos
+  "locales": { [locale: string]: string } // Traducciones opcionales para el nombre del recurso
   "isFTC": boolean // Si el modelo está destinado a usarse en campos de FTC en lugar de campos de FRC (predeterminado "false")
   "disableSimplification": boolean // Si se debe deshabilitar la simplificación del modelo, opcional
   "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Secuencia de rotaciones a lo largo de los ejes x, y, y z
@@ -48,6 +50,7 @@ Se debe incluir un modelo en la carpeta con el nombre "model.glb". Los archivos 
   "cameras": [ // Posiciones fijas de la cámara, puede estar vacío
     {
       "name": string // Nombre de la cámara
+      "locales": { [locale: string]: string } // Traducciones opcionales para el nombre de la cámara
       "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Secuencia de rotaciones a lo largo de los ejes x, y, y z
       "position": [number, number, number] // Desplazamiento de posición en metros relativo al robot, aplicado después de la rotación
       "resolution": [number, number] // Resolución en píxeles, utilizada para establecer la relación de aspecto fija
@@ -109,6 +112,7 @@ Se debe incluir una imagen en la carpeta con el nombre "image.png". El archivo d
 ```json
 {
   "name": string // Nombre único, requerido para todos los tipos de recursos
+  "locales": { [locale: string]: string } // Traducciones opcionales para el nombre del recurso
   "components": [...] // Arreglo de configuraciones de componentes, ver a continuación
 }
 ```
@@ -194,6 +198,7 @@ Se debe incluir una imagen en la carpeta con el nombre "image.png". Debe orienta
 ```json
 {
   "name": string // Nombre único, requerido para todos los tipos de recursos
+  "locales": { [locale: string]: string } // Traducciones opcionales para el nombre del recurso
   "isFTC": boolean // Si este es un campo de FTC en lugar de un campo de FRC
   "coordinateSystem": // El sistema de coordenadas predeterminado a utilizar (ver a continuación)
       "wall-alliance" |  // FRC 2022
@@ -216,6 +221,7 @@ Se debe incluir un modelo en la carpeta con el nombre "model.glb". Después de a
 ```json
 {
   "name": string // Nombre único, requerido para todos los tipos de recursos
+  "locales": { [locale: string]: string } // Traducciones opcionales para el nombre del recurso
   "isFTC": boolean // Si este es un campo de FTC en lugar de un campo de FRC
   "coordinateSystem": // El sistema de coordenadas predeterminado a utilizar (ver a continuación)
       "wall-alliance" |  // FRC 2022
@@ -234,6 +240,7 @@ Se debe incluir un modelo en la carpeta con el nombre "model.glb". Después de a
   "gamePieces": [ // Lista de tipos de elementos de juego
     {
       "name": string // Nombre del elemento de juego
+      "locales": { [locale: string]: string } // Traducciones opcionales para el nombre del elemento de juego
       "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Secuencia de rotaciones a lo largo de los ejes x, y, y z
       "position": [number, number, number] // Desplazamiento de posición en metros, aplicado después de la rotación
       "stagedObjects": string[] // Nombres de los objetos de elementos de juego posicionados en el campo, para ocultar si se suministran poses de usuario

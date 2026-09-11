@@ -642,7 +642,15 @@ hub:
     width: "عرض نظام الإحداثيات (بكسل)"
     height: "ارتفاع نظام الإحداثيات (بكسل)"
     orientation: "اتجاه نظام الإحداثيات"
+    orientationXrYd: "+X لليمين، +Y للأسفل"
+    orientationXrYu: "+X لليمين، +Y للأعلى"
+    orientationXuYl: "+X للأعلى، +Y لليسار"
     origin: "أصل نظام الإحداثيات"
+    originUpperLeft: "أعلى اليسار"
+    originUpperRight: "أعلى اليمين"
+    originLowerLeft: "أسفل اليسار"
+    originLowerRight: "أسفل اليمين"
+    originCenter: "الوسط"
     dimensions: "الأبعاد"
 
   metadata:

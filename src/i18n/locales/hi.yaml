@@ -594,7 +594,15 @@ hub:
     width: "कोऑर्डिनेट सिस्टम चौड़ाई (पिक्सेल)"
     height: "कोऑर्डिनेट सिस्टम ऊँचाई (पिक्सेल)"
     orientation: "कोऑर्डिनेट सिस्टम अभिविन्यास"
+    orientationXrYd: "+X दाएँ, +Y नीचे"
+    orientationXrYu: "+X दाएँ, +Y ऊपर"
+    orientationXuYl: "+X ऊपर, +Y बाएँ"
     origin: "कोऑर्डिनेट सिस्टम मूल"
+    originUpperLeft: "ऊपरी बायाँ"
+    originUpperRight: "ऊपरी दायाँ"
+    originLowerLeft: "निचला बायाँ"
+    originLowerRight: "निचला दायाँ"
+    originCenter: "केंद्र"
     dimensions: "आयाम"
 
   metadata:

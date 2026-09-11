@@ -45,5 +45,5 @@ _De Engelstalige interface wordt hierboven weergegeven._
 Waarden kunnen automatisch worden geïntegreerd of gedifferentieerd door AdvantageScope. Deltatijd wordt altijd gemeten in seconden. Klik op de drie stippen naast de astitel en selecteer vervolgens `Differentiëren` of `Integreren`.
 
 :::info
-Afgeleiden worden berekend met behulp van het [eindige differentie](https://en.wikipedia.org/wiki/Finite_difference)-algoritme van aangrenzende meetpunten. Integralen worden berekend met behulp van [trapeziumintegratie](https://en.wikipedia.org/wiki/Trapezoidal_rule).
+Afgeleiden worden berekend met behulp van het [eindige differentie](https://en.wikipedia.org/wiki/Finite_difference)-algoritme van aangrenzende meetpunten. Integralen worden berekend met behulp van [trapeziumintegratie](https://nl.wikipedia.org/wiki/Trapeziumregel).
 :::

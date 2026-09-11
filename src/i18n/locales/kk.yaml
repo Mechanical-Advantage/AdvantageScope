@@ -592,7 +592,15 @@ hub:
     width: "Координаттар жүйесінің ені (пиксель)"
     height: "Координаттар жүйесінің биіктігі (пиксель)"
     orientation: "Координаттар жүйесінің бағдары"
+    orientationXrYd: "+X оңға, +Y төмен"
+    orientationXrYu: "+X оңға, +Y жоғары"
+    orientationXuYl: "+X жоғары, +Y солға"
     origin: "Координаттар жүйесінің бас нүктесі"
+    originUpperLeft: "Жоғарғы сол жақ"
+    originUpperRight: "Жоғарғы оң жақ"
+    originLowerLeft: "Төменгі сол жақ"
+    originLowerRight: "Төменгі оң жақ"
+    originCenter: "Ортасы"
     dimensions: "Өлшемдері"
 
   metadata:

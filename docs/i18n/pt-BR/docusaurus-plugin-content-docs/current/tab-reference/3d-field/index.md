@@ -152,7 +152,7 @@ Este modo possui os mesmos controles do modo "Orbitar campo", mas a posição da
 
 ### Driver Station {#driver-station}
 
-Este modo bloqueia a câmera atrás de uma das estações de piloto na altura típica dos olhos. Escolha manualmente a estação a ser visualizada ou escolha "Autônomo" para usar a aliança e o número da estação armazenados nos dados do log.
+Este modo bloqueia a câmera atrás de uma das estações de piloto na altura típica dos olhos. Escolha manualmente a estação a ser visualizada ou escolha "Automático" para usar a aliança e o número da estação armazenados nos dados do log.
 
 :::warning
 A seleção automática do número da estação pode ser imprecisa ao visualizar dados de log produzidos pelo AdvantageKit 2023 ou anterior.

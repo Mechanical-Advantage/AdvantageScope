@@ -12,7 +12,7 @@ _A interface em inglês é exibida acima._
 
 ## Painel de controle {#control-pane}
 
-Para começar, arraste um campo para a seção "Medições". Exclua um campo usando o botão X ou oculte-o temporariamente clicando no ícone de olho ou dando um duplo clique no nome do campo. Para remover todos os campos, clique nos três pontos perto do título do eixo e depois em `Limpar tudo`. Os campos podem ser reorganizados na lista clicando e arrastando.
+Para começar, arraste um campo para a seção "Medições". Exclua um campo usando o botão X ou oculte-o temporariamente clicando no ícone de olho ou dando um duplo clique no nome do campo. Para remover todos os campos, clique na lixeira perto do título do eixo e depois em `Limpar tudo`. Os campos podem ser reorganizados na lista clicando e arrastrando.
 
 Para analisar a diferença entre campos, altere um campo para o modo "Referência" e adicione outros campos adicionais como filhos. Os filhos podem ser alternados entre os modos "Erro relativo" e "Erro absoluto".
 
@@ -63,9 +63,9 @@ A tabela de medidas estatísticas mostra os valores calculados de cada medida pa
 
 #### Dispersão {#spread}
 
-- [**Desvio padrão:**](https://pt.wikipedia.org/wiki/Desvio_padr%C3%A3o) A medida estatística de variação mais comum, onde um valor menor indica menor variação. 68% dos dados caem dentro de um desvio padrão da média.
-- [**Desvio absoluto mediano:**](https://en.wikipedia.org/wiki/Average_absolute_deviation) A distância média entre cada valor e a média. Esta é uma alternativa ao desvio padrão.
-- [**Intervalo interquartil:**](https://pt.wikipedia.org/wiki/Amplitude_interquartil) A diferença entre o terceiro e o primeiro quartil (percentil 75 e percentil 25), menos afetado por valores discrepantes (outliers) do que o desvio padrão ou o desvio absoluto mediano.
+- [**Desvio padrão:**](https://pt.wikipedia.org/wiki/Desvio_padr%C3%A3o) A medida estatística de variação mais comum, onde um valor menor indica menor variação. Para dados normalmente distribuídos, aproximadamente 68% dos dados caem dentro de um desvio padrão da média.
+- [**Desvio absoluto mediano:**](https://pt.wikipedia.org/wiki/Desvio_absoluto_mediano) A mediana dos desvios absolutos em relação à mediana dos dados. Esta é uma medida de dispersão estatística mais resistente a valores discrepantes (outliers) do que o desvio padrão.
+- [**Intervalo interquartil:**](https://pt.wikipedia.org/wiki/Amplitude_interquartil) A diferença entre o terceiro e o primeiro quartil (percentil 75 e percentil 25), menos afetado por valores discrepantes (outliers) do que o desvio padrão.
 - [**Assimetria:**](<https://pt.wikipedia.org/wiki/Assimetria_(estat%C3%ADstica)>) Uma medida da assimetria dos dados. Um valor negativo indica uma cauda para a esquerda, um valor positivo indica uma cauda para a direita e um valor zero sugere uma distribuição simétrica.
 
 #### Percentis {#percentiles}

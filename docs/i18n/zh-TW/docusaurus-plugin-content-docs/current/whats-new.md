@@ -126,7 +126,7 @@ Windows 11 上的 AdvantageScope UI 已更新以支援半透明側邊欄，此�
 此版本包含整個應用程式中的各種 Bug 修復與穩定性提升。完整清單可以在發布[更新日誌](https://github.com/Mechanical-Advantage/AdvantageScope/releases)中找到，以下列出了一些值得注意的修復：
 
 - 大幅提升了 AdvantageScope 在長時間串流資料時的效能，特別是在使用折線圖分頁時。
-- AdvantageScope 現在對異常日誌資料具備更高容錯度，包括大型日誌檔案與大型場值。
+- AdvantageScope 現在對異常日誌資料具備更高容錯度，包括體積較大的日誌檔案與資料量較大的欄位值。
 - 修復了瀏覽日誌資料時的各種視覺缺陷，特別是在折線圖分頁上使用篩選器時。
 - 修復了下載視窗中 AdvantageKit 日誌檔案的排序；沒有時間戳記的日誌現在位於清單底部，與其他格式類似。
 - 在 3D 場地分頁上，滾轉軸 (roll axis) 旋轉非零的機器人攝影機現在可以正確視覺化。

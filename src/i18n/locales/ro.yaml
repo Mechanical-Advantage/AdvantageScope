@@ -606,7 +606,15 @@ hub:
     width: "Lățime sistem de coordonate (pixeli)"
     height: "Înălțime sistem de coordonate (pixeli)"
     orientation: "Orientare sistem de coordonate"
+    orientationXrYd: "+X dreapta, +Y jos"
+    orientationXrYu: "+X dreapta, +Y sus"
+    orientationXuYl: "+X sus, +Y stânga"
     origin: "Origine sistem de coordonate"
+    originUpperLeft: "Stânga sus"
+    originUpperRight: "Dreapta sus"
+    originLowerLeft: "Stânga jos"
+    originLowerRight: "Dreapta jos"
+    originCenter: "Centru"
     dimensions: "Dimensiuni"
 
   metadata:

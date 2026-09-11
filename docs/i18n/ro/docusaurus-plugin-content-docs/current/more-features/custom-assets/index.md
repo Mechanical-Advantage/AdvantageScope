@@ -21,12 +21,13 @@ Toate resursele sunt stocate în foldere cu convenția de denumire „TIP_NUME�
 Exemple de nume de foldere ar fi „Field2d_2023Field”, „Joystick_OperatorButtons” sau „Robot_Dozer”.
 :::
 
-Acest folder ar trebui să conțină un fișier numit „config.json” și unul sau mai multe fișiere de resurse, așa cum este descris mai jos. Fișierul de configurare include întotdeauna numele resursei care urmează să fie afișat de AdvantageScope. Acest nume trebuie să fie unic pentru fiecare tip de resursă.
+Acest folder ar trebui să conțină un fișier numit „config.json” și unul sau mai multe fișiere de resurse, așa cum este descris mai jos. Fișierul de configurare include întotdeauna numele resursei care va fi afișat de AdvantageScope. Acest nume trebuie să fie unic pentru fiecare tip de resursă. De asemenea, resursele pot include opțional un obiect „locales” care mapează codurile de limbă (de ex., „en-US”, „es-419”, „fr”) la nume traduse. Numele „name” de la nivelul rădăcină este tratat ca nume implicit dacă limba selectată nu este furnizată sau „locales” este omis.
 
 ```json
 {
-  "name": string // Unique name, required for all asset types
-  ... // Type-dependent configuration, described below
+  "name": string, // Nume implicit unic, obligatoriu pentru toate tipurile de resurse
+  "locales": { [locale: string]: string } // Nume traduse opționale care mapează codurile de limbă (de ex. „en-US”, „fr”) la traduceri
+  ... // Configurație dependentă de tip, descrisă mai jos
 }
 ```
 
@@ -43,6 +44,7 @@ Un model trebuie să fie inclus în folder cu numele „model.glb”. Fișierele
 ```json
 {
   "name": string // Unique name, required for all asset types
+  "locales": { [locale: string]: string } // Traduceri opționale pentru numele resursei
   "isFTC": boolean // Whether the model is intended for use on FTC fields instead of FRC fields (default "false")
   "disableSimplification": boolean // Whether to disable model simplification, optional
   "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
@@ -50,6 +52,7 @@ Un model trebuie să fie inclus în folder cu numele „model.glb”. Fișierele
   "cameras": [ // Fixed camera positions, can be empty
     {
       "name": string // Camera name
+      "locales": { [locale: string]: string } // Traduceri opționale pentru numele camerei
       "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
       "position": [number, number, number] // Position offset in meters relative to the robot, applied after rotation
       "resolution": [number, number] // Resolution in pixels, used to set the fixed aspect ratio
@@ -116,6 +119,7 @@ O imagine trebuie inclusă în folder cu numele „image.png”. Fișierul de co
 ```json
 {
   "name": string // Unique name, required for all asset types
+  "locales": { [locale: string]: string } // Traduceri opționale pentru numele resursei
   "components": [...] // Array of component configurations, see below
 }
 ```
@@ -203,6 +207,7 @@ O imagine trebuie inclusă în folder cu numele „image.png”. Aceasta ar treb
 ```json
 {
   "name": string // Unique name, required for all asset types
+  "locales": { [locale: string]: string } // Traduceri opționale pentru numele resursei
   "isFTC": boolean // Whether this is an FTC field instead of an FRC field
   "coordinateSystem": // The default coordinate system to use (see below)
       "wall-alliance" |  // FRC 2022
@@ -227,6 +232,7 @@ Fișierul de configurare trebuie să fie în următorul format:
 ```json
 {
   "name": string // Unique name, required for all asset types
+  "locales": { [locale: string]: string } // Traduceri opționale pentru numele resursei
   "isFTC": boolean // Whether this is an FTC field instead of an FRC field
   "coordinateSystem": // The default coordinate system to use (see below)
       "wall-alliance" |  // FRC 2022
@@ -245,6 +251,7 @@ Fișierul de configurare trebuie să fie în următorul format:
   "gamePieces": [ // List of game piece types
     {
       "name": string // Game piece name
+      "locales": { [locale: string]: string } // Traduceri opționale pentru numele piesei de joc
       "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
       "position": [number, number, number] // Position offset in meters, applied after rotation
       "stagedObjects": string[] // Names of staged game piece objects, to hide if user poses are supplied

@@ -38,7 +38,7 @@ Pentru a începe, trageți un câmp în secțiunea „Surse”. Ștergeți o sur
 
 ## Formatul datelor {#data-format}
 
-Datele ar trebui publicate ca o structură codificată pe octeți (byte-encoded struct) sau protobuf, folosind tipurile `SwerveModuleState[]`, `ChassisSpeeds`, `Rotation2d` sau `Rotation3d`.
+Datele ar trebui publicate ca o structură codificată pe octeți (byte-encoded struct) sau protobuf, folosind tipurile `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d` sau `Rotation3d`.
 
 Multe biblioteci suportă formatul struct, inclusiv WPILib și AdvantageKit. Codul de exemplu de mai jos arată cum se înregistrează stările modulelor swerve în Java.
 
@@ -60,11 +60,11 @@ Telemetry.log("MyStates", states);
 <TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
-SwerveModuleState[] states = new SwerveModuleState[] {
-  new SwerveModuleState(),
-  new SwerveModuleState(),
-  new SwerveModuleState(),
-  new SwerveModuleState()
+SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity()
 }
 
 Logger.recordOutput("MyStates", states);

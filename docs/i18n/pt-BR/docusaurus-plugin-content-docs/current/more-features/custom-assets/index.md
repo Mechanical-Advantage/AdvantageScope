@@ -21,11 +21,12 @@ Todos os recursos são armazenados em pastas com a convenção de nomenclatura "
 Exemplos de nomes de pastas seriam "Field2d_2023Field", "Joystick_OperatorButtons" ou "Robot_Dozer".
 :::
 
-Esta pasta deve conter um arquivo chamado "config.json" e um ou mais arquivos de recursos, conforme descrito abaixo. O arquivo de configuração sempre inclui o nome do recurso a ser exibido pelo AdvantageScope. Este nome deve ser exclusivo para cada tipo de recurso.
+Esta pasta deve conter um arquivo chamado "config.json" e um ou mais arquivos de recursos, conforme descrito abaixo. O arquivo de configuração sempre inclui o nome do recurso a ser exibido pelo AdvantageScope. Este nome deve ser exclusivo para cada tipo de recurso. Os recursos também podem incluir opcionalmente um objeto "locales" mapeando chaves de idioma (por exemplo, "en-US", "es-419", "fr") para nomes traduzidos. O "name" no nível raiz é tratado como o nome padrão se o idioma selecionado não for fornecido ou se "locales" for omitido.
 
 ```json
 {
-  "name": string // Nome exclusivo, obrigatório para todos os tipos de recursos
+  "name": string, // Nome padrão exclusivo, obrigatório para todos os tipos de recursos
+  "locales": { [locale: string]: string } // Nomes localizados opcionais mapeando códigos de idioma (por exemplo, "en-US", "fr") para traduções
   ... // Configuração dependente do tipo, descrita abaixo
 }
 ```
@@ -43,6 +44,7 @@ Um modelo deve ser incluído na pasta com o nome "model.glb". Arquivos CAD devem
 ```json
 {
   "name": string // Nome exclusivo, obrigatório para todos os tipos de recursos
+  "locales": { [locale: string]: string } // Traduções opcionais para o nome do recurso
   "isFTC": boolean // Se o modelo é destinado ao uso em campos do FTC em vez de campos da FRC (padrão "false")
   "disableSimplification": boolean // Se deve desativar a simplificação do modelo, opcional
   "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequência de rotações ao longo dos eixos x, y e z
@@ -50,6 +52,7 @@ Um modelo deve ser incluído na pasta com o nome "model.glb". Arquivos CAD devem
   "cameras": [ // Posições de câmeras fixas, pode ser vazio
     {
       "name": string // Nome da câmera
+      "locales": { [locale: string]: string } // Traduções opcionais para o nome da câmera
       "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequência de rotações ao longo dos eixos x, y e z
       "position": [number, number, number] // Deslocamento de posição em metros relativo ao robô, aplicado após a rotação
       "resolution": [number, number] // Resolução em pixels, usada para definir a proporção de imagem fixa
@@ -116,17 +119,18 @@ Uma imagem deve ser incluída na pasta com o nome "image.png". O arquivo de conf
 ```json
 {
   "name": string // Nome exclusivo, obrigatório para todos os tipos de recursos
-  "components": [...] // Array de configurações de componentes, veja abaixo
+  "locales": { [locale: string]: string } // Traduções opcionais para o nome do recurso
+  "components": [...] // Matriz de configurações de componentes, veja abaixo
 }
 ```
 
 :::info
-Botões, joysticks e valores de eixos suportam tanto associações (bindings) [SDL](https://www.libsdl.org) (usadas pela Driver Station atual da FIRST) quanto associações NI (usadas pela antiga Driver Station da NI FRC). Pelo menos um conjunto de associações deve ser fornecido para cada componente.
+Botões, joysticks e valores de eixos suportam tanto vínculos [SDL](https://www.libsdl.org) (usados pelo atual FIRST Driver Station) quanto vínculos NI (usados pelo antigo NI FRC Driver Station). Pelo menos um conjunto de vínculos deve ser fornecido para cada componente.
 
-Para associações NI, o AdvantageScope é compatível com as antigas chaves de configuração sem prefixo (por exemplo, `sourceIndex`). **Todos os novos joysticks devem usar associações SDL explícitas (por exemplo, `sdlSourceIndex`) para compatibilidade com a Driver Station atual da FIRST.**
+Para vínculos NI, o AdvantageScope é compatível com versões anteriores com as antigas chaves de configuração sem prefixo (por exemplo, `sourceIndex`). **Todos os novos joysticks devem usar vínculos SDL explícitos (por exemplo, `sdlSourceIndex`) para compatibilidade com o atual FIRST Driver Station.**
 :::
 
-### Botão único / Valor de POV {#single-button-pov-value}
+### Botão único / Valor POV {#single-button-pov-value}
 
 ```json
 {
@@ -138,7 +142,7 @@ Para associações NI, o AdvantageScope é compatível com as antigas chaves de 
   "sdlSourceIndex": number
   "sdlSourcePov": string // Opcional, pode ser "up", "right", "down" ou "left". Se fornecido, "sdlSourceIndex" será o índice do POV a ser lido.
 
-  // Associações alternativas para a Driver Station da NI (opcional)
+  // Vínculos alternativos para o NI Driver Station (opcional)
   "niSourceIndex": number
   "niSourcePov": string
 }
@@ -158,7 +162,7 @@ Para associações NI, o AdvantageScope é compatível com as antigas chaves de 
   "sdlYSourceInverted": boolean // Não invertido: cima = positivo
   "sdlButtonSourceIndex": number // Opcional
 
-  // Associações alternativas para a Driver Station da NI (opcional)
+  // Vínculos alternativos para o NI Driver Station (opcional)
   "niXSourceIndex": number
   "niXSourceInverted": boolean
   "niYSourceIndex": number
@@ -178,7 +182,7 @@ Para associações NI, o AdvantageScope é compatível com as antigas chaves de 
   "sdlSourceIndex": number,
   "sdlSourceRange": [number, number] // Mínimo maior que o máximo para inverter
 
-  // Associações alternativas para a Driver Station da NI (opcional)
+  // Vínculos alternativos para o NI Driver Station (opcional)
   "niSourceIndex": number,
   "niSourceRange": [number, number]
 }
@@ -203,16 +207,17 @@ Uma imagem deve ser incluída na pasta com o nome "image.png". Ela deve ser orie
 ```json
 {
   "name": string // Nome exclusivo, obrigatório para todos os tipos de recursos
-  "isFTC": boolean // Se este é um campo do FTC em vez de um campo da FRC
+  "locales": { [locale: string]: string } // Traduções opcionais para o nome do recurso
+  "isFTC": boolean // Se este é um campo FTC em vez de um campo FRC
   "coordinateSystem": // O sistema de coordenadas padrão a ser usado (veja abaixo)
       "wall-alliance" |  // FRC 2022
       "wall-blue" |      // FRC 2023-2026
       "center-rotated" | // FTC tradicional
       "center-red"       // Systemcore
-  "useGrid": boolean // Se deve renderizar linhas de grade se este campo for do FTC (padrão "true")
+  "useGrid": boolean // Se deve renderizar linhas de grade se este campo for um do FTC (padrão "true")
   "sourceUrl": string // Link para o arquivo original, opcional
-  "topLeft": [number, number] // Coordenada em pixels (origem no canto superior esquerdo)
-  "bottomRight": [number, number] // Coordenada em pixels (origem no canto superior esquerdo)
+  "topLeft": [number, number] // Coordenada de pixel (origem no canto superior esquerdo)
+  "bottomRight": [number, number] // Coordenada de pixel (origem no canto superior esquerdo)
   "widthInches": number // Largura real do campo (lado longo)
   "heightInches": number // Altura real do campo (lado curto)
 }
@@ -220,38 +225,40 @@ Uma imagem deve ser incluída na pasta com o nome "image.png". Ela deve ser orie
 
 ## Modelos de campo 3D {#3d-field-models}
 
-Um modelo deve ser incluído na pasta com o nome "model.glb". Após todas as rotações serem aplicadas, o campo deve estar orientado com a aliança vermelha à esquerda. Arquivos CAD devem ser convertidos para glTF; consulte [esta página](gltf-convert) para mais detalhes. Os modelos de peças do jogo seguem a convenção de nomenclatura "model_INDEX.glb" com base na ordem em que aparecem no array "gamePieces". AprilTags declaradas aqui são sempre posicionadas usando um sistema de coordenadas [centro/vermelho](/more-features/coordinate-systems#center-red), independentemente de quaisquer outras opções de configuração.
+Um modelo deve ser incluído na pasta com o nome "model.glb". Após a aplicação de todas as rotações, o campo deve ser orientado com a aliança vermelha à esquerda. Arquivos CAD devem ser convertidos para glTF; consulte [esta página](gltf-convert) para mais detalhes. Os modelos de peças de jogo seguem a convenção de nomenclatura "model_INDEX.glb" com base na ordem em que aparecem na matriz "gamePieces". As AprilTags declaradas aqui são sempre posicionadas usando um sistema de coordenadas [centro/vermelho](/more-features/coordinate-systems#center-red), independentemente de quaisquer outras opções de configuração.
 
 O arquivo de configuração deve estar no seguinte formato:
 
 ```json
 {
   "name": string // Nome exclusivo, obrigatório para todos os tipos de recursos
-  "isFTC": boolean // Se este é um campo do FTC em vez de um campo da FRC
+  "locales": { [locale: string]: string } // Traduções opcionais para o nome do recurso
+  "isFTC": boolean // Se este é um campo FTC em vez de um campo FRC
   "coordinateSystem": // O sistema de coordenadas padrão a ser usado (veja abaixo)
       "wall-alliance" |  // FRC 2022
       "wall-blue" |      // FRC 2023-2026
       "center-rotated" | // FTC tradicional
       "center-red"       // Systemcore
-  "useGrid": boolean // Se deve renderizar linhas de grade se este campo for do FTC (padrão "true")
+  "useGrid": boolean // Se deve renderizar linhas de grade se este campo for um do FTC (padrão "true")
   "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequência de rotações ao longo dos eixos x, y e z
   "widthInches": number // Largura real do campo (lado longo)
   "heightInches": number // Altura real do campo (lado curto)
-  "defaultOrigin": "auto" | "blue" | "red" // Local da origem padrão, "auto" se não especificado
+  "defaultOrigin": "auto" | "blue" | "red" // Local de origem padrão, "auto" se não especificado
   "driverStations": [
-    [number, number] // Posições das estações de piloto (X e Y em metros relativos ao centro do campo)
+    [number, number] // Posições da Driver Station (X e Y em metros relativos ao centro do campo)
     ...              // Para FRC, 6 elementos ordenados [B1, B2, B3, R1, R2, R3]. Para FTC, 4 elementos ordenados [BL, BR, RL, RR].
   ]
-  "gamePieces": [ // Lista de tipos de peças do jogo
+  "gamePieces": [ // Lista de tipos de peças de jogo
     {
-      "name": string // Nome da peça do jogo
+      "name": string // Nome da peça de jogo
+      "locales": { [locale: string]: string } // Traduções opcionais para o nome da peça de jogo
       "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequência de rotações ao longo dos eixos x, y e z
       "position": [number, number, number] // Deslocamento de posição em metros, aplicado após a rotação
-      "stagedObjects": string[] // Nomes de objetos de peças do jogo dispostos, a ocultar se poses do usuário forem fornecidas
+      "stagedObjects": string[] // Nomes de objetos de peças de jogo posicionadas, a serem ocultados se poses do usuário forem fornecidas
     },
     ...
   ],
-  "aprilTags": [ // Lista de modelos de AprilTag suplementares (se não fizerem parte do modelo do campo)
+  "aprilTags": [ // Lista de modelos suplementares de AprilTag (se não fizerem parte do modelo do campo)
     "variant": string // Formato como "FAMILY-SIZEin" onde "FAMILY" é "36h11" ou "16h5" e "SIZE" é o comprimento da seção preta
     "id": number
     "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequência de rotações ao longo dos eixos x, y e z

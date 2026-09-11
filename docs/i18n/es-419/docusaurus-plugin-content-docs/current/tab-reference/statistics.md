@@ -12,7 +12,7 @@ _En la imagen de arriba se muestra la interfaz en inglés._
 
 ## Panel de control {#control-pane}
 
-Para comenzar, arrastra un campo a la sección "Mediciones". Elimina un campo usando el botón X, u ocúltalo temporalmente haciendo clic en el ícono del ojo o haciendo doble clic en el nombre del campo. Para eliminar todos los campos, haz clic en los tres puntos cerca del título del eje y luego en `Borrar todo`.
+Para comenzar, arrastra un campo a la sección "Mediciones". Elimina un campo usando el botón X, u ocúltalo temporalmente haciendo clic en el ícono del ojo o haciendo doble clic en el nombre del campo. Para eliminar todos los campos, haz clic en el basurero cerca del título del eje y luego en `Borrar todo`.
 
 Los campos se pueden reorganizar en la lista haciendo clic y arrastrando. Para analizar la diferencia entre campos, cambia un campo al modo "Referencia" y agrega otros campos adicionales como secundarios (children). Los elementos secundarios se pueden cambiar entre los modos "Error relativo" y "Error absoluto".
 
@@ -63,9 +63,9 @@ La tabla de medidas estadísticas muestra los valores calculados de cada medida 
 
 #### Dispersión {#spread}
 
-- **[Desviación estándar](https://es.wikipedia.org/wiki/Desviaci%C3%B3n_t%C3%ADpica):** La medida estadística de variación más común, donde un valor más bajo indica menos variación. El 68% de los datos se encuentra dentro de una desviación estándar de la media.
-- **[Desviación absoluta media](https://es.wikipedia.org/wiki/Desviaci%C3%B3n_media):** La distancia promedio entre cada valor y la media. Esta es una alternativa a la desviación estándar.
-- **[Rango intercuartílico](https://es.wikipedia.org/wiki/Rango_intercuart%C3%ADlico):** La diferencia entre el tercer y primer cuartil (percentil 75 y percentil 25), menos afectada por valores atípicos que la desviación estándar o la desviación absoluta media.
+- **[Desviación estándar](https://es.wikipedia.org/wiki/Desviaci%C3%B3n_t%C3%ADpica):** La medida estadística de variación más común, donde un valor más bajo indica menos variación. Para datos normalmente distribuidos, aproximadamente el 68% de los datos se encuentra dentro de una desviación estándar de la media.
+- **[Desviación absoluta de la mediana](https://es.wikipedia.org/wiki/Desviaci%C3%B3n_absoluta_mediana):** La mediana de las desviaciones absolutas respecto a la mediana de los datos. Esta es una medida de dispersión estadística más resistente a valores atípicos que la desviación estándar.
+- **[Rango intercuartílico](https://es.wikipedia.org/wiki/Rango_intercuart%C3%ADlico):** La diferencia entre el tercer y primer cuartil (percentil 75 y percentil 25), menos afectada por valores atípicos que la desviación estándar.
 - **[Asimetría](https://es.wikipedia.org/wiki/Asimetr%C3%ADa_estad%C3%ADstica):** Una medida del sesgo asimétrico de los datos. Un valor negativo indica una cola a la izquierda, un valor positivo indica una cola a la derecha y un valor cero sugiere una distribución simétrica.
 
 #### Percentiles {#percentiles}

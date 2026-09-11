@@ -12,7 +12,7 @@ _De Engelstalige interface wordt hierboven weergegeven._
 
 ## Bedieningspaneel {#control-pane}
 
-Om te beginnen sleep je een veld naar de sectie "Metingen". Verwijder een veld met de X-knop, of verberg het tijdelijk door op het oogpictogram te klikken of te dubbelklikken op de veldnaam. Om alle velden te verwijderen, klik je op de drie stippen naast de astitel en vervolgens op `Alles wissen`. Velden kunnen in de lijst opnieuw worden gerangschikt door te klikken en te slepen.
+Om te beginnen sleep je een veld naar de sectie "Metingen". Verwijder een veld met de X-knop, of verberg het tijdelijk door op het oogpictogram te klikken of te dubbelklikken op de veldnaam. Om alle velden te verwijderen, klik je op de prullenbak naast de astitel en vervolgens op `Alles wissen`. Velden kunnen in de lijst opnieuw worden gerangschikt door te klikken en te slepen.
 
 Om het verschil tussen velden te analyseren, zet je een veld in de "Referentie"-modus en voeg je andere velden toe als onderliggende elementen. Onderliggende elementen kunnen worden geschakeld tussen de modi "Relatieve fout" en "Absolute fout".
 
@@ -54,23 +54,23 @@ De tabel met statistische meetwaarden toont de berekende waarden van elke meetwa
 
 #### Midden {#center}
 
-- [**Gemiddelde:**](https://en.wikipedia.org/wiki/Arithmetic_mean) Het rekenkundig gemiddelde (eenvoudig gemiddelde) van de data.
-- [**Mediaan:**](https://en.wikipedia.org/wiki/Median) De "middelste" waarde van de data, ofwel het 50e percentiel.
-- [**Modus:**](<https://en.wikipedia.org/wiki/Mode_(statistics)>) De meest voorkomende waarde in de data.
-- [**Meetkundig gemiddelde:**](https://en.wikipedia.org/wiki/Geometric_mean) Een centrummaat berekend met behulp van het product van de waarden in plaats van de som. Van toepassing bij het meten van _exponentiële groeicijfers_ (zoals procentuele verandering tussen cycli).
-- [**Harmonisch gemiddelde:**](https://en.wikipedia.org/wiki/Harmonic_mean) Een centrummaat berekend met behulp van de som van de reciproken van de waarden. Van toepassing bij het meten van _snelheden of verhoudingen_.
-- [**Kwadratisch gemiddelde:**](https://en.wikipedia.org/wiki/Root_mean_square) Een centrummaat berekend met behulp van de kwadraten van de waarden. Van toepassing bij het meten van data met zowel _positieve als negatieve waarden_, zoals periodieke beweging.
+- [**Gemiddelde:**](https://nl.wikipedia.org/wiki/Rekenkundig_gemiddelde) Het rekenkundig gemiddelde (eenvoudig gemiddelde) van de data.
+- [**Mediaan:**](<https://nl.wikipedia.org/wiki/Mediaan_(statistiek)>) De "middelste" waarde van de data, ofwel het 50e percentiel.
+- [**Modus:**](<https://nl.wikipedia.org/wiki/Modus_(statistiek)>) De meest voorkomende waarde in de data.
+- [**Meetkundig gemiddelde:**](https://nl.wikipedia.org/wiki/Meetkundig_gemiddelde) Een centrummaat berekend met behulp van het product van de waarden in plaats van de som. Van toepassing bij het meten van _exponentiële groeicijfers_ (zoals procentuele verandering tussen cycli).
+- [**Harmonisch gemiddelde:**](https://nl.wikipedia.org/wiki/Harmonisch_gemiddelde) Een centrummaat berekend met behulp van de som van de reciproken van de waarden. Van toepassing bij het meten van _snelheden of verhoudingen_.
+- [**Kwadratisch gemiddelde:**](https://nl.wikipedia.org/wiki/Effectieve_waarde) Een centrummaat berekend met behulp van de kwadraten van de waarden. Van toepassing bij het meten van data met zowel _positieve als negatieve waarden_, zoals periodieke beweging.
 
 #### Spreiding {#spread}
 
-- [**Standaardafwijking:**](https://en.wikipedia.org/wiki/Standard_deviation) De meest gangbare statistische maat voor variatie, waarbij een lagere waarde duidt op minder variatie. 68% van de data valt binnen één standaardafwijking van het gemiddelde.
-- [**Mediane absolute afwijking:**](https://en.wikipedia.org/wiki/Average_absolute_deviation) De gemiddelde afstand tussen elke waarde en het gemiddelde. Dit is een alternatief voor de standaardafwijking.
-- [**Interkwartielafstand:**](https://en.wikipedia.org/wiki/Interquartile_range) Het verschil tussen het derde en eerste kwartiel (75e percentiel en 25e percentiel), minder beïnvloed door uitschieters dan de standaardafwijking of mediane absolute afwijking.
+- [**Standaardafwijking:**](https://nl.wikipedia.org/wiki/Standaardafwijking) De meest gangbare statistische maat voor variatie, waarbij een lagere waarde duidt op minder variatie. Voor normaal verdeelde data valt ongeveer 68% van de data binnen één standaardafwijking van het gemiddelde.
+- [**Mediane absolute afwijking:**](https://en.wikipedia.org/wiki/Median_absolute_deviation) De mediaan van de absolute afwijkingen van de mediaan van de data. Dit is een spreidingsmaat die beter bestand is tegen uitschieters dan de standaardafwijking.
+- [**Interkwartielafstand:**](https://nl.wikipedia.org/wiki/Interkwartielafstand) Het verschil tussen het derde en eerste kwartiel (75e percentiel en 25e percentiel), minder beïnvloed door uitschieters dan de standaardafwijking.
 - [**Scheefheid:**](https://en.wikipedia.org/wiki/Skewness) Een maat voor de asymmetrie van de data. Een negatieve waarde duidt op een staart naar links, een positieve waarde op een staart naar rechts, en een nulwaarde suggereert een symmetrische verdeling.
 
 #### Percentielen {#percentiles}
 
-De [percentielen](https://en.wikipedia.org/wiki/Percentile) meten waarden waaronder het gegeven percentage van andere waarden valt. 10% van de waarden valt bijvoorbeeld onder het 10e percentiel. De volgende percentielen staan ook bekend als:
+De [percentielen](https://nl.wikipedia.org/wiki/Percentiel) meten waarden waaronder het gegeven percentage van andere waarden valt. 10% van de waarden valt bijvoorbeeld onder het 10e percentiel. De volgende percentielen staan ook bekend als:
 
 - 25e percentiel = 1e kwartiel (Q1)
 - 50e percentiel = 2e kwartiel (Q2) = mediaan

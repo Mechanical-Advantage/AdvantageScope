@@ -21,12 +21,12 @@ AdvantageScope फ्लैट फील्ड छवियों, फील्�
 उदाहरण फ़ोल्डर नाम "Field2d_2023Field", "Joystick_OperatorButtons", या "Robot_Dozer" होंगे।
 :::
 
-इस फ़ोल्डर में "config.json" नाम की एक फ़ाइल और एक या अधिक एसेट फ़ाइलें होनी चाहिए, जैसा कि नीचे वर्णित है। कॉन्फ़िग फ़ाइल में हमेशा AdvantageScope द्वारा प्रदर्शित किए जाने वाले एसेट का नाम शामिल होता है। यह नाम प्रत्येक एसेट प्रकार के लिए अद्वितीय होना चाहिए। एसेट्स वैकल्पिक रूप से अनुवादित नामों में लोकेल कुंजियों (उदा. "es-419", "fr", "zh-CN") को मैप करने वाला एक "locales" ऑब्जेक्ट भी शामिल कर सकते हैं। यदि चयनित लोकेल प्रदान नहीं किया गया है या "locales" को छोड़ दिया गया है, तो रूट-स्तरीय "name" को डिफ़ॉल्ट नाम माना जाता है।
+इस फ़ोल्डर में "config.json" नाम की एक फ़ाइल और एक या अधिक एसेट फ़ाइलें होनी चाहिए, जैसा कि नीचे वर्णित है। कॉन्फ़िग फ़ाइल में हमेशा AdvantageScope द्वारा प्रदर्शित किए जाने वाले एसेट का नाम शामिल होता है। यह नाम प्रत्येक एसेट प्रकार के लिए अद्वितीय होना चाहिए। एसेट्स वैकल्पिक रूप से अनुवादित नामों में लोकेल कुंजियों (उदा. "en-US", "es-419", "fr") को मैप करने वाला एक "locales" ऑब्जेक्ट भी शामिल कर सकते हैं। यदि चयनित लोकेल प्रदान नहीं किया गया है या "locales" को छोड़ दिया गया है, तो रूट-स्तरीय "name" को डिफ़ॉल्ट नाम माना जाता है।
 
 ```json
 {
   "name": string, // Unique default name, required for all asset types
-  "locales": { [locale: string]: string } // Optional localized names mapping language codes (e.g. "es-419", "fr") to translations
+  "locales": { [locale: string]: string } // Optional localized names mapping language codes (e.g. "en-US", "fr") to translations
   ... // Type-dependent configuration, described below
 }
 ```

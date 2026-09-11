@@ -602,7 +602,15 @@ hub:
     width: "Coordinate system width (pixels)" # Tooltip for points width input
     height: "Coordinate system height (pixels)" # Tooltip for points height input
     orientation: "Coordinate system orientation" # Tooltip for points orientation dropdown
+    orientationXrYd: "+X right, +Y down" # Option for coordinate system with +X right and +Y down
+    orientationXrYu: "+X right, +Y up" # Option for coordinate system with +X right and +Y up
+    orientationXuYl: "+X up, +Y left" # Option for coordinate system with +X up and +Y left
     origin: "Coordinate system origin" # Tooltip for points origin dropdown
+    originUpperLeft: "Upper Left" # Option for upper left origin
+    originUpperRight: "Upper Right" # Option for upper right origin
+    originLowerLeft: "Lower Left" # Option for lower left origin
+    originLowerRight: "Lower Right" # Option for lower right origin
+    originCenter: "Center" # Option for center origin
     dimensions: "Dimensions" # Heading for 2D points dimensions
 
   metadata:

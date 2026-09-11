@@ -38,7 +38,7 @@ _上图所示为英文界面。_
 
 ## 数据格式 {#data-format}
 
-数据应作为字节编码的结构体或 protobuf 进行发布，使用 `SwerveModuleState[]`、`ChassisSpeeds`、`Rotation2d` 或 `Rotation3d` 类型。
+数据应作为字节编码的结构体或 protobuf 进行发布，使用 `SwerveModuleVelocity[]`、`ChassisVelocities`、`Rotation2d` 或 `Rotation3d` 类型。
 
 许多库都支持结构体格式，包括 WPILib 和 AdvantageKit。下面的示例代码展示了如何在 Java 中记录 Swerve 模块状态。
 
@@ -83,7 +83,7 @@ Logger.recordOutput("MyStates", states);
 提供以下配置选项：
 
 - **最大速度：** 模块可达到的最大速度，用于调整矢量的大小。
-- **框架尺寸：** 左右和前后 Swerve 模块之间的距离。改变机器人图示的宽高比。
+- **车架尺寸：** 左右和前后 Swerve 模块之间的距离。改变机器人图示的宽高比。
 - **方向：** 调整机器人图示指向的方向。此选项通常有助于与位姿数据或比赛视频保持一致。
 
 :::note
