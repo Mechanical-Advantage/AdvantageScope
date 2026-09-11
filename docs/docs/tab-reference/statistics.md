@@ -10,7 +10,7 @@ The statistics tab allows for deep statistical analysis of numerical fields, ana
 
 ## Control Pane
 
-To get started, drag a field to the "Measurements" section. Delete a field using the X button, or hide it temporarily by clicking the eye icon or double-clicking the field name. To remove all fields, click the three dots near the axis title and then `Clear All`. Fields can be rearranged in the list by clicking and dragging.
+To get started, drag a field to the "Measurements" section. Delete a field using the X button, or hide it temporarily by clicking the eye icon or double-clicking the field name. To remove all fields, click the trash can near the axis title and then `Clear All`. Fields can be rearranged in the list by clicking and dragging.
 
 To analyze the difference between fields, switch a field to "Reference" mode and additional other fields as children. Children can be switched between "Relative Error" and "Absolute Error" modes.
 
@@ -61,9 +61,9 @@ The table of statistical measures shows the calculated values of each measure fo
 
 #### Spread
 
-- [**Standard Deviation:**](https://en.wikipedia.org/wiki/Standard_deviation) The most common statistical measure of variation, where a lower value indicates less variation. 68% of the data falls within one standard deviation of the mean.
-- [**Mean Absolute Deviation:**](https://en.wikipedia.org/wiki/Average_absolute_deviation) The average distance between each value and the mean. This is an alternative to the standard deviation.
-- [**Interquartile Range:**](https://en.wikipedia.org/wiki/Interquartile_range) The difference between the third and first quartiles (75th percentile and 25th percentile), less affected by outliers than the standard deviation or mean absolute deviation.
+- [**Standard Deviation:**](https://en.wikipedia.org/wiki/Standard_deviation) The most common statistical measure of variation, where a lower value indicates less variation. For normally distributed data, approximately 68% of the data falls within one standard deviation of the mean.
+- [**Median Absolute Deviation:**](https://en.wikipedia.org/wiki/Median_absolute_deviation) The median of the absolute deviations from the data's median. This is a measure of statistical dispersion that is more resilient to outliers than the standard deviation.
+- [**Interquartile Range:**](https://en.wikipedia.org/wiki/Interquartile_range) The difference between the third and first quartiles (75th percentile and 25th percentile), less affected by outliers than the standard deviation.
 - [**Skewness:**](https://en.wikipedia.org/wiki/Skewness) A measure of the asymmetric skew of the data. A negative value indicates a tail to the left, a positive value indicates a tail to the right, and a zero value suggests a symmetric distribution.
 
 #### Percentiles
