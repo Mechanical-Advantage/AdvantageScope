@@ -37,3 +37,4 @@ Unofficial distributions of AdvantageScope are available from several sources, w
 - [**AdvantageScope Lite for REV Control System:**](https://github.com/j5155/AdvantageScope-Lite-FTC) A modification of [AdvantageScope Lite](/more-features/advantagescope-lite) for use on the existing (pre-Systemcore) FTC control system.
 - [**Homebrew Installer:**](https://formulae.brew.sh/cask/advantagescope) A Homebrew cask for installing AdvantageScope from the command line on macOS.
 - [**Arch User Repository:**](https://aur.archlinux.org/packages/advantagescope) An alternative distribution method for use with the pacman package manager (an official Arch distribution of AdvantageScope is available [here](#6328-downloads)).
+- [**FRC Nix:**](https://github.com/frc4451/frc-nix) A set of Nix packages and declarative NixOS modules for use with the Nix package manager, and the NixOS Linux distribution, including AdvantageScope.
