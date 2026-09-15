@@ -25,6 +25,8 @@
 		8CBFA6DE2BF8663D009AA8CD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CBFA6DD2BF8663D009AA8CD /* ContentView.swift */; };
 		8CBFA6E02BF8663E009AA8CD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8CBFA6DF2BF8663E009AA8CD /* Assets.xcassets */; };
 		8CCB36702D0F8A0900F516D8 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CCB366F2D0F8A0600F516D8 /* RecordButton.swift */; };
+		8CDF923C305900BD008E48F8 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8CDF923B305900BD008E48F8 /* Settings.bundle */; };
+		8CDF923D305900BD008E48F8 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8CDF923B305900BD008E48F8 /* Settings.bundle */; };
 		8CF342672D14065200291788 /* AdvantageScopeXRClip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = 8CF342582D14065100291788 /* AdvantageScopeXRClip.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8CF3426E2D1406BF00291788 /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = 8CF3426D2D1406BF00291788 /* Starscream */; };
 		8CF342702D1408E200291788 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CCB366F2D0F8A0600F516D8 /* RecordButton.swift */; };
@@ -87,6 +89,7 @@
 		8CBFA6DD2BF8663D009AA8CD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8CBFA6DF2BF8663E009AA8CD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8CCB366F2D0F8A0600F516D8 /* RecordButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordButton.swift; sourceTree = "<group>"; };
+		8CDF923B305900BD008E48F8 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		8CF342582D14065100291788 /* AdvantageScopeXRClip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AdvantageScopeXRClip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -146,6 +149,7 @@
 		8CBFA6DA2BF8663D009AA8CD /* AdvantageScopeXR */ = {
 			isa = PBXGroup;
 			children = (
+				8CDF923B305900BD008E48F8 /* Settings.bundle */,
 				8CBC9A712D140E68000EFB70 /* AdvantageScopeXR.swift */,
 				8CCB366F2D0F8A0600F516D8 /* RecordButton.swift */,
 				8C1672E52D0BB125004100D8 /* Constants.swift */,
@@ -291,6 +295,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8CBFA6E02BF8663E009AA8CD /* Assets.xcassets in Resources */,
+				8CDF923C305900BD008E48F8 /* Settings.bundle in Resources */,
 				8C6FB4012E41588B00167EFB /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -300,6 +305,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8CBC9A742D14B355000EFB70 /* Assets.xcassets in Resources */,
+				8CDF923D305900BD008E48F8 /* Settings.bundle in Resources */,
 				8C6FB4002E41588B00167EFB /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
