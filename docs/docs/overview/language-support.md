@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 🌐 Language Support {#language-support}
 
-AdvantageScope supports multiple languages to provide a localized experience for teams worldwide. The following languages are currently available:
+AdvantageScope supports multiple languages to provide a localized experience for teams worldwide. The following languages are currently available and supported by the AdvantageScope documentation, desktop app, mobile apps (AdvantageScope XR and AdvantageTune), and AdvantageScope Lite (on Systemcore and in the FIRST Driver Station).
 
 - English (US)
 - Spanish (Latin America)
@@ -32,7 +32,7 @@ To change the display language in AdvantageScope, open the preferences window by
 
 ## Logging Keys {#logging-keys}
 
-All formats supported by AdvantageScope feature full Unicode compatibility when defining log keys. This means you can log data using your native language (including accents, special characters, and non-Latin alphabets) and it will be properly recorded and displayed in AdvantageScope.
+All formats supported by AdvantageScope feature full Unicode compatibility when defining log keys. This means you can log data using your preferred language (including accents, special characters, and non-Latin alphabets) and it will be properly recorded and displayed in AdvantageScope.
 
 Here is an example of logging a string with a Simplified Chinese key:
 
