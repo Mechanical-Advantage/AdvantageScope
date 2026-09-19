@@ -160,10 +160,9 @@ export default class Field3dController implements TabController {
 
     // Update AprilTag variants
     let aprilTagVariants: string[] = fieldConfig?.isFTC
-      ? ["36h11-2in", "36h11-3in", "36h11-4in", "36h11-5in", "36h11-6.5in"]
+      ? ["36h11-2in", "36h11-3in", "36h11-3.25in", "36h11-4in", "36h11-5in", "36h11-6.5in"]
       : ["36h11-6.5in", "16h5-6in"];
     this.sourceList.setOptionValues("aprilTag", "variant", aprilTagVariants);
-    this.sourceList.setOptionValues("aprilTagLegacy", "variant", aprilTagVariants);
 
     this.updateRobotOptions();
   }
@@ -344,7 +343,10 @@ export default class Field3dController implements TabController {
                 [],
                 this.UUID
               );
-              let tagCount = source.options.variant === "16h5" ? APRIL_TAG_16H5_COUNT : APRIL_TAG_36H11_COUNT;
+              let tagCount =
+                typeof source.options.variant === "string" && source.options.variant.startsWith("16h5")
+                  ? APRIL_TAG_16H5_COUNT
+                  : APRIL_TAG_36H11_COUNT;
               values.forEach((id) => {
                 id = clampValue(Math.floor(id), 0, tagCount - 1);
                 let index = poses.findIndex((value) => value.annotation.aprilTagId === undefined);

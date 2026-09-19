@@ -63,7 +63,7 @@ SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
   new SwerveModuleVelocity(),
   new SwerveModuleVelocity(),
   new SwerveModuleVelocity()
-}
+};
 
 Logger.recordOutput("MyStates", states);
 ```
