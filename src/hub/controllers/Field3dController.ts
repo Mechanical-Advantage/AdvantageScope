@@ -157,6 +157,7 @@ export default class Field3dController implements TabController {
       ? [
           { key: "36h11-2in", display: "2 in" },
           { key: "36h11-3in", display: "3 in" },
+          { key: "36h11-3.25in", display: "3.25 in" },
           { key: "36h11-4in", display: "4 in" },
           { key: "36h11-5in", display: "5 in" },
           { key: "36h11-6.5in", display: "6.5 in" }
@@ -166,7 +167,6 @@ export default class Field3dController implements TabController {
           { key: "16h5-6in", display: "16h5" }
         ];
     this.sourceList.setOptionValues("aprilTag", "variant", aprilTagVariants);
-    this.sourceList.setOptionValues("aprilTagLegacy", "variant", aprilTagVariants);
 
     this.updateRobotOptions();
   }
@@ -347,7 +347,10 @@ export default class Field3dController implements TabController {
                 [],
                 this.UUID
               );
-              let tagCount = source.options.variant === "16h5" ? APRIL_TAG_16H5_COUNT : APRIL_TAG_36H11_COUNT;
+              let tagCount =
+                typeof source.options.variant === "string" && source.options.variant.startsWith("16h5")
+                  ? APRIL_TAG_16H5_COUNT
+                  : APRIL_TAG_36H11_COUNT;
               values.forEach((id) => {
                 id = clampValue(Math.floor(id), 0, tagCount - 1);
                 let index = poses.findIndex((value) => value.annotation.aprilTagId === undefined);
