@@ -73,7 +73,7 @@ The XR controls window presents several options that control how the model is di
 
 AdvantageScope XR does not require an internet connection. To ensure that the app is available offline, download AdvantageScope XR from the App Store using the link below. To connect to the AdvantageScope desktop application, scan the QR code using the iOS camera app or tap the "Scan" button in the AdvantageScope XR app.
 
-[![App Store](./img/app-store.svg)](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[![App Store](../../img/app-store.svg)](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
 
 :::note
 Even when running without an internet connection, the host and client devices **must be connected to the same network** (such as a robot, custom Wi-Fi network, or via USB tethering).

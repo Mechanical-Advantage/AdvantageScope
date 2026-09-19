@@ -11,8 +11,10 @@ By default, all values in AdvantageScope are read-only. To toggle tuning mode, *
 - To edit a **numeric field**, enter a new value using the text box to the right of the field in the sidebar. The value is published after the input is deselected or the "Enter" key is pressed. Leave the text box blank to use the robot-published value.
 - To toggle a **boolean field**, click the red or green circle to the right of the field in the sidebar.
 
-:::warning
-This feature is not intended for controlling the robot on the field. Dashboard-style inputs like choosers, trigger buttons, etc. are not supported.
+:::tip
+For users on iPhone and iPad, **AdvantageTune** is an alternative option created by the AdvantageScope developers for tuning NetworkTables values from mobile devices.
+
+[![App Store](../../img/app-store.svg)](https://apps.apple.com/us/app/advantagetune/id6811453643)
 :::
 
 ## Tuning With AdvantageKit
