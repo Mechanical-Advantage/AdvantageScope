@@ -415,8 +415,10 @@ hub:
       variant_16h5-6in: "16h5"
       variant_36h11-2in: "2 英寸"
       variant_36h11-3in: "3 英寸"
+      variant_36h11-3.25in: "3.25 英寸"
       variant_36h11-4in: "4 英寸"
       variant_36h11-5in: "5 英寸"
+      variant_36h11-6.5in-ftc: "6.5 英寸"
 
   lineGraph:
     numericAxis: "数值轴"

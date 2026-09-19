@@ -64,7 +64,7 @@ Tabelul de măsurători statistice afișează valorile calculate pentru fiecare 
 #### Răspândire {#spread}
 
 - [**Deviație standard:**](https://ro.wikipedia.org/wiki/Abatere_standard) Cea mai comună măsurătoare statistică a variației, unde o valoare mai mică indică o variație mai mică. Pentru date distribuite normal, aproximativ 68% din date se încadrează în limita unei deviații standard față de medie.
-- [**Deviație absolută mediană:**](https://en.wikipedia.org/wiki/Median_absolute_deviation) Mediana deviațiilor absolute față de mediana datelor. Aceasta este o măsurătoare a dispersiei statistice mai rezistentă la valorile aberante decât deviația standard.
+- [**Abatere mediană absolută:**](https://en.wikipedia.org/wiki/Median_absolute_deviation) Mediana deviațiilor absolute față de mediana datelor. Aceasta este o măsurătoare a dispersiei statistice mai rezistentă la valorile aberante decât deviația standard.
 - [**Interval intercuartilic:**](https://ro.wikipedia.org/wiki/Interval_intercuartilic) Diferența dintre cuartila a treia și prima cuartilă (percentila 75 și percentila 25), mai puțin afectată de valorile aberante (outliers) decât deviația standard.
 - [**Asimetrie:**](https://ro.wikipedia.org/wiki/Asimetrie_statistic%C4%83) O măsurătoare a asimetriei datelor. O valoare negativă indică o coadă spre stânga, o valoare pozitivă indică o coadă spre dreapta, iar o valoare zero sugerează o distribuție simetrică.
 

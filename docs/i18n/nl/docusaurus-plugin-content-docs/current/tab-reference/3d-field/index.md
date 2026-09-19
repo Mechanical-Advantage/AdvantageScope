@@ -22,7 +22,11 @@ Om te zoomen, plaats je de cursor op de tijdlijn en scrol je omhoog of omlaag. E
 
 </details>
 
-:::warning
+:::warning FTC 2026-2027-veld
+Het 2026-2027 FTC-veldmodel bevat geen ingebouwde AprilTags, aangezien de locaties van tags op de hive naar verwachting tijdens de wedstrijd zullen veranderen. Teams kunnen een `Pose3d[]` en `number[]` publiceren om dynamische AprilTag-objecten aan het veld toe te voegen. Het juiste AprilTag-formaat voor dit veld is **3,25 inch**.
+:::
+
+:::warning FRC 2026-veld
 Het 2026 FRC-veldmodel komt overeen met de AprilTag-indeling voor het **gelaste** veld. De verschillen tussen de gelaste en AndyMark-velden zijn zeer klein, maar er kunnen kleine afwijkingen (~0,5 inch) optreden bij het visualiseren van AprilTag-poses op basis van de AndyMark-veldindeling.
 :::
 

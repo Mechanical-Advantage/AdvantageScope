@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 🌐 Dil desteği {#language-support}
 
-AdvantageScope, dünya çapındaki takımlara yerelleştirilmiş bir deneyim sunmak için birden fazla dili destekler. Şu anda aşağıdaki diller mevcuttur:
+AdvantageScope, dünya çapındaki takımlara yerelleştirilmiş bir deneyim sunmak için birden fazla dili destekler. Aşağıdaki diller şu anda mevcuttur ve AdvantageScope belgeleri, masaüstü uygulaması, mobil uygulamalar (AdvantageScope XR ve AdvantageTune) ile AdvantageScope Lite (Systemcore üzerinde ve FIRST Driver Station'da) tarafından desteklenmektedir:
 
 - İngilizce (ABD)
 - İspanyolca (Latin Amerika)
@@ -32,7 +32,7 @@ AdvantageScope'ta görüntüleme dilini değiştirmek için `App` > `Tercihleri 
 
 ## Log anahtarları {#logging-keys}
 
-AdvantageScope tarafından desteklenen tüm formatlar, log anahtarları tanımlanırken tam Unicode uyumluluğuna sahiptir. Bu, verileri kendi ana dilinizi kullanarak (aksanlar, özel karakterler ve Latin dışı alfabeler dahil) kaydedebileceğiniz ve verilerin AdvantageScope'ta düzgün bir şekilde kaydedilip görüntüleneceği anlamına gelir.
+AdvantageScope tarafından desteklenen tüm formatlar, log anahtarları tanımlanırken tam Unicode uyumluluğuna sahiptir. Bu, verileri tercih ettiğiniz dili kullanarak (aksanlar, özel karakterler ve Latin dışı alfabeler dahil) kaydedebileceğiniz ve verilerin AdvantageScope'ta düzgün bir şekilde kaydedilip görüntüleneceği anlamına gelir.
 
 Aşağıda Türkçe bir anahtarla dize kaydetme örneği verilmiştir:
 

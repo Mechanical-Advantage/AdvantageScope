@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 🌐 Prise en charge des langues {#language-support}
 
-AdvantageScope prend en charge plusieurs langues pour offrir une expérience localisée aux équipes du monde entier. Les langues suivantes sont actuellement disponibles :
+AdvantageScope prend en charge plusieurs langues pour offrir une expérience localisée aux équipes du monde entier. Les langues suivantes sont actuellement disponibles et prises en charge par la documentation d'AdvantageScope, l'application de bureau, les applications mobiles (AdvantageScope XR et AdvantageTune) et AdvantageScope Lite (sur Systemcore et dans la FIRST Driver Station) :
 
 - Anglais (États-Unis)
 - Espagnol (Amérique latine)
@@ -26,13 +26,13 @@ AdvantageScope prend en charge plusieurs langues pour offrir une expérience loc
 
 ## Configuration {#configuration}
 
-Pour modifier la langue d'affichage dans AdvantageScope, ouvrez la fenêtre des préférences en cliquant sur `App` > `Afficher les préférences...` (Windows/Linux) ou `AdvantageScope` > `Paramètres...` (macOS). Sous le paramètre « Langue », vous pouvez choisir parmi la liste des langues prises en charge ou sélectionner « Valeur par défaut du système » pour correspondre automatiquement à la langue de votre système d'exploitation.
+Pour modifier la langue d'affichage dans AdvantageScope, ouvrez la fenêtre des préférences en cliquant sur `App` > `Afficher les préférences...` (Windows/Linux) ou `AdvantageScope` > `Paramètres...` (macOS). Sous le paramètre « Langue », vous pouvez choisir parmi la liste des langues prises en charge ou sélectionner « Valeur par défaut du système » pour correspondre automatiquement à la langue de votre système d'exploitation.
 
 <img src="/img/prefs_fr.webp" alt="Diagramme des préférences" height="450" />
 
 ## Clés de journalisation {#logging-keys}
 
-Tous les formats pris en charge par AdvantageScope intègrent une compatibilité Unicode complète lors de la définition des clés de journal. Cela signifie que vous pouvez enregistrer des données dans votre langue maternelle (y compris avec des accents, des caractères spéciaux et des alphabets non latins) et qu'elles seront correctement enregistrées et affichées dans AdvantageScope.
+Tous les formats pris en charge par AdvantageScope intègrent une compatibilité Unicode complète lors de la définition des clés de journal. Cela signifie que vous pouvez enregistrer des données dans votre langue préférée (y compris avec des accents, des caractères spéciaux et des alphabets non latins) et qu'elles seront correctement enregistrées et affichées dans AdvantageScope.
 
 Voici un exemple d'enregistrement d'une chaîne avec une clé en français :
 

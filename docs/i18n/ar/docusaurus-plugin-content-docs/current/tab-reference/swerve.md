@@ -51,7 +51,7 @@ SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
   new SwerveModuleVelocity(),
   new SwerveModuleVelocity(),
   new SwerveModuleVelocity()
-}
+};
 
 Telemetry.log("MyStates", states);
 ```
@@ -65,7 +65,7 @@ SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
   new SwerveModuleVelocity(),
   new SwerveModuleVelocity(),
   new SwerveModuleVelocity()
-}
+};
 
 Logger.recordOutput("MyStates", states);
 ```

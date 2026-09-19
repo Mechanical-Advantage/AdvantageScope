@@ -22,7 +22,11 @@ Para dar zoom, posicione o cursor sobre a linha do tempo e role para cima ou par
 
 </details>
 
-:::warning
+:::warning Campo da FTC 2026-2027
+O modelo de campo da FTC 2026-2027 não inclui AprilTags integradas, pois espera-se que as localizações das tags na estrutura (hive) mudem durante a partida. As equipes podem publicar um `Pose3d[]` e `number[]` para adicionar objetos dinâmicos de AprilTag ao campo. O tamanho correto da AprilTag para este campo é de **3,25 polegadas**.
+:::
+
+:::warning Campo da FRC 2026
 O modelo de campo da FRC 2026 é consistente com o layout de AprilTags para o campo **soldado (welded)**. As diferenças entre os campos soldado e AndyMark são muito pequenas, mas pode haver pequenos desalinhamentos (~0,5 polegada) ao visualizar poses de AprilTag com base no layout do campo AndyMark.
 :::
 

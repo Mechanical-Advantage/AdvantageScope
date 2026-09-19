@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 🌐 語言支援 {#language-support}
 
-AdvantageScope 支援多種語言，為全球隊伍提供在地化體驗。目前支援以下語言：
+AdvantageScope 在文件、桌面應用程式、行動應用程式 (AdvantageScope XR 與 AdvantageTune) 以及 AdvantageScope Lite 中支援多種語言。目前支援以下語言：
 
 - 英語 (美國)
 - 西班牙語 (拉丁美洲)
@@ -32,7 +32,7 @@ AdvantageScope 支援多種語言，為全球隊伍提供在地化體驗。目�
 
 ## 日誌鍵名 {#logging-keys}
 
-AdvantageScope 支援的所有格式在定義日誌鍵名時均具有完全的 Unicode 相容性。這意味著你可以使用自己的母語（包括重音符號、特殊字元與非拉丁字母）記錄資料，並且這些資料將在 AdvantageScope 中正確記錄與顯示。
+AdvantageScope 支援的所有格式在定義日誌鍵名時均具有完全的 Unicode 相容性。這意味著你可以使用自己的偏好語言（包括重音符號、特殊字元與非拉丁字母）記錄資料，並且這些資料將在 AdvantageScope 中正確記錄與顯示。
 
 以下是使用繁體中文鍵名記錄字串的範例：
 

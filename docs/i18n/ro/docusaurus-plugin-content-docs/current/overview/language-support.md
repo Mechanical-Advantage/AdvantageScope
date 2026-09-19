@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 🌐 Suport lingvistic {#language-support}
 
-AdvantageScope suportă mai multe limbi pentru a oferi o experiență localizată echipelor din întreaga lume. Următoarele limbi sunt disponibile în prezent:
+AdvantageScope suportă mai multe limbi pentru a oferi o experiență localizată echipelor din întreaga lume. Următoarele limbi sunt disponibile în prezent și sunt suportate de documentația AdvantageScope, aplicația desktop, aplicațiile mobile (AdvantageScope XR și AdvantageTune) și AdvantageScope Lite (pe Systemcore și în FIRST Driver Station):
 
 - Engleză (SUA)
 - Spaniolă (America Latină)
@@ -32,7 +32,7 @@ Pentru a schimba limba de afișare în AdvantageScope, deschide fereastra de pre
 
 ## Chei de jurnalizare {#logging-keys}
 
-Toate formatele suportate de AdvantageScope beneficiază de compatibilitate completă Unicode la definirea cheilor de jurnalizare. Aceasta înseamnă că poți înregistra date folosind limba ta maternă (inclusiv diacritice, caractere speciale și alfabete non-latine) și acestea vor fi înregistrate și afișate corect în AdvantageScope.
+Toate formatele suportate de AdvantageScope beneficiază de compatibilitate completă Unicode la definirea cheilor de jurnalizare. Aceasta înseamnă că poți înregistra date folosind limba ta preferată (inclusiv diacritice, caractere speciale și alfabete non-latine) și acestea vor fi înregistrate și afișate corect în AdvantageScope.
 
 Iată un exemplu de înregistrare a unui șir de caractere cu o cheie în limba română:
 

@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 🌐 Taalondersteuning {#language-support}
 
-AdvantageScope ondersteunt meerdere talen om een gelokaliseerde ervaring te bieden voor teams over de hele wereld. De volgende talen zijn momenteel beschikbaar:
+AdvantageScope ondersteunt meerdere talen om een gelokaliseerde ervaring te bieden voor teams over de hele wereld. De volgende talen zijn momenteel beschikbaar en worden ondersteund door de AdvantageScope-documentatie, desktop-app, mobiele apps (AdvantageScope XR en AdvantageTune) en AdvantageScope Lite (op Systemcore en in het FIRST Driver Station):
 
 - Engels (VS)
 - Spaans (Latijns-Amerika)
@@ -32,7 +32,7 @@ Om de weergavetaal in AdvantageScope te wijzigen, open je het voorkeurenvenster 
 
 ## Logsleutels {#logging-keys}
 
-Alle door AdvantageScope ondersteunde formaten bieden volledige Unicode-compatibiliteit bij het definiëren van logsleutels. Dit betekent dat je data kunt loggen in je moedertaal (inclusief accenten, speciale tekens en niet-Latijnse alfabetten) en dat dit correct wordt geregistreerd en weergegeven in AdvantageScope.
+Alle door AdvantageScope ondersteunde formaten bieden volledige Unicode-compatibiliteit bij het definiëren van logsleutels. Dit betekent dat je data kunt loggen in je voorkeurstaal (inclusief accenten, speciale tekens en niet-Latijnse alfabetten) en dat dit correct wordt geregistreerd en weergegeven in AdvantageScope.
 
 Hier is een voorbeeld van het loggen van een string met een Nederlandstalige sleutel:
 

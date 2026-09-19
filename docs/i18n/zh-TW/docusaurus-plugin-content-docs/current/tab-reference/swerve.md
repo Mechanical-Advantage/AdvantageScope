@@ -53,9 +53,7 @@ SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
   new SwerveModuleVelocity()
 };
 
-periodic() {
-  Telemetry.log("MyStates", states);
-}
+Telemetry.log("MyStates", states);
 ```
 
 </TabItem>
@@ -67,7 +65,7 @@ SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
   new SwerveModuleVelocity(),
   new SwerveModuleVelocity(),
   new SwerveModuleVelocity()
-}
+};
 
 Logger.recordOutput("MyStates", states);
 ```

@@ -42,11 +42,7 @@ Open het voorkeurenvenster door te klikken op `App` > `Voorkeuren tonen...` (Win
 <img src="/img/prefs_nl.webp" alt="Diagram van voorkeuren" height="450" />
 </details>
 
-Klik op `Bestand` > `Logs downloaden...` om het downloadvenster te openen. Het downloaden van logs wordt ondersteund op Systemcore en de roboRIO. Zodra er verbinding is met de robot, worden de beschikbare logs getoond met de nieuwste bovenaan. Selecteer een of meer logbestanden om te downloaden (shift-klik om een bereik te selecteren of **cmd/ctrl + A** om alles te selecteren). Klik vervolgens op het ↓-symbool en selecteer een opslaglocatie.
-
-:::info
-CTRE's [signaallogger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) gebruikt een niet-standaard formaat dat logs in submappen groepeert. Selecteer een of meer mappen in de lijst om de logbestanden als groep te downloaden.
-:::
+Klik op `Bestand` > `Logs downloaden...` om het downloadvenster te openen. Het downloaden van logs wordt ondersteund op Systemcore en de roboRIO. Zodra er verbinding is met de robot, worden de beschikbare logs getoond met de nieuwste bovenaan. Selecteer een of meer logbestanden of mappen om te downloaden (shift-klik om een bereik te selecteren of **cmd/ctrl + A** om alles te selecteren). Klik vervolgens op het ↓-symbool en selecteer een opslaglocatie.
 
 :::tip
 Bij het downloaden van meerdere bestanden slaat AdvantageScope bestanden over die al in de doelmap bestaan.

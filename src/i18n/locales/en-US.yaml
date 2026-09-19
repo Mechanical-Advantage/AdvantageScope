@@ -434,8 +434,10 @@ hub:
       variant_16h5-6in: "16h5" # 16h5 FRC AprilTag variant
       variant_36h11-2in: "2 in" # 2 in FTC AprilTag variant
       variant_36h11-3in: "3 in" # 3 in FTC AprilTag variant
+      variant_36h11-3.25in: "3.25 in" # 3.25 in FTC AprilTag variant
       variant_36h11-4in: "4 in" # 4 in FTC AprilTag variant
       variant_36h11-5in: "5 in" # 5 in FTC AprilTag variant
+      variant_36h11-6.5in-ftc: "6.5 in" # 6.5 in FTC AprilTag variant
 
   lineGraph:
     numericAxis: "Numeric Axis" # Title for the numeric axis source list in the line graph

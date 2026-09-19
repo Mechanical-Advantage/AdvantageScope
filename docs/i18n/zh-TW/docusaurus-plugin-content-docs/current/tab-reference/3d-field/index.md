@@ -22,8 +22,12 @@ _上圖所示為英文介面。_
 
 </details>
 
-:::warning
+:::warning 2026 FRC 場地
 2026 FRC 場地模型與**焊接**場地的 AprilTag 佈局一致。焊接場地與 AndyMark 場地之間的差異非常微小，但在根據 AndyMark 場地佈局視覺化 AprilTag 姿態時，可能會出現微小的（約 0.5 英吋）偏差。
+:::
+
+:::warning 2026-2027 FTC 場地
+2026-2027 FTC 場地上的 AprilTag 目標是動態的，無法在 AdvantageScope 中顯示為靜態物件。若要在 3D 場地上查看它們的位置，請將物件類型設定為尺寸為 **3.25 英吋**的 **AprilTag**，並從機器人程式碼中動態記錄其位置。
 :::
 
 ## 新增物件 {#adding-objects}

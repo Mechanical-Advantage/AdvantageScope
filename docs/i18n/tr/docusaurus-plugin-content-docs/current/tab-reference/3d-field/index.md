@@ -22,7 +22,11 @@ Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı v
 
 </details>
 
-:::warning
+:::warning 2026-2027 FTC Sahası
+2026-2027 FTC saha modeli, hive üzerindeki etiketlerin konumlarının maç sırasında değişmesi beklendiğinden yerleşik AprilTag'leri içermez. Takımlar, sahaya dinamik AprilTag nesneleri eklemek için bir `Pose3d[]` ve `number[]` yayınlayabilir. Bu saha için doğru AprilTag boyutu **3,25 inç**tir.
+:::
+
+:::warning 2026 FRC Sahası
 2026 FRC saha modeli, **kaynaklı** saha için AprilTag düzeniyle tutarlıdır. Kaynaklı ve AndyMark sahaları arasındaki farklar çok küçüktür, ancak AndyMark saha düzenine dayalı AprilTag pozları görselleştirilirken küçük (~0.5 inç) hizalama hataları olabilir.
 :::
 

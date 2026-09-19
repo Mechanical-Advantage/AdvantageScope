@@ -22,7 +22,11 @@ Pentru a mări, plasați cursorul peste cronologie și derulați în sus sau în
 
 </details>
 
-:::warning
+:::warning Teren FTC 2026-2027
+Modelul terenului FTC 2026-2027 nu include AprilTags integrate, deoarece se preconizează că locațiile tag-urilor de pe structură (hive) se vor schimba în timpul meciului. Echipele pot publica un `Pose3d[]` și `number[]` pentru a adăuga obiecte AprilTag dinamice pe teren. Dimensiunea corectă a AprilTag-ului pentru acest teren este de **3,25 in**.
+:::
+
+:::warning Teren FRC 2026
 Modelul terenului FRC 2026 este consecvent cu configurarea AprilTag pentru terenul **sudat** (welded). Diferențele dintre terenurile sudate și AndyMark sunt foarte minore, dar pot exista mici alinieri eronate (~0,5 inchi) la vizualizarea pose-urilor AprilTag bazate pe configurarea terenului AndyMark.
 :::
 

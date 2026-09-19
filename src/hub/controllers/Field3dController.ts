@@ -162,7 +162,17 @@ export default class Field3dController implements TabController {
     let aprilTagVariants: string[] = fieldConfig?.isFTC
       ? ["36h11-2in", "36h11-3in", "36h11-3.25in", "36h11-4in", "36h11-5in", "36h11-6.5in"]
       : ["36h11-6.5in", "16h5-6in"];
-    this.sourceList.setOptionValues("aprilTag", "variant", aprilTagVariants);
+    let aprilTagTitles: (string | null)[] = fieldConfig?.isFTC
+      ? [
+          t("hub.field.optionValues.variant_36h11-2in"),
+          t("hub.field.optionValues.variant_36h11-3in"),
+          t("hub.field.optionValues.variant_36h11-3.25in"),
+          t("hub.field.optionValues.variant_36h11-4in"),
+          t("hub.field.optionValues.variant_36h11-5in"),
+          t("hub.field.optionValues.variant_36h11-6.5in-ftc")
+        ]
+      : [t("hub.field.optionValues.variant_36h11-6.5in"), t("hub.field.optionValues.variant_16h5-6in")];
+    this.sourceList.setOptionValues("aprilTag", "variant", aprilTagVariants, aprilTagTitles);
 
     this.updateRobotOptions();
   }

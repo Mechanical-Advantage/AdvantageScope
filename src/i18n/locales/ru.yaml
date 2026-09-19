@@ -451,8 +451,10 @@ hub:
       variant_16h5-6in: "16h5"
       variant_36h11-2in: "2 дюйма"
       variant_36h11-3in: "3 дюйма"
+      variant_36h11-3.25in: "3,25 дюйма"
       variant_36h11-4in: "4 дюйма"
       variant_36h11-5in: "5 дюймов"
+      variant_36h11-6.5in-ftc: "6,5 дюйма"
 
   lineGraph:
     numericAxis: "Числовая ось"

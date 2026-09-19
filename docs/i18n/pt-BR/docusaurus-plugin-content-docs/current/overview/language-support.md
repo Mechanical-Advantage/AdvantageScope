@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 🌐 Suporte a idiomas {#language-support}
 
-O AdvantageScope suporta múltiplos idiomas para fornecer uma experiência localizada para equipes do mundo todo. Os seguintes idiomas estão disponíveis no momento:
+O AdvantageScope suporta múltiplos idiomas para fornecer uma experiência localizada para equipes do mundo todo. Os seguintes idiomas estão disponíveis no momento e são suportados pela documentação do AdvantageScope, pelo aplicativo para desktop, pelos aplicativos móveis (AdvantageScope XR e AdvantageTune) e pelo AdvantageScope Lite (no Systemcore e no FIRST Driver Station):
 
 - Inglês (EUA)
 - Espanhol (América Latina)
@@ -32,7 +32,7 @@ Para alterar o idioma de exibição no AdvantageScope, abra a janela de preferê
 
 ## Chaves de log {#logging-keys}
 
-Todos os formatos suportados pelo AdvantageScope possuem compatibilidade total com Unicode ao definir chaves de log. Isso significa que você pode registrar dados usando seu idioma nativo (incluindo acentos, caracteres especiais e alfabetos não latinos) e eles serão devidamente gravados e exibidos no AdvantageScope.
+Todos os formatos suportados pelo AdvantageScope possuem compatibilidade total com Unicode ao definir chaves de log. Isso significa que você pode registrar dados usando seu idioma preferido (incluindo acentos, caracteres especiais e alfabetos não latinos) e eles serão devidamente gravados e exibidos no AdvantageScope.
 
 Aqui está um exemplo de gravação de uma string com uma chave em português:
 

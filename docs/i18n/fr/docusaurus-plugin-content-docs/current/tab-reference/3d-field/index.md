@@ -22,7 +22,11 @@ Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le hau
 
 </details>
 
-:::warning
+:::warning Terrain FTC 2026-2027
+Le modèle de terrain FTC 2026-2027 n'inclut pas d'AprilTags intégrés, car l'emplacement des balises sur la structure (hive) est susceptible de changer pendant le match. Les équipes peuvent publier un `Pose3d[]` et un `number[]` pour ajouter des objets AprilTag dynamiques au terrain. La taille correcte d'AprilTag pour ce terrain est de **3,25 po**.
+:::
+
+:::warning Terrain FRC 2026
 Le modèle de terrain FRC 2026 est cohérent avec la disposition d'AprilTag pour le terrain **soudé**. Les différences entre les terrains soudés et AndyMark sont très mineures, mais il peut y avoir de légers désalignements (~0,5 pouce) lors de la visualisation des poses d'AprilTag basées sur la disposition du terrain AndyMark.
 :::
 
