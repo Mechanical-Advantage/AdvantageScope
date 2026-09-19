@@ -105,6 +105,9 @@ async function start(data: Uint8Array) {
                   } else if (startData.type.startsWith(PROTO_PREFIX)) {
                     let schemaType = startData.type.split(PROTO_PREFIX)[1];
                     log.setStructuredType(startData.name, schemaType);
+                  } else if (startData.type.startsWith("log:")) {
+                    let extension = startData.type.split("log:")[1];
+                    log.setStructuredType(startData.name, "." + extension.toLowerCase());
                   }
                   break;
               }
@@ -157,6 +160,18 @@ async function start(data: Uint8Array) {
   if (shortLivedFieldNames.size > 0) {
     console.warn("Ignoring short-lived WPILOG entries:", [...shortLivedFieldNames].toSorted());
   }
+
+  // Load schemas and control words to decode struct-based enabled states
+  log.getFieldKeys().forEach((key) => {
+    if (key.includes("/.schema/") || key.startsWith(".schema/")) {
+      parseField(key, true);
+    }
+  });
+  log.getFieldKeys().forEach((key) => {
+    if (key.endsWith("controlWord") || key.endsWith("ControlWord")) {
+      parseField(key, true);
+    }
+  });
 
   // Load enabled field (required for merging)
   let enabledKey = getEnabledKey(log);

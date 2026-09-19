@@ -303,22 +303,80 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       shell.openExternal("https://github.com/" + GITHUB_REPOSITORY + "/issues/new/choose");
       break;
 
+    case "historical-start-raw":
+      {
+        const uuid: string = message.data.uuid;
+        const data: Uint8Array = message.data.data;
+        const extension: string = message.data.extension;
+
+        // Prevent path traversal
+        if (extension.includes("/") || extension.includes("\\") || extension.includes("..")) {
+          sendMessage(window, "historical-data", {
+            files: [null],
+            error: "Invalid log extension",
+            uuid: uuid
+          });
+          break;
+        }
+
+        let tempPath = path.join(app.getPath("temp"), "child_" + createUUID() + "." + extension);
+        fs.writeFile(tempPath, data, (err) => {
+          if (!err) {
+            handleHubMessage(window, {
+              name: "historical-start",
+              data: {
+                uuid: uuid,
+                path: tempPath,
+                deleteAfterRead: true
+              }
+            });
+          } else {
+            sendMessage(window, "historical-data", {
+              files: [null],
+              error: err.message,
+              uuid: uuid
+            });
+          }
+        });
+      }
+      break;
+
     case "historical-start":
       {
         // Record opened files
         const uuid: string = message.data.uuid;
         const logPath: string = message.data.path;
-        app.addRecentDocument(logPath);
-        // Writing this file is a supplemental task, so we don't need to block/ensure success
-        fs.writeFile(AKIT_PATH_OUTPUT, logPath, () => {});
+        if (!message.data.deleteAfterRead) {
+          app.addRecentDocument(logPath);
+          // Writing this file is a supplemental task, so we don't need to block/ensure success
+          fs.writeFile(AKIT_PATH_OUTPUT, logPath, () => {});
+        }
 
         // Send data if all file reads finished
         let completedCount = 0;
         let targetCount = 0;
         let errorMessage: null | string = null;
         let hasHootNonPro = false;
+        let paths: string[] = typeof logPath === "string" ? [logPath] : logPath;
+        let pathsToRemove: string[] = [];
+        if (message.data.deleteAfterRead) {
+          pathsToRemove.push(...paths);
+        }
+
         let sendIfReady = () => {
           if (completedCount === targetCount) {
+            if (message.data.deleteAfterRead) {
+              paths.forEach((p) => {
+                if (p.endsWith(".dslog")) {
+                  let eventsPath = p.slice(0, p.length - 5) + "dsevents";
+                  if (fs.existsSync(eventsPath)) pathsToRemove.push(eventsPath);
+                }
+              });
+            }
+            pathsToRemove.forEach((p) => {
+              if (fs.existsSync(p)) fs.rmSync(p, { force: true });
+            });
+
             sendMessage(window, "historical-data", {
               files: results,
               error: errorMessage,
@@ -426,9 +484,9 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               .finally(() => {
                 convertHoot(logPath)
                   .then((wpilogPath) => {
+                    pathsToRemove.push(wpilogPath);
                     openPath(wpilogPath, (buffer) => {
                       results[0] = buffer;
-                      fs.rmSync(wpilogPath);
                     });
                   })
                   .catch((reason) => {
@@ -448,11 +506,11 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
           // Save WPILOG in temporary folder
           let wpilogPath = path.join(app.getPath("temp"), "revlog_" + createUUID() + ".wpilog");
+          pathsToRemove.push(wpilogPath);
           try {
             await parseREVLOG(logPath, wpilogPath);
             openPath(wpilogPath, (buffer) => {
               results[0] = buffer;
-              fs.rmSync(wpilogPath);
             });
           } catch (err: any) {
             errorMessage = err.message;

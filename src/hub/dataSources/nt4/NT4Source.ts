@@ -249,6 +249,9 @@ export default class NT4Source extends LiveDataSource {
             structuredType = "MessagePack";
           } else if (topic.type === "json") {
             structuredType = "JSON";
+          } else if (topic.type.startsWith("log:")) {
+            let extension = topic.type.split("log:")[1];
+            structuredType = "." + extension.toLowerCase();
           }
           this.log.createBlankField(modifiedKey, this.getLogType(topic.type));
           this.log.setWpilibType(modifiedKey, topic.type);

@@ -567,12 +567,12 @@ export default class Log {
     }
 
     // Check for struct schema
-    if (key.includes("/.schema/" + STRUCT_PREFIX)) {
+    if (key.includes("/.schema/" + STRUCT_PREFIX) || key.startsWith(".schema/" + STRUCT_PREFIX)) {
       this.structDecoder.addSchema(key.split(STRUCT_PREFIX)[1], value);
       this.photonDecoder.addSchema(key.split(STRUCT_PREFIX)[1], value);
       this.attemptQueuedStructures();
     }
-    if (key.includes("/.schema/" + PHOTON_PREFIX)) {
+    if (key.includes("/.schema/" + PHOTON_PREFIX) || key.startsWith(".schema/" + PHOTON_PREFIX)) {
       this.photonDecoder.addSchema(key.split(PHOTON_PREFIX)[1], value);
       this.attemptQueuedStructures();
     }
@@ -1040,6 +1040,9 @@ export default class Log {
       }
     });
     let protoDescriptors: any[] = [];
+    this.protoDecoder.toSerialized().forEach((descriptor: any) => {
+      protoDescriptors.push(descriptor);
+    });
     sourceSerialized.protoDecoder.forEach((descriptor: any) => {
       protoDescriptors.push(descriptor);
     });

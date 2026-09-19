@@ -53,6 +53,59 @@ export class HistoricalDataSource {
   private requestedFields: Set<string> = new Set();
   private fieldRequestInterval: number | null = null;
   private lastRawRequestFields: Set<string> = new Set();
+  private childSources: Map<string, HistoricalDataSource> = new Map();
+
+  /**
+   * Generates log data from an in-memory byte array (for child logs).
+   */
+  openRaw(
+    log: Log,
+    data: Uint8Array,
+    extension: string,
+    keyPrefix: string,
+    statusCallback: (status: HistoricalDataSourceStatus) => void,
+    progressCallback: (progress: number) => void,
+    refreshCallback: (hasNewFields: boolean) => void
+  ) {
+    this.log = log;
+    this.path = "child." + extension; // Give it a fake path with the right extension
+    this.keyPrefix = keyPrefix;
+    this.statusCallback = statusCallback;
+    this.progressCallback = progressCallback;
+    this.refreshCallback = refreshCallback;
+
+    this.setStatus(HistoricalDataSourceStatus.Reading);
+    if (["wpilog", "rlog", "csv", "log"].includes(extension)) {
+      setTimeout(() => {
+        this.handleMainMessage({
+          uuid: this.UUID,
+          files: [data],
+          error: null
+        });
+      }, 0);
+    } else {
+      window.sendMainMessage("historical-start-raw", {
+        uuid: this.UUID,
+        data: data,
+        extension: extension
+      });
+    }
+
+    this.fieldRequestInterval = window.setInterval(() => this.updateFieldRequest(), 50);
+
+    let startTime = new Date().getTime();
+    let sendMockProgress = () => {
+      if (this.mockProgressActive) {
+        let time = (new Date().getTime() - startTime) / 1000;
+        this.mockProgress = calcMockProgress(time);
+        if (this.progressCallback !== null) {
+          this.progressCallback(this.mockProgress);
+        }
+        window.requestAnimationFrame(sendMockProgress);
+      }
+    };
+    window.requestAnimationFrame(sendMockProgress);
+  }
 
   /**
    * Generates log data from a file.
@@ -106,6 +159,7 @@ export class HistoricalDataSource {
   /** Cancels the read operation. */
   stop() {
     this.setStatus(HistoricalDataSourceStatus.Stopped);
+    this.childSources.forEach((source) => source.stop());
   }
 
   /** Returns an alternative error message to be displayed if log loading fails. */
@@ -118,12 +172,17 @@ export class HistoricalDataSource {
     return this.requestedFields;
   }
 
-  /** Process new data from the main process, send to worker. */
-  handleMainMessage(data: any) {
-    if (this.status !== HistoricalDataSourceStatus.Reading || data.uuid !== this.UUID) return;
+  /** Processes a message from the main process. */
+  handleMainMessage(message: any) {
+    if (message.uuid !== this.UUID) {
+      this.childSources.forEach((child) => child.handleMainMessage(message));
+      return;
+    }
+
+    if (this.status !== HistoricalDataSourceStatus.Reading) return;
     this.setStatus(HistoricalDataSourceStatus.DecodingInitial);
-    this.customError = data.error;
-    let fileContents: (Uint8Array | null)[] = data.files;
+    this.customError = message.error;
+    let fileContents: (Uint8Array | null)[] = message.files;
 
     // Check for read error (all files are null)
     if (fileContents.every((buffer) => buffer === null)) {
@@ -184,6 +243,46 @@ export class HistoricalDataSource {
               if (field.generatedParent) this.log?.setGeneratedParent(key);
               this.requestedFields.delete(key);
               this.finishedFields.add(key);
+
+              // Check if this is a child log
+              let wpilibType = this.log?.getWpilibType(key);
+              let structuredType = this.log?.getStructuredType(key);
+              let logType = wpilibType?.startsWith("log:")
+                ? wpilibType
+                : structuredType?.startsWith("log:")
+                ? structuredType
+                : null;
+
+              if (logType) {
+                let extension = logType.slice(4).toLowerCase();
+                if (!this.childSources.has(key) && this.log) {
+                  let rawData = this.log.getField(key)?.getRaw(-Infinity, Infinity);
+                  if (rawData) {
+                    let totalLength = rawData.values.reduce((sum, arr) => sum + arr.length, 0);
+                    let concatenated = new Uint8Array(totalLength);
+                    let arrayOffset = 0;
+                    for (let arr of rawData.values) {
+                      concatenated.set(arr, arrayOffset);
+                      arrayOffset += arr.length;
+                    }
+                    let childSource = new HistoricalDataSource();
+                    this.childSources.set(key, childSource);
+                    childSource.openRaw(
+                      this.log,
+                      concatenated,
+                      extension,
+                      key, // Use the parent field name as the prefix
+                      (status) => {}, // Don't forward status directly, keep it independent
+                      (progress) => {}, // Keep progress independent
+                      (hasNewFields) => {
+                        if (this.refreshCallback !== null) {
+                          this.refreshCallback(hasNewFields);
+                        }
+                      }
+                    );
+                  }
+                }
+              }
             });
           }
           break;
@@ -217,7 +316,7 @@ export class HistoricalDataSource {
     }
   }
 
-  private updateFieldRequest(loadEverything = false) {
+  updateFieldRequest(loadEverything = false, forwardedRequests: Set<string> | null = null) {
     if (
       (this.status === HistoricalDataSourceStatus.Idle || this.status === HistoricalDataSourceStatus.DecodingField) &&
       this.worker !== null &&
@@ -229,6 +328,9 @@ export class HistoricalDataSource {
         window.tabs.getActiveFields().forEach((field) => requestFields.add(field));
         window.sidebar.getActiveFields().forEach((field) => requestFields.add(field));
         getURCLKeys(window.log).forEach((field) => requestFields.add(field));
+        if (forwardedRequests) {
+          forwardedRequests.forEach((field) => requestFields.add(field));
+        }
       } else {
         // Need to access all fields, load everything
         this.log?.getFieldKeys().forEach((key) => {
@@ -242,7 +344,13 @@ export class HistoricalDataSource {
 
         // Add keys that are always requested
         this.log?.getFieldKeys().forEach((key) => {
-          if (key.includes("/.schema/")) {
+          if (key.includes("/.schema/") || key.startsWith(".schema/")) {
+            requestFields.add(key);
+          }
+          if (
+            this.log?.getWpilibType(key)?.startsWith("log:") ||
+            this.log?.getStructuredType(key)?.startsWith("log:")
+          ) {
             requestFields.add(key);
           }
         });
@@ -260,19 +368,52 @@ export class HistoricalDataSource {
           });
         });
 
-        // Filter fields
+        // Filter fields and forward to child sources
+        let childRequests: Map<string, Set<string>> = new Map();
+        for (let childKey of this.childSources.keys()) {
+          childRequests.set(childKey, new Set());
+        }
+
         requestFields.forEach((field) => {
+          // Check if field is a merged log prefix (e.g. "/Log0", "/Log1") rather than just starting with "/Log" (like "/Logs/Hoot")
+          let isMergePrefix = false;
+          if (this.keyPrefix.length === 0 && field.startsWith("/" + MERGE_PREFIX)) {
+            let nextChar = field.charAt(MERGE_PREFIX.length + 1);
+            if (nextChar >= "0" && nextChar <= "9") {
+              isMergePrefix = true;
+            }
+          }
+
           if (
             this.requestedFields.has(field) ||
             this.finishedFields.has(field) ||
             this.log?.getField(field) === null ||
             this.log?.isGenerated(field) ||
             !field.startsWith(this.keyPrefix) ||
-            (this.keyPrefix.length === 0 && field.startsWith("/" + MERGE_PREFIX))
+            isMergePrefix
           ) {
             requestFields.delete(field);
+          } else {
+            // Do not request fields managed by child sources
+            for (let childKey of this.childSources.keys()) {
+              if (field.startsWith(childKey + "/")) {
+                childRequests.get(childKey)?.add(field);
+                requestFields.delete(field);
+                break;
+              }
+            }
           }
         });
+
+        // Trigger child sources to update their requests
+        for (let [childKey, childSource] of this.childSources.entries()) {
+          // Remove the childKey prefix so the child source sees its own local keys
+          let localChildRequests = new Set<string>();
+          childRequests.get(childKey)?.forEach((field) => {
+            localChildRequests.add(field.slice(childKey.length));
+          });
+          childSource.updateFieldRequest(loadEverything, localChildRequests);
+        }
 
         // Decode schemas and URCL metadata first
         let requestFieldsArray = Array.from(requestFields);
@@ -280,11 +421,22 @@ export class HistoricalDataSource {
           ...requestFieldsArray.filter(
             (field) =>
               field.includes("/.schema/") ||
+              field.startsWith(".schema/") ||
               // A bit of a hack but it works
               field.includes("URCL/Raw/Aliases") ||
-              field.includes("URCL/Raw/Persistent")
+              field.includes("URCL/Raw/Persistent") ||
+              this.log?.getWpilibType(field)?.startsWith("log:") ||
+              this.log?.getStructuredType(field)?.startsWith("log:")
           ),
-          ...requestFieldsArray.filter((field) => !field.includes("/.schema/"))
+          ...requestFieldsArray.filter(
+            (field) =>
+              !field.includes("/.schema/") &&
+              !field.startsWith(".schema/") &&
+              !field.includes("URCL/Raw/Aliases") &&
+              !field.includes("URCL/Raw/Persistent") &&
+              !this.log?.getWpilibType(field)?.startsWith("log:") &&
+              !this.log?.getStructuredType(field)?.startsWith("log:")
+          )
         ];
 
         // Send requests

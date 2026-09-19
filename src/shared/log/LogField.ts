@@ -199,9 +199,11 @@ export default class LogField {
     }
 
     // Compare to adjacent values
-    if (insertIndex > 0 && logValuesEqual(this.type, value, this.data.values[insertIndex - 1])) {
+    let isChildLog = this.wpilibType?.startsWith("log:") || this.structuredType?.startsWith("log:");
+    if (!isChildLog && insertIndex > 0 && logValuesEqual(this.type, value, this.data.values[insertIndex - 1])) {
       // Same as the previous value
     } else if (
+      !isChildLog &&
       insertIndex < this.data.values.length &&
       logValuesEqual(this.type, value, this.data.values[insertIndex])
     ) {
