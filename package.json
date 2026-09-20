@@ -193,11 +193,10 @@
     ],
     "mac": {
       "target": "dmg",
-      "icon": "icons/app/app-icon.icns",
+      "icon": "icons/app/app-icon.icon",
       "entitlements": "entitlements.mac.plist",
       "entitlementsInherit": "entitlements.mac.plist",
       "extendInfo": {
-        "CFBundleIconName": "AppIcon",
         "CFBundleLocalizations": [
           "en"
         ],
@@ -212,13 +211,7 @@
             ]
           }
         }
-      },
-      "extraResources": [
-        {
-          "from": "icons/macos-assets.car",
-          "to": "Assets.car"
-        }
-      ]
+      }
     },
     "linux": {
       "target": [
