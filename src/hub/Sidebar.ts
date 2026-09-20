@@ -220,6 +220,18 @@ export default class Sidebar {
     this.TUNING_BUTTON.addEventListener("click", () => {
       this.setTuningModeActive(!this.isTuningMode);
     });
+    this.TUNING_BUTTON.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
+      let values = Object.keys(this.tuningValueCache)
+        .sort()
+        .map((key) => key + " = " + this.tuningValueCache[key])
+        .join("\n");
+      window.sendMainMessage("ask-open-tuning-context-menu", {
+        isTuningMode: this.isTuningMode,
+        values: values,
+        position: [event.clientX, event.clientY]
+      });
+    });
 
     // Periodic functions
     let periodic = () => {
@@ -783,6 +795,7 @@ export default class Sidebar {
           let value = !oldValue;
           let liveTime = window.selection.getCurrentLiveTime();
           if (liveTime !== null) {
+            this.tuningValueCache[field.fullKey!] = value.toString();
             window.tuner?.publish(field.fullKey!, value);
             window.log.putBoolean(field.fullKey!, liveTime, value);
           }
@@ -793,6 +806,7 @@ export default class Sidebar {
             svg.classList.add("tunable");
           } else {
             svg.classList.remove("tunable");
+            delete this.tuningValueCache[field.fullKey!];
           }
         };
         this.setTuningModeActiveCallbacks.push(setTuningModeActive);
