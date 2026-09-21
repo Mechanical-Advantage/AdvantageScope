@@ -362,7 +362,11 @@ export class HistoricalDataSource {
         requestFields.forEach((field) => {
           this.log?.getFieldKeys().forEach((existingField) => {
             if (this.log?.getType(existingField) === LoggableType.Empty) return;
-            if (existingField.startsWith(field) || field.startsWith(existingField)) {
+            if (
+              existingField === field ||
+              existingField.startsWith(field + "/") ||
+              field.startsWith(existingField + "/")
+            ) {
               requestFields.add(existingField);
             }
           });
@@ -384,12 +388,14 @@ export class HistoricalDataSource {
             }
           }
 
+          let matchesPrefix = this.keyPrefix.length === 0 ? true : field.startsWith(this.keyPrefix + "/");
+
           if (
             this.requestedFields.has(field) ||
             this.finishedFields.has(field) ||
             this.log?.getField(field) === null ||
             this.log?.isGenerated(field) ||
-            !field.startsWith(this.keyPrefix) ||
+            !matchesPrefix ||
             isMergePrefix
           ) {
             requestFields.delete(field);

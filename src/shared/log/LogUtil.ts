@@ -154,6 +154,8 @@ export function findKey(log: Log, search: string[]): string | undefined {
 export function applyKeyPrefix(prefix: string, key: string): string {
   if (prefix.length === 0) {
     return key;
+  } else if (key.length === 0 || key === "/") {
+    return prefix;
   } else if (key.startsWith("/")) {
     return prefix + key;
   } else {

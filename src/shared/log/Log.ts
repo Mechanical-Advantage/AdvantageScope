@@ -457,7 +457,9 @@ export default class Log {
         }
         position = position.children[table];
       });
-      position.fullKey = key;
+      if (position.fullKey === null || !key.endsWith("/")) {
+        position.fullKey = key;
+      }
     });
     return root;
   }
@@ -1001,7 +1003,9 @@ export default class Log {
 
     // Merge fields
     Object.entries(sourceSerialized.fields).forEach(([key, value]) => {
-      this.fields[applyKeyPrefix(prefix, key)] = LogField.fromSerialized(value);
+      let targetKey = applyKeyPrefix(prefix, key);
+      if (prefix.length > 0 && targetKey === prefix) return;
+      this.fields[targetKey] = LogField.fromSerialized(value);
     });
 
     // Merge generated parents
