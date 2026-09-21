@@ -6,7 +6,8 @@
 // at the root directory of this project.
 
 import { getRobotAddress } from "../../../shared/Preferences";
-import { filterFieldByPrefixes, getOrDefault, logValuesEqual } from "../../../shared/log/LogUtil";
+import { filterFieldByPrefixes } from "../../../shared/log/LogKeyUtils";
+import { getOrDefault, logValuesEqual } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
 import { NT4_Client, NT4_PORTS_DEFAULT } from "./NT4";
 

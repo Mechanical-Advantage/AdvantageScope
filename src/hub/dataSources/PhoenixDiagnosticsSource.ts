@@ -6,8 +6,8 @@
 // at the root directory of this project.
 
 import Log from "../../shared/log/Log";
-import { PHOENIX_PREFIX } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
+import { PHOENIX_PREFIX } from "../../shared/log/LogKeyUtils";
 import { LiveDataSource, LiveDataSourceStatus } from "./LiveDataSource";
 
 export default class PhoenixDiagnosticsSource extends LiveDataSource {

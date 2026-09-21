@@ -8,16 +8,21 @@
 import Log from "../../shared/log/Log";
 import LogField from "../../shared/log/LogField";
 import {
+  applyKeyPrefix,
+  getChildLogExtension,
+  isChildLog,
+  isMergePrefix,
+  isSchema
+} from "../../shared/log/LogKeyUtils";
+import { getURCLKeys } from "../../shared/log/LogUtil";
+import LoggableType from "../../shared/log/LoggableType";
+import {
   AKIT_TIMESTAMP_KEYS,
   EVENT_KEYS,
   MATCH_NUMBER_KEYS,
   MATCH_TYPE_KEYS,
-  MERGE_PREFIX,
-  SYSTEM_TIME_KEYS,
-  applyKeyPrefix,
-  getURCLKeys
-} from "../../shared/log/LogUtil";
-import LoggableType from "../../shared/log/LoggableType";
+  SYSTEM_TIME_KEYS
+} from "../../shared/log/RobotState";
 import { calcMockProgress, createUUID, scaleValue, setsEqual } from "../../shared/util";
 
 /** A provider of historical log data (i.e. all the data is returned at once). */
@@ -169,7 +174,17 @@ export class HistoricalDataSource {
 
   /** Returns the set of fields that are currently loading. */
   getLoadingFields(): Set<string> {
-    return this.requestedFields;
+    let fields = new Set(this.requestedFields);
+    this.childSources.forEach((childSource, key) => {
+      if (
+        childSource.status === HistoricalDataSourceStatus.Reading ||
+        childSource.status === HistoricalDataSourceStatus.DecodingInitial
+      ) {
+        fields.add(key);
+      }
+      childSource.getLoadingFields().forEach((field) => fields.add(field));
+    });
+    return fields;
   }
 
   /** Processes a message from the main process. */
@@ -245,41 +260,40 @@ export class HistoricalDataSource {
               this.finishedFields.add(key);
 
               // Check if this is a child log
-              let wpilibType = this.log?.getWpilibType(key);
-              let structuredType = this.log?.getStructuredType(key);
-              let logType = wpilibType?.startsWith("log:")
-                ? wpilibType
-                : structuredType?.startsWith("log:")
-                ? structuredType
-                : null;
+              let extension = getChildLogExtension(this.log?.getWpilibType(key), this.log?.getStructuredType(key));
 
-              if (logType) {
-                let extension = logType.slice(4).toLowerCase();
+              if (extension !== null) {
                 if (!this.childSources.has(key) && this.log) {
-                  let rawData = this.log.getField(key)?.getRaw(-Infinity, Infinity);
+                  let capturedLog = this.log;
+                  let rawData = capturedLog.getField(key)?.getRaw(-Infinity, Infinity);
                   if (rawData) {
-                    let totalLength = rawData.values.reduce((sum, arr) => sum + arr.length, 0);
-                    let concatenated = new Uint8Array(totalLength);
-                    let arrayOffset = 0;
-                    for (let arr of rawData.values) {
-                      concatenated.set(arr, arrayOffset);
-                      arrayOffset += arr.length;
-                    }
-                    let childSource = new HistoricalDataSource();
-                    this.childSources.set(key, childSource);
-                    childSource.openRaw(
-                      this.log,
-                      concatenated,
-                      extension,
-                      key, // Use the parent field name as the prefix
-                      (status) => {}, // Don't forward status directly, keep it independent
-                      (progress) => {}, // Keep progress independent
-                      (hasNewFields) => {
-                        if (this.refreshCallback !== null) {
-                          this.refreshCallback(hasNewFields);
+                    setTimeout(async () => {
+                      let totalLength = rawData.values.reduce((sum, arr) => sum + arr.length, 0);
+                      let concatenated = new Uint8Array(totalLength);
+                      let arrayOffset = 0;
+                      for (let i = 0; i < rawData.values.length; i++) {
+                        concatenated.set(rawData.values[i], arrayOffset);
+                        arrayOffset += rawData.values[i].length;
+                        if (i % 1000 === 0) {
+                          await new Promise((resolve) => setTimeout(resolve, 0));
                         }
                       }
-                    );
+                      let childSource = new HistoricalDataSource();
+                      this.childSources.set(key, childSource);
+                      childSource.openRaw(
+                        capturedLog,
+                        concatenated,
+                        extension,
+                        key, // Use the parent field name as the prefix
+                        (status) => {}, // Don't forward status directly, keep it independent
+                        (progress) => {}, // Keep progress independent
+                        (hasNewFields) => {
+                          if (this.refreshCallback !== null) {
+                            this.refreshCallback(hasNewFields);
+                          }
+                        }
+                      );
+                    }, 0);
                   }
                 }
               }
@@ -344,13 +358,10 @@ export class HistoricalDataSource {
 
         // Add keys that are always requested
         this.log?.getFieldKeys().forEach((key) => {
-          if (key.includes("/.schema/") || key.startsWith(".schema/")) {
+          if (isSchema(key)) {
             requestFields.add(key);
           }
-          if (
-            this.log?.getWpilibType(key)?.startsWith("log:") ||
-            this.log?.getStructuredType(key)?.startsWith("log:")
-          ) {
+          if (isChildLog(this.log?.getWpilibType(key), this.log?.getStructuredType(key))) {
             requestFields.add(key);
           }
         });
@@ -380,13 +391,7 @@ export class HistoricalDataSource {
 
         requestFields.forEach((field) => {
           // Check if field is a merged log prefix (e.g. "/Log0", "/Log1") rather than just starting with "/Log" (like "/Logs/Hoot")
-          let isMergePrefix = false;
-          if (this.keyPrefix.length === 0 && field.startsWith("/" + MERGE_PREFIX)) {
-            let nextChar = field.charAt(MERGE_PREFIX.length + 1);
-            if (nextChar >= "0" && nextChar <= "9") {
-              isMergePrefix = true;
-            }
-          }
+          let isMergePrefixLocal = this.keyPrefix.length === 0 && isMergePrefix(field);
 
           let matchesPrefix = this.keyPrefix.length === 0 ? true : field.startsWith(this.keyPrefix + "/");
 
@@ -396,7 +401,7 @@ export class HistoricalDataSource {
             this.log?.getField(field) === null ||
             this.log?.isGenerated(field) ||
             !matchesPrefix ||
-            isMergePrefix
+            isMergePrefixLocal
           ) {
             requestFields.delete(field);
           } else {
@@ -426,22 +431,18 @@ export class HistoricalDataSource {
         requestFieldsArray = [
           ...requestFieldsArray.filter(
             (field) =>
-              field.includes("/.schema/") ||
-              field.startsWith(".schema/") ||
+              isSchema(field) ||
               // A bit of a hack but it works
               field.includes("URCL/Raw/Aliases") ||
               field.includes("URCL/Raw/Persistent") ||
-              this.log?.getWpilibType(field)?.startsWith("log:") ||
-              this.log?.getStructuredType(field)?.startsWith("log:")
+              isChildLog(this.log?.getWpilibType(field), this.log?.getStructuredType(field))
           ),
           ...requestFieldsArray.filter(
             (field) =>
-              !field.includes("/.schema/") &&
-              !field.startsWith(".schema/") &&
+              !isSchema(field) &&
               !field.includes("URCL/Raw/Aliases") &&
               !field.includes("URCL/Raw/Persistent") &&
-              !this.log?.getWpilibType(field)?.startsWith("log:") &&
-              !this.log?.getStructuredType(field)?.startsWith("log:")
+              !isChildLog(this.log?.getWpilibType(field), this.log?.getStructuredType(field))
           )
         ];
 

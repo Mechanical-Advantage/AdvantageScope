@@ -6,8 +6,15 @@
 // at the root directory of this project.
 
 import Log from "../../../shared/log/Log";
-import { getEnabledKey, PHOTON_PREFIX, PROTO_PREFIX, STRUCT_PREFIX } from "../../../shared/log/LogUtil";
+import {
+  PHOTON_PREFIX,
+  PROTO_PREFIX,
+  STRUCT_PREFIX,
+  getStructuredTypeFromRaw,
+  isSchema
+} from "../../../shared/log/LogKeyUtils";
 import LoggableType from "../../../shared/log/LoggableType";
+import { ENABLED_KEYS, getEnabledKey } from "../../../shared/log/RobotState";
 import {
   HistoricalDataSource_WorkerFieldResponse,
   HistoricalDataSource_WorkerRequest,
@@ -96,18 +103,9 @@ async function start(data: Uint8Array) {
                   break;
                 default: // Default to raw
                   log.createBlankField(startData.name, LoggableType.Raw);
-                  if (startData.type.startsWith(STRUCT_PREFIX)) {
-                    let schemaType = startData.type.split(STRUCT_PREFIX)[1];
+                  let schemaType = getStructuredTypeFromRaw(startData.type);
+                  if (schemaType !== null) {
                     log.setStructuredType(startData.name, schemaType);
-                  } else if (startData.type.startsWith(PHOTON_PREFIX)) {
-                    let schemaType = startData.type.split(PHOTON_PREFIX)[1];
-                    log.setStructuredType(startData.name, schemaType);
-                  } else if (startData.type.startsWith(PROTO_PREFIX)) {
-                    let schemaType = startData.type.split(PROTO_PREFIX)[1];
-                    log.setStructuredType(startData.name, schemaType);
-                  } else if (startData.type.startsWith("log:")) {
-                    let extension = startData.type.split("log:")[1];
-                    log.setStructuredType(startData.name, "." + extension.toLowerCase());
                   }
                   break;
               }
@@ -161,14 +159,15 @@ async function start(data: Uint8Array) {
     console.warn("Ignoring short-lived WPILOG entries:", [...shortLivedFieldNames].toSorted());
   }
 
-  // Load schemas and control words to decode struct-based enabled states
+  // Load schemas and keys needed to decode struct-based enabled states
   log.getFieldKeys().forEach((key) => {
-    if (key.includes("/.schema/") || key.startsWith(".schema/")) {
+    if (isSchema(key)) {
       parseField(key, true);
     }
   });
   log.getFieldKeys().forEach((key) => {
-    if (key.endsWith("controlWord") || key.endsWith("ControlWord")) {
+    const isEager = ENABLED_KEYS.some((enabledKey) => enabledKey.startsWith(key + "/") || enabledKey === key);
+    if (isEager) {
       parseField(key, true);
     }
   });

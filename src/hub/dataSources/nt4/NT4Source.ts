@@ -7,9 +7,10 @@
 
 import { IS_LITE } from "../../../shared/buildConstants";
 import Log from "../../../shared/log/Log";
-import { getEnabledKey, getURCLKeys, PHOTON_PREFIX, PROTO_PREFIX, STRUCT_PREFIX } from "../../../shared/log/LogUtil";
+import { PHOTON_PREFIX, PROTO_PREFIX, STRUCT_PREFIX, getStructuredTypeFromRaw } from "../../../shared/log/LogKeyUtils";
+import { getURCLKeys } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
-import ProtoDecoder from "../../../shared/log/ProtoDecoder";
+import { getEnabledKey } from "../../../shared/log/RobotState";
 import { checkArrayType } from "../../../shared/util";
 import { LiveDataSource, LiveDataSourceStatus } from "../LiveDataSource";
 import CustomSchemas from "../schema/CustomSchemas";
@@ -235,24 +236,7 @@ export default class NT4Source extends LiveDataSource {
           if (this.noFieldsTimeout) clearTimeout(this.noFieldsTimeout);
           if (topic.name === "") return;
           let modifiedKey = this.getKeyFromTopic(topic);
-          let structuredType: string | null = null;
-          if (topic.type.startsWith(STRUCT_PREFIX)) {
-            structuredType = topic.type.split(STRUCT_PREFIX)[1];
-            if (structuredType.endsWith("[]")) {
-              structuredType = structuredType.slice(0, -2);
-            }
-          } else if (topic.type.startsWith(PROTO_PREFIX)) {
-            structuredType = ProtoDecoder.getFriendlySchemaType(topic.type.split(PROTO_PREFIX)[1]);
-          } else if (topic.type.startsWith(PHOTON_PREFIX)) {
-            structuredType = topic.type.split(PHOTON_PREFIX)[1];
-          } else if (topic.type === "msgpack") {
-            structuredType = "MessagePack";
-          } else if (topic.type === "json") {
-            structuredType = "JSON";
-          } else if (topic.type.startsWith("log:")) {
-            let extension = topic.type.split("log:")[1];
-            structuredType = "." + extension.toLowerCase();
-          }
+          let structuredType = getStructuredTypeFromRaw(topic.type);
           this.log.createBlankField(modifiedKey, this.getLogType(topic.type));
           this.log.setWpilibType(modifiedKey, topic.type);
           this.log.setStructuredType(modifiedKey, structuredType);
