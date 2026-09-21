@@ -89,5 +89,6 @@ External log data is saved to the WPILOG format using a raw entry whose type str
 While data from vendor logs can be browsed directly in AdvantageScope, it may sometimes be necessary to extract the original vendor log as it was produced by the original library (e.g. for inspection in vendor-specific utilities). This can be accomplished using the [`extract_vendor_logs.py`](TODO) Python script, which searches a `.wpilog` file for all integrated vendor logs and exports them to separate files.
 
 ```bash
+pip3 install robotpy-wpiutil # Required dependency
 python3 extract_vendor_logs.py path/to/source.wpilog
 ```
