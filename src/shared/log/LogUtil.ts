@@ -990,12 +990,21 @@ export function getMechanismState(log: Log, key: string, time: number): Mechanis
       ) {
         continue;
       }
-      let translation: Translation2d = [
-        getOrDefault(log, key + "/" + mechanismChildTree.children["x"].fullKey!, LoggableType.Number, time, 0),
-        getOrDefault(log, key + "/" + mechanismChildTree.children["y"].fullKey!, LoggableType.Number, time, 0)
-      ];
+
+      let translation: Translation2d = Object.keys(mechanismChildTree.children).includes("position")
+        ? getOrDefault(
+            log,
+            key + "/" + mechanismChildTree.children["position"].fullKey!,
+            LoggableType.NumberArray,
+            time,
+            [0, 0]
+          )
+        : [
+            getOrDefault(log, key + "/" + mechanismChildTree.children["x"].fullKey!, LoggableType.Number, time, 0),
+            getOrDefault(log, key + "/" + mechanismChildTree.children["y"].fullKey!, LoggableType.Number, time, 0)
+          ];
       for (let [rootChildKey, rootChildTree] of Object.entries(mechanismChildTree.children)) {
-        if (rootChildKey === "x" || rootChildKey === "y") continue;
+        if (rootChildKey === "x" || rootChildKey === "y" || rootChildKey === "position") continue;
         addLine(rootChildTree, translation, 0.0);
       }
     }

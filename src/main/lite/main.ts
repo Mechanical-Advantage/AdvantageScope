@@ -384,6 +384,9 @@ async function handleHubMessage(message: NamedMessage) {
       // Sidebar context menu is currently not implemented in the Lite version since the only current options require HTTPS APIs (navigator.clipboard APIs).
       break;
 
+    case "ask-open-tuning-context-menu":
+      break;
+
     case "open-app-menu":
       {
         let menuItems: (MenuItem | Submenu | "-")[] = [];
