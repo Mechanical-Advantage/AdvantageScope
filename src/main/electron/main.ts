@@ -661,6 +661,24 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       });
       break;
 
+    case "ask-open-tuning-context-menu":
+      const tuningMenu = new Menu();
+      tuningMenu.append(
+        new MenuItem({
+          label: "Copy Tuned Values",
+          enabled: message.data.isTuningMode,
+          click() {
+            clipboard.writeText(message.data.values);
+          }
+        })
+      );
+      tuningMenu.popup({
+        window: window,
+        x: Math.round(message.data.position[0]),
+        y: Math.round(message.data.position[1])
+      });
+      break;
+
     case "open-app-menu":
     case "close-app-menu":
       {
