@@ -1,5 +1,6 @@
 ---
 sidebar_position: 3
+draft: true
 ---
 
 import Tabs from '@theme/Tabs';
@@ -29,7 +30,7 @@ As this library is not an official REV tool, support queries should be directed 
 
 ## Setup
 
-Install the URCL vendordep by following the instructions to install [3rd party libraries](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html) using the dependency manager in VSCode. Alternatively, you can use the following vendor JSON URL:
+Install the URCL vendordep by following the instructions to install [3rd party libraries](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html) using the dependency manager in VS Code. Alternatively, you can use the following vendor JSON URL:
 
 ```
 https://raw.githubusercontent.com/Mechanical-Advantage/URCL/main/URCL.json
@@ -171,7 +172,7 @@ sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
 The log file from the robot must be opened and exported by AdvantageScope _before opening it using the SysId analyzer_. This is required to convert the CAN data recorded by URCL to a format compatible with SysId.
 :::
 
-3. Open the SysId analyzer by searching for "WPILib: Start Tool" in the VSCode command palette and choosing "SysId" (or using the desktop launcher on Windows). Open the exported log file by clicking "Open data log file..."
+3. Open the SysId analyzer by searching for "WPILib: Start Tool" in the VS Code command palette and choosing "SysId" (or using the desktop launcher on Windows). Open the exported log file by clicking "Open data log file..."
 
 4. Choose the following fields below to run the analysis using the default encoder. Position and velocity data from secondary encoders can also be used (alternate, external, analog, absolute, etc).
 

@@ -91,3 +91,20 @@ img {
   margin: 0 5px;
   vertical-align: middle;
 }
+
+@media (min-width: 997px) {
+  .menu {
+    padding: 0.5rem !important;
+  }
+}
+
+.sidebar-tutorials {
+  background-color: rgba(68, 108, 227, 0.16);
+  border-radius: 8px;
+  padding: 4px 0;
+  margin: 4px 0;
+}
+
+[data-theme="dark"] .sidebar-tutorials {
+  background-color: rgba(68, 108, 227, 0.26);
+}

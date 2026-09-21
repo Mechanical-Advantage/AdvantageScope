@@ -34,6 +34,10 @@ To get started, drag a field to the "Sources" section. Delete a source using the
 - **Robot Velocities:** Linear and angular speeds displayed in the center of the diagram.
 - **Rotation:** Angular position used to rotate the diagram.
 
+:::tip
+Swerve module states can also be visualized on the 🗺️ [2D Field](/tab-reference/2d-field) and 👀 [3D Field](/tab-reference/3d-field) tabs.
+:::
+
 ## Data Format
 
 Data should be published as a byte-encoded struct or protobuf, using the `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d`, or `Rotation3d` types.
