@@ -100,9 +100,15 @@ export function findKey(log: Log, search: string[]): string | undefined {
     let unmerged = removeMergePrefix(fieldKeys[i]);
     let searchIndex: number;
     if ((searchIndex = search.indexOf(unmerged)) !== -1) {
-      if (searchIndex < bestKeySearchIndex) bestKey = fieldKeys[i];
+      if (searchIndex < bestKeySearchIndex) {
+        bestKey = fieldKeys[i];
+        bestKeySearchIndex = searchIndex;
+      }
     } else if (unmerged.startsWith("/") && (searchIndex = search.indexOf(unmerged.slice(1))) !== -1) {
-      if (searchIndex < bestKeySearchIndex) bestKey = fieldKeys[i];
+      if (searchIndex < bestKeySearchIndex) {
+        bestKey = fieldKeys[i];
+        bestKeySearchIndex = searchIndex;
+      }
     }
   }
   return bestKey;
