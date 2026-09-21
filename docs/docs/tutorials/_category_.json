@@ -1,0 +1,10 @@
+{
+  "label": "Tutorials",
+  "position": 3,
+  "collapsed": false,
+  "className": "sidebar-tutorials",
+  "link": {
+    "type": "generated-index",
+    "description": "TODO."
+  }
+}
