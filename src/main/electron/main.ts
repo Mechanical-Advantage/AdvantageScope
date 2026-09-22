@@ -32,7 +32,7 @@ import net from "net";
 import os from "os";
 import path from "path";
 import { Client, Stats } from "ssh2";
-import { Readable } from "stream";
+import { Readable, Writable } from "stream";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
@@ -319,6 +319,32 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           break;
         }
 
+        if (extension === "revlog") {
+          let chunks: Buffer[] = [];
+          let writable = new Writable({
+            write(chunk, encoding, callback) {
+              chunks.push(chunk);
+              callback();
+            }
+          });
+          parseREVLOG(Buffer.from(data), writable)
+            .then(() => {
+              sendMessage(window, "historical-data", {
+                files: [Buffer.concat(chunks)],
+                error: null,
+                uuid: uuid
+              });
+            })
+            .catch((err: any) => {
+              sendMessage(window, "historical-data", {
+                files: [null],
+                error: err.message,
+                uuid: uuid
+              });
+            });
+          break;
+        }
+
         let tempPath = path.join(app.getPath("temp"), "child_" + createUUID() + "." + extension);
         fs.writeFile(tempPath, data, (err) => {
           if (!err) {
@@ -504,14 +530,18 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           // REVLOG, convert to WPILOG
           targetCount += 1;
 
-          // Save WPILOG in temporary folder
-          let wpilogPath = path.join(app.getPath("temp"), "revlog_" + createUUID() + ".wpilog");
-          pathsToRemove.push(wpilogPath);
           try {
-            await parseREVLOG(logPath, wpilogPath);
-            openPath(wpilogPath, (buffer) => {
-              results[0] = buffer;
+            let chunks: Buffer[] = [];
+            let writable = new Writable({
+              write(chunk, encoding, callback) {
+                chunks.push(chunk);
+                callback();
+              }
             });
+            await parseREVLOG(logPath, writable);
+            results[0] = Buffer.concat(chunks);
+            completedCount++;
+            sendIfReady();
           } catch (err: any) {
             errorMessage = err.message;
             completedCount++;
