@@ -275,6 +275,7 @@ export default class Field3dController implements TabController {
       let components: AnnotatedPose3d[] = [];
       let mechanismsXZ: MechanismState[] = [];
       let mechanismsYZ: MechanismState[] = [];
+      let mechanismsXY: MechanismState[] = [];
       let visionTargets: AnnotatedPose3d[] = [];
       let swerveModuleVelocities: {
         values: ModuleVelocity[];
@@ -292,7 +293,12 @@ export default class Field3dController implements TabController {
             case "mechanism": {
               let state = getMechanismState(window.log, child.logKey, time!);
               if (state !== null) {
-                (child.options.plane === "yz" ? mechanismsYZ : mechanismsXZ).push(state);
+                (child.options.plane === "yz"
+                  ? mechanismsYZ
+                  : child.options.plane === "xy"
+                  ? mechanismsXY
+                  : mechanismsXZ
+                ).push(state);
               }
               break;
             }
@@ -365,6 +371,7 @@ export default class Field3dController implements TabController {
       }
       let mechanismXZ = mechanismsXZ.length === 0 ? null : mergeMechanismStates(mechanismsXZ);
       let mechanismYZ = mechanismsYZ.length === 0 ? null : mergeMechanismStates(mechanismsYZ);
+      let mechanismXY = mechanismsXY.length === 0 ? null : mergeMechanismStates(mechanismsXY);
       visionTargets.reverse();
       swerveModuleVelocities.reverse();
 
@@ -378,7 +385,8 @@ export default class Field3dController implements TabController {
             components: components,
             mechanisms: {
               xz: mechanismXZ,
-              yz: mechanismYZ
+              yz: mechanismYZ,
+              xy: mechanismXY
             },
             visionTargets: visionTargets,
             swerveModuleVelocities: swerveModuleVelocities
@@ -393,7 +401,8 @@ export default class Field3dController implements TabController {
             components: components,
             mechanisms: {
               xz: mechanismXZ,
-              yz: mechanismYZ
+              yz: mechanismYZ,
+              xy: mechanismXY
             },
             visionTargets: visionTargets,
             swerveModuleVelocities: swerveModuleVelocities
