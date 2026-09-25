@@ -524,9 +524,15 @@ export default class LineGraphController implements TabController {
                   startIndex = Math.max(0, i - 1);
                 }
 
-                // Trapezoidal integration
-                integral +=
-                  (data.timestamps[i] - data.timestamps[prevIndex]) * (data.values[i] + data.values[prevIndex]) * 0.5;
+                if (fieldItem.type === "stepped") {
+                  // Rectangle (left-Riemann): value is held constant between samples, so
+                  // dropped consecutive duplicates don't affect the area.
+                  integral += (data.timestamps[i] - data.timestamps[prevIndex]) * data.values[prevIndex];
+                } else {
+                  // Trapezoidal integration
+                  integral +=
+                    (data.timestamps[i] - data.timestamps[prevIndex]) * (data.values[i] + data.values[prevIndex]) * 0.5;
+                }
                 newValues.push(integral);
               }
               data.values = newValues.slice(startIndex);
