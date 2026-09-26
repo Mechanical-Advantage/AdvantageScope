@@ -31,7 +31,7 @@ import jsonfile from "jsonfile";
 import net from "net";
 import os from "os";
 import path from "path";
-import { Client, Stats } from "ssh2";
+import { Client, FileEntry, Stats } from "ssh2";
 import { Readable, Writable } from "stream";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import ButtonRect from "../../shared/ButtonRect";
@@ -1712,41 +1712,54 @@ function downloadStart() {
         } else {
           // Successful SFTP connection
           let readFiles = () => {
-            sftp.readdir(downloadPath, (error, list) => {
+            sftp.readdir(downloadPath, async (error, list) => {
               if (error) {
                 // Failed to read directory (not found?)
                 downloadError(error.message);
               } else {
-                // Return list of files
-                if (downloadWindow) {
-                  sendMessage(
-                    downloadWindow,
-                    "set-list",
-                    list
-                      .map((file) => {
-                        return { name: file.filename, size: file.attrs.size };
-                      })
-                      .filter(
-                        (file) =>
-                          !file.name.startsWith(".") &&
-                          (file.name.endsWith(".rlog") ||
-                            file.name.endsWith(".wpilog") ||
-                            file.name.endsWith(".wpilogxz") ||
-                            file.name.endsWith(".revlog") ||
-                            file.name.endsWith(".hoot"))
-                      )
-                      .map((file) => {
-                        return {
-                          name: file.name,
-                          size: file.size
-                        };
-                      })
-                  );
+                // Return list of files and folders
+                const filesAndFolders = list.filter(
+                  (file) =>
+                    !file.filename.startsWith(".") &&
+                    ((file.attrs as Stats).isDirectory() ||
+                      file.filename.endsWith(".rlog") ||
+                      file.filename.endsWith(".wpilog") ||
+                      file.filename.endsWith(".wpilogxz") ||
+                      file.filename.endsWith(".revlog") ||
+                      file.filename.endsWith(".hoot"))
+                );
+                const listData: { name: string; size: number; isFolder: boolean }[] = [];
+                for (const file of filesAndFolders) {
+                  if ((file.attrs as Stats).isDirectory()) {
+                    let totalSize = 0;
+                    try {
+                      const subFiles = await new Promise<FileEntry[] | undefined>((resolve) => {
+                        sftp.readdir(downloadPath + file.filename, (err, subList) => {
+                          if (err) resolve(undefined);
+                          else resolve(subList);
+                        });
+                      });
+                      if (subFiles) {
+                        subFiles.forEach((subFile) => {
+                          if (!(subFile.attrs as Stats).isDirectory() && !subFile.filename.startsWith(".")) {
+                            totalSize += subFile.attrs.size;
+                          }
+                        });
+                      }
+                    } catch (e) {}
+                    listData.push({ name: file.filename, size: totalSize, isFolder: true });
+                  } else {
+                    listData.push({ name: file.filename, size: file.attrs.size, isFolder: false });
+                  }
+                }
+
+                if (downloadWindow && !downloadWindow.isDestroyed()) {
+                  sendMessage(downloadWindow, "set-list", listData);
                 }
 
                 // Save cache of file sizes
-                list.forEach((file) => {
-                  downloadFileSizeCache[file.filename] = file.attrs.size;
+                listData.forEach((file) => {
+                  downloadFileSizeCache[file.name] = file.size;
                 });
               }
             });
@@ -1856,12 +1869,12 @@ function downloadSave(files: string[]) {
     }
     if (savePath !== "") {
       // Start saving
-      downloadClient?.sftp((error, sftp) => {
+      downloadClient?.sftp(async (error, sftp) => {
         if (error) {
           downloadError(error.message);
         } else {
           if (downloadWindow) sendMessage(downloadWindow, "set-progress", 0);
-          if (files.length === 1) {
+          if (files.length === 1 && firstExtension !== "") {
             // Single file
             sftp.fastGet(
               downloadPath + files[0],
@@ -1902,83 +1915,129 @@ function downloadSave(files: string[]) {
             );
           } else {
             // Multiple files
-            let completeCount = 0;
-            let skipCount = 0;
-            let allSizesTransferred: number[] = new Array(files.length).fill(0);
-            let allSizesTotal = 0;
-            files.forEach((file, index) => {
-              let fileSize = file in downloadFileSizeCache ? downloadFileSizeCache[file] : 0;
-              allSizesTotal += fileSize;
-              fs.stat(savePath + "/" + file, async (statErr, stats) => {
-                let remoteStats = await new Promise<Stats>((resolve) => {
-                  sftp.stat(downloadPath + file, (_, stats) => {
-                    resolve(stats);
+            let downloadTasks: { remote: string; local: string; size: number }[] = [];
+            for (const file of files) {
+              if (path.extname(file) === "") {
+                // Folder
+                try {
+                  const subFiles = await new Promise<FileEntry[] | undefined>((resolve) => {
+                    sftp.readdir(downloadPath + file, (err, subList) => {
+                      if (err) resolve(undefined);
+                      else resolve(subList);
+                    });
                   });
-                });
-                if (statErr === null && stats.size >= remoteStats.size) {
-                  // File already downloaded, skip
-                  completeCount++;
-                  skipCount++;
-                  allSizesTotal -= fileSize; // Remove from total size of files
-                  if (skipCount === files.length) {
-                    // All files skipped
-                    if (downloadWindow) sendMessage(downloadWindow, "show-alert", "No new logs found.");
-                  }
-                } else {
-                  // File not downloaded or out of date, download
-                  sftp.fastGet(
-                    downloadPath + file,
-                    savePath + "/" + file,
-                    {
-                      step: (sizeTransferred) => {
-                        allSizesTransferred[index] = sizeTransferred;
-                        if (!downloadWindow) return;
-                        let sumSizeTransferred = allSizesTransferred.reduce((a, b) => a + b, 0);
-                        sendMessage(downloadWindow, "set-progress", {
-                          current: sumSizeTransferred,
-                          total: allSizesTotal
+                  if (subFiles) {
+                    const localFolderPath = path.join(savePath, file);
+                    if (!fs.existsSync(localFolderPath)) {
+                      fs.mkdirSync(localFolderPath, { recursive: true });
+                    }
+                    for (const subFile of subFiles) {
+                      if (!(subFile.attrs as Stats).isDirectory() && !subFile.filename.startsWith(".")) {
+                        downloadTasks.push({
+                          remote: downloadPath + file + "/" + subFile.filename,
+                          local: path.join(localFolderPath, subFile.filename),
+                          size: subFile.attrs.size
                         });
                       }
-                    },
-                    (error) => {
-                      if (error) {
-                        downloadError(error.message);
-                      } else {
-                        completeCount++;
-
-                        if (completeCount >= files.length) {
-                          let message: string;
-                          if (skipCount > 0) {
-                            let newCount = completeCount - skipCount;
-                            message =
-                              "Saved " +
-                              newCount.toString() +
-                              " new log" +
-                              (newCount === 1 ? "" : "s") +
-                              " (" +
-                              skipCount.toString() +
-                              " skipped) to <u>" +
-                              savePath +
-                              "</u>";
-                          } else {
-                            message =
-                              "Saved " +
-                              completeCount.toString() +
-                              " log" +
-                              (completeCount === 1 ? "" : "s") +
-                              " to <u>" +
-                              savePath +
-                              "</u>";
-                          }
-                          if (!downloadWindow) return;
-                          sendMessage(downloadWindow, "set-progress", 1);
-                          sendMessage(downloadWindow, "show-alert", message);
-                        }
-                      }
                     }
-                  );
+                  }
+                } catch (e) {
+                  console.error(e);
                 }
-              });
+              } else {
+                // File
+                let remoteSize = file in downloadFileSizeCache ? downloadFileSizeCache[file] : 0;
+                downloadTasks.push({
+                  remote: downloadPath + file,
+                  local: path.join(savePath, file),
+                  size: remoteSize
+                });
+              }
+            }
+
+            let totalCount = downloadTasks.length;
+            let completeCount = 0;
+            let skipCount = 0;
+            let allSizesTransferred: number[] = new Array(downloadTasks.length).fill(0);
+            let allSizesTotal = 0;
+
+            let tasksToDownload: { task: { remote: string; local: string; size: number }; index: number }[] = [];
+            for (let i = 0; i < downloadTasks.length; i++) {
+              const task = downloadTasks[i];
+              let shouldSkip = false;
+              try {
+                if (fs.existsSync(task.local) && fs.statSync(task.local).size >= task.size) {
+                  shouldSkip = true;
+                }
+              } catch (e) {}
+
+              if (shouldSkip) {
+                completeCount++;
+                skipCount++;
+              } else {
+                allSizesTotal += task.size;
+                tasksToDownload.push({ task, index: i });
+              }
+            }
+
+            if (tasksToDownload.length === 0) {
+              // All files skipped
+              if (downloadWindow) sendMessage(downloadWindow, "show-alert", "No new logs found.");
+              return;
+            }
+
+            tasksToDownload.forEach(({ task, index }) => {
+              sftp.fastGet(
+                task.remote,
+                task.local,
+                {
+                  step: (sizeTransferred) => {
+                    allSizesTransferred[index] = sizeTransferred;
+                    if (!downloadWindow) return;
+                    let sumSizeTransferred = allSizesTransferred.reduce((a, b) => a + b, 0);
+                    sendMessage(downloadWindow, "set-progress", {
+                      current: sumSizeTransferred,
+                      total: allSizesTotal
+                    });
+                  }
+                },
+                (error) => {
+                  if (error) {
+                    downloadError(error.message);
+                  } else {
+                    completeCount++;
+
+                    if (completeCount >= totalCount) {
+                      let message: string;
+                      let newCount = completeCount - skipCount;
+                      if (skipCount > 0) {
+                        message =
+                          "Saved " +
+                          newCount.toString() +
+                          " new log" +
+                          (newCount === 1 ? "" : "s") +
+                          " (" +
+                          skipCount.toString() +
+                          " skipped) to <u>" +
+                          savePath +
+                          "</u>";
+                      } else {
+                        message =
+                          "Saved " +
+                          completeCount.toString() +
+                          " log" +
+                          (completeCount === 1 ? "" : "s") +
+                          " to <u>" +
+                          savePath +
+                          "</u>";
+                      }
+                      if (!downloadWindow) return;
+                      sendMessage(downloadWindow, "set-progress", 1);
+                      sendMessage(downloadWindow, "show-alert", message);
+                    }
+                  }
+                }
+              );
             });
           }
         }
