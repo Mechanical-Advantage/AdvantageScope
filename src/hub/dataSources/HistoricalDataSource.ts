@@ -404,11 +404,9 @@ export class HistoricalDataSource {
         }
 
         requestFields.forEach((field) => {
-          // Check if field is a merged log prefix (e.g. "/Log0", "/Log1") rather than just starting with "/Log" (like "/Logs/Hoot")
+          // Check if field is a merged log prefix
           let isMergePrefixLocal = this.keyPrefix.length === 0 && isMergePrefix(field);
-
           let matchesPrefix = this.keyPrefix.length === 0 ? true : field.startsWith(this.keyPrefix + "/");
-
           if (
             this.requestedFields.has(field) ||
             this.finishedFields.has(field) ||
