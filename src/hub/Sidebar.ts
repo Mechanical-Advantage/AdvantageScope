@@ -301,6 +301,8 @@ export default class Sidebar {
         if (field.startsWith("NT:/" + hiddenKey)) show = false;
         if (field.startsWith("NT:/AdvantageKit/" + hiddenKey)) show = false;
         if (field.startsWith("DS:/" + hiddenKey)) show = false;
+        if (field.includes("/" + hiddenKey + "/")) show = false;
+        if (field.endsWith("/" + hiddenKey)) show = false;
       });
       return show;
     });
@@ -1006,12 +1008,10 @@ export default class Sidebar {
         // Add children if first time
         if (firstExpand) {
           firstExpand = false;
-          let childKeys = Object.keys(field.children);
+          let childKeys = Object.keys(field.children).filter((key) => !this.HIDDEN_KEYS.includes(key));
           if (fullTitle === "/AdvantageKit" || fullTitle === "/NT" || fullTitle.startsWith("/" + this.MERGED_KEY)) {
-            // Apply hidden and known keys
-            childKeys = childKeys
-              .filter((key) => !this.HIDDEN_KEYS.includes(key))
-              .sort((a, b) => this.sortKeys(a, b, true));
+            // Apply known keys sorting
+            childKeys = childKeys.sort((a, b) => this.sortKeys(a, b, true));
           } else {
             childKeys = childKeys.sort((a, b) => this.sortKeys(a, b));
           }

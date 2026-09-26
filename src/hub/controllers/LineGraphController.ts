@@ -9,8 +9,9 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
-import { AKIT_TIMESTAMP_KEYS, getLogValueText, getRobotStateRanges } from "../../shared/log/LogUtil";
+import { getLogValueText } from "../../shared/log/LogUtil";
 import { LogValueSetNumber } from "../../shared/log/LogValueSets";
+import { AKIT_TIMESTAMP_KEYS, getRobotStateRanges } from "../../shared/log/RobotState";
 import {
   LineGraphRendererCommand,
   LineGraphRendererCommand_Alert,

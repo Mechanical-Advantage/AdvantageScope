@@ -10,8 +10,10 @@ import { IReadable } from "@mcap/core/dist/esm/src/types";
 import ExportOptions from "../shared/ExportOptions";
 import Log from "../shared/log/Log";
 import LogFieldTree from "../shared/log/LogFieldTree";
-import { AKIT_TIMESTAMP_KEYS, filterFieldByPrefixes, getLogValueText } from "../shared/log/LogUtil";
+import { filterFieldByPrefixes } from "../shared/log/LogKeyUtils";
+import { getLogValueText } from "../shared/log/LogUtil";
 import LoggableType from "../shared/log/LoggableType";
+import { AKIT_TIMESTAMP_KEYS } from "../shared/log/RobotState";
 import { cleanFloat } from "../shared/util";
 import { WPILOGEncoder, WPILOGEncoderRecord } from "./dataSources/wpilog/WPILOGEncoder";
 
