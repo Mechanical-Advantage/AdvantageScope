@@ -14,7 +14,13 @@ import {
   isSchema
 } from "../../../shared/log/LogKeyUtils";
 import LoggableType from "../../../shared/log/LoggableType";
-import { AUTONOMOUS_KEYS, ENABLED_KEYS, UTILITY_KEYS, getEnabledKey } from "../../../shared/log/RobotState";
+import {
+  AUTONOMOUS_KEYS,
+  ENABLED_KEYS,
+  UTILITY_KEYS,
+  getEnabledKey,
+  getProgramStartTimeKey
+} from "../../../shared/log/RobotState";
 import {
   HistoricalDataSource_WorkerFieldResponse,
   HistoricalDataSource_WorkerRequest,
@@ -31,6 +37,7 @@ const entryIds: { [id: number]: string } = {};
 const entryTypes: { [id: string]: string } = {};
 const entryStartTimes: { [id: number]: number } = {};
 const dataRecordPositions: { [id: string]: number[] } = {};
+let clearTime: number | null = null;
 
 function sendResponse(response: HistoricalDataSource_WorkerResponse) {
   self.postMessage(response);
@@ -50,6 +57,7 @@ self.onmessage = async (event) => {
 };
 
 async function start(data: Uint8Array) {
+  clearTime = null;
   let lastProgressValue = 0;
   let shortLivedFieldNames: Set<string> = new Set();
   decoder = new WPILOGDecoder(data);
@@ -179,6 +187,20 @@ async function start(data: Uint8Array) {
     parseField(enabledKey, true);
   }
 
+  // Find program start time to clear old data
+  let programStartTimeKey = getProgramStartTimeKey(log);
+  if (programStartTimeKey !== undefined) {
+    parseField(programStartTimeKey, true);
+    let field = log.getField(programStartTimeKey);
+    if (field !== null && field.getType() === LoggableType.Number) {
+      let values = field.toSerialized().values as number[];
+      if (values.length > 0) {
+        clearTime = values[values.length - 1] / 1e9;
+        log.clearBeforeTime(clearTime);
+      }
+    }
+  }
+
   // Send message
   log.getChangedFields(); // Reset changed fields
   sendResponse({
@@ -279,6 +301,10 @@ function parseField(key: string, skipMessage = false) {
       }
     });
     delete dataRecordPositions[key]; // Clear memory
+  }
+
+  if (clearTime !== null) {
+    log.clearBeforeTime(clearTime);
   }
 
   // Get set of changed fields

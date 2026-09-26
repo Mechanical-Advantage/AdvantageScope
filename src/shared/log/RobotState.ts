@@ -103,10 +103,16 @@ export const MATCH_NUMBER_KEYS = [
   "NT:/FMSInfo/MatchNumber", // NT, pre-2027
   "NT:/Netcomm/Control/MatchInfo/MatchNumber" // Systemcore
 ];
+export const PROGRAM_START_TIME_KEYS = ["NT:/Robot/ProgramStartTime", "/Robot/ProgramStartTime"];
 
 /** Finds the first matching key that indicates enabled state. */
 export function getEnabledKey(log: Log): string | undefined {
   return findKey(log, ENABLED_KEYS);
+}
+
+/** Finds the first matching key that indicates program start time. */
+export function getProgramStartTimeKey(log: Log): string | undefined {
+  return findKey(log, PROGRAM_START_TIME_KEYS);
 }
 
 /** Retrieves the boolean values representing the robot's enabled state over time. */
