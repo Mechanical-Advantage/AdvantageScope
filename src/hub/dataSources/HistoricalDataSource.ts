@@ -335,7 +335,7 @@ export class HistoricalDataSource {
     }
   }
 
-  updateFieldRequest(loadEverything = false, forwardedRequests: Set<string> | null = null) {
+  private updateFieldRequest(loadEverything = false, forwardedRequests: Set<string> | null = null) {
     if (
       (this.status === HistoricalDataSourceStatus.Idle || this.status === HistoricalDataSourceStatus.DecodingField) &&
       this.worker !== null &&
