@@ -11,7 +11,8 @@ import { Units } from "../units";
 import { arraysEqual, checkArrayType } from "../util";
 import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
-import { PHOTON_PREFIX, STRUCT_PREFIX, TYPE_KEY, applyKeyPrefix, getEnabledData, splitLogKey } from "./LogUtil";
+import { PHOTON_PREFIX, STRUCT_PREFIX, applyKeyPrefix, getSchemaType, splitLogKey } from "./LogKeyUtils";
+import { TYPE_KEY } from "./LogUtil";
 import {
   LogValueSetAny,
   LogValueSetBoolean,
@@ -25,6 +26,7 @@ import {
 import LoggableType from "./LoggableType";
 import PhotonStructDecoder from "./PhotonStructDecoder";
 import ProtoDecoder from "./ProtoDecoder";
+import { getEnabledData } from "./RobotState";
 import StructDecoder from "./StructDecoder";
 
 /** Represents a collection of log fields. */
@@ -457,7 +459,9 @@ export default class Log {
         }
         position = position.children[table];
       });
-      position.fullKey = key;
+      if (position.fullKey === null || !key.endsWith("/")) {
+        position.fullKey = key;
+      }
     });
     return root;
   }
@@ -567,14 +571,17 @@ export default class Log {
     }
 
     // Check for struct schema
-    if (key.includes("/.schema/" + STRUCT_PREFIX)) {
-      this.structDecoder.addSchema(key.split(STRUCT_PREFIX)[1], value);
-      this.photonDecoder.addSchema(key.split(STRUCT_PREFIX)[1], value);
-      this.attemptQueuedStructures();
-    }
-    if (key.includes("/.schema/" + PHOTON_PREFIX)) {
-      this.photonDecoder.addSchema(key.split(PHOTON_PREFIX)[1], value);
-      this.attemptQueuedStructures();
+    let schemaType = getSchemaType(key);
+    if (schemaType !== null) {
+      if (schemaType.startsWith(STRUCT_PREFIX)) {
+        this.structDecoder.addSchema(schemaType.slice(STRUCT_PREFIX.length), value);
+        this.photonDecoder.addSchema(schemaType.slice(STRUCT_PREFIX.length), value);
+        this.attemptQueuedStructures();
+      }
+      if (schemaType.startsWith(PHOTON_PREFIX)) {
+        this.photonDecoder.addSchema(schemaType.slice(PHOTON_PREFIX.length), value);
+        this.attemptQueuedStructures();
+      }
     }
   }
 
@@ -1001,7 +1008,9 @@ export default class Log {
 
     // Merge fields
     Object.entries(sourceSerialized.fields).forEach(([key, value]) => {
-      this.fields[applyKeyPrefix(prefix, key)] = LogField.fromSerialized(value);
+      let targetKey = applyKeyPrefix(prefix, key);
+      if (prefix.length > 0 && targetKey === prefix) return;
+      this.fields[targetKey] = LogField.fromSerialized(value);
     });
 
     // Merge generated parents
@@ -1040,6 +1049,9 @@ export default class Log {
       }
     });
     let protoDescriptors: any[] = [];
+    this.protoDecoder.toSerialized().forEach((descriptor: any) => {
+      protoDescriptors.push(descriptor);
+    });
     sourceSerialized.protoDecoder.forEach((descriptor: any) => {
       protoDescriptors.push(descriptor);
     });

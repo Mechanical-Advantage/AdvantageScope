@@ -22,7 +22,8 @@ import {
   rotation3dTo2d,
   rotation3dToRPY
 } from "../shared/geometry";
-import { getLogValueText, getMechanismState, getOrDefault } from "../shared/log/LogUtil";
+import { getMechanismState } from "../shared/log/LogMechanismState";
+import { getLogValueText, getOrDefault } from "../shared/log/LogUtil";
 import LoggableType from "../shared/log/LoggableType";
 import { Units } from "../shared/units";
 import { createUUID, jsonCopy } from "../shared/util";

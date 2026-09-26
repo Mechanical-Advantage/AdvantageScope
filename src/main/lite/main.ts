@@ -360,6 +360,16 @@ async function handleHubMessage(message: NamedMessage) {
         const uuid: string = message.data.uuid;
         const path: string = message.data.path;
 
+        let extension = path.split(".").pop();
+        if (extension === "hoot" || extension === "revlog" || extension === "wpilogxz") {
+          sendMessage(hubPort, "historical-data", {
+            files: [null],
+            error: "Unsupported file format in AdvantageScope Lite.",
+            uuid: uuid
+          });
+          break;
+        }
+
         let prefs = DEFAULT_PREFS;
         let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
         if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
@@ -373,6 +383,27 @@ async function handleHubMessage(message: NamedMessage) {
           error: null,
           uuid: uuid
         });
+      }
+      break;
+
+    case "historical-start-raw":
+      {
+        const uuid: string = message.data.uuid;
+        const extension: string = message.data.extension;
+
+        if (extension === "hoot" || extension === "revlog" || extension === "wpilogxz") {
+          sendMessage(hubPort, "historical-data", {
+            files: [null],
+            error: "Unsupported file format in AdvantageScope Lite.",
+            uuid: uuid
+          });
+        } else {
+          sendMessage(hubPort, "historical-data", {
+            files: [message.data.data],
+            error: null,
+            uuid: uuid
+          });
+        }
       }
       break;
 

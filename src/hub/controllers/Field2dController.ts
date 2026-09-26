@@ -18,7 +18,7 @@ import {
   grabPosesAuto,
   rotation3dTo2d
 } from "../../shared/geometry";
-import { ALLIANCE_KEYS, getIsRedAlliance } from "../../shared/log/LogUtil";
+import { ALLIANCE_KEYS, getIsRedAlliance } from "../../shared/log/RobotState";
 import {
   Field2dRendererCommand,
   Field2dRendererCommand_AnyObj,

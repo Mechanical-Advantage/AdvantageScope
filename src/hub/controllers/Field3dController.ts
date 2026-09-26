@@ -18,17 +18,10 @@ import {
   grabPosesAuto,
   rotationSequenceToQuaternion
 } from "../../shared/geometry";
-import {
-  ALLIANCE_KEYS,
-  DRIVER_STATION_KEYS,
-  MechanismState,
-  getDriverStation,
-  getIsRedAlliance,
-  getMechanismState,
-  getOrDefault,
-  mergeMechanismStates
-} from "../../shared/log/LogUtil";
+import { MechanismState, getMechanismState, mergeMechanismStates } from "../../shared/log/LogMechanismState";
+import { getOrDefault } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
+import { ALLIANCE_KEYS, DRIVER_STATION_KEYS, getDriverStation, getIsRedAlliance } from "../../shared/log/RobotState";
 import { Field3dRendererCommand, Field3dRendererCommand_AnyObj } from "../../shared/renderers/Field3dRenderer";
 import { clampValue, createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
