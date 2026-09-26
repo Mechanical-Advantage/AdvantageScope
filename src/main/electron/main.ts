@@ -1685,20 +1685,14 @@ function downloadStart() {
     })
     .on("error", (error) => {
       // Failed SSH connection
-      if (error.message === "All configured authentication methods failed") {
-        downloadDevice = downloadDevice === "systemcore" ? "roborio" : "systemcore";
-        if (downloadAuthFailedOnce) {
-          downloadAuthFailedOnce = false;
-          downloadError(error.message);
-        } else {
-          downloadAuthFailedOnce = true;
-          if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
-          downloadStart();
-        }
-      } else {
-        downloadDevice = "systemcore";
+      downloadDevice = downloadDevice === "systemcore" ? "roborio" : "systemcore";
+      if (downloadAuthFailedOnce) {
         downloadAuthFailedOnce = false;
         downloadError(error.message);
+      } else {
+        downloadAuthFailedOnce = true;
+        if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
+        downloadStart();
       }
     })
     .connect({
