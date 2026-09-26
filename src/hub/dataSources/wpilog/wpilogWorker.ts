@@ -14,7 +14,7 @@ import {
   isSchema
 } from "../../../shared/log/LogKeyUtils";
 import LoggableType from "../../../shared/log/LoggableType";
-import { ENABLED_KEYS, getEnabledKey } from "../../../shared/log/RobotState";
+import { AUTONOMOUS_KEYS, ENABLED_KEYS, UTILITY_KEYS, getEnabledKey } from "../../../shared/log/RobotState";
 import {
   HistoricalDataSource_WorkerFieldResponse,
   HistoricalDataSource_WorkerRequest,
@@ -165,8 +165,9 @@ async function start(data: Uint8Array) {
       parseField(key, true);
     }
   });
+  const ALL_EAGER_KEYS = [...ENABLED_KEYS, ...AUTONOMOUS_KEYS, ...UTILITY_KEYS];
   log.getFieldKeys().forEach((key) => {
-    const isEager = ENABLED_KEYS.some((enabledKey) => enabledKey.startsWith(key + "/") || enabledKey === key);
+    const isEager = ALL_EAGER_KEYS.some((eagerKey) => eagerKey.startsWith(key + "/") || eagerKey === key);
     if (isEager) {
       parseField(key, true);
     }
