@@ -15,7 +15,7 @@ import LoggableType from "./LoggableType";
 export const ENABLED_KEYS = [
   "/DriverStation/Enabled", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/Enabled", // AdvantageKit
-  "DS:controlWord/enabled", // DataLog, post-2027
+  "DS:controlWord/enabled", // DataLog/Phoenix, post-2027
   "DS:enabled", // DataLog, pre-2027
   "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
   "/DSLog/Status/DSDisabled", // NI DS
@@ -29,7 +29,7 @@ export const AUTONOMOUS_KEYS = [
   "NT:/AdvantageKit/DriverStation/RobotMode", // AdvantageKit, post-2027
   "/DriverStation/Autonomous", // AdvantageKit, pre-2027
   "NT:/AdvantageKit/DriverStation/Autonomous", // AdvantageKit, pre-2027
-  "DS:controlWord/robotMode", // DataLog, post-2027
+  "DS:controlWord/robotMode", // DataLog/Phoenix, post-2027
   "DS:autonomous", // DataLog, pre-2027
   "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
   "/DSLog/Status/DSTeleop", // NI DS
@@ -42,7 +42,7 @@ export const UTILITY_KEYS = [
   "NT:/AdvantageKit/DriverStation/RobotMode", // AdvantageKit, post-2027
   "/DriverStation/Test", // AdvantageKit, pre-2027
   "NT:/AdvantageKit/DriverStation/Test", // AdvantageKit, pre-2027
-  "DS:controlWord/robotMode", // DataLog, post-2027
+  "DS:controlWord/robotMode", // DataLog/Phoenix, post-2027
   "DS:test", // DataLog, pre-2027
   "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
   "RobotMode", // Phoenix
@@ -55,6 +55,7 @@ export const ALLIANCE_KEYS = [
   "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
   "NT:/DriverStation/IsRedAlliance", // NT, post-2027
   "NT:/FMSInfo/IsRedAlliance", // NT, pre-2027
+  "DS:allianceStation", // Phoenix
   "AllianceStation" // Phoenix
 ];
 export const DRIVER_STATION_KEYS = [
@@ -63,6 +64,7 @@ export const DRIVER_STATION_KEYS = [
   "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
   "NT:/DriverStation/StationNumber", // NT, post-2027
   "NT:/FMSInfo/StationNumber", // NT, pre-2027
+  "DS:allianceStation", // Phoenix
   "AllianceStation" // Phoenix
 ];
 export const SYSTEM_TIME_KEYS = [
@@ -85,7 +87,8 @@ export const EVENT_KEYS = [
   "DS:/Dscomm/Control/Robot/MatchInfo/EventName", // FIRST DS
   "NT:/DriverStation/EventName", // NT, post-2027
   "NT:/FMSInfo/EventName", // NT, pre-2027
-  "NT:/Netcomm/Control/MatchInfo/EventName" // Systemcore
+  "NT:/Netcomm/Control/MatchInfo/EventName", // Systemcore
+  "DS:matchInfo/eventName" // Phoenix
 ];
 export const MATCH_TYPE_KEYS = [
   "/DriverStation/MatchType", // AdvantageKit
@@ -93,7 +96,8 @@ export const MATCH_TYPE_KEYS = [
   "DS:/Dscomm/Control/Robot/MatchInfo/MatchType", // FIRST DS
   "NT:/DriverStation/MatchType", // NT, post-2027
   "NT:/FMSInfo/MatchType", // NT, pre-2027
-  "NT:/Netcomm/Control/MatchInfo/MatchType" // Systemcore
+  "NT:/Netcomm/Control/MatchInfo/MatchType", // Systemcore
+  "DS:matchInfo/matchType" // Phoenix
 ];
 export const MATCH_NUMBER_KEYS = [
   "/DriverStation/MatchNumber", // AdvantageKit
@@ -101,7 +105,8 @@ export const MATCH_NUMBER_KEYS = [
   "DS:/Dscomm/Control/Robot/MatchInfo/MatchNumber", // FIRST DS
   "NT:/DriverStation/MatchNumber", // NT, post-2027
   "NT:/FMSInfo/MatchNumber", // NT, pre-2027
-  "NT:/Netcomm/Control/MatchInfo/MatchNumber" // Systemcore
+  "NT:/Netcomm/Control/MatchInfo/MatchNumber", // Systemcore
+  "DS:matchInfo/matchNumber" // Phoenix
 ];
 export const PROGRAM_START_TIME_KEYS = ["NT:/Robot/ProgramStartTime", "/Robot/ProgramStartTime"];
 
@@ -328,7 +333,7 @@ export function getIsRedAlliance(log: Log, time: number): boolean {
         tempAllianceData.values[tempAllianceData.values.length - 1] > 0
       );
     }
-  } else if (allianceKey.endsWith("AllianceStation")) {
+  } else if (allianceKey.endsWith("AllianceStation") || allianceKey.endsWith("allianceStation")) {
     // String value (station) from Phoenix
     let tempAllianceData = log.getString(allianceKey, time, time);
     if (tempAllianceData && tempAllianceData.values.length > 0) {
@@ -415,7 +420,7 @@ export function getDriverStation(log: Log, time: number): number {
         }
       }
     }
-  } else if (dsKey.endsWith("AllianceStation")) {
+  } else if (dsKey.endsWith("AllianceStation") || dsKey.endsWith("allianceStation")) {
     // Phoenix, string value
     let tempDSData = log.getString(dsKey, time, time);
     if (tempDSData && tempDSData.values.length > 0) {
