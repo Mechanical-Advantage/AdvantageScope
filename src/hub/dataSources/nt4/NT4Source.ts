@@ -10,7 +10,7 @@ import Log from "../../../shared/log/Log";
 import { PHOTON_PREFIX, PROTO_PREFIX, STRUCT_PREFIX, getStructuredTypeFromRaw } from "../../../shared/log/LogKeyUtils";
 import { getURCLKeys } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
-import { getEnabledKey } from "../../../shared/log/RobotState";
+import { AUTONOMOUS_KEYS, ENABLED_KEYS, UTILITY_KEYS } from "../../../shared/log/RobotState";
 import { checkArrayType } from "../../../shared/util";
 import { LiveDataSource, LiveDataSourceStatus } from "../LiveDataSource";
 import CustomSchemas from "../schema/CustomSchemas";
@@ -104,7 +104,6 @@ export default class NT4Source extends LiveDataSource {
         let activeFields: Set<string> = new Set();
         if (window.log === this.log) {
           let announcedKeys = this.log.getFieldKeys().filter((key) => this.log?.getType(key) !== LoggableType.Empty);
-          let enabledKey = getEnabledKey(this.log);
           let initialKeys: string[];
           switch (this.mode) {
             case NT4Mode.AdvantageKit:
@@ -123,7 +122,9 @@ export default class NT4Source extends LiveDataSource {
           }
           [
             ...initialKeys,
-            ...(enabledKey === undefined ? [] : [enabledKey]),
+            ...ENABLED_KEYS,
+            ...AUTONOMOUS_KEYS,
+            ...UTILITY_KEYS,
             ...window.tabs.getActiveFields(),
             ...window.sidebar.getActiveFields(),
             ...getURCLKeys(window.log)
