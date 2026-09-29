@@ -384,12 +384,14 @@ export default class LineGraphController implements TabController {
     }
 
     // Use specified value if valid
-    if (options.autoTarget !== null) {
+    if (options.autoTarget !== null && options.autoTarget in Units.GROUP_BY_UNIT) {
       let autoTargetGroup = Units.GROUP_BY_UNIT[options.autoTarget];
       if (
         sourceVisible.every((item) => {
           let itemUnit = window.log.getUnit(item.logKey);
-          return itemUnit !== null && Units.GROUP_BY_UNIT[itemUnit] === autoTargetGroup;
+          return (
+            itemUnit !== null && itemUnit in Units.GROUP_BY_UNIT && Units.GROUP_BY_UNIT[itemUnit] === autoTargetGroup
+          );
         })
       ) {
         return { status: "success", unit: options.autoTarget };
@@ -402,7 +404,7 @@ export default class LineGraphController implements TabController {
     let unitsConsistent = true;
     for (let i = 0; i < sourceVisible.length; i++) {
       let unit = window.log.getUnit(sourceVisible[i].logKey);
-      if (unit !== null) {
+      if (unit !== null && unit in Units.GROUP_BY_UNIT) {
         if (firstUnit === null) {
           firstUnit = unit;
           firstUnitGroup = Units.GROUP_BY_UNIT[unit];
@@ -540,7 +542,12 @@ export default class LineGraphController implements TabController {
         let hasUnit = false;
         if (autoTargetResult.status === "success") {
           let sourceUnit = window.log.getUnit(fieldItem.logKey);
-          if (sourceUnit !== null && Units.GROUP_BY_UNIT[sourceUnit] === Units.GROUP_BY_UNIT[autoTargetResult.unit]) {
+          if (
+            sourceUnit !== null &&
+            sourceUnit in Units.GROUP_BY_UNIT &&
+            autoTargetResult.unit in Units.GROUP_BY_UNIT &&
+            Units.GROUP_BY_UNIT[sourceUnit] === Units.GROUP_BY_UNIT[autoTargetResult.unit]
+          ) {
             data.values = data.values.map((value) => Units.convert(value, sourceUnit, autoTargetResult.unit));
             hasUnit = true;
           }

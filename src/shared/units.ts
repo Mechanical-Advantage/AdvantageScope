@@ -840,12 +840,14 @@ export namespace Units {
       distance: "meters"
     },
     SwerveModuleVelocity: {
+      velocity: "meters/second",
       speed: "meters/second"
     },
     SwerveModuleState: {
       speed: "meters/second"
     },
     SwerveModuleAcceleration: {
+      acceleration: "meters/second²",
       speed: "meters/second²"
     },
     ArmFeedforward: {

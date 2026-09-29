@@ -293,7 +293,7 @@ export default class Log {
       });
       if (structType !== null) {
         let structUnitInfo = Units.STRUCT_UNITS[structType];
-        if (structUnitInfo !== undefined) {
+        if (structUnitInfo !== undefined && structChildKey in structUnitInfo) {
           return structUnitInfo[structChildKey];
         }
       }
@@ -335,7 +335,7 @@ export default class Log {
     // Apply cache
     if (!(key in this.fields)) return null;
     if (this.fields[key].getType() !== LoggableType.Number) return null;
-    if (!(key in this.fieldUnitCache)) this.fieldUnitCache[key] = getUnitImpl();
+    if (!(key in this.fieldUnitCache)) this.fieldUnitCache[key] = getUnitImpl() ?? null;
     return this.fieldUnitCache[key];
   }
 
