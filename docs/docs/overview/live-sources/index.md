@@ -10,6 +10,7 @@ All visualizations in AdvantageScope are designed to receive live data from a ro
 - **Phoenix Diagnostics:** This mode uses HTTP to connect to a Phoenix [diagnostic server](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html), which allows for data streaming from CTRE CAN devices with [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/). This is similar to the [plotting feature](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) in Phoenix Tuner. See [this page](/overview/live-sources/phoenix-diagnostics) for more information.
 - **RLOG Server:** This protocol is supported by AdvantageKit as an alternative to NetworkTables. The connection is initiated on port 5800 by default.
 - **FTC Dashboard:** This mode integrates with FTC robots publishing data to [FTC Dashboard](https://acmerobotics.github.io/ftc-dashboard).
+- **FateWeaver:** This mode streams live data from FTC robots running [FateWeaver](https://github.com/HermesFTC/FateWeaver), which broadcasts its log format over a WebSocket on port 8110. The same channels appear as when opening a `.fate` file. Note that FTC rules prohibit live streaming from third-party libraries during competition, so FateWeaver's live streaming must be switched off before matches.
 
 :::info
 AdvantageScope can connect to the FIRST Driver Station to view diagnostic data when running on the same device as the DS application. No configuration is required (see the instructions below).
