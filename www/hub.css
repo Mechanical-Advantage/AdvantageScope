@@ -1091,6 +1091,10 @@ div.source-list button.help {
   height: 25px;
 }
 
+div.source-list button.clear img {
+  transform: translate(-50%, -50%) scale(85%);
+}
+
 div.source-list button.help {
   right: 40px;
 }
