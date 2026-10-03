@@ -84,6 +84,8 @@ The following tasks are defined in `package.json` to assist with development:
 - `npm run wasm:compile`: Compiles the C++ logic to WebAssembly (requires Emscripten).
 - `npm run watch`: Automatically recompiles bundles when files change.
 
+Sourcemaps make debugging much easier. To enable them, put `ENABLE_SOURCEMAP=true` before a command, such as `ENABLE_SOURCEMAP=true npm run watch`.
+
 ### Documentation
 
 - `npm run docs:start`: Starts the documentation development server (Docusaurus).
@@ -93,6 +95,8 @@ The following tasks are defined in `package.json` to assist with development:
 
 - `npm run format`: Automatically fixes formatting issues using Prettier and adds license headers.
 - `npm run check-format`: Checks code for formatting errors without modifying files.
+
+Consider enabling your IDE's Prettier integration and setting it to format on save to ensure your commits are always formatted properly.
 
 ## Building for Multiple Platforms
 
