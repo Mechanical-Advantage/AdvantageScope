@@ -1437,8 +1437,9 @@ div.setting-blocks div.split div span {
   font-size: 11px;
   font-weight: bold;
   line-height: 1;
-  background-color: #222;
+  background-color: #000;
   color: #eee;
+  opacity: 0.85;
   transform: translateY(-50%);
 
   transition:
@@ -1493,7 +1494,7 @@ div.setting-blocks div.split div.selected span {
   }
 
   div.setting-blocks div.split div span {
-    background-color: #eee;
+    background-color: #fff;
     color: #444;
   }
 
