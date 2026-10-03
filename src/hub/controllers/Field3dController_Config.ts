@@ -18,7 +18,7 @@ const Field3dController_Config: SourceListConfig = {
     {
       key: "robot",
       display: "Robot",
-      symbol: "location.fill",
+      symbol: "nearme",
       showInTypeName: false,
       color: "#000000",
       darkColor: "#ffffff",
@@ -48,7 +48,7 @@ const Field3dController_Config: SourceListConfig = {
     {
       key: "ghost",
       display: "Ghost",
-      symbol: "location.fill.viewfinder",
+      symbol: "nearmeoutline",
       showInTypeName: true,
       color: "color",
       sourceTypes: [
@@ -83,7 +83,7 @@ const Field3dController_Config: SourceListConfig = {
     {
       key: "component",
       display: "Component",
-      symbol: "puzzlepiece.extension.fill",
+      symbol: "extension",
       showInTypeName: true,
       color: "#9370db",
       sourceTypes: ["Pose3d", "Pose3d[]", "Transform3d", "Transform3d[]"],
@@ -95,7 +95,7 @@ const Field3dController_Config: SourceListConfig = {
     {
       key: "mechanism",
       display: "Mechanism",
-      symbol: "gearshape.fill",
+      symbol: "settings",
       showInTypeName: true,
       color: "#888888",
       sourceTypes: ["Mechanism2d"],
@@ -116,7 +116,7 @@ const Field3dController_Config: SourceListConfig = {
     {
       key: "vision",
       display: "Vision Target",
-      symbol: "scope",
+      symbol: "target",
       showInTypeName: true,
       color: "color",
       sourceTypes: [
@@ -157,7 +157,7 @@ const Field3dController_Config: SourceListConfig = {
     {
       key: "swerveModuleVelocities",
       display: "Swerve Module Velocities",
-      symbol: "arrow.up.left.and.down.right.and.arrow.up.right.and.down.left",
+      symbol: "zoomoutmap",
       showInTypeName: true,
       color: "color",
       sourceTypes: ["SwerveModuleVelocity[]", "SwerveModuleState[]"],
@@ -183,7 +183,7 @@ const Field3dController_Config: SourceListConfig = {
     {
       key: "rotationOverride",
       display: "Rotation Override",
-      symbol: "angle",
+      symbol: "360",
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",
@@ -196,7 +196,7 @@ const Field3dController_Config: SourceListConfig = {
     {
       key: "rotationOverrideLegacy",
       display: "Rotation Override",
-      symbol: "angle",
+      symbol: "360",
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",
@@ -219,7 +219,7 @@ const Field3dController_Config: SourceListConfig = {
     {
       key: "gamePiece",
       display: "Game Piece",
-      symbol: "star.fill",
+      symbol: "chesspawn",
       showInTypeName: false,
       color: "#ffd700",
       sourceTypes: ["Pose3d", "Pose3d[]", "Transform3d", "Transform3d[]", "Translation3d", "Translation3d[]"],
@@ -238,7 +238,7 @@ const Field3dController_Config: SourceListConfig = {
     {
       key: "trajectory",
       display: "Trajectory",
-      symbol: "point.bottomleft.forward.to.point.topright.scurvepath.fill",
+      symbol: "conversionpath",
       showInTypeName: true,
       color: "color",
       sourceTypes: [
@@ -275,7 +275,7 @@ const Field3dController_Config: SourceListConfig = {
     {
       key: "heatmap",
       display: "Heatmap",
-      symbol: "map.fill",
+      symbol: "map",
       showInTypeName: true,
       color: "#ff0000",
       sourceTypes: [
@@ -335,7 +335,7 @@ const Field3dController_Config: SourceListConfig = {
     {
       key: "aprilTagIDs",
       display: "AprilTag IDs",
-      symbol: "number",
+      symbol: "numbers",
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",
@@ -348,7 +348,7 @@ const Field3dController_Config: SourceListConfig = {
     {
       key: "axes",
       display: "Axes",
-      symbol: "move.3d",
+      symbol: "explore",
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",
@@ -360,7 +360,7 @@ const Field3dController_Config: SourceListConfig = {
     {
       key: "cone",
       display: "Cone",
-      symbol: "cone.fill",
+      symbol: "navigation",
       showInTypeName: true,
       color: "color",
       sourceTypes: [
@@ -399,7 +399,7 @@ const Field3dController_Config: SourceListConfig = {
     {
       key: "cameraOverride",
       display: "Camera Override",
-      symbol: "camera.fill",
+      symbol: "photocamera",
       showInTypeName: true,
       color: "#888888",
       sourceTypes: ["Pose3d", "Transform3d"],
