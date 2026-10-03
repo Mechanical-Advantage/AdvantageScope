@@ -21,7 +21,11 @@ To zoom, place the cursor over the timeline and scroll up or down. A range can a
 
 </details>
 
-:::warning
+:::warning FTC 2026-2027 Field
+The 2026-2027 FTC field model does not include built-in AprilTags, as the locations of tags on the hive are expected to change during the match. Teams can publish a `Pose3d[]` and `number[]` to add dynamic AprilTag objects to the field. The correct AprilTag size for this field is **3.25 in**.
+:::
+
+:::warning FRC 2026 Field
 The 2026 FRC field model is consistent with the AprilTag layout for the **welded** field. The differences between the welded and AndyMark fields are very minor, but there may be small (~0.5 inch) misalignments when visualizing AprilTag poses based on the AndyMark field layout.
 :::
 
@@ -52,20 +56,9 @@ Many libraries support the struct format, including WPILib and AdvantageKit. The
 Pose3d poseA = new Pose3d();
 Pose3d poseB = new Pose3d();
 
-StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
-  .getStructTopic("MyPose", Pose3d.struct).publish();
-StructArrayPublisher<Pose3d> arrayPublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyPoseArray", Pose3d.struct).publish();
-
-periodic() {
-  publisher.set(poseA);
-  arrayPublisher.set(new Pose3d[] {poseA, poseB});
-}
+Telemetry.log("MyPose", poseA);
+Telemetry.log("MyPoseArray", new Pose3d[] {poseA, poseB});
 ```
-
-:::tip
-WPILib's [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) class can also be used to log several sets of 2D pose data together.
-:::
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">

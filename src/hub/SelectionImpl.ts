@@ -7,7 +7,7 @@
 
 import Selection, { SelectionMode } from "../shared/Selection";
 import TabType from "../shared/TabType";
-import { AKIT_TIMESTAMP_KEYS } from "../shared/log/LogUtil";
+import { AKIT_TIMESTAMP_KEYS } from "../shared/log/RobotState";
 
 export default class SelectionImpl implements Selection {
   private STEP_SIZE = 0.02; // When using left-right arrows keys on non-AdvantageKit logs
@@ -58,7 +58,13 @@ export default class SelectionImpl implements Selection {
     });
 
     window.addEventListener("keydown", (event) => {
-      if (event.target !== document.body && event.target !== window) return;
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement ||
+        (event.target instanceof HTMLElement && event.target.isContentEditable)
+      ) {
+        return;
+      }
       switch (event.code) {
         case "Space":
           event.preventDefault();

@@ -6,8 +6,8 @@
 // at the root directory of this project.
 
 import Log from "../../../shared/log/Log";
-import { PHOTON_PREFIX, PROTO_PREFIX, STRUCT_PREFIX } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
+import { PHOTON_PREFIX, PROTO_PREFIX, STRUCT_PREFIX } from "../../../shared/log/LogKeyUtils";
 import CustomSchemas from "../schema/CustomSchemas";
 import { TEXT_DECODER } from "../wpilog/WPILOGShared";
 

@@ -18,17 +18,10 @@ import {
   grabPosesAuto,
   rotationSequenceToQuaternion
 } from "../../shared/geometry";
-import {
-  ALLIANCE_KEYS,
-  DRIVER_STATION_KEYS,
-  MechanismState,
-  getDriverStation,
-  getIsRedAlliance,
-  getMechanismState,
-  getOrDefault,
-  mergeMechanismStates
-} from "../../shared/log/LogUtil";
+import { MechanismState, getMechanismState, mergeMechanismStates } from "../../shared/log/LogMechanismState";
+import { getOrDefault } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
+import { ALLIANCE_KEYS, DRIVER_STATION_KEYS, getDriverStation, getIsRedAlliance } from "../../shared/log/RobotState";
 import { Field3dRendererCommand, Field3dRendererCommand_AnyObj } from "../../shared/renderers/Field3dRenderer";
 import { clampValue, createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
@@ -67,6 +60,13 @@ export default class Field3dController implements TabController {
 
     // Set up game select
     this.FIELD_SELECT.addEventListener("change", () => {
+      let isFTC = [...(window.assets === null ? [] : window.assets.field3ds), ...BuiltIn3dFields].find(
+        (game) => game.id === this.FIELD_SELECT.value
+      )?.isFTC;
+      if (isFTC !== undefined) {
+        if (window.preferences) window.preferences.prefersFTC = isFTC;
+        window.sendMainMessage("update-preferences", { prefersFTC: isFTC });
+      }
       this.updateFieldDependentControls();
     });
     this.updateFieldOptions();
@@ -106,9 +106,28 @@ export default class Field3dController implements TabController {
     if (options.includes(value)) {
       this.FIELD_SELECT.value = value;
     } else {
-      this.FIELD_SELECT.selectedIndex = 0;
+      this.selectDefaultField();
     }
     this.updateFieldDependentControls();
+  }
+
+  /** Selects the default field based on whether the user prefers FTC. */
+  private selectDefaultField() {
+    let prefersFTC = window.preferences?.prefersFTC ?? false;
+    let primaryGroup = prefersFTC
+      ? (this.FIELD_SELECT.lastElementChild as HTMLElement)
+      : (this.FIELD_SELECT.firstElementChild as HTMLElement);
+    let secondaryGroup = prefersFTC
+      ? (this.FIELD_SELECT.firstElementChild as HTMLElement)
+      : (this.FIELD_SELECT.lastElementChild as HTMLElement);
+
+    if (primaryGroup.children.length > 0) {
+      this.FIELD_SELECT.value = (primaryGroup.children[0] as HTMLOptionElement).value;
+    } else if (secondaryGroup.children.length > 0) {
+      this.FIELD_SELECT.value = (secondaryGroup.children[0] as HTMLOptionElement).value;
+    } else {
+      this.FIELD_SELECT.selectedIndex = 0;
+    }
   }
 
   /** Updates source list with the latest robot models. */
@@ -157,6 +176,7 @@ export default class Field3dController implements TabController {
       ? [
           { key: "36h11-2in", display: "2 in" },
           { key: "36h11-3in", display: "3 in" },
+          { key: "36h11-3.25in", display: "3.25 in" },
           { key: "36h11-4in", display: "4 in" },
           { key: "36h11-5in", display: "5 in" },
           { key: "36h11-6.5in", display: "6.5 in" }
@@ -166,7 +186,6 @@ export default class Field3dController implements TabController {
           { key: "16h5-6in", display: "16h5" }
         ];
     this.sourceList.setOptionValues("aprilTag", "variant", aprilTagVariants);
-    this.sourceList.setOptionValues("aprilTagLegacy", "variant", aprilTagVariants);
 
     this.updateRobotOptions();
   }
@@ -188,7 +207,7 @@ export default class Field3dController implements TabController {
     if ("game" in state && typeof state.game === "string") {
       this.FIELD_SELECT.value = state.game;
       if (this.FIELD_SELECT.value === "") {
-        this.FIELD_SELECT.selectedIndex = 0;
+        this.selectDefaultField();
       }
     }
     this.updateFieldDependentControls();
@@ -347,7 +366,10 @@ export default class Field3dController implements TabController {
                 [],
                 this.UUID
               );
-              let tagCount = source.options.variant === "16h5" ? APRIL_TAG_16H5_COUNT : APRIL_TAG_36H11_COUNT;
+              let tagCount =
+                typeof source.options.variant === "string" && source.options.variant.startsWith("16h5")
+                  ? APRIL_TAG_16H5_COUNT
+                  : APRIL_TAG_36H11_COUNT;
               values.forEach((id) => {
                 id = clampValue(Math.floor(id), 0, tagCount - 1);
                 let index = poses.findIndex((value) => value.annotation.aprilTagId === undefined);

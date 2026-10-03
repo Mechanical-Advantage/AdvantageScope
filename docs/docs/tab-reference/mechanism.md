@@ -33,22 +33,32 @@ To get started, drag a `Mechanism2d` to the control pane. Delete a mechanism usi
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-To publish mechanism data using WPILib, send a `Mechanism2d` object to NetworkTables (shown below). If data logging is enabled, the mechanisms can also be viewed based the generated WPILOG file.
+To publish mechanism data using WPILib, log a `Mechanism2d` object periodically using `Telemetry` (shown below). Note that this call only records the current state of the `Mechanism2d`, so it must be called every loop cycle after the object is updated.
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
-SmartDashboard.putData("MyMechanism", mechanism);
+
+periodic() {
+  Telemetry.log("MyMechanism", mechanism);
+}
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-To publish mechanism data using AdvantageKit, record a `Mechanism2d` as an output field (shown below). Note that this call only records the current state of the `Mechanism2d`, so it must be called every loop cycle after the object is updated.
+To publish mechanism data using AdvantageKit, record a `Mechanism2d` periodically as an output field (shown below). Note that this call only records the current state of the `Mechanism2d`, so it must be called every loop cycle after the object is updated.
 
 ```java
 LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);
-Logger.recordOutput("MyMechanism", mechanism);
+
+periodic() {
+  Logger.recordOutput("MyMechanism", mechanism);
+}
 ```
+
+:::tip
+AdvantageKit's [@AutoLogOutput](https://docs.advantagekit.org/data-flow/recording-outputs/annotation-logging) annotation can be used to automatically log the state of the mechanism every loop cycle without calling `Logger.recordOutput`.
+:::
 
 </TabItem>
 </Tabs>

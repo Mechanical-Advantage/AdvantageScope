@@ -4,8 +4,7 @@
 // Use of this source code is governed by a BSD
 // license that can be found in the LICENSE file
 // at the root directory of this project.
-
-import { getRobotStateRanges } from "../shared/log/LogUtil";
+import { getRobotStateRanges } from "../shared/log/RobotState";
 import { calcAxisStepSize, clampValue, cleanFloat, scaleValue } from "../shared/util";
 import ScrollSensor from "./ScrollSensor";
 

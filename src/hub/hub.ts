@@ -13,7 +13,8 @@ import Selection from "../shared/Selection";
 import { SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
 import { Distribution, DISTRIBUTION, IS_LITE } from "../shared/buildConstants";
 import Log from "../shared/log/Log";
-import { AKIT_TIMESTAMP_KEYS, getEnabledData, MERGE_PREFIX } from "../shared/log/LogUtil";
+import { MERGE_PREFIX } from "../shared/log/LogKeyUtils";
+import { AKIT_TIMESTAMP_KEYS, getEnabledData } from "../shared/log/RobotState";
 import { calcMockProgress, clampValue, htmlEncode, scaleValue } from "../shared/util";
 import SelectionImpl from "./SelectionImpl";
 import Sidebar from "./Sidebar";
@@ -904,6 +905,10 @@ async function handleMainMessage(message: NamedMessage) {
 
     case "set-3d-camera":
       window.tabs.set3DCamera(message.data);
+      break;
+
+    case "set-2d-camera":
+      window.tabs.set2DCamera(message.data);
       break;
 
     case "edit-fov":

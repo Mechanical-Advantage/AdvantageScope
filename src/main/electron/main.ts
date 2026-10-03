@@ -31,12 +31,13 @@ import jsonfile from "jsonfile";
 import net from "net";
 import os from "os";
 import path from "path";
-import { Client, Stats } from "ssh2";
-import { Readable } from "stream";
+import { Client, FileEntry, Stats } from "ssh2";
+import { Readable, Writable } from "stream";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
 import ExportOptions from "../../shared/ExportOptions";
+import { Field2dCameraMode } from "../../shared/Field2dCameraMode";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import NamedMessage from "../../shared/NamedMessage";
 import Preferences, { DEFAULT_PREFS, getLiveModeName, LiveMode, mergePreferences } from "../../shared/Preferences";
@@ -302,22 +303,106 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       shell.openExternal("https://github.com/" + GITHUB_REPOSITORY + "/issues/new/choose");
       break;
 
+    case "historical-start-raw":
+      {
+        const uuid: string = message.data.uuid;
+        const data: Uint8Array = message.data.data;
+        const extension: string = message.data.extension;
+
+        // Prevent path traversal
+        if (extension.includes("/") || extension.includes("\\") || extension.includes("..")) {
+          sendMessage(window, "historical-data", {
+            files: [null],
+            error: "Invalid log extension",
+            uuid: uuid
+          });
+          break;
+        }
+
+        if (extension === "revlog") {
+          let chunks: Buffer[] = [];
+          let writable = new Writable({
+            write(chunk, encoding, callback) {
+              chunks.push(chunk);
+              callback();
+            }
+          });
+          parseREVLOG(Buffer.from(data), writable)
+            .then(() => {
+              sendMessage(window, "historical-data", {
+                files: [Buffer.concat(chunks)],
+                error: null,
+                uuid: uuid
+              });
+            })
+            .catch((err: any) => {
+              sendMessage(window, "historical-data", {
+                files: [null],
+                error: err.message,
+                uuid: uuid
+              });
+            });
+          break;
+        }
+
+        let tempPath = path.join(app.getPath("temp"), "child_" + createUUID() + "." + extension);
+        fs.writeFile(tempPath, data, (err) => {
+          if (!err) {
+            handleHubMessage(window, {
+              name: "historical-start",
+              data: {
+                uuid: uuid,
+                path: tempPath,
+                deleteAfterRead: true
+              }
+            });
+          } else {
+            sendMessage(window, "historical-data", {
+              files: [null],
+              error: err.message,
+              uuid: uuid
+            });
+          }
+        });
+      }
+      break;
+
     case "historical-start":
       {
         // Record opened files
         const uuid: string = message.data.uuid;
         const logPath: string = message.data.path;
-        app.addRecentDocument(logPath);
-        // Writing this file is a supplemental task, so we don't need to block/ensure success
-        fs.writeFile(AKIT_PATH_OUTPUT, logPath, () => {});
+        if (!message.data.deleteAfterRead) {
+          app.addRecentDocument(logPath);
+          // Writing this file is a supplemental task, so we don't need to block/ensure success
+          fs.writeFile(AKIT_PATH_OUTPUT, logPath, () => {});
+        }
 
         // Send data if all file reads finished
         let completedCount = 0;
         let targetCount = 0;
         let errorMessage: null | string = null;
         let hasHootNonPro = false;
+        let paths: string[] = typeof logPath === "string" ? [logPath] : logPath;
+        let pathsToRemove: string[] = [];
+        if (message.data.deleteAfterRead) {
+          pathsToRemove.push(...paths);
+        }
+
         let sendIfReady = () => {
           if (completedCount === targetCount) {
+            if (message.data.deleteAfterRead) {
+              paths.forEach((p) => {
+                if (p.endsWith(".dslog")) {
+                  let eventsPath = p.slice(0, p.length - 5) + "dsevents";
+                  if (fs.existsSync(eventsPath)) pathsToRemove.push(eventsPath);
+                }
+              });
+            }
+            pathsToRemove.forEach((p) => {
+              if (fs.existsSync(p)) fs.rmSync(p, { force: true });
+            });
+
             sendMessage(window, "historical-data", {
               files: results,
               error: errorMessage,
@@ -425,9 +510,9 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               .finally(() => {
                 convertHoot(logPath)
                   .then((wpilogPath) => {
+                    pathsToRemove.push(wpilogPath);
                     openPath(wpilogPath, (buffer) => {
                       results[0] = buffer;
-                      fs.rmSync(wpilogPath);
                     });
                   })
                   .catch((reason) => {
@@ -445,14 +530,18 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           // REVLOG, convert to WPILOG
           targetCount += 1;
 
-          // Save WPILOG in temporary folder
-          let wpilogPath = path.join(app.getPath("temp"), "revlog_" + createUUID() + ".wpilog");
           try {
-            await parseREVLOG(logPath, wpilogPath);
-            openPath(wpilogPath, (buffer) => {
-              results[0] = buffer;
-              fs.rmSync(wpilogPath);
+            let chunks: Buffer[] = [];
+            let writable = new Writable({
+              write(chunk, encoding, callback) {
+                chunks.push(chunk);
+                callback();
+              }
             });
+            await parseREVLOG(logPath, writable);
+            results[0] = Buffer.concat(chunks);
+            completedCount++;
+            sendIfReady();
           } catch (err: any) {
             errorMessage = err.message;
             completedCount++;
@@ -596,6 +685,24 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         })
       );
       fieldCopyMenu.popup({
+        window: window,
+        x: Math.round(message.data.position[0]),
+        y: Math.round(message.data.position[1])
+      });
+      break;
+
+    case "ask-open-tuning-context-menu":
+      const tuningMenu = new Menu();
+      tuningMenu.append(
+        new MenuItem({
+          label: "Copy Tuned Values",
+          enabled: message.data.isTuningMode,
+          click() {
+            clipboard.writeText(message.data.values);
+          }
+        })
+      );
+      tuningMenu.popup({
         window: window,
         x: Math.round(message.data.position[0]),
         y: Math.round(message.data.position[1])
@@ -1211,6 +1318,10 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       );
       break;
 
+    case "ask-2d-camera":
+      select2DCameraPopup(window, message.data.position, message.data.selectedIndex);
+      break;
+
     case "export-console":
       dialog
         .showSaveDialog(window, {
@@ -1516,6 +1627,45 @@ function select3DCameraPopup(
   });
 }
 
+function select2DCameraPopup(window: BrowserWindow, position: [number, number], selectedIndex: Field2dCameraMode) {
+  const cameraMenu = new Menu();
+  cameraMenu.append(
+    new MenuItem({
+      label: "Unlocked",
+      type: "checkbox",
+      checked: selectedIndex === Field2dCameraMode.Unlocked,
+      click() {
+        sendMessage(window, "set-2d-camera", Field2dCameraMode.Unlocked);
+      }
+    })
+  );
+  cameraMenu.append(
+    new MenuItem({
+      label: "Locked to Robot",
+      type: "checkbox",
+      checked: selectedIndex === Field2dCameraMode.Robot,
+      click() {
+        sendMessage(window, "set-2d-camera", Field2dCameraMode.Robot);
+      }
+    })
+  );
+  cameraMenu.append(
+    new MenuItem({
+      label: "Locked to Robot && Rotation",
+      type: "checkbox",
+      checked: selectedIndex === Field2dCameraMode.RobotAndRotation,
+      click() {
+        sendMessage(window, "set-2d-camera", Field2dCameraMode.RobotAndRotation);
+      }
+    })
+  );
+  cameraMenu.popup({
+    window: window,
+    x: Math.round(position[0]),
+    y: Math.round(position[1])
+  });
+}
+
 /**
  * Process a message from a download window.
  * @param message The received message
@@ -1562,41 +1712,54 @@ function downloadStart() {
         } else {
           // Successful SFTP connection
           let readFiles = () => {
-            sftp.readdir(downloadPath, (error, list) => {
+            sftp.readdir(downloadPath, async (error, list) => {
               if (error) {
                 // Failed to read directory (not found?)
                 downloadError(error.message);
               } else {
-                // Return list of files
-                if (downloadWindow) {
-                  sendMessage(
-                    downloadWindow,
-                    "set-list",
-                    list
-                      .map((file) => {
-                        return { name: file.filename, size: file.attrs.size };
-                      })
-                      .filter(
-                        (file) =>
-                          !file.name.startsWith(".") &&
-                          (file.name.endsWith(".rlog") ||
-                            file.name.endsWith(".wpilog") ||
-                            file.name.endsWith(".wpilogxz") ||
-                            file.name.endsWith(".revlog") ||
-                            file.name.endsWith(".hoot"))
-                      )
-                      .map((file) => {
-                        return {
-                          name: file.name,
-                          size: file.size
-                        };
-                      })
-                  );
+                // Return list of files and folders
+                const filesAndFolders = list.filter(
+                  (file) =>
+                    !file.filename.startsWith(".") &&
+                    ((file.attrs as Stats).isDirectory() ||
+                      file.filename.endsWith(".rlog") ||
+                      file.filename.endsWith(".wpilog") ||
+                      file.filename.endsWith(".wpilogxz") ||
+                      file.filename.endsWith(".revlog") ||
+                      file.filename.endsWith(".hoot"))
+                );
+                const listData: { name: string; size: number; isFolder: boolean }[] = [];
+                for (const file of filesAndFolders) {
+                  if ((file.attrs as Stats).isDirectory()) {
+                    let totalSize = 0;
+                    try {
+                      const subFiles = await new Promise<FileEntry[] | undefined>((resolve) => {
+                        sftp.readdir(downloadPath + file.filename, (err, subList) => {
+                          if (err) resolve(undefined);
+                          else resolve(subList);
+                        });
+                      });
+                      if (subFiles) {
+                        subFiles.forEach((subFile) => {
+                          if (!(subFile.attrs as Stats).isDirectory() && !subFile.filename.startsWith(".")) {
+                            totalSize += subFile.attrs.size;
+                          }
+                        });
+                      }
+                    } catch (e) {}
+                    listData.push({ name: file.filename, size: totalSize, isFolder: true });
+                  } else {
+                    listData.push({ name: file.filename, size: file.attrs.size, isFolder: false });
+                  }
+                }
+
+                if (downloadWindow && !downloadWindow.isDestroyed()) {
+                  sendMessage(downloadWindow, "set-list", listData);
                 }
 
                 // Save cache of file sizes
-                list.forEach((file) => {
-                  downloadFileSizeCache[file.filename] = file.attrs.size;
+                listData.forEach((file) => {
+                  downloadFileSizeCache[file.name] = file.size;
                 });
               }
             });
@@ -1610,20 +1773,14 @@ function downloadStart() {
     })
     .on("error", (error) => {
       // Failed SSH connection
-      if (error.message === "All configured authentication methods failed") {
-        downloadDevice = downloadDevice === "systemcore" ? "roborio" : "systemcore";
-        if (downloadAuthFailedOnce) {
-          downloadAuthFailedOnce = false;
-          downloadError(error.message);
-        } else {
-          downloadAuthFailedOnce = true;
-          if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
-          downloadStart();
-        }
-      } else {
-        downloadDevice = "systemcore";
+      downloadDevice = downloadDevice === "systemcore" ? "roborio" : "systemcore";
+      if (downloadAuthFailedOnce) {
         downloadAuthFailedOnce = false;
         downloadError(error.message);
+      } else {
+        downloadAuthFailedOnce = true;
+        if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
+        downloadStart();
       }
     })
     .connect({
@@ -1706,12 +1863,12 @@ function downloadSave(files: string[]) {
     }
     if (savePath !== "") {
       // Start saving
-      downloadClient?.sftp((error, sftp) => {
+      downloadClient?.sftp(async (error, sftp) => {
         if (error) {
           downloadError(error.message);
         } else {
           if (downloadWindow) sendMessage(downloadWindow, "set-progress", 0);
-          if (files.length === 1) {
+          if (files.length === 1 && firstExtension !== "") {
             // Single file
             sftp.fastGet(
               downloadPath + files[0],
@@ -1752,83 +1909,129 @@ function downloadSave(files: string[]) {
             );
           } else {
             // Multiple files
-            let completeCount = 0;
-            let skipCount = 0;
-            let allSizesTransferred: number[] = new Array(files.length).fill(0);
-            let allSizesTotal = 0;
-            files.forEach((file, index) => {
-              let fileSize = file in downloadFileSizeCache ? downloadFileSizeCache[file] : 0;
-              allSizesTotal += fileSize;
-              fs.stat(savePath + "/" + file, async (statErr, stats) => {
-                let remoteStats = await new Promise<Stats>((resolve) => {
-                  sftp.stat(downloadPath + file, (_, stats) => {
-                    resolve(stats);
+            let downloadTasks: { remote: string; local: string; size: number }[] = [];
+            for (const file of files) {
+              if (path.extname(file) === "") {
+                // Folder
+                try {
+                  const subFiles = await new Promise<FileEntry[] | undefined>((resolve) => {
+                    sftp.readdir(downloadPath + file, (err, subList) => {
+                      if (err) resolve(undefined);
+                      else resolve(subList);
+                    });
                   });
-                });
-                if (statErr === null && stats.size >= remoteStats.size) {
-                  // File already downloaded, skip
-                  completeCount++;
-                  skipCount++;
-                  allSizesTotal -= fileSize; // Remove from total size of files
-                  if (skipCount === files.length) {
-                    // All files skipped
-                    if (downloadWindow) sendMessage(downloadWindow, "show-alert", "No new logs found.");
-                  }
-                } else {
-                  // File not downloaded or out of date, download
-                  sftp.fastGet(
-                    downloadPath + file,
-                    savePath + "/" + file,
-                    {
-                      step: (sizeTransferred) => {
-                        allSizesTransferred[index] = sizeTransferred;
-                        if (!downloadWindow) return;
-                        let sumSizeTransferred = allSizesTransferred.reduce((a, b) => a + b, 0);
-                        sendMessage(downloadWindow, "set-progress", {
-                          current: sumSizeTransferred,
-                          total: allSizesTotal
+                  if (subFiles) {
+                    const localFolderPath = path.join(savePath, file);
+                    if (!fs.existsSync(localFolderPath)) {
+                      fs.mkdirSync(localFolderPath, { recursive: true });
+                    }
+                    for (const subFile of subFiles) {
+                      if (!(subFile.attrs as Stats).isDirectory() && !subFile.filename.startsWith(".")) {
+                        downloadTasks.push({
+                          remote: downloadPath + file + "/" + subFile.filename,
+                          local: path.join(localFolderPath, subFile.filename),
+                          size: subFile.attrs.size
                         });
                       }
-                    },
-                    (error) => {
-                      if (error) {
-                        downloadError(error.message);
-                      } else {
-                        completeCount++;
-
-                        if (completeCount >= files.length) {
-                          let message: string;
-                          if (skipCount > 0) {
-                            let newCount = completeCount - skipCount;
-                            message =
-                              "Saved " +
-                              newCount.toString() +
-                              " new log" +
-                              (newCount === 1 ? "" : "s") +
-                              " (" +
-                              skipCount.toString() +
-                              " skipped) to <u>" +
-                              savePath +
-                              "</u>";
-                          } else {
-                            message =
-                              "Saved " +
-                              completeCount.toString() +
-                              " log" +
-                              (completeCount === 1 ? "" : "s") +
-                              " to <u>" +
-                              savePath +
-                              "</u>";
-                          }
-                          if (!downloadWindow) return;
-                          sendMessage(downloadWindow, "set-progress", 1);
-                          sendMessage(downloadWindow, "show-alert", message);
-                        }
-                      }
                     }
-                  );
+                  }
+                } catch (e) {
+                  console.error(e);
                 }
-              });
+              } else {
+                // File
+                let remoteSize = file in downloadFileSizeCache ? downloadFileSizeCache[file] : 0;
+                downloadTasks.push({
+                  remote: downloadPath + file,
+                  local: path.join(savePath, file),
+                  size: remoteSize
+                });
+              }
+            }
+
+            let totalCount = downloadTasks.length;
+            let completeCount = 0;
+            let skipCount = 0;
+            let allSizesTransferred: number[] = new Array(downloadTasks.length).fill(0);
+            let allSizesTotal = 0;
+
+            let tasksToDownload: { task: { remote: string; local: string; size: number }; index: number }[] = [];
+            for (let i = 0; i < downloadTasks.length; i++) {
+              const task = downloadTasks[i];
+              let shouldSkip = false;
+              try {
+                if (fs.existsSync(task.local) && fs.statSync(task.local).size >= task.size) {
+                  shouldSkip = true;
+                }
+              } catch (e) {}
+
+              if (shouldSkip) {
+                completeCount++;
+                skipCount++;
+              } else {
+                allSizesTotal += task.size;
+                tasksToDownload.push({ task, index: i });
+              }
+            }
+
+            if (tasksToDownload.length === 0) {
+              // All files skipped
+              if (downloadWindow) sendMessage(downloadWindow, "show-alert", "No new logs found.");
+              return;
+            }
+
+            tasksToDownload.forEach(({ task, index }) => {
+              sftp.fastGet(
+                task.remote,
+                task.local,
+                {
+                  step: (sizeTransferred) => {
+                    allSizesTransferred[index] = sizeTransferred;
+                    if (!downloadWindow) return;
+                    let sumSizeTransferred = allSizesTransferred.reduce((a, b) => a + b, 0);
+                    sendMessage(downloadWindow, "set-progress", {
+                      current: sumSizeTransferred,
+                      total: allSizesTotal
+                    });
+                  }
+                },
+                (error) => {
+                  if (error) {
+                    downloadError(error.message);
+                  } else {
+                    completeCount++;
+
+                    if (completeCount >= totalCount) {
+                      let message: string;
+                      let newCount = completeCount - skipCount;
+                      if (skipCount > 0) {
+                        message =
+                          "Saved " +
+                          newCount.toString() +
+                          " new log" +
+                          (newCount === 1 ? "" : "s") +
+                          " (" +
+                          skipCount.toString() +
+                          " skipped) to <u>" +
+                          savePath +
+                          "</u>";
+                      } else {
+                        message =
+                          "Saved " +
+                          completeCount.toString() +
+                          " log" +
+                          (completeCount === 1 ? "" : "s") +
+                          " to <u>" +
+                          savePath +
+                          "</u>";
+                      }
+                      if (!downloadWindow) return;
+                      sendMessage(downloadWindow, "set-progress", 1);
+                      sendMessage(downloadWindow, "show-alert", message);
+                    }
+                  }
+                }
+              );
             });
           }
         }
@@ -3113,7 +3316,8 @@ function createSatellite(
       let message: NamedMessage = event.data;
       switch (message.name) {
         case "set-aspect-ratio":
-          let aspectRatio = message.data;
+          let aspectRatio = message.data.aspectRatio;
+          let lock = message.data.lock;
           if (aspectRatio === null) {
             satellite.setAspectRatio(0);
           } else {
@@ -3121,7 +3325,11 @@ function createSatellite(
             let originalArea = originalSize[0] * originalSize[1];
             let newY = Math.sqrt(originalArea / aspectRatio);
             let newX = aspectRatio * newY;
-            satellite.setAspectRatio(aspectRatio);
+            if (lock) {
+              satellite.setAspectRatio(aspectRatio);
+            } else {
+              satellite.setAspectRatio(0);
+            }
             satellite.setContentSize(Math.round(newX), Math.round(newY));
           }
           break;
@@ -3135,6 +3343,10 @@ function createSatellite(
             message.data.fov,
             message.data.isFTC
           );
+          break;
+
+        case "ask-2d-camera":
+          select2DCameraPopup(satellite, message.data.position, message.data.selectedIndex);
           break;
 
         case "add-table-range":

@@ -220,6 +220,18 @@ export default class Sidebar {
     this.TUNING_BUTTON.addEventListener("click", () => {
       this.setTuningModeActive(!this.isTuningMode);
     });
+    this.TUNING_BUTTON.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
+      let values = Object.keys(this.tuningValueCache)
+        .sort()
+        .map((key) => key + " = " + this.tuningValueCache[key])
+        .join("\n");
+      window.sendMainMessage("ask-open-tuning-context-menu", {
+        isTuningMode: this.isTuningMode,
+        values: values,
+        position: [event.clientX, event.clientY]
+      });
+    });
 
     // Periodic functions
     let periodic = () => {
@@ -289,6 +301,8 @@ export default class Sidebar {
         if (field.startsWith("NT:/" + hiddenKey)) show = false;
         if (field.startsWith("NT:/AdvantageKit/" + hiddenKey)) show = false;
         if (field.startsWith("DS:/" + hiddenKey)) show = false;
+        if (field.includes("/" + hiddenKey + "/")) show = false;
+        if (field.endsWith("/" + hiddenKey)) show = false;
       });
       return show;
     });
@@ -783,6 +797,7 @@ export default class Sidebar {
           let value = !oldValue;
           let liveTime = window.selection.getCurrentLiveTime();
           if (liveTime !== null) {
+            this.tuningValueCache[field.fullKey!] = value.toString();
             window.tuner?.publish(field.fullKey!, value);
             window.log.putBoolean(field.fullKey!, liveTime, value);
           }
@@ -793,6 +808,7 @@ export default class Sidebar {
             svg.classList.add("tunable");
           } else {
             svg.classList.remove("tunable");
+            delete this.tuningValueCache[field.fullKey!];
           }
         };
         this.setTuningModeActiveCallbacks.push(setTuningModeActive);
@@ -992,12 +1008,10 @@ export default class Sidebar {
         // Add children if first time
         if (firstExpand) {
           firstExpand = false;
-          let childKeys = Object.keys(field.children);
+          let childKeys = Object.keys(field.children).filter((key) => !this.HIDDEN_KEYS.includes(key));
           if (fullTitle === "/AdvantageKit" || fullTitle === "/NT" || fullTitle.startsWith("/" + this.MERGED_KEY)) {
-            // Apply hidden and known keys
-            childKeys = childKeys
-              .filter((key) => !this.HIDDEN_KEYS.includes(key))
-              .sort((a, b) => this.sortKeys(a, b, true));
+            // Apply known keys sorting
+            childKeys = childKeys.sort((a, b) => this.sortKeys(a, b, true));
           } else {
             childKeys = childKeys.sort((a, b) => this.sortKeys(a, b));
           }

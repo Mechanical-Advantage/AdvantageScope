@@ -7,7 +7,7 @@
 
 import { MatchType } from "../../shared/MatchInfo";
 import VideoSource from "../../shared/VideoSource";
-import { getEnabledData, getMatchInfo } from "../../shared/log/LogUtil";
+import { getEnabledData, getMatchInfo } from "../../shared/log/RobotState";
 import { createUUID } from "../../shared/util";
 import TabController from "./TabController";
 
@@ -181,7 +181,9 @@ export default class VideoController implements TabController {
       if (
         root === null ||
         root.hidden ||
-        event.target !== document.body ||
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement ||
+        (event.target instanceof HTMLElement && event.target.isContentEditable) ||
         (window.platform === "darwin" ? event.metaKey : event.ctrlKey)
       )
         return;
