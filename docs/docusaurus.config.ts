@@ -172,7 +172,7 @@ const config: Config = {
     prism: {
       theme: prismThemes.jettwaveLight,
       darkTheme: prismThemes.jettwaveDark,
-      additionalLanguages: ["java"]
+      additionalLanguages: ["java", "bash"]
     },
     algolia: {
       appId: "GBP8QKXFZG",
