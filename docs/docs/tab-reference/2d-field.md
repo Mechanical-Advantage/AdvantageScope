@@ -50,10 +50,10 @@ To see a full list of supported object types, click the `?` icon. This list also
 
 Geometry data should be published as a byte-encoded struct or protobuf. Various 2D and 3D geometry types are supported, including `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, and more.
 
-Many libraries support the struct format, including WPILib and AdvantageKit. The example code below shows how to log 2D pose data in Java.
+Many libraries support the struct format, including WPILib and AdvantageKit. The example code below shows how to log 2D pose data.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Pose2d poseA = new Pose2d();
@@ -61,6 +61,31 @@ Pose2d poseB = new Pose2d();
 
 Telemetry.log("MyPose", poseA);
 Telemetry.log("MyPoseArray", new Pose2d[] {poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::math::Pose2d poseA;
+wpi::math::Pose2d poseB;
+
+wpi::telemetry::Log("MyPose", poseA);
+wpi::telemetry::Log("MyPoseArray", std::vector{poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import Pose2d
+import telemetry
+
+pose_a = Pose2d()
+pose_b = Pose2d()
+
+telemetry.log("MyPose", pose_a)
+telemetry.log("MyPoseArray", [pose_a, pose_b], element_type=Pose2d)
 ```
 
 </TabItem>
