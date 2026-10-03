@@ -79,13 +79,13 @@ export default class Field2dController implements TabController {
     // Set up switchers
     setupKeyboardControls(this.ORIENTATION_SWITCHER.children[0] as HTMLElement);
     this.ORIENTATION_SWITCHER.children[0].addEventListener("click", () => {
-      this.orientationSetting--;
-      if (this.orientationSetting < 0) this.orientationSetting = 3;
+      this.orientationSetting++;
+      if (this.orientationSetting > 3) this.orientationSetting = 0;
     });
     setupKeyboardControls(this.ORIENTATION_SWITCHER.children[1] as HTMLElement);
     this.ORIENTATION_SWITCHER.children[1].addEventListener("click", () => {
-      this.orientationSetting++;
-      if (this.orientationSetting > 3) this.orientationSetting = 0;
+      this.orientationSetting--;
+      if (this.orientationSetting < 0) this.orientationSetting = 3;
     });
     (["large", "medium", "small"] as const).forEach((value, index) => {
       setupKeyboardControls(this.SIZE_SWITCHER.children[index] as HTMLElement);

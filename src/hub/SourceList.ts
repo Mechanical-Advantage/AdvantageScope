@@ -93,7 +93,7 @@ export default class SourceList {
     this.EDIT_BUTTON.title = "Edit settings";
     let editIcon = document.createElement("img");
     this.EDIT_BUTTON.appendChild(editIcon);
-    editIcon.src = "symbols/ellipsis.svg";
+    editIcon.src = "symbols/morehoriz.svg";
     this.EDIT_BUTTON.hidden = editButtonCallback === undefined;
 
     this.CLEAR_BUTTON = document.createElement("button");
@@ -102,7 +102,7 @@ export default class SourceList {
     this.CLEAR_BUTTON.title = "Clear all fields";
     let clearButton = document.createElement("img");
     this.CLEAR_BUTTON.appendChild(clearButton);
-    clearButton.src = "symbols/trash.fill.svg";
+    clearButton.src = "symbols/delete.svg";
     this.CLEAR_BUTTON.hidden = editButtonCallback !== undefined;
 
     this.HELP_BUTTON = document.createElement("button");
@@ -111,7 +111,7 @@ export default class SourceList {
     this.HELP_BUTTON.title = "Help";
     let helpIcon = document.createElement("img");
     this.HELP_BUTTON.appendChild(helpIcon);
-    helpIcon.src = "symbols/questionmark.circle.svg";
+    helpIcon.src = "symbols/help.svg";
     this.HELP_BUTTON.hidden = editButtonCallback !== undefined;
 
     this.LIST = document.createElement("div");
@@ -121,7 +121,7 @@ export default class SourceList {
     this.HAND_ICON = document.createElement("img");
     this.ROOT.appendChild(this.HAND_ICON);
     this.HAND_ICON.classList.add("hand-icon");
-    this.HAND_ICON.src = "symbols/rectangle.and.hand.point.up.left.filled.svg";
+    this.HAND_ICON.src = "symbols/trackpadinput.svg";
     this.updateHandIcon();
 
     this.DRAG_HIGHLIGHT = document.createElement("div");
@@ -1013,7 +1013,7 @@ export default class SourceList {
     // Update hide button
     let hideButton = item.getElementsByClassName("hide")[0] as HTMLButtonElement;
     let hideIcon = hideButton.firstElementChild as HTMLImageElement;
-    hideIcon.src = "symbols/" + (state.visible ? "eye.svg" : "eye.slash.svg");
+    hideIcon.src = "symbols/" + (state.visible ? "visibility.svg" : "visibilityoff.svg");
     let titleText = state.visible ? "Hide field" : "Show field";
     hideButton.title = titleText;
     if (state.visible) {
