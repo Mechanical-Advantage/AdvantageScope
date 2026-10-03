@@ -384,15 +384,15 @@ input.side-bar-search::-webkit-search-cancel-button {
   -webkit-appearance: none;
   height: 1em;
   width: 1em;
-  background: url("symbols/xmark.circle.fill.svg") no-repeat 50% 50%;
+  background: url("symbols/cancel.svg") no-repeat 50% 50%;
   background-size: contain;
 }
 
 img.side-bar-search-icon {
   position: absolute;
-  left: 23px;
+  left: 21px;
   top: 50%;
-  height: 13px;
+  height: 20px;
   transform: translateY(-50%);
 }
 
@@ -957,7 +957,7 @@ body.fancy-title-bar-lite button.popup {
 }
 
 button.close img {
-  transform: translate(-50%, -50%) scale(90%);
+  transform: translate(-50%, -50%);
 }
 
 button.add-tab {
@@ -1421,6 +1421,27 @@ div.setting-blocks div.split div img {
   transform: translateY(-50%);
 }
 
+div.setting-blocks div.split div span {
+  position: relative;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 1;
+  background-color: #222;
+  color: #eee;
+  transform: translateY(-50%);
+
+  transition:
+    background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out;
+}
+
 div.setting-blocks div.split div:first-child {
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
@@ -1435,9 +1456,17 @@ div.setting-blocks div.split div:hover {
   background-color: #ddd;
 }
 
+div.setting-blocks div.split div:hover span {
+  color: #ddd;
+}
+
 div.setting-blocks div.split div.selected {
   background-color: #aaa;
   border: 1px solid #222;
+}
+
+div.setting-blocks div.split div.selected span {
+  color: #aaa;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -1457,6 +1486,19 @@ div.setting-blocks div.split div.selected {
 
   div.setting-blocks div.split div img.invertable {
     filter: invert(100%);
+  }
+
+  div.setting-blocks div.split div span {
+    background-color: #eee;
+    color: #444;
+  }
+
+  div.setting-blocks div.split div:hover span {
+    color: #555;
+  }
+
+  div.setting-blocks div.split div.selected span {
+    color: #888;
   }
 }
 
