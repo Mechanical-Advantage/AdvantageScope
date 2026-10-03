@@ -28,6 +28,7 @@ export default interface Preferences {
   systemcoreStaticAddress: "" | "usb" | "wifi";
   hasScrolledLineGraph: boolean;
   hasScrolledTimeline: boolean;
+  prefersFTC: boolean;
   timestamps: "start-zero" | "original";
 }
 
@@ -51,6 +52,7 @@ export const DEFAULT_PREFS: Preferences = {
   systemcoreStaticAddress: "",
   hasScrolledLineGraph: false,
   hasScrolledTimeline: false,
+  prefersFTC: false,
   timestamps: "start-zero"
 };
 
@@ -204,6 +206,9 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   }
   if ("hasScrolledTimeline" in newPrefs && typeof newPrefs.hasScrolledTimeline === "boolean") {
     basePrefs.hasScrolledTimeline = newPrefs.hasScrolledTimeline;
+  }
+  if ("prefersFTC" in newPrefs && typeof newPrefs.prefersFTC === "boolean") {
+    basePrefs.prefersFTC = newPrefs.prefersFTC;
   }
   if ("timestamps" in newPrefs && (newPrefs.timestamps === "start-zero" || newPrefs.timestamps === "original")) {
     basePrefs.timestamps = newPrefs.timestamps;

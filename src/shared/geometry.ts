@@ -8,8 +8,9 @@
 import * as THREE from "three";
 import { Config3d_Rotation, CoordinateSystem } from "./AdvantageScopeAssets";
 import Log from "./log/Log";
-import { getOrDefault, getRobotStateRanges } from "./log/LogUtil";
+import { getOrDefault } from "./log/LogUtil";
 import LoggableType from "./log/LoggableType";
+import { getRobotStateRanges } from "./log/RobotState";
 import { Units } from "./units";
 import { indexArray, jsonCopy } from "./util";
 

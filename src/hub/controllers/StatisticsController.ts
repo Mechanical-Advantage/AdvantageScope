@@ -7,7 +7,7 @@
 
 import * as stats from "simple-statistics";
 import { SourceListItemState, SourceListState } from "../../shared/SourceListConfig";
-import { AKIT_TIMESTAMP_KEYS, getRobotStateRanges } from "../../shared/log/LogUtil";
+import { AKIT_TIMESTAMP_KEYS, getRobotStateRanges } from "../../shared/log/RobotState";
 import { StatisticsRendererCommand, StatisticsRendererCommand_Stats } from "../../shared/renderers/StatisticsRenderer";
 import { arraysEqual, cleanFloat, createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
