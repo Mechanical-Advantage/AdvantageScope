@@ -39,8 +39,8 @@ public class ExampleTeleop implements OpMode {
     double t = Timer.getTimestamp();
 
     // Generate a sample circular driving trajectory
-    double x = 8.0 + 2.0 * Math.cos(t * 0.5);
-    double y = 4.0 + 2.0 * Math.sin(t * 0.5);
+    double x = 2.0 * Math.cos(t * 0.5);
+    double y = 2.0 * Math.sin(t * 0.5);
     Rotation2d rotation = Rotation2d.fromRadians(t * 0.5 + Math.PI / 2.0);
     Pose2d robotPose2d = new Pose2d(x, y, rotation);
 
