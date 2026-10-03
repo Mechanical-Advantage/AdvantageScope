@@ -29,7 +29,7 @@ As this approach is not officially supported by vendors, support requests should
 :::
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 Download the [`VendorLogCapture.java`](TODO.java) class and place it in your robot project. This class automatically captures data from vendor logs into the active `DataLog` and should be configured in your `Robot` constructor as shown below. You must select an appropriate directory (such as `/U/logs/` on a USB drive or `/home/systemcore/logs/`) for temporarily staging vendor logs during capture. See the [How It Works](#how-it-works) section for details.
 
@@ -46,6 +46,46 @@ public Robot() {
   VendorLogger.setPath("/U/logs/");
   VendorLogger.start();
 }
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+Download the [`VendorLogCapture.h`](TODO.h) and [`VendorLogCapture.cpp`](TODO.cpp) files and place them in your robot project. This class automatically captures data from vendor logs into the active `DataLog` and should be configured in your `Robot` constructor as shown below. You must select an appropriate directory (such as `/U/logs/` on a USB drive or `/home/systemcore/logs/`) for temporarily staging vendor logs during capture. See the [How It Works](#how-it-works) section for details.
+
+```cpp
+Robot::Robot() {
+  // Start WPILib's DataLogManager normally
+  wpi::DataLogManager::Start();
+
+  // Enable vendor log capturing from a temporary staging directory
+  VendorLogCapture::Start(wpi::DataLogManager::GetLog(), "/U/logs/");
+
+  // Start the vendor logger AFTER log capture is enabled
+  // If configurable, the output directory must match the path above
+  VendorLogger::SetPath("/U/logs/");
+  VendorLogger::Start();
+}
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+Download the [`vendor_log_capture.py`](TODO.py) file and place it in your robot project. This helper automatically captures data from vendor logs into the active `DataLog` and should be configured in `robotInit` as shown below. You must select an appropriate directory (such as `/U/logs/` on a USB drive or `/home/systemcore/logs/`) for temporarily staging vendor logs during capture. See the [How It Works](#how-it-works) section for details.
+
+```python
+class Robot(wpilib.TimedRobot):
+    def robotInit(self):
+        # Start WPILib's DataLogManager normally
+        wpilib.DataLogManager.start()
+
+        # Enable vendor log capturing from a temporary staging directory
+        VendorLogCapture.start(wpilib.DataLogManager.get_log(), "/U/logs/")
+
+        # Start the vendor logger AFTER log capture is enabled
+        # If configurable, the output directory must match the path above
+        VendorLogger.set_path("/U/logs/")
+        VendorLogger.start()
 ```
 
 </TabItem>
