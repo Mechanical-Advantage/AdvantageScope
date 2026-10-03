@@ -61,6 +61,11 @@ export default class Field2dController implements TabController {
 
     // Set up field select
     this.FIELD_SELECT.addEventListener("change", () => {
+      let isFTC = window.assets?.field2ds.find((field) => field.id === this.FIELD_SELECT.value)?.isFTC;
+      if (isFTC !== undefined) {
+        if (window.preferences) window.preferences.prefersFTC = isFTC;
+        window.sendMainMessage("update-preferences", { prefersFTC: isFTC });
+      }
       this.updateFieldDependentControls();
     });
     this.FIELD_SOURCE.addEventListener("click", () => {
@@ -116,9 +121,28 @@ export default class Field2dController implements TabController {
     if (options.includes(value)) {
       this.FIELD_SELECT.value = value;
     } else {
-      this.FIELD_SELECT.selectedIndex = 0;
+      this.selectDefaultField();
     }
     this.updateFieldDependentControls();
+  }
+
+  /** Selects the default field based on whether the user prefers FTC. */
+  private selectDefaultField() {
+    let prefersFTC = window.preferences?.prefersFTC ?? false;
+    let primaryGroup = prefersFTC
+      ? (this.FIELD_SELECT.lastElementChild as HTMLElement)
+      : (this.FIELD_SELECT.firstElementChild as HTMLElement);
+    let secondaryGroup = prefersFTC
+      ? (this.FIELD_SELECT.firstElementChild as HTMLElement)
+      : (this.FIELD_SELECT.lastElementChild as HTMLElement);
+
+    if (primaryGroup.children.length > 0) {
+      this.FIELD_SELECT.value = (primaryGroup.children[0] as HTMLOptionElement).value;
+    } else if (secondaryGroup.children.length > 0) {
+      this.FIELD_SELECT.value = (secondaryGroup.children[0] as HTMLOptionElement).value;
+    } else {
+      this.FIELD_SELECT.selectedIndex = 0;
+    }
   }
 
   /** Updates the source link and size switcher based on the selected field. */
@@ -169,7 +193,7 @@ export default class Field2dController implements TabController {
     if ("field" in state && typeof state.field === "string") {
       this.FIELD_SELECT.value = state.field;
       if (this.FIELD_SELECT.value === "") {
-        this.FIELD_SELECT.selectedIndex = 0;
+        this.selectDefaultField();
       }
     }
     if (
