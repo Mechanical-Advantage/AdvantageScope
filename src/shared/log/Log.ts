@@ -9,8 +9,10 @@ import { Decoder } from "@msgpack/msgpack";
 import { Pose2d, Translation2d } from "../geometry";
 import { Units } from "../units";
 import { arraysEqual, checkArrayType } from "../util";
+import { LogCommand, SchedulerProto } from "./LogCommandState";
 import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
+import LoggableType from "./LoggableType";
 import { PHOTON_PREFIX, STRUCT_PREFIX, applyKeyPrefix, getSchemaType, splitLogKey } from "./LogKeyUtils";
 import { TYPE_KEY } from "./LogUtil";
 import {
@@ -23,7 +25,6 @@ import {
   LogValueSetString,
   LogValueSetStringArray
 } from "./LogValueSets";
-import LoggableType from "./LoggableType";
 import PhotonStructDecoder from "./PhotonStructDecoder";
 import ProtoDecoder from "./ProtoDecoder";
 import { getEnabledData } from "./RobotState";
@@ -38,6 +39,11 @@ export default class Log {
   private photonDecoder = new PhotonStructDecoder();
 
   private fields: { [id: string]: LogField } = {};
+  private commandSchedulers: {
+    [id: string]: {
+      commands: Map<number, LogCommand>;
+    };
+  } = {};
   private generatedParents: Set<string> = new Set(); // Children of these fields are generated
   private timestampRange: [number, number] | null = null;
   private timestampZero: number | null = null;
@@ -194,6 +200,27 @@ export default class Log {
     } else {
       return null;
     }
+  }
+
+  /**
+   * Gets all commands for a scheduler key.
+   *
+   * @param schedulerKey The key of the logged scheduler data
+   * @param start The start time of the range to search for commands
+   * @param end The end time of the range to search for commands
+   */
+  getCommands(schedulerKey: string, start: number, end: number): LogCommand[] {
+    if (!(schedulerKey in this.commandSchedulers)) {
+      return [];
+    }
+
+    const scheduler = this.commandSchedulers[schedulerKey];
+
+    // Look for commands for the specified mechanism
+    return scheduler.commands
+      .values()
+      .filter((command) => command.range[1] >= start && command.range[0] <= end)
+      .toArray();
   }
 
   /** Adds an existing log field to this log. */
@@ -899,6 +926,67 @@ export default class Log {
       this.putRaw(key, timestamp, value);
       this.attemptQueuedStructures();
       return;
+    }
+
+    // Special case for command schedulers. The protobuf data is flat for storage, but we can reorganize into
+    // pointers and a graph structure for easier navigation on the renderer side.
+    if (schemaType === "wpi.proto.ProtobufScheduler") {
+      if (this.fields[key].getType() === LoggableType.Raw) {
+        this.setGeneratedParent(key);
+        this.setStructuredType(key, ProtoDecoder.getFriendlySchemaType(schemaType));
+        let decodedData: { data: unknown; schemaTypes: { [key: string]: string } } | null = null;
+        try {
+          decodedData = this.protoDecoder.decode(schemaType, value);
+        } catch {}
+
+        if (decodedData !== null) {
+          let scheduler = decodedData.data as SchedulerProto;
+          this.commandSchedulers[key] ||= {
+            commands: new Map()
+          };
+
+          let localCommands = this.commandSchedulers[key].commands;
+
+          // Parse command data
+          scheduler.running_commands.forEach((cmd) => {
+            const existingCommand = localCommands.get(cmd.id);
+            if (existingCommand) {
+              // This command has been seen before, bump the end of its range but otherwise do not modify
+              existingCommand.range[1] = timestamp;
+            } else {
+              // First time, add a record for it
+              const newCommand: LogCommand = {
+                id: cmd.id,
+                parentId: cmd.parent_id,
+                name: cmd.name,
+                requirements: cmd.requirements.map((req) => req.name),
+                range: [timestamp, timestamp],
+                children: [],
+                depth: 0
+              };
+
+              // Add to the map
+              localCommands.set(cmd.id, newCommand);
+
+              // Add to the parent's children list
+              if (cmd.parent_id) {
+                const parentCommand = localCommands.get(cmd.parent_id);
+                if (parentCommand) {
+                  parentCommand.children.push(newCommand);
+                  newCommand.depth = parentCommand.depth + 1;
+                }
+              }
+            }
+          });
+        } else {
+          this.queuedProtos.push({
+            key: key,
+            timestamp: timestamp,
+            value: value,
+            schemaType: schemaType
+          });
+        }
+      }
     }
 
     // Not a schema, continue normally

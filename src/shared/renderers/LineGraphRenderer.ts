@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import ScrollSensor from "../../hub/ScrollSensor";
-import { ensureThemeContrast } from "../Colors";
+import { ensureThemeContrast, PastelColors, PastelColors_Dark } from "../Colors";
 import LineGraphFilter from "../LineGraphFilter";
 import { SelectionMode } from "../Selection";
 import { Units } from "../units";
@@ -187,7 +187,9 @@ export default class LineGraphRenderer implements TabRenderer {
         field.colorMap ? field.values : null // Specific values affect color-mapped fields so serialize full state
       ]),
       command.rightFields.map((field) => [field.values.length, field.color, field.type, field.size]),
-      command.alerts.map((row) => row.map((alert) => [alert.type, alert.text, alert.range]))
+      command.alerts.map((row) => row.map((alert) => [alert.type, alert.text, alert.range])),
+      command.commands.map((cmd) => [cmd.id, cmd.parentId, cmd.name, cmd.range, cmd.row, cmd.height, cmd.level]),
+      command.commandRowCount
     ];
     let renderStateString = JSON.stringify(renderState);
     if (renderStateString === this.lastRenderState) {
@@ -207,7 +209,7 @@ export default class LineGraphRenderer implements TabRenderer {
     this.SCROLL_OVERLAY.style.top = graphTop.toString() + "px";
     let graphHeight = height - graphTop - 35;
     if (graphHeight < 1) graphHeight = 1;
-    let discreteRowCount = command.discreteFields.length + command.alerts.length;
+    let discreteRowCount = command.discreteFields.length + command.alerts.length + command.commandRowCount;
     let graphHeightOpen = graphHeight - discreteRowCount * 20 - (discreteRowCount > 0 ? 5 : 0);
     if (graphHeightOpen < 1) graphHeightOpen = 1;
 
@@ -380,6 +382,55 @@ export default class LineGraphRenderer implements TabRenderer {
           context.fillText(alert.text, adjustedStartX + 5, topY + 15 / 2, endX - adjustedStartX - 10);
         }
       });
+    });
+
+    // Render commands
+    // In Commands v3, nested commands can never outlive their parent (and transitively, their root command).
+    // Therefore, every command tree fits strictly within the 2D bounding box of its root command:
+    // - Horizontally: bounded by [root.startTime, root.endTime].
+    // - Vertically: spanning from the top row downward across all descendant rows (height = 1 + descendantRows).
+    //
+    // LineGraphRenderer exploits this invariant:
+    // Commands are rendered in level order (root commands first at level 0, followed by nested children)
+    // so the root command establishes the base rectangular background for the entire tree, and nested
+    // child commands draw on top, at their respective rows with horizontal indentation.
+    const sortedCommands = [...command.commands].sort((a, b) => a.level - b.level);
+
+    sortedCommands.forEach((cmd) => {
+      discreteBorders.push(cmd.range[0], cmd.range[1]);
+      let totalRowIndex = command.discreteFields.length + command.alerts.length + cmd.row;
+      let topY = graphTop + graphHeight - 20 - totalRowIndex * 20;
+      let boxHeight = 15 + (cmd.height - 1) * 20;
+
+      let startX = scaleValue(cmd.range[0], timeRange, [graphLeft, graphLeft + graphWidth]);
+      let endX = scaleValue(cmd.range[1], timeRange, [graphLeft, graphLeft + graphWidth]);
+      if (endX - startX < 1) {
+        // Ensure positive width if the indentation would cause the start to be after the end
+        endX = startX + 1;
+      }
+
+      let colors = light ? PastelColors : PastelColors_Dark;
+      let color = colors[(cmd.level ?? 0) % colors.length];
+      let textColor = shiftColor(color, light ? -130 : 130);
+
+      // Draw shape
+      context.fillStyle = color;
+      context.fillRect(startX, topY, endX - startX, boxHeight);
+
+      // Draw bounding box around commands to distinguish them from each other and from their parents
+      context.strokeStyle = light ? "#222" : "#555";
+      context.lineWidth = 1;
+      context.strokeRect(startX, topY, endX - startX, boxHeight);
+
+      // Draw text label
+      let indent = (cmd.level ?? 0) * 2;
+      context.fillStyle = textColor;
+      context.fillText(
+        formatCommandLineGraphLabel(cmd.name, cmd.requirements),
+        startX + 5 + indent,
+        topY + 15 / 2,
+        endX - startX - 5 - indent
+      );
     });
 
     // Render continuous data
@@ -787,6 +838,19 @@ export type LineGraphRendererCommand = {
   rightFields: LineGraphRendererCommand_NumericField[];
   discreteFields: LineGraphRendererCommand_DiscreteField[];
   alerts: LineGraphRendererCommand_AlertSet;
+  commands: LineGraphRendererCommand_Command[];
+  commandRowCount: number;
+};
+
+export type LineGraphRendererCommand_Command = {
+  name: string;
+  id: number;
+  parentId?: number;
+  requirements: string[];
+  range: [number, number];
+  row: number;
+  height: number;
+  level: number;
 };
 
 export type LineGraphRendererCommand_NumericField = {
@@ -813,3 +877,18 @@ export type LineGraphRendererCommand_Alert = {
   text: string;
   range: [number, number];
 };
+
+/**
+ * Formats the label text for a command box.
+ *
+ * @param name The name of the command.
+ * @param requirements The requirements of the command. May be empty.
+ */
+export function formatCommandLineGraphLabel(name: string, requirements: string[]): string {
+  const parts = [name];
+  if (requirements.length > 0) {
+    const reqsList = '(' + requirements.join(', ') + ')';
+    parts.push(reqsList);
+  }
+  return parts.join(' ');
+}

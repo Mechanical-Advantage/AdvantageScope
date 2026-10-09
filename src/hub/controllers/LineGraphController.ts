@@ -9,6 +9,7 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
+import { LogCommand } from "../../shared/log/LogCommandState";
 import { getLogValueText } from "../../shared/log/LogUtil";
 import { LogValueSetNumber } from "../../shared/log/LogValueSets";
 import { AKIT_TIMESTAMP_KEYS, getRobotStateRanges } from "../../shared/log/RobotState";
@@ -16,6 +17,7 @@ import {
   LineGraphRendererCommand,
   LineGraphRendererCommand_Alert,
   LineGraphRendererCommand_AlertSet,
+  LineGraphRendererCommand_Command,
   LineGraphRendererCommand_DiscreteField,
   LineGraphRendererCommand_NumericField
 } from "../../shared/renderers/LineGraphRenderer";
@@ -709,7 +711,7 @@ export default class LineGraphController implements TabController {
     }
 
     this.discreteSourceList.getState().forEach((fieldItem) => {
-      if (!fieldItem.visible || fieldItem.type === "alerts") return;
+      if (!fieldItem.visible || fieldItem.type === "alerts" || fieldItem.type === "commands") return;
 
       let data = window.log.getRange(fieldItem.logKey, timeRange[0], timeRange[1]);
       if (data === undefined) return;
@@ -815,6 +817,196 @@ export default class LineGraphController implements TabController {
     );
     alerts = alerts.filter((row) => row.length > 0);
 
+    // Process commands
+    let commands: LineGraphRendererCommand_Command[] = [];
+    let commandRowCount = 0;
+    this.discreteSourceList
+      .getState()
+      .filter((fieldItem) => fieldItem.visible && fieldItem.type === "commands")
+      .forEach((fieldItem) => {
+        let logCommands = window.log.getCommands(fieldItem.logKey, timeRange[0], timeRange[1]);
+        if (logCommands.length === 0) {
+          return;
+        }
+
+        // Collect all descendants of a command that fall within the current window range
+        let getWindowDescendants = (cmd: LogCommand): LogCommand[] => {
+          let descendants: LogCommand[] = [];
+          let traverse = (curr: LogCommand) => {
+            for (const child of curr.children) {
+              if (child.range[1] >= timeRange[0] && child.range[0] <= timeRange[1]) {
+                descendants.push(child);
+                traverse(child);
+              }
+            }
+          };
+          traverse(cmd);
+          return descendants;
+        };
+
+        // Every command in the window tracks the maximum instantaneous number of descendants
+        // it ever has within the bounds of the window. Height is 1 + maxNumDescendants.
+        let commandHeights = new Map<LogCommand, number>();
+        let computeCommandHeight = (cmd: LogCommand): number => {
+          if (commandHeights.has(cmd)) return commandHeights.get(cmd)!;
+
+          let descendants = getWindowDescendants(cmd);
+          if (descendants.length === 0) {
+            commandHeights.set(cmd, 1);
+            return 1;
+          }
+
+          let cmdStartBounded = Math.max(cmd.range[0], timeRange[0]);
+          let cmdEndBounded = Math.min(cmd.range[1], timeRange[1]);
+
+          // Find all critical endpoint timestamps within the command's bounded window
+          let endpoints: number[] = [];
+          for (const desc of descendants) {
+            let descStart = Math.max(desc.range[0], timeRange[0]);
+            let descEnd = Math.min(desc.range[1], timeRange[1]);
+            if (descStart >= cmdStartBounded && descStart <= cmdEndBounded) {
+              endpoints.push(descStart);
+            }
+            if (descEnd >= cmdStartBounded && descEnd <= cmdEndBounded) {
+              endpoints.push(descEnd);
+            }
+          }
+
+          let maxInstantaneousDescendants = 0;
+          for (const t of endpoints) {
+            let count = 0;
+            for (const desc of descendants) {
+              let descStart = Math.max(desc.range[0], timeRange[0]);
+              let descEnd = Math.min(desc.range[1], timeRange[1]);
+              if (descStart <= t && t <= descEnd) {
+                count++;
+              }
+            }
+            if (count > maxInstantaneousDescendants) {
+              maxInstantaneousDescendants = count;
+            }
+          }
+
+          let height = 1 + maxInstantaneousDescendants;
+          commandHeights.set(cmd, height);
+          return height;
+        };
+
+        // Helper to find the lowest available contiguous block of rows for a time interval
+        let findFreeBaseRow = (occupancy: [number, number][][], start: number, end: number, height: number): number => {
+          let baseRow = 0;
+          while (true) {
+            let free = true;
+            for (let r = baseRow; r < baseRow + height; r++) {
+              if (occupancy[r]) {
+                for (const occ of occupancy[r]) {
+                  if (!(end <= occ[0] || start >= occ[1])) {
+                    free = false;
+                    break;
+                  }
+                }
+              }
+              if (!free) break;
+            }
+            if (free) return baseRow;
+            baseRow++;
+          }
+        };
+
+        let markOccupied = (
+          occupancy: [number, number][][],
+          start: number,
+          end: number,
+          baseRow: number,
+          height: number
+        ) => {
+          for (let r = baseRow; r < baseRow + height; r++) {
+            if (!occupancy[r]) {
+              occupancy[r] = [];
+            }
+            occupancy[r].push([start, end]);
+          }
+        };
+
+        // Filter root commands to those overlapping with the current window range
+        let rootsInWindow = logCommands.filter(
+          (cmd) =>
+            (cmd.parentId === undefined || cmd.depth === 0) &&
+            cmd.range[1] >= timeRange[0] &&
+            cmd.range[0] <= timeRange[1]
+        );
+
+        // Sort root commands descending by ID so higher IDs claim lower rows (bottom)
+        // and lower IDs claim higher rows (above higher IDs).
+        rootsInWindow.sort((a, b) => b.id - a.id);
+
+        // Recursively assign discrete row coordinates to parent and child commands
+        let assignCommandRows = (cmd: LogCommand, topRow: number, level: number = 0) => {
+          // Every command in the window tracks its start and end time, bounded to the start and end
+          // of the current window range. This controls the width of its bounding box.
+          let boundedRange: [number, number] = [
+            Math.max(cmd.range[0], timeRange[0]),
+            Math.min(cmd.range[1], timeRange[1])
+          ];
+          let height = computeCommandHeight(cmd);
+
+          commands.push({
+            name: cmd.name,
+            id: cmd.id,
+            parentId: cmd.parentId,
+            requirements: cmd.requirements,
+            range: boundedRange,
+            row: topRow,
+            height: height,
+            level: level
+          });
+
+          let childrenInWindow = cmd.children.filter(
+            (child) => child.range[1] >= timeRange[0] && child.range[0] <= timeRange[1]
+          );
+          // Sort child siblings ascending by ID so lower IDs claim lower relative row offsets
+          // (closer to parent header at top) and appear above higher IDs.
+          childrenInWindow.sort((a, b) => a.id - b.id);
+
+          let childOccupancy: [number, number][][] = [];
+
+          for (const child of childrenInWindow) {
+            let childStart = Math.max(child.range[0], timeRange[0]);
+            let childEnd = Math.min(child.range[1], timeRange[1]);
+            let childHeight = computeCommandHeight(child);
+
+            let baseRelRow = findFreeBaseRow(childOccupancy, childStart, childEnd, childHeight);
+            markOccupied(childOccupancy, childStart, childEnd, baseRelRow, childHeight);
+
+            let childTopRow = topRow - 1 - baseRelRow;
+            assignCommandRows(child, childTopRow, level + 1);
+          }
+        };
+
+        let rootOccupancy: [number, number][][] = [];
+        let maxTopRow = -1;
+
+        for (const root of rootsInWindow) {
+          let rootStart = Math.max(root.range[0], timeRange[0]);
+          let rootEnd = Math.min(root.range[1], timeRange[1]);
+          let rootHeight = computeCommandHeight(root);
+
+          let baseRow = findFreeBaseRow(rootOccupancy, rootStart, rootEnd, rootHeight);
+          markOccupied(rootOccupancy, rootStart, rootEnd, baseRow, rootHeight);
+
+          let topRow = baseRow + rootHeight - 1;
+          if (topRow > maxTopRow) {
+            maxTopRow = topRow;
+          }
+
+          assignCommandRows(root, topRow, 0);
+        }
+
+        if (maxTopRow >= 0) {
+          commandRowCount += maxTopRow + 1;
+        }
+      });
+
     // Get numeric ranges
     let calcRange = (dataRange: [number, number], lockedRange: [number, number] | null): [number, number] => {
       let range: [number, number];
@@ -863,7 +1055,9 @@ export default class LineGraphController implements TabController {
       leftFields: leftFieldsCommand,
       rightFields: rightFieldsCommand,
       discreteFields: discreteFieldsCommand,
-      alerts: alerts
+      alerts: alerts,
+      commands: commands,
+      commandRowCount: commandRowCount
     };
   }
 

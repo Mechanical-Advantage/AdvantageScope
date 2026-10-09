@@ -41,6 +41,38 @@ export const NeonColors_RedStart: SourceListOptionValueConfig[] = [
   { key: "#ff00ff", display: "Magenta" }
 ];
 
+export const PastelColors_Light: string[] = [
+  "#fbb4ae",
+  "#fed9a6",
+  "#ffffcc",
+  "#d2f5b0",
+  "#ccebc5",
+  "#a8e6cf",
+  "#b3e5fc",
+  "#b3cde3",
+  "#cfbaf0",
+  "#decbe4",
+  "#fddaec",
+  "#f4b6c2"
+];
+
+export const PastelColors: string[] = PastelColors_Light;
+
+export const PastelColors_Dark: string[] = [
+  "#733734",
+  "#704824",
+  "#6b6026",
+  "#4c6328",
+  "#33633d",
+  "#296156",
+  "#275c78",
+  "#35537a",
+  "#523e7a",
+  "#663b73",
+  "#78375c",
+  "#783543"
+];
+
 const DARK_MIN_LIGHTNESS = 65;
 const LIGHT_MAX_LIGHTNESS = 45;
 
