@@ -10,11 +10,11 @@ import path from "path";
 
 let licenses = [];
 let packageLock = JSON.parse(fs.readFileSync("package-lock.json"));
-Object.keys(packageLock.packages).forEach(async (modulePath) => {
+for (const modulePath of Object.keys(packageLock.packages)) {
   let moduleName = modulePath === "" ? "AdvantageScope" : modulePath.replaceAll("node_modules/", "");
   if (modulePath !== "" && !fs.existsSync(modulePath)) {
     // Module not installed
-    return;
+    continue;
   }
   let licenseFiles = fs
     .readdirSync(modulePath === "" ? "." : modulePath)
@@ -23,7 +23,8 @@ Object.keys(packageLock.packages).forEach(async (modulePath) => {
         filename.toLowerCase().startsWith("license") &&
         !filename.endsWith(".js") &&
         !filename.endsWith(".json") &&
-        !filename.includes("header")
+        !filename.includes("header") &&
+        !fs.statSync(path.join(modulePath === "" ? "." : modulePath, filename)).isDirectory()
     );
   let licenseText = null;
   if (licenseFiles.length > 0) {
@@ -32,17 +33,29 @@ Object.keys(packageLock.packages).forEach(async (modulePath) => {
   } else if (fs.existsSync(path.join(modulePath, "package.json"))) {
     // Read from package.json
     let packageJson = JSON.parse(fs.readFileSync(path.join(modulePath, "package.json")));
-    let request = await fetch(
-      "https://raw.githubusercontent.com/spdx/license-list-data/main/json/details/" +
-        encodeURIComponent(packageJson.license) +
-        ".json"
-    );
-    if (!request.ok) {
-      console.error('Failed to get license for "' + moduleName + '"');
-      return;
+    let spdxId = packageJson.license;
+    if (typeof spdxId === "string") {
+      spdxId = spdxId.replace(/[()]/g, "").trim();
+      if (spdxId.includes(" OR ")) {
+        spdxId = spdxId.split(" OR ")[0].trim();
+      }
     }
-    let spdxLicense = await request.json();
-    licenseText = spdxLicense.licenseText;
+    try {
+      let request = await fetch(
+        "https://raw.githubusercontent.com/spdx/license-list-data/main/json/details/" +
+          encodeURIComponent(spdxId) +
+          ".json"
+      );
+      if (!request.ok) {
+        console.error('Failed to get license for "' + moduleName + '"');
+        continue;
+      }
+      let spdxLicense = await request.json();
+      licenseText = spdxLicense.licenseText;
+    } catch {
+      console.error('Failed to get license for "' + moduleName + '"');
+      continue;
+    }
   }
   if (licenseText !== null) {
     licenses.push({
@@ -50,6 +63,28 @@ Object.keys(packageLock.packages).forEach(async (modulePath) => {
       text: licenseText
     });
   }
+}
+
+// Add extra licenses from "licenses" directory
+if (fs.existsSync("licenses")) {
+  fs.readdirSync("licenses")
+    .filter((filename) => filename.endsWith(".txt"))
+    .sort()
+    .forEach((filename) => {
+      let moduleName = filename.slice(0, -4);
+      let licenseText = fs.readFileSync(path.join("licenses", filename), "utf-8");
+      licenses.push({
+        module: moduleName,
+        text: licenseText
+      });
+    });
+}
+
+// Sort licenses alphabetically with AdvantageScope first
+licenses.sort((a, b) => {
+  if (a.module === "AdvantageScope") return -1;
+  if (b.module === "AdvantageScope") return 1;
+  return a.module.localeCompare(b.module);
 });
 
 // Save JSON version

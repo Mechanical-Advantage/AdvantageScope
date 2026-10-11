@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import { SourceListState } from "../../shared/SourceListConfig";
-import { MechanismState, getMechanismState, mergeMechanismStates } from "../../shared/log/LogUtil";
+import { MechanismState, getMechanismState, mergeMechanismStates } from "../../shared/log/LogMechanismState";
 import { MechanismRendererCommand } from "../../shared/renderers/MechanismRenderer";
 import { createUUID } from "../../shared/util";
 import SourceList from "../SourceList";

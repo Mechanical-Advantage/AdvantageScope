@@ -21,7 +21,11 @@ To zoom, place the cursor over the timeline and scroll up or down. A range can a
 
 </details>
 
-:::warning
+:::warning FTC 2026-2027 Field
+The 2026-2027 FTC field model does not include built-in AprilTags, as the locations of tags on the hive are expected to change during the match. Teams can publish a `Pose3d[]` and `number[]` to add dynamic AprilTag objects to the field. The correct AprilTag size for this field is **3.25 in**.
+:::
+
+:::warning FRC 2026 Field
 The 2026 FRC field model is consistent with the AprilTag layout for the **welded** field. The differences between the welded and AndyMark fields are very minor, but there may be small (~0.5 inch) misalignments when visualizing AprilTag poses based on the AndyMark field layout.
 :::
 

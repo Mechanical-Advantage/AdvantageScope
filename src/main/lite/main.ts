@@ -360,6 +360,16 @@ async function handleHubMessage(message: NamedMessage) {
         const uuid: string = message.data.uuid;
         const path: string = message.data.path;
 
+        let extension = path.split(".").pop();
+        if (extension === "hoot" || extension === "revlog" || extension === "wpilogxz") {
+          sendMessage(hubPort, "historical-data", {
+            files: [null],
+            error: "Unsupported file format in AdvantageScope Lite.",
+            uuid: uuid
+          });
+          break;
+        }
+
         let prefs = DEFAULT_PREFS;
         let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
         if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
@@ -376,12 +386,36 @@ async function handleHubMessage(message: NamedMessage) {
       }
       break;
 
+    case "historical-start-raw":
+      {
+        const uuid: string = message.data.uuid;
+        const extension: string = message.data.extension;
+
+        if (extension === "hoot" || extension === "revlog" || extension === "wpilogxz") {
+          sendMessage(hubPort, "historical-data", {
+            files: [null],
+            error: "Unsupported file format in AdvantageScope Lite.",
+            uuid: uuid
+          });
+        } else {
+          sendMessage(hubPort, "historical-data", {
+            files: [message.data.data],
+            error: null,
+            uuid: uuid
+          });
+        }
+      }
+      break;
+
     case "open-link":
       window.open(message.data, "_blank");
       break;
 
     case "ask-open-sidebar-context-menu":
       // Sidebar context menu is currently not implemented in the Lite version since the only current options require HTTPS APIs (navigator.clipboard APIs).
+      break;
+
+    case "ask-open-tuning-context-menu":
       break;
 
     case "open-app-menu":

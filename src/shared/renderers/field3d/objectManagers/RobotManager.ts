@@ -13,7 +13,7 @@ import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import WorkerManager from "../../../../hub/WorkerManager";
 import { AdvantageScopeAssets } from "../../../AdvantageScopeAssets";
 import { ModuleVelocity, rotationSequenceToQuaternion } from "../../../geometry";
-import { MechanismState } from "../../../log/LogUtil";
+import { MechanismState } from "../../../log/LogMechanismState";
 import { Units } from "../../../units";
 import { transformPx } from "../../../util";
 import { Field3dRendererCommand_GhostObj, Field3dRendererCommand_RobotObj } from "../../Field3dRenderer";

@@ -145,12 +145,12 @@ ARKit requires physical hardware, but the UI can be tested in the simulator. Sim
 Free Apple Developer accounts (Personal Teams) cannot sign App Clip entitlements. To test on a physical device using a free account:
 
 1. In Xcode, select the `AdvantageScopeXR` project > `AdvantageScopeXR` target > `Signing & Capabilities`.
-2. Change the team to your personal Apple ID team and update the bundle identifier to a unique prefix (e.g., `com.<username>.advantagescopexr`).
+2. Change the team to your personal team and update the bundle identifier to a unique prefix (e.g., `com.<username>.advantagescopexr`).
 3. In the `AdvantageScopeXR` target > `Build Phases`:
    - Under `Dependencies`, remove `AdvantageScopeXRClip`.
    - Under `Embed App Clips`, remove `AdvantageScopeXRClip.app` (or delete the build phase).
-4. On your iOS device, enable developer (`Settings` > `Privacy & Security` > `Developer Mode`) and trust your developer certificate (`Settings` > `General` > `VPN & Device Management`).
-5. Build and run the app on your device using Xcode.
+4. On your iOS device, enable Developer Mode under `Settings` > `Privacy & Security` > `Developer Mode` (requires a restart).
+5. Build and run the app on your device from Xcode. On the first run, trust your developer certificate under `Settings` > `General` > `VPN & Device Management`.
 
 ## Bundled Assets
 

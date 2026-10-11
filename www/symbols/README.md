@@ -1,3 +1,3 @@
-Symbols are copied from Apple's SF Symbols:
-
-https://developer.apple.com/sf-symbols/
+Based on Google's Material Symbols: https://fonts.google.com/icons
+Default size is 24px
+Add fill-opacity="0.85"

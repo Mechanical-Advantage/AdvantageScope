@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import { Translation2d } from "../geometry";
-import { MechanismState } from "../log/LogUtil";
+import { MechanismState } from "../log/LogMechanismState";
 import TabRenderer from "./TabRenderer";
 
 export default class MechanismRenderer implements TabRenderer {

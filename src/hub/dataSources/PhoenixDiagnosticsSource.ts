@@ -6,15 +6,15 @@
 // at the root directory of this project.
 
 import Log from "../../shared/log/Log";
-import { PHOENIX_PREFIX } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
+import { PHOENIX_PREFIX } from "../../shared/log/LogKeyUtils";
 import { LiveDataSource, LiveDataSourceStatus } from "./LiveDataSource";
 
 export default class PhoenixDiagnosticsSource extends LiveDataSource {
   private PORT = 1250;
-  private GET_DEVICES_PERIOD = 500;
-  private GET_DEVICES_TIMEOUT = 400;
-  private GET_SIGNALS_TIMEOUT = 200;
+  private GET_DEVICES_PERIOD = 1000;
+  private GET_DEVICES_TIMEOUT = 3000;
+  private GET_SIGNALS_TIMEOUT = 3000;
   private PLOT_PERIOD = 50;
   private PLOT_TIMEOUT = this.PLOT_PERIOD - 10;
   private PLOT_RESOLUTION = this.PLOT_PERIOD; // Support up to 1Khz signals
@@ -93,48 +93,34 @@ export default class PhoenixDiagnosticsSource extends LiveDataSource {
     this.plotInterval = setInterval(() => {
       // Get set of signals to request
       let activeSignals: { [key: string]: Response_Signal[] } = {};
-      if (window.preferences?.liveSubscribeMode === "logging") {
-        // Logging mode, all signals are active
-        Object.entries(this.deviceSignals).forEach(([deviceName, signals]) => {
-          signals.forEach((signal) => {
-            if (!(deviceName in activeSignals)) {
-              activeSignals[deviceName] = [];
-            }
-            if (activeSignals[deviceName].find((prevSignal) => prevSignal.Id === signal!.Id) !== undefined) return;
-            activeSignals[deviceName].push(signal);
-          });
-        });
-      } else {
-        // Low bandwidth mode, only use active fields
-        [...window.tabs.getActiveFields(), ...window.sidebar.getActiveFields()].forEach((activeField) => {
-          if (!activeField.startsWith(PHOENIX_PREFIX)) return;
-          let splitKey = activeField.split("/");
-          let deviceName: string, signalName: string;
-          if (splitKey.length === 3) {
-            deviceName = splitKey[1];
-            signalName = splitKey[2];
-          } else if (splitKey.length === 4) {
-            deviceName = splitKey[1] + "/" + splitKey[2];
-            signalName = splitKey[3];
-          } else {
-            return;
-          }
+      window.tabs.getActiveFields().forEach((activeField) => {
+        if (!activeField.startsWith(PHOENIX_PREFIX)) return;
+        let splitKey = activeField.split("/");
+        let deviceName: string, signalName: string;
+        if (splitKey.length === 3) {
+          deviceName = splitKey[1];
+          signalName = splitKey[2];
+        } else if (splitKey.length === 4) {
+          deviceName = splitKey[1] + "/" + splitKey[2];
+          signalName = splitKey[3];
+        } else {
+          return;
+        }
 
-          if (!(deviceName in activeSignals)) {
-            activeSignals[deviceName] = [];
-          }
-          if (!(deviceName in this.deviceSignals)) return;
-          let signal = this.deviceSignals[deviceName].find((signal) => signal.Name === signalName);
-          if (signal === undefined) return;
-          if (activeSignals[deviceName].find((prevSignal) => prevSignal.Id === signal!.Id) !== undefined) return;
-          activeSignals[deviceName].push(signal);
-        });
-      }
+        if (!(deviceName in activeSignals)) {
+          activeSignals[deviceName] = [];
+        }
+        if (!(deviceName in this.deviceSignals)) return;
+        let signal = this.deviceSignals[deviceName].find((signal) => signal.Name === signalName);
+        if (signal === undefined) return;
+        if (activeSignals[deviceName].find((prevSignal) => prevSignal.Id === signal!.Id) !== undefined) return;
+        activeSignals[deviceName].push(signal);
+      });
 
       // Request for each device
       let deviceCount = Object.keys(activeSignals).length;
       Object.keys(activeSignals).forEach((deviceName, deviceIndex) => {
-        // Offset requests for each device to spread out the load on the RIO
+        // Offset requests for each device to spread out the load
         window.setTimeout(
           () => {
             // Merge sidebar and tab signals

@@ -17,7 +17,7 @@ const StatisticsController_Config: SourceListConfig = {
     {
       key: "independent",
       display: "Independent",
-      symbol: "line.3.horizontal",
+      symbol: "menu",
       showInTypeName: true,
       color: "color",
       sourceTypes: ["Number"],
@@ -35,7 +35,7 @@ const StatisticsController_Config: SourceListConfig = {
     {
       key: "reference",
       display: "Reference",
-      symbol: "line.horizontal.star.fill.line.horizontal",
+      symbol: "anchor",
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",
@@ -48,7 +48,7 @@ const StatisticsController_Config: SourceListConfig = {
     {
       key: "relativeError",
       display: "Relative Error",
-      symbol: "arrow.down.and.line.horizontal.and.arrow.up",
+      symbol: "verticalaligncenter",
       showInTypeName: true,
       color: "color",
       sourceTypes: ["Number"],
@@ -67,7 +67,7 @@ const StatisticsController_Config: SourceListConfig = {
     {
       key: "absoluteError",
       display: "Absolute Error",
-      symbol: "arrow.down.to.line",
+      symbol: "verticalalignbottom",
       showInTypeName: true,
       color: "color",
       sourceTypes: ["Number"],

@@ -16,20 +16,20 @@ const liteAssetsPath = path.join("lite", "static", "bundledAssets");
 const githubAssetsRepository = "Mechanical-Advantage/AdvantageScopeAssets";
 const githubAssetsTag = "archive-v1";
 let githubAssetNames = [
-  "Joystick_LogitechF310V2",
-  "Joystick_PS4ControllerV2",
-  "Joystick_XboxControllerBlueV2",
-  "Joystick_XboxControllerWhiteV2"
+  "Joystick_LogitechF310V3",
+  "Joystick_PS4ControllerV3",
+  "Joystick_XboxControllerBlueV3",
+  "Joystick_XboxControllerWhiteV3"
 ];
 if (!isDS) {
   // Only include fields and robots in non-DS distribution
   githubAssetNames = githubAssetNames.concat([
-    "Field2d_2026FRCFieldV1",
-    "Field2d_20252026FTCFieldV1",
-    "Field3d_2026FRCFieldV1",
-    "Field3d_20252026FTCFieldV1",
-    "Robot_2026FRCKitBotV1",
-    "Robot_FTCDriveBaseV1"
+    "Field2d_2026FRCFieldV2",
+    "Field2d_20262027FTCFieldV1",
+    "Field3d_2026FRCFieldV2",
+    "Field3d_20262027FTCFieldV1",
+    "Robot_2026FRCKitBotV2",
+    "Robot_FTCDriveBaseV2"
   ]);
 }
 

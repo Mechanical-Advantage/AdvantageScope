@@ -6,8 +6,21 @@
 // at the root directory of this project.
 
 import Log from "../../../shared/log/Log";
-import { getEnabledKey, PHOTON_PREFIX, PROTO_PREFIX, STRUCT_PREFIX } from "../../../shared/log/LogUtil";
+import {
+  PHOTON_PREFIX,
+  PROTO_PREFIX,
+  STRUCT_PREFIX,
+  getStructuredTypeFromRaw,
+  isSchema
+} from "../../../shared/log/LogKeyUtils";
 import LoggableType from "../../../shared/log/LoggableType";
+import {
+  AUTONOMOUS_KEYS,
+  ENABLED_KEYS,
+  UTILITY_KEYS,
+  getEnabledKey,
+  getProgramStartTimeKey
+} from "../../../shared/log/RobotState";
 import {
   HistoricalDataSource_WorkerFieldResponse,
   HistoricalDataSource_WorkerRequest,
@@ -24,6 +37,7 @@ const entryIds: { [id: number]: string } = {};
 const entryTypes: { [id: string]: string } = {};
 const entryStartTimes: { [id: number]: number } = {};
 const dataRecordPositions: { [id: string]: number[] } = {};
+let clearTime: number | null = null;
 
 function sendResponse(response: HistoricalDataSource_WorkerResponse) {
   self.postMessage(response);
@@ -43,6 +57,7 @@ self.onmessage = async (event) => {
 };
 
 async function start(data: Uint8Array) {
+  clearTime = null;
   let lastProgressValue = 0;
   let shortLivedFieldNames: Set<string> = new Set();
   decoder = new WPILOGDecoder(data);
@@ -96,14 +111,8 @@ async function start(data: Uint8Array) {
                   break;
                 default: // Default to raw
                   log.createBlankField(startData.name, LoggableType.Raw);
-                  if (startData.type.startsWith(STRUCT_PREFIX)) {
-                    let schemaType = startData.type.split(STRUCT_PREFIX)[1];
-                    log.setStructuredType(startData.name, schemaType);
-                  } else if (startData.type.startsWith(PHOTON_PREFIX)) {
-                    let schemaType = startData.type.split(PHOTON_PREFIX)[1];
-                    log.setStructuredType(startData.name, schemaType);
-                  } else if (startData.type.startsWith(PROTO_PREFIX)) {
-                    let schemaType = startData.type.split(PROTO_PREFIX)[1];
+                  let schemaType = getStructuredTypeFromRaw(startData.type);
+                  if (schemaType !== null) {
                     log.setStructuredType(startData.name, schemaType);
                   }
                   break;
@@ -158,10 +167,38 @@ async function start(data: Uint8Array) {
     console.warn("Ignoring short-lived WPILOG entries:", [...shortLivedFieldNames].toSorted());
   }
 
+  // Load schemas and keys needed to decode struct-based enabled states
+  log.getFieldKeys().forEach((key) => {
+    if (isSchema(key)) {
+      parseField(key, true);
+    }
+  });
+  const ALL_EAGER_KEYS = [...ENABLED_KEYS, ...AUTONOMOUS_KEYS, ...UTILITY_KEYS];
+  log.getFieldKeys().forEach((key) => {
+    const isEager = ALL_EAGER_KEYS.some((eagerKey) => eagerKey.startsWith(key + "/") || eagerKey === key);
+    if (isEager) {
+      parseField(key, true);
+    }
+  });
+
   // Load enabled field (required for merging)
   let enabledKey = getEnabledKey(log);
   if (enabledKey !== undefined) {
     parseField(enabledKey, true);
+  }
+
+  // Find program start time to clear old data
+  let programStartTimeKey = getProgramStartTimeKey(log);
+  if (programStartTimeKey !== undefined) {
+    parseField(programStartTimeKey, true);
+    let field = log.getField(programStartTimeKey);
+    if (field !== null && field.getType() === LoggableType.Number) {
+      let values = field.toSerialized().values as number[];
+      if (values.length > 0) {
+        clearTime = values[values.length - 1] / 1e9;
+        log.clearBeforeTime(clearTime);
+      }
+    }
   }
 
   // Send message
@@ -264,6 +301,10 @@ function parseField(key: string, skipMessage = false) {
       }
     });
     delete dataRecordPositions[key]; // Clear memory
+  }
+
+  if (clearTime !== null) {
+    log.clearBeforeTime(clearTime);
   }
 
   // Get set of changed fields

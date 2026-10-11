@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import LoggableType from "./LoggableType";
+import { isChildLog } from "./LogKeyUtils";
 import { logValuesEqual } from "./LogUtil";
 import {
   LogValueSetAny,
@@ -199,9 +200,11 @@ export default class LogField {
     }
 
     // Compare to adjacent values
-    if (insertIndex > 0 && logValuesEqual(this.type, value, this.data.values[insertIndex - 1])) {
+    let childLog = isChildLog(this.wpilibType, this.structuredType);
+    if (!childLog && insertIndex > 0 && logValuesEqual(this.type, value, this.data.values[insertIndex - 1])) {
       // Same as the previous value
     } else if (
+      !childLog &&
       insertIndex < this.data.values.length &&
       logValuesEqual(this.type, value, this.data.values[insertIndex])
     ) {

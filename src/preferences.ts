@@ -124,6 +124,7 @@ window.addEventListener("message", (event) => {
             systemcoreStaticAddress: oldPrefs.systemcoreStaticAddress,
             hasScrolledLineGraph: oldPrefs.hasScrolledLineGraph,
             hasScrolledTimeline: oldPrefs.hasScrolledTimeline,
+            prefersFTC: oldPrefs.prefersFTC,
             timestamps: timestamps
           };
           messagePort.postMessage(newPrefs);

@@ -6,10 +6,8 @@ sidebar_position: 2
 
 AdvantageScope supports live-streaming of signals from Phoenix 6 devices with **no setup in user code**. This enables easy debugging and tuning of Phoenix devices using the familiar interface and full power of AdvantageScope:
 
-- Flexible visualization options, including support for multiple axes and discrete fields
+- Flexible visualization options, including support for tables and statistical analysis
 - Full support for unit-aware graphing, including implicit and one-click unit conversion ([docs](/tab-reference/line-graph/units))
-- Live preview of all values in the sidebar for easy browsing
-- Support for plotting and signal preview from multiple devices simultaneously
 - Decoding of enum values as human-readable strings (control modes, bridge status, CANcoder magnet state, etc)
 - Integrated sidebar tooltips with descriptions and units for each signal
 - Hierarchical organization of signals, grouped by CAN bus, device, and signal type

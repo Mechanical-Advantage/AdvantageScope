@@ -2,8 +2,8 @@ Assets in this folder are used as source list icons, and adjusted as described t
 
 Replace all instances of:
 
-fill="#000000" fill-opacity="0.85"
+fill="#000000"
 
 with:
 
-fill="currentColor" fill-opacity="1"
+fill="currentColor"
