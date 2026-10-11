@@ -39,6 +39,7 @@ export default class ConsoleRenderer implements TabRenderer {
   private lastDisplayOffset: number | null = null;
   private lastIsStartAt0: boolean | null = null;
   private displayOffset = 0;
+  private lastFollowState = "";
 
   constructor(root: HTMLElement, hasController: boolean) {
     this.hasController = hasController;
@@ -202,6 +203,7 @@ export default class ConsoleRenderer implements TabRenderer {
 
     // Update highlights
     this.updateHighlights();
+    this.updateFollowRange(command.followRange ?? null);
 
     // Update placeholder for jump input
     let selectedTime = this.selectedTime;
@@ -392,6 +394,33 @@ export default class ConsoleRenderer implements TabRenderer {
     }
   }
 
+  /** Fades rows outside of the followed range and scrolls to the start of the range when it changes. */
+  private updateFollowRange(followRange: [number, number] | null) {
+    let followState = JSON.stringify([followRange, this.renderedTimestamps.length, this.lastFilter]);
+    if (followState === this.lastFollowState) return;
+    this.lastFollowState = followState;
+
+    let firstRow: HTMLElement | null = null;
+    this.renderedTimestamps.forEach((timestamp, index) => {
+      let row = this.TABLE_BODY.children[index + 1] as HTMLElement;
+      row.classList.toggle(
+        "out-of-range",
+        followRange !== null && (timestamp < followRange[0] || timestamp > followRange[1])
+      );
+      if (firstRow === null && followRange !== null && timestamp >= followRange[0]) {
+        firstRow = row;
+      }
+    });
+    if (followRange === null || this.selectionMode === SelectionMode.Locked) return;
+    if (firstRow === null) {
+      // All rows are before the range
+      this.TABLE_CONTAINER.scrollTop = this.TABLE_CONTAINER.scrollHeight;
+    } else {
+      let headerHeight = (this.TABLE_BODY.firstElementChild as HTMLElement).clientHeight;
+      this.TABLE_CONTAINER.scrollTop = (firstRow as HTMLElement).offsetTop - headerHeight;
+    }
+  }
+
   /** Formats a console log line containing ANSI escape sequences to HTML with filter highlighting. */
   private formatValue(value: string, filter: string): string {
     let normalized = value.replace(/\\(?:033|x1b|x1B|e)(?=\[[0-9;:]*[a-zA-Z])/g, "\x1b");
@@ -450,4 +479,7 @@ export type ConsoleRendererCommand = {
   selectionMode: SelectionMode;
   selectedTime: number | null;
   hoveredTime: number | null;
+
+  /** If provided, rows outside this time range are faded and the table scrolls to the start of the range. */
+  followRange?: [number, number] | null;
 };

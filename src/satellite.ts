@@ -12,6 +12,7 @@ import Selection, { SelectionMode } from "./shared/Selection";
 import TabType, { getTabIcon } from "./shared/TabType";
 import ConsoleRenderer from "./shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "./shared/renderers/DocumentationRenderer";
+import DriverStationRenderer from "./shared/renderers/DriverStationRenderer";
 import Field2dRenderer from "./shared/renderers/Field2dRenderer";
 import Field3dRenderer from "./shared/renderers/Field3dRenderer";
 import JoysticksRenderer from "./shared/renderers/JoysticksRenderer";
@@ -101,6 +102,9 @@ function updateVisualizer() {
       break;
     case TabType.Metadata:
       renderer = new MetadataRenderer(root);
+      break;
+    case TabType.DriverStation:
+      renderer = new DriverStationRenderer(root, false);
       break;
   }
 }

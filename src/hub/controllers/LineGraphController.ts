@@ -9,8 +9,10 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
-import { getLogValueText } from "../../shared/log/LogUtil";
+import { DriverStationColor } from "../../shared/log/DriverStationStatus";
+import { getLogValueText, getOrDefault } from "../../shared/log/LogUtil";
 import { LogValueSetNumber } from "../../shared/log/LogValueSets";
+import LoggableType from "../../shared/log/LoggableType";
 import { AKIT_TIMESTAMP_KEYS, getRobotStateRanges } from "../../shared/log/RobotState";
 import {
   LineGraphRendererCommand,
@@ -55,6 +57,9 @@ export default class LineGraphController implements TabController {
   private leftUnitCache: Units.UnitConfig | null = null;
   private rightUnitCache: Units.UnitConfig | null = null;
   private showRobotMode = false;
+  private discreteTextOverride: ((logKey: string, value: unknown) => string | null) | null = null;
+  private numericValueOverride: ((logKey: string, value: number) => number) | null = null;
+  private discreteColorOverride: ((logKey: string, value: unknown) => DriverStationColor | null) | null = null;
 
   constructor(root: HTMLElement) {
     // Make source lists
@@ -149,6 +154,14 @@ export default class LineGraphController implements TabController {
           showRobotMode: this.showRobotMode,
           config: LineGraphController_DiscreteConfig
         });
+      },
+      (key: string, time: number) => {
+        // Match the text displayed on the graph, with the raw value alongside any replaced text
+        let value = getOrDefault(window.log, key, LoggableType.Number, time, null);
+        if (value === null) return null;
+        let valueText = getLogValueText(value, LoggableType.Number);
+        let override = this.discreteTextOverride?.(key, value) ?? null;
+        return override === null ? valueText : override + " [" + valueText + "]";
       }
     );
   }
@@ -309,6 +322,44 @@ export default class LineGraphController implements TabController {
         this.discreteSourceList.clear();
         break;
     }
+  }
+
+  /**
+   * Sets a function that can replace the text displayed for values of discrete fields. The default
+   * text is used when the function returns null.
+   */
+  setDiscreteTextOverride(override: ((logKey: string, value: unknown) => string | null) | null) {
+    this.discreteTextOverride = override;
+  }
+
+  /** Sets a function that can replace the values of numeric fields before they are displayed. */
+  setNumericValueOverride(override: ((logKey: string, value: number) => number) | null) {
+    this.numericValueOverride = override;
+  }
+
+  /**
+   * Sets a function that can assign colors to values of discrete fields. Stripes are displayed in
+   * the assigned color, using the same colors as the robot mode visualization for robot modes.
+   */
+  setDiscreteColorOverride(override: ((logKey: string, value: unknown) => DriverStationColor | null) | null) {
+    this.discreteColorOverride = override;
+  }
+
+  /** Returns the colors used to display each robot mode and fault. */
+  private getStateColors(): { [color in DriverStationColor]: string } {
+    let light = !window.matchMedia("(prefers-color-scheme: dark)").matches;
+    return {
+      Disabled: light ? "#dddddd" : "#444444",
+      Teleop: light ? "#5a83ff" : "#3957dd",
+      Auto: light ? "#efab28" : "#c38615",
+      Utility: light ? "#888888" : "#777777",
+      EStop: light ? "#f0504a" : "#c8322d",
+      AStop: light ? "#f0504a" : "#c8322d",
+      Brownout: light ? "#b07a4a" : "#8a5a2e",
+      NoRadioConnection: light ? "#f0504a" : "#c8322d",
+      NoRobotConnection: light ? "#f08a2e" : "#c96a1a",
+      NoRobotCommunication: light ? "#e8c21e" : "#b89a10"
+    };
   }
 
   /** Sets the state of the robot mode visualization. */
@@ -473,6 +524,15 @@ export default class LineGraphController implements TabController {
           filter === LineGraphFilter.Differentiate ? -1 : 0
         );
         if (data === undefined) return;
+
+        // Apply value override
+        if (this.numericValueOverride !== null) {
+          let override = this.numericValueOverride;
+          data = {
+            timestamps: data.timestamps,
+            values: data.values.map((value) => override(fieldItem.logKey, value))
+          };
+        }
 
         // Add AdvantageKit samples
         if (akitTimestamps !== undefined) {
@@ -667,7 +727,7 @@ export default class LineGraphController implements TabController {
 
       // Filter out ranges outside the time range
       let relevantRanges = ranges.filter(
-        (range) => range.start <= timeRange[1] && (range.end === undefined || range.end >= timeRange[0])
+        (range) => range.start < timeRange[1] && (range.end === undefined || range.end > timeRange[0])
       );
 
       if (relevantRanges.length > 0) {
@@ -689,13 +749,7 @@ export default class LineGraphController implements TabController {
           values.push(""); // Terminate visual block
         }
 
-        let light = !window.matchMedia("(prefers-color-scheme: dark)").matches;
-        let colorMap: { [key: string]: string } = {
-          Disabled: light ? "#dddddd" : "#444444",
-          Teleop: light ? "#5a83ff" : "#3957dd",
-          Auto: light ? "#efab28" : "#c38615",
-          Utility: light ? "#888888" : "#777777"
-        };
+        let colorMap: { [key: string]: string } = this.getStateColors();
 
         discreteFieldsCommand.push({
           timestamps: timestamps,
@@ -733,13 +787,24 @@ export default class LineGraphController implements TabController {
       // Convert to text
       let logType = window.log.getType(fieldItem.logKey);
       if (logType === null) return;
-      data.values = data.values.map((value) => getLogValueText(value, logType!));
+      let colorMap: { [key: string]: string } | undefined = undefined;
+      let stateColors = this.getStateColors();
+      data.values = data.values.map((value) => {
+        let text = this.discreteTextOverride?.(fieldItem.logKey, value) ?? getLogValueText(value, logType!);
+        let color = fieldItem.type === "stripes" ? this.discreteColorOverride?.(fieldItem.logKey, value) ?? null : null;
+        if (color !== null) {
+          if (colorMap === undefined) colorMap = {};
+          colorMap[text] = stateColors[color];
+        }
+        return text;
+      });
 
       // Add field command
       discreteFieldsCommand.push({
         timestamps: data.timestamps,
         values: data.values,
         color: ensureThemeContrast(fieldItem.options.color),
+        colorMap: colorMap,
         type: fieldItem.type as "stripes" | "graph",
         toggleReference: toggleReference
       });

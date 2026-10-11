@@ -964,3 +964,144 @@ table.metadata-table td.no-data {
     border-right: 1px solid #eee;
   }
 }
+
+/* Driver Station */
+
+div.driver-station-container {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+div.driver-station-toolbar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 6px 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+div.driver-station-toolbar[hidden] {
+  display: none;
+}
+
+div.driver-station-button-group {
+  display: flex;
+  align-items: center;
+}
+
+div.driver-station-button-group[hidden] {
+  display: none;
+}
+
+/* Displayed after the other groups so that they do not move when it appears */
+div.driver-station-follow-buttons {
+  order: 1;
+}
+
+/* Matches the appearance of the tab bar */
+button.driver-station-segment {
+  height: 26px;
+  margin-left: -1px;
+  padding: 0px 10px;
+
+  font-size: 13px;
+  line-height: 24px;
+  white-space: nowrap;
+  color: inherit;
+
+  transition:
+    background-color 0.2s ease-in-out,
+    border 0.2s ease-in-out;
+  background-color: #eee;
+  border: 1px solid #aaa;
+  border-radius: 0px;
+}
+
+button.driver-station-segment.first {
+  margin-left: 0px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+button.driver-station-segment.last {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+button.driver-station-segment:not(:disabled):hover {
+  background-color: #ddd;
+}
+
+button.driver-station-segment.active,
+button.driver-station-segment.active:not(:disabled):hover,
+button.driver-station-segment:not(:disabled):active {
+  z-index: 1;
+  background-color: #aaa;
+  border: 1px solid #222;
+}
+
+button.driver-station-segment:disabled {
+  opacity: 50%;
+}
+
+/* Matches the appearance of the tab control buttons */
+button.driver-station-icon-button {
+  flex: none;
+  height: 26px;
+  width: 26px;
+  margin-left: 4px;
+}
+
+button.driver-station-icon-button[hidden] {
+  display: none;
+}
+
+div.driver-station-body {
+  position: relative;
+  flex: 1;
+  min-height: 0px;
+}
+
+div.driver-station-pane {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+}
+
+table.console-table tr.out-of-range td {
+  opacity: 35%;
+}
+
+div.driver-station-graph div.line-graph-help {
+  display: none !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.driver-station-toolbar {
+    border-bottom: 1px solid #000;
+  }
+
+  button.driver-station-segment {
+    background-color: #444;
+    border: 1px solid #666;
+  }
+
+  button.driver-station-segment:not(:disabled):hover {
+    background-color: #555;
+  }
+
+  button.driver-station-segment.active,
+  button.driver-station-segment.active:not(:disabled):hover,
+  button.driver-station-segment:not(:disabled):active {
+    background-color: #888;
+    border: 1px solid #eee;
+  }
+}
