@@ -962,7 +962,8 @@ export default class Log {
                 requirements: cmd.requirements.map((req) => req.name),
                 range: [timestamp, timestamp],
                 children: [],
-                depth: 0
+                depth: 0,
+                isDefaultCommand: cmd.is_default_command
               };
 
               // Add to the map

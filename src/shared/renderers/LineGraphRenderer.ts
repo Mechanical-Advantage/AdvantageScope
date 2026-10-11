@@ -188,7 +188,16 @@ export default class LineGraphRenderer implements TabRenderer {
       ]),
       command.rightFields.map((field) => [field.values.length, field.color, field.type, field.size]),
       command.alerts.map((row) => row.map((alert) => [alert.type, alert.text, alert.range])),
-      command.commands.map((cmd) => [cmd.id, cmd.parentId, cmd.name, cmd.range, cmd.row, cmd.height, cmd.level]),
+      command.commands.map((cmd) => [
+        cmd.id,
+        cmd.parentId,
+        cmd.name,
+        cmd.range,
+        cmd.row,
+        cmd.height,
+        cmd.level,
+        cmd.colorIndex
+      ]),
       command.commandRowCount
     ];
     let renderStateString = JSON.stringify(renderState);
@@ -409,9 +418,17 @@ export default class LineGraphRenderer implements TabRenderer {
         endX = startX + 1;
       }
 
-      let colors = light ? PastelColors : PastelColors_Dark;
-      let color = colors[(cmd.level ?? 0) % colors.length];
-      let textColor = shiftColor(color, light ? -130 : 130);
+      let color;
+      let textColor;
+
+      if (cmd.colorIndex === null) {
+        color = light ? "#eee" : "#444";
+        textColor = light ? "#222" : "#eee";
+      } else {
+        let colorPalette = light ? PastelColors : PastelColors_Dark;
+        color = colorPalette[cmd.colorIndex % colorPalette.length];
+        textColor = shiftColor(color, light ? -130 : 130);
+      }
 
       // Draw shape
       context.fillStyle = color;
@@ -851,6 +868,7 @@ export type LineGraphRendererCommand_Command = {
   row: number;
   height: number;
   level: number;
+  colorIndex: number | null;
 };
 
 export type LineGraphRendererCommand_NumericField = {
@@ -887,8 +905,8 @@ export type LineGraphRendererCommand_Alert = {
 export function formatCommandLineGraphLabel(name: string, requirements: string[]): string {
   const parts = [name];
   if (requirements.length > 0) {
-    const reqsList = '(' + requirements.join(', ') + ')';
+    const reqsList = "(" + requirements.join(", ") + ")";
     parts.push(reqsList);
   }
-  return parts.join(' ');
+  return parts.join(" ");
 }

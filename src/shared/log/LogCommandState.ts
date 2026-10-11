@@ -42,6 +42,11 @@ export interface LogCommand {
    */
   depth: number;
 
+  /**
+   * Is this command a default command for a mechanism?
+   */
+  isDefaultCommand?: boolean;
+
   // last_time_ms and total_time_ms do change over time, and would necessitate tracking individual data points
   // but for the time being, we discard them for the sake of performance
 }
@@ -63,6 +68,7 @@ export type CommandProto = {
   requirements: MechanismProto[];
   last_time_ms: number;
   total_time_ms: number;
+  is_default_command?: boolean;
 };
 
 /**

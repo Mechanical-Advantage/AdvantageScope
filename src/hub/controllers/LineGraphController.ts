@@ -829,12 +829,76 @@ export default class LineGraphController implements TabController {
           return;
         }
 
+        let commandFilter = (cmd: LogCommand): boolean => {
+          if ("depth" in fieldItem.options) {
+            const depth = fieldItem.options.depth;
+            switch (depth) {
+              case "all":
+                // No filtering
+                break;
+              case "roots":
+                if (cmd.depth !== 0) {
+                  return false;
+                }
+                break;
+              default:
+                const maxDepth = parseInt(depth);
+                if (!isNaN(maxDepth)) {
+                  if (cmd.depth > maxDepth) {
+                    return false;
+                  }
+                }
+                break;
+            }
+          }
+
+          if ("minDuration" in fieldItem.options) {
+            // Options are in milliseconds, but data is timestamped in seconds.
+            const minDuration = parseInt(fieldItem.options.minDuration) * 1e-3;
+            if (minDuration > 0) {
+              if (cmd.range[1] - cmd.range[0] < minDuration) {
+                return false;
+              }
+            }
+          }
+
+          if ("requirements" in fieldItem.options) {
+            const requirements = fieldItem.options.requirements;
+            switch (requirements) {
+              case "all":
+                // No filtering
+                break;
+              case "none":
+                if (cmd.requirements.length !== 0) {
+                  return false;
+                }
+                break;
+              case "required":
+                if (cmd.requirements.length === 0) {
+                  return false;
+                }
+                break;
+            }
+          }
+
+          if ("defaultCommands" in fieldItem.options) {
+            if (fieldItem.options.defaultCommands === "hide" && cmd.isDefaultCommand) {
+              return false;
+            }
+          }
+
+          return true;
+        };
+
+        logCommands = logCommands.filter(commandFilter);
+        let filteredCommands = new Set(logCommands); // store in a set for faster lookup
+
         // Collect all descendants of a command that fall within the current window range
         let getWindowDescendants = (cmd: LogCommand): LogCommand[] => {
           let descendants: LogCommand[] = [];
           let traverse = (curr: LogCommand) => {
             for (const child of curr.children) {
-              if (child.range[1] >= timeRange[0] && child.range[0] <= timeRange[1]) {
+              if (child.range[1] >= timeRange[0] && child.range[0] <= timeRange[1] && filteredCommands.has(child)) {
                 descendants.push(child);
                 traverse(child);
               }
@@ -931,7 +995,9 @@ export default class LineGraphController implements TabController {
         // Filter root commands to those overlapping with the current window range
         let rootsInWindow = logCommands.filter(
           (cmd) =>
-            (cmd.parentId === undefined || cmd.depth === 0) &&
+            (cmd.parentId === undefined ||
+              cmd.depth === 0 ||
+              filteredCommands.values().find((c) => c.id === cmd.parentId) === undefined) &&
             cmd.range[1] >= timeRange[0] &&
             cmd.range[0] <= timeRange[1]
         );
@@ -939,6 +1005,16 @@ export default class LineGraphController implements TabController {
         // Sort root commands descending by ID so higher IDs claim lower rows (bottom)
         // and lower IDs claim higher rows (above higher IDs).
         rootsInWindow.sort((a, b) => b.id - a.id);
+
+        // Computes a hashcode for a string. Used for mechanism coloring so each mechanism gets a consistent color.
+        let strHash = (str: string): number => {
+          let hash = 0;
+          for (let i = 0; i < str.length; i++) {
+            hash = (hash << 5) - hash + str.charCodeAt(i);
+            hash |= 0; // Convert to 32-bit signed integer
+          }
+          return hash >>> 0; // Convert to non-negative unsigned 32-bit integer
+        };
 
         // Recursively assign discrete row coordinates to parent and child commands
         let assignCommandRows = (cmd: LogCommand, topRow: number, level: number = 0) => {
@@ -950,6 +1026,21 @@ export default class LineGraphController implements TabController {
           ];
           let height = computeCommandHeight(cmd);
 
+          let colorIndex = null;
+          if ("colorScheme" in fieldItem.options) {
+            let colorScheme = fieldItem.options.colorScheme;
+            if (colorScheme === "depth") {
+              colorIndex = cmd.depth;
+            } else if (colorScheme === "mechanism") {
+              colorIndex = cmd.requirements.length === 1 ? strHash(cmd.requirements[0]) : null;
+            } else {
+              // Unrecognized option, leave colorIndex as null. The renderer will use a neutral default color.
+            }
+          } else {
+            // Default to coloring by mechanism if the option is missing.
+            colorIndex = cmd.requirements.length === 1 ? strHash(cmd.requirements[0]) : null;
+          }
+
           commands.push({
             name: cmd.name,
             id: cmd.id,
@@ -958,11 +1049,12 @@ export default class LineGraphController implements TabController {
             range: boundedRange,
             row: topRow,
             height: height,
-            level: level
+            level: level,
+            colorIndex: colorIndex
           });
 
           let childrenInWindow = cmd.children.filter(
-            (child) => child.range[1] >= timeRange[0] && child.range[0] <= timeRange[1]
+            (child) => child.range[1] >= timeRange[0] && child.range[0] <= timeRange[1] && filteredCommands.has(child)
           );
           // Sort child siblings ascending by ID so lower IDs claim lower relative row offsets
           // (closer to parent header at top) and appear above higher IDs.
