@@ -21,7 +21,10 @@ import {
 } from "./RRLOGCommon";
 
 export default class RRLOGDecoder {
-  private SUPPORTED_LOG_REVISIONS = [0, 1, 2];
+  private SUPPORTED_LOG_REVISIONS = [0, 1, 2, 3];
+
+  // First revision whose message entries carry their own timestamp
+  private TIMESTAMPED_REVISION = 3;
   private STRING_DECODER = new TextDecoder("UTF-8");
 
   private magic: string | null = null;
@@ -248,12 +251,32 @@ export default class RRLOGDecoder {
               keyID = dataBuffer.getInt32(shiftOffset(4));
               let key = this.keyIDs[keyID];
               let schema = this.keySchemas[keyID];
+
+              // Newer logs stamp every message with the time it was logged, nanoseconds on the
+              // robot's monotonic clock. Read it before the payload, where the writer put it.
+              let hasMessageTimestamp = this.logRevision !== null && this.logRevision >= this.TIMESTAMPED_REVISION;
+              let messageTimestamp = hasMessageTimestamp ? dataBuffer.getBigInt64(shiftOffset(8)) : null;
               let msg = readMsg(schema);
 
               // Find a timestamp
+              if (messageTimestamp !== null) {
+                // Timestamps are not guaranteed to increase (several threads can log at once), which
+                // the log handles by inserting out of order values in place.
+                this.lastTimestamp = rrTimestampToSeconds(messageTimestamp);
 
-              // Automatically added by log writer
-              if (
+                // The robot reports OpMode transitions as events
+                if (key === "OpMode/Event" && typeof msg === "string") {
+                  if (msg === "PRE_START") {
+                    // Offset start time by 50ms to show the values returned by the first loop
+                    log.putBoolean("RUNNING", this.lastTimestamp + 0.05, true);
+                  } else if (msg === "POST_STOP") {
+                    log.putBoolean("RUNNING", this.lastTimestamp, false);
+                  }
+                }
+
+                // Older logs have no per-message timestamp, so one is inferred from the data.
+                // Automatically added by log writer
+              } else if (
                 (key === "OPMODE_PRE_INIT" ||
                   key === "OPMODE_PRE_START" ||
                   key === "OPMODE_POST_STOP" ||
