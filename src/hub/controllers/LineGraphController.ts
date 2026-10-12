@@ -829,6 +829,40 @@ export default class LineGraphController implements TabController {
           return;
         }
 
+        // If the user has specified that default commands should be hidden, mark all default commands and all their
+        // descendants as hidden. None of them will be rendered.
+        let hiddenDefaultCommands = new Set<LogCommand>();
+        if ("defaultCommands" in fieldItem.options && fieldItem.options.defaultCommands === "hide") {
+          let markDescendants = (cmd: LogCommand) => {
+            hiddenDefaultCommands.add(cmd);
+            for (const child of cmd.children) {
+              markDescendants(child);
+            }
+          };
+          for (const cmd of logCommands) {
+            if (cmd.isDefaultCommand) {
+              markDescendants(cmd);
+            }
+          }
+        }
+
+        let commandMap = new Map<number, LogCommand>();
+        logCommands.forEach((cmd) => commandMap.set(cmd.id, cmd));
+
+        let isDefaultOrDescendant = (cmd: LogCommand): boolean => {
+          if (hiddenDefaultCommands.has(cmd)) return true;
+          let curr: LogCommand | undefined = cmd;
+          while (curr) {
+            if (curr.isDefaultCommand || hiddenDefaultCommands.has(curr)) {
+              hiddenDefaultCommands.add(cmd);
+              return true;
+            }
+            if (curr.parentId === undefined) break;
+            curr = commandMap.get(curr.parentId);
+          }
+          return false;
+        };
+
         let commandFilter = (cmd: LogCommand): boolean => {
           if ("depth" in fieldItem.options) {
             const depth = fieldItem.options.depth;
@@ -882,7 +916,7 @@ export default class LineGraphController implements TabController {
           }
 
           if ("defaultCommands" in fieldItem.options) {
-            if (fieldItem.options.defaultCommands === "hide" && cmd.isDefaultCommand) {
+            if (fieldItem.options.defaultCommands === "hide" && isDefaultOrDescendant(cmd)) {
               return false;
             }
           }
@@ -1053,7 +1087,7 @@ export default class LineGraphController implements TabController {
             height: height,
             level: level,
             colorIndex: colorIndex,
-            showBorders: fieldItem.options.borders === undefined || fieldItem.options.borders === "true",
+            showBorders: fieldItem.options.borders === undefined || fieldItem.options.borders === "true"
           });
 
           let childrenInWindow = cmd.children.filter(
