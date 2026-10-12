@@ -942,7 +942,7 @@ export default class LineGraphController implements TabController {
             for (const desc of descendants) {
               let descStart = Math.max(desc.range[0], timeRange[0]);
               let descEnd = Math.min(desc.range[1], timeRange[1]);
-              if (descStart <= t && t <= descEnd) {
+              if (descStart <= t && t < descEnd) {
                 count++;
               }
             }

@@ -42,6 +42,7 @@ export default class Log {
   private commandSchedulers: {
     [id: string]: {
       commands: Map<number, LogCommand>;
+      liveCommands: Set<number>;
     };
   } = {};
   private generatedParents: Set<string> = new Set(); // Children of these fields are generated
@@ -942,14 +943,25 @@ export default class Log {
         if (decodedData !== null) {
           let scheduler = decodedData.data as SchedulerProto;
           this.commandSchedulers[key] ||= {
-            commands: new Map()
+            commands: new Map(),
+            liveCommands: new Set()
           };
 
           let localCommands = this.commandSchedulers[key].commands;
+          let localLiveCommands = this.commandSchedulers[key].liveCommands;
+
+          localLiveCommands.forEach((id) => {
+            let range = localCommands.get(id)?.range;
+            if (range) {
+              range[1] = timestamp;
+            }
+          });
+          localLiveCommands.clear();
 
           // Parse command data
           scheduler.running_commands.forEach((cmd) => {
             const existingCommand = localCommands.get(cmd.id);
+            localLiveCommands.add(cmd.id);
             if (existingCommand) {
               // This command has been seen before, bump the end of its range but otherwise do not modify
               existingCommand.range[1] = timestamp;
