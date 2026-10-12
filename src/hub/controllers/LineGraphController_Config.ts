@@ -187,7 +187,17 @@ export const LineGraphController_DiscreteConfig: SourceListConfig = {
           showInTypeName: false,
           values: [
             { key: "mechanism", display: "By Mechanism" },
-            { key: "depth", display: "By Depth" }
+            { key: "depth", display: "By Depth" },
+            { key: "id", display: "By Run Order" }
+          ]
+        },
+        {
+          key: "borders",
+          display: "Show Borders",
+          showInTypeName: false,
+          values: [
+            { key: "true", display: "Yes" },
+            { key: "false", display: "No" }
           ]
         },
         {

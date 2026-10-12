@@ -1033,6 +1033,8 @@ export default class LineGraphController implements TabController {
               colorIndex = cmd.depth;
             } else if (colorScheme === "mechanism") {
               colorIndex = cmd.requirements.length === 1 ? strHash(cmd.requirements[0]) : null;
+            } else if (colorScheme === "id") {
+              colorIndex = cmd.id;
             } else {
               // Unrecognized option, leave colorIndex as null. The renderer will use a neutral default color.
             }
@@ -1050,7 +1052,8 @@ export default class LineGraphController implements TabController {
             row: topRow,
             height: height,
             level: level,
-            colorIndex: colorIndex
+            colorIndex: colorIndex,
+            showBorders: fieldItem.options.borders === undefined || fieldItem.options.borders === "true",
           });
 
           let childrenInWindow = cmd.children.filter(

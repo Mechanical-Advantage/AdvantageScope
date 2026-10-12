@@ -196,7 +196,8 @@ export default class LineGraphRenderer implements TabRenderer {
         cmd.row,
         cmd.height,
         cmd.level,
-        cmd.colorIndex
+        cmd.colorIndex,
+        cmd.showBorders
       ]),
       command.commandRowCount
     ];
@@ -435,9 +436,11 @@ export default class LineGraphRenderer implements TabRenderer {
       context.fillRect(startX, topY, endX - startX, boxHeight);
 
       // Draw bounding box around commands to distinguish them from each other and from their parents
-      context.strokeStyle = light ? "#222" : "#555";
-      context.lineWidth = 1;
-      context.strokeRect(startX, topY, endX - startX, boxHeight);
+      if (cmd.showBorders) {
+        context.strokeStyle = light ? "#222" : "#555";
+        context.lineWidth = 1;
+        context.strokeRect(startX, topY, endX - startX, boxHeight);
+      }
 
       // Draw text label
       let indent = (cmd.level ?? 0) * 2;
@@ -869,6 +872,7 @@ export type LineGraphRendererCommand_Command = {
   height: number;
   level: number;
   colorIndex: number | null;
+  showBorders: boolean;
 };
 
 export type LineGraphRendererCommand_NumericField = {
