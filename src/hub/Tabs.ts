@@ -12,6 +12,7 @@ import { Distribution, DISTRIBUTION } from "../shared/buildConstants";
 import { getAutonomousKey, getEnabledKey, getUtilityKey } from "../shared/log/RobotState";
 import ConsoleRenderer from "../shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
+import DriverStationRenderer from "../shared/renderers/DriverStationRenderer";
 import Field2dRenderer from "../shared/renderers/Field2dRenderer";
 import Field3dRenderer from "../shared/renderers/Field3dRenderer";
 import JoysticksRenderer from "../shared/renderers/JoysticksRenderer";
@@ -29,6 +30,7 @@ import { clampValue } from "../shared/util";
 import ScrollSensor, { ScrollSensorMouseControl } from "./ScrollSensor";
 import Timeline from "./Timeline";
 import ConsoleController from "./controllers/ConsoleController";
+import DriverStationController from "./controllers/DriverStationController";
 import Field2dController from "./controllers/Field2dController";
 import Field3dController from "./controllers/Field3dController";
 import JoysticksController from "./controllers/JoysticksController";
@@ -97,6 +99,7 @@ export default class Tabs {
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Mechanism, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Points, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Metadata, 0);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.DriverStation, undefined);
 
     // Hover and click handling
     let mouseDownInfo: [number, number] | null = null;
@@ -400,7 +403,13 @@ export default class Tabs {
       if (appliedHeight < 30) appliedHeight = 0;
     }
     selectedTab.controlsHeight = appliedHeight;
-    this.CONTROLS_HANDLE.hidden = fixedHeight === 0;
+    let hideControls =
+      selectedTab.type === TabType.DriverStation && !(selectedTab.controller as DriverStationController).hasControls();
+    if (hideControls) {
+      // Keep the saved height for when the controls are available again
+      appliedHeight = 0;
+    }
+    this.CONTROLS_HANDLE.hidden = fixedHeight === 0 || hideControls;
     this.CONTROLS_CONTENT.hidden = appliedHeight === 0;
     document.documentElement.style.setProperty("--tab-controls-height", appliedHeight.toString() + "px");
     document.documentElement.style.setProperty("--show-tab-controls", appliedHeight === 0 ? "0" : "1");
@@ -568,6 +577,11 @@ export default class Tabs {
         controller = new MetadataController();
         renderer = new MetadataRenderer(rendererElement);
         break;
+      case TabType.DriverStation:
+        // Renderer creates the shared graph and console elements used by the controller
+        renderer = new DriverStationRenderer(rendererElement, true);
+        controller = new DriverStationController(controlsElement, rendererElement);
+        break;
       default:
         controller = new NoopController();
         renderer = new NoopRenderer();
@@ -723,6 +737,13 @@ export default class Tabs {
         unitConversion,
         filter
       );
+    } else if (this.tabList[this.selectedTab].type === TabType.DriverStation) {
+      (this.tabList[this.selectedTab].controller as DriverStationController).editAxis(
+        legend,
+        lockedRange,
+        unitConversion,
+        filter
+      );
     }
   }
 
@@ -730,6 +751,8 @@ export default class Tabs {
   clearAxis(legend: string) {
     if (this.tabList[this.selectedTab].type === TabType.LineGraph) {
       (this.tabList[this.selectedTab].controller as LineGraphController).clearAxis(legend);
+    } else if (this.tabList[this.selectedTab].type === TabType.DriverStation) {
+      (this.tabList[this.selectedTab].controller as DriverStationController).clearAxis(legend);
     }
   }
 
@@ -737,6 +760,8 @@ export default class Tabs {
   setRobotModeVisible(showRobotMode: boolean) {
     if (this.tabList[this.selectedTab].type === TabType.LineGraph) {
       (this.tabList[this.selectedTab].controller as LineGraphController).setRobotModeVisible(showRobotMode);
+    } else if (this.tabList[this.selectedTab].type === TabType.DriverStation) {
+      (this.tabList[this.selectedTab].controller as DriverStationController).setRobotModeVisible(showRobotMode);
     }
   }
 

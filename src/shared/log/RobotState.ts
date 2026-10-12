@@ -312,6 +312,50 @@ export function getRobotStateRanges(
   return ranges;
 }
 
+/** The maximum disabled time between auto and teleop for them to be considered part of the same enabled period. */
+const AUTO_TELEOP_MAX_GAP_SECS = 15;
+
+/** Only has values in logs from the FIRST Driver Station when it was connected to the FMS. */
+const FMS_TIMES_KEY = "DS:/Dscomm/Status/Connection/FmsTimes";
+
+/** Returns whether the log includes FMS timing data from the FIRST Driver Station, meaning it is from a real match. */
+function hasFmsTimes(log: Log): boolean {
+  let key = log.getFieldKeys().find((key) => key.endsWith(FMS_TIMES_KEY));
+  if (key === undefined) return false;
+  let data = log.getNumber(key, -Infinity, Infinity);
+  return data !== undefined && data.values.length > 0;
+}
+
+/**
+ * Computes the time ranges where the robot was enabled, regardless of the robot mode. An autonomous
+ * period and the teleop period that follows are combined into a single range from the auto enable to
+ * the teleop disable if the log is from a real match (FMS timing data is available) or if teleop
+ * starts shortly after auto ends.
+ */
+export function getEnabledPeriods(log: Log): [number, number][] {
+  let logEnd = log.getTimestampRange()[1];
+  let isMatch = hasFmsTimes(log);
+  let periods: { start: number; end: number; lastMode: string }[] = [];
+  getRobotStateRanges(log).forEach((range) => {
+    if (range.mode === "disabled") return;
+    let end = range.end === undefined ? logEnd : range.end;
+    let previous = periods.length > 0 ? periods[periods.length - 1] : null;
+    if (
+      previous !== null &&
+      (range.start <= previous.end ||
+        (previous.lastMode === "auto" &&
+          range.mode === "teleop" &&
+          (isMatch || range.start - previous.end <= AUTO_TELEOP_MAX_GAP_SECS)))
+    ) {
+      previous.end = end;
+      previous.lastMode = range.mode;
+    } else {
+      periods.push({ start: range.start, end: end, lastMode: range.mode });
+    }
+  });
+  return periods.map((period) => [period.start, period.end]);
+}
+
 /** Determines if the robot is on the red alliance at a given time. */
 export function getIsRedAlliance(log: Log, time: number): boolean {
   let allianceKey = findKey(log, ALLIANCE_KEYS);
