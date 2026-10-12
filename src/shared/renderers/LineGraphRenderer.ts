@@ -475,7 +475,7 @@ export default class LineGraphRenderer implements TabRenderer {
 
       // Draw bounding box around commands to distinguish them from each other and from their parents
       if (cmd.showBorders) {
-        context.strokeStyle = light ? "#222" : "#555";
+        context.strokeStyle = light ? "#222" : "#111";
         context.lineWidth = 1;
         context.strokeRect(startX, topY, endX - startX, boxHeight);
       }
