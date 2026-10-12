@@ -106,7 +106,7 @@ export namespace Units {
           "meter per second",
           "meterspersecond",
           "meters per second",
-          "m/s"
+          "m/s" // WPILib unit name
         ]
       },
       "inches/second": {
@@ -157,7 +157,7 @@ export namespace Units {
           "rad per second",
           "rads per sec",
           "rads per second",
-          "rad/s"
+          "rad/s" // WPILib unit name
         ]
       },
       "degrees/second": {
@@ -238,7 +238,7 @@ export namespace Units {
           "meters per second squared",
           "meter per second per second",
           "meters per second per second",
-          "m/s/s"
+          "m/s/s" // WPILib unit name
         ]
       },
       "inches/second²": {
@@ -374,7 +374,7 @@ export namespace Units {
           "rads per second²",
           "rads per second squared",
           "rads per second per second",
-          "rad/s/s"
+          "rad/s/s" // WPILib unit name
         ]
       },
       "degrees/second²": {
@@ -621,7 +621,12 @@ export namespace Units {
         value: 1,
         suffix: "Hz",
         pluralizeSuffix: false,
-        names: ["hz", "hertz", "frequency", "<?>/s"]
+        names: [
+          "hz",
+          "hertz",
+          "frequency",
+          "<?>/s" // WPILib unit name
+        ]
       },
       kilohertz: {
         value: 1e-3,
@@ -689,7 +694,13 @@ export namespace Units {
         value: 1,
         suffix: "W",
         pluralizeSuffix: false,
-        names: ["w", "watt", "watts", "power", "j/s"]
+        names: [
+          "w",
+          "watt",
+          "watts",
+          "power",
+          "j/s" // WPILib unit name
+        ]
       },
       milliwatts: {
         value: 1000,
@@ -741,7 +752,15 @@ export namespace Units {
         value: 1,
         suffix: "",
         pluralizeSuffix: false,
-        names: ["ratio", "ratios", "fraction", "proportion", "duty cycle", "dutycycle", "<?>"]
+        names: [
+          "ratio",
+          "ratios",
+          "fraction",
+          "proportion",
+          "duty cycle",
+          "dutycycle",
+          "<?>" // WPILib unit name
+        ]
       },
       percent: {
         value: 100,
