@@ -404,13 +404,51 @@ export default class LineGraphRenderer implements TabRenderer {
     // Commands are rendered in level order (root commands first at level 0, followed by nested children)
     // so the root command establishes the base rectangular background for the entire tree, and nested
     // child commands draw on top, at their respective rows with horizontal indentation.
+    // Unlike alerts and generic discrete data, only root commands have a 5px gap between them, while inner commands
+    // have no gap between them. This lets us visually group inner commands while keeping different compositions
+    // distinct from one another.
     const sortedCommands = [...command.commands].sort((a, b) => a.level - b.level);
+    const commandMap = new Map<number, LineGraphRendererCommand_Command>();
+    command.commands.forEach((cmd) => {
+      commandMap.set(cmd.id, cmd);
+    });
+
+    const rootCommands = command.commands.filter((cmd) => cmd.level === 0);
+    rootCommands.sort((a, b) => a.row - b.row);
+
+    const rootStackLevels = new Map<number, number>();
+    rootCommands.forEach((root) => {
+      let maxBelowLevel = -1;
+      rootCommands.forEach((other) => {
+        if (other.id !== root.id && other.row < root.row) {
+          if (other.range[0] < root.range[1] && other.range[1] > root.range[0]) {
+            let otherLevel = rootStackLevels.get(other.id) ?? 0;
+            if (otherLevel > maxBelowLevel) {
+              maxBelowLevel = otherLevel;
+            }
+          }
+        }
+      });
+      rootStackLevels.set(root.id, maxBelowLevel + 1);
+    });
+
+    let discreteBaseCount = command.discreteFields.length + command.alerts.length;
+    let commandBaseY = graphTop + graphHeight - 5 - discreteBaseCount * 20;
 
     sortedCommands.forEach((cmd) => {
       discreteBorders.push(cmd.range[0], cmd.range[1]);
-      let totalRowIndex = command.discreteFields.length + command.alerts.length + cmd.row;
-      let topY = graphTop + graphHeight - 20 - totalRowIndex * 20;
-      let boxHeight = 15 + (cmd.height - 1) * 20;
+
+      let rootCmd = cmd;
+      while (rootCmd.parentId !== undefined && commandMap.has(rootCmd.parentId)) {
+        rootCmd = commandMap.get(rootCmd.parentId)!;
+      }
+
+      let heightBelow = rootCmd.row - rootCmd.height + 1;
+      let stacksBelow = rootStackLevels.get(rootCmd.id) ?? 0;
+      let rootYIndex = rootCmd.height * 15 + heightBelow * 15 + stacksBelow * 5;
+      let rootTopY = commandBaseY - rootYIndex;
+      let topY = rootTopY + (rootCmd.row - cmd.row) * 15;
+      let boxHeight = cmd.height * 15;
 
       let startX = scaleValue(cmd.range[0], timeRange, [graphLeft, graphLeft + graphWidth]);
       let endX = scaleValue(cmd.range[1], timeRange, [graphLeft, graphLeft + graphWidth]);
