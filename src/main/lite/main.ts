@@ -257,6 +257,20 @@ async function initHub() {
   });
   hubPort.start();
 
+  // Propagate the hub's title to the parent tab
+  const hubTitleElement = HUB_FRAME.contentDocument?.querySelector("title");
+  if (hubTitleElement) {
+    const syncTitle = () => {
+      if (hubTitleElement.textContent) document.title = hubTitleElement.textContent;
+    };
+    new MutationObserver(syncTitle).observe(hubTitleElement, {
+      childList: true,
+      characterData: true,
+      subtree: true
+    });
+    syncTitle();
+  }
+
   // Init messages
   sendMessage(hubPort, "set-version", {
     platform: "lite",

@@ -41,7 +41,8 @@ body {
 }
 
 body.fancy-title-bar-mac div.title-bar,
-body.fancy-title-bar-win div.title-bar {
+body.fancy-title-bar-win div.title-bar,
+body.fancy-title-bar-lite div.title-bar {
   display: initial;
 }
 
@@ -62,6 +63,14 @@ body.fancy-title-bar-mac div.title-bar-text {
   left: calc(var(--side-bar-width) + 20px + ((1 - var(--show-side-bar)) * 60px));
   right: calc(
     154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px
+  );
+}
+
+body.fancy-title-bar-lite div.title-bar-text {
+  left: calc(var(--side-bar-width) + 20px);
+  right: calc(
+    154px - 33px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) *
+      38px
   );
 }
 
@@ -323,7 +332,8 @@ div.viewer {
 }
 
 body.fancy-title-bar-mac div.viewer,
-body.fancy-title-bar-win div.viewer {
+body.fancy-title-bar-win div.viewer,
+body.fancy-title-bar-lite div.viewer {
   top: 38px;
 }
 
@@ -664,14 +674,8 @@ div.tab-bar {
   scrollbar-width: none; /* Required for Firefox */
 }
 
+body.fancy-title-bar-mac div.tab-bar,
 body.fancy-title-bar-lite div.tab-bar {
-  right: calc(
-    154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px -
-      33px
-  );
-}
-
-body.fancy-title-bar-mac div.tab-bar {
   right: 10px;
 }
 
@@ -701,14 +705,8 @@ div.tab-bar-shadow-right {
   background-image: linear-gradient(to left, white, rgba(255, 255, 255, 0.75), transparent);
 }
 
+body.fancy-title-bar-mac div.tab-bar-shadow-right,
 body.fancy-title-bar-lite div.tab-bar-shadow-right {
-  right: calc(
-    154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px -
-      33px
-  );
-}
-
-body.fancy-title-bar-mac div.tab-bar-shadow-right {
   right: 10px;
 }
 
@@ -747,14 +745,8 @@ div.tab-bar-scroll {
   scrollbar-width: none; /* Required for Firefox */
 }
 
+body.fancy-title-bar-mac div.tab-bar-scroll,
 body.fancy-title-bar-lite div.tab-bar-scroll {
-  right: calc(
-    154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px -
-      33px
-  );
-}
-
-body.fancy-title-bar-mac div.tab-bar-scroll {
   right: 10px;
 }
 
@@ -840,7 +832,8 @@ button.tab-control {
   -webkit-app-region: no-drag;
 }
 
-body.fancy-title-bar-mac button.tab-control {
+body.fancy-title-bar-mac button.tab-control,
+body.fancy-title-bar-lite button.tab-control {
   top: 8px;
 }
 

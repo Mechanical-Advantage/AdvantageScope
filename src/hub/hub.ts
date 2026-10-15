@@ -116,7 +116,12 @@ let dragData: any = null;
 // WINDOW UTILITIES
 
 function setWindowTitle(name: string, status?: string) {
-  let title = htmlEncode(name) + (status ? " (" + htmlEncode(status) + ")" : "") + " &mdash; AdvantageScope";
+  let title =
+    htmlEncode(name) +
+    (status ? " (" + htmlEncode(status) + ")" : "") +
+    " &mdash; AdvantageScope" +
+    (IS_LITE ? " Lite" : "") +
+    (DISTRIBUTION === Distribution.LiteDS ? " (DS)" : "");
   document.getElementsByTagName("title")[0].innerHTML = title;
   document.getElementsByClassName("title-bar-text")[0].innerHTML = title;
 }
