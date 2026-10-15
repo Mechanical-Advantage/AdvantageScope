@@ -37,7 +37,7 @@ export default class ConsoleController implements TabController {
       let structuredType = window.log.getStructuredType(dragData.data.fields[0]);
       let validType =
         fieldType === LoggableType.String ||
-        ["Console", "ConsoleLineTimestamp", "ErrorInfoTimestamp", "ProgramCrashInfoTimestamp"].includes(
+        ["ConsoleData", "Console", "ConsoleLineTimestamp", "ErrorInfoTimestamp", "ProgramCrashInfoTimestamp"].includes(
           structuredType || ""
         );
       this.DRAG_HIGHLIGHT.hidden = true;
@@ -75,6 +75,8 @@ export default class ConsoleController implements TabController {
       let structuredType = window.log.getStructuredType(this.field);
       if (structuredType === "Console") {
         return [this.field + "/ConsoleLine", this.field + "/ErrorInfo", this.field + "/ProgramCrashInfo"];
+      } else if (structuredType === "ConsoleData") {
+        return [this.field + "/index", this.field + "/data"];
       } else {
         return [this.field];
       }
@@ -97,6 +99,7 @@ export default class ConsoleController implements TabController {
       let type = window.log.getType(this.field);
 
       if (type === LoggableType.String) {
+        // Legacy string parsing: AvantageKit v26.0.2 and below.
         let fieldData = window.log.getField(this.field)?.getString(-Infinity, Infinity);
         if (fieldData) {
           for (let i = 0; i < fieldData.timestamps.length; i++) {
@@ -110,7 +113,29 @@ export default class ConsoleController implements TabController {
             });
           }
         }
+      } else if (structuredType === "ConsoleData") {
+        // Structured string parsing: AvantageKit v27.0.0 and above.
+        let fieldIndex = window.log.getField(this.field + "/index")?.getNumber(-Infinity, Infinity);
+        let fieldData = window.log.getField(this.field + "/data")?.getString(-Infinity, Infinity);
+
+        if (fieldIndex && fieldData) {
+          let dataIter = new LogFieldIterator(fieldData);
+
+          for (let time of fieldIndex.timestamps) {
+            let newData = dataIter.getAtTime(time);
+            if (newData === undefined) continue;
+
+            let newDataLower = newData.toLowerCase();
+            lines.push({
+              timestamp: time,
+              value: newData,
+              isError: newDataLower.includes("error"),
+              isWarning: newDataLower.includes("warning")
+            });
+          }
+        }
       } else {
+        // Structured 2027+ DSlog console data
         let keysToProcess: string[] = [];
         if (structuredType === "Console") {
           keysToProcess = [this.field + "/ConsoleLine", this.field + "/ErrorInfo", this.field + "/ProgramCrashInfo"];
