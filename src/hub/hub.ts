@@ -517,9 +517,7 @@ document.addEventListener("drop", (event) => {
       files.push(window.electron.getFilePath(file));
     }
     if (files.length > 0) {
-      files.forEach((file, index) => {
-        startHistorical(file, index === 0, files.length > 1);
-      });
+      window.sendMainMessage("open-files-request", { files: files });
     }
   }
 });

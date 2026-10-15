@@ -328,6 +328,10 @@ async function handleHubMessage(message: NamedMessage) {
       HUB_FRAME.style.opacity = "100%";
       break;
 
+    case "open-files-request":
+      sendMessage(hubPort, "open-files", { files: message.data.files, merge: false });
+      break;
+
     case "alert":
     case "error":
       window.alert(message.data.content);
