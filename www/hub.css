@@ -972,7 +972,8 @@ div.timeline {
   height: calc(32px * var(--show-timeline));
   left: 10px;
   right: 10px;
-  z-index: 5;
+  z-index: 20;
+  will-change: transform;
 }
 
 canvas.timeline-canvas {
@@ -1023,6 +1024,7 @@ div.renderer-content {
   width: 100%;
   top: calc(50px + var(--show-timeline) * 42px);
   bottom: var(--tab-controls-height);
+  z-index: 1;
 }
 
 div.controls-content {
