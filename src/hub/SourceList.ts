@@ -402,16 +402,19 @@ export default class SourceList {
     this.HAND_ICON.style.opacity = show ? "0.15" : "0";
   }
 
-  /**
-   * Adds a new field to the list, if the type is valid.
-   *
-   * @param logKey The key for the field to add
-   * @param parentIndex The index of the parent item (optional)
-   */
-  addField(logKey: string, parentIndex?: number) {
+/**
+ * Adds a new field to the list, if the type is valid.
+ *
+ * @param logKey The key for the field to add
+ * @param option The optional configuration for the field to add
+ * @param option.parentIndex The index of the parent item (optional)
+ * @param option.type The type of the field to add (optional)
+ */
+  addField(logKey: string, option?: { parentIndex?: number; type?: string }) {
     let logType = window.log.getType(logKey);
     let logTypeString = logType === null ? null : LoggableType[logType];
     let structuredType = window.log.getStructuredType(logKey);
+    const parentIndex = option?.parentIndex;
 
     // Get memory entry
     let memory: SourceListTypeMemoryEntry | null = null;
@@ -492,7 +495,7 @@ export default class SourceList {
       }
     });
     let state: SourceListItemState = {
-      type: bestType.typeConfig.key,
+      type: option?.type || bestType.typeConfig.key,
       logKey: logKey,
       logType: bestType.logType,
       visible: true,
@@ -702,7 +705,7 @@ export default class SourceList {
       if (!typeValidAsChild) parentIndex = null;
       if (parentIndex !== null || typeValidAsRoot) {
         draggedFields.forEach((field) => {
-          this.addField(field, parentIndex === null ? undefined : parentIndex);
+          this.addField(field, { parentIndex: parentIndex === null ? undefined : parentIndex });
         });
       }
       Array.from(this.LIST.children).forEach((element) => {
@@ -1261,5 +1264,9 @@ export default class SourceList {
     if (text !== null && text !== valueText.innerText) {
       valueText.innerText = text;
     }
+  }
+
+  public getUUID() {
+    return this.UUID;
   }
 }
