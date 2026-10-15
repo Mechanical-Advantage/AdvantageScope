@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import TinyPopupMenu, { MenuItem, Submenu } from "tiny-popup-menu";
+import WorkerManager from "../../hub/WorkerManager";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import { BUILD_DATE, COPYRIGHT, Distribution, DISTRIBUTION, LITE_VERSION } from "../../shared/buildConstants";
 import ButtonRect from "../../shared/ButtonRect";
@@ -375,7 +376,7 @@ async function handleHubMessage(message: NamedMessage) {
         const path: string = message.data.path;
 
         let extension = path.split(".").pop();
-        if (extension === "hoot" || extension === "revlog" || extension === "wpilogxz") {
+        if (extension === "hoot" || extension === "revlog") {
           sendMessage(hubPort, "historical-data", {
             files: [null],
             error: "Unsupported file format in AdvantageScope Lite.",
@@ -391,10 +392,15 @@ async function handleHubMessage(message: NamedMessage) {
         let response = await fetch(`logs/${encodeURIComponent(path)}?folder=${encodeURIComponent(prefs.remotePath)}`);
         let buffer = await response.arrayBuffer();
         let array = new Uint8Array(buffer);
+        let error: string | null = null;
+        if (extension === "wpilogxz") {
+          array = await WorkerManager.request("bundles/xzWorker.js", array);
+          if (array.length === 0) error = "Failed to decompress WPILOG file.";
+        }
 
         sendMessage(hubPort, "historical-data", {
           files: [array],
-          error: null,
+          error: error,
           uuid: uuid
         });
       }
@@ -405,10 +411,17 @@ async function handleHubMessage(message: NamedMessage) {
         const uuid: string = message.data.uuid;
         const extension: string = message.data.extension;
 
-        if (extension === "hoot" || extension === "revlog" || extension === "wpilogxz") {
+        if (extension === "hoot" || extension === "revlog") {
           sendMessage(hubPort, "historical-data", {
             files: [null],
             error: "Unsupported file format in AdvantageScope Lite.",
+            uuid: uuid
+          });
+        } else if (extension === "wpilogxz") {
+          const decompressed = await WorkerManager.request("bundles/xzWorker.js", message.data.data);
+          sendMessage(hubPort, "historical-data", {
+            files: [decompressed],
+            error: decompressed.length === 0 ? "Failed to decompress WPILOG file." : null,
             uuid: uuid
           });
         } else {
