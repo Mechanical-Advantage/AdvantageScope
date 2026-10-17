@@ -9,8 +9,10 @@ import { Decoder } from "@msgpack/msgpack";
 import { Pose2d, Translation2d } from "../geometry";
 import { Units } from "../units";
 import { arraysEqual, checkArrayType } from "../util";
+import { LogCommand, SchedulerProto } from "./LogCommandState";
 import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
+import LoggableType from "./LoggableType";
 import { PHOTON_PREFIX, STRUCT_PREFIX, applyKeyPrefix, getSchemaType, splitLogKey } from "./LogKeyUtils";
 import { TYPE_KEY } from "./LogUtil";
 import {
@@ -23,7 +25,6 @@ import {
   LogValueSetString,
   LogValueSetStringArray
 } from "./LogValueSets";
-import LoggableType from "./LoggableType";
 import PhotonStructDecoder from "./PhotonStructDecoder";
 import ProtoDecoder from "./ProtoDecoder";
 import { getEnabledData } from "./RobotState";
@@ -38,6 +39,12 @@ export default class Log {
   private photonDecoder = new PhotonStructDecoder();
 
   private fields: { [id: string]: LogField } = {};
+  private commandSchedulers: {
+    [id: string]: {
+      commands: Map<number, LogCommand>;
+      liveCommands: Set<number>;
+    };
+  } = {};
   private generatedParents: Set<string> = new Set(); // Children of these fields are generated
   private timestampRange: [number, number] | null = null;
   private timestampZero: number | null = null;
@@ -135,6 +142,27 @@ export default class Log {
     Object.values(this.fields).forEach((field) => {
       field.clearBeforeTime(timestamp);
     });
+    Object.values(this.commandSchedulers).forEach((scheduler) => {
+      let idsToDelete: number[] = [];
+      scheduler.commands.forEach((cmd, id) => {
+        if (cmd.range[1] < timestamp) {
+          idsToDelete.push(id);
+        } else if (cmd.range[0] < timestamp) {
+          cmd.range[0] = timestamp;
+        }
+      });
+      idsToDelete.forEach((id) => {
+        let cmd = scheduler.commands.get(id);
+        if (cmd && cmd.parentId !== undefined) {
+          let parent = scheduler.commands.get(cmd.parentId);
+          if (parent) {
+            parent.children = parent.children.filter((child) => child.id !== id);
+          }
+        }
+        scheduler.commands.delete(id);
+        scheduler.liveCommands.delete(id);
+      });
+    });
   }
 
   /** Adjusts the timestamp range based on a known timestamp. */
@@ -194,6 +222,74 @@ export default class Log {
     } else {
       return null;
     }
+  }
+
+  /**
+   * Gets all commands for a scheduler key.
+   *
+   * @param schedulerKey The key of the logged scheduler data
+   * @param start The start time of the range to search for commands
+   * @param end The end time of the range to search for commands
+   */
+  getCommands(schedulerKey: string, start: number, end: number): LogCommand[] {
+    if (!(schedulerKey in this.commandSchedulers)) {
+      return [];
+    }
+
+    const scheduler = this.commandSchedulers[schedulerKey];
+
+    // Look for commands for the specified mechanism
+    return scheduler.commands
+      .values()
+      .filter((command) => command.range[1] >= start && command.range[0] <= end)
+      .toArray();
+  }
+
+  /** Returns the list of commands for a command scheduler key. */
+  getCommandScheduler(key: string): LogCommand[] | undefined {
+    if (key in this.commandSchedulers) {
+      return Array.from(this.commandSchedulers[key].commands.values()).map((cmd) => ({
+        id: cmd.id,
+        parentId: cmd.parentId,
+        name: cmd.name,
+        requirements: [...cmd.requirements],
+        range: [cmd.range[0], cmd.range[1]],
+        children: [],
+        depth: cmd.depth,
+        isDefaultCommand: cmd.isDefaultCommand
+      }));
+    } else {
+      return undefined;
+    }
+  }
+
+  /** Sets the command scheduler data for a key. */
+  setCommandScheduler(key: string, commandList: LogCommand[]) {
+    let commands = new Map<number, LogCommand>();
+    commandList.forEach((cmd) => {
+      commands.set(cmd.id, {
+        id: cmd.id,
+        parentId: cmd.parentId,
+        name: cmd.name,
+        requirements: [...cmd.requirements],
+        range: [cmd.range[0], cmd.range[1]],
+        children: [],
+        depth: cmd.depth,
+        isDefaultCommand: cmd.isDefaultCommand
+      });
+    });
+    commands.forEach((cmd) => {
+      if (cmd.parentId !== undefined) {
+        let parent = commands.get(cmd.parentId);
+        if (parent) {
+          parent.children.push(cmd);
+        }
+      }
+    });
+    this.commandSchedulers[key] = {
+      commands: commands,
+      liveCommands: new Set()
+    };
   }
 
   /** Adds an existing log field to this log. */
@@ -901,6 +997,79 @@ export default class Log {
       return;
     }
 
+    // Special case for command schedulers. The protobuf data is flat for storage, but we can reorganize into
+    // pointers and a graph structure for easier navigation on the renderer side.
+    if (schemaType === "wpi.proto.ProtobufScheduler") {
+      if (this.fields[key].getType() === LoggableType.Raw) {
+        this.setGeneratedParent(key);
+        this.setStructuredType(key, ProtoDecoder.getFriendlySchemaType(schemaType));
+        let decodedData: { data: unknown; schemaTypes: { [key: string]: string } } | null = null;
+        try {
+          decodedData = this.protoDecoder.decode(schemaType, value);
+        } catch {}
+
+        if (decodedData !== null) {
+          let scheduler = decodedData.data as SchedulerProto;
+          this.commandSchedulers[key] ||= {
+            commands: new Map(),
+            liveCommands: new Set()
+          };
+
+          let localCommands = this.commandSchedulers[key].commands;
+          let localLiveCommands = this.commandSchedulers[key].liveCommands;
+
+          localLiveCommands.forEach((id) => {
+            let range = localCommands.get(id)?.range;
+            if (range) {
+              range[1] = timestamp;
+            }
+          });
+          localLiveCommands.clear();
+
+          // Parse command data
+          scheduler.running_commands.forEach((cmd) => {
+            const existingCommand = localCommands.get(cmd.id);
+            localLiveCommands.add(cmd.id);
+            if (existingCommand) {
+              // This command has been seen before, bump the end of its range but otherwise do not modify
+              existingCommand.range[1] = timestamp;
+            } else {
+              // First time, add a record for it
+              const newCommand: LogCommand = {
+                id: cmd.id,
+                parentId: cmd.parent_id,
+                name: cmd.name,
+                requirements: cmd.requirements.map((req) => req.name),
+                range: [timestamp, timestamp],
+                children: [],
+                depth: 0,
+                isDefaultCommand: cmd.is_default_command
+              };
+
+              // Add to the map
+              localCommands.set(cmd.id, newCommand);
+
+              // Add to the parent's children list
+              if (cmd.parent_id) {
+                const parentCommand = localCommands.get(cmd.parent_id);
+                if (parentCommand) {
+                  parentCommand.children.push(newCommand);
+                  newCommand.depth = parentCommand.depth + 1;
+                }
+              }
+            }
+          });
+        } else {
+          this.queuedProtos.push({
+            key: key,
+            timestamp: timestamp,
+            value: value,
+            schemaType: schemaType
+          });
+        }
+      }
+    }
+
     // Not a schema, continue normally
     this.putRaw(key, timestamp, value);
     if (this.fields[key].getType() === LoggableType.Raw) {
@@ -1056,11 +1225,42 @@ export default class Log {
       protoDescriptors.push(descriptor);
     });
     this.protoDecoder = ProtoDecoder.fromSerialized(protoDescriptors);
+
+    // Merge command schedulers
+    Object.entries(source.commandSchedulers).forEach(([key, scheduler]) => {
+      let targetKey = applyKeyPrefix(prefix, key);
+      if (prefix.length > 0 && targetKey === prefix) return;
+      let commands: LogCommand[] = Array.from(scheduler.commands.values()).map((cmd) => ({
+        id: cmd.id,
+        parentId: cmd.parentId,
+        name: cmd.name,
+        requirements: [...cmd.requirements],
+        range: [cmd.range[0] + offset, cmd.range[1] + offset],
+        children: [],
+        depth: cmd.depth,
+        isDefaultCommand: cmd.isDefaultCommand
+      }));
+      this.setCommandScheduler(targetKey, commands);
+    });
+
     return offset;
   }
 
   /** Returns a serialized version of the data from this log. */
   toSerialized(): any {
+    let commandSchedulers: { [key: string]: LogCommand[] } = {};
+    Object.entries(this.commandSchedulers).forEach(([key, scheduler]) => {
+      commandSchedulers[key] = Array.from(scheduler.commands.values()).map((cmd) => ({
+        id: cmd.id,
+        parentId: cmd.parentId,
+        name: cmd.name,
+        requirements: [...cmd.requirements],
+        range: [cmd.range[0], cmd.range[1]],
+        children: [],
+        depth: cmd.depth,
+        isDefaultCommand: cmd.isDefaultCommand
+      }));
+    });
     let result: any = {
       fields: {},
       generatedParents: Array.from(this.generatedParents),
@@ -1070,7 +1270,8 @@ export default class Log {
       protoDecoder: this.protoDecoder.toSerialized(),
       queuedStructs: this.queuedStructs,
       queuedStructArrays: this.queuedStructArrays,
-      queuedProtos: this.queuedProtos
+      queuedProtos: this.queuedProtos,
+      commandSchedulers: commandSchedulers
     };
     Object.entries(this.fields).forEach(([key, value]) => {
       result.fields[key] = value.toSerialized();
@@ -1092,6 +1293,11 @@ export default class Log {
     log.queuedStructs = serializedData.queuedStructs;
     log.queuedStructArrays = serializedData.queuedStructArrays;
     log.queuedProtos = serializedData.queuedProtos;
+    if (serializedData.commandSchedulers) {
+      Object.entries(serializedData.commandSchedulers).forEach(([key, commandList]) => {
+        log.setCommandScheduler(key, commandList as LogCommand[]);
+      });
+    }
     return log;
   }
 }

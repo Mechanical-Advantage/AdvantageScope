@@ -425,7 +425,7 @@ export default class SourceList {
 
     // Get all possible types
     let stateWithSupplemental = this.state.concat(...this.supplementalStateSuppliers.map((func) => func()));
-    let possibleTypes: { typeConfig: SourceListTypeConfig; logType: string; uses: number }[] = [];
+    let possibleTypes: { typeConfig: SourceListTypeConfig; logType: string; uses: number; structured: boolean }[] = [];
     for (let i = 0; i < this.config.types.length; i++) {
       let typeConfig = this.config.types[i];
       if (
@@ -435,8 +435,10 @@ export default class SourceList {
         continue;
       }
       let finalType = "";
+      let structured = false;
       if (structuredType !== null && typeConfig.sourceTypes.includes(structuredType)) {
         finalType = structuredType;
+        structured = true;
       } else if (logTypeString !== null && typeConfig.sourceTypes.includes(logTypeString)) {
         finalType = logTypeString;
       }
@@ -444,9 +446,15 @@ export default class SourceList {
         possibleTypes.push({
           typeConfig: typeConfig,
           logType: finalType,
-          uses: stateWithSupplemental.filter((itemState) => itemState.type === typeConfig.key).length
+          uses: stateWithSupplemental.filter((itemState) => itemState.type === typeConfig.key).length,
+          structured: structured
         });
       }
+    }
+
+    // Filter to structured types if any are available
+    if (possibleTypes.some((type) => type.structured)) {
+      possibleTypes = possibleTypes.filter((type) => type.structured);
     }
 
     // Find best type
@@ -1236,6 +1244,18 @@ export default class SourceList {
               infoCount.toString() +
               " info" +
               (infoCount === 1 ? "" : "s");
+          } else if (structuredType === "Scheduler") {
+            let commandCount: number = getOrDefault(
+              window.log,
+              state.logKey + "/running_commands/length",
+              LoggableType.Number,
+              time,
+              0
+            );
+            // Don't bother getting the number of queued commands, since it can only be shown if the scheduler
+            // is logged in the middle of a run call; ie just after commands are added to the queue and just before
+            // they get promoted to the running set.
+            text = `${commandCount.toString()} command${commandCount === 1 ? "" : "s"}`;
           } else if (
             logType === LoggableType.BooleanArray ||
             logType === LoggableType.NumberArray ||

@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import Log from "../../shared/log/Log";
+import { LogCommand } from "../../shared/log/LogCommandState";
 import LogField from "../../shared/log/LogField";
 import {
   applyKeyPrefix,
@@ -261,6 +262,13 @@ export class HistoricalDataSource {
               field.data.timestamps = (field.data.timestamps as number[]).map((timestamp) => timestamp + offset);
               this.log?.setField(key, LogField.fromSerialized(field.data));
               if (field.generatedParent) this.log?.setGeneratedParent(key);
+              if (field.commandScheduler && this.log) {
+                let shiftedCommands = field.commandScheduler.map((cmd) => ({
+                  ...cmd,
+                  range: [cmd.range[0] + offset, cmd.range[1] + offset] as [number, number]
+                }));
+                this.log.setCommandScheduler(key, shiftedCommands);
+              }
               this.requestedFields.delete(key);
               this.finishedFields.add(key);
 
@@ -525,6 +533,7 @@ export type HistoricalDataSource_WorkerFieldResponse = {
   key: string;
   data: any;
   generatedParent: boolean;
+  commandScheduler?: LogCommand[];
 };
 
 export enum HistoricalDataSourceStatus {

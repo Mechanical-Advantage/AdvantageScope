@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import ScrollSensor from "../../hub/ScrollSensor";
-import { ensureThemeContrast } from "../Colors";
+import { ensureThemeContrast, PastelColors, PastelColors_Dark } from "../Colors";
 import LineGraphFilter from "../LineGraphFilter";
 import { SelectionMode } from "../Selection";
 import { Units } from "../units";
@@ -187,7 +187,19 @@ export default class LineGraphRenderer implements TabRenderer {
         field.colorMap ? field.values : null // Specific values affect color-mapped fields so serialize full state
       ]),
       command.rightFields.map((field) => [field.values.length, field.color, field.type, field.size]),
-      command.alerts.map((row) => row.map((alert) => [alert.type, alert.text, alert.range]))
+      command.alerts.map((row) => row.map((alert) => [alert.type, alert.text, alert.range])),
+      command.commands.map((cmd) => [
+        cmd.id,
+        cmd.parentId,
+        cmd.name,
+        cmd.range,
+        cmd.row,
+        cmd.height,
+        cmd.level,
+        cmd.colorIndex,
+        cmd.showBorders
+      ]),
+      command.commandRowCount
     ];
     let renderStateString = JSON.stringify(renderState);
     if (renderStateString === this.lastRenderState) {
@@ -207,7 +219,7 @@ export default class LineGraphRenderer implements TabRenderer {
     this.SCROLL_OVERLAY.style.top = graphTop.toString() + "px";
     let graphHeight = height - graphTop - 35;
     if (graphHeight < 1) graphHeight = 1;
-    let discreteRowCount = command.discreteFields.length + command.alerts.length;
+    let discreteRowCount = command.discreteFields.length + command.alerts.length + command.commandRowCount;
     let graphHeightOpen = graphHeight - discreteRowCount * 20 - (discreteRowCount > 0 ? 5 : 0);
     if (graphHeightOpen < 1) graphHeightOpen = 1;
 
@@ -380,6 +392,103 @@ export default class LineGraphRenderer implements TabRenderer {
           context.fillText(alert.text, adjustedStartX + 5, topY + 15 / 2, endX - adjustedStartX - 10);
         }
       });
+    });
+
+    // Render commands
+    // In Commands v3, nested commands can never outlive their parent (and transitively, their root command).
+    // Therefore, every command tree fits strictly within the 2D bounding box of its root command:
+    // - Horizontally: bounded by [root.startTime, root.endTime].
+    // - Vertically: spanning from the top row downward across all descendant rows (height = 1 + descendantRows).
+    //
+    // LineGraphRenderer exploits this invariant:
+    // Commands are rendered in level order (root commands first at level 0, followed by nested children)
+    // so the root command establishes the base rectangular background for the entire tree, and nested
+    // child commands draw on top, at their respective rows with horizontal indentation.
+    // Unlike alerts and generic discrete data, only root commands have a 5px gap between them, while inner commands
+    // have no gap between them. This lets us visually group inner commands while keeping different compositions
+    // distinct from one another.
+    const sortedCommands = [...command.commands].sort((a, b) => a.level - b.level);
+    const commandMap = new Map<number, LineGraphRendererCommand_Command>();
+    command.commands.forEach((cmd) => {
+      commandMap.set(cmd.id, cmd);
+    });
+
+    const rootCommands = command.commands.filter((cmd) => cmd.level === 0);
+    rootCommands.sort((a, b) => a.row - b.row);
+
+    const rootStackLevels = new Map<number, number>();
+    rootCommands.forEach((root) => {
+      let maxBelowLevel = -1;
+      rootCommands.forEach((other) => {
+        if (other.id !== root.id && other.row < root.row) {
+          if (other.range[0] < root.range[1] && other.range[1] > root.range[0]) {
+            let otherLevel = rootStackLevels.get(other.id) ?? 0;
+            if (otherLevel > maxBelowLevel) {
+              maxBelowLevel = otherLevel;
+            }
+          }
+        }
+      });
+      rootStackLevels.set(root.id, maxBelowLevel + 1);
+    });
+
+    let discreteBaseCount = command.discreteFields.length + command.alerts.length;
+    let commandBaseY = graphTop + graphHeight - 5 - discreteBaseCount * 20;
+
+    sortedCommands.forEach((cmd) => {
+      discreteBorders.push(cmd.range[0], cmd.range[1]);
+
+      let rootCmd = cmd;
+      while (rootCmd.parentId !== undefined && commandMap.has(rootCmd.parentId)) {
+        rootCmd = commandMap.get(rootCmd.parentId)!;
+      }
+
+      let heightBelow = rootCmd.row - rootCmd.height + 1;
+      let stacksBelow = rootStackLevels.get(rootCmd.id) ?? 0;
+      let rootYIndex = rootCmd.height * 15 + heightBelow * 15 + stacksBelow * 5;
+      let rootTopY = commandBaseY - rootYIndex;
+      let topY = rootTopY + (rootCmd.row - cmd.row) * 15;
+      let boxHeight = cmd.height * 15;
+
+      let startX = scaleValue(cmd.range[0], timeRange, [graphLeft, graphLeft + graphWidth]);
+      let endX = scaleValue(cmd.range[1], timeRange, [graphLeft, graphLeft + graphWidth]);
+      if (endX - startX < 1) {
+        // Ensure positive width if the indentation would cause the start to be after the end
+        endX = startX + 1;
+      }
+
+      let color;
+      let textColor;
+
+      if (cmd.colorIndex === null) {
+        color = light ? "#eee" : "#444";
+        textColor = light ? "#222" : "#eee";
+      } else {
+        let colorPalette = light ? PastelColors : PastelColors_Dark;
+        color = colorPalette[cmd.colorIndex % colorPalette.length];
+        textColor = shiftColor(color, light ? -130 : 130);
+      }
+
+      // Draw shape
+      context.fillStyle = color;
+      context.fillRect(startX, topY, endX - startX, boxHeight);
+
+      // Draw bounding box around commands to distinguish them from each other and from their parents
+      if (cmd.showBorders) {
+        context.strokeStyle = light ? "#222" : "#111";
+        context.lineWidth = 1;
+        context.strokeRect(startX, topY, endX - startX, boxHeight);
+      }
+
+      // Draw text label
+      let indent = (cmd.level ?? 0) * 2;
+      context.fillStyle = textColor;
+      context.fillText(
+        formatCommandLineGraphLabel(cmd.name, cmd.requirements),
+        startX + 5 + indent,
+        topY + 15 / 2,
+        endX - startX - 5 - indent
+      );
     });
 
     // Render continuous data
@@ -787,6 +896,21 @@ export type LineGraphRendererCommand = {
   rightFields: LineGraphRendererCommand_NumericField[];
   discreteFields: LineGraphRendererCommand_DiscreteField[];
   alerts: LineGraphRendererCommand_AlertSet;
+  commands: LineGraphRendererCommand_Command[];
+  commandRowCount: number;
+};
+
+export type LineGraphRendererCommand_Command = {
+  name: string;
+  id: number;
+  parentId?: number;
+  requirements: string[];
+  range: [number, number];
+  row: number;
+  height: number;
+  level: number;
+  colorIndex: number | null;
+  showBorders: boolean;
 };
 
 export type LineGraphRendererCommand_NumericField = {
@@ -813,3 +937,18 @@ export type LineGraphRendererCommand_Alert = {
   text: string;
   range: [number, number];
 };
+
+/**
+ * Formats the label text for a command box.
+ *
+ * @param name The name of the command.
+ * @param requirements The requirements of the command. May be empty.
+ */
+export function formatCommandLineGraphLabel(name: string, requirements: string[]): string {
+  const parts = [name];
+  if (requirements.length > 0) {
+    const reqsList = "(" + requirements.join(", ") + ")";
+    parts.push(reqsList);
+  }
+  return parts.join(" ");
+}
