@@ -12,19 +12,22 @@ import RRLOGDecoder from "./RRLOGDecoder";
 /**
  * Live source for FateWeaver's FlightProjector.
  *
- * The robot broadcasts exactly the bytes a ".fate" file would contain, so this decodes the stream
- * with the same RRLOGDecoder used for files: it retains partial trailing entries between chunks,
- * and resets its channel table when a new "RR" header arrives mid-stream (which is what happens
- * when a new OpMode starts while this stays connected).
+ * The robot sends the bytes a ".fate" file would contain, one whole entry per message, so this
+ * uses the same RRLOGDecoder as files. A new "RR" header mid-stream (a new OpMode) resets its
+ * channel table. A message for an unknown channel is skipped and the robot is asked to resend the
+ * header and schemas. The log and time origin survive reconnects.
  */
 export default class FateWeaverSource extends LiveDataSource {
   private FATEWEAVER_PORT = 8110;
   private RECONNECT_DELAY_MS = 500;
   private TIME_SYNC_INTERVAL = 0.5;
+  private RESYNC_REQUEST = "resync";
+  private RESYNC_TIMEOUT_MS = 2000;
 
   private socket: WebSocket | null = null;
   private decoder: RRLOGDecoder | null = null;
   private reconnectTimeout: NodeJS.Timeout | null = null;
+  private resyncTimeout: NodeJS.Timeout | null = null;
   private liveShiftInterval: NodeJS.Timeout | null = null;
   private lastTimeSync = 0;
   private liveZeroTime = 0;
@@ -59,10 +62,15 @@ export default class FateWeaverSource extends LiveDataSource {
   }
 
   private openSocket() {
-    // The decoder holds per-connection state (channel table, partial entry bytes), and the robot
-    // replays the header and schemas to every new client, so this always starts fresh.
-    this.log = new Log();
-    this.decoder = new RRLOGDecoder();
+    // The robot replays the header and schemas to each new client, so each connection gets a new
+    // decoder. The log and time origin carry over to keep timestamps continuous.
+    let previous = this.decoder;
+    if (this.log === null) {
+      this.log = new Log();
+      previous = null;
+    }
+    this.decoder = new RRLOGDecoder(true, previous);
+    this.clearResync();
     this.liveZeroTime = 0;
     this.targetLiveZeroTime = 0;
     this.setStatus(LiveDataSourceStatus.Connecting);
@@ -76,6 +84,7 @@ export default class FateWeaverSource extends LiveDataSource {
   }
 
   private closeSocket() {
+    this.clearResync();
     if (this.socket === null) return;
     // Detach handlers first so closing here doesn't schedule a reconnect
     this.socket.onclose = null;
@@ -90,17 +99,35 @@ export default class FateWeaverSource extends LiveDataSource {
     if (this.status === LiveDataSourceStatus.Stopped) return;
 
     if (!this.decoder.decode(this.log, chunk)) {
-      // Bad magic, unsupported revision, or a corrupt entry. The decoder's offsets are no longer
-      // trustworthy, so reconnect and start over rather than try to resync.
+      // Bad magic, unsupported revision, or corrupt entry; reconnect for a fresh header and schemas
       this.socket?.close();
       return;
     }
 
-    // Reset time sync at start
+    if (this.decoder.clockReset) {
+      // Robot restarted, so its timestamps no longer match this log; start a new one
+      this.log = null;
+      this.decoder = null;
+      this.socket?.close();
+      return;
+    }
+
+    if (this.decoder.needsResync) {
+      this.requestResync();
+    } else {
+      this.clearResync();
+    }
+
+    // Reset time sync at start, from the end of the log if it already has data
     const now = new Date().getTime() / 1000;
     if (this.status === LiveDataSourceStatus.Connecting) {
-      this.liveZeroTime = now;
-      this.targetLiveZeroTime = now;
+      let logDuration = 0;
+      if (this.log.getFieldKeys().length > 0) {
+        const logRange = this.log.getTimestampRange();
+        logDuration = logRange[1] - logRange[0];
+      }
+      this.liveZeroTime = now - logDuration;
+      this.targetLiveZeroTime = this.liveZeroTime;
       this.lastTimeSync = now;
     }
 
@@ -124,6 +151,19 @@ export default class FateWeaverSource extends LiveDataSource {
         }
       });
     }
+  }
+
+  /** Asks the robot to resend the header and schemas, reconnecting if they don't arrive in time. */
+  private requestResync() {
+    if (this.resyncTimeout !== null) return;
+    this.socket?.send(this.RESYNC_REQUEST);
+    this.resyncTimeout = setTimeout(() => this.socket?.close(), this.RESYNC_TIMEOUT_MS);
+  }
+
+  private clearResync() {
+    if (this.resyncTimeout === null) return;
+    clearTimeout(this.resyncTimeout);
+    this.resyncTimeout = null;
   }
 
   private reconnect() {

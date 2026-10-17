@@ -35,32 +35,35 @@ export default class RRLOGDecoder {
   private keyIDs: { [id: number]: string } = {};
   private keySchemas: { [id: number]: MessageSchema } = {};
 
-  // Trailing bytes of an entry that was cut off by the end of the last chunk. Always empty when
-  // decoding a complete file in one call.
-  private pendingData: Uint8Array = new Uint8Array();
+  /** Live only: a message arrived for a channel with no schema. Cleared by the next log header. */
+  needsResync = false;
+
+  /** The first timestamp seen is earlier than the latest one from the previous decoder, so the robot's clock restarted. */
+  clockReset = false;
+  private latestRRTimestamp: bigint | null = null;
+  private timestampSeen = false;
 
   /**
-   * Decodes a chunk of log data, which does not need to end at an entry boundary. Bytes belonging
-   * to an incomplete trailing entry are saved and prepended to the next chunk, so a stream can be
-   * decoded by calling this repeatedly with the same decoder.
+   * @param live Whether each decode() call is one whole live message or an entire log file
+   * @param previous The decoder for an earlier connection to the same log, whose time origin this one continues.
    */
+  constructor(
+    private live = false,
+    previous: RRLOGDecoder | null = null
+  ) {
+    this.firstRRTimestamp = previous?.firstRRTimestamp ?? null;
+    this.latestRRTimestamp = previous?.latestRRTimestamp ?? null;
+  }
+
   decode(log: Log, dataArray: Uint8Array, progressCallback?: (progress: number) => void): boolean {
-    if (this.pendingData.length > 0) {
-      let combined = new Uint8Array(this.pendingData.length + dataArray.length);
-      combined.set(this.pendingData);
-      combined.set(dataArray, this.pendingData.length);
-      dataArray = combined;
-      this.pendingData = new Uint8Array();
-    }
-    let dataBuffer = new DataView(dataArray.buffer, dataArray.byteOffset, dataArray.byteLength);
+    let dataBuffer = new DataView(dataArray.buffer);
     let offset = 0;
 
     function shiftOffset(shift: number) {
       return (offset += shift) - shift;
     }
 
-    // Reads past the end of the chunk throw RangeError, which is how an incomplete entry is
-    // detected. DataView does that on its own; these two read raw bytes, so they check manually.
+    // DataView throws RangeError past the end on its own; raw byte reads check manually
     const readByte = (): number => {
       if (offset >= dataArray.length) throw new RangeError("Incomplete byte");
       return dataArray[shiftOffset(1)];
@@ -181,6 +184,12 @@ export default class RRLOGDecoder {
     const rrTimestampToSeconds = (rrTimestamp: bigint) => {
       if (this.firstRRTimestamp === null) {
         this.firstRRTimestamp = rrTimestamp;
+      } else if (!this.timestampSeen && this.latestRRTimestamp !== null && rrTimestamp < this.latestRRTimestamp) {
+        this.clockReset = true;
+      }
+      this.timestampSeen = true;
+      if (this.latestRRTimestamp === null || rrTimestamp > this.latestRRTimestamp) {
+        this.latestRRTimestamp = rrTimestamp;
       }
       return Number(rrTimestamp - this.firstRRTimestamp) / 1e9; // Nanoseconds to seconds
     };
@@ -188,7 +197,6 @@ export default class RRLOGDecoder {
     try {
       // Check magic beginning
       if (this.magic === null) {
-        if (dataArray.length - offset < 2) return this.retain(dataArray, offset);
         this.magic = this.STRING_DECODER.decode(dataArray.subarray(offset, offset + 2));
         shiftOffset(2);
         if (!(this.magic === "RR")) {
@@ -198,7 +206,6 @@ export default class RRLOGDecoder {
 
       // Check log revision
       if (this.logRevision === null) {
-        if (dataArray.length - offset < 2) return this.retain(dataArray, offset);
         this.logRevision = dataBuffer.getInt16(shiftOffset(2));
         if (!this.SUPPORTED_LOG_REVISIONS.includes(this.logRevision)) {
           return false;
@@ -206,11 +213,7 @@ export default class RRLOGDecoder {
       }
 
       while (true) {
-        // Everything before this point is a complete entry, so this is where decoding resumes if
-        // the chunk runs out partway through the next one
-        let entryStart = offset;
-
-        if (offset >= dataArray.length) break; // No more entries in this chunk
+        if (offset >= dataArray.length) break; // No more entries
 
         let type: number;
         try {
@@ -226,7 +229,8 @@ export default class RRLOGDecoder {
             // Channels and keys are per-log
             this.keyIDs = {};
             this.keySchemas = {};
-            if (offset >= dataArray.length) break; // Header was the end of this chunk
+            this.needsResync = false;
+            if (offset >= dataArray.length) break; // Live header messages hold nothing else
           }
 
           type = dataBuffer.getInt32(shiftOffset(4));
@@ -234,12 +238,9 @@ export default class RRLOGDecoder {
           let keyID: number;
           switch (type) {
             case 0: // New channel definition
-              // The name and schema are stored together, so a channel is never half-registered if
-              // the entry turns out to be incomplete (the ID is derived from the channel count)
               keyID = Object.keys(this.keyIDs).length;
-              let newName = readString();
+              this.keyIDs[keyID] = readString();
               let newSchema = readSchema();
-              this.keyIDs[keyID] = newName;
               this.keySchemas[keyID] = newSchema;
               if (this.logRevision === 0) {
                 // Workaround for https://github.com/acmerobotics/road-runner-ftc/issues/22
@@ -251,6 +252,12 @@ export default class RRLOGDecoder {
               keyID = dataBuffer.getInt32(shiftOffset(4));
               let key = this.keyIDs[keyID];
               let schema = this.keySchemas[keyID];
+              if (schema === undefined && this.live) {
+                // Each live message is one entry, so skipping it leaves the next one intact
+                this.needsResync = true;
+                offset = dataArray.length;
+                break;
+              }
 
               // Newer logs stamp every message with the time it was logged, nanoseconds on the
               // robot's monotonic clock. Read it before the payload, where the writer put it.
@@ -263,6 +270,7 @@ export default class RRLOGDecoder {
                 // Timestamps are not guaranteed to increase (several threads can log at once), which
                 // the log handles by inserting out of order values in place.
                 this.lastTimestamp = rrTimestampToSeconds(messageTimestamp);
+                if (this.clockReset) break; // Don't write a value that belongs to a new robot boot
 
                 // The robot reports OpMode transitions as events
                 if (key === "OpMode/Event" && typeof msg === "string") {
@@ -337,11 +345,8 @@ export default class RRLOGDecoder {
               break;
           }
         } catch (e) {
-          // The entry ran past the end of the chunk. For a stream that means the rest of it hasn't
-          // arrived yet, so keep the bytes and pick up here next time. For a file it means the log
-          // was truncated or corrupted, and the retained bytes are simply never used.
-          if (e instanceof RangeError) {
-            this.retain(dataArray, entryStart);
+          // Handles corrupted or incorrectly saved files ending early (a live message ending early is corrupt)
+          if (e instanceof RangeError && !this.live) {
             break;
           } else {
             console.error(e);
@@ -363,15 +368,6 @@ export default class RRLOGDecoder {
       console.error(e);
       return false;
     }
-  }
-
-  /**
-   * Saves the bytes from the given offset onward to be decoded once the rest of the entry arrives.
-   * Returns true so callers can `return this.retain(...)` when a chunk is too short to act on.
-   */
-  private retain(dataArray: Uint8Array, from: number): boolean {
-    this.pendingData = from >= dataArray.length ? new Uint8Array() : dataArray.slice(from);
-    return true;
   }
 
   /**
