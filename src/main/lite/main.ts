@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import TinyPopupMenu, { MenuItem, Submenu } from "tiny-popup-menu";
+import WorkerManager from "../../hub/WorkerManager";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import { BUILD_DATE, COPYRIGHT, Distribution, DISTRIBUTION, LITE_VERSION } from "../../shared/buildConstants";
 import ButtonRect from "../../shared/ButtonRect";
@@ -257,6 +258,20 @@ async function initHub() {
   });
   hubPort.start();
 
+  // Propagate the hub's title to the parent tab
+  const hubTitleElement = HUB_FRAME.contentDocument?.querySelector("title");
+  if (hubTitleElement) {
+    const syncTitle = () => {
+      if (hubTitleElement.textContent) document.title = hubTitleElement.textContent;
+    };
+    new MutationObserver(syncTitle).observe(hubTitleElement, {
+      childList: true,
+      characterData: true,
+      subtree: true
+    });
+    syncTitle();
+  }
+
   // Init messages
   sendMessage(hubPort, "set-version", {
     platform: "lite",
@@ -313,6 +328,10 @@ async function handleHubMessage(message: NamedMessage) {
       HUB_FRAME.style.opacity = "100%";
       break;
 
+    case "open-files-request":
+      sendMessage(hubPort, "open-files", { files: message.data.files, merge: false });
+      break;
+
     case "alert":
     case "error":
       window.alert(message.data.content);
@@ -361,7 +380,7 @@ async function handleHubMessage(message: NamedMessage) {
         const path: string = message.data.path;
 
         let extension = path.split(".").pop();
-        if (extension === "hoot" || extension === "revlog" || extension === "wpilogxz") {
+        if (extension === "hoot" || extension === "revlog") {
           sendMessage(hubPort, "historical-data", {
             files: [null],
             error: "Unsupported file format in AdvantageScope Lite.",
@@ -377,10 +396,15 @@ async function handleHubMessage(message: NamedMessage) {
         let response = await fetch(`logs/${encodeURIComponent(path)}?folder=${encodeURIComponent(prefs.remotePath)}`);
         let buffer = await response.arrayBuffer();
         let array = new Uint8Array(buffer);
+        let error: string | null = null;
+        if (extension === "wpilogxz") {
+          array = await WorkerManager.request("bundles/xzWorker.js", array);
+          if (array.length === 0) error = "Failed to decompress WPILOG file.";
+        }
 
         sendMessage(hubPort, "historical-data", {
           files: [array],
-          error: null,
+          error: error,
           uuid: uuid
         });
       }
@@ -391,10 +415,17 @@ async function handleHubMessage(message: NamedMessage) {
         const uuid: string = message.data.uuid;
         const extension: string = message.data.extension;
 
-        if (extension === "hoot" || extension === "revlog" || extension === "wpilogxz") {
+        if (extension === "hoot" || extension === "revlog") {
           sendMessage(hubPort, "historical-data", {
             files: [null],
             error: "Unsupported file format in AdvantageScope Lite.",
+            uuid: uuid
+          });
+        } else if (extension === "wpilogxz") {
+          const decompressed = await WorkerManager.request("bundles/xzWorker.js", message.data.data);
+          sendMessage(hubPort, "historical-data", {
+            files: [decompressed],
+            error: decompressed.length === 0 ? "Failed to decompress WPILOG file." : null,
             uuid: uuid
           });
         } else {

@@ -47,6 +47,7 @@ import { BUILD_DATE, COPYRIGHT, DISTRIBUTION, Distribution } from "../../shared/
 import { Units } from "../../shared/units";
 import { createUUID, formatDate } from "../../shared/util";
 import { GITHUB_REPOSITORY } from "../github";
+import DEFAULT_DS_LAYOUT from "../lite/dsLayout";
 import {
   AKIT_PATH_INPUT,
   AKIT_PATH_INPUT_PERIOD,
@@ -113,6 +114,7 @@ let menuTemplate: (Electron.MenuItemConstructorOptions | Electron.MenuItem)[] | 
 let stateTracker = new StateTracker();
 let updateChecker = new UpdateChecker();
 let firstOpenPath: string | null = null; // Cache path to open immediately
+
 let advantageScopeAssets: AdvantageScopeAssets = {
   field2ds: [],
   field3ds: [],
@@ -252,6 +254,10 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         detail: message.data.content,
         icon: WINDOW_ICON
       });
+      break;
+
+    case "open-files-request":
+      openFilesSmart(message.data.files, window);
       break;
 
     case "error":
@@ -2191,7 +2197,7 @@ function setupMenu() {
               })
               .then((files) => {
                 if (files.filePaths.length > 0) {
-                  sendMessage(window!, "open-files", { files: files.filePaths, merge: false });
+                  openFilesSmart(files.filePaths, window!);
                 }
               });
           }
@@ -2494,6 +2500,25 @@ function setupMenu() {
               });
           }
         },
+        {
+          label: "Reset to DS Layout",
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
+            if (window === undefined || !hubWindows.includes(window)) return;
+            const result = dialog.showMessageBoxSync(window, {
+              type: "warning",
+              title: "Warning",
+              message: "Reset to DS Layout?",
+              detail: "The layout of this window will be replaced with the DS layout. This cannot be undone.",
+              buttons: ["Reset", "Cancel"],
+              defaultId: 0,
+              cancelId: 1,
+              icon: WINDOW_ICON
+            });
+            if (result !== 0) return;
+            sendMessage(window, "restore-state", DEFAULT_DS_LAYOUT);
+          }
+        },
         { type: "separator" },
         {
           label: "New Window",
@@ -2755,7 +2780,7 @@ function createAboutWindow() {
 }
 
 /** Creates a new hub window. */
-function createHubWindow(state?: WindowState) {
+function createHubWindow(state?: WindowState, layoutOverride?: any) {
   let prefs: BrowserWindowConstructorOptions = {
     minWidth: 800,
     minHeight: 400,
@@ -2917,7 +2942,9 @@ function createHubWindow(state?: WindowState) {
     if (fs.existsSync(TYPE_MEMORY_FILENAME)) {
       sendMessage(window, "restore-type-memory", jsonfile.readFileSync(TYPE_MEMORY_FILENAME));
     }
-    if (firstLoad && state !== undefined) {
+    if (firstLoad && layoutOverride !== undefined) {
+      sendMessage(window, "restore-state", layoutOverride);
+    } else if (firstLoad && state !== undefined) {
       sendMessage(window, "restore-state", state.state);
     } else {
       let cachedState = stateTracker.getRendererState(window);
@@ -2984,6 +3011,10 @@ function createHubWindow(state?: WindowState) {
       });
       if (choice === 0) event.preventDefault();
     }
+  });
+  window.once("closed", () => {
+    const index = hubWindows.indexOf(window);
+    if (index !== -1) hubWindows.splice(index, 1);
   });
   window.on("enter-full-screen", () => sendMessage(window, "set-fullscreen", true));
   window.on("leave-full-screen", () => sendMessage(window, "set-fullscreen", false));
@@ -3678,6 +3709,110 @@ function openBetaWelcome(parentWindow: Electron.BrowserWindow) {
   betaWelcome.loadFile(path.join(__dirname, "../www/betaWelcome.html"));
 }
 
+// DS LOG HANDLING
+
+/**
+ * Returns whether the path is a Driver Station log.
+ */
+function isDsLog(path: string): boolean {
+  // Read the extra header from the WPILOG directory. This happens before
+  // actually loading the file normally, so just parse the start of it.
+  const expectedExtra = Buffer.from("DS Log File", "utf8");
+  const buffer = Buffer.alloc(12 + expectedExtra.length);
+  let fd: number | null = null;
+  try {
+    fd = fs.openSync(path, "r");
+    if (fs.readSync(fd, buffer, 0, buffer.length, 0) < buffer.length) return false;
+  } catch {
+    return false;
+  } finally {
+    if (fd !== null) fs.closeSync(fd);
+  }
+  if (buffer.toString("ascii", 0, 6) !== "WPILOG") return false;
+  if (buffer.readUInt8(7) !== 1) return false;
+  if (buffer.readUInt32LE(8) !== expectedExtra.length) return false;
+  return buffer.subarray(12).equals(expectedExtra);
+}
+
+/**
+ * Returns whether the window has the default Driver Station layout.
+ */
+function isDsWindow(window: BrowserWindow): boolean {
+  const state = stateTracker.getRendererState(window);
+  if (state?.tabs?.tabs === undefined) return false;
+  const signature = (tabs: any[]) => JSON.stringify(tabs.map((tab) => [tab.type, tab.title]));
+  return signature(state.tabs.tabs) === signature(DEFAULT_DS_LAYOUT.tabs.tabs as any[]);
+}
+
+function createDsWindow(files: string[]) {
+  const window = createHubWindow(undefined, DEFAULT_DS_LAYOUT);
+  window.webContents.once("dom-ready", () => sendMessage(window, "open-files", { files: files, merge: false }));
+}
+
+/**
+ * Opens files new files without merging. Routes requests to a new or existing
+ * window while recommending a DS layout for FIRST DS logs.
+ */
+function openFilesSmart(files: string[], sourceWindow: BrowserWindow | null) {
+  const hubAlive = (window: BrowserWindow | null): window is BrowserWindow =>
+    window !== null && !window.isDestroyed() && hubWindows.includes(window);
+  if (sourceWindow !== null && !hubAlive(sourceWindow)) sourceWindow = null;
+
+  if (files.length !== 1 || !isDsLog(files[0])) {
+    if (sourceWindow !== null) {
+      sendMessage(sourceWindow, "open-files", { files: files, merge: false });
+    } else {
+      const window = createHubWindow();
+      window.webContents.once("dom-ready", () => sendMessage(window, "open-files", { files: files, merge: false }));
+    }
+    return;
+  }
+
+  const dsWindow = hubWindows.find((window) => hubAlive(window) && isDsWindow(window));
+
+  if (sourceWindow === null && !hubWindows.some(hubAlive)) {
+    createDsWindow(files);
+    return;
+  }
+  if (sourceWindow !== null && isDsWindow(sourceWindow)) {
+    sendMessage(sourceWindow, "open-files", { files: files, merge: false });
+    return;
+  }
+
+  const buttons: string[] = [];
+  const actions: (() => void)[] = [];
+  if (dsWindow !== undefined) {
+    const target = dsWindow;
+    buttons.push("Open in DS Window");
+    actions.push(() => {
+      target.focus();
+      sendMessage(target, "open-files", { files: files, merge: false });
+    });
+  } else {
+    buttons.push("Open in New Window");
+    actions.push(() => createDsWindow(files));
+  }
+  if (sourceWindow !== null) {
+    const source = sourceWindow;
+    buttons.push("Open in This Window");
+    actions.push(() => sendMessage(source, "open-files", { files: files, merge: false }));
+  }
+  buttons.push("Cancel");
+  const options = {
+    type: "question" as const,
+    title: "Open DS log",
+    message: "Open this log using the DS layout?",
+    detail: "The Driver Station layout can be opened in a separate window without changing your current layout.",
+    buttons: buttons,
+    defaultId: 0,
+    cancelId: buttons.length - 1,
+    icon: WINDOW_ICON
+  };
+  const result =
+    sourceWindow !== null ? dialog.showMessageBoxSync(sourceWindow, options) : dialog.showMessageBoxSync(options);
+  if (result < actions.length) actions[result]();
+}
+
 // APPLICATION EVENTS
 
 function checkForUpdate(alwaysPrompt: boolean) {
@@ -3777,7 +3912,7 @@ app.whenReady().then(async () => {
   // Open file if exists
   if (firstOpenPath !== null && targetWindow !== null) {
     targetWindow.webContents.once("dom-ready", () => {
-      sendMessage(targetWindow!, "open-files", { files: [firstOpenPath], merge: false });
+      openFilesSmart([firstOpenPath!], targetWindow!);
     });
   }
 
@@ -3799,6 +3934,10 @@ app.on("window-all-closed", () => {
 // macOS only, Linux & Windows start a new process and pass the file as an argument
 app.on("open-file", (_, path) => {
   if (app.isReady()) {
+    if (isDsLog(path)) {
+      openFilesSmart([path], hubWindows.length > 0 ? hubWindows[0] : null);
+      return;
+    }
     // Already running, create a new window
     let window = createHubWindow();
     window.webContents.once("dom-ready", () => {
@@ -3821,7 +3960,7 @@ setInterval(() => {
       fs.unlinkSync(AKIT_PATH_INPUT);
       if (hubWindows.length > 0) {
         hubWindows[0].focus();
-        sendMessage(hubWindows[0], "open-files", { files: [path.trim()], merge: false });
+        openFilesSmart([path.trim()], hubWindows[0]);
       }
     });
   }

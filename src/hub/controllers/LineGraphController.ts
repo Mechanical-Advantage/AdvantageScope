@@ -667,7 +667,7 @@ export default class LineGraphController implements TabController {
 
       // Filter out ranges outside the time range
       let relevantRanges = ranges.filter(
-        (range) => range.start <= timeRange[1] && (range.end === undefined || range.end >= timeRange[0])
+        (range) => range.start <= timeRange[1] && (range.end === undefined || range.end > timeRange[0])
       );
 
       if (relevantRanges.length > 0) {
@@ -676,9 +676,13 @@ export default class LineGraphController implements TabController {
 
         relevantRanges.forEach((range) => {
           let start = Math.max(range.start, timeRange[0]);
-          if (timestamps.length === 0 || start > timestamps[timestamps.length - 1]) {
+          let value = range.mode.charAt(0).toUpperCase() + range.mode.slice(1);
+          if (timestamps.length > 0 && start <= timestamps[timestamps.length - 1]) {
+            // Same timestamp, later range wins
+            values[values.length - 1] = value;
+          } else {
             timestamps.push(start);
-            values.push(range.mode.charAt(0).toUpperCase() + range.mode.slice(1));
+            values.push(value);
           }
         });
 
