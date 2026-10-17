@@ -11,12 +11,12 @@ import { XzReadableStream } from "xz-decompress";
  * Decompresses XZ data.
  */
 self.onmessage = async (event: MessageEvent) => {
-  const { id, payload } = event.data as { id: number; payload: Uint8Array<ArrayBuffer> };
+  const { id, payload } = event.data as { id: number; payload: Uint8Array };
 
   const chunks: Uint8Array[] = [];
   let totalLength = 0;
   try {
-    const reader = new XzReadableStream(new Blob([payload]).stream()).getReader();
+    const reader = new XzReadableStream(new Blob([payload as BlobPart]).stream()).getReader();
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
