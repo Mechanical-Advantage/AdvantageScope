@@ -8,19 +8,49 @@
 import { Pose2d } from "../../../shared/geometry";
 import Log from "../../../shared/log/Log";
 import { Units } from "../../../shared/units";
-import { ArraySchema, EnumSchema, MessageSchema, PrimitiveSchema, RRMessage, StructSchema } from "./RRLOGCommon";
+import {
+  ArraySchema,
+  EnumSchema,
+  MapSchema,
+  MessageSchema,
+  OptionalSchema,
+  PrimitiveSchema,
+  RRMessage,
+  StructSchema,
+  mapKeyToString
+} from "./RRLOGCommon";
 
 export default class RRLOGDecoder {
-  private SUPPORTED_LOG_REVISIONS = [0, 1];
+  private SUPPORTED_LOG_REVISIONS = [0, 1, 2, 3];
   private STRING_DECODER = new TextDecoder("UTF-8");
 
   private magic: string | null = null;
   private logRevision: number | null = null;
   private firstRRTimestamp: bigint | null = null;
-  private lastTimestamp: number = 0;
+  private currentTimestamp: number = 0;
   private lastProgressTimestamp = 0;
   private keyIDs: { [id: number]: string } = {};
   private keySchemas: { [id: number]: MessageSchema } = {};
+
+  /** Live only: a message arrived for a channel with no schema. Cleared by the next log header. */
+  needsResync = false;
+
+  /** The first timestamp seen is earlier than the latest one from the previous decoder, so the robot's clock restarted. */
+  clockReset = false;
+  private latestRRTimestamp: bigint | null = null;
+  private timestampSeen = false;
+
+  /**
+   * @param live Whether each decode() call is one whole live message or an entire log file
+   * @param previous The decoder for an earlier connection to the same log, whose time origin this one continues.
+   */
+  constructor(
+    private live = false,
+    previous: RRLOGDecoder | null = null
+  ) {
+    this.firstRRTimestamp = previous?.firstRRTimestamp ?? null;
+    this.latestRRTimestamp = previous?.latestRRTimestamp ?? null;
+  }
 
   decode(log: Log, dataArray: Uint8Array, progressCallback?: (progress: number) => void): boolean {
     let dataBuffer = new DataView(dataArray.buffer);
@@ -32,6 +62,7 @@ export default class RRLOGDecoder {
 
     const readString = (): string => {
       let len = dataBuffer.getInt32(shiftOffset(4));
+      if (len < 0 || offset + len > dataArray.length) throw new RangeError("Incomplete string");
       let string = this.STRING_DECODER.decode(dataArray.subarray(offset, offset + len));
       offset += len;
       return string;
@@ -65,6 +96,11 @@ export default class RRLOGDecoder {
         return schema;
       } else if (schemaType === 7) {
         return new ArraySchema(readSchema());
+      } else if (schemaType === 8) {
+        let key = readSchema();
+        return new MapSchema(key, readSchema());
+      } else if (schemaType === 9) {
+        return new OptionalSchema(readSchema());
       } else {
         throw "Unknown schema type: " + schemaType;
       }
@@ -112,6 +148,17 @@ export default class RRLOGDecoder {
           msg.push(readMsg(schema.schema)); // the schema of the array elements
         }
         return msg;
+      } else if (schema instanceof MapSchema) {
+        let size = dataBuffer.getInt32(shiftOffset(4));
+        let msg = new Map<string, RRMessage>();
+        for (let i = 0; i < size; ++i) {
+          let key = readMsg(schema.key); // key and value are always both present
+          msg.set(mapKeyToString(key), readMsg(schema.value));
+        }
+        return msg;
+      } else if (schema instanceof OptionalSchema) {
+        if (dataArray[shiftOffset(1)] === 0) return null; // Absent, nothing follows
+        return readMsg(schema.schema);
       } else {
         throw "Unknown schema type: " + schema;
       }
@@ -120,6 +167,12 @@ export default class RRLOGDecoder {
     const rrTimestampToSeconds = (rrTimestamp: bigint) => {
       if (this.firstRRTimestamp === null) {
         this.firstRRTimestamp = rrTimestamp;
+      } else if (!this.timestampSeen && this.latestRRTimestamp !== null && rrTimestamp < this.latestRRTimestamp) {
+        this.clockReset = true;
+      }
+      this.timestampSeen = true;
+      if (this.latestRRTimestamp === null || rrTimestamp > this.latestRRTimestamp) {
+        this.latestRRTimestamp = rrTimestamp;
       }
       return Number(rrTimestamp - this.firstRRTimestamp) / 1e9; // Nanoseconds to seconds
     };
@@ -143,24 +196,27 @@ export default class RRLOGDecoder {
       }
 
       while (true) {
-        // Check for the start of another log
-        // Allows users to concatenate auto and teleop logs for full match replays
-        if (this.STRING_DECODER.decode(dataArray.subarray(offset, offset + 2)) === "RR") {
-          shiftOffset(2);
-          // Check log revision again for completeness (probably not needed)
-          this.logRevision = dataBuffer.getInt16(shiftOffset(2));
-          if (!this.SUPPORTED_LOG_REVISIONS.includes(this.logRevision)) {
-            return false;
-          }
-          // Channels and keys are per-log
-          this.keyIDs = {};
-          this.keySchemas = {};
-        }
+        if (offset >= dataArray.length) break; // No more entries
 
         let type: number;
         try {
+          // Check for the start of another log
+          // Allows users to concatenate auto and teleop logs for full match replays
+          if (this.STRING_DECODER.decode(dataArray.subarray(offset, offset + 2)) === "RR") {
+            shiftOffset(2);
+            // Check log revision again for completeness (probably not needed)
+            this.logRevision = dataBuffer.getInt16(shiftOffset(2));
+            if (!this.SUPPORTED_LOG_REVISIONS.includes(this.logRevision)) {
+              return false;
+            }
+            // Channels and keys are per-log
+            this.keyIDs = {};
+            this.keySchemas = {};
+            this.needsResync = false;
+            if (offset >= dataArray.length) break; // Live header messages hold nothing else
+          }
+
           type = dataBuffer.getInt32(shiftOffset(4));
-          if (type === undefined) break; // This was the last cycle, save the data
 
           let keyID: number;
           switch (type) {
@@ -179,35 +235,57 @@ export default class RRLOGDecoder {
               keyID = dataBuffer.getInt32(shiftOffset(4));
               let key = this.keyIDs[keyID];
               let schema = this.keySchemas[keyID];
+              if (schema === undefined && this.live) {
+                // Each live message is one entry, so skipping it leaves the next one intact
+                this.needsResync = true;
+                offset = dataArray.length;
+                break;
+              }
+
+              // Revision 3 and later put a timestamp (robot nanoseconds) before every message
+              let messageTimestamp =
+                this.logRevision !== null && this.logRevision >= 3 ? dataBuffer.getBigInt64(shiftOffset(8)) : null;
               let msg = readMsg(schema);
 
               // Find a timestamp
+              if (messageTimestamp !== null) {
+                this.currentTimestamp = rrTimestampToSeconds(messageTimestamp);
+                if (this.clockReset) break; // Don't write a value that belongs to a new robot boot
 
-              // Automatically added by log writer
-              if (
+                if (key === "OpMode/Event" && typeof msg === "string") {
+                  if (msg === "PRE_START") {
+                    // Offset start time by 50ms to show the values returned by the first loop
+                    log.putBoolean("RUNNING", this.currentTimestamp + 0.05, true);
+                  } else if (msg === "POST_STOP") {
+                    log.putBoolean("RUNNING", this.currentTimestamp, false);
+                  }
+                }
+
+                // Automatically added by log writer (older revisions)
+              } else if (
                 (key === "OPMODE_PRE_INIT" ||
                   key === "OPMODE_PRE_START" ||
                   key === "OPMODE_POST_STOP" ||
                   key === "TIMESTAMP") &&
                 typeof msg === "bigint"
               ) {
-                this.lastTimestamp = rrTimestampToSeconds(msg);
+                this.currentTimestamp = rrTimestampToSeconds(msg);
                 if (key === "OPMODE_PRE_START") {
                   // Offset start time by 50ms to show the values returned by the first loop
-                  log.putBoolean("RUNNING", this.lastTimestamp + 0.05, true);
+                  log.putBoolean("RUNNING", this.currentTimestamp + 0.05, true);
                 } else if (key === "OPMODE_POST_STOP") {
-                  log.putBoolean("RUNNING", this.lastTimestamp, false);
+                  log.putBoolean("RUNNING", this.currentTimestamp, false);
                 }
 
                 // Automatically parse timestamp fields of Road Runner's built in message classes
               } else if (msg instanceof Map && msg.has("timestamp")) {
                 let timestamp = msg.get("timestamp");
                 if (timestamp !== undefined && typeof timestamp === "bigint") {
-                  this.lastTimestamp = rrTimestampToSeconds(timestamp);
+                  this.currentTimestamp = rrTimestampToSeconds(timestamp);
                 }
               }
 
-              let timestamp = this.lastTimestamp;
+              let timestamp = this.currentTimestamp;
               let type = typeof msg;
               switch (type) {
                 case "boolean":
@@ -245,9 +323,14 @@ export default class RRLOGDecoder {
               break;
           }
         } catch (e) {
-          // Catch file ending
-          // Usually files should end at message breaks, but this handles corrupted or incorrectly saved logs ending early
-          if (e instanceof RangeError && e.message === "Offset is outside the bounds of the DataView") {
+          if (this.live) {
+            // A live message is one entry, so a corrupt one can be skipped. The channel table may
+            // be wrong if it was a schema entry, so ask for it again.
+            console.error(e);
+            this.needsResync = true;
+            break;
+          } else if (e instanceof RangeError) {
+            // Handles corrupted or incorrectly saved files ending early
             break;
           } else {
             console.error(e);

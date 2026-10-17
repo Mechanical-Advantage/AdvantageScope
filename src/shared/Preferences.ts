@@ -61,7 +61,7 @@ export const DEFAULT_PREFS_LITEDS: Preferences = Object.assign({}, DEFAULT_PREFS
   liveSubscribeMode: "logging"
 });
 
-export type LiveMode = "nt4" | "nt4-akit" | "nt4-systemcore" | "phoenix" | "rlog" | "ftcdashboard";
+export type LiveMode = "nt4" | "nt4-akit" | "nt4-systemcore" | "phoenix" | "rlog" | "ftcdashboard" | "fateweaver";
 
 export function getLiveModeName(mode: LiveMode): string {
   switch (mode) {
@@ -77,12 +77,14 @@ export function getLiveModeName(mode: LiveMode): string {
       return "RLOG Server";
     case "ftcdashboard":
       return "FTC Dashboard";
+    case "fateweaver":
+      return "FateWeaver";
   }
 }
 
 // Phoenix not possible due to cross origin restrictions
 // RLOG not possible because it uses raw TCP
-export const LITE_ALLOWED_LIVE_MODES: LiveMode[] = ["nt4", "nt4-akit", "nt4-systemcore", "ftcdashboard"];
+export const LITE_ALLOWED_LIVE_MODES: LiveMode[] = ["nt4", "nt4-akit", "nt4-systemcore", "ftcdashboard", "fateweaver"];
 
 export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   if ("theme" in newPrefs && (newPrefs.theme === "light" || newPrefs.theme === "dark" || newPrefs.theme === "system")) {
@@ -113,7 +115,8 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
       newPrefs.liveMode === "nt4-systemcore" ||
       newPrefs.liveMode === "phoenix" ||
       newPrefs.liveMode === "rlog" ||
-      newPrefs.liveMode === "ftcdashboard")
+      newPrefs.liveMode === "ftcdashboard" ||
+      newPrefs.liveMode === "fateweaver")
   ) {
     basePrefs.liveMode = newPrefs.liveMode;
   }

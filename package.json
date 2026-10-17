@@ -169,6 +169,14 @@
         "icon": "icons/app/revlog-icon"
       },
       {
+        "ext": "fate",
+        "name": "FateWeaver robot log",
+        "description": "FateWeaver robot log",
+        "mimeType": "application/x-fate",
+        "role": "Viewer",
+        "icon": "icons/app/fate-icon"
+      },
+      {
         "ext": "csv",
         "name": "Comma-separated values",
         "description": "Comma-separated values",
