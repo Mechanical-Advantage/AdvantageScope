@@ -22,15 +22,12 @@ import {
 
 export default class RRLOGDecoder {
   private SUPPORTED_LOG_REVISIONS = [0, 1, 2, 3];
-
-  // First revision whose message entries carry their own timestamp
-  private TIMESTAMPED_REVISION = 3;
   private STRING_DECODER = new TextDecoder("UTF-8");
 
   private magic: string | null = null;
   private logRevision: number | null = null;
   private firstRRTimestamp: bigint | null = null;
-  private lastTimestamp: number = 0;
+  private currentTimestamp: number = 0;
   private lastProgressTimestamp = 0;
   private keyIDs: { [id: number]: string } = {};
   private keySchemas: { [id: number]: MessageSchema } = {};
@@ -63,12 +60,6 @@ export default class RRLOGDecoder {
       return (offset += shift) - shift;
     }
 
-    // DataView throws RangeError past the end on its own; raw byte reads check manually
-    const readByte = (): number => {
-      if (offset >= dataArray.length) throw new RangeError("Incomplete byte");
-      return dataArray[shiftOffset(1)];
-    };
-
     const readString = (): string => {
       let len = dataBuffer.getInt32(shiftOffset(4));
       if (len < 0 || offset + len > dataArray.length) throw new RangeError("Incomplete string");
@@ -77,7 +68,7 @@ export default class RRLOGDecoder {
       return string;
     };
 
-    const readSchema = (): MessageSchema => {
+    function readSchema(): MessageSchema {
       let schemaType = dataBuffer.getInt32(shiftOffset(4));
       if (schemaType === 0) {
         let schema = new StructSchema();
@@ -106,16 +97,14 @@ export default class RRLOGDecoder {
       } else if (schemaType === 7) {
         return new ArraySchema(readSchema());
       } else if (schemaType === 8) {
-        this.requireRevision2(schemaType);
         let key = readSchema();
         return new MapSchema(key, readSchema());
       } else if (schemaType === 9) {
-        this.requireRevision2(schemaType);
         return new OptionalSchema(readSchema());
       } else {
         throw "Unknown schema type: " + schemaType;
       }
-    };
+    }
 
     function arraySchemaCount(schema: MessageSchema): number {
       if (schema instanceof StructSchema) {
@@ -127,10 +116,6 @@ export default class RRLOGDecoder {
         return count;
       } else if (schema instanceof ArraySchema) {
         return 1 + arraySchemaCount(schema.schema);
-      } else if (schema instanceof MapSchema) {
-        return arraySchemaCount(schema.key) + arraySchemaCount(schema.value);
-      } else if (schema instanceof OptionalSchema) {
-        return arraySchemaCount(schema.schema);
       } else {
         return 0;
       }
@@ -152,7 +137,7 @@ export default class RRLOGDecoder {
       } else if (schema === PrimitiveSchema.STRING) {
         return readString();
       } else if (schema === PrimitiveSchema.BOOLEAN) {
-        return readByte() !== 0;
+        return dataArray[shiftOffset(1)] !== 0;
       } else if (schema instanceof EnumSchema) {
         let ordinal = dataBuffer.getInt32(shiftOffset(4));
         return schema.constants[ordinal];
@@ -172,9 +157,7 @@ export default class RRLOGDecoder {
         }
         return msg;
       } else if (schema instanceof OptionalSchema) {
-        let present = readByte();
-        if (present === 0) return null; // Absent, nothing follows
-        if (present !== 1) throw "Invalid optional presence byte: " + present;
+        if (dataArray[shiftOffset(1)] === 0) return null; // Absent, nothing follows
         return readMsg(schema.schema);
       } else {
         throw "Unknown schema type: " + schema;
@@ -259,31 +242,26 @@ export default class RRLOGDecoder {
                 break;
               }
 
-              // Newer logs stamp every message with the time it was logged, nanoseconds on the
-              // robot's monotonic clock. Read it before the payload, where the writer put it.
-              let hasMessageTimestamp = this.logRevision !== null && this.logRevision >= this.TIMESTAMPED_REVISION;
-              let messageTimestamp = hasMessageTimestamp ? dataBuffer.getBigInt64(shiftOffset(8)) : null;
+              // Revision 3 and later put a timestamp (robot nanoseconds) before every message
+              let messageTimestamp =
+                this.logRevision !== null && this.logRevision >= 3 ? dataBuffer.getBigInt64(shiftOffset(8)) : null;
               let msg = readMsg(schema);
 
               // Find a timestamp
               if (messageTimestamp !== null) {
-                // Timestamps are not guaranteed to increase (several threads can log at once), which
-                // the log handles by inserting out of order values in place.
-                this.lastTimestamp = rrTimestampToSeconds(messageTimestamp);
+                this.currentTimestamp = rrTimestampToSeconds(messageTimestamp);
                 if (this.clockReset) break; // Don't write a value that belongs to a new robot boot
 
-                // The robot reports OpMode transitions as events
                 if (key === "OpMode/Event" && typeof msg === "string") {
                   if (msg === "PRE_START") {
                     // Offset start time by 50ms to show the values returned by the first loop
-                    log.putBoolean("RUNNING", this.lastTimestamp + 0.05, true);
+                    log.putBoolean("RUNNING", this.currentTimestamp + 0.05, true);
                   } else if (msg === "POST_STOP") {
-                    log.putBoolean("RUNNING", this.lastTimestamp, false);
+                    log.putBoolean("RUNNING", this.currentTimestamp, false);
                   }
                 }
 
-                // Older logs have no per-message timestamp, so one is inferred from the data.
-                // Automatically added by log writer
+                // Automatically added by log writer (older revisions)
               } else if (
                 (key === "OPMODE_PRE_INIT" ||
                   key === "OPMODE_PRE_START" ||
@@ -291,23 +269,23 @@ export default class RRLOGDecoder {
                   key === "TIMESTAMP") &&
                 typeof msg === "bigint"
               ) {
-                this.lastTimestamp = rrTimestampToSeconds(msg);
+                this.currentTimestamp = rrTimestampToSeconds(msg);
                 if (key === "OPMODE_PRE_START") {
                   // Offset start time by 50ms to show the values returned by the first loop
-                  log.putBoolean("RUNNING", this.lastTimestamp + 0.05, true);
+                  log.putBoolean("RUNNING", this.currentTimestamp + 0.05, true);
                 } else if (key === "OPMODE_POST_STOP") {
-                  log.putBoolean("RUNNING", this.lastTimestamp, false);
+                  log.putBoolean("RUNNING", this.currentTimestamp, false);
                 }
 
                 // Automatically parse timestamp fields of Road Runner's built in message classes
               } else if (msg instanceof Map && msg.has("timestamp")) {
                 let timestamp = msg.get("timestamp");
                 if (timestamp !== undefined && typeof timestamp === "bigint") {
-                  this.lastTimestamp = rrTimestampToSeconds(timestamp);
+                  this.currentTimestamp = rrTimestampToSeconds(timestamp);
                 }
               }
 
-              let timestamp = this.lastTimestamp;
+              let timestamp = this.currentTimestamp;
               let type = typeof msg;
               switch (type) {
                 case "boolean":
@@ -345,8 +323,14 @@ export default class RRLOGDecoder {
               break;
           }
         } catch (e) {
-          // Handles corrupted or incorrectly saved files ending early (a live message ending early is corrupt)
-          if (e instanceof RangeError && !this.live) {
+          if (this.live) {
+            // A live message is one entry, so a corrupt one can be skipped. The channel table may
+            // be wrong if it was a schema entry, so ask for it again.
+            console.error(e);
+            this.needsResync = true;
+            break;
+          } else if (e instanceof RangeError) {
+            // Handles corrupted or incorrectly saved files ending early
             break;
           } else {
             console.error(e);
@@ -367,16 +351,6 @@ export default class RRLOGDecoder {
     } catch (e) {
       console.error(e);
       return false;
-    }
-  }
-
-  /**
-   * Rejects a schema tag that the declared log revision doesn't include; message types added in later versions can't
-   * be ignored because decoder doesn't know how many bytes to skip. Throws an error if the log revision is too low.
-   */
-  private requireRevision2(schemaType: number) {
-    if (this.logRevision !== null && this.logRevision < 2) {
-      throw "Schema type " + schemaType + " requires log revision 2, but the header declares " + this.logRevision;
     }
   }
 }

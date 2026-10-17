@@ -23,11 +23,14 @@ export default class FateWeaverSource extends LiveDataSource {
   private TIME_SYNC_INTERVAL = 0.5;
   private RESYNC_REQUEST = "resync";
   private RESYNC_TIMEOUT_MS = 2000;
+  private MAX_RESYNCS = 3;
+  private RESYNC_WINDOW_MS = 10000;
 
   private socket: WebSocket | null = null;
   private decoder: RRLOGDecoder | null = null;
   private reconnectTimeout: NodeJS.Timeout | null = null;
   private resyncTimeout: NodeJS.Timeout | null = null;
+  private resyncTimes: number[] = [];
   private liveShiftInterval: NodeJS.Timeout | null = null;
   private lastTimeSync = 0;
   private liveZeroTime = 0;
@@ -71,6 +74,7 @@ export default class FateWeaverSource extends LiveDataSource {
     }
     this.decoder = new RRLOGDecoder(true, previous);
     this.clearResync();
+    this.resyncTimes = [];
     this.liveZeroTime = 0;
     this.targetLiveZeroTime = 0;
     this.setStatus(LiveDataSourceStatus.Connecting);
@@ -99,7 +103,7 @@ export default class FateWeaverSource extends LiveDataSource {
     if (this.status === LiveDataSourceStatus.Stopped) return;
 
     if (!this.decoder.decode(this.log, chunk)) {
-      // Bad magic, unsupported revision, or corrupt entry; reconnect for a fresh header and schemas
+      // Bad magic or unsupported revision; reconnect for a fresh header and schemas
       this.socket?.close();
       return;
     }
@@ -153,9 +157,19 @@ export default class FateWeaverSource extends LiveDataSource {
     }
   }
 
-  /** Asks the robot to resend the header and schemas, reconnecting if they don't arrive in time. */
+  /**
+   * Asks the robot to resend the header and schemas, reconnecting if they don't arrive in time or
+   * if resyncing keeps failing to fix the stream.
+   */
   private requestResync() {
     if (this.resyncTimeout !== null) return;
+    const now = Date.now();
+    this.resyncTimes = this.resyncTimes.filter((time) => now - time < this.RESYNC_WINDOW_MS);
+    if (this.resyncTimes.length >= this.MAX_RESYNCS) {
+      this.socket?.close();
+      return;
+    }
+    this.resyncTimes.push(now);
     this.socket?.send(this.RESYNC_REQUEST);
     this.resyncTimeout = setTimeout(() => this.socket?.close(), this.RESYNC_TIMEOUT_MS);
   }
