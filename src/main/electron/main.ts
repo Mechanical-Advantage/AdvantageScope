@@ -114,7 +114,6 @@ let menuTemplate: (Electron.MenuItemConstructorOptions | Electron.MenuItem)[] | 
 let stateTracker = new StateTracker();
 let updateChecker = new UpdateChecker();
 let firstOpenPath: string | null = null; // Cache path to open immediately
-let dsWindow: BrowserWindow | null = null; // Window opened for DS log viewing
 
 let advantageScopeAssets: AdvantageScopeAssets = {
   field2ds: [],
@@ -2496,7 +2495,6 @@ function setupMenu() {
             });
             if (result !== 0) return;
             sendMessage(window, "restore-state", DEFAULT_DS_LAYOUT);
-            dsWindow = window;
           }
         },
         { type: "separator" },
@@ -2991,6 +2989,10 @@ function createHubWindow(state?: WindowState, layoutOverride?: any) {
       });
       if (choice === 0) event.preventDefault();
     }
+  });
+  window.once("closed", () => {
+    const index = hubWindows.indexOf(window);
+    if (index !== -1) hubWindows.splice(index, 1);
   });
   window.on("enter-full-screen", () => sendMessage(window, "set-fullscreen", true));
   window.on("leave-full-screen", () => sendMessage(window, "set-fullscreen", false));
@@ -3710,7 +3712,10 @@ function isDsLog(path: string): boolean {
   return buffer.subarray(12).equals(expectedExtra);
 }
 
-function dsTabsUnchanged(window: BrowserWindow): boolean {
+/**
+ * Returns whether the window has the default Driver Station layout.
+ */
+function isDsWindow(window: BrowserWindow): boolean {
   const state = stateTracker.getRendererState(window);
   if (state?.tabs?.tabs === undefined) return false;
   const signature = (tabs: any[]) => JSON.stringify(tabs.map((tab) => [tab.type, tab.title]));
@@ -3719,10 +3724,6 @@ function dsTabsUnchanged(window: BrowserWindow): boolean {
 
 function createDsWindow(files: string[]) {
   const window = createHubWindow(undefined, DEFAULT_DS_LAYOUT);
-  dsWindow = window;
-  window.on("closed", () => {
-    if (dsWindow === window) dsWindow = null;
-  });
   window.webContents.once("dom-ready", () => sendMessage(window, "open-files", { files: files, merge: false }));
 }
 
@@ -3745,21 +3746,20 @@ function openFilesSmart(files: string[], sourceWindow: BrowserWindow | null) {
     return;
   }
 
-  // Forget the DS window if it was closed or modified
-  if (!hubAlive(dsWindow) || !dsTabsUnchanged(dsWindow)) dsWindow = null;
+  const dsWindow = hubWindows.find((window) => hubAlive(window) && isDsWindow(window));
 
-  if (sourceWindow === null && hubWindows.length === 0) {
+  if (sourceWindow === null && !hubWindows.some(hubAlive)) {
     createDsWindow(files);
     return;
   }
-  if (sourceWindow !== null && sourceWindow === dsWindow) {
+  if (sourceWindow !== null && isDsWindow(sourceWindow)) {
     sendMessage(sourceWindow, "open-files", { files: files, merge: false });
     return;
   }
 
   const buttons: string[] = [];
   const actions: (() => void)[] = [];
-  if (dsWindow !== null) {
+  if (dsWindow !== undefined) {
     const target = dsWindow;
     buttons.push("Open in DS Window");
     actions.push(() => {
