@@ -818,6 +818,49 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
         // Add options
         let currentTypeConfig = config.types.find((typeConfig) => typeConfig.key === state.type)!;
+        let addLogsOptionConfig = currentTypeConfig.options.find((optionConfig) => optionConfig.key === "AddFromLogs");
+        if (addLogsOptionConfig !== undefined && addLogsOptionConfig.values.length > 0) {
+          menu.append(
+            new MenuItem({
+              label: "Add from all logs",
+              click() {
+                sendMessage(window, "add-from-all-logs", {
+                  logKey: state.logKey,
+                  type: state.type,
+                  uuid: message.data.uuid
+                });
+                respond();
+              }
+            })
+          );
+          menu.append(
+            new MenuItem({
+              type: "separator"
+            })
+          );
+        }
+        let appendOptionItem = (optionConfig: SourceListConfig["types"][number]["options"][number]) => {
+          if (optionConfig.key === "AddFromLogs") {
+            return;
+          }
+          menu.append(
+            new MenuItem({
+              label: optionConfig.display,
+              submenu: optionConfig.values.map((optionValue) => {
+                return {
+                  label: optionValue.display,
+                  type: "checkbox",
+                  checked: optionValue.key === state.options[optionConfig.key],
+                  icon: getIcon(optionValue.key),
+                  click() {
+                    state.options[optionConfig.key] = optionValue.key;
+                    respond();
+                  }
+                };
+              })
+            })
+          );
+        };
         if (currentTypeConfig.options.length === 1) {
           let optionConfig = currentTypeConfig.options[0];
           optionConfig.values.forEach((optionValue) => {
@@ -836,23 +879,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           });
         } else {
           currentTypeConfig.options.forEach((optionConfig) => {
-            menu.append(
-              new MenuItem({
-                label: optionConfig.display,
-                submenu: optionConfig.values.map((optionValue) => {
-                  return {
-                    label: optionValue.display,
-                    type: "checkbox",
-                    checked: optionValue.key === state.options[optionConfig.key],
-                    icon: getIcon(optionValue.key),
-                    click() {
-                      state.options[optionConfig.key] = optionValue.key;
-                      respond();
-                    }
-                  };
-                })
-              })
-            );
+            appendOptionItem(optionConfig);
           });
         }
 
