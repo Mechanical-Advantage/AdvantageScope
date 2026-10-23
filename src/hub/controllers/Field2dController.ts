@@ -36,7 +36,7 @@ export default class Field2dController implements TabController {
   private static TRAIL_LENGTH_SECS = 3;
   private static TRAIL_DT = 0.1;
 
-  private static FADE_LENGTH_SECS = 2;
+  private static FADE_LENGTH_SECS = 1.5;
 
   private SETTINGS: HTMLElement;
   private ORIENTATION_SWITCHER: HTMLElement;

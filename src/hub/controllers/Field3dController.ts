@@ -31,6 +31,8 @@ import TabController, { setupKeyboardControls } from "./TabController";
 export default class Field3dController implements TabController {
   UUID = createUUID();
 
+  private static FADE_LENGTH_SECS = 1.5;
+
   private XR_BUTTON: HTMLButtonElement;
   private FIELD_SELECT: HTMLSelectElement;
 
@@ -290,6 +292,18 @@ export default class Field3dController implements TabController {
         poses = grabHeatmapData(window.log, source.logKey, source.logType, timeRange, this.UUID);
       }
 
+      // Get time since update and fade opacity for ghost
+      let fadeFactor: number = 1;
+      if (time !== null && source.type === "ghost" && source.options.fadeOut === "on") {
+        const values = window.log.getRange(source.logKey, time, time, this.UUID);
+
+        if (values !== undefined && values.timestamps.length > 0) {
+          const ageSeconds = time - values.timestamps[0];
+
+          fadeFactor = clampValue(Field3dController.FADE_LENGTH_SECS - ageSeconds, 0, Field3dController.FADE_LENGTH_SECS) / Field3dController.FADE_LENGTH_SECS;
+        }
+      }
+
       // Add data from children
       let components: AnnotatedPose3d[] = [];
       let mechanismsXZ: MechanismState[] = [];
@@ -408,6 +422,7 @@ export default class Field3dController implements TabController {
             type: "ghost",
             color: source.options.color,
             model: source.options.model,
+            fadeFactor: fadeFactor,
             poses: poses,
             components: components,
             mechanisms: {
