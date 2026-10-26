@@ -5,8 +5,8 @@ slug: /
 ---
 
 import DocCardList from "@theme/DocCardList";
-import BannerLight from "./img/banner-light.png";
-import BannerDark from "./img/banner-dark.png";
+import BannerLight from "./img/banner-ltr-light.png";
+import BannerDark from "./img/banner-ltr-dark.png";
 import ScreenshotLight from "./img/screenshot-light.png";
 import ScreenshotDark from "./img/screenshot-dark.png";
 
