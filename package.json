@@ -74,7 +74,7 @@
     "xz-decompress": "^0.2.3"
   },
   "dependencies": {
-    "@rev-robotics/revlog-converter": "^1.0.5",
+    "@rev-robotics/revlog-converter": "^2.0.0",
     "@types/emscripten": "^1.39.13",
     "@types/ws": "^8.5.13",
     "check-disk-space": "^3.4.0",
