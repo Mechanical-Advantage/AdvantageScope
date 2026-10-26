@@ -8,7 +8,7 @@
 import { Decoder } from "@msgpack/msgpack";
 import { Pose2d, Translation2d } from "../geometry";
 import { Units } from "../units";
-import { arraysEqual, checkArrayType } from "../util";
+import { arraysEqual, checkArrayType, lowerBound } from "../util";
 import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
 import { PHOTON_PREFIX, STRUCT_PREFIX, applyKeyPrefix, getSchemaType, splitLogKey } from "./LogKeyUtils";
@@ -159,12 +159,15 @@ export default class Log {
     // Update timestamp set caches
     if (this.enableTimestampSetCache) {
       Object.values(this.timestampSetCache).forEach((cache) => {
-        if (cache.keys.includes(key) && !cache.timestamps.includes(timestamp)) {
-          let insertIndex = cache.timestamps.findIndex((x) => x > timestamp);
-          if (insertIndex === -1) {
-            insertIndex = cache.timestamps.length;
+        if (cache.keys.includes(key)) {
+          let insertIndex = lowerBound(cache.timestamps, timestamp);
+          if (cache.timestamps[insertIndex] !== timestamp) {
+            if (insertIndex === cache.timestamps.length) {
+              cache.timestamps.push(timestamp);
+            } else {
+              cache.timestamps.splice(insertIndex, 0, timestamp);
+            }
           }
-          cache.timestamps.splice(insertIndex, 0, timestamp);
         }
       });
     }

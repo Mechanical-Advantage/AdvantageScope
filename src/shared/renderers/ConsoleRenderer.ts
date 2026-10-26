@@ -8,7 +8,7 @@
 import { AnsiUp } from "ansi_up";
 import { SelectionMode } from "../Selection";
 import { IS_LITE } from "../buildConstants";
-import { formatTimeWithMS } from "../util";
+import { formatTimeWithMS, upperBound } from "../util";
 import TabRenderer from "./TabRenderer";
 
 export default class ConsoleRenderer implements TabRenderer {
@@ -369,8 +369,7 @@ export default class ConsoleRenderer implements TabRenderer {
     let highlight = (time: number | null, className: string) => {
       Array.from(this.TABLE_BODY.children).forEach((row) => row.classList.remove(className));
       if (time) {
-        let target = this.renderedTimestamps.findIndex((value) => value > time);
-        if (target === -1) target = this.renderedTimestamps.length; // Use the last timestamp
+        let target = upperBound(this.renderedTimestamps, time);
         if (target < 1) target = 1; // Use the first timestamp (0 is the header cell, so the indexes of console cells start at 1)
         this.TABLE_BODY.children[target].classList.add(className);
       }
