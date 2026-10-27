@@ -110,6 +110,9 @@ export const MATCH_NUMBER_KEYS = [
 ];
 export const PROGRAM_START_TIME_KEYS = ["NT:/Robot/ProgramStartTime", "/Robot/ProgramStartTime"];
 
+export type RobotMode = "disabled" | "auto" | "teleop" | "utility";
+export type RobotStateRange = { start: number; end?: number; mode: RobotMode };
+
 /** Finds the first matching key that indicates enabled state. */
 export function getEnabledKey(log: Log): string | undefined {
   return findKey(log, ENABLED_KEYS);
@@ -238,9 +241,7 @@ export function getUtilityData(log: Log): LogValueSetBoolean | null {
 }
 
 /** Computes contiguous time ranges of robot state (e.g. auto, teleop). */
-export function getRobotStateRanges(
-  log: Log
-): { start: number; end?: number; mode: "disabled" | "auto" | "teleop" | "utility" }[] {
+export function getRobotStateRanges(log: Log): RobotStateRange[] {
   let enabledData = getEnabledData(log);
   let autoData = getAutonomousData(log);
   let utilityData = getUtilityData(log);
@@ -281,9 +282,9 @@ export function getRobotStateRanges(
   });
 
   // Get ranges
-  let ranges: { start: number; end?: number; mode: "disabled" | "auto" | "teleop" | "utility" }[] = [];
+  let ranges: RobotStateRange[] = [];
   combined.forEach((sample, index) => {
-    let mode: "disabled" | "auto" | "teleop" | "utility" = "disabled";
+    let mode: RobotMode = "disabled";
     if (sample.enabled) {
       if (sample.auto) {
         mode = "auto";

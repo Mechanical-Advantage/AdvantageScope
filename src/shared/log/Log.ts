@@ -24,9 +24,9 @@ import {
   LogValueSetStringArray
 } from "./LogValueSets";
 import LoggableType from "./LoggableType";
+import { getMergeOffset } from "./MergeCalculator";
 import PhotonStructDecoder from "./PhotonStructDecoder";
 import ProtoDecoder from "./ProtoDecoder";
-import { getEnabledData } from "./RobotState";
 import StructDecoder from "./StructDecoder";
 
 /** Represents a collection of log fields. */
@@ -979,19 +979,7 @@ export default class Log {
   /** Merges a new log into this log. Returns the timestamp offset. */
   mergeWith(source: Log, prefix = ""): number {
     // Serialize source and adjust timestamps
-    let offset = 0;
-    let targetEnabledData = getEnabledData(this);
-    let sourceEnabledData = getEnabledData(source);
-    if (
-      targetEnabledData &&
-      sourceEnabledData &&
-      targetEnabledData.values.includes(true) &&
-      sourceEnabledData.values.includes(true)
-    ) {
-      offset =
-        targetEnabledData.timestamps[targetEnabledData.values.indexOf(true)] -
-        sourceEnabledData.timestamps[sourceEnabledData.values.indexOf(true)];
-    }
+    let offset = this.timestampRange !== null && source.timestampRange !== null ? getMergeOffset(this, source) : 0;
     let sourceSerialized = source.toSerialized();
     Object.values(sourceSerialized.fields).forEach((field) => {
       let typedField = field as { timestamps: number[]; values: number[] };

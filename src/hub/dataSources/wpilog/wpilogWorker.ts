@@ -196,6 +196,7 @@ async function start(data: Uint8Array) {
       let values = field.toSerialized().values as number[];
       if (values.length > 0) {
         clearTime = values[values.length - 1] / 1e9;
+        log.updateRangeWithTimestamp(clearTime);
         log.clearBeforeTime(clearTime);
       }
     }
