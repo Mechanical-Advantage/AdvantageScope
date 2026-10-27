@@ -602,6 +602,56 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       }
       break;
 
+    case "frc-coordinate-system-warning":
+      {
+        let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+        if (prefs.skipFRCCoordinateSystemWarning) return;
+        dialog
+          .showMessageBox(window, {
+            type: "info",
+            title: "Alert",
+            message: "Legacy Coordinate System",
+            detail:
+              'This field uses a legacy coordinate system by default for compatibility with pre-2027 WPILib. If your robot code uses 2027 WPILib, you can change the "Coordinate System" option in the AdvantageScope preferences. See the documentation for details.',
+            buttons: ["OK"],
+            checkboxLabel: "Don't Show Again",
+            icon: WINDOW_ICON
+          })
+          .then((response) => {
+            if (response.checkboxChecked) {
+              prefs.skipFRCCoordinateSystemWarning = true;
+              jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+              sendAllPreferences();
+            }
+          });
+      }
+      break;
+
+    case "ftc-coordinate-system-warning":
+      {
+        let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+        if (prefs.skipFTCCoordinateSystemWarning) return;
+        dialog
+          .showMessageBox(window, {
+            type: "info",
+            title: "Alert",
+            message: "Systemcore Coordinate System",
+            detail:
+              'This field uses the Systemcore coordinate system by default. If your robot code uses the traditional FTC coordinate system, you can change the "Coordinate System" option in the AdvantageScope preferences. See the documentation for details.',
+            buttons: ["OK"],
+            checkboxLabel: "Don't Show Again",
+            icon: WINDOW_ICON
+          })
+          .then((response) => {
+            if (response.checkboxChecked) {
+              prefs.skipFTCCoordinateSystemWarning = true;
+              jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+              sendAllPreferences();
+            }
+          });
+      }
+      break;
+
     case "live-rlog-start":
       rlogSockets[windowId]?.destroy();
       rlogSockets[windowId] = net.createConnection({

@@ -46,6 +46,7 @@ export default class Field2dController implements TabController {
 
   private orientationSetting = Orientation.DEG_0;
   private sizeSetting: "large" | "medium" | "small" = "large";
+  private lastCoordinateSystemAlert: "none" | "frc" | "ftc" = "none";
 
   constructor(root: HTMLElement) {
     this.sourceList = new SourceList(
@@ -240,6 +241,24 @@ export default class Field2dController implements TabController {
       (window.preferences?.coordinateSystem === "automatic"
         ? fieldData?.coordinateSystem
         : window.preferences?.coordinateSystem) ?? "center-red";
+    if (fieldData !== undefined && window.preferences !== null) {
+      let currentAlert: "none" | "frc" | "ftc" = "none";
+      if (!fieldData.isFTC && fieldData.coordinateSystem !== "center-red") {
+        currentAlert = "frc";
+      } else if (fieldData.isFTC && fieldData.coordinateSystem === "center-red") {
+        currentAlert = "ftc";
+      }
+      if (currentAlert !== this.lastCoordinateSystemAlert) {
+        if (window.preferences.coordinateSystem === "automatic") {
+          if (currentAlert === "frc") {
+            window.sendMainMessage("frc-coordinate-system-warning");
+          } else if (currentAlert === "ftc") {
+            window.sendMainMessage("ftc-coordinate-system-warning");
+          }
+        }
+        this.lastCoordinateSystemAlert = currentAlert;
+      }
+    }
 
     // Get alliance
     let isRedAlliance = time === null ? false : getIsRedAlliance(window.log, time);

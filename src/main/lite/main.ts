@@ -374,6 +374,42 @@ async function handleHubMessage(message: NamedMessage) {
       window.open("https://github.com/" + GITHUB_REPOSITORY + "/issues/new/choose", "_blank");
       break;
 
+    case "frc-coordinate-system-warning":
+      {
+        let prefs = Object.assign({}, DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS);
+        let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
+        if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+        if (prefs.skipFRCCoordinateSystemWarning) return;
+        if (
+          confirm(
+            'This field uses a legacy coordinate system by default for compatibility with pre-2027 WPILib. If your robot code uses 2027 WPILib, you can change the "Coordinate System" option in the AdvantageScope preferences. See the documentation for details.'
+          )
+        ) {
+          prefs.skipFRCCoordinateSystemWarning = true;
+          localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
+          sendMessage(hubPort, "set-preferences", prefs);
+        }
+      }
+      break;
+
+    case "ftc-coordinate-system-warning":
+      {
+        let prefs = Object.assign({}, DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS);
+        let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
+        if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+        if (prefs.skipFTCCoordinateSystemWarning) return;
+        if (
+          confirm(
+            'This field uses the Systemcore coordinate system by default. If your robot code uses the traditional FTC coordinate system, you can change the "Coordinate System" option in the AdvantageScope preferences. See the documentation for details.'
+          )
+        ) {
+          prefs.skipFTCCoordinateSystemWarning = true;
+          localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
+          sendMessage(hubPort, "set-preferences", prefs);
+        }
+      }
+      break;
+
     case "historical-start":
       {
         const uuid: string = message.data.uuid;
