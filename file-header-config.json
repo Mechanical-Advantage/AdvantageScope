@@ -3,6 +3,7 @@
     "**/!(*.js|*.mjs|*.ts|*.tsx|*.swift|*.html|*.css|*.c|*.h|*.metal|*.py)",
     "bundles",
     "docs/build",
+    "docs/snippets",
     "docs/.docusaurus",
     "runOwletDownload.js",
     "src/hub/dataSources/schema/spark/*",
