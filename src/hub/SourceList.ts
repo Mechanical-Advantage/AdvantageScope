@@ -464,17 +464,7 @@ export default class SourceList {
     // Add to list
     let options: { [key: string]: string } = {};
     bestType.typeConfig.options.forEach((optionConfig) => {
-      if (
-        memory !== null &&
-        optionConfig.key in memory.options &&
-        optionConfig.values.map((valueConfig) => valueConfig.key).includes(memory.options[optionConfig.key])
-      ) {
-        // Select value from type memory
-        options[optionConfig.key] = memory.options[optionConfig.key];
-      } else if (this.config.autoAdvance !== optionConfig.key) {
-        // Select first value
-        options[optionConfig.key] = optionConfig.values[0].key;
-      } else {
+      if (this.config.autoAdvance === optionConfig.key) {
         // Select least used value
         let useCounts: { valueConfig: SourceListOptionValueConfig; uses: number }[] = optionConfig.values.map(
           (valueConfig) => {
@@ -489,6 +479,16 @@ export default class SourceList {
         );
         useCounts.sort((a, b) => a.uses - b.uses);
         options[optionConfig.key] = useCounts[0].valueConfig.key;
+      } else if (
+        memory !== null &&
+        optionConfig.key in memory.options &&
+        optionConfig.values.map((valueConfig) => valueConfig.key).includes(memory.options[optionConfig.key])
+      ) {
+        // Select value from type memory
+        options[optionConfig.key] = memory.options[optionConfig.key];
+      } else {
+        // Select first value
+        options[optionConfig.key] = optionConfig.values[0].key;
       }
     });
     let state: SourceListItemState = {

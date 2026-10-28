@@ -142,6 +142,7 @@ export default (cliArgs) => {
         ...(isLite && !isDS ? ["uploadAsset.ts"] : []),
 
         "hub/dataSources/wpilog/wpilogWorker.ts",
+        ...(isLite ? ["main/lite/xzWorker.ts"] : []),
         ...(!isLite ? ["hub/exportWorker.ts"] : []),
         ...(!isDS
           ? [

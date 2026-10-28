@@ -354,23 +354,29 @@ export default class LineGraphRenderer implements TabRenderer {
         let endX = scaleValue(alert.range[1], timeRange, [graphLeft, graphLeft + graphWidth]);
 
         // Draw shape
+        let baseColor = "#ffffff";
+        let textColor = "#000000";
         switch (alert.type) {
           case "error":
-            context.fillStyle = ensureThemeContrast("#ff0000");
+            baseColor = ensureThemeContrast("#ff0000");
+            textColor = "#ffeeee";
             break;
           case "warning":
-            context.fillStyle = ensureThemeContrast("#ffaa00");
+            baseColor = ensureThemeContrast("#ffaa00");
+            textColor = "#331100";
             break;
           case "info":
-            context.fillStyle = ensureThemeContrast("#00ff00");
+            baseColor = ensureThemeContrast("#0000ff");
+            textColor = "#eeeeff";
             break;
         }
+        context.fillStyle = baseColor;
         context.fillRect(startX, topY, endX - startX, 15);
 
         // Draw text
         let adjustedStartX = startX < graphLeft ? graphLeft : startX;
         if (endX - adjustedStartX > 10) {
-          context.fillStyle = "black";
+          context.fillStyle = textColor;
           context.fillText(alert.text, adjustedStartX + 5, topY + 15 / 2, endX - adjustedStartX - 10);
         }
       });
