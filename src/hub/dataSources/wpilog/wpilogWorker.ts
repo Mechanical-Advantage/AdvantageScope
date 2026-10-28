@@ -316,7 +316,8 @@ function parseField(key: string, skipMessage = false) {
     fieldData.push({
       key: childKey,
       data: serialized,
-      generatedParent: log.isGeneratedParent(childKey)
+      generatedParent: log.isGeneratedParent(childKey),
+      commandScheduler: log.getCommandScheduler(childKey)
     });
   });
   if (!hasRoot) {
@@ -325,7 +326,8 @@ function parseField(key: string, skipMessage = false) {
       fieldData.push({
         key: key,
         data: field.toSerialized(),
-        generatedParent: log.isGeneratedParent(key)
+        generatedParent: log.isGeneratedParent(key),
+        commandScheduler: log.getCommandScheduler(key)
       });
     }
   }

@@ -9,6 +9,7 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
+import { LogCommand } from "../../shared/log/LogCommandState";
 import { getLogValueText } from "../../shared/log/LogUtil";
 import { LogValueSetNumber } from "../../shared/log/LogValueSets";
 import { AKIT_TIMESTAMP_KEYS, getRobotStateRanges } from "../../shared/log/RobotState";
@@ -16,6 +17,7 @@ import {
   LineGraphRendererCommand,
   LineGraphRendererCommand_Alert,
   LineGraphRendererCommand_AlertSet,
+  LineGraphRendererCommand_Command,
   LineGraphRendererCommand_DiscreteField,
   LineGraphRendererCommand_NumericField
 } from "../../shared/renderers/LineGraphRenderer";
@@ -713,7 +715,7 @@ export default class LineGraphController implements TabController {
     }
 
     this.discreteSourceList.getState().forEach((fieldItem) => {
-      if (!fieldItem.visible || fieldItem.type === "alerts") return;
+      if (!fieldItem.visible || fieldItem.type === "alerts" || fieldItem.type === "commands") return;
 
       let data = window.log.getRange(fieldItem.logKey, timeRange[0], timeRange[1]);
       if (data === undefined) return;
@@ -819,6 +821,325 @@ export default class LineGraphController implements TabController {
     );
     alerts = alerts.filter((row) => row.length > 0);
 
+    // Process commands
+    let commands: LineGraphRendererCommand_Command[] = [];
+    let commandRowCount = 0;
+    this.discreteSourceList
+      .getState()
+      .filter((fieldItem) => fieldItem.visible && fieldItem.type === "commands")
+      .forEach((fieldItem) => {
+        let logCommands = window.log.getCommands(fieldItem.logKey, timeRange[0], timeRange[1]);
+        if (logCommands.length === 0) {
+          return;
+        }
+
+        // If the user has specified that default commands should be hidden, mark all default commands and all their
+        // descendants as hidden. None of them will be rendered.
+        let hiddenDefaultCommands = new Set<LogCommand>();
+        if ("defaultCommands" in fieldItem.options && fieldItem.options.defaultCommands === "hide") {
+          let markDescendants = (cmd: LogCommand) => {
+            hiddenDefaultCommands.add(cmd);
+            for (const child of cmd.children) {
+              markDescendants(child);
+            }
+          };
+          for (const cmd of logCommands) {
+            if (cmd.isDefaultCommand) {
+              markDescendants(cmd);
+            }
+          }
+        }
+
+        let commandMap = new Map<number, LogCommand>();
+        logCommands.forEach((cmd) => commandMap.set(cmd.id, cmd));
+
+        let isDefaultOrDescendant = (cmd: LogCommand): boolean => {
+          if (hiddenDefaultCommands.has(cmd)) return true;
+          let curr: LogCommand | undefined = cmd;
+          while (curr) {
+            if (curr.isDefaultCommand || hiddenDefaultCommands.has(curr)) {
+              hiddenDefaultCommands.add(cmd);
+              return true;
+            }
+            if (curr.parentId === undefined) break;
+            curr = commandMap.get(curr.parentId);
+          }
+          return false;
+        };
+
+        let commandFilter = (cmd: LogCommand): boolean => {
+          if ("depth" in fieldItem.options) {
+            const depth = fieldItem.options.depth;
+            switch (depth) {
+              case "all":
+                // No filtering
+                break;
+              case "roots":
+                if (cmd.depth !== 0) {
+                  return false;
+                }
+                break;
+              default:
+                const maxDepth = parseInt(depth);
+                if (!isNaN(maxDepth)) {
+                  if (cmd.depth > maxDepth) {
+                    return false;
+                  }
+                }
+                break;
+            }
+          }
+
+          if ("minDuration" in fieldItem.options) {
+            // Options are in milliseconds, but data is timestamped in seconds.
+            const minDuration = parseInt(fieldItem.options.minDuration) * 1e-3;
+            if (minDuration > 0) {
+              if (cmd.range[1] - cmd.range[0] < minDuration) {
+                return false;
+              }
+            }
+          }
+
+          if ("requirements" in fieldItem.options) {
+            const requirements = fieldItem.options.requirements;
+            switch (requirements) {
+              case "all":
+                // No filtering
+                break;
+              case "none":
+                if (cmd.requirements.length !== 0) {
+                  return false;
+                }
+                break;
+              case "required":
+                if (cmd.requirements.length === 0) {
+                  return false;
+                }
+                break;
+            }
+          }
+
+          if ("defaultCommands" in fieldItem.options) {
+            if (fieldItem.options.defaultCommands === "hide" && isDefaultOrDescendant(cmd)) {
+              return false;
+            }
+          }
+
+          return true;
+        };
+
+        logCommands = logCommands.filter(commandFilter);
+        let filteredCommands = new Set(logCommands); // store in a set for faster lookup
+
+        // Collect all descendants of a command that fall within the current window range
+        let getWindowDescendants = (cmd: LogCommand): LogCommand[] => {
+          let descendants: LogCommand[] = [];
+          let traverse = (curr: LogCommand) => {
+            for (const child of curr.children) {
+              if (child.range[1] >= timeRange[0] && child.range[0] <= timeRange[1] && filteredCommands.has(child)) {
+                descendants.push(child);
+                traverse(child);
+              }
+            }
+          };
+          traverse(cmd);
+          return descendants;
+        };
+
+        // Every command in the window tracks the maximum instantaneous number of descendants
+        // it ever has within the bounds of the window. Height is 1 + maxNumDescendants.
+        let commandHeights = new Map<LogCommand, number>();
+        let computeCommandHeight = (cmd: LogCommand): number => {
+          if (commandHeights.has(cmd)) return commandHeights.get(cmd)!;
+
+          let descendants = getWindowDescendants(cmd);
+          if (descendants.length === 0) {
+            commandHeights.set(cmd, 1);
+            return 1;
+          }
+
+          let cmdStartBounded = Math.max(cmd.range[0], timeRange[0]);
+          let cmdEndBounded = Math.min(cmd.range[1], timeRange[1]);
+
+          // Find all critical endpoint timestamps within the command's bounded window
+          let endpoints: number[] = [];
+          for (const desc of descendants) {
+            let descStart = Math.max(desc.range[0], timeRange[0]);
+            let descEnd = Math.min(desc.range[1], timeRange[1]);
+            if (descStart >= cmdStartBounded && descStart <= cmdEndBounded) {
+              endpoints.push(descStart);
+            }
+            if (descEnd >= cmdStartBounded && descEnd <= cmdEndBounded) {
+              endpoints.push(descEnd);
+            }
+          }
+
+          let maxInstantaneousDescendants = 0;
+          for (const t of endpoints) {
+            let count = 0;
+            for (const desc of descendants) {
+              let descStart = Math.max(desc.range[0], timeRange[0]);
+              let descEnd = Math.min(desc.range[1], timeRange[1]);
+              if (descStart <= t && t < descEnd) {
+                count++;
+              }
+            }
+            if (count > maxInstantaneousDescendants) {
+              maxInstantaneousDescendants = count;
+            }
+          }
+
+          let height = 1 + maxInstantaneousDescendants;
+          commandHeights.set(cmd, height);
+          return height;
+        };
+
+        // Helper to find the lowest available contiguous block of rows for a time interval
+        let findFreeBaseRow = (occupancy: [number, number][][], start: number, end: number, height: number): number => {
+          let baseRow = 0;
+          while (true) {
+            let free = true;
+            for (let r = baseRow; r < baseRow + height; r++) {
+              if (occupancy[r]) {
+                for (const occ of occupancy[r]) {
+                  if (!(end <= occ[0] || start >= occ[1])) {
+                    free = false;
+                    break;
+                  }
+                }
+              }
+              if (!free) break;
+            }
+            if (free) return baseRow;
+            baseRow++;
+          }
+        };
+
+        let markOccupied = (
+          occupancy: [number, number][][],
+          start: number,
+          end: number,
+          baseRow: number,
+          height: number
+        ) => {
+          for (let r = baseRow; r < baseRow + height; r++) {
+            if (!occupancy[r]) {
+              occupancy[r] = [];
+            }
+            occupancy[r].push([start, end]);
+          }
+        };
+
+        // Filter root commands to those overlapping with the current window range
+        let rootsInWindow = logCommands.filter(
+          (cmd) =>
+            (cmd.parentId === undefined ||
+              cmd.depth === 0 ||
+              filteredCommands.values().find((c) => c.id === cmd.parentId) === undefined) &&
+            cmd.range[1] >= timeRange[0] &&
+            cmd.range[0] <= timeRange[1]
+        );
+
+        // Sort root commands descending by ID so higher IDs claim lower rows (bottom)
+        // and lower IDs claim higher rows (above higher IDs).
+        rootsInWindow.sort((a, b) => b.id - a.id);
+
+        // Computes a hashcode for a string. Used for mechanism coloring so each mechanism gets a consistent color.
+        let strHash = (str: string): number => {
+          let hash = 0;
+          for (let i = 0; i < str.length; i++) {
+            hash = (hash << 5) - hash + str.charCodeAt(i);
+            hash |= 0; // Convert to 32-bit signed integer
+          }
+          return hash >>> 0; // Convert to non-negative unsigned 32-bit integer
+        };
+
+        // Recursively assign discrete row coordinates to parent and child commands
+        let assignCommandRows = (cmd: LogCommand, topRow: number, level: number = 0) => {
+          // Every command in the window tracks its start and end time, bounded to the start and end
+          // of the current window range. This controls the width of its bounding box.
+          let boundedRange: [number, number] = [
+            Math.max(cmd.range[0], timeRange[0]),
+            Math.min(cmd.range[1], timeRange[1])
+          ];
+          let height = computeCommandHeight(cmd);
+
+          let colorIndex = null;
+          if ("colorScheme" in fieldItem.options) {
+            let colorScheme = fieldItem.options.colorScheme;
+            if (colorScheme === "depth") {
+              colorIndex = cmd.depth;
+            } else if (colorScheme === "mechanism") {
+              colorIndex = cmd.requirements.length === 1 ? strHash(cmd.requirements[0]) : null;
+            } else if (colorScheme === "id") {
+              colorIndex = cmd.id;
+            } else {
+              // Unrecognized option, leave colorIndex as null. The renderer will use a neutral default color.
+            }
+          } else {
+            // Default to coloring by mechanism if the option is missing.
+            colorIndex = cmd.requirements.length === 1 ? strHash(cmd.requirements[0]) : null;
+          }
+
+          commands.push({
+            name: cmd.name,
+            id: cmd.id,
+            parentId: cmd.parentId,
+            requirements: cmd.requirements,
+            range: boundedRange,
+            row: topRow,
+            height: height,
+            level: level,
+            colorIndex: colorIndex,
+            showBorders: fieldItem.options.borders === undefined || fieldItem.options.borders === "true"
+          });
+
+          let childrenInWindow = cmd.children.filter(
+            (child) => child.range[1] >= timeRange[0] && child.range[0] <= timeRange[1] && filteredCommands.has(child)
+          );
+          // Sort child siblings ascending by ID so lower IDs claim lower relative row offsets
+          // (closer to parent header at top) and appear above higher IDs.
+          childrenInWindow.sort((a, b) => a.id - b.id);
+
+          let childOccupancy: [number, number][][] = [];
+
+          for (const child of childrenInWindow) {
+            let childStart = Math.max(child.range[0], timeRange[0]);
+            let childEnd = Math.min(child.range[1], timeRange[1]);
+            let childHeight = computeCommandHeight(child);
+
+            let baseRelRow = findFreeBaseRow(childOccupancy, childStart, childEnd, childHeight);
+            markOccupied(childOccupancy, childStart, childEnd, baseRelRow, childHeight);
+
+            let childTopRow = topRow - 1 - baseRelRow;
+            assignCommandRows(child, childTopRow, level + 1);
+          }
+        };
+
+        let rootOccupancy: [number, number][][] = [];
+        let maxTopRow = -1;
+
+        for (const root of rootsInWindow) {
+          let rootStart = Math.max(root.range[0], timeRange[0]);
+          let rootEnd = Math.min(root.range[1], timeRange[1]);
+          let rootHeight = computeCommandHeight(root);
+
+          let baseRow = findFreeBaseRow(rootOccupancy, rootStart, rootEnd, rootHeight);
+          markOccupied(rootOccupancy, rootStart, rootEnd, baseRow, rootHeight);
+
+          let topRow = baseRow + rootHeight - 1;
+          if (topRow > maxTopRow) {
+            maxTopRow = topRow;
+          }
+
+          assignCommandRows(root, topRow, 0);
+        }
+
+        if (maxTopRow >= 0) {
+          commandRowCount += maxTopRow + 1;
+        }
+      });
+
     // Get numeric ranges
     let calcRange = (dataRange: [number, number], lockedRange: [number, number] | null): [number, number] => {
       let range: [number, number];
@@ -867,7 +1188,9 @@ export default class LineGraphController implements TabController {
       leftFields: leftFieldsCommand,
       rightFields: rightFieldsCommand,
       discreteFields: discreteFieldsCommand,
-      alerts: alerts
+      alerts: alerts,
+      commands: commands,
+      commandRowCount: commandRowCount
     };
   }
 
