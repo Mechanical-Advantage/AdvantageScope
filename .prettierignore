@@ -3,4 +3,5 @@ dist
 bundles
 src/licenses.json
 docs/build
+docs/snippets
 xr
