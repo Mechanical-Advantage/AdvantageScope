@@ -66,6 +66,15 @@ const Field2dController_Config: SourceListConfig = {
           display: "Color",
           showInTypeName: false,
           values: NeonColors
+        },
+        {
+          key: "fadeOut",
+          display: "Fade When Stale",
+          showInTypeName: false,
+          values: [
+            { key: "off", display: "Off" },
+            { key: "on", display: "On" },
+          ]
         }
       ],
       initialSelectionOption: "color",

@@ -419,7 +419,8 @@ export default class Field2dRenderer implements TabRenderer {
         color: string;
       }[],
       bumperColor?: string,
-      ghostColor?: string
+      ghostColor?: string,
+      fadeFactor: number = 1
     ) => {
       let centerPos = calcCoordinates(pose.translation);
       let rotation = pose.rotation;
@@ -442,9 +443,9 @@ export default class Field2dRenderer implements TabRenderer {
         context.fill();
         context.stroke();
       } else {
-        context.globalAlpha = 0.2;
+        context.globalAlpha = 0.2 * fadeFactor;
         context.fill();
-        context.globalAlpha = 1;
+        context.globalAlpha = 1 * fadeFactor;
         context.stroke();
       }
 
@@ -643,7 +644,7 @@ export default class Field2dRenderer implements TabRenderer {
               });
 
               // Draw main object
-              drawRobot(pose.pose, object.swerveModuleVelocities, undefined, object.color);
+              drawRobot(pose.pose, object.swerveModuleVelocities, undefined, object.color, object.fadeFactor);
             });
             break;
           case "arrow":
@@ -730,6 +731,7 @@ export type Field2dRendererCommand_GhostObj = {
   type: "ghost";
   poses: AnnotatedPose2d[];
   color: string;
+  fadeFactor: number;
   visionTargets: AnnotatedPose2d[];
   swerveModuleVelocities: {
     values: ModuleVelocity[];
