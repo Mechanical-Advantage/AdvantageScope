@@ -2230,7 +2230,18 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Robot logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "hoot", "revlog", "log", "csv", "dslog", "dsevents"]
+                    extensions: [
+                      "rlog",
+                      "wpilog",
+                      "wpilogxz",
+                      "hoot",
+                      "revlog",
+                      "log",
+                      "fate",
+                      "csv",
+                      "dslog",
+                      "dsevents"
+                    ]
                   }
                 ]
               })
@@ -2254,7 +2265,18 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Robot logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "hoot", "revlog", "log", "csv", "dslog", "dsevents"]
+                    extensions: [
+                      "rlog",
+                      "wpilog",
+                      "wpilogxz",
+                      "hoot",
+                      "revlog",
+                      "log",
+                      "fate",
+                      "csv",
+                      "dslog",
+                      "dsevents"
+                    ]
                   }
                 ]
               })
@@ -2279,7 +2301,7 @@ function setupMenu() {
               }
             },
             { type: "separator" },
-            ...(["nt4", "nt4-akit", "nt4-systemcore", "phoenix", "rlog", "ftcdashboard"] as const).map(
+            ...(["nt4", "nt4-akit", "nt4-systemcore", "phoenix", "rlog", "ftcdashboard", "fateweaver"] as const).map(
               (liveMode: LiveMode) => {
                 let item: Electron.MenuItemConstructorOptions = {
                   label: getLiveModeName(liveMode),
@@ -2312,7 +2334,7 @@ function setupMenu() {
               }
             },
             { type: "separator" },
-            ...(["nt4", "nt4-akit", "nt4-systemcore", "phoenix", "rlog", "ftcdashboard"] as const).map(
+            ...(["nt4", "nt4-akit", "nt4-systemcore", "phoenix", "rlog", "ftcdashboard", "fateweaver"] as const).map(
               (liveMode: LiveMode) => {
                 let item: Electron.MenuItemConstructorOptions = {
                   label: getLiveModeName(liveMode),
@@ -3928,6 +3950,7 @@ app.whenReady().then(async () => {
       x.endsWith(".hoot") ||
       x.endsWith(".revlog") ||
       x.endsWith(".log") ||
+      x.endsWith(".fate") ||
       x.endsWith(".csv") ||
       x.endsWith(".dslog") ||
       x.endsWith(".dsevents")
