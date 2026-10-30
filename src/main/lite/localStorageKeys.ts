@@ -6,7 +6,6 @@
 // at the root directory of this project.
 
 import { Distribution, DISTRIBUTION, LITE_VERSION } from "../../shared/buildConstants";
-import { BETA_CONFIG } from "../betaConfig";
 
 export namespace LocalStorageKeys {
   const PREFIX = DISTRIBUTION === Distribution.LiteDS ? "AdvantageScopeLiteDS/" : "AdvantageScopeLite/";
@@ -14,6 +13,5 @@ export namespace LocalStorageKeys {
   export const PREFS = PREFIX + "prefs";
   export const TYPE_MEMORY = PREFIX + "type-memory";
   export const RECENT_UNITS = PREFIX + "recent-units";
-  export const BETA_STATE = PREFIX + "beta-" + (BETA_CONFIG === null ? "NA" : BETA_CONFIG.year);
   export const SIDEBAR_WIDTH = "AdvantageScopeLite/sidebar-width"; // Shared with DS lite
 }

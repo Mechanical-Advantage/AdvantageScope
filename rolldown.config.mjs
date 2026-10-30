@@ -126,7 +126,6 @@ export default (cliArgs) => {
         "unitConversion.ts",
         "renameTab.ts",
         "sourceListHelp.ts",
-        "betaWelcome.ts",
         "licenses.ts",
         "download.ts",
         ...(!isLite ? ["export.ts"] : []),

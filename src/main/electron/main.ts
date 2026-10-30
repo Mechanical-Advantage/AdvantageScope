@@ -43,7 +43,7 @@ import NamedMessage from "../../shared/NamedMessage";
 import Preferences, { DEFAULT_PREFS, getLiveModeName, LiveMode, mergePreferences } from "../../shared/Preferences";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../../shared/TabType";
-import { BUILD_DATE, COPYRIGHT, DISTRIBUTION, Distribution } from "../../shared/buildConstants";
+import { BUILD_DATE, COPYRIGHT } from "../../shared/buildConstants";
 import { Units } from "../../shared/units";
 import { createUUID, formatDate } from "../../shared/util";
 import { GITHUB_REPOSITORY } from "../github";
@@ -74,20 +74,9 @@ import {
   WINDOW_ICON
 } from "./ElectronConstants";
 import StateTracker, { ApplicationState, SatelliteWindowState, WindowState } from "./StateTracker";
-import UpdateChecker from "./UpdateChecker";
 import { VideoProcessor } from "./VideoProcessor";
 import { getAssetDownloadStatus, startAssetDownloadLoop } from "./assetDownloader";
 import { createAssetFolders, getUserAssetsPath, loadAssets } from "./assetLoader";
-import {
-  delayBetaSurvey,
-  isAlpha,
-  isBeta,
-  isBetaExpired,
-  isBetaWelcomeComplete,
-  openBetaSurvey,
-  saveBetaWelcomeComplete,
-  shouldPromptBetaSurvey
-} from "./betaUtil";
 import { getOwletDownloadStatus, startOwletDownloadLoop } from "./owletDownloadLoop";
 import { checkHootIsPro, convertHoot, CTRE_LICENSE_URL } from "./owletInterface";
 
@@ -110,7 +99,6 @@ let ctreLicensePrompt: Promise<void> | null = null;
 let menuTemplate: (Electron.MenuItemConstructorOptions | Electron.MenuItem)[] | null = null;
 
 let stateTracker = new StateTracker();
-let updateChecker = new UpdateChecker();
 let firstOpenPath: string | null = null; // Cache path to open immediately
 
 let advantageScopeAssets: AdvantageScopeAssets = {
@@ -289,14 +277,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         jsonfile.writeFileSync(PREFS_FILENAME, prefs);
         sendAllPreferences();
       }
-      break;
-
-    case "prompt-update":
-      updateChecker.showPrompt();
-      break;
-
-    case "open-feedback":
-      shell.openExternal("https://github.com/" + GITHUB_REPOSITORY + "/issues/new/choose");
       break;
 
     case "historical-start-raw":
@@ -2085,16 +2065,6 @@ function setupMenu() {
             openPreferences(window);
           }
         },
-        ...(DISTRIBUTION === Distribution.FRC6328
-          ? [
-              {
-                label: "Check for Updates...",
-                click() {
-                  checkForUpdate(true);
-                }
-              }
-            ]
-          : []),
         {
           label: "Show Licenses...",
           click(_, baseWindow) {
@@ -2910,8 +2880,6 @@ function createHubWindow(state?: WindowState, layoutOverride?: any) {
       platformArch: app.runningUnderARM64Translation ? "arm64" : process.arch, // Arch of OS, not this binary
       appVersion: APP_VERSION
     });
-    sendMessage(window, "show-update-button", updateChecker.getShouldPrompt());
-    sendMessage(window, "show-feedback-button", isBeta());
     sendMessage(window, "show-when-ready");
     sendAllPreferences();
     sendActiveSatellites();
@@ -2929,51 +2897,6 @@ function createHubWindow(state?: WindowState, layoutOverride?: any) {
       }
     }
     firstLoad = false;
-
-    // Beta init
-    if (isBeta()) {
-      if (isBetaExpired()) {
-        dialog
-          .showMessageBox(window, {
-            type: "info",
-            title: "Alert",
-            message: (isAlpha() ? "Alpha" : "Beta") + " is complete",
-            detail:
-              "The AdvantageScope " +
-              (isAlpha() ? "alpha" : "beta") +
-              " is complete. " +
-              (DISTRIBUTION === Distribution.WPILib
-                ? "Please update to the latest stable release of WPILib."
-                : "Please download the latest stable release of AdvantageScope from GitHub."),
-            buttons: ["Quit", "Ignore"],
-            defaultId: 0
-          })
-          .then((result) => {
-            if (result.response === 0) app.quit();
-          });
-      } else if (!isBetaWelcomeComplete()) {
-        openBetaWelcome(window);
-      } else if (shouldPromptBetaSurvey()) {
-        dialog
-          .showMessageBox(window, {
-            type: "info",
-            title: "Alert",
-            message: "Share feedback?",
-            detail: `Please take 30 seconds to share your experience using the AdvantageScope ${
-              isAlpha() ? "alpha" : "beta"
-            }. We'll keep this quick.`,
-            buttons: ["Open", "Not Now"],
-            defaultId: 0
-          })
-          .then((result) => {
-            if (result.response === 0) {
-              openBetaSurvey();
-            } else {
-              delayBetaSurvey();
-            }
-          });
-      }
-    }
   });
   window.on("close", (event) => {
     if (hubExportingIds.has(window.id)) {
@@ -3642,49 +3565,6 @@ function openSourceListHelp(parentWindow: Electron.BrowserWindow, config: Source
   helpWindow.loadFile(path.join(__dirname, "../www/sourceListHelp.html"));
 }
 
-/**
- * Creates a new beta help window.
- * @param parentWindow The parent window to use for alignment
- */
-function openBetaWelcome(parentWindow: Electron.BrowserWindow) {
-  const width = 450;
-  const height = process.platform === "win32" ? 530 : 490;
-  let betaWelcome = new BrowserWindow({
-    width: width,
-    height: height,
-    useContentSize: true,
-    resizable: false,
-    icon: WINDOW_ICON,
-    show: false,
-    parent: parentWindow,
-    modal: true,
-    webPreferences: {
-      preload: path.join(__dirname, "preload.js")
-    }
-  });
-  // Finish setup
-  betaWelcome.setMenu(null);
-  betaWelcome.setMenuBarVisibility(false);
-  betaWelcome.on("close", () => {
-    app.quit();
-  });
-  betaWelcome.webContents.on("dom-ready", () => {
-    // Create ports on reload
-    if (betaWelcome === null) return;
-    const { port1, port2 } = new MessageChannelMain();
-    betaWelcome.webContents.postMessage("port", null, [port1]);
-    port2.postMessage(isAlpha());
-    port2.on("message", () => {
-      betaWelcome.destroy();
-      saveBetaWelcomeComplete();
-      shouldPromptBetaSurvey(); // Ensures survey is scheduled
-    });
-    port2.start();
-    betaWelcome.show();
-  });
-  betaWelcome.loadFile(path.join(__dirname, "../www/betaWelcome.html"));
-}
-
 // DS LOG HANDLING
 
 /**
@@ -3791,17 +3671,6 @@ function openFilesSmart(files: string[], sourceWindow: BrowserWindow | null) {
 
 // APPLICATION EVENTS
 
-function checkForUpdate(alwaysPrompt: boolean) {
-  updateChecker.check().then(() => {
-    hubWindows.forEach((window) => {
-      sendMessage(window, "show-update-button", updateChecker.getShouldPrompt());
-    });
-    if (alwaysPrompt) {
-      updateChecker.showPrompt();
-    }
-  });
-}
-
 // "unsafe-eval" is required in the hub for protobufjs
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 
@@ -3896,11 +3765,6 @@ app.whenReady().then(async () => {
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createHubWindow();
   });
-
-  // Check for update and show button on hub windows (but don't prompt)
-  if (DISTRIBUTION === Distribution.FRC6328) {
-    checkForUpdate(false);
-  }
 });
 
 app.on("window-all-closed", () => {

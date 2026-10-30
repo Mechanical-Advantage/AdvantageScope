@@ -34,7 +34,6 @@ import {
 import { Units } from "../../shared/units";
 import { GITHUB_REPOSITORY } from "../github";
 import { loadAssets } from "./assetLoader";
-import { isAlpha, isBeta, isBetaExpired, isBetaWelcomeComplete, saveBetaWelcomeComplete } from "./betaUtil";
 import DEFAULT_DS_LAYOUT from "./dsLayout";
 import { LocalStorageKeys } from "./localStorageKeys";
 
@@ -279,7 +278,6 @@ async function initHub() {
     platformArch: "",
     appVersion: LITE_VERSION
   });
-  sendMessage(hubPort, "show-feedback-button", isBeta());
   let prefs = DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS;
   let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
   if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
@@ -368,10 +366,6 @@ async function handleHubMessage(message: NamedMessage) {
         localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
         sendMessage(hubPort, "set-preferences", prefs);
       }
-      break;
-
-    case "open-feedback":
-      window.open("https://github.com/" + GITHUB_REPOSITORY + "/issues/new/choose", "_blank");
       break;
 
     case "frc-coordinate-system-warning":
@@ -1463,35 +1457,5 @@ window.addEventListener("load", () => {
     HUB_FRAME.addEventListener("load", () => {
       initHub();
     });
-  }
-
-  // Beta init
-  if (isBeta()) {
-    if (isBetaExpired()) {
-      if (
-        DISTRIBUTION != Distribution.LiteDS &&
-        confirm(
-          `The mur-voir Lite ${
-            isAlpha() ? "alpha" : "beta"
-          } is complete. Please follow the instructions in the documentation to update to the latest stable release.`
-        )
-      ) {
-        // Redirect to Systemcore home page
-        location.href = "http://" + location.hostname;
-      }
-    } else if (!isBetaWelcomeComplete()) {
-      openPopupWindow(
-        "www/betaWelcome.html",
-        [450, 490],
-        "pixels",
-        () => {
-          closePopupWindow(true); // Force close
-          saveBetaWelcomeComplete();
-        },
-        true // Require force close
-      ).then((port) => {
-        port.postMessage(isAlpha());
-      });
-    }
   }
 });
