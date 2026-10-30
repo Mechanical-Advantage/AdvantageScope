@@ -4,9 +4,16 @@
 // Use of this source code is governed by a BSD
 // license that can be found in the LICENSE file
 // at the root directory of this project.
-import { getRobotStateRanges } from "../shared/log/RobotState";
 import { calcAxisStepSize, clampValue, cleanFloat, scaleValue } from "../shared/util";
 import ScrollSensor from "./ScrollSensor";
+
+/** A colored range drawn behind the timeline (e.g. a lap). Times are in log seconds. */
+export type TimelineBand = {
+  start: number;
+  end?: number; // Undefined extends to the end of the visible range
+  color: string;
+  darkColor: string;
+};
 
 export default class Timeline {
   private STEP_TARGET_PX = 125;
@@ -23,6 +30,7 @@ export default class Timeline {
   private lastCursorInRect = false;
   private scrollTime: number | null = null;
   private zoomInAccumulator = 0;
+  private bandSupplier: () => TimelineBand[] = () => [];
 
   constructor(container: HTMLElement) {
     this.CONTAINER = container;
@@ -103,6 +111,15 @@ export default class Timeline {
     });
   }
 
+  /**
+   * Sets the source of bands drawn behind the timeline. Lap bands will be
+   * supplied here by the lap engine; no bands are drawn by default. (The
+   * FRC auto/teleop coloring was removed.)
+   */
+  setBandSupplier(supplier: () => TimelineBand[]) {
+    this.bandSupplier = supplier;
+  }
+
   private isHidden() {
     return this.CONTAINER.clientHeight === 0;
   }
@@ -135,26 +152,13 @@ export default class Timeline {
     let extraDigits = Math.max(0, intDigits + decDigits - 3);
     let stepSize = calcAxisStepSize(displayTimeRange, width, this.STEP_TARGET_PX + extraDigits * 12);
 
-    // Draw state ranges
+    // Draw bands (e.g. laps)
     context.lineWidth = 1;
     let rangeBorders: number[] = [];
-    getRobotStateRanges(window.log).forEach((range) => {
-      if (range.mode === "disabled") return;
+    this.bandSupplier().forEach((range) => {
       let startTime = range.start;
       let endTime = range.end === undefined ? timeRange[1] : range.end;
-      let isAuto = range.mode === "auto";
-
-      switch (range.mode) {
-        case "teleop":
-          context.fillStyle = light ? "#5a83ff" : "#3957dd";
-          break;
-        case "auto":
-          context.fillStyle = light ? "#efab28" : "#c38615";
-          break;
-        case "utility":
-          context.fillStyle = light ? "#888888" : "#777777";
-          break;
-      }
+      context.fillStyle = light ? range.color : range.darkColor;
       let startX = clampValue(scaleValue(startTime, timeRange, [0, width]), 0, width);
       let endX = clampValue(scaleValue(endTime, timeRange, [0, width]), 0, width);
       context.fillRect(startX, 0, endX - startX, height);

@@ -23,7 +23,7 @@ import VideoRenderer from "../shared/renderers/VideoRenderer";
 import { Units } from "../shared/units";
 import { clampValue } from "../shared/util";
 import ScrollSensor, { ScrollSensorMouseControl } from "./ScrollSensor";
-import Timeline from "./Timeline";
+import Timeline, { TimelineBand } from "./Timeline";
 import ConsoleController from "./controllers/ConsoleController";
 import Field2dController from "./controllers/Field2dController";
 import Field3dController from "./controllers/Field3dController";
@@ -624,6 +624,11 @@ export default class Tabs {
     let tab = this.tabList.splice(index, 1)[0];
     this.tabList.splice(index + shift, 0, tab);
     this.updateElements();
+  }
+
+  /** Sets the source of bands drawn behind the timeline (e.g. laps). */
+  setTimelineBandSupplier(supplier: () => TimelineBand[]) {
+    this.timeline.setBandSupplier(supplier);
   }
 
   /** Updates the list of active satellites for data publishing. */
