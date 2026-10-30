@@ -1,4 +1,4 @@
-// Copyright (c) 2026 Melbourne University Motorsport
+// Copyright (c) 2026 Melbourne University Motorsports. Based on AdvantageScope (BSD-3-Clause, © Littleton Robotics).
 // https://github.com/Melbourne-University-Motorsports/mur-voir
 //
 // Use of this source code is governed by a BSD

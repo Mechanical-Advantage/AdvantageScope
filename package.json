@@ -17,7 +17,7 @@
     "build-linux": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build -c.electronVersion=37.10.3",
     "fast-build": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build --dir",
     "watch": "rolldown -c -w",
-    "format": "license-check-and-add add -f file-header-config.json -r \"2026 Melbourne University Motorsport\" \"https://github.com/Melbourne-University-Motorsports/mur-voir\" && prettier --write .",
+    "format": "license-check-and-add add -f file-header-config.json -r \"2026 Melbourne University Motorsports. Based on AdvantageScope (BSD-3-Clause, © Littleton Robotics).\" \"https://github.com/Melbourne-University-Motorsports/mur-voir\" && prettier --write .",
     "check-format": "license-check-and-add check -f file-header-config.json && prettier --check .",
     "wasm:compile": "node wasmCompile.mjs",
     "docs:start": "cd docs && npm run start && cd ..",
