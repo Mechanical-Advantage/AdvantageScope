@@ -410,15 +410,6 @@ async function handleHubMessage(message: NamedMessage) {
         const path: string = message.data.path;
 
         let extension = path.split(".").pop();
-        if (extension === "hoot" || extension === "revlog") {
-          sendMessage(hubPort, "historical-data", {
-            files: [null],
-            error: "Unsupported file format in mur-voir Lite.",
-            uuid: uuid
-          });
-          break;
-        }
-
         let prefs = DEFAULT_PREFS;
         let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
         if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
@@ -445,13 +436,7 @@ async function handleHubMessage(message: NamedMessage) {
         const uuid: string = message.data.uuid;
         const extension: string = message.data.extension;
 
-        if (extension === "hoot" || extension === "revlog") {
-          sendMessage(hubPort, "historical-data", {
-            files: [null],
-            error: "Unsupported file format in mur-voir Lite.",
-            uuid: uuid
-          });
-        } else if (extension === "wpilogxz") {
+        if (extension === "wpilogxz") {
           const decompressed = await WorkerManager.request("bundles/xzWorker.js", message.data.data);
           sendMessage(hubPort, "historical-data", {
             files: [decompressed],

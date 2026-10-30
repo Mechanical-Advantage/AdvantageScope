@@ -17,7 +17,6 @@
     "build-linux": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build -c.electronVersion=37.10.3",
     "fast-build": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build --dir",
     "watch": "rolldown -c -w",
-    "download-owlet": "rolldown -c --configRunOwletDownload && node runOwletDownload.js",
     "format": "license-check-and-add add -f file-header-config.json -r \"2026 Melbourne University Motorsport\" \"https://github.com/Melbourne-University-Motorsports/mur-voir\" && prettier --write .",
     "check-format": "license-check-and-add check -f file-header-config.json && prettier --check .",
     "wasm:compile": "node wasmCompile.mjs",
@@ -27,7 +26,7 @@
     "docs:clear": "cd docs && npm run clear && cd ..",
     "docs:serve": "cd docs && npm run serve && cd ..",
     "postinstall": "node installElectron.mjs && node getLicenses.mjs && node bundleLiteAssets.mjs",
-    "install-extras": "cd docs && npm install && cd .. && node tesseractLangDownload.mjs && npm run download-owlet"
+    "install-extras": "cd docs && npm install && cd .. && node tesseractLangDownload.mjs"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.26.0",
@@ -74,7 +73,6 @@
     "xz-decompress": "^0.2.3"
   },
   "dependencies": {
-    "@rev-robotics/revlog-converter": "^2.0.0",
     "@types/emscripten": "^1.39.13",
     "check-disk-space": "^3.4.0",
     "download": "^8.0.0",
@@ -112,12 +110,6 @@
       "!icons/**/*.iconset",
       "bundledAssets/**/*",
       "docs/build/**/*",
-      {
-        "filter": [
-          "owlet/${os}-${arch}/*"
-        ]
-      },
-      "@rev-robotics/revlog-converter/**/*",
       "!**/.*"
     ],
     "extraResources": [
@@ -149,22 +141,6 @@
         "mimeType": "application/x-rlog",
         "role": "Viewer",
         "icon": "icons/app/rlog-icon"
-      },
-      {
-        "ext": "hoot",
-        "name": "Hoot robot log",
-        "description": "Hoot robot log",
-        "mimeType": "application/x-hoot",
-        "role": "Viewer",
-        "icon": "icons/app/hoot-icon"
-      },
-      {
-        "ext": "revlog",
-        "name": "REV Robotics CAN log",
-        "description": "REV Robotics CAN log",
-        "mimeType": "application/x-revlog",
-        "role": "Viewer",
-        "icon": "icons/app/revlog-icon"
       },
       {
         "ext": "csv",

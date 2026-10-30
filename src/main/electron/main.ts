@@ -5,7 +5,6 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { parseREVLOG } from "@rev-robotics/revlog-converter";
 import { hex } from "color-convert";
 import {
   app,
@@ -32,7 +31,7 @@ import net from "net";
 import os from "os";
 import path from "path";
 import { Client, FileEntry, Stats } from "ssh2";
-import { Readable, Writable } from "stream";
+import { Readable } from "stream";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
@@ -77,8 +76,6 @@ import StateTracker, { ApplicationState, SatelliteWindowState, WindowState } fro
 import { VideoProcessor } from "./VideoProcessor";
 import { getAssetDownloadStatus, startAssetDownloadLoop } from "./assetDownloader";
 import { createAssetFolders, getUserAssetsPath, loadAssets } from "./assetLoader";
-import { getOwletDownloadStatus, startOwletDownloadLoop } from "./owletDownloadLoop";
-import { checkHootIsPro, convertHoot, CTRE_LICENSE_URL } from "./owletInterface";
 
 // Dynamically load lzma-native to handle platforms without prebuilt binaries
 let lzma: typeof import("lzma-native") | null = null;
@@ -95,7 +92,6 @@ let satelliteWindows: { [id: string]: BrowserWindow[] } = {};
 let windowPorts: { [id: number]: MessagePortMain } = {};
 let hubTouchBarSliders: { [id: number]: TouchBarSlider } = {};
 let hubExportingIds: Set<number> = new Set();
-let ctreLicensePrompt: Promise<void> | null = null;
 let menuTemplate: (Electron.MenuItemConstructorOptions | Electron.MenuItem)[] | null = null;
 
 let stateTracker = new StateTracker();
@@ -295,32 +291,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           break;
         }
 
-        if (extension === "revlog") {
-          let chunks: Buffer[] = [];
-          let writable = new Writable({
-            write(chunk, encoding, callback) {
-              chunks.push(chunk);
-              callback();
-            }
-          });
-          parseREVLOG(Buffer.from(data), writable)
-            .then(() => {
-              sendMessage(window, "historical-data", {
-                files: [Buffer.concat(chunks)],
-                error: null,
-                uuid: uuid
-              });
-            })
-            .catch((err: any) => {
-              sendMessage(window, "historical-data", {
-                files: [null],
-                error: err.message,
-                uuid: uuid
-              });
-            });
-          break;
-        }
-
         let tempPath = path.join(app.getPath("temp"), "child_" + createUUID() + "." + extension);
         fs.writeFile(tempPath, data, (err) => {
           if (!err) {
@@ -358,7 +328,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         let completedCount = 0;
         let targetCount = 0;
         let errorMessage: null | string = null;
-        let hasHootNonPro = false;
         let paths: string[] = typeof logPath === "string" ? [logPath] : logPath;
         let pathsToRemove: string[] = [];
         if (message.data.deleteAfterRead) {
@@ -384,28 +353,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               error: errorMessage,
               uuid: uuid
             });
-            if (hasHootNonPro) {
-              let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-              if (!prefs.skipHootNonProWarning) {
-                dialog
-                  .showMessageBox(window, {
-                    type: "info",
-                    title: "Alert",
-                    message: "Limited Signals Available",
-                    detail:
-                      "This log file includes a limited number of signals from Phoenix devices. Check the Phoenix documentation for details.",
-                    checkboxLabel: "Don't Show Again",
-                    icon: WINDOW_ICON
-                  })
-                  .then((response) => {
-                    if (response.checkboxChecked) {
-                      prefs.skipHootNonProWarning = true;
-                      jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-                      sendAllPreferences();
-                    }
-                  });
-              }
-            }
           }
         };
 
@@ -433,96 +380,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           targetCount += 2;
           openPath(logPath, (buffer) => (results[0] = buffer));
           openPath(logPath.slice(0, logPath.length - 5) + "dsevents", (buffer) => (results[1] = buffer));
-        } else if (logPath.endsWith(".hoot")) {
-          // Hoot, convert to WPILOG
-          targetCount += 1;
-
-          // Prompt for CTRE license if not accepted
-          let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-          if (!prefs.ctreLicenseAccepted) {
-            if (ctreLicensePrompt === null) {
-              ctreLicensePrompt = new Promise(async (resolve) => {
-                while (true) {
-                  let response = await dialog.showMessageBox(window, {
-                    type: "question",
-                    title: "Alert",
-                    message: "CTRE License Agreement",
-                    detail:
-                      "Hoot log file decoding requires agreement to CTRE's end user license agreement. Please click the button below to view the full license agreement, then check the box if you agree to the terms.",
-                    checkboxLabel: "I Agree",
-                    buttons: ["View License", "OK"],
-                    defaultId: 1,
-                    icon: WINDOW_ICON
-                  });
-                  if (response.response === 1) {
-                    if (response.checkboxChecked) {
-                      prefs.ctreLicenseAccepted = true;
-                      jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-                      sendAllPreferences();
-                    }
-                    resolve();
-                    break;
-                  } else {
-                    shell.openExternal(CTRE_LICENSE_URL);
-                  }
-                }
-              });
-            }
-            await ctreLicensePrompt;
-            ctreLicensePrompt = null;
-          }
-
-          // Check for license and open file
-          prefs = jsonfile.readFileSync(PREFS_FILENAME);
-          if (!prefs.ctreLicenseAccepted) {
-            errorMessage = "Hoot log files cannot be decoded without agreeing to CTRE's end user license agreement.";
-            completedCount++;
-            sendIfReady();
-          } else {
-            checkHootIsPro(logPath)
-              .then((isPro) => {
-                hasHootNonPro = hasHootNonPro || !isPro;
-              })
-              .finally(() => {
-                convertHoot(logPath)
-                  .then((wpilogPath) => {
-                    pathsToRemove.push(wpilogPath);
-                    openPath(wpilogPath, (buffer) => {
-                      results[0] = buffer;
-                    });
-                  })
-                  .catch((reason) => {
-                    if (typeof reason === "string") {
-                      errorMessage = reason;
-                    } else {
-                      errorMessage = reason.message;
-                    }
-                    completedCount++;
-                    sendIfReady();
-                  });
-              });
-          }
-        } else if (logPath.endsWith(".revlog")) {
-          // REVLOG, convert to WPILOG
-          targetCount += 1;
-
-          try {
-            let chunks: Buffer[] = [];
-            let writable = new Writable({
-              write(chunk, encoding, callback) {
-                chunks.push(chunk);
-                callback();
-              }
-            });
-            await parseREVLOG(logPath, writable);
-            results[0] = Buffer.concat(chunks);
-            completedCount++;
-            sendIfReady();
-          } catch (err: any) {
-            errorMessage = err.message;
-            completedCount++;
-            sendIfReady();
-          }
         } else if (logPath.endsWith(".wpilogxz")) {
           // Externally compressed WPILOG, decompress
           targetCount += 1;
@@ -2117,19 +1974,6 @@ function setupMenu() {
             });
           }
         },
-        {
-          label: "Owlet Download Status...",
-          click() {
-            dialog.showMessageBox({
-              type: "info",
-              title: "About",
-              message: "Owlet Download Status",
-              detail: getOwletDownloadStatus(),
-              buttons: ["Close"],
-              icon: WINDOW_ICON
-            });
-          }
-        },
         ...(isMac
           ? ([
               { type: "separator" },
@@ -2161,7 +2005,7 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Robot logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "hoot", "revlog", "log", "csv", "dslog", "dsevents"]
+                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv", "dslog", "dsevents"]
                   }
                 ]
               })
@@ -2185,7 +2029,7 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Robot logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "hoot", "revlog", "log", "csv", "dslog", "dsevents"]
+                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv", "dslog", "dsevents"]
                   }
                 ]
               })
@@ -2210,23 +2054,21 @@ function setupMenu() {
               }
             },
             { type: "separator" },
-            ...(["nt4", "nt4-akit", "nt4-systemcore", "phoenix", "rlog", "ftcdashboard"] as const).map(
-              (liveMode: LiveMode) => {
-                let item: Electron.MenuItemConstructorOptions = {
-                  label: getLiveModeName(liveMode),
-                  click(_, baseWindow) {
-                    const window = baseWindow as BrowserWindow | undefined;
-                    if (window === undefined || !hubWindows.includes(window)) return;
-                    let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-                    prefs.liveMode = liveMode;
-                    jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-                    sendAllPreferences();
-                    sendMessage(window, "start-live", "robot");
-                  }
-                };
-                return item;
-              }
-            )
+            ...(["nt4", "nt4-akit", "nt4-systemcore", "rlog", "ftcdashboard"] as const).map((liveMode: LiveMode) => {
+              let item: Electron.MenuItemConstructorOptions = {
+                label: getLiveModeName(liveMode),
+                click(_, baseWindow) {
+                  const window = baseWindow as BrowserWindow | undefined;
+                  if (window === undefined || !hubWindows.includes(window)) return;
+                  let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+                  prefs.liveMode = liveMode;
+                  jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+                  sendAllPreferences();
+                  sendMessage(window, "start-live", "robot");
+                }
+              };
+              return item;
+            })
           ]
         },
         {
@@ -2243,23 +2085,21 @@ function setupMenu() {
               }
             },
             { type: "separator" },
-            ...(["nt4", "nt4-akit", "nt4-systemcore", "phoenix", "rlog", "ftcdashboard"] as const).map(
-              (liveMode: LiveMode) => {
-                let item: Electron.MenuItemConstructorOptions = {
-                  label: getLiveModeName(liveMode),
-                  click(_, baseWindow) {
-                    const window = baseWindow as BrowserWindow | undefined;
-                    if (window === undefined || !hubWindows.includes(window)) return;
-                    let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-                    prefs.liveMode = liveMode;
-                    jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-                    sendAllPreferences();
-                    sendMessage(window, "start-live", "sim");
-                  }
-                };
-                return item;
-              }
-            )
+            ...(["nt4", "nt4-akit", "nt4-systemcore", "rlog", "ftcdashboard"] as const).map((liveMode: LiveMode) => {
+              let item: Electron.MenuItemConstructorOptions = {
+                label: getLiveModeName(liveMode),
+                click(_, baseWindow) {
+                  const window = baseWindow as BrowserWindow | undefined;
+                  if (window === undefined || !hubWindows.includes(window)) return;
+                  let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+                  prefs.liveMode = liveMode;
+                  jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+                  sendAllPreferences();
+                  sendMessage(window, "start-live", "sim");
+                }
+              };
+              return item;
+            })
           ]
         },
         {
@@ -3718,9 +3558,6 @@ app.whenReady().then(async () => {
   }, 5000);
   advantageScopeAssets = await loadAssets();
 
-  // Start owlet download
-  startOwletDownloadLoop();
-
   // Create menu and windows
   setupMenu();
   let applicationState = stateTracker.getSavedApplicationState();
@@ -3743,8 +3580,6 @@ app.whenReady().then(async () => {
       x.endsWith(".wpilog") ||
       x.endsWith(".wpilogxz") ||
       x.endsWith(".rlog") ||
-      x.endsWith(".hoot") ||
-      x.endsWith(".revlog") ||
       x.endsWith(".log") ||
       x.endsWith(".csv") ||
       x.endsWith(".dslog") ||

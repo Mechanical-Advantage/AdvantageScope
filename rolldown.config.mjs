@@ -75,24 +75,7 @@ function bundle(input, isMain, external = []) {
   };
 }
 
-export default (cliArgs) => {
-  // Owlet download
-  if (cliArgs.configRunOwletDownload === true) {
-    return [
-      {
-        input: "src/runOwletDownload.ts",
-        output: {
-          file: "runOwletDownload.js",
-          format: "cjs"
-        },
-        context: "this",
-        external: ["download"],
-        plugins: [typescript()],
-        onwarn() {}
-      }
-    ];
-  }
-
+export default () => {
   return [
     // Main bundles
     ...(isLite
@@ -110,8 +93,7 @@ export default (cliArgs) => {
             "download",
             "youtube-dl-exec",
             "tesseract.js",
-            "lzma-native",
-            "@rev-robotics/revlog-converter"
+            "lzma-native"
           ]),
           bundle(["preload.ts"], true, ["electron"])
         ]),

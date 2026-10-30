@@ -37,8 +37,6 @@ export class HistoricalDataSource {
     ".rlog": "rlogWorker.js",
     ".wpilog": "wpilogWorker.js",
     ".wpilogxz": "wpilogWorker.js", // Decompressed by main process
-    ".hoot": "wpilogWorker.js", // Converted to WPILOG by main process
-    ".revlog": "wpilogWorker.js", // Converted to WPILOG by main process
     ".log": "roadRunnerWorker.js",
     ".csv": "csvWorker.js",
     ".dslog": "dsLogWorker.js",

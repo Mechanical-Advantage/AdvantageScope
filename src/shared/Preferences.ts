@@ -23,10 +23,8 @@ export default interface Preferences {
   field3dAntialiasing: boolean;
   tbaApiKey: string;
   userAssetsFolder: string | null;
-  skipHootNonProWarning: boolean;
   skipFRCCoordinateSystemWarning: boolean;
   skipFTCCoordinateSystemWarning: boolean;
-  ctreLicenseAccepted: boolean;
   systemcoreStaticAddress: "" | "usb" | "wifi";
   hasScrolledLineGraph: boolean;
   hasScrolledTimeline: boolean;
@@ -49,10 +47,8 @@ export const DEFAULT_PREFS: Preferences = {
   field3dAntialiasing: true,
   tbaApiKey: "",
   userAssetsFolder: null,
-  skipHootNonProWarning: false,
   skipFRCCoordinateSystemWarning: false,
   skipFTCCoordinateSystemWarning: false,
-  ctreLicenseAccepted: false,
   systemcoreStaticAddress: "",
   hasScrolledLineGraph: false,
   hasScrolledTimeline: false,
@@ -65,7 +61,7 @@ export const DEFAULT_PREFS_LITEDS: Preferences = Object.assign({}, DEFAULT_PREFS
   liveSubscribeMode: "logging"
 });
 
-export type LiveMode = "nt4" | "nt4-akit" | "nt4-systemcore" | "phoenix" | "rlog" | "ftcdashboard";
+export type LiveMode = "nt4" | "nt4-akit" | "nt4-systemcore" | "rlog" | "ftcdashboard";
 
 export function getLiveModeName(mode: LiveMode): string {
   switch (mode) {
@@ -75,8 +71,6 @@ export function getLiveModeName(mode: LiveMode): string {
       return "NetworkTables (AdvantageKit)";
     case "nt4-systemcore":
       return "Systemcore Diagnostics";
-    case "phoenix":
-      return "Phoenix Diagnostics";
     case "rlog":
       return "RLOG Server";
     case "ftcdashboard":
@@ -84,7 +78,6 @@ export function getLiveModeName(mode: LiveMode): string {
   }
 }
 
-// Phoenix not possible due to cross origin restrictions
 // RLOG not possible because it uses raw TCP
 export const LITE_ALLOWED_LIVE_MODES: LiveMode[] = ["nt4", "nt4-akit", "nt4-systemcore", "ftcdashboard"];
 
@@ -115,7 +108,6 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
     (newPrefs.liveMode === "nt4" ||
       newPrefs.liveMode === "nt4-akit" ||
       newPrefs.liveMode === "nt4-systemcore" ||
-      newPrefs.liveMode === "phoenix" ||
       newPrefs.liveMode === "rlog" ||
       newPrefs.liveMode === "ftcdashboard")
   ) {
@@ -191,17 +183,11 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   if ("userAssetsFolder" in newPrefs && typeof newPrefs.userAssetsFolder === "string") {
     basePrefs.userAssetsFolder = newPrefs.userAssetsFolder;
   }
-  if ("skipHootNonProWarning" in newPrefs && typeof newPrefs.skipHootNonProWarning === "boolean") {
-    basePrefs.skipHootNonProWarning = newPrefs.skipHootNonProWarning;
-  }
   if ("skipFRCCoordinateSystemWarning" in newPrefs && typeof newPrefs.skipFRCCoordinateSystemWarning === "boolean") {
     basePrefs.skipFRCCoordinateSystemWarning = newPrefs.skipFRCCoordinateSystemWarning;
   }
   if ("skipFTCCoordinateSystemWarning" in newPrefs && typeof newPrefs.skipFTCCoordinateSystemWarning === "boolean") {
     basePrefs.skipFTCCoordinateSystemWarning = newPrefs.skipFTCCoordinateSystemWarning;
-  }
-  if ("ctreLicenseAccepted" in newPrefs && typeof newPrefs.ctreLicenseAccepted === "boolean") {
-    basePrefs.ctreLicenseAccepted = newPrefs.ctreLicenseAccepted;
   }
   if (
     "systemcoreStaticAddress" in newPrefs &&
