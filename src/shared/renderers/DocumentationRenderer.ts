@@ -50,10 +50,10 @@ export default class DocumentationRenderer implements TabRenderer {
   }
 
   render(_: unknown): void {
-    // Load documentation page once visible
+    // Load welcome page once visible
     if (this.firstRender) {
       this.firstRender = false;
-      this.IFRAME.src = "../docs/build/index.html";
+      this.IFRAME.src = "welcome.html";
       this.IFRAME.addEventListener("load", () => {
         this.loaded = true;
       });

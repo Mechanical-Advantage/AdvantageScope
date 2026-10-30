@@ -4,8 +4,6 @@
     "bundles",
     "lite/static/bundles",
     "lite/ipk/overlay/**/bundles",
-    "docs/build",
-    "docs/.docusaurus",
     "runOwletDownload.js",
     "src/hub/dataSources/schema/spark/*",
     "src/hub/dataSources/ftcdashboard/configReducer.ts",

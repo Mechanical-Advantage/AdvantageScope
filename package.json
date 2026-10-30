@@ -13,20 +13,14 @@
     "start": "electron bundles/main.js",
     "compile": "rolldown -c",
     "typecheck": "tsc --noEmit --skipLibCheck -p .",
-    "build": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build",
-    "build-linux": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build -c.electronVersion=37.10.3",
-    "fast-build": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build --dir",
+    "build": "npm run compile && npm run wasm:compile && electron-builder build",
+    "build-linux": "npm run compile && npm run wasm:compile && electron-builder build -c.electronVersion=37.10.3",
+    "fast-build": "npm run compile && npm run wasm:compile && electron-builder build --dir",
     "watch": "rolldown -c -w",
     "format": "license-check-and-add add -f file-header-config.json -r \"2026 Melbourne University Motorsports. Based on AdvantageScope (BSD-3-Clause, © Littleton Robotics).\" \"https://github.com/Melbourne-University-Motorsports/mur-voir\" && prettier --write .",
     "check-format": "license-check-and-add check -f file-header-config.json && prettier --check .",
     "wasm:compile": "node wasmCompile.mjs",
-    "docs:start": "cd docs && npm run start && cd ..",
-    "docs:build": "cd docs && npm run build && cd ..",
-    "docs:build-embed": "cd docs && npm run build-embed && cd ..",
-    "docs:clear": "cd docs && npm run clear && cd ..",
-    "docs:serve": "cd docs && npm run serve && cd ..",
-    "postinstall": "node installElectron.mjs && node getLicenses.mjs && node bundleLiteAssets.mjs",
-    "install-extras": "cd docs && npm install && cd .."
+    "postinstall": "node installElectron.mjs && node getLicenses.mjs && node bundleLiteAssets.mjs"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.26.0",
@@ -105,7 +99,6 @@
       "icons/**/*.png",
       "!icons/**/*.iconset",
       "bundledAssets/**/*",
-      "docs/build/**/*",
       "!**/.*"
     ],
     "extraResources": [
