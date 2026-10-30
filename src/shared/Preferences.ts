@@ -21,7 +21,6 @@ export default interface Preferences {
   field3dModeAc: "cinematic" | "standard" | "low-power";
   field3dModeBattery: "" | "cinematic" | "standard" | "low-power";
   field3dAntialiasing: boolean;
-  tbaApiKey: string;
   userAssetsFolder: string | null;
   skipFRCCoordinateSystemWarning: boolean;
   skipFTCCoordinateSystemWarning: boolean;
@@ -44,7 +43,6 @@ export const DEFAULT_PREFS: Preferences = {
   field3dModeAc: "standard",
   field3dModeBattery: "",
   field3dAntialiasing: true,
-  tbaApiKey: "",
   userAssetsFolder: null,
   skipFRCCoordinateSystemWarning: false,
   skipFTCCoordinateSystemWarning: false,
@@ -174,9 +172,6 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   }
   if ("field3dAntialiasing" in newPrefs && typeof newPrefs.field3dAntialiasing === "boolean") {
     basePrefs.field3dAntialiasing = newPrefs.field3dAntialiasing;
-  }
-  if ("tbaApiKey" in newPrefs && typeof newPrefs.tbaApiKey === "string") {
-    basePrefs.tbaApiKey = newPrefs.tbaApiKey;
   }
   if ("userAssetsFolder" in newPrefs && typeof newPrefs.userAssetsFolder === "string") {
     basePrefs.userAssetsFolder = newPrefs.userAssetsFolder;

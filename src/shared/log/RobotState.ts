@@ -5,12 +5,9 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import MatchInfo, { MatchType } from "../MatchInfo";
 import Log from "./Log";
 import { findKey } from "./LogKeyUtils";
-import { getOrDefault } from "./LogUtil";
 import { LogValueSetBoolean } from "./LogValueSets";
-import LoggableType from "./LoggableType";
 
 export const ENABLED_KEYS = [
   "/DriverStation/Enabled", // AdvantageKit
@@ -80,33 +77,6 @@ export const METADATA_KEYS = [
   "NT:/Metadata",
   "NT:/AdvantageKit/RealMetadata",
   "NT:/AdvantageKit/ReplayMetadata"
-];
-export const EVENT_KEYS = [
-  "/DriverStation/EventName", // AdvantageKit
-  "NT:/AdvantageKit/DriverStation/EventName", // AdvantageKit
-  "DS:/Dscomm/Control/Robot/MatchInfo/EventName", // FIRST DS
-  "NT:/DriverStation/EventName", // NT, post-2027
-  "NT:/FMSInfo/EventName", // NT, pre-2027
-  "NT:/Netcomm/Control/MatchInfo/EventName", // Systemcore
-  "DS:matchInfo/eventName" // Phoenix
-];
-export const MATCH_TYPE_KEYS = [
-  "/DriverStation/MatchType", // AdvantageKit
-  "NT:/AdvantageKit/DriverStation/MatchType", // AdvantageKit
-  "DS:/Dscomm/Control/Robot/MatchInfo/MatchType", // FIRST DS
-  "NT:/DriverStation/MatchType", // NT, post-2027
-  "NT:/FMSInfo/MatchType", // NT, pre-2027
-  "NT:/Netcomm/Control/MatchInfo/MatchType", // Systemcore
-  "DS:matchInfo/matchType" // Phoenix
-];
-export const MATCH_NUMBER_KEYS = [
-  "/DriverStation/MatchNumber", // AdvantageKit
-  "NT:/AdvantageKit/DriverStation/MatchNumber", // AdvantageKit
-  "DS:/Dscomm/Control/Robot/MatchInfo/MatchNumber", // FIRST DS
-  "NT:/DriverStation/MatchNumber", // NT, post-2027
-  "NT:/FMSInfo/MatchNumber", // NT, pre-2027
-  "NT:/Netcomm/Control/MatchInfo/MatchNumber", // Systemcore
-  "DS:matchInfo/matchNumber" // Phoenix
 ];
 export const PROGRAM_START_TIME_KEYS = ["NT:/Robot/ProgramStartTime", "/Robot/ProgramStartTime"];
 
@@ -442,50 +412,4 @@ export function getDriverStation(log: Log, time: number): number {
     }
   }
   return -1;
-}
-
-/** Extracts metadata information about the match (e.g. year, event, match number). */
-export function getMatchInfo(log: Log): MatchInfo | null {
-  // Get first enable time
-  let enabledData = getEnabledData(log);
-  let enabledTime: null | number = null;
-  enabledData?.values.forEach((enabled, index) => {
-    if (enabledTime === null && enabled) {
-      enabledTime = enabledData!.timestamps[index];
-    }
-  });
-  if (enabledTime === null) {
-    return null;
-  }
-
-  // Get match info keys
-  let systemTimeKey = findKey(log, SYSTEM_TIME_KEYS);
-  let eventKey = findKey(log, EVENT_KEYS);
-  let matchTypeKeys = findKey(log, MATCH_TYPE_KEYS);
-  let matchNumberKeys = findKey(log, MATCH_NUMBER_KEYS);
-  if (!eventKey || !matchTypeKeys || !matchNumberKeys) return null;
-
-  // Read match info
-  let info: MatchInfo = {
-    year: 2022, // Default to 2022 for AdvantageKit logs that didn't include system time
-    event: "",
-    matchType: MatchType.Qualification,
-    matchNumber: 1
-  };
-  if (systemTimeKey) {
-    let epochMicros = getOrDefault(log, systemTimeKey, LoggableType.Number, enabledTime, info.year);
-    info.year = new Date(epochMicros / 1000).getUTCFullYear();
-    // Reset to current year if the logged year is clearly wrong
-    if (info.year < 2022) info.year = new Date().getUTCFullYear();
-  }
-  info.event = getOrDefault(log, eventKey, LoggableType.String, enabledTime, info.event);
-  let matchType = getOrDefault(log, matchTypeKeys, LoggableType.Number, enabledTime, 0);
-  if ([1, 2, 3].includes(matchType)) {
-    info.matchType = matchType;
-  } else {
-    // Not a match
-    return null;
-  }
-  info.matchNumber = getOrDefault(log, matchNumberKeys, LoggableType.Number, enabledTime, info.matchNumber);
-  return info;
 }

@@ -1648,9 +1648,11 @@ div.video-synchronization {
 div.video-source > button {
   position: absolute;
   height: 70%;
-  width: calc(80% / 3);
+  width: 80%;
   top: 15%;
+  left: 10%;
   overflow: hidden;
+  background-color: #666666;
 }
 
 div.video-source > button > img {
@@ -1660,61 +1662,12 @@ div.video-source > button > img {
   filter: brightness(0%) saturate(0%) invert(100%);
 }
 
-div.video-source > button > svg > path {
-  fill: none;
-  stroke-width: 0px;
-  transition: stroke-width 0.3s;
-}
-
-div.video-source > button.animating > svg > path {
-  stroke-width: 8px;
-}
-
-div.video-source > button:nth-child(2) > svg > path {
-  stroke: #ffb8b8;
-}
-
-div.video-source > button:nth-child(3) > svg > path {
-  stroke: #9aacff;
-}
-
-div.video-source > button:nth-child(1) {
-  left: 5%;
-  background-color: #666666;
-}
-
-div.video-source > button:nth-child(2) {
-  left: calc(5% + 80% / 3 + 5%);
-  background-color: #ff0000;
-}
-
-div.video-source > button:nth-child(3) {
-  left: calc(5% + 80% / 3 + 5% + 80% / 3 + 5%);
-  background-color: #4556a5;
-}
-
-div.video-source > button:nth-child(1):hover {
+div.video-source > button:hover {
   background-color: #565656;
 }
 
-div.video-source > button:nth-child(2):hover {
-  background-color: #e00000;
-}
-
-div.video-source > button:nth-child(3):hover {
-  background-color: #354695;
-}
-
-div.video-source > button:nth-child(1):active {
+div.video-source > button:active {
   background-color: #464646;
-}
-
-div.video-source > button:nth-child(2):active {
-  background-color: #c00000;
-}
-
-div.video-source > button:nth-child(3):active {
-  background-color: #253685;
 }
 
 div.video-timeline-section {

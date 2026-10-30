@@ -90,8 +90,6 @@ export default () => {
             "http",
             "path",
             "download",
-            "youtube-dl-exec",
-            "tesseract.js",
             "lzma-native"
           ]),
           bundle(["preload.ts"], true, ["electron"])

@@ -22,9 +22,6 @@ import {
   AUTONOMOUS_KEYS,
   DRIVER_STATION_KEYS,
   ENABLED_KEYS,
-  EVENT_KEYS,
-  MATCH_NUMBER_KEYS,
-  MATCH_TYPE_KEYS,
   SYSTEM_TIME_KEYS,
   UTILITY_KEYS
 } from "../../shared/log/RobotState";
@@ -375,10 +372,7 @@ export class HistoricalDataSource {
           ...ALLIANCE_KEYS,
           ...DRIVER_STATION_KEYS,
           ...SYSTEM_TIME_KEYS,
-          ...AKIT_TIMESTAMP_KEYS,
-          ...EVENT_KEYS,
-          ...MATCH_TYPE_KEYS,
-          ...MATCH_NUMBER_KEYS
+          ...AKIT_TIMESTAMP_KEYS
         ].forEach((key) => requestFields.add(key));
 
         // Compare to existing fields

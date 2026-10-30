@@ -1234,14 +1234,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "select-video":
-      VideoProcessor.prepare(
-        window,
-        message.data.uuid,
-        message.data.source,
-        message.data.matchInfo,
-        message.data.menuCoordinates,
-        (data) => sendMessage(window, "video-data", data)
-      );
+      VideoProcessor.prepare(window, message.data.uuid, (data) => sendMessage(window, "video-data", data));
       break;
 
     case "update-touch-bar-slider":
