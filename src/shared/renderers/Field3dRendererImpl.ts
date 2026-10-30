@@ -8,7 +8,7 @@
 import CameraControls from "camera-controls";
 import * as THREE from "three";
 import WorkerManager from "../../hub/WorkerManager";
-import { AdvantageScopeAssets, BuiltIn3dFields, Config3dField, CoordinateSystem } from "../AdvantageScopeAssets";
+import { AdvantageScopeAssets, BuiltIn3dFields, Config3dField } from "../AdvantageScopeAssets";
 import { Rotation3d, rotationSequenceToQuaternion } from "../geometry";
 import { Units } from "../units";
 import { checkArrayType, clampValue } from "../util";
@@ -43,9 +43,6 @@ export default class Field3dRendererImpl implements TabRenderer {
   private ORBIT_FIELD_FTC_DEFAULT_POSITION = new THREE.Vector3(0, 2, -4);
   private ORBIT_ROBOT_FRC_DEFAULT_POSITION = new THREE.Vector3(2, 1, 1);
   private ORBIT_ROBOT_FTC_DEFAULT_POSITION = new THREE.Vector3(1, 0.5, 0.5);
-  private DS_CAMERA_HEIGHT = Units.convert(62, "inches", "meters"); // https://www.ergocenter.ncsu.edu/wp-content/uploads/sites/18/2017/09/Anthropometric-Summary-Data-Tables.pdf
-  private DS_CAMERA_OFFSET_FRC = 1.5; // Distance away from the glass
-  private DS_CAMERA_TARGET_FTC = new THREE.Vector3(0, -0.2, 0);
   private CONTROLS_MIN_DISTANCE_FRC = 1;
   private CONTROLS_MIN_DISTANCE_FTC = 0.5;
   private MATERIAL_SPECULAR: THREE.Color = new THREE.Color(0x666666); // Overridden if not cinematic
@@ -103,8 +100,6 @@ export default class Field3dRendererImpl implements TabRenderer {
   private primaryRobotGroup: THREE.Group;
   private fixedCameraObj: THREE.Object3D;
   private fixedCameraOverrideObj: THREE.Object3D;
-  private dsCameraGroup: THREE.Group;
-  private dsCameraObj: THREE.Object3D;
   private spotLights: THREE.SpotLight[] = [];
   private FTCGrid: THREE.GridHelper | null = null;
 
@@ -125,7 +120,6 @@ export default class Field3dRendererImpl implements TabRenderer {
   private isFieldLoading = false;
   private aspectRatio: number | null = null;
   private lastCameraIndex = -1;
-  private lastAutoDriverStation = -1;
   private lastFrameTime = 0;
   private lastWidth: number | null = 0;
   private lastHeight: number | null = 0;
@@ -135,7 +129,6 @@ export default class Field3dRendererImpl implements TabRenderer {
   private lastAssets: AdvantageScopeAssets | null = null;
   private lastFieldId: string = "";
   private lastIsFTC: boolean | null = null;
-  private lastCoordinateSystem: CoordinateSystem | null = null;
   private keysPressed: Set<string> = new Set();
 
   static {
@@ -185,8 +178,7 @@ export default class Field3dRendererImpl implements TabRenderer {
           options: cameraList,
           position: [event.clientX, event.clientY],
           selectedIndex: this.cameraIndex >= cameraList.length ? CameraIndexEnum.OrbitField : this.cameraIndex,
-          fov: this.orbitFov,
-          isFTC: this.fieldConfigCache !== null && this.fieldConfigCache.isFTC
+          fov: this.orbitFov
         });
       }
       startPx = null;
@@ -259,14 +251,6 @@ export default class Field3dRendererImpl implements TabRenderer {
       this.fixedCameraOverrideObj = new THREE.Object3D();
       this.fixedCameraOverrideObj.visible = false;
       this.wpilibFieldCoordinateGroup.add(this.primaryRobotGroup, this.fixedCameraOverrideObj);
-    }
-
-    // Create DS camera object
-    {
-      this.dsCameraObj = new THREE.Object3D();
-      this.dsCameraObj.position.set(-this.DS_CAMERA_OFFSET_FRC, 0.0, this.DS_CAMERA_HEIGHT);
-      this.dsCameraGroup = new THREE.Group().add(this.dsCameraObj);
-      this.wpilibCoordinateGroup.add(this.dsCameraGroup);
     }
 
     // Create key bindings
@@ -398,34 +382,6 @@ export default class Field3dRendererImpl implements TabRenderer {
           this.ORBIT_ROBOT_FRC_DEFAULT_TARGET.z,
           animate
         );
-      }
-    } else {
-      // Driver Station
-      let fieldConfig = this.getFieldConfig(command);
-      if (fieldConfig !== null) {
-        let driverStation = -1;
-        if (this.cameraIndex < -3) {
-          driverStation = -4 - this.cameraIndex;
-        } else {
-          driverStation = command.autoDriverStation;
-        }
-        if (driverStation >= 0 && driverStation < fieldConfig.driverStations.length) {
-          let position = fieldConfig.driverStations[driverStation];
-          this.dsCameraGroup.position.set(position[0], position[1], 0);
-          this.dsCameraGroup.rotation.set(0, 0, Math.atan2(-position[1], -position[0]));
-          this.dsCameraObj.position.set(isFTC ? 0.0 : -this.DS_CAMERA_OFFSET_FRC, 0.0, this.DS_CAMERA_HEIGHT);
-          let cameraPosition = this.dsCameraObj.getWorldPosition(new THREE.Vector3());
-          let cameraTarget = isFTC ? this.DS_CAMERA_TARGET_FTC : this.ORBIT_FIELD_FRC_DEFAULT_TARGET;
-          this.controls.setLookAt(
-            cameraPosition.x,
-            cameraPosition.y,
-            cameraPosition.z,
-            cameraTarget.x,
-            cameraTarget.y,
-            cameraTarget.z,
-            animate
-          );
-        }
       }
     }
   }
@@ -610,17 +566,6 @@ export default class Field3dRendererImpl implements TabRenderer {
       return; // Continue trying to render
     }
 
-    // Update field if currently axes and coordinate system changes
-    if (
-      command.coordinateSystem !== this.lastCoordinateSystem &&
-      this.lastCoordinateSystem !== null &&
-      (command.field === "FRC:Axes" || command.field === "FTC:Axes")
-    ) {
-      this.shouldLoadNewField = true;
-      this.shouldRender = true;
-    }
-    this.lastCoordinateSystem = command.coordinateSystem;
-
     // Check if rendering should continue
     if (!this.shouldRender) {
       return;
@@ -641,44 +586,13 @@ export default class Field3dRendererImpl implements TabRenderer {
       this.shouldResetCamera = false;
     }
 
-    // Update field coordinates
-    switch (command.coordinateSystem) {
-      case "wall-alliance":
-        this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(
-          new THREE.Vector3(0, 0, 1),
-          command.isRedAlliance ? 0 : Math.PI
-        );
-        this.wpilibFieldCoordinateGroup.position.set(
-          Units.convert(fieldConfig.widthInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
-          Units.convert(fieldConfig.heightInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
-          0
-        );
-        break;
-      case "wall-blue":
-        this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
-        this.wpilibFieldCoordinateGroup.position.set(
-          Units.convert(fieldConfig.widthInches / 2, "inches", "meters"),
-          Units.convert(fieldConfig.heightInches / 2, "inches", "meters"),
-          0
-        );
-        break;
-      case "center-rotated":
-        this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), -Math.PI / 2);
-        this.wpilibFieldCoordinateGroup.position.set(0, 0, 0);
-        break;
-      case "center-red":
-        this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), 0);
-        this.wpilibFieldCoordinateGroup.position.set(0, 0, 0);
-        break;
-    }
-
     // Update field
     if (fieldId !== this.lastFieldId || newFieldAssets) {
       this.shouldLoadNewField = true;
       this.lastFieldId = fieldId;
 
-      // Reset camera if switching between FRC and FTC, or if using DS camera
-      if ((fieldConfig.isFTC !== this.lastIsFTC && this.lastIsFTC !== null) || this.cameraIndex < -2) {
+      // Reset camera if switching between FRC and FTC
+      if (fieldConfig.isFTC !== this.lastIsFTC && this.lastIsFTC !== null) {
         this.resetCamera(command, fieldConfig.isFTC);
       }
 
@@ -758,12 +672,7 @@ export default class Field3dRendererImpl implements TabRenderer {
         newFieldReady();
       } else if (fieldId === "FRC:Axes" || fieldId === "FTC:Axes") {
         this.isFieldLoading = false;
-        this.field = makeAxesField(
-          this.MATERIAL_SPECULAR,
-          this.MATERIAL_SHININESS,
-          command.coordinateSystem,
-          fieldId === "FTC:Axes"
-        );
+        this.field = makeAxesField(this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS, fieldId === "FTC:Axes");
         this.fieldStagedPieces = new THREE.Object3D();
         newFieldReady();
       } else {
@@ -840,9 +749,6 @@ export default class Field3dRendererImpl implements TabRenderer {
       if (newRobotAssets && (entry.type === "robot" || entry.type === "ghost")) {
         (entry.manager as RobotManager).newAssets();
       }
-      if (entry.type === "heatmap") {
-        (entry.manager as HeatmapManager).setIsRedAlliance(command.isRedAlliance);
-      }
       entry.manager.setObjectData(object);
     });
     this.objectManagers.forEach((entry) => {
@@ -880,7 +786,6 @@ export default class Field3dRendererImpl implements TabRenderer {
       // Update camera controls
       let orbitalCamera =
         this.cameraIndex === CameraIndexEnum.OrbitField || this.cameraIndex === CameraIndexEnum.OrbitRobot;
-      let dsCamera = this.cameraIndex < CameraIndexEnum.OrbitRobot;
       if (orbitalCamera !== this.controls.enabled) {
         this.controls.enabled = orbitalCamera;
       }
@@ -888,7 +793,7 @@ export default class Field3dRendererImpl implements TabRenderer {
       // Update container and camera based on mode
       let fov = this.orbitFov;
       this.aspectRatio = null;
-      if (orbitalCamera || dsCamera) {
+      if (orbitalCamera) {
         this.canvas.classList.remove("fixed");
         this.canvasContainer.classList.remove("fixed");
         this.canvas.style.width = "";
@@ -908,7 +813,7 @@ export default class Field3dRendererImpl implements TabRenderer {
         }
 
         // Reset location
-        if (this.cameraIndex === CameraIndexEnum.OrbitField || dsCamera) {
+        if (this.cameraIndex === CameraIndexEnum.OrbitField) {
           // Reset to default origin
           this.wpilibCoordinateGroup.position.set(0, 0, 0);
           this.wpilibCoordinateGroup.rotation.setFromQuaternion(this.WPILIB_ROTATION);
@@ -935,10 +840,7 @@ export default class Field3dRendererImpl implements TabRenderer {
         }
 
         // Reset coordinate frame with animation
-        if (
-          this.cameraIndex !== this.lastCameraIndex ||
-          (this.cameraIndex === CameraIndexEnum.DSAuto && this.lastAutoDriverStation !== command.autoDriverStation)
-        ) {
+        if (this.cameraIndex !== this.lastCameraIndex) {
           this.resetCamera(command, fieldConfig.isFTC, this.lastCameraIndex < 0);
         }
       } else {
@@ -982,10 +884,7 @@ export default class Field3dRendererImpl implements TabRenderer {
       if (this.cameraIndex === CameraIndexEnum.OrbitRobot) {
         this.alert.hidden = this.primaryRobotGroup.visible;
         this.alert.innerHTML = 'Robot pose not available</br>for camera "Orbit Robot".';
-      } else if (this.cameraIndex === CameraIndexEnum.DSAuto) {
-        this.alert.hidden = command.autoDriverStation >= 0;
-        this.alert.innerHTML = "Driver Station position</br>not available.";
-      } else if (this.cameraIndex === CameraIndexEnum.OrbitField || dsCamera) {
+      } else if (this.cameraIndex === CameraIndexEnum.OrbitField) {
         this.alert.hidden = true;
       } else {
         this.alert.hidden = this.primaryRobotGroup.visible || this.fixedCameraOverrideObj.visible;
@@ -1002,7 +901,6 @@ export default class Field3dRendererImpl implements TabRenderer {
       }
 
       this.lastCameraIndex = this.cameraIndex;
-      this.lastAutoDriverStation = command.autoDriverStation;
     }
 
     // Update spinner
@@ -1039,14 +937,7 @@ export default class Field3dRendererImpl implements TabRenderer {
 type CameraIndex = number | CameraIndexEnum;
 enum CameraIndexEnum {
   OrbitField = -1,
-  OrbitRobot = -2,
-  DSAuto = -3,
-  DSB1 = -4,
-  DSB2 = -5,
-  DSB3 = -6,
-  DSR1 = -7,
-  DSR2 = -8,
-  DSR3 = -9
+  OrbitRobot = -2
 }
 
 /** Disposes of all materials and geometries in object. */

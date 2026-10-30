@@ -20,7 +20,6 @@ import {
 import { MechanismState, getMechanismState, mergeMechanismStates } from "../../shared/log/LogMechanismState";
 import { getOrDefault } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
-import { ALLIANCE_KEYS, DRIVER_STATION_KEYS, getDriverStation, getIsRedAlliance } from "../../shared/log/RobotState";
 import { Field3dRendererCommand, Field3dRendererCommand_AnyObj } from "../../shared/renderers/Field3dRenderer";
 import { clampValue, createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
@@ -33,7 +32,6 @@ export default class Field3dController implements TabController {
   private FIELD_SELECT: HTMLSelectElement;
 
   private sourceList: SourceList;
-  private lastCoordinateSystemAlert: "none" | "frc" | "ftc" = "none";
 
   constructor(root: HTMLElement) {
     this.sourceList = new SourceList(
@@ -80,6 +78,8 @@ export default class Field3dController implements TabController {
         (field.isFTC ? ftcGroup : frcGroup).appendChild(option);
       });
     }
+    frcGroup.hidden = frcGroup.childElementCount === 0;
+    ftcGroup.hidden = ftcGroup.childElementCount === 0;
     if (options.includes(value)) {
       this.FIELD_SELECT.value = value;
     } else {
@@ -200,7 +200,7 @@ export default class Field3dController implements TabController {
   }
 
   getActiveFields(): string[] {
-    return [...this.sourceList.getActiveFields(), ...ALLIANCE_KEYS, ...DRIVER_STATION_KEYS];
+    return this.sourceList.getActiveFields();
   }
 
   showTimeline(): boolean {
@@ -215,32 +215,6 @@ export default class Field3dController implements TabController {
     let fieldData = [...(window.assets === null ? [] : window.assets.field3ds), ...BuiltIn3dFields].find(
       (game) => game.id === this.FIELD_SELECT.value
     );
-    let coordinateSystem =
-      (window.preferences?.coordinateSystem === "automatic"
-        ? fieldData?.coordinateSystem
-        : window.preferences?.coordinateSystem) ?? "center-red";
-    if (fieldData !== undefined && window.preferences !== null) {
-      let currentAlert: "none" | "frc" | "ftc" = "none";
-      if (!fieldData.isFTC && fieldData.coordinateSystem !== "center-red") {
-        currentAlert = "frc";
-      } else if (fieldData.isFTC && fieldData.coordinateSystem === "center-red") {
-        currentAlert = "ftc";
-      }
-      if (currentAlert !== this.lastCoordinateSystemAlert) {
-        if (window.preferences.coordinateSystem === "automatic") {
-          if (currentAlert === "frc") {
-            window.sendMainMessage("frc-coordinate-system-warning");
-          } else if (currentAlert === "ftc") {
-            window.sendMainMessage("ftc-coordinate-system-warning");
-          }
-        }
-        this.lastCoordinateSystemAlert = currentAlert;
-      }
-    }
-
-    // Get alliance
-    let isRedAlliance = time === null ? false : getIsRedAlliance(window.log, time);
-
     let objects: Field3dRendererCommand_AnyObj[] = [];
     let cameraOverride: AnnotatedPose3d | null = null;
     let sources = this.sourceList.getState(true);
@@ -511,11 +485,8 @@ export default class Field3dController implements TabController {
 
     return {
       field: this.FIELD_SELECT.value,
-      isRedAlliance: isRedAlliance,
-      coordinateSystem: coordinateSystem,
       objects: objects,
       cameraOverride: cameraOverride,
-      autoDriverStation: getDriverStation(window.log, time!),
       allRobotModels: [...allRobotModels]
     };
   }

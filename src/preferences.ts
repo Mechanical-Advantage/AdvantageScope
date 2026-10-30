@@ -5,7 +5,6 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { CoordinateSystem } from "./shared/AdvantageScopeAssets";
 import Preferences from "./shared/Preferences";
 
 const THEME = document.getElementById("theme") as HTMLInputElement;
@@ -13,7 +12,6 @@ const ROBOT_ADDRESS = document.getElementById("robotAddress") as HTMLInputElemen
 const REMOTE_PATH = document.getElementById("remotePath") as HTMLInputElement;
 const LIVE_SUBSCRIBE_MODE = document.getElementById("liveSubscribeMode") as HTMLInputElement;
 const LIVE_DISCARD = document.getElementById("liveDiscard") as HTMLInputElement;
-const COORDINATE_SYSTEM = document.getElementById("coordinateSystem") as HTMLInputElement;
 const TIMESTAMPS = document.getElementById("timestamps") as HTMLInputElement;
 const FIELD_3D_MODE_AC = document.getElementById("field3dModeAc") as HTMLInputElement;
 const FIELD_3D_MODE_AC_LABEL = document.getElementById("field3dModeAcLabel") as HTMLElement;
@@ -60,7 +58,6 @@ window.addEventListener("message", (event) => {
       REMOTE_PATH.value = oldPrefs.remotePath;
       LIVE_SUBSCRIBE_MODE.value = oldPrefs.liveSubscribeMode;
       LIVE_DISCARD.value = oldPrefs.liveDiscard.toString();
-      COORDINATE_SYSTEM.value = oldPrefs.coordinateSystem;
       TIMESTAMPS.value = oldPrefs.timestamps;
       FIELD_3D_MODE_AC.value = oldPrefs.field3dModeAc;
       FIELD_3D_MODE_BATTERY.value = oldPrefs.field3dModeBattery;
@@ -77,13 +74,6 @@ window.addEventListener("message", (event) => {
           let liveSubscribeMode: "low-bandwidth" | "logging" = "low-bandwidth";
           if (LIVE_SUBSCRIBE_MODE.value === "low-bandwidth") liveSubscribeMode = "low-bandwidth";
           if (LIVE_SUBSCRIBE_MODE.value === "logging") liveSubscribeMode = "logging";
-
-          let coordinateSystem: "automatic" | CoordinateSystem = "automatic";
-          if (COORDINATE_SYSTEM.value === "automatic") coordinateSystem = "automatic";
-          if (COORDINATE_SYSTEM.value === "wall-alliance") coordinateSystem = "wall-alliance";
-          if (COORDINATE_SYSTEM.value === "wall-blue") coordinateSystem = "wall-blue";
-          if (COORDINATE_SYSTEM.value === "center-rotated") coordinateSystem = "center-rotated";
-          if (COORDINATE_SYSTEM.value === "center-red") coordinateSystem = "center-red";
 
           let field3dModeAc: "cinematic" | "standard" | "low-power" = "standard";
           if (FIELD_3D_MODE_AC.value === "cinematic") field3dModeAc = "cinematic";
@@ -108,13 +98,10 @@ window.addEventListener("message", (event) => {
             liveSubscribeMode: liveSubscribeMode,
             liveDiscard: Number(LIVE_DISCARD.value),
             rlogPort: oldPrefs.rlogPort,
-            coordinateSystem: coordinateSystem,
             field3dModeAc: field3dModeAc,
             field3dModeBattery: field3dModeBattery,
             field3dAntialiasing: FIELD_3D_ANTIALIASING.value === "true",
             userAssetsFolder: oldPrefs.userAssetsFolder,
-            skipFRCCoordinateSystemWarning: oldPrefs.skipFRCCoordinateSystemWarning,
-            skipFTCCoordinateSystemWarning: oldPrefs.skipFTCCoordinateSystemWarning,
             hasScrolledLineGraph: oldPrefs.hasScrolledLineGraph,
             hasScrolledTimeline: oldPrefs.hasScrolledTimeline,
             prefersFTC: oldPrefs.prefersFTC,

@@ -382,56 +382,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       }
       break;
 
-    case "frc-coordinate-system-warning":
-      {
-        let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-        if (prefs.skipFRCCoordinateSystemWarning) return;
-        dialog
-          .showMessageBox(window, {
-            type: "info",
-            title: "Alert",
-            message: "Legacy Coordinate System",
-            detail:
-              'This field uses a legacy coordinate system by default for compatibility with pre-2027 WPILib. If your robot code uses 2027 WPILib, you can change the "Coordinate System" option in the AdvantageScope preferences. See the documentation for details.',
-            buttons: ["OK"],
-            checkboxLabel: "Don't Show Again",
-            icon: WINDOW_ICON
-          })
-          .then((response) => {
-            if (response.checkboxChecked) {
-              prefs.skipFRCCoordinateSystemWarning = true;
-              jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-              sendAllPreferences();
-            }
-          });
-      }
-      break;
-
-    case "ftc-coordinate-system-warning":
-      {
-        let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-        if (prefs.skipFTCCoordinateSystemWarning) return;
-        dialog
-          .showMessageBox(window, {
-            type: "info",
-            title: "Alert",
-            message: "Systemcore Coordinate System",
-            detail:
-              'This field uses the Systemcore coordinate system by default. If your robot code uses the traditional FTC coordinate system, you can change the "Coordinate System" option in the AdvantageScope preferences. See the documentation for details.',
-            buttons: ["OK"],
-            checkboxLabel: "Don't Show Again",
-            icon: WINDOW_ICON
-          })
-          .then((response) => {
-            if (response.checkboxChecked) {
-              prefs.skipFTCCoordinateSystemWarning = true;
-              jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-              sendAllPreferences();
-            }
-          });
-      }
-      break;
-
     case "live-rlog-start":
       rlogSockets[windowId]?.destroy();
       rlogSockets[windowId] = net.createConnection({
@@ -1149,8 +1099,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         message.data.position,
         message.data.options,
         message.data.selectedIndex,
-        message.data.fov,
-        message.data.isFTC
+        message.data.fov
       );
       break;
 
@@ -1269,8 +1218,7 @@ function select3DCameraPopup(
   position: [number, number],
   options: string[],
   selectedIndex: number,
-  fov: number,
-  isFTC: boolean
+  fov: number
 ) {
   const cameraMenu = new Menu();
   cameraMenu.append(
@@ -1291,104 +1239,6 @@ function select3DCameraPopup(
       click() {
         sendMessage(window, "set-3d-camera", -2);
       }
-    })
-  );
-  cameraMenu.append(
-    new MenuItem({
-      label: isFTC ? "Driver View" : "Driver Station",
-      submenu: isFTC
-        ? [
-            {
-              label: "Blue Left",
-              type: "checkbox",
-              checked: selectedIndex === -4,
-              click() {
-                sendMessage(window, "set-3d-camera", -4);
-              }
-            },
-            {
-              label: "Blue Right",
-              type: "checkbox",
-              checked: selectedIndex === -5,
-              click() {
-                sendMessage(window, "set-3d-camera", -5);
-              }
-            },
-            {
-              label: "Red Left",
-              type: "checkbox",
-              checked: selectedIndex === -6,
-              click() {
-                sendMessage(window, "set-3d-camera", -6);
-              }
-            },
-            {
-              label: "Red Right",
-              type: "checkbox",
-              checked: selectedIndex === -7,
-              click() {
-                sendMessage(window, "set-3d-camera", -7);
-              }
-            }
-          ]
-        : [
-            {
-              label: "Auto",
-              type: "checkbox",
-              checked: selectedIndex === -3,
-              click() {
-                sendMessage(window, "set-3d-camera", -3);
-              }
-            },
-            {
-              label: "Blue 1",
-              type: "checkbox",
-              checked: selectedIndex === -4,
-              click() {
-                sendMessage(window, "set-3d-camera", -4);
-              }
-            },
-            {
-              label: "Blue 2",
-              type: "checkbox",
-              checked: selectedIndex === -5,
-              click() {
-                sendMessage(window, "set-3d-camera", -5);
-              }
-            },
-            {
-              label: "Blue 3",
-              type: "checkbox",
-              checked: selectedIndex === -6,
-              click() {
-                sendMessage(window, "set-3d-camera", -6);
-              }
-            },
-            {
-              label: "Red 1",
-              type: "checkbox",
-              checked: selectedIndex === -7,
-              click() {
-                sendMessage(window, "set-3d-camera", -7);
-              }
-            },
-            {
-              label: "Red 2",
-              type: "checkbox",
-              checked: selectedIndex === -8,
-              click() {
-                sendMessage(window, "set-3d-camera", -8);
-              }
-            },
-            {
-              label: "Red 3",
-              type: "checkbox",
-              checked: selectedIndex === -9,
-              click() {
-                sendMessage(window, "set-3d-camera", -9);
-              }
-            }
-          ]
     })
   );
   cameraMenu.append(
@@ -2615,8 +2465,7 @@ function createSatellite(
             message.data.position,
             message.data.options,
             message.data.selectedIndex,
-            message.data.fov,
-            message.data.isFTC
+            message.data.fov
           );
           break;
 

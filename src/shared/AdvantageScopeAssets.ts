@@ -12,23 +12,6 @@ export const FRC_STANDARD_FIELD_WIDTH = Units.convert(27, "feet", "meters");
 export const FTC_STANDARD_FIELD_LENGTH = Units.convert(12, "feet", "meters");
 export const FTC_STANDARD_FIELD_WIDTH = Units.convert(12, "feet", "meters");
 
-export const ALLIANCE_STATION_WIDTH = Units.convert(69, "inches", "meters");
-export const DEFAULT_DRIVER_STATIONS_FRC: [number, number][] = [
-  [FRC_STANDARD_FIELD_LENGTH / 2, -ALLIANCE_STATION_WIDTH],
-  [FRC_STANDARD_FIELD_LENGTH / 2, 0],
-  [FRC_STANDARD_FIELD_LENGTH / 2, ALLIANCE_STATION_WIDTH],
-  [-FRC_STANDARD_FIELD_LENGTH / 2, ALLIANCE_STATION_WIDTH],
-  [-FRC_STANDARD_FIELD_LENGTH / 2, 0],
-  [-FRC_STANDARD_FIELD_LENGTH / 2, -ALLIANCE_STATION_WIDTH]
-];
-const DEFAULT_DRIVER_STATION_Y_OFFSET_FTC = FTC_STANDARD_FIELD_LENGTH / 2 + Units.convert(39, "inches", "meters");
-export const DEFAULT_DRIVER_STATIONS_FTC: [number, number][] = [
-  [DEFAULT_DRIVER_STATION_Y_OFFSET_FTC, -FTC_STANDARD_FIELD_WIDTH / 6],
-  [DEFAULT_DRIVER_STATION_Y_OFFSET_FTC, FTC_STANDARD_FIELD_WIDTH / 6],
-  [-DEFAULT_DRIVER_STATION_Y_OFFSET_FTC, FTC_STANDARD_FIELD_WIDTH / 6],
-  [-DEFAULT_DRIVER_STATION_Y_OFFSET_FTC, -FTC_STANDARD_FIELD_WIDTH / 6]
-];
-
 export interface AdvantageScopeAssets {
   field2ds: Config2d[];
   field3ds: Config3dField[];
@@ -36,11 +19,10 @@ export interface AdvantageScopeAssets {
   loadFailures: string[];
 }
 
-export type CoordinateSystem =
-  | "wall-alliance" // FRC 2022
-  | "wall-blue" // FRC 2023-2026
-  | "center-rotated" // FTC traditional
-  | "center-red"; // Systemcore
+/**
+ * All poses use a single right-handed coordinate system: origin at the center
+ * of the field, +X forward, +Y left, +Z up.
+ */
 
 export interface Config2d {
   name: string;
@@ -48,7 +30,6 @@ export interface Config2d {
   id: string;
 
   isFTC: boolean;
-  coordinateSystem: CoordinateSystem;
   useGrid: boolean | undefined;
   sourceUrl?: string;
   topLeft: [number, number];
@@ -63,13 +44,11 @@ export interface Config3dField {
   id: string;
 
   isFTC: boolean;
-  coordinateSystem: CoordinateSystem;
   useGrid: boolean | undefined;
   rotations: Config3d_Rotation[];
   position: [number, number, number];
   widthInches: number;
   heightInches: number;
-  driverStations: [number, number][];
   gamePieces: Config3dField_GamePiece[];
   aprilTags: Config3dField_AprilTag[];
 }
@@ -124,28 +103,11 @@ export const BuiltIn3dFields: Config3dField[] = [
     path: "",
     id: "FRC:Evergreen",
     isFTC: false,
-    coordinateSystem: "center-red",
     useGrid: true,
     rotations: [],
     position: [0, 0, 0],
     widthInches: Units.convert(FRC_STANDARD_FIELD_LENGTH, "meters", "inches"),
     heightInches: Units.convert(FRC_STANDARD_FIELD_WIDTH, "meters", "inches"),
-    driverStations: DEFAULT_DRIVER_STATIONS_FRC,
-    gamePieces: [],
-    aprilTags: []
-  },
-  {
-    name: "Evergreen",
-    path: "",
-    id: "FTC:Evergreen",
-    isFTC: true,
-    coordinateSystem: "center-red",
-    useGrid: true,
-    rotations: [],
-    position: [0, 0, 0],
-    widthInches: Units.convert(FTC_STANDARD_FIELD_LENGTH, "meters", "inches"),
-    heightInches: Units.convert(FTC_STANDARD_FIELD_WIDTH, "meters", "inches"),
-    driverStations: DEFAULT_DRIVER_STATIONS_FTC,
     gamePieces: [],
     aprilTags: []
   },
@@ -154,28 +116,11 @@ export const BuiltIn3dFields: Config3dField[] = [
     path: "",
     id: "FRC:Axes",
     isFTC: false,
-    coordinateSystem: "center-red",
     useGrid: true,
     rotations: [],
     position: [0, 0, 0],
     widthInches: Units.convert(FRC_STANDARD_FIELD_LENGTH, "meters", "inches"),
     heightInches: Units.convert(FRC_STANDARD_FIELD_WIDTH, "meters", "inches"),
-    driverStations: DEFAULT_DRIVER_STATIONS_FRC,
-    gamePieces: [],
-    aprilTags: []
-  },
-  {
-    name: "Axes",
-    path: "",
-    id: "FTC:Axes",
-    isFTC: true,
-    coordinateSystem: "center-red",
-    useGrid: true,
-    rotations: [],
-    position: [0, 0, 0],
-    widthInches: Units.convert(FTC_STANDARD_FIELD_LENGTH, "meters", "inches"),
-    heightInches: Units.convert(FTC_STANDARD_FIELD_WIDTH, "meters", "inches"),
-    driverStations: DEFAULT_DRIVER_STATIONS_FTC,
     gamePieces: [],
     aprilTags: []
   }

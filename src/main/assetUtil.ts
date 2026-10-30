@@ -13,9 +13,7 @@ import {
   Config3dField_GamePiece,
   Config3dRobot,
   Config3dRobot_Camera,
-  Config3dRobot_Component,
-  DEFAULT_DRIVER_STATIONS_FRC,
-  DEFAULT_DRIVER_STATIONS_FTC
+  Config3dRobot_Component
 } from "../shared/AdvantageScopeAssets";
 import { checkArrayType } from "../shared/util";
 
@@ -27,7 +25,6 @@ export function parseField2d(configRaw: unknown): Config2d | "invalid" | "skip" 
     id: "",
     isFTC: false,
     useGrid: true,
-    coordinateSystem: "center-red",
     topLeft: [-1, -1],
     bottomRight: [-1, -1],
     widthInches: 0,
@@ -41,16 +38,6 @@ export function parseField2d(configRaw: unknown): Config2d | "invalid" | "skip" 
   } else {
     // Pre-2026 format, skip
     return "skip";
-  }
-  if (
-    "coordinateSystem" in configRaw &&
-    typeof configRaw.coordinateSystem === "string" &&
-    (configRaw.coordinateSystem === "wall-alliance" ||
-      configRaw.coordinateSystem === "wall-blue" ||
-      configRaw.coordinateSystem === "center-rotated" ||
-      configRaw.coordinateSystem === "center-red")
-  ) {
-    config.coordinateSystem = configRaw.coordinateSystem;
   }
   if ("useGrid" in configRaw && typeof configRaw.useGrid === "boolean") {
     config.useGrid = configRaw.useGrid;
@@ -100,13 +87,11 @@ export function parseField3d(configRaw: unknown): Config3dField | "invalid" | "s
     path: "",
     id: "",
     isFTC: false,
-    coordinateSystem: "center-red",
     useGrid: true,
     rotations: [],
     position: [0, 0, 0],
     widthInches: 0,
     heightInches: 0,
-    driverStations: DEFAULT_DRIVER_STATIONS_FRC,
     gamePieces: [],
     aprilTags: []
   };
@@ -115,22 +100,9 @@ export function parseField3d(configRaw: unknown): Config3dField | "invalid" | "s
   }
   if ("isFTC" in configRaw && typeof configRaw.isFTC === "boolean") {
     config.isFTC = configRaw.isFTC;
-    if (config.isFTC) {
-      config.driverStations = DEFAULT_DRIVER_STATIONS_FTC;
-    }
   } else {
     // Pre-2026 format, skip
     return "skip";
-  }
-  if (
-    "coordinateSystem" in configRaw &&
-    typeof configRaw.coordinateSystem === "string" &&
-    (configRaw.coordinateSystem === "wall-alliance" ||
-      configRaw.coordinateSystem === "wall-blue" ||
-      configRaw.coordinateSystem === "center-rotated" ||
-      configRaw.coordinateSystem === "center-red")
-  ) {
-    config.coordinateSystem = configRaw.coordinateSystem;
   }
   if ("useGrid" in configRaw && typeof configRaw.useGrid === "boolean") {
     config.useGrid = configRaw.useGrid;
@@ -161,14 +133,6 @@ export function parseField3d(configRaw: unknown): Config3dField | "invalid" | "s
   }
   if ("heightInches" in configRaw && typeof configRaw.heightInches === "number") {
     config.heightInches = configRaw.heightInches;
-  }
-  if (
-    "driverStations" in configRaw &&
-    Array.isArray(configRaw.driverStations) &&
-    configRaw.driverStations.length === (config.isFTC ? 4 : 6) &&
-    configRaw.driverStations.every((position) => checkArrayType(position, "number") && position.length === 2)
-  ) {
-    config.driverStations = configRaw.driverStations;
   }
   if ("gamePieces" in configRaw && Array.isArray(configRaw.gamePieces)) {
     configRaw.gamePieces.forEach((gamePieceRaw: any) => {

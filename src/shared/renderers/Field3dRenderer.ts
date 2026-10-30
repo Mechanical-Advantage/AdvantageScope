@@ -5,7 +5,6 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { CoordinateSystem } from "../AdvantageScopeAssets";
 import { AnnotatedPose3d, ModuleVelocity } from "../geometry";
 import { MechanismState } from "../log/LogMechanismState";
 import Field3dRendererImpl from "./Field3dRendererImpl";
@@ -115,15 +114,11 @@ export default class Field3dRenderer implements TabRenderer {
   }
 }
 
-// Most poses are still in their original coordinate system
-// Heatmap poses are already converted to a center-red coordinate system
+// All poses use the field-centered coordinate system (+X forward, +Y left, +Z up)
 export type Field3dRendererCommand = {
   field: string;
-  isRedAlliance: boolean;
-  coordinateSystem: CoordinateSystem;
   objects: Field3dRendererCommand_AnyObj[];
   cameraOverride: AnnotatedPose3d | null;
-  autoDriverStation: number;
   allRobotModels: string[];
 };
 

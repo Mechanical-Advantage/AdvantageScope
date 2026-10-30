@@ -5,8 +5,6 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { CoordinateSystem } from "./AdvantageScopeAssets";
-
 /** A set of application preferences. */
 export default interface Preferences {
   theme: "light" | "dark" | "system";
@@ -16,13 +14,10 @@ export default interface Preferences {
   liveSubscribeMode: "low-bandwidth" | "logging";
   liveDiscard: number;
   rlogPort: number;
-  coordinateSystem: "automatic" | CoordinateSystem;
   field3dModeAc: "cinematic" | "standard" | "low-power";
   field3dModeBattery: "" | "cinematic" | "standard" | "low-power";
   field3dAntialiasing: boolean;
   userAssetsFolder: string | null;
-  skipFRCCoordinateSystemWarning: boolean;
-  skipFTCCoordinateSystemWarning: boolean;
   hasScrolledLineGraph: boolean;
   hasScrolledTimeline: boolean;
   prefersFTC: boolean;
@@ -37,13 +32,10 @@ export const DEFAULT_PREFS: Preferences = {
   liveSubscribeMode: "low-bandwidth",
   liveDiscard: 1200,
   rlogPort: 5800,
-  coordinateSystem: "automatic",
   field3dModeAc: "standard",
   field3dModeBattery: "",
   field3dAntialiasing: true,
   userAssetsFolder: null,
-  skipFRCCoordinateSystemWarning: false,
-  skipFTCCoordinateSystemWarning: false,
   hasScrolledLineGraph: false,
   hasScrolledTimeline: false,
   prefersFTC: false,
@@ -115,16 +107,6 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
     basePrefs.rlogPort = newPrefs.rlogPort;
   }
   if (
-    "coordinateSystem" in newPrefs &&
-    (newPrefs.coordinateSystem === "automatic" ||
-      newPrefs.coordinateSystem === "wall-alliance" ||
-      newPrefs.coordinateSystem === "wall-blue" ||
-      newPrefs.coordinateSystem === "center-rotated" ||
-      newPrefs.coordinateSystem === "center-red")
-  ) {
-    basePrefs.coordinateSystem = newPrefs.coordinateSystem;
-  }
-  if (
     "threeDimensionModeAc" in newPrefs &&
     (newPrefs.threeDimensionModeAc === "cinematic" ||
       newPrefs.threeDimensionModeAc === "standard" ||
@@ -165,12 +147,6 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   }
   if ("userAssetsFolder" in newPrefs && typeof newPrefs.userAssetsFolder === "string") {
     basePrefs.userAssetsFolder = newPrefs.userAssetsFolder;
-  }
-  if ("skipFRCCoordinateSystemWarning" in newPrefs && typeof newPrefs.skipFRCCoordinateSystemWarning === "boolean") {
-    basePrefs.skipFRCCoordinateSystemWarning = newPrefs.skipFRCCoordinateSystemWarning;
-  }
-  if ("skipFTCCoordinateSystemWarning" in newPrefs && typeof newPrefs.skipFTCCoordinateSystemWarning === "boolean") {
-    basePrefs.skipFTCCoordinateSystemWarning = newPrefs.skipFTCCoordinateSystemWarning;
   }
   if ("hasScrolledLineGraph" in newPrefs && typeof newPrefs.hasScrolledLineGraph === "boolean") {
     basePrefs.hasScrolledLineGraph = newPrefs.hasScrolledLineGraph;

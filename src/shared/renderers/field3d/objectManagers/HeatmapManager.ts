@@ -7,7 +7,7 @@
 
 import * as THREE from "three";
 import { Config3dField } from "../../../AdvantageScopeAssets";
-import { annotatedPose3dTo2d, convertFromCoordinateSystem } from "../../../geometry";
+import { annotatedPose3dTo2d } from "../../../geometry";
 import { Units } from "../../../units";
 import { Field3dRendererCommand_HeatmapObj } from "../../Field3dRenderer";
 import { disposeObject } from "../../Field3dRendererImpl";
@@ -22,7 +22,6 @@ export default class HeatmapManager extends ObjectManager<Field3dRendererCommand
   private heatmap = new Heatmap(this.container);
   private canvas: HTMLCanvasElement | null = null;
   private mesh: THREE.Mesh | null = null;
-  private isRedAlliance = false;
 
   constructor(
     root: THREE.Object3D,
@@ -46,10 +45,6 @@ export default class HeatmapManager extends ObjectManager<Field3dRendererCommand
     document.body.removeChild(this.container);
   }
 
-  setIsRedAlliance(isRedAlliance: boolean) {
-    this.isRedAlliance = isRedAlliance;
-  }
-
   setObjectData(object: Field3dRendererCommand_HeatmapObj): void {
     let fieldConfig = this.getFieldConfig();
     if (fieldConfig === null) return;
@@ -63,20 +58,7 @@ export default class HeatmapManager extends ObjectManager<Field3dRendererCommand
       Math.round(this.HEIGHT_PIXELS * (fieldDimensions[0] / fieldDimensions[1])),
       this.HEIGHT_PIXELS
     ];
-    let coordinateSystem =
-      (window.preferences?.coordinateSystem === "automatic"
-        ? fieldConfig.coordinateSystem
-        : window.preferences?.coordinateSystem) ?? "center-red";
-    let translations = object.poses.map(
-      (x) =>
-        convertFromCoordinateSystem(
-          annotatedPose3dTo2d(x),
-          coordinateSystem,
-          this.isRedAlliance ? "red" : "blue",
-          fieldDimensions[0],
-          fieldDimensions[1]
-        ).pose.translation
-    );
+    let translations = object.poses.map((x) => annotatedPose3dTo2d(x).pose.translation);
     this.heatmap.update(translations, pixelDimensions, fieldDimensions);
 
     // Update texture

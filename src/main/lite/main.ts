@@ -364,42 +364,6 @@ async function handleHubMessage(message: NamedMessage) {
       }
       break;
 
-    case "frc-coordinate-system-warning":
-      {
-        let prefs = Object.assign({}, DEFAULT_PREFS);
-        let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
-        if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
-        if (prefs.skipFRCCoordinateSystemWarning) return;
-        if (
-          confirm(
-            'This field uses a legacy coordinate system by default for compatibility with pre-2027 WPILib. If your robot code uses 2027 WPILib, you can change the "Coordinate System" option in the AdvantageScope preferences. See the documentation for details.'
-          )
-        ) {
-          prefs.skipFRCCoordinateSystemWarning = true;
-          localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
-          sendMessage(hubPort, "set-preferences", prefs);
-        }
-      }
-      break;
-
-    case "ftc-coordinate-system-warning":
-      {
-        let prefs = Object.assign({}, DEFAULT_PREFS);
-        let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
-        if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
-        if (prefs.skipFTCCoordinateSystemWarning) return;
-        if (
-          confirm(
-            'This field uses the Systemcore coordinate system by default. If your robot code uses the traditional FTC coordinate system, you can change the "Coordinate System" option in the AdvantageScope preferences. See the documentation for details.'
-          )
-        ) {
-          prefs.skipFTCCoordinateSystemWarning = true;
-          localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
-          sendMessage(hubPort, "set-preferences", prefs);
-        }
-      }
-      break;
-
     case "historical-start":
       {
         const uuid: string = message.data.uuid;
@@ -1115,7 +1079,6 @@ async function handleHubMessage(message: NamedMessage) {
         let options: string[] = message.data.options;
         let selectedIndex: number = message.data.selectedIndex;
         let fov: number = message.data.fov;
-        let isFTC: boolean = message.data.isFTC;
 
         let menuItems: (MenuItem | Submenu | "-")[] = [
           {
@@ -1129,80 +1092,6 @@ async function handleHubMessage(message: NamedMessage) {
             callback() {
               sendMessage(hubPort, "set-3d-camera", -2);
             }
-          },
-          {
-            content: isFTC ? "Driver View" : "Driver Station",
-            items: isFTC
-              ? [
-                  {
-                    content: (selectedIndex === -4 ? "\u2714 " : "") + "Blue Left",
-                    callback() {
-                      sendMessage(hubPort, "set-3d-camera", -4);
-                    }
-                  },
-                  {
-                    content: (selectedIndex === -5 ? "\u2714 " : "") + "Blue Right",
-                    callback() {
-                      sendMessage(hubPort, "set-3d-camera", -5);
-                    }
-                  },
-                  {
-                    content: (selectedIndex === -6 ? "\u2714 " : "") + "Red Left",
-                    callback() {
-                      sendMessage(hubPort, "set-3d-camera", -6);
-                    }
-                  },
-                  {
-                    content: (selectedIndex === -7 ? "\u2714 " : "") + "Red Right",
-                    callback() {
-                      sendMessage(hubPort, "set-3d-camera", -7);
-                    }
-                  }
-                ]
-              : [
-                  {
-                    content: (selectedIndex === -3 ? "\u2714 " : "") + "Auto",
-                    callback() {
-                      sendMessage(hubPort, "set-3d-camera", -3);
-                    }
-                  },
-                  {
-                    content: (selectedIndex === -4 ? "\u2714 " : "") + "Blue 1",
-                    callback() {
-                      sendMessage(hubPort, "set-3d-camera", -4);
-                    }
-                  },
-                  {
-                    content: (selectedIndex === -5 ? "\u2714 " : "") + "Blue 2",
-                    callback() {
-                      sendMessage(hubPort, "set-3d-camera", -5);
-                    }
-                  },
-                  {
-                    content: (selectedIndex === -6 ? "\u2714 " : "") + "Blue 3",
-                    callback() {
-                      sendMessage(hubPort, "set-3d-camera", -6);
-                    }
-                  },
-                  {
-                    content: (selectedIndex === -7 ? "\u2714 " : "") + "Red 1",
-                    callback() {
-                      sendMessage(hubPort, "set-3d-camera", -7);
-                    }
-                  },
-                  {
-                    content: (selectedIndex === -8 ? "\u2714 " : "") + "Red 2",
-                    callback() {
-                      sendMessage(hubPort, "set-3d-camera", -8);
-                    }
-                  },
-                  {
-                    content: (selectedIndex === -9 ? "\u2714 " : "") + "Red 3",
-                    callback() {
-                      sendMessage(hubPort, "set-3d-camera", -9);
-                    }
-                  }
-                ]
           },
           {
             content: "Set FOV",

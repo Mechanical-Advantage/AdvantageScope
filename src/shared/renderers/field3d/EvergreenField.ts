@@ -7,7 +7,6 @@
 
 import * as THREE from "three";
 import {
-  ALLIANCE_STATION_WIDTH,
   FRC_STANDARD_FIELD_LENGTH,
   FRC_STANDARD_FIELD_WIDTH,
   FTC_STANDARD_FIELD_LENGTH,
@@ -21,8 +20,7 @@ export default function makeEvergreenField(
   isFTC: boolean
 ): THREE.Object3D {
   let field = new THREE.Group();
-  const blueColor = 0x6379a6;
-  const redColor = 0xa66363;
+  const endWallColor = 0x6e747c; // Neutral (no alliance colors)
 
   // Floor
   let carpet = new THREE.Mesh(
@@ -101,7 +99,7 @@ export default function makeEvergreenField(
         let panel = new THREE.Mesh(
           new THREE.PlaneGeometry(FTC_STANDARD_FIELD_LENGTH, guardrailHeight),
           new THREE.MeshPhongMaterial({
-            color: x < 0 ? redColor : blueColor,
+            color: endWallColor,
             side: THREE.DoubleSide,
             transparent: false
           })
@@ -126,7 +124,7 @@ export default function makeEvergreenField(
       }
     });
   } else {
-    const allianceStationWidth = ALLIANCE_STATION_WIDTH;
+    const allianceStationWidth = Units.convert(69, "inches", "meters");
     const allianceStationHeight = Units.convert(78, "inches", "meters");
     const allianceStationSolidHeight = Units.convert(36.75, "inches", "meters");
     const allianceStationShelfDepth = Units.convert(12.25, "inches", "meters");
@@ -164,7 +162,7 @@ export default function makeEvergreenField(
       [-FRC_STANDARD_FIELD_WIDTH / 2 + fillerWidth / 2, FRC_STANDARD_FIELD_WIDTH / 2 - fillerWidth / 2].forEach((y) => {
         let filler = new THREE.Mesh(
           new THREE.PlaneGeometry(allianceStationHeight, fillerWidth),
-          new THREE.MeshPhongMaterial({ color: x < 0 ? redColor : blueColor, side: THREE.DoubleSide })
+          new THREE.MeshPhongMaterial({ color: endWallColor, side: THREE.DoubleSide })
         );
         field.add(filler);
         filler.rotateY(Math.PI / 2);
@@ -173,7 +171,7 @@ export default function makeEvergreenField(
       {
         let allianceWall = new THREE.Mesh(
           new THREE.PlaneGeometry(allianceStationSolidHeight, allianceStationWidth * 3),
-          new THREE.MeshPhongMaterial({ color: x < 0 ? redColor : blueColor, side: THREE.DoubleSide })
+          new THREE.MeshPhongMaterial({ color: endWallColor, side: THREE.DoubleSide })
         );
         field.add(allianceWall);
         allianceWall.rotateY(Math.PI / 2);
@@ -183,7 +181,7 @@ export default function makeEvergreenField(
         let allianceGlass = new THREE.Mesh(
           new THREE.PlaneGeometry(allianceStationHeight - allianceStationSolidHeight, allianceStationWidth * 3),
           new THREE.MeshPhongMaterial({
-            color: x < 0 ? redColor : blueColor,
+            color: endWallColor,
             side: THREE.DoubleSide,
             opacity: 0.25,
             transparent: true
@@ -200,7 +198,7 @@ export default function makeEvergreenField(
       {
         let allianceShelves = new THREE.Mesh(
           new THREE.PlaneGeometry(allianceStationShelfDepth, allianceStationWidth * 3),
-          new THREE.MeshPhongMaterial({ color: x < 0 ? redColor : blueColor, side: THREE.DoubleSide })
+          new THREE.MeshPhongMaterial({ color: endWallColor, side: THREE.DoubleSide })
         );
         field.add(allianceShelves);
         allianceShelves.position.set(

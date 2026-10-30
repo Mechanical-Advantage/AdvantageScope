@@ -45,7 +45,7 @@ const Field2dController_Config: SourceListConfig = {
           key: "bumpers",
           display: "Bumpers",
           showInTypeName: false,
-          values: [{ key: "", display: "Alliance Color" }, ...NeonColors]
+          values: NeonColors
         }
       ],
       parentKey: "robot",

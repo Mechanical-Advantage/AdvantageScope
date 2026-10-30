@@ -18,9 +18,7 @@ import { getURCLKeys } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
 import {
   AKIT_TIMESTAMP_KEYS,
-  ALLIANCE_KEYS,
   AUTONOMOUS_KEYS,
-  DRIVER_STATION_KEYS,
   ENABLED_KEYS,
   SYSTEM_TIME_KEYS,
   UTILITY_KEYS
@@ -363,15 +361,9 @@ export class HistoricalDataSource {
             requestFields.add(key);
           }
         });
-        [
-          ...ENABLED_KEYS,
-          ...AUTONOMOUS_KEYS,
-          ...UTILITY_KEYS,
-          ...ALLIANCE_KEYS,
-          ...DRIVER_STATION_KEYS,
-          ...SYSTEM_TIME_KEYS,
-          ...AKIT_TIMESTAMP_KEYS
-        ].forEach((key) => requestFields.add(key));
+        [...ENABLED_KEYS, ...AUTONOMOUS_KEYS, ...UTILITY_KEYS, ...SYSTEM_TIME_KEYS, ...AKIT_TIMESTAMP_KEYS].forEach(
+          (key) => requestFields.add(key)
+        );
 
         // Compare to existing fields
         requestFields.forEach((field) => {
