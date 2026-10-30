@@ -15,7 +15,6 @@ export default interface Preferences {
   liveMode: LiveMode;
   liveSubscribeMode: "low-bandwidth" | "logging";
   liveDiscard: number;
-  publishFilter: string;
   rlogPort: number;
   coordinateSystem: "automatic" | CoordinateSystem;
   field3dModeAc: "cinematic" | "standard" | "low-power";
@@ -37,7 +36,6 @@ export const DEFAULT_PREFS: Preferences = {
   liveMode: "nt4",
   liveSubscribeMode: "low-bandwidth",
   liveDiscard: 1200,
-  publishFilter: "",
   rlogPort: 5800,
   coordinateSystem: "automatic",
   field3dModeAc: "standard",
@@ -117,9 +115,6 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   }
   if ("liveDiscard" in newPrefs && typeof newPrefs.liveDiscard === "number") {
     basePrefs.liveDiscard = newPrefs.liveDiscard;
-  }
-  if ("publishFilter" in newPrefs && typeof newPrefs.publishFilter === "string") {
-    basePrefs.publishFilter = newPrefs.publishFilter;
   }
   if ("rlogPort" in newPrefs && typeof newPrefs.rlogPort === "number") {
     basePrefs.rlogPort = newPrefs.rlogPort;

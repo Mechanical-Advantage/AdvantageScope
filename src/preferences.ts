@@ -13,7 +13,6 @@ const ROBOT_ADDRESS = document.getElementById("robotAddress") as HTMLInputElemen
 const REMOTE_PATH = document.getElementById("remotePath") as HTMLInputElement;
 const LIVE_SUBSCRIBE_MODE = document.getElementById("liveSubscribeMode") as HTMLInputElement;
 const LIVE_DISCARD = document.getElementById("liveDiscard") as HTMLInputElement;
-const PUBLISH_FILTER = document.getElementById("publishFilter") as HTMLInputElement;
 const COORDINATE_SYSTEM = document.getElementById("coordinateSystem") as HTMLInputElement;
 const TIMESTAMPS = document.getElementById("timestamps") as HTMLInputElement;
 const FIELD_3D_MODE_AC = document.getElementById("field3dModeAc") as HTMLInputElement;
@@ -61,7 +60,6 @@ window.addEventListener("message", (event) => {
       REMOTE_PATH.value = oldPrefs.remotePath;
       LIVE_SUBSCRIBE_MODE.value = oldPrefs.liveSubscribeMode;
       LIVE_DISCARD.value = oldPrefs.liveDiscard.toString();
-      PUBLISH_FILTER.value = oldPrefs.publishFilter;
       COORDINATE_SYSTEM.value = oldPrefs.coordinateSystem;
       TIMESTAMPS.value = oldPrefs.timestamps;
       FIELD_3D_MODE_AC.value = oldPrefs.field3dModeAc;
@@ -109,7 +107,6 @@ window.addEventListener("message", (event) => {
             liveMode: oldPrefs.liveMode,
             liveSubscribeMode: liveSubscribeMode,
             liveDiscard: Number(LIVE_DISCARD.value),
-            publishFilter: PUBLISH_FILTER.value,
             rlogPort: oldPrefs.rlogPort,
             coordinateSystem: coordinateSystem,
             field3dModeAc: field3dModeAc,

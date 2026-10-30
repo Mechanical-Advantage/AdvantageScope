@@ -25,7 +25,6 @@ import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
 import LiveDataTuner from "./dataSources/LiveDataTuner";
 import FTCDashboardSource from "./dataSources/ftcdashboard/FTCDashboardSource";
-import { NT4Publisher, NT4PublisherStatus } from "./dataSources/nt4/NT4Publisher";
 import NT4Source, { NT4Mode } from "./dataSources/nt4/NT4Source";
 import RLOGServerSource from "./dataSources/rlog/RLOGServerSource";
 
@@ -96,7 +95,6 @@ let historicalSources: {
   progressIncluded: boolean;
 }[] = [];
 let liveSource: LiveDataSource | null = null;
-let publisher: NT4Publisher | null = null;
 let isExporting = false;
 let logFriendlyName: string | null = null;
 let liveActive = false;
@@ -424,7 +422,6 @@ function startLive(sourceType: "robot" | "sim" | "ds") {
   historicalSources.forEach((entry) => entry.source.stop());
   historicalSources = [];
   liveSource?.stop();
-  publisher?.stop();
   liveActive = true;
   setLoading(null);
 
@@ -754,55 +751,6 @@ async function handleMainMessage(message: NamedMessage) {
       } else {
         startLive(message.data);
       }
-      break;
-
-    case "start-publish":
-      if (liveActive) {
-        window.sendMainMessage("error", {
-          title: "Cannot publish",
-          content: "Publishing is not allowed from a live source."
-        });
-      } else if (!("NT" in window.log.getFieldTree())) {
-        window.sendMainMessage("error", {
-          title: "Cannot publish",
-          content: "Please open a log file with NetworkTables data, then try again."
-        });
-      } else {
-        // Start mock progress
-        let mockProgress = 0;
-        let mockProgressStart = new Date().getTime();
-        let mockProgressInterval = setInterval(() => {
-          mockProgress = calcMockProgress((new Date().getTime() - mockProgressStart) / 1000, 1);
-          setLoading(mockProgress);
-        }, 1000 / 60);
-
-        // Load missing fields
-        if (historicalSources.length > 0) {
-          await historicalSources[0].source.loadAllFields(); // Root NT table is always from the first source
-        }
-        clearInterval(mockProgressInterval);
-
-        // Start publisher
-        publisher?.stop();
-        publisher = new NT4Publisher(message.data, (status) => {
-          if (logFriendlyName === null) return;
-          switch (status) {
-            case NT4PublisherStatus.Connecting:
-              setWindowTitle(logFriendlyName, "Searching");
-              break;
-            case NT4PublisherStatus.Active:
-              setWindowTitle(logFriendlyName, "Publishing");
-              break;
-            case NT4PublisherStatus.Stopped:
-              setWindowTitle(logFriendlyName);
-              break;
-          }
-        });
-      }
-      break;
-
-    case "stop-publish":
-      publisher?.stop();
       break;
 
     case "set-playback-options":

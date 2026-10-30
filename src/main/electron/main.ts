@@ -1728,38 +1728,6 @@ function setupMenu() {
             sendMessage(window, "start-export");
           }
         },
-        {
-          label: "Publish NT Data",
-          submenu: [
-            {
-              label: "Connect to Robot",
-              accelerator: "CmdOrCtrl+P",
-              click(_, baseWindow) {
-                const window = baseWindow as BrowserWindow | undefined;
-                if (window === undefined || !hubWindows.includes(window)) return;
-                sendMessage(window, "start-publish", false);
-              }
-            },
-            {
-              label: "Connect to Simulator",
-              accelerator: "CmdOrCtrl+Shift+P",
-              click(_, baseWindow) {
-                const window = baseWindow as BrowserWindow | undefined;
-                if (window === undefined || !hubWindows.includes(window)) return;
-                sendMessage(window, "start-publish", true);
-              }
-            },
-            {
-              label: "Stop Publishing",
-              accelerator: "CmdOrCtrl+Alt+P",
-              click(_, baseWindow) {
-                const window = baseWindow as BrowserWindow | undefined;
-                if (window === undefined || !hubWindows.includes(window)) return;
-                sendMessage(window, "stop-publish");
-              }
-            }
-          ]
-        },
         { type: "separator" },
         {
           label: "Export Layout...",
