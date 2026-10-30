@@ -21,6 +21,7 @@
     "format": "license-check-and-add add -f file-header-config.json && prettier --write .",
     "check-format": "license-check-and-add check -f file-header-config.json && prettier --check .",
     "wasm:compile": "node wasmCompile.mjs",
+    "mock-backend": "node tools/mock-backend/src/main.ts",
     "docs:start": "cd docs && npm run start && cd ..",
     "docs:build": "cd docs && npm run build && cd ..",
     "docs:build-embed": "cd docs && npm run build-embed && cd ..",
