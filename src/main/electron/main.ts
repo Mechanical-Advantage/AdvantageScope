@@ -65,7 +65,6 @@ import {
 } from "./ElectronConstants";
 import StateTracker, { ApplicationState, SatelliteWindowState, WindowState } from "./StateTracker";
 import { VideoProcessor } from "./VideoProcessor";
-import { getAssetDownloadStatus, startAssetDownloadLoop } from "./assetDownloader";
 import { createAssetFolders, getUserAssetsPath, loadAssets } from "./assetLoader";
 
 // Dynamically load lzma-native to handle platforms without prebuilt binaries
@@ -1551,19 +1550,6 @@ function setupMenu() {
             sendAssets();
           }
         },
-        {
-          label: "Asset Download Status...",
-          click() {
-            dialog.showMessageBox({
-              type: "info",
-              title: "About",
-              message: "Asset Download Status",
-              detail: getAssetDownloadStatus(),
-              buttons: ["Close"],
-              icon: WINDOW_ICON
-            });
-          }
-        },
         ...(isMac
           ? ([
               { type: "separator" },
@@ -2895,10 +2881,6 @@ app.whenReady().then(async () => {
 
   // Load assets
   createAssetFolders();
-  startAssetDownloadLoop(async () => {
-    advantageScopeAssets = await loadAssets();
-    sendAssets();
-  });
   setInterval(async () => {
     // Periodically load assets in case they are updated
     advantageScopeAssets = await loadAssets();
