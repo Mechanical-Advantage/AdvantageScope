@@ -27,7 +27,6 @@ import {
 } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
-import net from "net";
 import os from "os";
 import path from "path";
 import { Readable } from "stream";
@@ -37,8 +36,9 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import ExportOptions from "../../shared/ExportOptions";
 import { Field2dCameraMode } from "../../shared/Field2dCameraMode";
 import LineGraphFilter from "../../shared/LineGraphFilter";
+import { LiveSourceInfo } from "../../shared/LiveSourceInfo";
 import NamedMessage from "../../shared/NamedMessage";
-import Preferences, { DEFAULT_PREFS, getLiveModeName, LiveMode, mergePreferences } from "../../shared/Preferences";
+import Preferences, { DEFAULT_PREFS, mergePreferences } from "../../shared/Preferences";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../../shared/TabType";
 import { BUILD_DATE, COPYRIGHT } from "../../shared/buildConstants";
@@ -54,10 +54,6 @@ import {
   HUB_DEFAULT_WIDTH,
   PREFS_FILENAME,
   RECENT_UNITS_FILENAME,
-  RLOG_CONNECT_TIMEOUT_MS,
-  RLOG_DATA_TIMEOUT_MS,
-  RLOG_HEARTBEAT_DATA,
-  RLOG_HEARTBEAT_DELAY_MS,
   SATELLITE_DEFAULT_HEIGHT,
   SATELLITE_DEFAULT_WIDTH,
   TYPE_MEMORY_FILENAME,
@@ -93,10 +89,8 @@ let advantageScopeAssets: AdvantageScopeAssets = {
   loadFailures: []
 };
 
-// Live RLOG variables
-let rlogSockets: { [id: number]: net.Socket } = {};
-let rlogSocketTimeouts: { [id: number]: NodeJS.Timeout } = {};
-let rlogDataArrays: { [id: number]: Uint8Array } = {};
+// Live sources (from LiveSourceRegistry, reported by the hub)
+let liveSources: LiveSourceInfo[] = [];
 
 // WINDOW MESSAGE HANDLING
 
@@ -133,9 +127,11 @@ function sendAllPreferences() {
     });
   });
   if (menuTemplate !== null) {
-    let autoString = "Default: " + getLiveModeName(data.liveMode);
-    findMenuTemplateItem(menuTemplate, "live-robot-default")!.label = autoString;
-    findMenuTemplateItem(menuTemplate, "live-sim-default")!.label = autoString;
+    const selectedLiveSource = getSelectedLiveSourceId(data);
+    liveSources.forEach((source) => {
+      const item = findMenuTemplateItem(menuTemplate!, "live-source-" + source.id);
+      if (item !== undefined) item.checked = source.id === selectedLiveSource;
+    });
     findMenuTemplateItem(menuTemplate, "custom-assets-folder")!.checked = data.userAssetsFolder !== null;
     let menu = Menu.buildFromTemplate(menuTemplate);
     Menu.setApplicationMenu(menu);
@@ -239,6 +235,13 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         mergePreferences(prefs, message.data);
         jsonfile.writeFileSync(PREFS_FILENAME, prefs);
         sendAllPreferences();
+      }
+      break;
+
+    case "set-live-sources":
+      if (JSON.stringify(liveSources) !== JSON.stringify(message.data)) {
+        liveSources = message.data;
+        setupMenu();
       }
       break;
 
@@ -380,72 +383,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           openPath(logPath, (buffer) => (results[0] = buffer));
         }
       }
-      break;
-
-    case "live-rlog-start":
-      rlogSockets[windowId]?.destroy();
-      rlogSockets[windowId] = net.createConnection({
-        host: message.data.address,
-        port: message.data.port
-      });
-
-      rlogSockets[windowId].setTimeout(RLOG_CONNECT_TIMEOUT_MS, () => {
-        sendMessage(window, "live-data", { uuid: message.data.uuid, status: false });
-      });
-
-      let appendArray = (newArray: Uint8Array) => {
-        let fullArray = new Uint8Array(rlogDataArrays[windowId].length + newArray.length);
-        fullArray.set(rlogDataArrays[windowId]);
-        fullArray.set(newArray, rlogDataArrays[windowId].length);
-        rlogDataArrays[windowId] = fullArray;
-      };
-
-      rlogDataArrays[windowId] = new Uint8Array();
-      rlogSockets[windowId].on("data", (data) => {
-        appendArray(data);
-        if (rlogSocketTimeouts[windowId] !== null) clearTimeout(rlogSocketTimeouts[windowId]);
-        rlogSocketTimeouts[windowId] = setTimeout(() => {
-          rlogSockets[windowId]?.destroy();
-        }, RLOG_DATA_TIMEOUT_MS);
-
-        while (true) {
-          let expectedLength;
-          if (rlogDataArrays[windowId].length < 4) {
-            break;
-          } else {
-            expectedLength = new DataView(rlogDataArrays[windowId].buffer).getInt32(0) + 4;
-            if (rlogDataArrays[windowId].length < expectedLength) {
-              break;
-            }
-          }
-
-          let singleArray = rlogDataArrays[windowId].slice(4, expectedLength);
-          rlogDataArrays[windowId] = rlogDataArrays[windowId].slice(expectedLength);
-
-          if (singleArray.length > 0) {
-            let success = sendMessage(window, "live-data", {
-              uuid: message.data.uuid,
-              success: true,
-              raw: new Uint8Array(singleArray)
-            });
-            if (!success) {
-              rlogSockets[windowId]?.destroy();
-            }
-          }
-        }
-      });
-
-      rlogSockets[windowId].on("error", () => {
-        sendMessage(window, "live-data", { uuid: message.data.uuid, success: false });
-      });
-
-      rlogSockets[windowId].on("close", () => {
-        sendMessage(window, "live-data", { uuid: message.data.uuid, success: false });
-      });
-      break;
-
-    case "live-rlog-stop":
-      rlogSockets[windowId]?.destroy();
       break;
 
     case "open-link":
@@ -1182,13 +1119,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
   }
 }
 
-// Send live RLOG heartbeats
-setInterval(() => {
-  Object.values(rlogSockets).forEach((socket) => {
-    socket.write(RLOG_HEARTBEAT_DATA);
-  });
-}, RLOG_HEARTBEAT_DELAY_MS);
-
 /** Shows a popup to create a new tab on a hub window. */
 function newTabPopup(window: BrowserWindow, rect: ButtonRect) {
   if (!hubWindows.includes(window)) return;
@@ -1317,6 +1247,11 @@ function select2DCameraPopup(window: BrowserWindow, position: [number, number], 
 }
 
 // CREATE WINDOWS
+
+/** Returns the ID of the selected live source, falling back to the first registered source. */
+function getSelectedLiveSourceId(prefs: Preferences): string | undefined {
+  return liveSources.find((source) => source.id === prefs.liveMode)?.id ?? liveSources[0]?.id;
+}
 
 /** Finds a menu template item by ID (searching submenus recursively). */
 function findMenuTemplateItem(
@@ -1466,68 +1401,41 @@ function setupMenu() {
           }
         },
         {
-          label: "Connect to Robot",
-          type: "submenu",
-          submenu: [
-            {
-              id: "live-robot-default",
-              label: "Default",
-              accelerator: "CmdOrCtrl+K",
-              click(_, baseWindow) {
-                const window = baseWindow as BrowserWindow | undefined;
-                if (window === undefined || !hubWindows.includes(window)) return;
-                sendMessage(window, "start-live", "robot");
-              }
-            },
-            { type: "separator" },
-            ...(["nt4", "nt4-akit", "nt4-systemcore", "rlog", "ftcdashboard"] as const).map((liveMode: LiveMode) => {
-              let item: Electron.MenuItemConstructorOptions = {
-                label: getLiveModeName(liveMode),
-                click(_, baseWindow) {
-                  const window = baseWindow as BrowserWindow | undefined;
-                  if (window === undefined || !hubWindows.includes(window)) return;
-                  let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-                  prefs.liveMode = liveMode;
-                  jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-                  sendAllPreferences();
-                  sendMessage(window, "start-live", "robot");
-                }
-              };
-              return item;
-            })
-          ]
+          label: "Connect to Live Source",
+          accelerator: "CmdOrCtrl+K",
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
+            if (window === undefined || !hubWindows.includes(window)) return;
+            sendMessage(window, "start-live", "robot");
+          }
         },
         {
-          label: "Connect to Simulator",
+          label: "Connect to Localhost",
+          accelerator: "CmdOrCtrl+Shift+K",
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
+            if (window === undefined || !hubWindows.includes(window)) return;
+            sendMessage(window, "start-live", "sim");
+          }
+        },
+        {
+          label: "Live Source",
           type: "submenu",
-          submenu: [
-            {
-              id: "live-sim-default",
-              label: "Default",
-              accelerator: "CmdOrCtrl+Shift+K",
-              click(_, baseWindow) {
-                const window = baseWindow as BrowserWindow | undefined;
-                if (window === undefined || !hubWindows.includes(window)) return;
-                sendMessage(window, "start-live", "sim");
+          submenu: liveSources.map((source) => {
+            let item: Electron.MenuItemConstructorOptions = {
+              id: "live-source-" + source.id,
+              label: source.name,
+              type: "radio",
+              checked: source.id === getSelectedLiveSourceId(prefs),
+              click() {
+                let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+                prefs.liveMode = source.id;
+                jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+                sendAllPreferences();
               }
-            },
-            { type: "separator" },
-            ...(["nt4", "nt4-akit", "nt4-systemcore", "rlog", "ftcdashboard"] as const).map((liveMode: LiveMode) => {
-              let item: Electron.MenuItemConstructorOptions = {
-                label: getLiveModeName(liveMode),
-                click(_, baseWindow) {
-                  const window = baseWindow as BrowserWindow | undefined;
-                  if (window === undefined || !hubWindows.includes(window)) return;
-                  let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-                  prefs.liveMode = liveMode;
-                  jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-                  sendAllPreferences();
-                  sendMessage(window, "start-live", "sim");
-                }
-              };
-              return item;
-            })
-          ]
+            };
+            return item;
+          })
         },
         {
           label: "Export Data...",
@@ -2035,7 +1943,6 @@ function createHubWindow(state?: WindowState, layoutOverride?: any) {
   window.webContents.on("dom-ready", () => {
     if (!firstLoad) {
       createPorts(); // Create ports on reload
-      rlogSockets[window.id]?.destroy(); // Destroy any existing RLOG sockets
     }
 
     // Launch dev tools

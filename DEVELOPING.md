@@ -67,6 +67,16 @@ npm run build        # installers
 
 The builds are unsigned unless signing credentials are configured.
 
+## Live sources
+
+All live sources are registered once, in `src/hub/dataSources/LiveSourceRegistry.ts`, as `{id, name, defaultAddress, liteCompatible, create()}`.
+
+- The hub creates sources from the registry.
+- The hub sends the serializable list (`set-live-sources`) to the Electron and Lite main processes, which build the File → Live Source menus from it.
+- The `liveMode` preference stores the selected ID. Unknown IDs fall back to the first registered source.
+
+Only NT4 is registered for now.
+
 ## Formatting and licence headers
 
 ```bash

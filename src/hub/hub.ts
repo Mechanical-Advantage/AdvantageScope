@@ -24,9 +24,7 @@ import WorkerManager from "./WorkerManager";
 import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
 import LiveDataTuner from "./dataSources/LiveDataTuner";
-import FTCDashboardSource from "./dataSources/ftcdashboard/FTCDashboardSource";
-import NT4Source, { NT4Mode } from "./dataSources/nt4/NT4Source";
-import RLOGServerSource from "./dataSources/rlog/RLOGServerSource";
+import { getLiveSource, getLiveSourceInfo } from "./dataSources/LiveSourceRegistry";
 
 // Constants
 const STATE_SAVE_PERIOD_MS = 250;
@@ -422,25 +420,8 @@ function startLive(sourceType: "robot" | "sim") {
   setLoading(null);
 
   if (!window.preferences) return;
-  {
-    switch (window.preferences.liveMode) {
-      case "nt4":
-        liveSource = new NT4Source(NT4Mode.Default);
-        break;
-      case "nt4-akit":
-        liveSource = new NT4Source(NT4Mode.AdvantageKit);
-        break;
-      case "nt4-systemcore":
-        liveSource = new NT4Source(NT4Mode.Systemcore);
-        break;
-      case "rlog":
-        liveSource = new RLOGServerSource();
-        break;
-      case "ftcdashboard":
-        liveSource = new FTCDashboardSource();
-        break;
-    }
-  }
+  const sourceDefinition = getLiveSource(window.preferences.liveMode, IS_LITE);
+  liveSource = sourceDefinition.create();
 
   let address = "";
   if (IS_LITE) {
@@ -448,9 +429,8 @@ function startLive(sourceType: "robot" | "sim") {
   } else if (sourceType === "sim") {
     address = "127.0.0.1";
   } else {
-    if (window.preferences) {
-      address = window.preferences.robotAddress;
-    }
+    address =
+      window.preferences.robotAddress !== "" ? window.preferences.robotAddress : sourceDefinition.defaultAddress;
   }
 
   liveSource.connect(
@@ -523,6 +503,9 @@ window.addEventListener("message", (event) => {
       let message: NamedMessage = event.data;
       handleMainMessage(message);
     };
+
+    // Share the registered live sources for the main process menus
+    window.sendMainMessage("set-live-sources", getLiveSourceInfo(IS_LITE));
   }
 });
 

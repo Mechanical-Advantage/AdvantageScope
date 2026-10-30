@@ -14,14 +14,9 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import { Field2dCameraMode } from "../../shared/Field2dCameraMode";
 import { HubState } from "../../shared/HubState";
 import LineGraphFilter from "../../shared/LineGraphFilter";
+import { LiveSourceInfo } from "../../shared/LiveSourceInfo";
 import NamedMessage from "../../shared/NamedMessage";
-import {
-  DEFAULT_PREFS,
-  getLiveModeName,
-  LITE_ALLOWED_LIVE_MODES,
-  LiveMode,
-  mergePreferences
-} from "../../shared/Preferences";
+import { DEFAULT_PREFS, mergePreferences } from "../../shared/Preferences";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
 import {
   getAllTabTypes,
@@ -45,6 +40,7 @@ let MENU_ANCHOR: HTMLElement;
 let hubPort: MessagePort | null = null;
 let popupMenu = new TinyPopupMenu();
 let assetsPromise: Promise<AdvantageScopeAssets>;
+let liveSources: LiveSourceInfo[] = []; // From LiveSourceRegistry, reported by the hub
 let downloadInterval: number | null = null;
 let popupRequiresForceClose = false;
 
@@ -322,6 +318,10 @@ async function handleHubMessage(message: NamedMessage) {
       HUB_FRAME.style.opacity = "100%";
       break;
 
+    case "set-live-sources":
+      liveSources = message.data;
+      break;
+
     case "open-files-request":
       sendMessage(hubPort, "open-files", { files: message.data.files, merge: false });
       break;
@@ -477,12 +477,13 @@ async function handleHubMessage(message: NamedMessage) {
                 }
               },
               {
-                content: "Set Live Mode",
-                items: LITE_ALLOWED_LIVE_MODES.map((liveMode: LiveMode) => {
+                content: "Live Source",
+                items: liveSources.map((source) => {
+                  const selectedId = liveSources.find((other) => other.id === prefs.liveMode)?.id ?? liveSources[0]?.id;
                   return {
-                    content: (prefs.liveMode === liveMode ? "\u2714 " : "") + getLiveModeName(liveMode),
+                    content: (selectedId === source.id ? "\u2714 " : "") + source.name,
                     callback() {
-                      prefs.liveMode = liveMode;
+                      prefs.liveMode = source.id;
                       localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
                       sendMessage(hubPort, "set-preferences", prefs);
                       sendMessage(hubPort, "start-live", "robot");

@@ -10,10 +10,9 @@ export default interface Preferences {
   theme: "light" | "dark" | "system";
   robotAddress: string;
   remotePath: string;
-  liveMode: LiveMode;
+  liveMode: string; // Live source ID (see LiveSourceRegistry), empty for the default source
   liveSubscribeMode: "low-bandwidth" | "logging";
   liveDiscard: number;
-  rlogPort: number;
   field3dModeAc: "cinematic" | "standard" | "low-power";
   field3dModeBattery: "" | "cinematic" | "standard" | "low-power";
   field3dAntialiasing: boolean;
@@ -26,12 +25,11 @@ export default interface Preferences {
 
 export const DEFAULT_PREFS: Preferences = {
   theme: "system",
-  robotAddress: "robot.local",
+  robotAddress: "",
   remotePath: "/U/logs",
-  liveMode: "nt4",
+  liveMode: "",
   liveSubscribeMode: "low-bandwidth",
   liveDiscard: 1200,
-  rlogPort: 5800,
   field3dModeAc: "standard",
   field3dModeBattery: "",
   field3dAntialiasing: true,
@@ -41,26 +39,6 @@ export const DEFAULT_PREFS: Preferences = {
   prefersFTC: false,
   timestamps: "start-zero"
 };
-
-export type LiveMode = "nt4" | "nt4-akit" | "nt4-systemcore" | "rlog" | "ftcdashboard";
-
-export function getLiveModeName(mode: LiveMode): string {
-  switch (mode) {
-    case "nt4":
-      return "NetworkTables";
-    case "nt4-akit":
-      return "NetworkTables (AdvantageKit)";
-    case "nt4-systemcore":
-      return "Systemcore Diagnostics";
-    case "rlog":
-      return "RLOG Server";
-    case "ftcdashboard":
-      return "FTC Dashboard";
-  }
-}
-
-// RLOG not possible because it uses raw TCP
-export const LITE_ALLOWED_LIVE_MODES: LiveMode[] = ["nt4", "nt4-akit", "nt4-systemcore", "ftcdashboard"];
 
 export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   if ("theme" in newPrefs && (newPrefs.theme === "light" || newPrefs.theme === "dark" || newPrefs.theme === "system")) {
@@ -84,14 +62,8 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   if ("remotePath" in newPrefs && typeof newPrefs.remotePath === "string") {
     basePrefs.remotePath = newPrefs.remotePath;
   }
-  if (
-    "liveMode" in newPrefs &&
-    (newPrefs.liveMode === "nt4" ||
-      newPrefs.liveMode === "nt4-akit" ||
-      newPrefs.liveMode === "nt4-systemcore" ||
-      newPrefs.liveMode === "rlog" ||
-      newPrefs.liveMode === "ftcdashboard")
-  ) {
+  if ("liveMode" in newPrefs && typeof newPrefs.liveMode === "string") {
+    // Unknown IDs fall back to the default source (see LiveSourceRegistry)
     basePrefs.liveMode = newPrefs.liveMode;
   }
   if (
@@ -102,9 +74,6 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   }
   if ("liveDiscard" in newPrefs && typeof newPrefs.liveDiscard === "number") {
     basePrefs.liveDiscard = newPrefs.liveDiscard;
-  }
-  if ("rlogPort" in newPrefs && typeof newPrefs.rlogPort === "number") {
-    basePrefs.rlogPort = newPrefs.rlogPort;
   }
   if (
     "threeDimensionModeAc" in newPrefs &&

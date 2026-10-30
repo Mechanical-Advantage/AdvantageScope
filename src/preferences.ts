@@ -97,7 +97,6 @@ window.addEventListener("message", (event) => {
             liveMode: oldPrefs.liveMode,
             liveSubscribeMode: liveSubscribeMode,
             liveDiscard: Number(LIVE_DISCARD.value),
-            rlogPort: oldPrefs.rlogPort,
             field3dModeAc: field3dModeAc,
             field3dModeBattery: field3dModeBattery,
             field3dAntialiasing: FIELD_3D_ANTIALIASING.value === "true",
