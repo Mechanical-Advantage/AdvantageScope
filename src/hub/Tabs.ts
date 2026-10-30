@@ -7,19 +7,16 @@
 
 import { TabsState } from "../shared/HubState";
 import LineGraphFilter from "../shared/LineGraphFilter";
-import TabType, { getDefaultTabTitle, getTabIcon } from "../shared/TabType";
+import TabType, { getAllTabTypes, getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import { getAutonomousKey, getEnabledKey, getUtilityKey } from "../shared/log/RobotState";
 import ConsoleRenderer from "../shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
 import Field2dRenderer from "../shared/renderers/Field2dRenderer";
 import Field3dRenderer from "../shared/renderers/Field3dRenderer";
-import JoysticksRenderer from "../shared/renderers/JoysticksRenderer";
 import LineGraphRenderer from "../shared/renderers/LineGraphRenderer";
-import MechanismRenderer from "../shared/renderers/MechanismRenderer";
 import MetadataRenderer from "../shared/renderers/MetadataRenderer";
 import PointsRenderer from "../shared/renderers/PointsRenderer";
 import StatisticsRenderer from "../shared/renderers/StatisticsRenderer";
-import SwerveRenderer from "../shared/renderers/SwerveRenderer";
 import TabRenderer, { NoopRenderer } from "../shared/renderers/TabRenderer";
 import TableRenderer from "../shared/renderers/TableRenderer";
 import VideoRenderer from "../shared/renderers/VideoRenderer";
@@ -30,13 +27,10 @@ import Timeline from "./Timeline";
 import ConsoleController from "./controllers/ConsoleController";
 import Field2dController from "./controllers/Field2dController";
 import Field3dController from "./controllers/Field3dController";
-import JoysticksController from "./controllers/JoysticksController";
 import LineGraphController from "./controllers/LineGraphController";
-import MechanismController from "./controllers/MechanismController";
 import MetadataController from "./controllers/MetadataController";
 import PointsController from "./controllers/PointsController";
 import StatisticsController from "./controllers/StatisticsController";
-import SwerveController from "./controllers/SwerveController";
 import TabController, { NoopController } from "./controllers/TabController";
 import TableController from "./controllers/TableController";
 import VideoController from "./controllers/VideoController";
@@ -90,9 +84,6 @@ export default class Tabs {
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Field2d, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Field3d, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Video, 85);
-    this.FIXED_CONTROL_HEIGHTS.set(TabType.Joysticks, 85);
-    this.FIXED_CONTROL_HEIGHTS.set(TabType.Swerve, undefined);
-    this.FIXED_CONTROL_HEIGHTS.set(TabType.Mechanism, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Points, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Metadata, 0);
 
@@ -407,18 +398,21 @@ export default class Tabs {
     });
     this.tabList = [];
     this.selectedTab = 0;
-    state.tabs.forEach((tabState, index) => {
-      this.addTab(tabState.type);
-      if (tabState.title) this.renameTab(index, tabState.title);
-      this.tabList[index].controller.UUID = tabState.controllerUUID;
-      this.tabList[index].controller.restoreState(tabState.controller);
-      this.tabList[index].renderer.restoreState(tabState.renderer);
+    const supportedTypes = getAllTabTypes();
+    state.tabs
+      .filter((tabState) => supportedTypes.includes(tabState.type)) // Skip tabs that have been removed
+      .forEach((tabState, index) => {
+        this.addTab(tabState.type);
+        if (tabState.title) this.renameTab(index, tabState.title);
+        this.tabList[index].controller.UUID = tabState.controllerUUID;
+        this.tabList[index].controller.restoreState(tabState.controller);
+        this.tabList[index].renderer.restoreState(tabState.renderer);
 
-      let tabConfig = this.FIXED_CONTROL_HEIGHTS.get(tabState.type);
-      if (tabState.controlsHeight === 0 || tabConfig === undefined) {
-        this.tabList[index].controlsHeight = tabState.controlsHeight;
-      }
-    });
+        let tabConfig = this.FIXED_CONTROL_HEIGHTS.get(tabState.type);
+        if (tabState.controlsHeight === 0 || tabConfig === undefined) {
+          this.tabList[index].controlsHeight = tabState.controlsHeight;
+        }
+      });
     this.selectedTab = state.selected >= this.tabList.length ? this.tabList.length - 1 : state.selected;
     this.updateElements();
     this.updateControlsHeight();
@@ -523,18 +517,6 @@ export default class Tabs {
       case TabType.Video:
         controller = new VideoController(controlsElement);
         renderer = new VideoRenderer(rendererElement);
-        break;
-      case TabType.Joysticks:
-        controller = new JoysticksController(controlsElement);
-        renderer = new JoysticksRenderer(rendererElement);
-        break;
-      case TabType.Swerve:
-        controller = new SwerveController(controlsElement);
-        renderer = new SwerveRenderer(rendererElement);
-        break;
-      case TabType.Mechanism:
-        controller = new MechanismController(controlsElement);
-        renderer = new MechanismRenderer(rendererElement);
         break;
       case TabType.Points:
         controller = new PointsController(controlsElement);

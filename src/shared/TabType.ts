@@ -14,11 +14,9 @@ enum TabType {
   Console,
   Statistics,
   Video,
-  Joysticks,
-  Swerve,
-  Mechanism,
-  Points,
-  Metadata
+  // 8-10 were Joysticks, Swerve and Mechanism (removed); values kept stable for saved layouts
+  Points = 11,
+  Metadata = 12
 }
 
 export default TabType;
@@ -35,9 +33,6 @@ export const LITE_COMPATIBLE_TABS = [
   TabType.Table,
   TabType.Console,
   TabType.Statistics,
-  TabType.Joysticks,
-  TabType.Swerve,
-  TabType.Mechanism,
   TabType.Points,
   TabType.Metadata
 ];
@@ -60,12 +55,6 @@ export function getDefaultTabTitle(type: TabType): string {
       return "Statistics";
     case TabType.Video:
       return "Video";
-    case TabType.Joysticks:
-      return "Joysticks";
-    case TabType.Swerve:
-      return "Swerve";
-    case TabType.Mechanism:
-      return "Mechanism";
     case TabType.Points:
       return "Points";
     case TabType.Metadata:
@@ -93,12 +82,6 @@ export function getTabIcon(type: TabType): string {
       return "📊";
     case TabType.Video:
       return "🎬";
-    case TabType.Joysticks:
-      return "🎮";
-    case TabType.Swerve:
-      return "🦀";
-    case TabType.Mechanism:
-      return "⚙️";
     case TabType.Points:
       return "📍";
     case TabType.Metadata:
@@ -128,12 +111,6 @@ export function getTabAccelerator(type: TabType): string {
           return "S";
         case TabType.Video:
           return "V";
-        case TabType.Joysticks:
-          return "J";
-        case TabType.Swerve:
-          return "D";
-        case TabType.Mechanism:
-          return "M";
         case TabType.Points:
           return "P";
         case TabType.Metadata:

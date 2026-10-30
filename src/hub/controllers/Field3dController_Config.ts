@@ -7,7 +7,7 @@
 
 import { NeonColors, NeonColors_RedStart } from "../../shared/Colors";
 import { SourceListConfig } from "../../shared/SourceListConfig";
-import { SwerveArrangementValues } from "./SwerveController_Config";
+import { SwerveArrangementValues } from "./Field2dController_Config";
 
 const Field3dController_Config: SourceListConfig = {
   title: "Poses",

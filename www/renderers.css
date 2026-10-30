@@ -809,68 +809,6 @@ div.video-container img {
   object-fit: contain;
 }
 
-/* Joysticks */
-
-canvas.joysticks-canvas {
-  position: absolute;
-  left: 0%;
-  top: 0%;
-  width: 100%;
-  height: 100%;
-}
-
-/* Swerve */
-
-div.swerve-canvas-container {
-  position: absolute;
-  bottom: 0%;
-  height: calc(100% + 10px);
-  left: 0px;
-  width: 100%;
-}
-
-body.satellite div.swerve-canvas-container {
-  height: 100%;
-}
-
-canvas.swerve-canvas {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-
-  background-color: #f4f4f4;
-  border: 1px solid #555;
-}
-
-@media (prefers-color-scheme: dark) {
-  canvas.swerve-canvas {
-    background-color: #292929;
-    border: 1px solid #999;
-  }
-}
-
-/* Mechanism */
-
-div.mechanism-svg-container {
-  position: absolute;
-  left: 0%;
-  bottom: 0%;
-  width: 100%;
-  height: calc(100% + 10px);
-}
-
-body.satellite div.mechanism-svg-container {
-  height: 100%;
-}
-
-svg.mechanism-svg {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
 /* Points */
 
 div.points-background-container {

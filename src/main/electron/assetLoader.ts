@@ -10,11 +10,11 @@ import jsonfile from "jsonfile";
 import path from "path";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import Preferences from "../../shared/Preferences";
-import { filterAndSortAssets, parseField2d, parseField3d, parseJoystick, parseRobot } from "../assetUtil";
+import { filterAndSortAssets, parseField2d, parseField3d, parseRobot } from "../assetUtil";
 import { BUNDLED_ASSETS, DEFAULT_USER_ASSETS, PREFS_FILENAME } from "./ElectronConstants";
 
 const USER_ASSETS_README =
-  'This folder contains extra assets for the 2D field, 3D field, and joystick views. For more details, see the "Custom Fields/Robots/Joysticks" page in the mur-voir documentation (available through the documentation tab in the app or the URL below).\n\nhttps://docs.advantagescope.org/more-features/custom-assets';
+  'This folder contains extra assets for the 2D and 3D field views. For more details, see the "Custom Fields/Robots/Joysticks" page in the mur-voir documentation (available through the documentation tab in the app or the URL below).\n\nhttps://docs.advantagescope.org/more-features/custom-assets';
 
 /** Returns the path to the user assets folder. */
 export function getUserAssetsPath() {
@@ -40,7 +40,6 @@ export function loadAssets(): AdvantageScopeAssets {
     field2ds: [],
     field3ds: [],
     robots: [],
-    joysticks: [],
     loadFailures: []
   };
 
@@ -55,7 +54,6 @@ export function loadAssets(): AdvantageScopeAssets {
         let isField2d = object.name.startsWith("Field2d_");
         let isField3d = object.name.startsWith("Field3d_");
         let isRobot = object.name.startsWith("Robot_");
-        let isJoystick = object.name.startsWith("Joystick_");
 
         let configPath = path.join(parentFolder, object.name, "config.json");
         if (!fs.existsSync(configPath)) return;
@@ -111,15 +109,6 @@ export function loadAssets(): AdvantageScopeAssets {
             )
           ) {
             assets.robots.push(config);
-            assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
-          }
-        } else if (isJoystick) {
-          // ***** JOYSTICK *****
-          let config = parseJoystick(configRaw);
-          if (config === "invalid") return;
-          config.path = encodePath(path.join(parentFolder, object.name, "image.png"));
-          if (fs.existsSync(decodeURIComponent(config.path))) {
-            assets.joysticks.push(config);
             assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
           }
         }

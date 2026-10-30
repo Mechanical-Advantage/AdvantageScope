@@ -14,13 +14,10 @@ import ConsoleRenderer from "./shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "./shared/renderers/DocumentationRenderer";
 import Field2dRenderer from "./shared/renderers/Field2dRenderer";
 import Field3dRenderer from "./shared/renderers/Field3dRenderer";
-import JoysticksRenderer from "./shared/renderers/JoysticksRenderer";
 import LineGraphRenderer from "./shared/renderers/LineGraphRenderer";
-import MechanismRenderer from "./shared/renderers/MechanismRenderer";
 import MetadataRenderer from "./shared/renderers/MetadataRenderer";
 import PointsRenderer from "./shared/renderers/PointsRenderer";
 import StatisticsRenderer from "./shared/renderers/StatisticsRenderer";
-import SwerveRenderer from "./shared/renderers/SwerveRenderer";
 import TabRenderer from "./shared/renderers/TabRenderer";
 import TableRenderer from "./shared/renderers/TableRenderer";
 import VideoRenderer from "./shared/renderers/VideoRenderer";
@@ -86,15 +83,6 @@ function updateVisualizer() {
       break;
     case TabType.Video:
       renderer = new VideoRenderer(root);
-      break;
-    case TabType.Joysticks:
-      renderer = new JoysticksRenderer(root);
-      break;
-    case TabType.Swerve:
-      renderer = new SwerveRenderer(root);
-      break;
-    case TabType.Mechanism:
-      renderer = new MechanismRenderer(root);
       break;
     case TabType.Points:
       renderer = new PointsRenderer(root);

@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
-import { filterAndSortAssets, parseField2d, parseField3d, parseJoystick, parseRobot } from "../assetUtil";
+import { filterAndSortAssets, parseField2d, parseField3d, parseRobot } from "../assetUtil";
 
 /** Loads all current assets. */
 export async function loadAssets(): Promise<AdvantageScopeAssets> {
@@ -14,7 +14,6 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
     field2ds: [],
     field3ds: [],
     robots: [],
-    joysticks: [],
     loadFailures: []
   };
 
@@ -46,7 +45,6 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
     let isField2d = name.startsWith("Field2d_");
     let isField3d = name.startsWith("Field3d_");
     let isRobot = name.startsWith("Robot_");
-    let isJoystick = name.startsWith("Joystick_");
 
     if (isField2d) {
       // ***** 2D FIELD *****
@@ -89,15 +87,6 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
         config.components.every((_, index) => `${name}/model_${index}.glb` in assetIndex)
       ) {
         assets.robots.push(config);
-        assets.loadFailures.splice(assets.loadFailures.indexOf(name), 1);
-      }
-    } else if (isJoystick) {
-      // ***** JOYSTICK *****
-      let config = parseJoystick(configRaw);
-      if (config === "invalid") continue;
-      config.path = currentPath + `assets/${encodeURIComponent(name)}/image.png`;
-      if (`${name}/image.png` in assetIndex) {
-        assets.joysticks.push(config);
         assets.loadFailures.splice(assets.loadFailures.indexOf(name), 1);
       }
     }

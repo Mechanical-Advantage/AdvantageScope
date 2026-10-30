@@ -33,7 +33,6 @@ export interface AdvantageScopeAssets {
   field2ds: Config2d[];
   field3ds: Config3dField[];
   robots: Config3dRobot[];
-  joysticks: ConfigJoystick[];
   loadFailures: string[];
 }
 
@@ -117,67 +116,6 @@ export interface Config3dRobot_Component {
 export interface Config3d_Rotation {
   axis: "x" | "y" | "z";
   degrees: number;
-}
-
-export interface ConfigJoystick {
-  name: string;
-  path: string;
-
-  components: (ConfigJoystick_Button | ConfigJoystick_Joystick | ConfigJoystick_Axis | ConfigJoystick_Touchpad)[];
-}
-
-export interface ConfigJoystick_Button {
-  type: "button";
-  isYellow: boolean;
-  isEllipse: boolean;
-  centerPx: [number, number]; // X, Y
-  sizePx: [number, number]; // width, height
-
-  sdlSourceIndex?: number; // button or POV index
-  sdlSourcePov?: "up" | "right" | "down" | "left"; // If specified, read as POV
-
-  niSourceIndex?: number; // button or POV index
-  niSourcePov?: "up" | "right" | "down" | "left"; // If specified, read as POV
-}
-
-export interface ConfigJoystick_Joystick {
-  type: "joystick";
-  isYellow: boolean;
-  centerPx: [number, number]; // X, Y
-  radiusPx: number;
-
-  sdlXSourceIndex?: number;
-  sdlXSourceInverted?: boolean; // Not inverted: right = positive
-  sdlYSourceIndex?: number;
-  sdlYSourceInverted?: boolean; // Not inverted: up = positive
-  sdlButtonSourceIndex?: number;
-
-  niXSourceIndex?: number;
-  niXSourceInverted?: boolean; // Not inverted: right = positive
-  niYSourceIndex?: number;
-  niYSourceInverted?: boolean; // Not inverted: up = positive
-  niButtonSourceIndex?: number;
-}
-
-export interface ConfigJoystick_Axis {
-  type: "axis";
-  isYellow: boolean;
-  centerPx: [number, number]; // X, Y
-  sizePx: [number, number]; // width, height
-
-  sdlSourceIndex?: number;
-  sdlSourceRange?: [number, number]; // Min greater than max to invert
-
-  niSourceIndex?: number;
-  niSourceRange?: [number, number]; // Min greater than max to invert
-}
-
-export interface ConfigJoystick_Touchpad {
-  type: "touchpad";
-  isYellow: boolean;
-  centerPx: [number, number]; // X, Y
-  sizePx: [number, number]; // width, height
-  sdlSourceIndex: number;
 }
 
 export const BuiltIn3dFields: Config3dField[] = [

@@ -90,7 +90,6 @@ let advantageScopeAssets: AdvantageScopeAssets = {
   field2ds: [],
   field3ds: [],
   robots: [],
-  joysticks: [],
   loadFailures: []
 };
 
