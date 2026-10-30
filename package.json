@@ -13,6 +13,7 @@
   "scripts": {
     "start": "electron bundles/main.js",
     "compile": "rolldown -c",
+    "typecheck": "tsc --noEmit --skipLibCheck -p .",
     "build": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build",
     "build-linux": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build -c.electronVersion=37.10.3",
     "fast-build": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build --dir",
@@ -26,7 +27,8 @@
     "docs:build-embed": "cd docs && npm run build-embed && cd ..",
     "docs:clear": "cd docs && npm run clear && cd ..",
     "docs:serve": "cd docs && npm run serve && cd ..",
-    "postinstall": "cd docs && npm install && cd .. && node getLicenses.mjs && node tesseractLangDownload.mjs && node bundleLiteAssets.mjs && npm run download-owlet"
+    "postinstall": "node installElectron.mjs && node getLicenses.mjs && node bundleLiteAssets.mjs",
+    "install-extras": "cd docs && npm install && cd .. && node tesseractLangDownload.mjs && npm run download-owlet"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.26.0",
@@ -234,5 +236,14 @@
       "target": "nsis",
       "icon": "icons/app/app-icon.ico"
     }
+  },
+  "allowScripts": {
+    "electron": true,
+    "lzma-native": true,
+    "protobufjs": true,
+    "electron-winstaller": false,
+    "ssh2": false,
+    "tesseract.js": false,
+    "github:jwbonner/youtube-dl-exec": false
   }
 }

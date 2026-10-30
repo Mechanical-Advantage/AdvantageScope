@@ -17,7 +17,9 @@ try {
       await new Promise((resolve, reject) => {
         exec("emcc --version", (error, stdout) => {
           if (error !== null) {
-            reject("Failed to invoke emcc. Is Emscripten installed?");
+            // Emscripten is optional: the WPILOG worker falls back to a pure-JS indexer
+            console.warn("Emscripten (emcc) not found, skipping WASM indexer. The pure-JS indexer will be used.");
+            process.exit(0);
           }
           if (!stdout.includes(EMSCRIPTEN_VERSION)) {
             reject(
