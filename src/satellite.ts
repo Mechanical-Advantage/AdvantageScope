@@ -147,7 +147,7 @@ window.addEventListener("message", (event) => {
           let newTitle = message.data.title;
           if (newTitle !== title) {
             titleElement.innerHTML =
-              (type !== null ? getTabIcon(type) + " " : "") + htmlEncode(newTitle) + " &mdash; AdvantageScope";
+              (type !== null ? getTabIcon(type) + " " : "") + htmlEncode(newTitle) + " &mdash; mur-voir";
             title = newTitle;
           }
 

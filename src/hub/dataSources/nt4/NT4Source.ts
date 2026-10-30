@@ -230,7 +230,7 @@ export default class NT4Source extends LiveDataSource {
       this.client = new NT4_Client(
         address,
         ports,
-        IS_LITE ? "AdvantageScopeLite" : "AdvantageScope",
+        IS_LITE ? "mur-voir-lite" : "mur-voir",
         (topic: NT4_Topic) => {
           // Announce
           if (!this.log) return;

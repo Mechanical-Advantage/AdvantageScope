@@ -1,5 +1,5 @@
-Copyright (c) 2021-2026 Littleton Robotics
-http://github.com/Mechanical-Advantage
+Copyright (c) ##(2021-2026 Littleton Robotics|2026 Melbourne University Motorsport)##
+##(http://github.com/Mechanical-Advantage|https://github.com/Melbourne-University-Motorsports/mur-voir)##
 
 Use of this source code is governed by a BSD
 license that can be found in the LICENSE file

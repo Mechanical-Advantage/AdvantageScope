@@ -1,12 +1,11 @@
 {
-  "name": "advantagescope",
-  "productName": "AdvantageScope",
+  "name": "mur-voir",
+  "productName": "mur-voir",
   "version": "27.0.0-alpha-6",
-  "description": "Robot telemetry application",
+  "description": "Telemetry dashboard for Melbourne Uni Motorsport (based on AdvantageScope)",
   "author": {
-    "name": "Littleton Robotics",
-    "email": "software@littletonrobotics.org",
-    "url": "https://littletonrobotics.org"
+    "name": "Melbourne University Motorsport",
+    "url": "https://github.com/Melbourne-University-Motorsports/mur-voir"
   },
   "license": "BSD-3-Clause",
   "main": "bundles/main.js",
@@ -19,7 +18,7 @@
     "fast-build": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build --dir",
     "watch": "rolldown -c -w",
     "download-owlet": "rolldown -c --configRunOwletDownload && node runOwletDownload.js",
-    "format": "license-check-and-add add -f file-header-config.json && prettier --write .",
+    "format": "license-check-and-add add -f file-header-config.json -r \"2026 Melbourne University Motorsport\" \"https://github.com/Melbourne-University-Motorsports/mur-voir\" && prettier --write .",
     "check-format": "license-check-and-add check -f file-header-config.json && prettier --check .",
     "wasm:compile": "node wasmCompile.mjs",
     "docs:start": "cd docs && npm run start && cd ..",
@@ -97,8 +96,8 @@
     ]
   },
   "build": {
-    "appId": "org.littletonrobotics.advantagescope",
-    "copyright": "Copyright © 2021-2026 Littleton Robotics",
+    "appId": "io.github.melbourne-university-motorsports.mur-voir",
+    "copyright": "Copyright © 2026 Melbourne University Motorsport. Based on AdvantageScope, © 2021-2026 Littleton Robotics.",
     "npmRebuild": false,
     "publish": [],
     "electronFuses": {
@@ -196,24 +195,14 @@
     ],
     "mac": {
       "target": "dmg",
-      "icon": "icons/app/app-icon.icon",
+      "icon": "icons/app/app-icon.icns",
       "entitlements": "entitlements.mac.plist",
       "entitlementsInherit": "entitlements.mac.plist",
       "extendInfo": {
         "CFBundleLocalizations": [
           "en"
         ],
-        "NSLocalNetworkUsageDescription": "AdvantageScope uses the local network to communicate with robots.",
-        "NSUpdateSecurityPolicy": {
-          "AllowPackages": [
-            "58SET3NSX7"
-          ],
-          "AllowProcesses": {
-            "58SET3NSX7": [
-              "WPILibInstaller"
-            ]
-          }
-        }
+        "NSLocalNetworkUsageDescription": "mur-voir uses the local network to receive live telemetry."
       }
     },
     "linux": {

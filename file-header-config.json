@@ -2,6 +2,8 @@
   "ignore": [
     "**/!(*.js|*.mjs|*.ts|*.tsx|*.swift|*.html|*.css|*.c|*.h|*.metal|*.py)",
     "bundles",
+    "lite/static/bundles",
+    "lite/ipk/overlay/**/bundles",
     "docs/build",
     "docs/.docusaurus",
     "runOwletDownload.js",
@@ -10,6 +12,7 @@
     "src/hub/dataSources/ftcdashboard/configTypes.ts"
   ],
   "license": "file-header.txt",
+  "regexIdentifier": "##",
   "licenseFormats": {
     "js|ts|mjs|tsx|swift|c|h|metal": {
       "append": "",

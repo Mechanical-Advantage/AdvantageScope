@@ -419,7 +419,7 @@ async function handleHubMessage(message: NamedMessage) {
         if (extension === "hoot" || extension === "revlog") {
           sendMessage(hubPort, "historical-data", {
             files: [null],
-            error: "Unsupported file format in AdvantageScope Lite.",
+            error: "Unsupported file format in mur-voir Lite.",
             uuid: uuid
           });
           break;
@@ -454,7 +454,7 @@ async function handleHubMessage(message: NamedMessage) {
         if (extension === "hoot" || extension === "revlog") {
           sendMessage(hubPort, "historical-data", {
             files: [null],
-            error: "Unsupported file format in AdvantageScope Lite.",
+            error: "Unsupported file format in mur-voir Lite.",
             uuid: uuid
           });
         } else if (extension === "wpilogxz") {
@@ -494,7 +494,7 @@ async function handleHubMessage(message: NamedMessage) {
             // App menu
             menuItems = [
               {
-                content: "About AdvantageScope Lite",
+                content: "About mur-voir Lite",
                 callback() {
                   let detailLines: string[] = [];
                   detailLines.push("Version: " + LITE_VERSION);
@@ -504,7 +504,7 @@ async function handleHubMessage(message: NamedMessage) {
                   detailLines.push("Build Date: " + BUILD_DATE);
                   detailLines.push("User Agent: " + navigator.userAgent);
                   let detail = detailLines.join("\n");
-                  window.alert("======= AdvantageScope Lite =======\n" + COPYRIGHT + "\n\n" + detail);
+                  window.alert("======= mur-voir Lite =======\n" + COPYRIGHT + "\n\n" + detail);
                 }
               },
               ...(DISTRIBUTION === Distribution.LiteDS
@@ -671,12 +671,6 @@ async function handleHubMessage(message: NamedMessage) {
                 }
               },
               {
-                content: "Contact Us",
-                callback() {
-                  window.open("mailto:software@team6328.org");
-                }
-              },
-              {
                 content: "GitHub Repository",
                 callback() {
                   window.open("https://github.com/" + GITHUB_REPOSITORY, "_blank");
@@ -700,17 +694,11 @@ async function handleHubMessage(message: NamedMessage) {
                     }
                   ]
                 : []) as (MenuItem | Submenu | "-")[]),
-              {
-                content: "WPILib Documentation",
-                callback() {
-                  window.open("https://docs.wpilib.org", "_blank");
-                }
-              },
               ...((DISTRIBUTION === Distribution.LiteDS ? ["-"] : []) as (MenuItem | Submenu | "-")[]),
               {
-                content: "Littleton Robotics",
+                content: "Based on AdvantageScope",
                 callback() {
-                  window.open("https://littletonrobotics.org", "_blank");
+                  window.open("https://github.com/Mechanical-Advantage/AdvantageScope", "_blank");
                 }
               }
             ];
@@ -1399,7 +1387,7 @@ function processKeydown(event: KeyboardEvent): boolean {
 window.addEventListener("load", () => {
   // Set tab title
   if (DISTRIBUTION === Distribution.LiteDS) {
-    document.title = "AdvantageScope Lite (DS)";
+    document.title = "mur-voir Lite (DS)";
   }
 
   // Load assets
@@ -1483,7 +1471,7 @@ window.addEventListener("load", () => {
       if (
         DISTRIBUTION != Distribution.LiteDS &&
         confirm(
-          `The AdvantageScope Lite ${
+          `The mur-voir Lite ${
             isAlpha() ? "alpha" : "beta"
           } is complete. Please follow the instructions in the documentation to update to the latest stable release.`
         )

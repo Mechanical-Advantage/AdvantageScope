@@ -15,7 +15,7 @@ const isWpilib = process.env.ASCOPE_DISTRIBUTION === "WPILIB";
 const isDS = process.env.ASCOPE_DISTRIBUTION === "LITEDS";
 const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE" || isDS;
 const licenseHeader =
-  "// Copyright (c) 2021-2026 Littleton Robotics\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the resources directory of this application.\n";
+  "// Copyright (c) 2021-2026 Littleton Robotics\n// Copyright (c) 2026 Melbourne University Motorsport\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the resources directory of this application.\n";
 
 /**
  * @import { RolldownOptions } from "rolldown"

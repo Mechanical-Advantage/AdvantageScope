@@ -25,7 +25,7 @@ window.addEventListener("message", (event) => {
       let config: SourceListConfig = message.data;
 
       // Update title
-      document.title = config.title + " Help \u2014 AdvantageScope";
+      document.title = config.title + " Help \u2014 mur-voir";
 
       // Add items
       let usedColors: string[] = [];

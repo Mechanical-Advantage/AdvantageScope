@@ -119,7 +119,7 @@ function setWindowTitle(name: string, status?: string) {
   let title =
     htmlEncode(name) +
     (status ? " (" + htmlEncode(status) + ")" : "") +
-    " &mdash; AdvantageScope" +
+    " &mdash; mur-voir" +
     (IS_LITE ? " Lite" : "") +
     (DISTRIBUTION === Distribution.LiteDS ? " (DS)" : "");
   document.getElementsByTagName("title")[0].innerHTML = title;
@@ -628,7 +628,7 @@ async function handleMainMessage(message: NamedMessage) {
           console.warn(
             "Failed to load: " +
               window.assets!.loadFailures.join(", ") +
-              ". Check that all assets follow the format described in the AdvantageScope documentation."
+              ". Check that all assets follow the format described in the mur-voir documentation."
           );
         }
         if (newHasFailed && !oldHadFailed) {

@@ -11,7 +11,7 @@ import path from "path";
 let licenses = [];
 let packageLock = JSON.parse(fs.readFileSync("package-lock.json"));
 for (const modulePath of Object.keys(packageLock.packages)) {
-  let moduleName = modulePath === "" ? "AdvantageScope" : modulePath.replaceAll("node_modules/", "");
+  let moduleName = modulePath === "" ? "mur-voir" : modulePath.replaceAll("node_modules/", "");
   if (modulePath !== "" && !fs.existsSync(modulePath)) {
     // Module not installed
     continue;
@@ -80,10 +80,10 @@ if (fs.existsSync("licenses")) {
     });
 }
 
-// Sort licenses alphabetically with AdvantageScope first
+// Sort licenses alphabetically with mur-voir first
 licenses.sort((a, b) => {
-  if (a.module === "AdvantageScope") return -1;
-  if (b.module === "AdvantageScope") return 1;
+  if (a.module === "mur-voir") return -1;
+  if (b.module === "mur-voir") return 1;
   return a.module.localeCompare(b.module);
 });
 
@@ -93,7 +93,7 @@ fs.writeFileSync("src/licenses.json", JSON.stringify(licenses));
 // Save text version
 let fullText = "";
 licenses.forEach((license, index) => {
-  if (index === 0) return; // AdvantageScope license already included
+  if (index === 0) return; // mur-voir license already included
   if (index > 1) fullText += "\n";
   fullText += "---------- " + license.module + " ----------\n\n";
   fullText += license.text;
