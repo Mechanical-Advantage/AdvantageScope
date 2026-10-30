@@ -8,7 +8,6 @@
 import { TabsState } from "../shared/HubState";
 import LineGraphFilter from "../shared/LineGraphFilter";
 import TabType, { getDefaultTabTitle, getTabIcon } from "../shared/TabType";
-import { Distribution, DISTRIBUTION } from "../shared/buildConstants";
 import { getAutonomousKey, getEnabledKey, getUtilityKey } from "../shared/log/RobotState";
 import ConsoleRenderer from "../shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
@@ -157,7 +156,7 @@ export default class Tabs {
             tabIndex = index;
           }
         });
-        if (tabIndex === 0 && DISTRIBUTION !== Distribution.LiteDS) return;
+        if (tabIndex === 0) return;
 
         // Trigger drag event
         while (this.DRAG_ITEM.firstChild) {
@@ -185,7 +184,7 @@ export default class Tabs {
     this.SCROLL_OVERLAY.addEventListener("contextmenu", (event) => {
       mouseDownInfo = null;
       this.tabList.forEach((tab, index) => {
-        if (index === 0 && DISTRIBUTION !== Distribution.LiteDS) return;
+        if (index === 0) return;
         let rect = tab.titleElement.getBoundingClientRect();
         if (
           event.clientX >= rect.left &&
@@ -267,10 +266,6 @@ export default class Tabs {
 
       let closestDist = Infinity;
       let closestIndex = 0;
-      if (DISTRIBUTION === Distribution.LiteDS && this.tabList.length > 0) {
-        closestDist = Math.abs(x - this.tabList[0].titleElement.getBoundingClientRect().left);
-        closestIndex = -1;
-      }
       this.tabList.forEach((tab, index) => {
         let dist = Math.abs(x - tab.titleElement.getBoundingClientRect().right);
         if (dist < closestDist) {
@@ -289,34 +284,20 @@ export default class Tabs {
       } else {
         this.DRAG_HIGHLIGHT.hidden = false;
         let highlightX = 0;
-        if (closestIndex === -1) {
-          highlightX =
-            this.tabList[0].titleElement.getBoundingClientRect().left -
-            this.SCROLL_OVERLAY.getBoundingClientRect().left +
-            10;
-        } else {
-          highlightX =
-            this.tabList[closestIndex].titleElement.getBoundingClientRect().right -
-            this.SCROLL_OVERLAY.getBoundingClientRect().left +
-            10;
-        }
+        highlightX =
+          this.tabList[closestIndex].titleElement.getBoundingClientRect().right -
+          this.SCROLL_OVERLAY.getBoundingClientRect().left +
+          10;
         this.DRAG_HIGHLIGHT.style.left = highlightX.toString() + "px";
       }
     });
 
     // Add default tabs
-    if (DISTRIBUTION === Distribution.LiteDS) {
-      this.addTab(TabType.LineGraph);
-      this.addTab(TabType.Console);
-      this.addTab(TabType.Joysticks);
-      this.setSelected(0);
-    } else {
-      this.addTab(TabType.Documentation);
-      this.addTab(TabType.LineGraph);
-      this.addTab(TabType.Field2d);
-      this.addTab(TabType.Field3d);
-      this.setSelected(1);
-    }
+    this.addTab(TabType.Documentation);
+    this.addTab(TabType.LineGraph);
+    this.addTab(TabType.Field2d);
+    this.addTab(TabType.Field3d);
+    this.setSelected(1);
 
     // Scroll management
     this.tabsScrollSensor = new ScrollSensor(
@@ -617,8 +598,7 @@ export default class Tabs {
 
   /** Closes the specified tab. */
   close(index: number) {
-    let minIndex = DISTRIBUTION === Distribution.LiteDS ? (this.tabList.length > 1 ? 0 : 1) : 1;
-    if (index < minIndex || index > this.tabList.length - 1) return;
+    if (index < 1 || index > this.tabList.length - 1) return;
 
     this.RENDERER_CONTENT.removeChild(this.tabList[index].rendererElement);
     this.CONTROLS_CONTENT.removeChild(this.tabList[index].controlsElement);
@@ -647,7 +627,7 @@ export default class Tabs {
 
   /** Moves the specified tab left or right. */
   shift(index: number, shift: number) {
-    let minIndex = DISTRIBUTION === Distribution.LiteDS ? 0 : 1;
+    const minIndex = 1;
     if (index < minIndex) return;
     if (index + shift < minIndex) shift = minIndex - index;
     if (index + shift > this.tabList.length - 1) shift = this.tabList.length - 1 - index;

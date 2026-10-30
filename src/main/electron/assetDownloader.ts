@@ -9,7 +9,6 @@ import checkDiskSpace from "check-disk-space";
 import download from "download";
 import fs from "fs";
 import path from "path";
-import { DISTRIBUTION, Distribution } from "../../shared/buildConstants";
 import { GITHUB_ASSET_TAG_DEFAULT, GITHUB_ASSET_TAG_FRC6328, GITHUB_ASSETS_REPOSITORY } from "../github";
 import { AUTO_ASSETS } from "./ElectronConstants";
 
@@ -96,7 +95,7 @@ async function getAssetInfo(): Promise<AssetDownloadInfo[]> {
         downloadInfo.push({
           target: path.join(AUTO_ASSETS, asset.name.slice(0, asset.name.length - 4)), // Remove ".zip"
           source: asset.browser_download_url,
-          optional: DISTRIBUTION === Distribution.WPILib && release.tag_name === GITHUB_ASSET_TAG_FRC6328
+          optional: false
         });
       });
     }

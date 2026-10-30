@@ -11,9 +11,7 @@ import fs from "fs";
 import { replacePlugin } from "rolldown/plugins";
 import cleanup from "rollup-plugin-cleanup";
 
-const isWpilib = process.env.ASCOPE_DISTRIBUTION === "WPILIB";
-const isDS = process.env.ASCOPE_DISTRIBUTION === "LITEDS";
-const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE" || isDS;
+const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE";
 const licenseHeader =
   "// Copyright (c) 2021-2026 Littleton Robotics\n// Copyright (c) 2026 Melbourne University Motorsport\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the resources directory of this application.\n";
 
@@ -56,7 +54,7 @@ function bundle(input, isMain, external = []) {
         : cleanup(),
       replacePlugin(
         {
-          __distribution__: isWpilib ? "WPILib" : isDS ? "LiteDS" : isLite ? "Lite" : "FRC6328",
+          __distribution__: isLite ? "Lite" : "FRC6328",
           __version__: packageJson.version,
           __build_date__: new Date().toISOString(),
           __copyright__: packageJson.build.copyright
@@ -107,23 +105,19 @@ export default () => {
         "sourceListHelp.ts",
         "licenses.ts",
         ...(!isLite ? ["export.ts"] : []),
-        ...(!isDS ? ["preferences.ts", "editFov.ts"] : []),
+        "preferences.ts",
+        "editFov.ts",
         ...(isLite ? ["download.ts"] : []),
-        ...(isLite && !isDS ? ["uploadAsset.ts"] : []),
+        ...(isLite ? ["uploadAsset.ts"] : []),
 
         "hub/dataSources/wpilog/wpilogWorker.ts",
         ...(isLite ? ["main/lite/xzWorker.ts"] : []),
         ...(!isLite ? ["hub/exportWorker.ts"] : []),
-        ...(!isDS
-          ? [
-              "hub/dataSources/csv/csvWorker.ts",
-              "hub/dataSources/rlog/rlogWorker.ts",
-              "hub/dataSources/roadrunnerlog/roadRunnerWorker.ts",
-              "hub/dataSources/dslog/dsLogWorker.ts",
-              "shared/renderers/field3d/workers/loadField.ts",
-              "shared/renderers/field3d/workers/loadRobot.ts"
-            ]
-          : [])
+        "hub/dataSources/csv/csvWorker.ts",
+        "hub/dataSources/rlog/rlogWorker.ts",
+        "hub/dataSources/roadrunnerlog/roadRunnerWorker.ts",
+        "shared/renderers/field3d/workers/loadField.ts",
+        "shared/renderers/field3d/workers/loadRobot.ts"
       ],
       false
     )

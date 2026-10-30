@@ -11,7 +11,7 @@ import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
 import Selection from "../shared/Selection";
 import { SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
-import { Distribution, DISTRIBUTION, IS_LITE } from "../shared/buildConstants";
+import { IS_LITE } from "../shared/buildConstants";
 import Log from "../shared/log/Log";
 import { MERGE_PREFIX } from "../shared/log/LogKeyUtils";
 import { AKIT_TIMESTAMP_KEYS, getEnabledData } from "../shared/log/RobotState";
@@ -112,11 +112,7 @@ let dragData: any = null;
 
 function setWindowTitle(name: string, status?: string) {
   let title =
-    htmlEncode(name) +
-    (status ? " (" + htmlEncode(status) + ")" : "") +
-    " &mdash; mur-voir" +
-    (IS_LITE ? " Lite" : "") +
-    (DISTRIBUTION === Distribution.LiteDS ? " (DS)" : "");
+    htmlEncode(name) + (status ? " (" + htmlEncode(status) + ")" : "") + " &mdash; mur-voir" + (IS_LITE ? " Lite" : "");
   document.getElementsByTagName("title")[0].innerHTML = title;
   document.getElementsByClassName("title-bar-text")[0].innerHTML = title;
 }
@@ -290,7 +286,7 @@ window.requestAnimationFrame(periodic);
 
 function checkLiveAutoStart() {
   if (IS_LITE && window.preferences !== null && !liveAutoStartComplete) {
-    startLive(DISTRIBUTION === Distribution.LiteDS ? "ds" : "robot");
+    startLive("robot");
     liveAutoStartComplete = true;
   }
 }
@@ -418,7 +414,7 @@ function startHistorical(path: string, clear = true, merge = false) {
 }
 
 /** Connects to a live data source. */
-function startLive(sourceType: "robot" | "sim" | "ds") {
+function startLive(sourceType: "robot" | "sim") {
   historicalSources.forEach((entry) => entry.source.stop());
   historicalSources = [];
   liveSource?.stop();
@@ -426,9 +422,7 @@ function startLive(sourceType: "robot" | "sim" | "ds") {
   setLoading(null);
 
   if (!window.preferences) return;
-  if (sourceType === "ds") {
-    liveSource = new NT4Source(NT4Mode.DriverStation);
-  } else {
+  {
     switch (window.preferences.liveMode) {
       case "nt4":
         liveSource = new NT4Source(NT4Mode.Default);
@@ -451,7 +445,7 @@ function startLive(sourceType: "robot" | "sim" | "ds") {
   let address = "";
   if (IS_LITE) {
     address = window.location.hostname;
-  } else if (sourceType === "sim" || sourceType === "ds") {
+  } else if (sourceType === "sim") {
     address = "127.0.0.1";
   } else {
     if (window.preferences) {

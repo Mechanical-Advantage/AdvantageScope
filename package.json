@@ -143,22 +143,6 @@
         "description": "Comma-separated values",
         "mimeType": "text/csv",
         "role": "Viewer"
-      },
-      {
-        "ext": "dslog",
-        "name": "NI Driver Station log",
-        "description": "NI Driver Station log",
-        "mimeType": "application/x-dslog",
-        "role": "Viewer",
-        "icon": "icons/app/dslog-icon"
-      },
-      {
-        "ext": "dsevents",
-        "name": "NI Driver Station events",
-        "description": "NI Driver Station events",
-        "mimeType": "application/x-dsevents",
-        "role": "Viewer",
-        "icon": "icons/app/dsevents-icon"
       }
     ],
     "mac": {

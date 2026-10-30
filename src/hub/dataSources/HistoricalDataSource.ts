@@ -35,9 +35,7 @@ export class HistoricalDataSource {
     ".wpilog": "wpilogWorker.js",
     ".wpilogxz": "wpilogWorker.js", // Decompressed by main process
     ".log": "roadRunnerWorker.js",
-    ".csv": "csvWorker.js",
-    ".dslog": "dsLogWorker.js",
-    ".dsevents": "dsLogWorker.js"
+    ".csv": "csvWorker.js"
   };
 
   private path = "";

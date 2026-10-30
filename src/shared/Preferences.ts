@@ -50,11 +50,6 @@ export const DEFAULT_PREFS: Preferences = {
   timestamps: "start-zero"
 };
 
-export const DEFAULT_PREFS_LITEDS: Preferences = Object.assign({}, DEFAULT_PREFS, {
-  remotePath: "",
-  liveSubscribeMode: "logging"
-});
-
 export type LiveMode = "nt4" | "nt4-akit" | "nt4-systemcore" | "rlog" | "ftcdashboard";
 
 export function getLiveModeName(mode: LiveMode): string {

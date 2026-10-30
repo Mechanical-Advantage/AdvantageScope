@@ -45,7 +45,6 @@ import { BUILD_DATE, COPYRIGHT } from "../../shared/buildConstants";
 import { Units } from "../../shared/units";
 import { createUUID, formatDate } from "../../shared/util";
 import { GITHUB_REPOSITORY } from "../github";
-import DEFAULT_DS_LAYOUT from "../lite/dsLayout";
 import {
   AKIT_PATH_INPUT,
   AKIT_PATH_INPUT_PERIOD,
@@ -306,14 +305,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
         let sendIfReady = () => {
           if (completedCount === targetCount) {
-            if (message.data.deleteAfterRead) {
-              paths.forEach((p) => {
-                if (p.endsWith(".dslog")) {
-                  let eventsPath = p.slice(0, p.length - 5) + "dsevents";
-                  if (fs.existsSync(eventsPath)) pathsToRemove.push(eventsPath);
-                }
-              });
-            }
             pathsToRemove.forEach((p) => {
               if (fs.existsSync(p)) fs.rmSync(p, { force: true });
             });
@@ -344,13 +335,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             });
           });
         };
-        if (logPath.endsWith(".dslog")) {
-          // DSLog, open DSEvents too
-          results = [null, null];
-          targetCount += 2;
-          openPath(logPath, (buffer) => (results[0] = buffer));
-          openPath(logPath.slice(0, logPath.length - 5) + "dsevents", (buffer) => (results[1] = buffer));
-        } else if (logPath.endsWith(".wpilogxz")) {
+        if (logPath.endsWith(".wpilogxz")) {
           // Externally compressed WPILOG, decompress
           targetCount += 1;
           if (lzma === null) {
@@ -1610,7 +1595,7 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Robot logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv", "dslog", "dsevents"]
+                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv"]
                   }
                 ]
               })
@@ -1634,7 +1619,7 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Robot logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv", "dslog", "dsevents"]
+                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv"]
                   }
                 ]
               })
@@ -1709,16 +1694,6 @@ function setupMenu() {
             })
           ]
         },
-        {
-          label: "Connect to Driver Station",
-          accelerator: "CmdOrCtrl+Alt+Shift+K",
-          click(_, baseWindow) {
-            const window = baseWindow as BrowserWindow | undefined;
-            if (window === undefined || !hubWindows.includes(window)) return;
-            sendMessage(window, "start-live", "ds");
-          }
-        },
-        { type: "separator" },
         {
           label: "Export Data...",
           accelerator: "CmdOrCtrl+E",
@@ -1840,25 +1815,6 @@ function setupMenu() {
                   });
                 }
               });
-          }
-        },
-        {
-          label: "Reset to DS Layout",
-          click(_, baseWindow) {
-            const window = baseWindow as BrowserWindow | undefined;
-            if (window === undefined || !hubWindows.includes(window)) return;
-            const result = dialog.showMessageBoxSync(window, {
-              type: "warning",
-              title: "Warning",
-              message: "Reset to DS Layout?",
-              detail: "The layout of this window will be replaced with the DS layout. This cannot be undone.",
-              buttons: ["Reset", "Cancel"],
-              defaultId: 0,
-              cancelId: 1,
-              icon: WINDOW_ICON
-            });
-            if (result !== 0) return;
-            sendMessage(window, "restore-state", DEFAULT_DS_LAYOUT);
           }
         },
         { type: "separator" },
@@ -2891,108 +2847,14 @@ function openSourceListHelp(parentWindow: Electron.BrowserWindow, config: Source
   helpWindow.loadFile(path.join(__dirname, "../www/sourceListHelp.html"));
 }
 
-// DS LOG HANDLING
-
-/**
- * Returns whether the path is a Driver Station log.
- */
-function isDsLog(path: string): boolean {
-  // Read the extra header from the WPILOG directory. This happens before
-  // actually loading the file normally, so just parse the start of it.
-  const expectedExtra = Buffer.from("DS Log File", "utf8");
-  const buffer = Buffer.alloc(12 + expectedExtra.length);
-  let fd: number | null = null;
-  try {
-    fd = fs.openSync(path, "r");
-    if (fs.readSync(fd, buffer, 0, buffer.length, 0) < buffer.length) return false;
-  } catch {
-    return false;
-  } finally {
-    if (fd !== null) fs.closeSync(fd);
-  }
-  if (buffer.toString("ascii", 0, 6) !== "WPILOG") return false;
-  if (buffer.readUInt8(7) !== 1) return false;
-  if (buffer.readUInt32LE(8) !== expectedExtra.length) return false;
-  return buffer.subarray(12).equals(expectedExtra);
-}
-
-/**
- * Returns whether the window has the default Driver Station layout.
- */
-function isDsWindow(window: BrowserWindow): boolean {
-  const state = stateTracker.getRendererState(window);
-  if (state?.tabs?.tabs === undefined) return false;
-  const signature = (tabs: any[]) => JSON.stringify(tabs.map((tab) => [tab.type, tab.title]));
-  return signature(state.tabs.tabs) === signature(DEFAULT_DS_LAYOUT.tabs.tabs as any[]);
-}
-
-function createDsWindow(files: string[]) {
-  const window = createHubWindow(undefined, DEFAULT_DS_LAYOUT);
-  window.webContents.once("dom-ready", () => sendMessage(window, "open-files", { files: files, merge: false }));
-}
-
-/**
- * Opens files new files without merging. Routes requests to a new or existing
- * window while recommending a DS layout for FIRST DS logs.
- */
+/** Opens files without merging, using the source window if available. */
 function openFilesSmart(files: string[], sourceWindow: BrowserWindow | null) {
-  const hubAlive = (window: BrowserWindow | null): window is BrowserWindow =>
-    window !== null && !window.isDestroyed() && hubWindows.includes(window);
-  if (sourceWindow !== null && !hubAlive(sourceWindow)) sourceWindow = null;
-
-  if (files.length !== 1 || !isDsLog(files[0])) {
-    if (sourceWindow !== null) {
-      sendMessage(sourceWindow, "open-files", { files: files, merge: false });
-    } else {
-      const window = createHubWindow();
-      window.webContents.once("dom-ready", () => sendMessage(window, "open-files", { files: files, merge: false }));
-    }
-    return;
-  }
-
-  const dsWindow = hubWindows.find((window) => hubAlive(window) && isDsWindow(window));
-
-  if (sourceWindow === null && !hubWindows.some(hubAlive)) {
-    createDsWindow(files);
-    return;
-  }
-  if (sourceWindow !== null && isDsWindow(sourceWindow)) {
+  if (sourceWindow !== null && !sourceWindow.isDestroyed() && hubWindows.includes(sourceWindow)) {
     sendMessage(sourceWindow, "open-files", { files: files, merge: false });
-    return;
-  }
-
-  const buttons: string[] = [];
-  const actions: (() => void)[] = [];
-  if (dsWindow !== undefined) {
-    const target = dsWindow;
-    buttons.push("Open in DS Window");
-    actions.push(() => {
-      target.focus();
-      sendMessage(target, "open-files", { files: files, merge: false });
-    });
   } else {
-    buttons.push("Open in New Window");
-    actions.push(() => createDsWindow(files));
+    const window = createHubWindow();
+    window.webContents.once("dom-ready", () => sendMessage(window, "open-files", { files: files, merge: false }));
   }
-  if (sourceWindow !== null) {
-    const source = sourceWindow;
-    buttons.push("Open in This Window");
-    actions.push(() => sendMessage(source, "open-files", { files: files, merge: false }));
-  }
-  buttons.push("Cancel");
-  const options = {
-    type: "question" as const,
-    title: "Open DS log",
-    message: "Open this log using the DS layout?",
-    detail: "The Driver Station layout can be opened in a separate window without changing your current layout.",
-    buttons: buttons,
-    defaultId: 0,
-    cancelId: buttons.length - 1,
-    icon: WINDOW_ICON
-  };
-  const result =
-    sourceWindow !== null ? dialog.showMessageBoxSync(sourceWindow, options) : dialog.showMessageBoxSync(options);
-  if (result < actions.length) actions[result]();
 }
 
 // APPLICATION EVENTS
@@ -3067,9 +2929,7 @@ app.whenReady().then(async () => {
       x.endsWith(".wpilogxz") ||
       x.endsWith(".rlog") ||
       x.endsWith(".log") ||
-      x.endsWith(".csv") ||
-      x.endsWith(".dslog") ||
-      x.endsWith(".dsevents")
+      x.endsWith(".csv")
   );
   if (fileArgs.length > 0) {
     firstOpenPath = fileArgs[0];
@@ -3095,10 +2955,6 @@ app.on("window-all-closed", () => {
 // macOS only, Linux & Windows start a new process and pass the file as an argument
 app.on("open-file", (_, path) => {
   if (app.isReady()) {
-    if (isDsLog(path)) {
-      openFilesSmart([path], hubWindows.length > 0 ? hubWindows[0] : null);
-      return;
-    }
     // Already running, create a new window
     let window = createHubWindow();
     window.webContents.once("dom-ready", () => {
