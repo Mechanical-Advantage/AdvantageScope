@@ -121,7 +121,6 @@ window.addEventListener("message", (event) => {
             userAssetsFolder: oldPrefs.userAssetsFolder,
             skipFRCCoordinateSystemWarning: oldPrefs.skipFRCCoordinateSystemWarning,
             skipFTCCoordinateSystemWarning: oldPrefs.skipFTCCoordinateSystemWarning,
-            systemcoreStaticAddress: oldPrefs.systemcoreStaticAddress,
             hasScrolledLineGraph: oldPrefs.hasScrolledLineGraph,
             hasScrolledTimeline: oldPrefs.hasScrolledTimeline,
             prefersFTC: oldPrefs.prefersFTC,

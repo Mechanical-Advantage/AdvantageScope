@@ -89,7 +89,6 @@ export default () => {
             "os",
             "http",
             "path",
-            "ssh2",
             "download",
             "youtube-dl-exec",
             "tesseract.js",
@@ -109,9 +108,9 @@ export default () => {
         "renameTab.ts",
         "sourceListHelp.ts",
         "licenses.ts",
-        "download.ts",
         ...(!isLite ? ["export.ts"] : []),
         ...(!isDS ? ["preferences.ts", "editFov.ts"] : []),
+        ...(isLite ? ["download.ts"] : []),
         ...(isLite && !isDS ? ["uploadAsset.ts"] : []),
 
         "hub/dataSources/wpilog/wpilogWorker.ts",

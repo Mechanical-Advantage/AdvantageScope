@@ -25,7 +25,6 @@ export default interface Preferences {
   userAssetsFolder: string | null;
   skipFRCCoordinateSystemWarning: boolean;
   skipFTCCoordinateSystemWarning: boolean;
-  systemcoreStaticAddress: "" | "usb" | "wifi";
   hasScrolledLineGraph: boolean;
   hasScrolledTimeline: boolean;
   prefersFTC: boolean;
@@ -49,7 +48,6 @@ export const DEFAULT_PREFS: Preferences = {
   userAssetsFolder: null,
   skipFRCCoordinateSystemWarning: false,
   skipFTCCoordinateSystemWarning: false,
-  systemcoreStaticAddress: "",
   hasScrolledLineGraph: false,
   hasScrolledTimeline: false,
   prefersFTC: false,
@@ -189,14 +187,6 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   if ("skipFTCCoordinateSystemWarning" in newPrefs && typeof newPrefs.skipFTCCoordinateSystemWarning === "boolean") {
     basePrefs.skipFTCCoordinateSystemWarning = newPrefs.skipFTCCoordinateSystemWarning;
   }
-  if (
-    "systemcoreStaticAddress" in newPrefs &&
-    (newPrefs.systemcoreStaticAddress === "" ||
-      newPrefs.systemcoreStaticAddress === "usb" ||
-      newPrefs.systemcoreStaticAddress === "wifi")
-  ) {
-    basePrefs.systemcoreStaticAddress = newPrefs.systemcoreStaticAddress;
-  }
   if ("hasScrolledLineGraph" in newPrefs && typeof newPrefs.hasScrolledLineGraph === "boolean") {
     basePrefs.hasScrolledLineGraph = newPrefs.hasScrolledLineGraph;
   }
@@ -209,14 +199,4 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   if ("timestamps" in newPrefs && (newPrefs.timestamps === "start-zero" || newPrefs.timestamps === "original")) {
     basePrefs.timestamps = newPrefs.timestamps;
   }
-}
-
-export function getRobotAddress(preferences: Preferences, platform: string): string {
-  if (preferences.systemcoreStaticAddress === "usb") {
-    return platform === "win32" ? "172.26.0.1" : "172.27.0.1";
-  }
-  if (preferences.systemcoreStaticAddress === "wifi") {
-    return "172.30.0.1";
-  }
-  return preferences.robotAddress;
 }
