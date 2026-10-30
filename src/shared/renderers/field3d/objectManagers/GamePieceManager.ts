@@ -20,11 +20,10 @@ export default class GamePieceManager extends ObjectManager<Field3dRendererComma
     materialSpecular: THREE.Color,
     materialShininess: number,
     mode: "low-power" | "standard" | "cinematic",
-    isXR: boolean,
     requestRender: () => void,
     gamePieces: { [key: string]: THREE.Mesh }
   ) {
-    super(root, materialSpecular, materialShininess, mode, isXR, requestRender);
+    super(root, materialSpecular, materialShininess, mode, requestRender);
     this.gamePieces = gamePieces;
   }
 

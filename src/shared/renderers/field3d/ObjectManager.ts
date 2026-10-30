@@ -13,7 +13,6 @@ export default abstract class ObjectManager<ObjectType extends Field3dRendererCo
   protected materialSpecular: THREE.Color;
   protected materialShininess: number;
   protected mode: "low-power" | "standard" | "cinematic";
-  protected isXR: boolean;
   protected requestRender: () => void;
   protected resolution = new THREE.Vector2();
 
@@ -22,14 +21,12 @@ export default abstract class ObjectManager<ObjectType extends Field3dRendererCo
     materialSpecular: THREE.Color,
     materialShininess: number,
     mode: "low-power" | "standard" | "cinematic",
-    isXR: boolean,
     requestRender: () => void
   ) {
     this.root = root;
     this.materialSpecular = materialSpecular;
     this.materialShininess = materialShininess;
     this.mode = mode;
-    this.isXR = isXR;
     this.requestRender = requestRender;
   }
 

@@ -29,10 +29,9 @@ export default class ConeManager extends ObjectManager<Field3dRendererCommand_Co
     materialSpecular: THREE.Color,
     materialShininess: number,
     mode: "low-power" | "standard" | "cinematic",
-    isXR: boolean,
     requestRender: () => void
   ) {
-    super(root, materialSpecular, materialShininess, mode, isXR, requestRender);
+    super(root, materialSpecular, materialShininess, mode, requestRender);
 
     this.geometry = new THREE.ConeGeometry(0.06, 0.25, 16, 32);
     this.geometry.rotateZ(-Math.PI / 2);

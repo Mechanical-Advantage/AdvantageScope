@@ -446,7 +446,6 @@ export default class Field3dRendererImpl implements TabRenderer {
       this.MATERIAL_SPECULAR,
       this.MATERIAL_SHININESS,
       this.mode,
-      false,
       () => (this.shouldRender = true)
     ] as const;
     let manager: ObjectManager<Field3dRendererCommand_AnyObj>;
@@ -471,7 +470,6 @@ export default class Field3dRendererImpl implements TabRenderer {
           this.MATERIAL_SPECULAR,
           this.MATERIAL_SHININESS,
           this.mode,
-          false,
           () => (this.shouldRender = true),
           () => this.fieldConfigCache
         );
@@ -486,7 +484,6 @@ export default class Field3dRendererImpl implements TabRenderer {
           this.MATERIAL_SPECULAR,
           this.MATERIAL_SHININESS,
           this.mode,
-          false,
           () => (this.shouldRender = true)
         );
         break;

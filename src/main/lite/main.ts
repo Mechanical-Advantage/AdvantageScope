@@ -655,7 +655,7 @@ async function handleHubMessage(message: NamedMessage) {
               {
                 content: `Close Tab (${modifier} E)`,
                 callback() {
-                  sendMessage(hubPort, "close-tab", false);
+                  sendMessage(hubPort, "close-tab");
                 }
               }
             ];
@@ -1358,7 +1358,7 @@ function processKeydown(event: KeyboardEvent): boolean {
   } else if (!event.shiftKey && modifier && lowerKey === "]") {
     sendMessage(hubPort, "shift-tab", 1);
   } else if (!event.shiftKey && modifier && lowerKey === "e") {
-    sendMessage(hubPort, "close-tab", false);
+    sendMessage(hubPort, "close-tab");
   } else if (event.shiftKey && modifier && lowerKey === "," && DISTRIBUTION !== Distribution.LiteDS) {
     openPreferences();
   } else if (!event.shiftKey && !modifier && event.altKey && !event.code.startsWith("Alt")) {

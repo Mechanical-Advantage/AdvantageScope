@@ -9,7 +9,6 @@ import * as THREE from "three";
 import { Line2 } from "three/examples/jsm/lines/Line2.js";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
-import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import WorkerManager from "../../../../hub/WorkerManager";
 import { AdvantageScopeAssets } from "../../../AdvantageScopeAssets";
 import { ModuleVelocity, rotationSequenceToQuaternion } from "../../../geometry";
@@ -19,7 +18,6 @@ import { transformPx } from "../../../util";
 import { Field3dRendererCommand_GhostObj, Field3dRendererCommand_RobotObj } from "../../Field3dRenderer";
 import { quaternionToRotation3d, rotation3dToQuaternion } from "../../Field3dRendererImpl";
 import ObjectManager from "../ObjectManager";
-import { FTC_MULTIPLIER, XR_MAX_RADIUS } from "../OptimizeGeometries";
 import ResizableInstancedMesh from "../ResizableInstancedMesh";
 
 type MechanismLineData = {
@@ -77,28 +75,25 @@ export default class RobotManager extends ObjectManager<
     materialSpecular: THREE.Color,
     materialShininess: number,
     mode: "low-power" | "standard" | "cinematic",
-    isXR: boolean,
     requestRender: () => void,
     loadingStart: () => void,
     loadingEnd: () => void
   ) {
-    super(root, materialSpecular, materialShininess, mode, isXR, requestRender);
+    super(root, materialSpecular, materialShininess, mode, requestRender);
     this.loadingStart = loadingStart;
     this.loadingEnd = loadingEnd;
 
-    if (!isXR) {
-      this.swerveContainer = document.createElement("div");
-      this.swerveCanvas = document.createElement("canvas");
-      this.swerveTexture = new THREE.CanvasTexture(this.swerveCanvas);
+    this.swerveContainer = document.createElement("div");
+    this.swerveCanvas = document.createElement("canvas");
+    this.swerveTexture = new THREE.CanvasTexture(this.swerveCanvas);
 
-      this.swerveContainer.hidden = true;
-      this.swerveContainer.appendChild(this.swerveCanvas);
-      this.swerveContainer.style.width = this.SWERVE_CANVAS_PX.toString() + "px";
-      this.swerveContainer.style.height = this.SWERVE_CANVAS_PX.toString() + "px";
-      this.swerveCanvas.width = this.SWERVE_CANVAS_PX;
-      this.swerveCanvas.height = this.SWERVE_CANVAS_PX;
-      document.body.appendChild(this.swerveContainer);
-    }
+    this.swerveContainer.hidden = true;
+    this.swerveContainer.appendChild(this.swerveCanvas);
+    this.swerveContainer.style.width = this.SWERVE_CANVAS_PX.toString() + "px";
+    this.swerveContainer.style.height = this.SWERVE_CANVAS_PX.toString() + "px";
+    this.swerveCanvas.width = this.SWERVE_CANVAS_PX;
+    this.swerveCanvas.height = this.SWERVE_CANVAS_PX;
+    document.body.appendChild(this.swerveContainer);
   }
 
   dispose(): void {
@@ -114,9 +109,7 @@ export default class RobotManager extends ObjectManager<
       this.visionLines.shift();
     }
     this.swerveTexture?.dispose();
-    if (!this.isXR) {
-      document.body.removeChild(this.swerveContainer!);
-    }
+    document.body.removeChild(this.swerveContainer!);
   }
 
   setResolution(resolution: THREE.Vector2) {
@@ -165,165 +158,71 @@ export default class RobotManager extends ObjectManager<
         if (this.isLoading) this.loadingEnd();
         this.isLoading = true;
 
-        if (this.isXR) {
-          // XR, load models directly
-          const urlTransformer: (path: string) => string = (url) => "/asset?path=" + encodeURIComponent(url);
-          const gltfLoader = new GLTFLoader();
-          Promise.all([
-            gltfLoader.loadAsync(urlTransformer(robotConfig.path)),
-            ...robotConfig.components.map((_, index) =>
-              gltfLoader.loadAsync(urlTransformer(robotConfig.path.slice(0, -4) + "_" + index.toString() + ".glb"))
-            )
-          ]).then((gltfs) => {
-            if (loadingCounter !== this.loadingCounter) {
-              // Model was switched, throw away the data :(
-              return;
-            }
+        // Load models with worker and mesh merging
+        WorkerManager.request("../bundles/loadRobot.js", {
+          robotConfig: robotConfig!,
+          isFTC: robotConfig.isFTC,
+          mode: this.mode,
+          materialSpecular: this.materialSpecular.toArray(),
+          materialShininess: this.materialShininess
+        }).then((result: THREE.MeshJSON[][]) => {
+          if (loadingCounter !== this.loadingCounter) {
+            // Model was switched, throw away the data :(
+            return;
+          }
 
-            this.meshes = [];
-            this.dimensions = [0, 0, 0, 0];
+          const loader = new THREE.ObjectLoader();
+          this.meshes = [];
+          this.dimensions = [0, 0, 0, 0];
 
-            let gltfScenes = (gltfs as GLTF[]).map((gltf) => gltf.scene);
-            for (let index = 0; index < gltfScenes.length; index++) {
-              let scene = gltfScenes[index];
+          result.forEach((sceneMeshJSONs, index) => {
+            // Load meshes
+            let sceneMeshes: THREE.Mesh[] = sceneMeshJSONs.map((json) => loader.parse(json) as THREE.Mesh);
+            sceneMeshes.forEach((mesh) => {
               if (index === 0) {
-                scene.rotation.setFromQuaternion(rotationSequenceToQuaternion(robotConfig.rotations));
-                scene.position.set(...robotConfig.position);
+                mesh.geometry.computeBoundingBox();
+                let box = mesh.geometry.boundingBox;
+                if (box !== null) {
+                  this.dimensions[0] = Math.max(this.dimensions[0], box.max.x);
+                  this.dimensions[1] = Math.max(this.dimensions[1], box.max.y);
+                  this.dimensions[2] = Math.max(this.dimensions[2], -box.min.x);
+                  this.dimensions[3] = Math.max(this.dimensions[3], -box.min.y);
+                }
               }
 
-              let sceneMeshes: THREE.Mesh[] = [];
-              scene.traverse((object) => {
-                let mesh = object as THREE.Mesh;
-                if (!mesh.isMesh) return;
-                if (mesh.material instanceof THREE.MeshStandardMaterial) {
-                  mesh.material.metalness = 0;
-                  mesh.material.roughness = 1;
+              if (object.type === "ghost") {
+                if (!Array.isArray(mesh.material)) {
+                  mesh.material.dispose();
                 }
-
-                // Check if too small
-                let vertices: THREE.Vector3[] = [];
-                let center = new THREE.Vector3();
-                for (let i = 0; i < mesh.geometry.attributes.position.count; i++) {
-                  let vertex = new THREE.Vector3(
-                    mesh.geometry.attributes.position.getX(i),
-                    mesh.geometry.attributes.position.getY(i),
-                    mesh.geometry.attributes.position.getZ(i)
-                  );
-                  vertices.push(vertex);
-                  center.add(vertex);
-                }
-                center.divideScalar(vertices.length);
-                let maxRadius = vertices.reduce((prev, vertex) => {
-                  let dist = vertex.distanceTo(center);
-                  return dist > prev ? dist : prev;
-                }, 0);
-                let enableSimplification = !robotConfig.disableSimplification && !mesh.name.includes("NOSIMPLIFY");
-                if (maxRadius >= XR_MAX_RADIUS * (robotConfig.isFTC ? FTC_MULTIPLIER : 1) || !enableSimplification) {
-                  // Apply world matrix to geometry
-                  let geometry = mesh.geometry.clone();
-                  mesh.updateWorldMatrix(true, false);
-                  geometry.applyMatrix4(mesh.matrixWorld);
-                  mesh.geometry = geometry;
-                  sceneMeshes.push(mesh);
-                }
-              });
-
-              sceneMeshes.forEach((mesh) => {
-                if (index === 0) {
-                  mesh.geometry.computeBoundingBox();
-                  let box = mesh.geometry.boundingBox;
-                  if (box !== null) {
-                    this.dimensions[0] = Math.max(this.dimensions[0], box.max.x);
-                    this.dimensions[1] = Math.max(this.dimensions[1], box.max.y);
-                    this.dimensions[2] = Math.max(this.dimensions[2], -box.min.x);
-                    this.dimensions[3] = Math.max(this.dimensions[3], -box.min.y);
-                  }
-                }
-
-                if (object.type === "ghost") {
-                  if (!Array.isArray(mesh.material)) {
-                    mesh.material.dispose();
-                  }
-                  mesh.material = this.ghostMaterial;
-                }
-              });
-
-              let castShadow = new Array(sceneMeshes.length).fill(true);
-              castShadow[castShadow.length - 1] = false;
-              this.meshes.push(new ResizableInstancedMesh(this.root, sceneMeshes, castShadow));
-            }
-
-            this.requestRender();
-            this.loadingEnd();
-            this.isLoading = false;
-          });
-        } else {
-          // Desktop, load models with worker and mesh merging
-          WorkerManager.request("../bundles/loadRobot.js", {
-            robotConfig: robotConfig!,
-            isFTC: robotConfig.isFTC,
-            mode: this.mode,
-            materialSpecular: this.materialSpecular.toArray(),
-            materialShininess: this.materialShininess
-          }).then((result: THREE.MeshJSON[][]) => {
-            if (loadingCounter !== this.loadingCounter) {
-              // Model was switched, throw away the data :(
-              return;
-            }
-
-            const loader = new THREE.ObjectLoader();
-            this.meshes = [];
-            this.dimensions = [0, 0, 0, 0];
-
-            result.forEach((sceneMeshJSONs, index) => {
-              // Load meshes
-              let sceneMeshes: THREE.Mesh[] = sceneMeshJSONs.map((json) => loader.parse(json) as THREE.Mesh);
-              sceneMeshes.forEach((mesh) => {
-                if (index === 0) {
-                  mesh.geometry.computeBoundingBox();
-                  let box = mesh.geometry.boundingBox;
-                  if (box !== null) {
-                    this.dimensions[0] = Math.max(this.dimensions[0], box.max.x);
-                    this.dimensions[1] = Math.max(this.dimensions[1], box.max.y);
-                    this.dimensions[2] = Math.max(this.dimensions[2], -box.min.x);
-                    this.dimensions[3] = Math.max(this.dimensions[3], -box.min.y);
-                  }
-                }
-
-                if (object.type === "ghost") {
-                  if (!Array.isArray(mesh.material)) {
-                    mesh.material.dispose();
-                  }
-                  mesh.material = this.ghostMaterial;
-                }
-              });
-
-              // Add swerve mesh
-              if (index === 0) {
-                let swerveMesh = new THREE.Mesh(
-                  new THREE.PlaneGeometry(this.SWERVE_CANVAS_METERS, this.SWERVE_CANVAS_METERS).translate(0, 0, 0.1),
-                  new THREE.MeshPhongMaterial({
-                    map: this.swerveTexture,
-                    transparent: true,
-                    side: THREE.DoubleSide
-                  })
-                );
-                swerveMesh.renderOrder = 999;
-                swerveMesh.material.depthTest = false;
-                swerveMesh.material.transparent = true;
-                sceneMeshes.push(swerveMesh);
+                mesh.material = this.ghostMaterial;
               }
-
-              let castShadow = new Array(sceneMeshes.length).fill(true);
-              castShadow[castShadow.length - 1] = false;
-              this.meshes.push(new ResizableInstancedMesh(this.root, sceneMeshes, castShadow));
             });
 
-            this.requestRender();
-            this.loadingEnd();
-            this.isLoading = false;
+            // Add swerve mesh
+            if (index === 0) {
+              let swerveMesh = new THREE.Mesh(
+                new THREE.PlaneGeometry(this.SWERVE_CANVAS_METERS, this.SWERVE_CANVAS_METERS).translate(0, 0, 0.1),
+                new THREE.MeshPhongMaterial({
+                  map: this.swerveTexture,
+                  transparent: true,
+                  side: THREE.DoubleSide
+                })
+              );
+              swerveMesh.renderOrder = 999;
+              swerveMesh.material.depthTest = false;
+              swerveMesh.material.transparent = true;
+              sceneMeshes.push(swerveMesh);
+            }
+
+            let castShadow = new Array(sceneMeshes.length).fill(true);
+            castShadow[castShadow.length - 1] = false;
+            this.meshes.push(new ResizableInstancedMesh(this.root, sceneMeshes, castShadow));
           });
-        }
+
+          this.requestRender();
+          this.loadingEnd();
+          this.isLoading = false;
+        });
       }
     }
 
@@ -516,71 +415,69 @@ export default class RobotManager extends ObjectManager<
     updateMechanism(object.mechanisms.xz, this.mechanismLinesXZ, "xz");
     updateMechanism(object.mechanisms.yz, this.mechanismLinesYZ, "yz");
 
-    // Update swerve canvas (disabled in XR)
-    if (!this.isXR) {
-      let context = this.swerveCanvas?.getContext("2d")!;
-      context.clearRect(0, 0, this.SWERVE_CANVAS_PX, this.SWERVE_CANVAS_PX);
-      const pxPerMeter = this.SWERVE_CANVAS_PX / this.SWERVE_CANVAS_METERS;
-      const moduleX = (Math.min(this.dimensions[0], this.dimensions[2]) - this.SWERVE_BUMPER_OFFSET) * pxPerMeter;
-      const moduleY = (Math.min(this.dimensions[1], this.dimensions[3]) - this.SWERVE_BUMPER_OFFSET) * pxPerMeter;
-      const centerPx = [this.SWERVE_CANVAS_PX / 2, this.SWERVE_CANVAS_PX / 2];
-      (
-        [
-          [1, 1],
-          [1, -1],
-          [-1, 1],
-          [-1, -1]
-        ] as const
-      ).forEach((cornerMultipliers, index) => {
-        let moduleCenterPx = [
-          centerPx[0] + moduleX * cornerMultipliers[0],
-          centerPx[1] - moduleY * cornerMultipliers[1]
-        ] as [number, number];
+    // Update swerve canvas
+    let context = this.swerveCanvas?.getContext("2d")!;
+    context.clearRect(0, 0, this.SWERVE_CANVAS_PX, this.SWERVE_CANVAS_PX);
+    const pxPerMeter = this.SWERVE_CANVAS_PX / this.SWERVE_CANVAS_METERS;
+    const moduleX = (Math.min(this.dimensions[0], this.dimensions[2]) - this.SWERVE_BUMPER_OFFSET) * pxPerMeter;
+    const moduleY = (Math.min(this.dimensions[1], this.dimensions[3]) - this.SWERVE_BUMPER_OFFSET) * pxPerMeter;
+    const centerPx = [this.SWERVE_CANVAS_PX / 2, this.SWERVE_CANVAS_PX / 2];
+    (
+      [
+        [1, 1],
+        [1, -1],
+        [-1, 1],
+        [-1, -1]
+      ] as const
+    ).forEach((cornerMultipliers, index) => {
+      let moduleCenterPx = [
+        centerPx[0] + moduleX * cornerMultipliers[0],
+        centerPx[1] - moduleY * cornerMultipliers[1]
+      ] as [number, number];
 
-        // Draw module data
-        let drawModuleData = (state: ModuleVelocity, color: string) => {
-          context.lineWidth = 0.03 * pxPerMeter;
-          context.strokeStyle = color;
-          context.lineCap = "round";
-          context.lineJoin = "round";
+      // Draw module data
+      let drawModuleData = (state: ModuleVelocity, color: string) => {
+        context.lineWidth = 0.03 * pxPerMeter;
+        context.strokeStyle = color;
+        context.lineCap = "round";
+        context.lineJoin = "round";
 
-          // Draw speed
-          if (Math.abs(state.velocity) <= 0.001) return;
-          let vectorSpeed = state.velocity / 5;
-          let vectorRotation = state.angle;
-          if (state.velocity < 0) {
-            vectorSpeed *= -1;
-            vectorRotation += Math.PI;
-          }
-          if (vectorSpeed < 0.05) return;
-          let vectorLength = pxPerMeter * Units.convert(36, "inches", "meters") * vectorSpeed;
-          let arrowBack = transformPx(moduleCenterPx, vectorRotation, [0, 0]);
-          let arrowFront = transformPx(moduleCenterPx, vectorRotation, [vectorLength, 0]);
-          let arrowLeft = transformPx(moduleCenterPx, vectorRotation, [
-            vectorLength - pxPerMeter * 0.1,
-            pxPerMeter * 0.1
-          ]);
-          let arrowRight = transformPx(moduleCenterPx, vectorRotation, [
-            vectorLength - pxPerMeter * 0.1,
-            pxPerMeter * -0.1
-          ]);
-          context.beginPath();
-          context.moveTo(...arrowBack);
-          context.lineTo(...arrowFront);
-          context.moveTo(...arrowLeft);
-          context.lineTo(...arrowFront);
-          context.lineTo(...arrowRight);
-          context.stroke();
-        };
-        object.swerveModuleVelocities.forEach((set) => {
-          if (index < set.values.length) {
-            drawModuleData(set.values[index], set.color);
-          }
-        });
+        // Draw speed
+        if (Math.abs(state.velocity) <= 0.001) return;
+        let vectorSpeed = state.velocity / 5;
+        let vectorRotation = state.angle;
+        if (state.velocity < 0) {
+          vectorSpeed *= -1;
+          vectorRotation += Math.PI;
+        }
+        if (vectorSpeed < 0.05) return;
+        let vectorLength = pxPerMeter * Units.convert(36, "inches", "meters") * vectorSpeed;
+        let arrowBack = transformPx(moduleCenterPx, vectorRotation, [0, 0]);
+        let arrowFront = transformPx(moduleCenterPx, vectorRotation, [vectorLength, 0]);
+        let arrowLeft = transformPx(moduleCenterPx, vectorRotation, [
+          vectorLength - pxPerMeter * 0.1,
+          pxPerMeter * 0.1
+        ]);
+        let arrowRight = transformPx(moduleCenterPx, vectorRotation, [
+          vectorLength - pxPerMeter * 0.1,
+          pxPerMeter * -0.1
+        ]);
+        context.beginPath();
+        context.moveTo(...arrowBack);
+        context.lineTo(...arrowFront);
+        context.moveTo(...arrowLeft);
+        context.lineTo(...arrowFront);
+        context.lineTo(...arrowRight);
+        context.stroke();
+      };
+      object.swerveModuleVelocities.forEach((set) => {
+        if (index < set.values.length) {
+          drawModuleData(set.values[index], set.color);
+        }
       });
-      let hasSwerveModuleVelocities = object.swerveModuleVelocities.length > 0;
-      this.swerveTexture!.needsUpdate = hasSwerveModuleVelocities || this.lastHadSwerveModuleVelocities;
-      this.lastHadSwerveModuleVelocities = hasSwerveModuleVelocities;
-    }
+    });
+    let hasSwerveModuleVelocities = object.swerveModuleVelocities.length > 0;
+    this.swerveTexture!.needsUpdate = hasSwerveModuleVelocities || this.lastHadSwerveModuleVelocities;
+    this.lastHadSwerveModuleVelocities = hasSwerveModuleVelocities;
   }
 }

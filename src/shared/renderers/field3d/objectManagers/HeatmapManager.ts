@@ -15,7 +15,7 @@ import Heatmap from "../../Heatmap";
 import ObjectManager from "../ObjectManager";
 
 export default class HeatmapManager extends ObjectManager<Field3dRendererCommand_HeatmapObj> {
-  private HEIGHT_PIXELS: number;
+  private HEIGHT_PIXELS = 800;
 
   private getFieldConfig: () => Config3dField | null;
   private container = document.createElement("div");
@@ -29,14 +29,11 @@ export default class HeatmapManager extends ObjectManager<Field3dRendererCommand
     materialSpecular: THREE.Color,
     materialShininess: number,
     mode: "low-power" | "standard" | "cinematic",
-    isXR: boolean,
     requestRender: () => void,
     getFieldConfig: () => Config3dField | null
   ) {
-    super(root, materialSpecular, materialShininess, mode, isXR, requestRender);
+    super(root, materialSpecular, materialShininess, mode, requestRender);
     this.getFieldConfig = getFieldConfig;
-    this.isXR = isXR;
-    this.HEIGHT_PIXELS = isXR ? 25 : 800; // Canvas texture updates are very slow in XR
     this.container.hidden = true;
     document.body.appendChild(this.container);
   }

@@ -21,11 +21,10 @@ const licenseHeader =
  * @import { RolldownOptions } from "rolldown"
  * @param input {string[]}
  * @param isMain {boolean}
- * @param isXRClient {boolean}
  * @param external {string[]}
  * @returns {RolldownOptions}
  */
-function bundle(input, isMain, isXRClient, external = []) {
+function bundle(input, isMain, external = []) {
   const packageJson = JSON.parse(
     fs.readFileSync("package.json", {
       encoding: "utf-8"
@@ -38,8 +37,8 @@ function bundle(input, isMain, isXRClient, external = []) {
       chunkFileNames: "chunk/[name].js",
       format: isMain ? "cjs" : "es",
       banner: licenseHeader,
-      minify: isXRClient || isLite || "dce-only",
-      minifyInternalExports: isXRClient || isLite
+      minify: isLite || "dce-only",
+      minifyInternalExports: isLite
     },
     context: "this",
     external: external,
@@ -48,13 +47,7 @@ function bundle(input, isMain, isXRClient, external = []) {
     },
     plugins: [
       typescript(),
-      isXRClient
-        ? getBabelOutputPlugin({
-            presets: [["@babel/preset-env", { modules: false }]],
-            compact: true,
-            targets: "iOS 16" // AdvantageScope XR is built for iOS 16
-          })
-        : isLite
+      isLite
         ? getBabelOutputPlugin({
             presets: [["@babel/preset-env", { modules: false }]],
             compact: true,
@@ -103,15 +96,14 @@ export default (cliArgs) => {
   return [
     // Main bundles
     ...(isLite
-      ? [bundle(["main/lite/main.ts"], false, false)]
+      ? [bundle(["main/lite/main.ts"], false)]
       : [
-          bundle(["main/electron/main.ts"], true, false, [
+          bundle(["main/electron/main.ts"], true, [
             "electron",
             "fs",
             "jsonfile",
             "net",
             "os",
-            "ws",
             "http",
             "path",
             "ssh2",
@@ -121,7 +113,7 @@ export default (cliArgs) => {
             "lzma-native",
             "@rev-robotics/revlog-converter"
           ]),
-          bundle(["preload.ts"], true, false, ["electron"])
+          bundle(["preload.ts"], true, ["electron"])
         ]),
 
     // App bundles
@@ -137,7 +129,7 @@ export default (cliArgs) => {
         "betaWelcome.ts",
         "licenses.ts",
         "download.ts",
-        ...(!isLite ? ["export.ts", "xrControls.ts"] : []),
+        ...(!isLite ? ["export.ts"] : []),
         ...(!isDS ? ["preferences.ts", "editFov.ts"] : []),
         ...(isLite && !isDS ? ["uploadAsset.ts"] : []),
 
@@ -155,11 +147,7 @@ export default (cliArgs) => {
             ]
           : [])
       ],
-      false,
       false
-    ),
-
-    // XR client
-    ...(!isLite ? [bundle(["xrClient/xrClient.ts"], false, true)] : [])
+    )
   ];
 };

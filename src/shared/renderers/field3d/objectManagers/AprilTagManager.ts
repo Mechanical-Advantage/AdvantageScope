@@ -31,10 +31,9 @@ export default class AprilTagManager extends ObjectManager<Field3dRendererComman
     materialSpecular: THREE.Color,
     materialShininess: number,
     mode: "low-power" | "standard" | "cinematic",
-    isXR: boolean,
     requestRender: () => void
   ) {
-    super(root, materialSpecular, materialShininess, mode, isXR, requestRender);
+    super(root, materialSpecular, materialShininess, mode, requestRender);
   }
 
   dispose(): void {
@@ -94,9 +93,7 @@ export default class AprilTagManager extends ObjectManager<Field3dRendererComman
             ? "smile"
             : zfill(annotatedPose.annotation.aprilTagId.toString(), 3);
         this.textureLoader.load(
-          this.isXR
-            ? `/apriltag?family=${object.variant.family}&name=${textureName}`
-            : IS_LITE
+          IS_LITE
             ? `textures/apriltag-${object.variant.family}/${textureName}.png`
             : `../www/textures/apriltag-${object.variant.family}/${textureName}.png`,
           (texture) => {

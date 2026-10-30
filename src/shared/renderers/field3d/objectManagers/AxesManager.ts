@@ -20,10 +20,9 @@ export default class AxesManager extends ObjectManager<Field3dRendererCommand_Ax
     materialSpecular: THREE.Color,
     materialShininess: number,
     mode: "low-power" | "standard" | "cinematic",
-    isXR: boolean,
     requestRender: () => void
   ) {
-    super(root, materialSpecular, materialShininess, mode, isXR, requestRender);
+    super(root, materialSpecular, materialShininess, mode, requestRender);
 
     let axes = makeAxesTemplate(this.materialSpecular, this.materialShininess);
     axes.scale.set(0.25, 0.25, 0.25);

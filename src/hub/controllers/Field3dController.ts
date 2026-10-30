@@ -7,7 +7,6 @@
 
 import { BuiltIn3dFields } from "../../shared/AdvantageScopeAssets";
 import { SourceListItemState, SourceListOptionValueConfig, SourceListState } from "../../shared/SourceListConfig";
-import { IS_LITE } from "../../shared/buildConstants";
 import {
   APRIL_TAG_16H5_COUNT,
   APRIL_TAG_36H11_COUNT,
@@ -26,12 +25,11 @@ import { Field3dRendererCommand, Field3dRendererCommand_AnyObj } from "../../sha
 import { clampValue, createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import Field3dController_Config from "./Field3dController_Config";
-import TabController, { setupKeyboardControls } from "./TabController";
+import TabController from "./TabController";
 
 export default class Field3dController implements TabController {
   UUID = createUUID();
 
-  private XR_BUTTON: HTMLButtonElement;
   private FIELD_SELECT: HTMLSelectElement;
 
   private sourceList: SourceList;
@@ -44,20 +42,7 @@ export default class Field3dController implements TabController {
       []
     );
     let settings = root.getElementsByClassName("field-3d-settings")[0] as HTMLElement;
-    this.XR_BUTTON = settings.getElementsByClassName("xr-button")[0] as HTMLButtonElement;
     this.FIELD_SELECT = settings.getElementsByClassName("field-select")[0] as HTMLSelectElement;
-
-    // Set up XR button
-    if (IS_LITE) {
-      Array.from(settings.getElementsByClassName("xr-control")).forEach((element) => {
-        let htmlElement = element as HTMLElement;
-        htmlElement.parentElement?.removeChild(htmlElement);
-      });
-    }
-    setupKeyboardControls(this.XR_BUTTON);
-    this.XR_BUTTON.addEventListener("click", () => {
-      window.sendMainMessage("open-xr", this.UUID);
-    });
 
     // Set up game select
     this.FIELD_SELECT.addEventListener("change", () => {
@@ -72,15 +57,6 @@ export default class Field3dController implements TabController {
     });
     this.updateFieldOptions();
     this.updateRobotOptions();
-  }
-
-  /** Sets whether XR streamling is currently active for this tab. */
-  setXRActive(active: boolean) {
-    if (active) {
-      this.XR_BUTTON.classList.add("active");
-    } else {
-      this.XR_BUTTON.classList.remove("active");
-    }
   }
 
   /** Updates field select with the latest options. */

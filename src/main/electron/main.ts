@@ -76,8 +76,6 @@ import {
 import StateTracker, { ApplicationState, SatelliteWindowState, WindowState } from "./StateTracker";
 import UpdateChecker from "./UpdateChecker";
 import { VideoProcessor } from "./VideoProcessor";
-import { XRControls } from "./XRControls";
-import { XRServer } from "./XRServer";
 import { getAssetDownloadStatus, startAssetDownloadLoop } from "./assetDownloader";
 import { createAssetFolders, getUserAssetsPath, loadAssets } from "./assetLoader";
 import {
@@ -122,7 +120,6 @@ let advantageScopeAssets: AdvantageScopeAssets = {
   joysticks: [],
   loadFailures: []
 };
-XRServer.assetsSupplier = () => advantageScopeAssets;
 
 // Live RLOG variables
 let rlogSockets: { [id: number]: net.Socket } = {};
@@ -225,13 +222,6 @@ function sendActiveSatellites() {
     sendMessage(window, "set-active-satellites", activeSatellites);
   });
 }
-
-// Send XR state to all hub windows
-XRControls.addSourceUUIDCallback((uuid) => {
-  hubWindows.forEach((window) => {
-    sendMessage(window, "set-active-xr-uuid", uuid);
-  });
-});
 
 /**
  * Process a message from a hub window.
@@ -1454,35 +1444,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       }
       break;
 
-    case "open-xr":
-      XRControls.open(message.data, window);
-      break;
-
-    case "confirm-xr-close":
-      {
-        dialog
-          .showMessageBox(window, {
-            type: "question",
-            title: "Alert",
-            message: "Stop XR Server?",
-            detail: "Closing this tab will stop the XR server and disconnect all devices.",
-            buttons: ["Don't Close", "Close"],
-            defaultId: 1,
-            icon: WINDOW_ICON
-          })
-          .then((response) => {
-            if (response.response === 1) {
-              sendMessage(window, "close-tab", true);
-              XRControls.close();
-            }
-          });
-      }
-      break;
-
-    case "update-xr-command":
-      XRServer.setHubCommand(message.data);
-      break;
-
     default:
       console.warn("Unknown message from hub renderer process", message);
       break;
@@ -2696,7 +2657,7 @@ function setupMenu() {
             const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined) return;
             if (hubWindows.includes(window)) {
-              sendMessage(window, "close-tab", false);
+              sendMessage(window, "close-tab");
             } else {
               window.destroy();
             }
