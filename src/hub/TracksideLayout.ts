@@ -24,7 +24,7 @@ export function applyTracksideLayout() {
     if (index < 0) {
       window.tabs.addTab(TabType.LineGraph);
       state = window.tabs.saveState();
-      index = state.tabs.length - 1;
+      index = state.selected;
     }
     const tab = state.tabs[index];
     tab.title = title;

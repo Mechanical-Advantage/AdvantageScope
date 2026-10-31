@@ -2243,6 +2243,7 @@ body.health-visible:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-
   top: 144px;
 }
 .health-controls {
+  flex: 0 0 80px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -2251,7 +2252,7 @@ body.health-visible:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-
 }
 .health-tile {
   position: relative;
-  flex: 1 0 116px;
+  flex: 1 0 132px;
   border-right: 1px solid var(--health-border);
 }
 .health-reading {
@@ -2334,8 +2335,8 @@ body.health-visible:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-
   }
 }
 
-body.trackside-layout div.source-list div.item {
-  height: 58px;
+body.trackside-layout div.controls-content div.source-list div.item {
+  min-height: 58px;
 }
 body.trackside-layout div.source-list div.value {
   font-size: 18px;
@@ -2348,4 +2349,12 @@ body.trackside-layout div.source-list div.value {
   body.trackside-layout div.source-list div.value {
     color: #ccc;
   }
+}
+
+.health-controls button {
+  color: inherit;
+  background: var(--health-background);
+  border: 1px solid var(--health-border);
+  border-radius: 0;
+  min-height: 24px;
 }

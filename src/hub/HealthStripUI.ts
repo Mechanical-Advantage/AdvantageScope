@@ -121,6 +121,10 @@ export default class HealthStripUI {
     document.body.classList.toggle("trackside-layout", this.state.trackside ?? false);
     this.element.hidden = !this.state.visible;
     if (!this.state.visible) return;
+    if (this.state.trackside && window.selection.getMode() === SelectionMode.Locked) {
+      const range = window.selection.getTimelineRange();
+      if (range[1] - range[0] > 30) window.selection.setTimelineRange([range[1] - 30, range[1]], false);
+    }
     if (!this.state.defaultsApplied) {
       const tiles = defaultHealthTiles(window.log.getFieldKeys());
       if (tiles.length) {
@@ -195,7 +199,12 @@ export default class HealthStripUI {
       const profile = tile.profile
         ? channelProfile({ name: tile.path, unit: base.rawUnit, enumLabels: base.enumLabels }, tile.profile)
         : base;
-      const text = formatChannelValue(value, { ...profile, unit: "" });
+      const text =
+        tile.fault && typeof value === "number" && !profile.enumLabels
+          ? value === 0
+            ? "No faults"
+            : `Fault bits 0x${value.toString(16)}`
+          : formatChannelValue(value, { ...profile, unit: "" });
       const severity = unknown
         ? "ok"
         : evaluateThreshold(typeof value === "number" ? convertChannelValue(value, profile) : value, tile);

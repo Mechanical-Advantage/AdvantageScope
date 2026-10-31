@@ -15,6 +15,10 @@ test("thresholds include boundaries and respect direction", () => {
   assert.equal(evaluateThreshold(50, tile), "warn");
   assert.equal(evaluateThreshold(60, tile), "critical");
   assert.equal(evaluateThreshold(10, { ...tile, direction: "low", warn: 25, critical: 15 }), "critical");
+  const low = { ...tile, direction: "low" as const, warn: 25, critical: 15 };
+  assert.equal(evaluateThreshold(26, low), "ok");
+  assert.equal(evaluateThreshold(25, low), "warn");
+  assert.equal(evaluateThreshold(15, low), "critical");
   assert.equal(evaluateThreshold(NaN, tile), "ok");
 });
 test("fault labels and latches retain the fault until acknowledged", () => {
