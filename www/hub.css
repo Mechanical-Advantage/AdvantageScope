@@ -2496,3 +2496,18 @@ div.source-list .spatial-warn .value {
     color: #ffb938;
   }
 }
+
+div.topic-inspector {
+  position: fixed;
+  z-index: 100;
+  max-width: 320px;
+  padding: 6px 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  word-break: break-all;
+  pointer-events: none;
+  background: var(--background-color, #fff);
+  color: var(--text-color, #000);
+  border: 1px solid #888;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
