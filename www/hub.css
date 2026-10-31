@@ -2216,3 +2216,120 @@ button.sidebar-freshness-filter:not([hidden]) {
   font-size: 11px;
   color: inherit;
 }
+
+/* Health is pinned independently of the active tab. */
+.health-strip {
+  position: absolute;
+  top: 0;
+  left: var(--side-bar-width);
+  right: 0;
+  height: 106px;
+  z-index: 5;
+  display: flex;
+  overflow-x: auto;
+  background: var(--health-background);
+  border-bottom: 1px solid var(--health-border);
+}
+.health-strip[hidden] {
+  display: none;
+}
+body:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-bar-lite) .health-strip {
+  top: 38px;
+}
+body.health-visible div.viewer {
+  top: 106px;
+}
+body.health-visible:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-bar-lite) div.viewer {
+  top: 144px;
+}
+.health-controls {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px;
+}
+.health-tile {
+  position: relative;
+  flex: 1 0 116px;
+  border-right: 1px solid var(--health-border);
+}
+.health-reading {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+.health-label {
+  font-size: 11px;
+  padding-right: 12px;
+}
+.health-value {
+  font-size: 24px;
+  font-variant-numeric: tabular-nums;
+  line-height: 34px;
+}
+.health-status {
+  font-size: 11px;
+  max-width: 150px;
+}
+.health-tile[data-severity="warn"] {
+  background: #755411;
+  color: #fff;
+}
+.health-tile[data-severity="critical"] {
+  background: #912c2c;
+  color: #fff;
+}
+.health-edit {
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+.health-strip.drop-target {
+  outline: 2px solid #888;
+  outline-offset: -2px;
+}
+.health-editor {
+  color: inherit;
+  background: var(--health-background);
+  border: 1px solid var(--health-border);
+  width: 350px;
+}
+.health-editor form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 12px;
+}
+.health-editor label {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.health-editor footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+:root {
+  --health-background: #fff;
+  --health-border: #ccc;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --health-background: #222;
+    --health-border: #444;
+  }
+}

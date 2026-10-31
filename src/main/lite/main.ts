@@ -521,6 +521,12 @@ async function handleHubMessage(message: NamedMessage) {
                 }
               },
               {
+                content: "Toggle Health Strip",
+                callback() {
+                  sendMessage(hubPort, "toggle-health-strip");
+                }
+              },
+              {
                 content: `Toggle Controls (${modifier} / )`,
                 callback() {
                   sendMessage(hubPort, "toggle-controls");

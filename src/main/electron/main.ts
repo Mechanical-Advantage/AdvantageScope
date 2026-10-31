@@ -1643,6 +1643,13 @@ function setupMenu() {
             sendMessage(window, "toggle-controls");
           }
         },
+        {
+          label: "Toggle Health Strip",
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
+            if (window && hubWindows.includes(window)) sendMessage(window, "toggle-health-strip");
+          }
+        },
         { role: "togglefullscreen" }
       ]
     },
