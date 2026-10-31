@@ -1,0 +1,101 @@
+VERSION "ENNOID_BMS_v0.1_PROVISIONAL"
+
+
+NS_ :
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: ENNOID TTCS
+
+BO_ 2147493386 ENNOID_VTot: 8 ENNOID
+ SG_ ENNOID_PackVoltage : 7|32@0- (1,0) [0|1000] "V" TTCS
+ SG_ ENNOID_ChargerVoltage : 39|32@0- (1,0) [0|1000] "V" TTCS
+
+BO_ 2147493642 ENNOID_I: 8 ENNOID
+ SG_ ENNOID_PackCurrent : 7|32@0- (1,0) [-1000|1000] "A" TTCS
+ SG_ ENNOID_PackCurrent2 : 39|32@0- (1,0) [-1000|1000] "A" TTCS
+
+BO_ 2147494154 ENNOID_VCell: 8 ENNOID
+ SG_ ENNOID_CellIndex : 7|8@0+ (1,0) [0|255] "" TTCS
+ SG_ ENNOID_CellTotal : 15|8@0+ (1,0) [0|255] "" TTCS
+ SG_ ENNOID_CellV0 : 23|16@0- (0.001,0) [-32.768|32.767] "V" TTCS
+ SG_ ENNOID_CellV1 : 39|16@0- (0.001,0) [-32.768|32.767] "V" TTCS
+ SG_ ENNOID_CellV2 : 55|16@0- (0.001,0) [-32.768|32.767] "V" TTCS
+
+BO_ 2147494666 ENNOID_Temps: 8 ENNOID
+ SG_ ENNOID_TempIndex : 7|8@0+ (1,0) [0|255] "" TTCS
+ SG_ ENNOID_TempTotal : 15|8@0+ (1,0) [0|255] "" TTCS
+ SG_ ENNOID_Temp0 : 23|16@0- (0.01,0) [-327.68|327.67] "degC" TTCS
+ SG_ ENNOID_Temp1 : 39|16@0- (0.01,0) [-327.68|327.67] "degC" TTCS
+ SG_ ENNOID_Temp2 : 55|16@0- (0.01,0) [-327.68|327.67] "degC" TTCS
+
+BO_ 2147494922 ENNOID_Hum: 6 ENNOID
+ SG_ ENNOID_BMSTemp0 : 7|16@0- (0.01,0) [-327.68|327.67] "degC" TTCS
+ SG_ ENNOID_Humidity : 23|16@0- (0.01,0) [-327.68|327.67] "%" TTCS
+ SG_ ENNOID_BMSTemp1 : 39|16@0- (0.01,0) [-327.68|327.67] "degC" TTCS
+
+BO_ 2147495178 ENNOID_Summary: 8 ENNOID
+ SG_ ENNOID_CellVoltageMin : 7|16@0- (0.001,0) [-32.768|32.767] "V" TTCS
+ SG_ ENNOID_CellVoltageMax : 23|16@0- (0.001,0) [-32.768|32.767] "V" TTCS
+ SG_ ENNOID_SoC : 39|8@0+ (0.392157,0) [0|100] "%" TTCS
+ SG_ ENNOID_SoH : 47|8@0+ (0.392157,0) [0|100] "%" TTCS
+ SG_ ENNOID_TempCellMax : 55|8@0- (1,0) [-128|127] "degC" TTCS
+ SG_ ENNOID_Charging : 56|1@1+ (1,0) [0|1] "" TTCS
+ SG_ ENNOID_Balancing : 57|1@1+ (1,0) [0|1] "" TTCS
+ SG_ ENNOID_ChargeAllowed : 58|1@1+ (1,0) [0|1] "" TTCS
+
+BO_ 2147486243 ENNOID_KeepAliveSafety: 1 TTCS
+ SG_ KA_Valid : 0|1@1+ (1,0) [0|1] "" ENNOID
+ SG_ KA_Safe : 1|1@1+ (1,0) [0|1] "" ENNOID
+ SG_ KA_WatchdogUpdate : 2|1@1+ (1,0) [0|1] "" ENNOID
+ SG_ KA_WatchdogValue255 : 3|1@1+ (1,0) [0|1] "" ENNOID
+
+CM_ "PROVISIONAL, DOCUMENTATION-ONLY vendor DBC for the ENNOID BMS in its VESC status protocol (BMS Tool: Load status protocol = VESC), the M25 unit's setting (firmware 6.6, CAN ID 10, VESC ID style, 500 kbit/s; 2026-10-12). Layouts from the newest public source, the ENNOID branch of EnnoidMe/ENNOID-BMS-Firmware (V5.2, modCANSendStatusVESC); TODO(capture): confirm against the 6.6 unit. Everything is sent once per second as one burst; all multi-byte fields are big-endian. Float signals are VESC float32_auto, bit-identical to IEEE-754 single. The firmware decoder is firmware/lib/ennoid/src/ennoid_vesc.c and does NOT use this file. Not wired into dbc/generate.py. Not listed: AH_WH (0x280A) and BAL (0x2A0A).";
+CM_ BO_ 2147493386 "1 Hz. Pack voltage = sum of cells on M25. ChargerVoltage is the BMS's charger-input measurement.";
+CM_ BO_ 2147493642 "1 Hz. MEANINGLESS on M25: the BMS has no current sensor. Not subscribed by the TTCS.";
+CM_ BO_ 2147494154 "1 Hz, one frame per 3 cells (108S = 36 frames). CellIndex is the first cell in the frame. Not subscribed by the TTCS (the summary carries min/max).";
+CM_ BO_ 2147494666 "1 Hz, one frame per 3 sensors; the last frame is shorter (DLC 4/6/8) when the count isn't a multiple of 3. EVERY channel the BMS reports, enabled or not. The TTCS uses the minimum for the charger's cold-charge check only.";
+CM_ BO_ 2147494922 "1 Hz. BMS board temperatures and humidity. Not subscribed by the TTCS.";
+CM_ BO_ 2147495178 "1 Hz. CAN_PACKET_BMS_SOC_SOH_TEMP_STAT. TempCellMax is the BMS's own maximum over its ENABLED sensors (1 degC resolution): the TTCS over-temperature input. ChargeAllowed (b2) feeds the TTCS charge enforcement and the charger. There is no discharge-allowed flag in this protocol.";
+CM_ BO_ 2147486243 "TTCS -> ENNOID safety keep-alive, fixed literal ID 0x0A23 (checked before node-ID filtering). The BMS only acts on it with 'Use Safety CAN Input' on (off on M25). TTCS sends 0x0F every 1 s.";
+BA_DEF_ BO_ "GenMsgCycleTime" INT 0 100000;
+BA_DEF_DEF_ "GenMsgCycleTime" 0;
+BA_ "GenMsgCycleTime" BO_ 2147493386 1000;
+BA_ "GenMsgCycleTime" BO_ 2147493642 1000;
+BA_ "GenMsgCycleTime" BO_ 2147494154 1000;
+BA_ "GenMsgCycleTime" BO_ 2147494666 1000;
+BA_ "GenMsgCycleTime" BO_ 2147494922 1000;
+BA_ "GenMsgCycleTime" BO_ 2147495178 1000;
+BA_ "GenMsgCycleTime" BO_ 2147486243 1000;
+SIG_VALTYPE_ 2147493386 ENNOID_PackVoltage : 1;
+SIG_VALTYPE_ 2147493386 ENNOID_ChargerVoltage : 1;
+SIG_VALTYPE_ 2147493642 ENNOID_PackCurrent : 1;
+SIG_VALTYPE_ 2147493642 ENNOID_PackCurrent2 : 1;

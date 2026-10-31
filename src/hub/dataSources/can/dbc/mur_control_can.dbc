@@ -1,0 +1,348 @@
+VERSION "MUR_Control_CAN_v1.1"
+
+
+NS_ :
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: PEDALBOX TTCS ECU BMS TELEMETRY REAR BENCH CHARGER
+
+BO_ 256 Pedal_Status: 8 PEDALBOX
+ SG_ PEDAL_Position1 : 0|10@1+ (0.1,0) [0|100] "%" ECU,TELEMETRY
+ SG_ PEDAL_Position2 : 10|10@1+ (0.1,0) [0|100] "%" ECU,TELEMETRY
+ SG_ PEDAL_BrakePressure1 : 20|16@1+ (0.1,0) [0|2000] "psi" ECU,TELEMETRY
+ SG_ PEDAL_BrakePressure2 : 36|16@1+ (0.1,0) [0|2000] "psi" ECU,TELEMETRY
+ SG_ PEDAL_StatusCounter : 56|8@1+ (1,0) [0|255] "" ECU,TELEMETRY
+
+BO_ 257 Pedal_Diagnostics: 8 PEDALBOX
+ SG_ PEDAL_BSEStatus : 0|8@1+ (1,0) [0|255] "" ECU,TELEMETRY
+ SG_ PEDAL_HeartbeatCounter : 8|8@1+ (1,0) [0|255] "" ECU,TELEMETRY
+
+BO_ 272 TTCS_Status: 8 TTCS
+ SG_ TTCS_SDCStatus1 : 0|1@1+ (1,0) [0|1] "" ECU,TELEMETRY
+ SG_ TTCS_SDCStatus2 : 1|1@1+ (1,0) [0|1] "" ECU,TELEMETRY
+ SG_ TTCS_TempBypass : 2|1@1+ (1,0) [0|1] "" ECU,TELEMETRY
+ SG_ TTCS_DHABBypass : 3|1@1+ (1,0) [0|1] "" ECU,TELEMETRY
+ SG_ TTCS_IMDState : 8|8@1+ (1,0) [0|255] "" ECU,TELEMETRY
+ SG_ TTCS_HeartbeatCounter : 16|8@1+ (1,0) [0|255] "" ECU,TELEMETRY
+ SG_ TTCS_IMDFrequency : 24|16@1+ (0.1,0) [0|6553.5] "Hz" ECU,TELEMETRY
+ SG_ TTCS_IMDDuty : 40|16@1+ (0.1,0) [0|100] "%" ECU,TELEMETRY
+
+BO_ 273 TTCS_Diagnostics: 8 TTCS
+ SG_ TTCS_IMDResistance : 0|16@1+ (1,0) [0|65535] "kOhm" ECU,TELEMETRY
+ SG_ TTCS_HVCurrent : 16|16@1- (0.1,0) [-3276.8|3276.7] "A" ECU,TELEMETRY
+ SG_ TTCS_DHABCh1Voltage : 32|13@1+ (1,0) [0|8191] "mV" ECU,TELEMETRY
+ SG_ TTCS_DHABCh2Voltage : 45|13@1+ (1,0) [0|8191] "mV" ECU,TELEMETRY
+ SG_ TTCS_HVCurrentSaturated : 58|1@1+ (1,0) [0|1] "" ECU,TELEMETRY
+ SG_ TTCS_HVCurrentMismatch : 59|1@1+ (1,0) [0|1] "" ECU,TELEMETRY
+
+BO_ 274 TTCS_Limits: 8 TTCS
+ SG_ TTCS_DCL : 0|16@1+ (0.1,0) [0|6553.5] "A" ECU,TELEMETRY
+ SG_ TTCS_CCL : 16|16@1+ (0.1,0) [0|6553.5] "A" ECU,TELEMETRY
+ SG_ TTCS_BattHighTemp : 32|16@1- (0.1,0) [-3276.8|3276.7] "degC" ECU,TELEMETRY
+ SG_ TTCS_BattTempValid : 48|1@1+ (1,0) [0|1] "" ECU,TELEMETRY
+ SG_ TTCS_LimitsCounter : 56|8@1+ (1,0) [0|255] "" ECU,TELEMETRY
+
+BO_ 576 ECU_DashData: 8 ECU
+ SG_ ECU_MotorSpeed : 0|16@1+ (1,0) [0|10000] "rpm" TTCS,TELEMETRY
+ SG_ ECU_AccuTempMax : 16|16@1- (0.1,0) [-3276.8|3276.7] "degC" TTCS,TELEMETRY
+ SG_ ECU_AccuTempMin : 32|16@1- (0.1,0) [-3276.8|3276.7] "degC" TTCS,TELEMETRY
+ SG_ ECU_AccuSOC : 48|8@1+ (1,0) [0|100] "%" TTCS,TELEMETRY
+
+BO_ 288 ECU_Control: 8 ECU
+ SG_ ECU_TorqueRequest : 0|16@1- (0.1,0) [-3276.8|3276.7] "Nm" TELEMETRY
+ SG_ ECU_TorqueLimit : 16|16@1+ (0.1,0) [0|6553.5] "Nm" TELEMETRY
+ SG_ ECU_DriveMode : 32|8@1+ (1,0) [0|255] "" TELEMETRY
+ SG_ ECU_ControlCounter : 40|8@1+ (1,0) [0|255] "" TELEMETRY
+
+BO_ 289 ECU_Cooling: 8 ECU
+ SG_ ECU_RadiatorTempIn : 0|16@1- (0.1,0) [-3276.8|3276.7] "degC" TELEMETRY
+ SG_ ECU_RadiatorTempOut : 16|16@1- (0.1,0) [-3276.8|3276.7] "degC" TELEMETRY
+ SG_ ECU_RadiatorPressureIn : 32|16@1+ (0.1,0) [0|6553.5] "psi" TELEMETRY
+ SG_ ECU_RadiatorPressureOut : 48|16@1+ (0.1,0) [0|6553.5] "psi" TELEMETRY
+
+BO_ 290 ECU_Status: 8 ECU
+ SG_ ECU_FaultFlags : 0|32@1+ (1,0) [0|4294967295] "" TELEMETRY
+ SG_ ECU_ECUState : 32|8@1+ (1,0) [0|255] "" TELEMETRY
+ SG_ ECU_StatusCounter : 40|8@1+ (1,0) [0|255] "" TELEMETRY
+ SG_ ECU_TrackMode : 48|8@1+ (1,0) [0|1] "" TELEMETRY,PEDALBOX,BENCH
+ SG_ ECU_TSActive : 56|1@1+ (1,0) [0|1] "" TELEMETRY,BENCH
+ SG_ ECU_RTDButton : 57|1@1+ (1,0) [0|1] "" TELEMETRY,BENCH
+ SG_ ECU_DashInputsStale : 58|1@1+ (1,0) [0|1] "" TELEMETRY,BENCH
+
+BO_ 291 ECU_PowerMapSet: 8 BENCH
+ SG_ BENCH_PowerMapLSTorque : 0|16@1- (0.1,0) [-3276.8|3276.7] "Nm" ECU
+ SG_ BENCH_PowerMapHSTorque : 16|16@1- (0.1,0) [-3276.8|3276.7] "Nm" ECU
+ SG_ BENCH_PowerMapRPMStart : 32|16@1+ (1,0) [0|65535] "rpm" ECU
+ SG_ BENCH_PowerMapRPMEnd : 48|16@1+ (1,0) [0|65535] "rpm" ECU
+
+BO_ 292 ECU_PitMapSet: 8 BENCH
+ SG_ BENCH_PitMapLSTorque : 0|16@1- (0.1,0) [-3276.8|3276.7] "Nm" ECU
+ SG_ BENCH_PitMapHSTorque : 16|16@1- (0.1,0) [-3276.8|3276.7] "Nm" ECU
+ SG_ BENCH_PitMapRPMStart : 32|16@1+ (1,0) [0|65535] "rpm" ECU
+ SG_ BENCH_PitMapRPMEnd : 48|16@1+ (1,0) [0|65535] "rpm" ECU
+
+BO_ 293 ECU_PowerMapStatus: 8 ECU
+ SG_ ECU_PowerMapLSTorque : 0|16@1- (0.1,0) [-3276.8|3276.7] "Nm" TELEMETRY,BENCH
+ SG_ ECU_PowerMapHSTorque : 16|16@1- (0.1,0) [-3276.8|3276.7] "Nm" TELEMETRY,BENCH
+ SG_ ECU_PowerMapRPMStart : 32|16@1+ (1,0) [0|65535] "rpm" TELEMETRY,BENCH
+ SG_ ECU_PowerMapRPMEnd : 48|16@1+ (1,0) [0|65535] "rpm" TELEMETRY,BENCH
+
+BO_ 294 ECU_PitMapStatus: 8 ECU
+ SG_ ECU_PitMapLSTorque : 0|16@1- (0.1,0) [-3276.8|3276.7] "Nm" TELEMETRY,BENCH
+ SG_ ECU_PitMapHSTorque : 16|16@1- (0.1,0) [-3276.8|3276.7] "Nm" TELEMETRY,BENCH
+ SG_ ECU_PitMapRPMStart : 32|16@1+ (1,0) [0|65535] "rpm" TELEMETRY,BENCH
+ SG_ ECU_PitMapRPMEnd : 48|16@1+ (1,0) [0|65535] "rpm" TELEMETRY,BENCH
+
+BO_ 295 ECU_InverterInhibit: 8 BENCH
+ SG_ BENCH_InverterTXInhibit : 0|8@1+ (1,0) [0|1] "" ECU
+ SG_ BENCH_InverterInhibitKey : 16|16@1+ (1,0) [0|65535] "" ECU
+
+BO_ 296 ECU_TrackModeSet: 8 BENCH
+ SG_ BENCH_TrackModeEnable : 0|8@1+ (1,0) [0|1] "" ECU
+ SG_ BENCH_TrackModeKey : 16|16@1+ (1,0) [0|65535] "" ECU
+
+BO_ 297 ECU_BuzzerTest: 8 BENCH
+ SG_ BENCH_BuzzerTestOn : 0|8@1+ (1,0) [0|1] "" ECU
+ SG_ BENCH_BuzzerTestKey : 16|16@1+ (1,0) [0|65535] "" ECU
+
+BO_ 298 ECU_RTDTest: 8 BENCH
+ SG_ BENCH_RTDTestOn : 0|8@1+ (1,0) [0|1] "" ECU
+ SG_ BENCH_RTDTestKey : 16|16@1+ (1,0) [0|65535] "" ECU
+
+BO_ 320 Telemetry_Heartbeat: 8 TELEMETRY
+ SG_ TELEM_NodeHealthBitfield : 0|16@1+ (1,0) [0|65535] "" ECU
+ SG_ TELEM_CPULoad : 16|8@1+ (1,0) [0|100] "%" ECU
+ SG_ TELEM_HeartbeatCounter : 24|8@1+ (1,0) [0|255] "" ECU
+
+BO_ 321 Watchdog_Status: 8 TELEMETRY
+ SG_ TELEM_LostNodesBitfield : 0|16@1+ (1,0) [0|65535] "" ECU
+ SG_ TELEM_TimeoutFlags : 16|16@1+ (1,0) [0|65535] "" ECU
+ SG_ TELEM_SystemState : 32|8@1+ (1,0) [0|255] "" ECU
+ SG_ TELEM_WatchdogCounter : 40|8@1+ (1,0) [0|255] "" ECU
+
+BO_ 128 MUR_Fault: 8 Vector__XXX
+ SG_ FAULT_Node : 0|8@1+ (1,0) [0|255] "" ECU,TELEMETRY
+ SG_ FAULT_Bitmask : 8|32@1+ (1,0) [0|4294967295] "" ECU,TELEMETRY
+ SG_ FAULT_Counter : 56|8@1+ (1,0) [0|255] "" ECU,TELEMETRY
+
+BO_ 336 Rear_Dynamics: 8 REAR
+ SG_ REAR_ShockPotRearLeft : 0|16@1+ (0.1,0) [0|500] "mm" TELEMETRY
+ SG_ REAR_ShockPotRearRight : 16|16@1+ (0.1,0) [0|500] "mm" TELEMETRY
+ SG_ REAR_DynamicsCounter : 48|8@1+ (1,0) [0|255] "" TELEMETRY
+
+BO_ 337 Rear_Thermal: 8 REAR
+ SG_ REAR_RadiatorTempIn : 0|16@1- (0.1,0) [-3276.8|3276.7] "degC" TELEMETRY
+ SG_ REAR_RadiatorTempOut : 16|16@1- (0.1,0) [-3276.8|3276.7] "degC" TELEMETRY
+ SG_ REAR_ThermalCounter : 48|8@1+ (1,0) [0|255] "" TELEMETRY
+
+BO_ 1793 MUR_HB_Pedalbox: 8 PEDALBOX
+ SG_ HB_PEDAL_Uptime : 0|32@1+ (1,0) [0|4294967295] "s" TELEMETRY
+ SG_ HB_PEDAL_TxErr : 32|8@1+ (1,0) [0|255] "" TELEMETRY
+ SG_ HB_PEDAL_RxErr : 40|8@1+ (1,0) [0|255] "" TELEMETRY
+ SG_ HB_PEDAL_FaultBits : 48|16@1+ (1,0) [0|65535] "" TELEMETRY
+
+BO_ 1795 MUR_HB_Rear: 8 REAR
+ SG_ HB_REAR_Uptime : 0|32@1+ (1,0) [0|4294967295] "s" TELEMETRY
+ SG_ HB_REAR_TxErr : 32|8@1+ (1,0) [0|255] "" TELEMETRY
+ SG_ HB_REAR_RxErr : 40|8@1+ (1,0) [0|255] "" TELEMETRY
+ SG_ HB_REAR_FaultBits : 48|16@1+ (1,0) [0|65535] "" TELEMETRY
+
+BO_ 1796 MUR_HB_TTCS: 8 TTCS
+ SG_ HB_TTCS_Uptime : 0|32@1+ (1,0) [0|4294967295] "s" TELEMETRY
+ SG_ HB_TTCS_TxErr : 32|8@1+ (1,0) [0|255] "" TELEMETRY
+ SG_ HB_TTCS_RxErr : 40|8@1+ (1,0) [0|255] "" TELEMETRY
+ SG_ HB_TTCS_FaultBits : 48|16@1+ (1,0) [0|65535] "" TELEMETRY
+
+BO_ 1797 MUR_HB_Charger: 8 CHARGER
+ SG_ HB_CHG_Uptime : 0|32@1+ (1,0) [0|4294967295] "s" Vector__XXX
+ SG_ HB_CHG_TxErr : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ HB_CHG_RxErr : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ HB_CHG_FaultBits : 48|16@1+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 280 CHARGER_Status: 8 CHARGER
+ SG_ CHG_State : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ CHG_Enable : 4|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ CHG_ACPresent : 5|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ CHG_ChargerFresh : 6|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ CHG_BMSFresh : 7|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ CHG_CmdVoltage : 8|16@1+ (0.1,0) [0|6553.5] "V" Vector__XXX
+ SG_ CHG_CmdCurrent : 24|16@1+ (0.1,0) [0|6553.5] "A" Vector__XXX
+ SG_ CHG_MeasCurrent : 40|16@1+ (0.1,0) [0|6553.5] "A" Vector__XXX
+ SG_ CHG_StatusCounter : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+
+CM_ BU_ PEDALBOX "Pedalbox Sensor Node";
+CM_ BU_ TTCS "Tractive System / Thermal / Cooling Sensor Node (SDC, IMD, HV cell temps)";
+CM_ BU_ ECU "Engine/Electronic Control Unit - VCU role, arbitrates torque and cooling";
+CM_ BU_ BMS "Battery Management System - CURRENTLY Orion BMS 2 (see vendor/Orion_BMS.dbc). CAN ID block 0x130-0x13F reserved for future ENNOID BMS - not yet implemented, no signals defined per design brief (no DBC/firmware exists yet). Orion BMS uses its own vendor-defined IDs (0x10,0x20,0x30,0x40,0x36,0x618) which do not fall in this block and must be loaded from vendor/Orion_BMS.dbc alongside this file.";
+CM_ BU_ TELEMETRY "Telemetry Unit (Raspberry Pi) - silently captures all Control CAN traffic, hosts watchdog";
+CM_ BU_ REAR "MUR ADDITION (PROVISIONAL - pending telemetry team sign-off): Rear Sensor Node - rear shock pots + rear cooling loop temps. ID block 0x150-0x15F reserved.";
+CM_ BU_ BENCH "MUR ADDITION (PROVISIONAL, bench-only, no on-car meaning): bench debug/calibration tool - a Raspberry Pi + CAN adapter running tools/bench/set_torque_map.py, used to set the ECU's live torque-map calibration during bring-up so firmware/apps/main_compute doesn't need reflashing to change LSMaxTorque/HSMaxTorque/RPM transition points for a motor-spin test. Distinct from the TELEMETRY node (which is the car's own passive-capture Pi) - BENCH is bench-harness-only and is never expected to be present on a running car.";
+CM_ BU_ CHARGER "MUR ADDITION (PROVISIONAL): charge-cart TTCS board running firmware/apps/charger. Same PCB as the car TTCS, separate firmware. Lives on the charge cart's own CAN bus (with the ENNOID BMS and the Valeo OBC), never on the car - its messages are in this DBC only so sn_core/can_proto keep one schema.";
+CM_ BO_ 128 "MUR ADDITION (PROVISIONAL): latched fault broadcast, any MUR sensor node transmits on fault raise (EVENT). FAULT_Node identifies the sender (1=Pedalbox 2=Dashboard 3=Rear 4=TTCS 5=Charger), so one shared message serves all nodes without signal-name collisions. Same message exists on Telemetry CAN for nodes homed there.";
+CM_ BO_ 336 "MUR ADDITION (PROVISIONAL): rear shock pot travel + counter, 100 Hz. Mirrors Dashboard_Dynamics for the rear axle.";
+CM_ BO_ 337 "MUR ADDITION (PROVISIONAL): rear cooling loop temps, 10 Hz. OPEN QUESTION - overlaps ECU_Cooling 0x121 radiator temps; ownership (ECU vs rear node sensors) to be settled at the CAN meeting.";
+CM_ BO_ 1793 "MUR ADDITION (PROVISIONAL): 1 Hz node heartbeat, ID 0x700 + node id. Uptime, CAN error counters, low 16 bits of latched fault mask. Signals are node-prefixed because the telemetry pipeline requires bus-wide unique signal names.";
+CM_ BO_ 1795 "MUR ADDITION (PROVISIONAL): see MUR_HB_Pedalbox.";
+CM_ BO_ 1796 "MUR ADDITION (PROVISIONAL): see MUR_HB_Pedalbox.";
+CM_ BO_ 1797 "MUR ADDITION (PROVISIONAL): see MUR_HB_Pedalbox. Charge-cart bus only.";
+CM_ BO_ 280 "MUR ADDITION (PROVISIONAL): charge-cart TTCS board state - ttcs_charger state machine, what it is commanding the OBC, and what the OBC reports. Charge-cart bus only; ID sits in the TTCS 0x110 block and clears every Valeo OBC ID in vendor/Valeo_OBC.dbc (0x171-0x191, 0x261-0x264, 0x305, 0x319-0x34C). Transmit rate 10 Hz.";
+CM_ BO_ 256 "Pedalbox primary sensor group. Transmit rate 100 Hz (FAST; was 250 Hz, capped 2026-10-12 for Tractive CAN load - ADC sampling stays 250 Hz). Bits 52-55 reserved for future expansion.";
+CM_ SG_ 256 PEDAL_StatusCounter "Rolling counter incremented every transmission. In-message so a frozen/stale pedal stream is detectable within one 10 ms cycle; the 10 Hz counter in Pedal_Diagnostics alone gives up to 100 ms detection latency.";
+CM_ BO_ 257 "Pedalbox diagnostics / BSE plausibility + heartbeat. Transmit rate 10 Hz.";
+CM_ SG_ 257 PEDAL_BSEStatus "Brake System Encoder / plausibility bitfield. Bit meanings TBD - to be defined with firmware team (placeholder byte reserved).";
+CM_ BO_ 272 "TTCS shutdown circuit + IMD state + heartbeat. Transmit rate 10 Hz.";
+CM_ SG_ 272 TTCS_SDCStatus1 "AIR- state, from the TTCS AIR- sense input (PC1): 1 = AIR- closed, 0 = open. Confirmed on the car 2026-10-14.";
+CM_ SG_ 272 TTCS_SDCStatus2 "AIR+ state, from the TTCS AIR+ sense input (PC2): 1 = AIR+ closed, 0 = open. AIR+ only closes after precharge. Confirmed on the car 2026-10-14.";
+CM_ SG_ 272 TTCS_IMDState "IMD operating state per Bender IMD datasheet. ASSUMPTION placeholder - exact enum values TBD, see VAL_ table below for suggested starting point.";
+CM_ SG_ 272 TTCS_TempBypass "1 = the TTCS is running its battery checks WITHOUT cell temperatures (TEST-mode bypass, TTCS_TEMP_BYPASS_IN_TEST in firmware/apps/ttcs/src/main.c): the BMS reports no temperature data, the ECU is fresh and in TEST mode, and the bypass is compiled in. Over-temperature is not monitored while this is 1. Approved for testing only (2026-10-14, no sensors fitted).";
+CM_ SG_ 272 TTCS_DHABBypass "1 = the TTCS is ignoring its DHAB current sensor (TEST-mode bypass, TTCS_DHAB_BYPASS_IN_TEST in firmware/apps/ttcs/src/main.c): the ECU is fresh and in TEST mode and the bypass is compiled in. OVERCURRENT and I_IMPLAUS are not raised and the battery/limit checks see 0 A, so pack current is NOT monitored by the TTCS while this is 1. Testing only (2026-10-14, DHAB not set up). TTCS_Diagnostics still carries the raw DHAB readings.";
+CM_ SG_ 272 TTCS_IMDFrequency "Raw measured IMD PWM frequency, before decode - for cross-checking TTCS_IMDState against a scope. 0 = no signal (no edge for 500 ms). Not filtered; a glitch edge can show as a very high value (clamped at 6553.5).";
+CM_ SG_ 272 TTCS_IMDDuty "Raw measured IMD PWM high-time duty, before decode and before any IR155-3203 inversion - for cross-checking TTCS_IMDResistance against a scope. 0 when TTCS_IMDFrequency is 0.";
+CM_ BO_ 273 "MUR CHANGE (PROVISIONAL): IMD insulation resistance + the TTCS's own HV current measurement (LEM DHAB S/134). Replaces TTCS_IMDVoltage (it was the IMD's insulation resistance all along - Bender IMDs report kOhm, not volts) and the dead TTCS_HVCellTemp1..3 (Orion cell-temp taps that were never wired; the ENNOID broadcasts its own temps). Bits 60-63 reserved. Snapshot sampled at transmit time, not averaged. Transmit rate 10 Hz (MEDIUM).";
+CM_ SG_ 273 TTCS_IMDResistance "Insulation resistance decoded from the IMD PWM duty (10/20 Hz measuring states). 65535 = no valid measurement (no signal, speed start, device error, earth-connection fault, duty outside 5..95 %). Valid readings clamp at 65534.";
+CM_ SG_ 273 TTCS_HVCurrent "Pack current from the DHAB, discharge positive. Low range channel up to 45 A, high range beyond. 0 when the TTCS analog layer is dead. When TTCS_HVCurrentSaturated is set the true current is AT LEAST this (range end, +/-200 A).";
+CM_ SG_ 273 TTCS_DHABCh1Voltage "DHAB channel 1 (+/-50 A, 40 mV/A) output in mV at the SENSOR, board divider backed out. 2500 mV = 0 A nominal: read at 0 A to calibrate the zero offset.";
+CM_ SG_ 273 TTCS_DHABCh2Voltage "DHAB channel 2 (+/-200 A, 10 mV/A) output in mV at the SENSOR, board divider backed out. 2500 mV = 0 A nominal.";
+CM_ SG_ 273 TTCS_HVCurrentSaturated "1 = high range channel at its output clamp: true current is beyond +/-200 A.";
+CM_ SG_ 273 TTCS_HVCurrentMismatch "1 = the two DHAB channels disagree beyond tolerance while both are in range (also raises fault bit I_IMPLAUS).";
+CM_ SG_ 274 TTCS_BattHighTemp "Corrected maximum received from ECU_DashData on Control CAN. ECU owns Table 5 conversion and summary fallback. Read only when TTCS_BattTempValid is 1.";
+CM_ SG_ 274 TTCS_BattTempValid "1 = ENNOID pack/summary comms are fresh and a valid ECU temperature arrived within 500 ms. Includes mapped summary fallback. 0 during missing data or TEST bypass.";
+CM_ BO_ 274 "MUR ADDITION (PROVISIONAL): computed pack current limits, the Orion BMS 2 DCL/CCL replacement. The ENNOID only produces voltage-proximity throttle percentages (no amps, no temperature derating, no internal-resistance model - verified against its modPowerElectronics.c), so the TTCS node computes amp-denominated limits from ENNOID cell-voltage extremes + an R-vs-temperature calibration table + temperature derate curves (firmware/lib/ttcs/ttcs_limits). The ECU MUST treat TTCS_DCL as a live torque/current cap (graceful derate path); the TTCS separately latches a fault and opens the SDC if actual current grossly exceeds the limit for a sustained window (enforcement path). 0 A is what an unconfigured/faulted TTCS broadcasts - consumers must treat 0 as 'no traction allowed', never as 'no limit'. Transmit rate 10 Hz.";
+CM_ BO_ 288 "ECU torque arbitration message, consumed internally by ECU/VCU logic before being translated into the Cascadia PM100DZ M192_Command_Message (vendor ID 0xC0) - these are NOT the same CAN message. Transmit rate capped at 100 Hz (Tractive CAN load; design brief said 200 Hz).";
+CM_ SG_ 288 ECU_TorqueRequest "Signed to allow negative (regen) torque requests per can_standard.md signedness rule.";
+CM_ SG_ 288 ECU_DriveMode "ASSUMPTION placeholder enum - exact drive mode set (Eco/Normal/Attack/etc.) TBD, see VAL_ table below.";
+CM_ BO_ 289 "ECU cooling loop temps/pressures, inlet and outlet. Transmit rate 20 Hz (MEDIUM).";
+CM_ BO_ 290 "ECU bitfield faults + state machine + heartbeat. Transmit rate 10 Hz, EVENT-driven on change permitted in addition.";
+CM_ SG_ 288 ECU_ControlCounter "Rolling counter for the ECU_Control stream. Renamed from ECU_HeartbeatCounter: signal names must be unique across the bus because the telemetry pipeline keys ZMQ topics on signal name alone - two messages sharing a signal name silently merge into one topic.";
+CM_ SG_ 290 ECU_StatusCounter "Rolling counter for the ECU_Status stream. Renamed from ECU_HeartbeatCounter - see ECU_ControlCounter note on bus-wide signal name uniqueness.";
+CM_ SG_ 290 ECU_TSActive "1 = the ECU sees the tractive system active: a fresh TTCS_Status (<= 500 ms) with both AIRs closed (TTCS_SDCStatus1/2), the inverter on the bus and its DC bus voltage >= 240 V. Both TEST and TRACK mode hold Standby until this has been 1 for the full startup wait (5 s of inverter disable frames with HV present); losing it drops Ready To Drive / Driving back to Standby. A build with MC_NO_TS_GATE=1 (bench power-supply spins, no AIRs) still reports this bit but does not gate on it.";
+CM_ SG_ 290 ECU_FaultFlags "32-bit bitfield per design brief FaultFlags convention. Bit assignments TBD - to be defined with firmware team.";
+CM_ SG_ 290 ECU_ECUState "ASSUMPTION placeholder state machine enum - TBD, see VAL_ table below. Standby -> ReadyToDrive requires ALL of: ECU_TSActive held for the full startup wait, average brake pressure (Pedal_Status PEDAL_BrakePressure1/2) above the ECU's RTD threshold, and a HELD press of the dash RTD button - a rising edge followed by 500 ms of continuous hold (Dashboard_Inputs DASH_ButtonStates bit 2, i.e. the dash's DIN[2], Telemetry CAN 0x201) - while that brake stays applied. Both halves are deliberate. The rising edge means a button already held - stuck, taped, or still down from a previous attempt - cannot start the car, and a drop back to Standby cannot re-arm itself without the driver releasing and pressing again. The 500 ms means a brush past the button or a knock in the cockpit is not a press; releasing early abandons the hold and does not accumulate. A stale (> 250 ms) or absent Dashboard_Inputs stream reads as not-pressed, cannot start or complete a hold, and never counts towards one. Watch ECU_RTDButton/ECU_DashInputsStale in this frame to see what the ECU makes of the button. Same in TEST and TRACK mode; on the bench ECU_RTDTest (CM_ BO_ 298) substitutes for both the brake and the button.";
+CM_ SG_ 290 ECU_RTDButton "MUR ADDITION (PROVISIONAL): 1 = the ECU currently sees the driver's ready-to-drive button pressed, i.e. a fresh Dashboard_Inputs (<= 250 ms, Telemetry CAN 0x201) with DASH_ButtonStates bit 2 set. This is the ECU's OWN view of the button, not the dash's claim about it, which is the point: the dashboard transmits on a different bus from this frame, so without this bit there is no way to tell a button that is not being pressed from a press that never reaches the ECU. Reads 0 whenever ECU_DashInputsStale is 1. It is the raw level - holding it for CTRL_RTD_HOLD_MS (500 ms) is what actually arms the car, so expect to see this sit at 1 for several frames before ECU_ECUState changes. Watch with tools/bench/can_watch.py rtd.";
+CM_ SG_ 290 ECU_DashInputsStale "MUR ADDITION (PROVISIONAL): 1 = no Dashboard_Inputs (0x201) within the last 250 ms, so the ECU has no button state and ECU_RTDButton reads 0 regardless of what the driver is doing. Distinguishes \"not pressed\" from \"not heard\", which is the first thing worth knowing when a press does nothing. Deliberately NOT a fault: a dead dashboard only means no NEW ready-to-drive request can be made, it never drops a car that is already driving, so this bit informs and gates nothing.";
+CM_ SG_ 290 ECU_TrackMode "MUR ADDITION (PROVISIONAL): 0 = TEST mode (the boot default; bench overrides active, but NOT over the Ready-to-drive sequence - see CM_ BO_ 296), 1 = TRACK mode (every override off). See CM_ BO_ 296. The pedalbox follows this signal rather than ECU_TrackModeSet, so the ECU is the single source of truth for the car's mode.";
+CM_ BO_ 291 "MUR ADDITION (PROVISIONAL, bench-only): sets firmware/lib/ctrl's power-map calibration (Car.Tasks.InverterControlTask.Power Limit Map.Torq Map.m1scr) live, replacing main_compute/src/main.c's compiled-in gs_mc_power_map so bench spin-testing doesn't require a reflash per calibration change. Raw domains match ctrl_torque_map_cal_t exactly (0.1 Nm/count signed torque, whole-rpm transition points) - no rescaling on receipt. RAM-only: lost on power-cycle/reflash, defaults back to main_compute's bench default (LS 80 Nm / HS 80 Nm, can_mur.c) until BENCH sets it again. EVENT-sent by the bench tool on operator change, not cyclic.";
+CM_ BO_ 292 "MUR ADDITION (PROVISIONAL, bench-only): see ECU_PowerMapSet - identical layout, sets the pit-limiter map (gs_mc_pit_map) instead.";
+CM_ BO_ 293 "MUR ADDITION (PROVISIONAL, bench-only): read-back broadcast of the power-map calibration main_compute is CURRENTLY using (gs_mc_power_map, after the latest ECU_PowerMapSet applied or the all-zero boot default) - lets the bench tool confirm a set actually landed instead of trusting the CAN send alone. Transmit rate matches ECU_Control/ECU_Cooling's best-effort thread cadence.";
+CM_ BO_ 294 "MUR ADDITION (PROVISIONAL, bench-only): see ECU_PowerMapStatus - identical layout, mirrors gs_mc_pit_map instead.";
+CM_ BO_ 295 "MUR ADDITION (PROVISIONAL, bench-only): asks main_compute to stop transmitting INV_Command (0xC0) entirely, so tools/bench/spin_motor.py can command the inverter directly WITHOUT powering the ECU down. Exists because two nodes transmitting the same arbitration ID with differing payloads is not a harmless race: both win arbitration through the identical ID field and then disagree in the data field, which is a bit error, an error frame and a retransmit storm that can drive either node error-passive or bus-off. DEADMAN, not a latch: main_compute holds the inhibit only while these frames keep arriving and resumes its own inverter TX ~500 ms after the last one, so a crashed or Ctrl-C'd bench tool can never leave the ECU permanently muted. On resume the ECU restarts its startup wait, which re-runs the STANDBY window and therefore re-issues the InverterEnable=0 frames that release the Cascadia's enable lockout - necessary because whatever was commanding in the meantime will have left the inverter enabled. Sent at 20 Hz by the bench tool while active; absent entirely otherwise. Honoured in TEST mode only: in TRACK mode (CM_ BO_ 296) main_compute ignores it, so a bench tool cannot take the inverter away from a car in track mode.";
+CM_ SG_ 295 BENCH_InverterTXInhibit "1 = stop transmitting INV_Command, 0 = resume immediately (an explicit 0 is honoured at once rather than waiting out the deadman, so a tool can hand control back cleanly on exit).";
+CM_ SG_ 295 BENCH_InverterInhibitKey "Must equal 0xA55A or the frame is ignored. This is deliberate friction, not security: muting the ECU's torque path is not something a stray or misaddressed frame should ever be able to do by accident.";
+CM_ BO_ 296 "MUR ADDITION (PROVISIONAL): switches main_compute from TEST mode to TRACK mode. BOTH modes now run the real Ready-to-drive sequence (brake held above its threshold + the dash RTD button held 500 ms, after the startup wait) - TEST mode no longer forces the state to Ready To Drive, so the sequence that is scrutineered on track is the same one exercised on the bench. What TEST mode still relaxes: ECU_ErrorCheck faults are logged rather than latched to Fault (so a bench with no pedalbox or a cold inverter still reaches Ready To Drive), and ECU_InverterInhibit / ECU_BuzzerTest / ECU_RTDTest are honoured. The pedalbox reports real brake pressure in both modes. TRACK mode turns every one of those off, so the real interlocks decide. In both modes torque is bounded only by the torque map and the inverter's EEPROM limits (there is no TEST-mode torque cap). ONE-WAY: nothing on CAN switches back - only a reset of the ECU returns it to TEST mode - so no frame, stray or deliberate, can bypass the interlocks on a car in track mode. The flip side: an ECU reset on track (brown-out, watchdog) comes back up in TEST mode. On entry the ECU drops to Standby and restarts its startup wait. Its mode is broadcast as ECU_Status.ECU_TrackMode. EVENT-sent by an operator, e.g. cansend can1 128#0100AC7E00000000.";
+CM_ SG_ 296 BENCH_TrackModeEnable "1 = enter TRACK mode. Any other value is ignored: there is no CAN path back to TEST mode (see CM_ BO_ 296).";
+CM_ BO_ 297 "MUR ADDITION (PROVISIONAL, bench-only): sounds the ready-to-drive buzzer (ECU PB11) on demand, so the buzzer and its wiring can be checked without driving the car through a full Ready-to-drive sequence - useful because in TRACK mode that sequence cannot be reached at all until the RTD button arrives over CAN. DEADMAN, not a latch, for the same reason as ECU_InverterInhibit but more sharply: the buzzer IS the car's audible ready-to-drive announcement, so a crashed or Ctrl-C'd bench tool must not be able to leave it sounding. main_compute holds it only while these frames keep arriving and releases ~500 ms after the last one. Sent at 20 Hz by the bench tool while active; absent entirely otherwise. Honoured in TEST mode only: a car in TRACK mode (CM_ BO_ 296) ignores it, so no frame can make a track-mode car announce a ready-to-drive it is not in. It never changes the car state and never suppresses the real one-shot - if the state machine sounds the buzzer while a test is held, the buzzer simply stays on. Use tools/bench/buzzer.py.";
+CM_ SG_ 297 BENCH_BuzzerTestOn "1 = hold the buzzer on (refreshes the deadman). 0 = release it immediately. Only acted on when BENCH_BuzzerTestKey matches.";
+CM_ BO_ 298 "MUR ADDITION (PROVISIONAL, bench-only): stands in for the driver's brake and RTD button, so a bench rig can drive main_compute through the REAL Ready-to-drive sequence with no pedalbox and no dashboard on the bus. Exists because TEST mode no longer forces the state to Ready To Drive (see CM_ BO_ 296): the sequence is now the same in both modes, which is the point, but it left the motor-spin bench with no way to reach Ready To Drive at all. While held this satisfies exactly two inputs - brake-ready and the RTD button, put through the same 500 ms held-press detector as the real one, so the car arms ~0.5 s after the frames start rather than instantly - and nothing else: the startup wait, the tractive-system gate (unless compiled out with MC_NO_TS_GATE=1) and every other condition still have to pass on their own merits, so this cannot spin a motor the car was not otherwise willing to spin. DEADMAN, not a latch, like ECU_InverterInhibit and ECU_BuzzerTest: main_compute honours it only while these frames keep arriving and drops it ~500 ms after the last one, which also means a crashed or Ctrl-C'd bench tool returns the car to Standby instead of leaving it armed. Note the asymmetry that follows from the deadman: releasing drops Ready To Drive, so a bench spin must keep these frames flowing for its whole duration. Sent at 20 Hz by the bench tool while active; absent entirely otherwise. Honoured in TEST mode only - a car in TRACK mode ignores it, so no frame can put a track-mode car into Ready To Drive without its driver. Use tools/bench/rtd.py.";
+CM_ SG_ 298 BENCH_RTDTestOn "1 = hold the virtual brake + RTD button (refreshes the deadman). 0 = release both immediately, dropping the car back to Standby. Only acted on when BENCH_RTDTestKey matches.";
+CM_ SG_ 298 BENCH_RTDTestKey "Must equal 0x5D7E or the frame is ignored. A fourth distinct key, so a mis-built inverter-inhibit (0xA55A), track-mode (0x7EAC) or buzzer-test (0xBE11) frame can never put the car into Ready To Drive.";
+CM_ SG_ 296 BENCH_TrackModeKey "Must equal 0x7EAC or the frame is ignored. Deliberate friction, like ECU_InverterInhibit's key, and a different value so a mis-built inhibit frame can never switch modes.";
+CM_ BO_ 320 "Telemetry Pi heartbeat + system health broadcast onto Control CAN. Transmit rate 10 Hz.";
+CM_ SG_ 320 TELEM_NodeHealthBitfield "One bit per monitored node (bit0=Pedalbox, bit1=TTCS, bit2=ECU, bit3=BMS) - ASSUMPTION bit order, confirm with telemetry firmware.";
+CM_ BO_ 321 "Watchdog / lost-node broadcast. Cyclic 1 Hz backstop + immediate retransmit on state change (was pure EVENT: a single lost event frame meant the ECU never learned a node died; the cyclic copy bounds that to 1 s and lets receivers treat watchdog silence itself as a failure).";
+CM_ SG_ 321 TELEM_WatchdogCounter "Rolling counter incremented every transmission so receivers can detect a dead/frozen watchdog service, not just missed frames.";
+CM_ SG_ 321 TELEM_LostNodesBitfield "One bit per node considered lost (same bit order assumption as TELEM_NodeHealthBitfield).";
+CM_ SG_ 321 TELEM_SystemState "ASSUMPTION placeholder enum - see VAL_ table below.";
+
+BA_DEF_ BO_ "GenMsgCycleTime" INT 0 100000;
+BA_DEF_ BO_ "GenMsgSendType" ENUM "Cyclic","OnChange","Event";
+BA_DEF_ "BusType" STRING ;
+BA_DEF_DEF_ "GenMsgCycleTime" 0;
+BA_DEF_DEF_ "GenMsgSendType" "Cyclic";
+BA_DEF_DEF_ "BusType" "CAN";
+BA_ "BusType" "CAN";
+BA_ "GenMsgCycleTime" BO_ 256 10;
+BA_ "GenMsgCycleTime" BO_ 257 100;
+BA_ "GenMsgCycleTime" BO_ 272 100;
+BA_ "GenMsgCycleTime" BO_ 273 100;
+BA_ "GenMsgCycleTime" BO_ 274 100;
+BA_ "GenMsgCycleTime" BO_ 288 10;
+BA_ "GenMsgCycleTime" BO_ 289 50;
+BA_ "GenMsgCycleTime" BO_ 290 100;
+BA_ "GenMsgCycleTime" BO_ 291 0;
+BA_ "GenMsgCycleTime" BO_ 292 0;
+BA_ "GenMsgCycleTime" BO_ 293 100;
+BA_ "GenMsgCycleTime" BO_ 294 100;
+BA_ "GenMsgCycleTime" BO_ 295 50;
+BA_ "GenMsgCycleTime" BO_ 296 0;
+BA_ "GenMsgCycleTime" BO_ 297 50;
+BA_ "GenMsgCycleTime" BO_ 298 50;
+BA_ "GenMsgCycleTime" BO_ 320 100;
+BA_ "GenMsgCycleTime" BO_ 321 1000;
+BA_ "GenMsgCycleTime" BO_ 128 0;
+BA_ "GenMsgCycleTime" BO_ 336 10;
+BA_ "GenMsgCycleTime" BO_ 337 100;
+BA_ "GenMsgCycleTime" BO_ 1793 1000;
+BA_ "GenMsgCycleTime" BO_ 1795 1000;
+BA_ "GenMsgCycleTime" BO_ 1796 1000;
+BA_ "GenMsgCycleTime" BO_ 1797 1000;
+BA_ "GenMsgCycleTime" BO_ 280 100;
+BA_ "GenMsgSendType" BO_ 256 0;
+BA_ "GenMsgSendType" BO_ 257 0;
+BA_ "GenMsgSendType" BO_ 272 0;
+BA_ "GenMsgSendType" BO_ 273 0;
+BA_ "GenMsgSendType" BO_ 274 0;
+BA_ "GenMsgSendType" BO_ 288 0;
+BA_ "GenMsgSendType" BO_ 289 0;
+BA_ "GenMsgSendType" BO_ 290 0;
+BA_ "GenMsgSendType" BO_ 291 2;
+BA_ "GenMsgSendType" BO_ 292 2;
+BA_ "GenMsgSendType" BO_ 293 0;
+BA_ "GenMsgSendType" BO_ 294 0;
+BA_ "GenMsgSendType" BO_ 295 0;
+BA_ "GenMsgSendType" BO_ 296 2;
+BA_ "GenMsgSendType" BO_ 297 0;
+BA_ "GenMsgSendType" BO_ 298 0;
+BA_ "GenMsgSendType" BO_ 320 0;
+BA_ "GenMsgSendType" BO_ 321 0;
+BA_ "GenMsgSendType" BO_ 128 2;
+BA_ "GenMsgSendType" BO_ 336 0;
+BA_ "GenMsgSendType" BO_ 337 0;
+BA_ "GenMsgSendType" BO_ 1793 0;
+BA_ "GenMsgSendType" BO_ 1795 0;
+BA_ "GenMsgSendType" BO_ 1796 0;
+BA_ "GenMsgSendType" BO_ 1797 0;
+BA_ "GenMsgSendType" BO_ 280 0;
+
+VAL_ 280 CHG_State 0 "Idle" 1 "Precheck" 2 "CC" 3 "CV" 4 "Done" 5 "Fault" ;
+VAL_ 272 TTCS_IMDState 0 "Normal" 1 "Undervoltage" 2 "Speed Start" 3 "Device Error" 4 "Earth Fault" 5 "Ground Fault Warning" 6 "SST Warning" 7 "SST Fault" 255 "Invalid/Init" ;
+VAL_ 288 ECU_DriveMode 0 "Off" 1 "Eco" 2 "Normal" 3 "Attack" 255 "Invalid/Init" ;
+VAL_ 290 ECU_ECUState 0 "Init" 1 "Standby" 2 "Ready To Drive" 3 "Driving" 4 "Fault" 5 "Shutdown" 255 "Invalid/Init" ;
+VAL_ 290 ECU_TrackMode 0 "Test" 1 "Track" ;
+VAL_ 321 TELEM_SystemState 0 "Nominal" 1 "Degraded" 2 "Safe State" 3 "Fault" ;
+
+CM_ BO_ 576 "Canonical ECU accumulator temperatures and SoC, mirrored byte-for-byte from Telemetry CAN at 10 Hz. TTCS consumes the mapped maximum; raw 32767 is invalid. TTCS requires a new frame within 500 ms. Summary fallback provides no minimum.";
+BA_ "GenMsgCycleTime" BO_ 576 100;
+BA_ "GenMsgSendType" BO_ 576 0;
+
+CM_ SG_ 576 ECU_AccuTempMax "Canonical car accumulator maximum, converted by ECU using voltage recovery and Table 5. Prefer complete fresh sweeps; if no sweep frames are fresh, use a fresh mapped summary maximum (1 degC input resolution). Partial or invalid live sweeps prevent fallback. 0x7FFF is invalid. Identical ECU_DashData bytes reach TTCS on Control CAN and screen on Telemetry/Dash CAN.";
+
+CM_ SG_ 576 ECU_AccuTempMin "Corrected minimum from complete fresh sensor sweeps. 0x7FFF is invalid, including during summary-maximum fallback; summary supplies no minimum.";
