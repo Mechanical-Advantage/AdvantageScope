@@ -21,6 +21,7 @@ export function traceDash(index: number): number[] {
   return [[], [8, 4], [2, 4]][index % 3];
 }
 export function compatibleProfiles(a: ChannelProfile, b: ChannelProfile): boolean {
+  if (a.dimension && b.dimension && a.dimension !== b.dimension) return false;
   if (a.from && b.from) return Units.GROUP_BY_UNIT[a.from] === Units.GROUP_BY_UNIT[b.from];
   return !a.rawUnit || !b.rawUnit || a.rawUnit === b.rawUnit;
 }

@@ -33,6 +33,7 @@ export default class LineGraphRenderer implements TabRenderer {
   private mouseDownX = 0;
   private grabZoomActive = false;
   private grabZoomStartTime = 0;
+  private interacted = false;
   private lastCursorX: number | null = null;
   private lastHoveredTime: number | null = null;
   private lastCursorInRect = false;
@@ -61,6 +62,7 @@ export default class LineGraphRenderer implements TabRenderer {
 
     // Selection handling
     this.SCROLL_OVERLAY.addEventListener("mousedown", (event) => {
+      this.interacted = true;
       this.mouseDownX = event.clientX - this.SCROLL_OVERLAY.getBoundingClientRect().x;
       if (event.shiftKey && this.lastHoveredTime !== null) {
         this.grabZoomActive = true;
@@ -103,6 +105,7 @@ export default class LineGraphRenderer implements TabRenderer {
       this.SCROLL_OVERLAY,
       (dx: number, dy: number, isPan: boolean, _cursorX: number, _cursorY: number) => {
         if (root.hidden) return;
+        this.interacted = true;
         window.selection.applyTimelineScroll(dx, isPan ? 0 : dy, this.SCROLL_OVERLAY.clientWidth);
 
         if (window.preferences && !window.preferences.hasScrolledLineGraph && !this.isFadingOut) {
@@ -138,6 +141,7 @@ export default class LineGraphRenderer implements TabRenderer {
     if (this.HELP_OVERLAY) {
       const hasScrolled = window.preferences?.hasScrolledLineGraph ?? false;
       this.HELP_OVERLAY.style.display =
+        this.interacted ||
         hasScrolled ||
         command.selectionMode === SelectionMode.Locked ||
         command.selectionMode === SelectionMode.Playback
@@ -183,7 +187,16 @@ export default class LineGraphRenderer implements TabRenderer {
       command.displayOffset,
       command.xUnit,
       command.lapLabels,
-      command.leftFields.map((field) => [field.values.length, field.color, field.type, field.size]),
+      command.thresholds,
+      command.leftFields.map((field) => [
+        field.values.length,
+        field.color,
+        field.type,
+        field.size,
+        field.dash,
+        field.focus,
+        field.dim
+      ]),
       command.discreteFields.map((field) => [
         field.values.length,
         field.color,
@@ -191,7 +204,15 @@ export default class LineGraphRenderer implements TabRenderer {
         field.toggleReference,
         field.colorMap ? field.values : null // Specific values affect color-mapped fields so serialize full state
       ]),
-      command.rightFields.map((field) => [field.values.length, field.color, field.type, field.size]),
+      command.rightFields.map((field) => [
+        field.values.length,
+        field.color,
+        field.type,
+        field.size,
+        field.dash,
+        field.focus,
+        field.dim
+      ]),
       command.alerts.map((row) => row.map((alert) => [alert.type, alert.text, alert.range]))
     ];
     let renderStateString = JSON.stringify(renderState);
@@ -487,6 +508,22 @@ export default class LineGraphRenderer implements TabRenderer {
     context.setLineDash([]);
     context.globalAlpha = 1;
 
+    for (const threshold of command.thresholds ?? []) {
+      const range = threshold.axis === "left" ? command.leftRange : command.rightRange;
+      const y = scaleValue(threshold.value, range, [graphTop + graphHeightOpen, graphTop]);
+      if (y < graphTop || y > graphTop + graphHeight) continue;
+      context.strokeStyle = threshold.critical ? "#e66" : "#dba957";
+      context.fillStyle = context.strokeStyle;
+      context.lineWidth = 1;
+      context.setLineDash([6, 4]);
+      context.beginPath();
+      context.moveTo(graphLeft, y);
+      context.lineTo(graphLeft + graphWidth, y);
+      context.stroke();
+      context.textAlign = "left";
+      context.fillText(threshold.label, graphLeft + 6, y - 5);
+    }
+    context.setLineDash([]);
     // Update hovered time based on graph layout
     if (this.lastCursorX === null || this.lastCursorX < graphLeft || this.lastCursorX > graphLeft + graphWidth) {
       if (!this.didClearHoveredTime) {
@@ -802,6 +839,7 @@ export default class LineGraphRenderer implements TabRenderer {
 }
 
 export type LineGraphRendererCommand = {
+  thresholds?: { axis: "left" | "right"; value: number; label: string; critical: boolean }[];
   leftTitle?: string;
   rightTitle?: string;
   xUnit?: "s" | "m";
