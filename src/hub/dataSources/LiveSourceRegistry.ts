@@ -7,6 +7,7 @@
 
 import { LiveSourceInfo } from "../../shared/LiveSourceInfo";
 import { LiveDataSource } from "./LiveDataSource";
+import MURSource from "./mur/MURSource";
 import NT4Source, { NT4Mode } from "./nt4/NT4Source";
 
 /** A live data source that can be selected by the user. */
@@ -27,6 +28,13 @@ export const LIVE_SOURCES: LiveSourceDefinition[] = [
     defaultAddress: "127.0.0.1",
     liteCompatible: true,
     create: () => new NT4Source(NT4Mode.Default)
+  },
+  {
+    id: "mur",
+    name: "MUR Telemetry",
+    defaultAddress: "http://localhost:8090",
+    liteCompatible: true,
+    create: () => new MURSource()
   }
 ];
 
