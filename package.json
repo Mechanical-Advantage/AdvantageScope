@@ -23,7 +23,10 @@
     "mock-backend": "node tools/mock-backend/src/main.ts",
     "postinstall": "node installElectron.mjs && node getLicenses.mjs && node bundleLiteAssets.mjs",
     "test": "node tools/run-tests.mjs",
-    "mqtt-mock": "node tools/mqtt-mock/main.mjs"
+    "mqtt-mock": "node tools/mqtt-mock/main.mjs",
+    "lite-build": "node bundleLiteAssets.mjs && ASCOPE_DISTRIBUTION=LITE npm run compile",
+    "lite-serve": "node tools/lite-serve/main.mjs",
+    "lite-smoke": "node tools/lite-smoke.mjs"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.26.0",
@@ -63,6 +66,7 @@
     "license-check-and-add": "^4.0.5",
     "lz4js": "^0.2.0",
     "mathjs": "11.3.0",
+    "playwright": "^1.64.1",
     "prettier": "3.0.3",
     "prettier-plugin-organize-imports": "^4.0.0",
     "protobufjs": "^8.3.0",

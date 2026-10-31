@@ -556,6 +556,10 @@ document.addEventListener("drop", (event) => {
   event.preventDefault();
   event.stopPropagation();
 
+  if (IS_LITE) {
+    if (event.dataTransfer?.files.length) window.sendMainMessage("show-open-log");
+    return;
+  }
   if (event.dataTransfer) {
     let files: string[] = [];
     for (const file of event.dataTransfer.files) {

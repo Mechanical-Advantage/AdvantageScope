@@ -17,6 +17,16 @@ export function validateLiveAddress(source: string, address: string): string | n
       return "Enter a valid WebSocket broker URL, for example ws://localhost:1884.";
     }
   }
+  if (source === "foxglove") {
+    try {
+      const url = new URL(/^[a-z]+:\/\//i.test(address) ? address : "ws://" + address);
+      return ["ws:", "wss:"].includes(url.protocol) && url.hostname && !url.username && !url.password && !url.hash
+        ? null
+        : "Enter a ws:// or wss:// Foxglove server URL.";
+    } catch {
+      return "Enter a valid Foxglove server address, for example ws://localhost:8765.";
+    }
+  }
   if (source === "mur") {
     try {
       const url = new URL(/^[a-z]+:\/\//i.test(address) ? address : "http://" + address);

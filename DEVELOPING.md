@@ -49,14 +49,64 @@ Use `_electron` from `playwright`:
 
 The hub window is the one whose URL ends in `hub.html`.
 
-## Build Lite (web)
+## Build and deploy Lite (web)
+
+Build on a development machine (Node and npm required):
 
 ```bash
-ASCOPE_DISTRIBUTION=LITE npm run compile    # bundles into lite/static/bundles/
-cd lite
-pip install -r requirements.txt
-python3 lite_server.py                      # serves http://localhost:5808
+npm install
+npm run lite-build
+npm run lite-serve -- --port 5808 --backend http://127.0.0.1:8090
 ```
+
+Open `http://<base-station-host>:5808/` from a pit browser. The Node server binds to
+all interfaces, serves the bundled assets and proxies `/api/` HTTP and WebSocket
+requests to the MUR backend. The MUR connection dialog defaults to the page's
+own origin, so remote browsers connect to the base station rather than their own
+localhost. The address is editable: `http://base:8090/prefix` uses
+`/prefix/api/v1/...`, for a reverse proxy deployment. Serve at the origin root.
+For HTTPS, terminate TLS at a reverse proxy with WebSocket upgrades enabled;
+ROS and MQTT addresses must then use WSS.
+
+For a Linux/Raspberry Pi deployment, copy `lite/static/` (dereference its `www`
+symlink, e.g. `cp -RL lite/static staging/lite/static`) and
+`tools/lite-serve/main.mjs` preserving that directory structure. Run the Node
+server with a recent Node LTS; it needs no npm packages at runtime. The mock and
+build dependencies are development-only. The server has no host filesystem log
+browser or asset upload endpoint; logs and URDF folders are selected locally.
+
+The existing Python server is also supported:
+
+```bash
+cd lite
+python3 -m pip install -r requirements.txt
+python3 lite_server.py
+```
+
+It serves on port 5808. Enter the MUR backend address explicitly, or put both
+behind a reverse proxy routing `/api/` to the backend; Python does not proxy it.
+The optional `--enable-file-access` enables the original base-station log browser
+and asset ZIP uploads. Use File → Browse Base Station Logs for that flow.
+
+File → Open Log uses the browser file picker. Select CSV, candump `.log`, MCAP,
+JSONL, WPILOG or RLOG; select companion `.dbc`, `<stem>.json`,
+`<stem>.markers.csv` and `<file>.enums.json` alongside the log when needed.
+Without custom DBCs, CAN decoding uses the bundled mur-msgs set. File → Export
+Layout downloads desktop-compatible JSON; Import Layout restores its first hub.
+Preferences and the current layout persist in this browser's local storage.
+The 3D tab's Load URDF folder uses Chromium's directory picker and embeds local
+meshes in layouts; expand xacro first.
+
+```bash
+npm run lite-smoke                 # builds, starts isolated servers and Chromium
+npm run lite-smoke -- --skip-build # reuse the last Lite build
+```
+
+Install Chromium with `npx playwright install chromium` if it is not cached.
+The smoke script is separate from `npm test`; it checks same-host MUR HTTP/WS,
+a live value, graph, health strip, layout download/upload and CSV import, then
+closes its browser and servers. Override `LITE_SMOKE_PORT` and
+`LITE_SMOKE_MOCK_PORT` if its defaults (15808 and 18091) are occupied.
 
 ## Package the desktop app
 

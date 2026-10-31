@@ -186,6 +186,59 @@ function openPreferences() {
   });
 }
 
+// Keep File objects rather than duplicate large byte arrays while the importer runs.
+let latestState: HubState | null = null;
+let uploadedFiles = new Map<string, File>();
+
+function chooseFile(accept: string, multiple: boolean, callback: (files: File[]) => void) {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = accept;
+  input.multiple = multiple;
+  input.onchange = () => callback(Array.from(input.files ?? []));
+  input.click();
+}
+
+function openLocalLog() {
+  chooseFile(".wpilog,.wpilogxz,.rlog,.log,.csv,.mcap,.jsonl,.dbc,.json", true, (files) => {
+    uploadedFiles = new Map(files.map((file) => [file.name, file]));
+    const logs = files.filter((file) => /\.(wpilog|wpilogxz|rlog|log|csv|mcap|jsonl)$/i.test(file.name));
+    sendMessage(hubPort, "open-files", {
+      files: logs.filter((file) => !file.name.endsWith(".markers.csv")).map((file) => file.name),
+      merge: false
+    });
+  });
+}
+
+function exportLayout() {
+  const state = latestState;
+  if (!state) return;
+  const url = URL.createObjectURL(
+    new Blob([JSON.stringify({ version: LITE_VERSION, hubs: [state], satellites: [] }, null, 2)], {
+      type: "application/json"
+    })
+  );
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "mur-voir-layout.json";
+  link.click();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function importLayout() {
+  chooseFile(".json", false, async ([file]) => {
+    if (!file) return;
+    try {
+      const data = JSON.parse(await file.text());
+      const state = data.hubs?.[0];
+      if (!state?.sidebar || !Array.isArray(state.tabs?.tabs)) throw new Error("Unrecognized layout format");
+      sendMessage(hubPort, "restore-state", state);
+    } catch (error) {
+      window.alert("Failed to import layout: " + String(error));
+    }
+  });
+}
+
 /** Opens a popup window for downloading logs. */
 function openDownload() {
   openPopupWindow("www/download.html", [35, 65], "percent", (message, port) => {
@@ -323,7 +376,7 @@ async function handleHubMessage(message: NamedMessage) {
       break;
 
     case "show-open-log":
-      openDownload();
+      openLocalLog();
       break;
 
     case "open-files-request":
@@ -336,6 +389,7 @@ async function handleHubMessage(message: NamedMessage) {
       break;
 
     case "save-state":
+      latestState = message.data;
       localStorage.setItem(LocalStorageKeys.STATE, JSON.stringify(message.data));
       localStorage.setItem(LocalStorageKeys.SIDEBAR_WIDTH, JSON.stringify(message.data.sidebar.width));
       break;
@@ -378,20 +432,52 @@ async function handleHubMessage(message: NamedMessage) {
         let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
         if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
 
-        let response = await fetch(`logs/${encodeURIComponent(path)}?folder=${encodeURIComponent(prefs.remotePath)}`);
-        let buffer = await response.arrayBuffer();
-        let array = new Uint8Array(buffer);
-        let error: string | null = null;
-        if (extension === "wpilogxz") {
-          array = await WorkerManager.request("bundles/xzWorker.js", array);
-          if (array.length === 0) error = "Failed to decompress WPILOG file.";
-        }
+        try {
+          const uploaded = uploadedFiles.get(path);
+          let buffer: ArrayBuffer;
+          if (uploaded) {
+            buffer = await uploaded.arrayBuffer();
+          } else {
+            const response = await fetch(
+              `logs/${encodeURIComponent(path)}?folder=${encodeURIComponent(prefs.remotePath)}`
+            );
+            if (!response.ok) throw new Error(response.statusText);
+            buffer = await response.arrayBuffer();
+          }
+          let array = new Uint8Array(buffer);
+          let error: string | null = null;
+          if (extension === "wpilogxz") {
+            array = await WorkerManager.request("bundles/xzWorker.js", array);
+            if (array.length === 0) error = "Failed to decompress WPILOG file.";
+          }
 
-        sendMessage(hubPort, "historical-data", {
-          files: [array],
-          error: error,
-          uuid: uuid
-        });
+          sendMessage(hubPort, "historical-data", {
+            files: await (async () => {
+              const read = async (name: string) => {
+                const file = uploadedFiles.get(name);
+                return file ? new Uint8Array(await file.arrayBuffer()) : null;
+              };
+              const stem = path.replace(/\.[^.]+$/, "");
+              if (extension === "csv") return [array, await read(path + ".enums.json")];
+              if (extension === "log") {
+                const dbcs = Array.from(uploadedFiles.values()).filter((file) => file.name.endsWith(".dbc"));
+                const pack = dbcs.length
+                  ? new TextEncoder().encode(
+                      JSON.stringify(
+                        Object.fromEntries(await Promise.all(dbcs.map(async (file) => [file.name, await file.text()])))
+                      )
+                    )
+                  : null;
+                return [array, await read(stem + ".json"), await read(stem + ".markers.csv"), pack];
+              }
+              return [array];
+            })(),
+            error: error,
+            uuid: uuid
+          });
+        } catch (error) {
+          sendMessage(hubPort, "historical-data", { files: [null], error: String(error), uuid });
+        }
       }
       break;
 
@@ -471,9 +557,12 @@ async function handleHubMessage(message: NamedMessage) {
               {
                 content: `Open Log (\u21e7 ${modifier} O)`,
                 callback() {
-                  openDownload();
+                  openLocalLog();
                 }
               },
+              { content: "Browse Base Station Logs…", callback: openDownload },
+              { content: "Export Layout…", callback: exportLayout },
+              { content: "Import Layout…", callback: importLayout },
               {
                 content: `Connect\u2026 (${modifier} K)`,
                 callback() {
@@ -1181,7 +1270,7 @@ function processKeydown(event: KeyboardEvent): boolean {
   let modifier = event.metaKey || event.ctrlKey;
   let lowerKey = event.key.toLowerCase();
   if (event.shiftKey && modifier && lowerKey === "o") {
-    openDownload();
+    openLocalLog();
   } else if (!event.shiftKey && modifier && lowerKey === "k") {
     sendMessage(hubPort, "show-connect-dialog");
   } else if (!event.shiftKey && modifier && lowerKey === "\\") {
