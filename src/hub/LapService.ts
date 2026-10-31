@@ -161,10 +161,11 @@ class LapService {
       const timestamps = [...new Set([...data.values()].flatMap((d) => d?.timestamps ?? []))].sort((a, b) => a - b);
       const firstFix =
         timestamps.find(
-          (t) => Math.abs(coordinate(s.latitude, t)) > 0.001 || Math.abs(coordinate(s.longitude, t)) > 0.001
+          (t) => Math.abs(held(s.latitude, t) ?? 0) > 0.001 && Math.abs(held(s.longitude, t) ?? 0) > 0.001
         ) ?? timestamps[0];
       const origin = { lat: coordinate(s.latitude, firstFix) || 0, lon: coordinate(s.longitude, firstFix) || 0 };
       timestamps.forEach((t) => {
+        if (lat && t < firstFix) return;
         const latitude = coordinate(s.latitude, t),
           longitude = coordinate(s.longitude, t);
         if (
