@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { IS_LITE } from "../../shared/buildConstants";
 import { LiveSourceInfo } from "../../shared/LiveSourceInfo";
 import FoxgloveSource from "./foxglove/FoxgloveSource";
 import { LiveDataSource } from "./LiveDataSource";
@@ -41,7 +42,7 @@ export const LIVE_SOURCES: LiveSourceDefinition[] = [
   {
     id: "mur",
     name: "MUR Telemetry",
-    defaultAddress: "http://localhost:8090",
+    defaultAddress: IS_LITE ? window.location.origin : "http://localhost:8090",
     liteCompatible: true,
     create: () => new MURSource()
   },
