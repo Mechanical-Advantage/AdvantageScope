@@ -7,6 +7,16 @@
 
 export function validateLiveAddress(source: string, address: string): string | null {
   if (/\s/.test(address)) return "Address cannot contain spaces.";
+  if (source === "mqtt") {
+    try {
+      const url = new URL(address);
+      return ["ws:", "wss:"].includes(url.protocol) && url.hostname && !url.username && !url.password && !url.hash
+        ? null
+        : "Enter a ws:// or wss:// broker URL; use the separate credentials fields.";
+    } catch {
+      return "Enter a valid WebSocket broker URL, for example ws://localhost:1884.";
+    }
+  }
   if (source === "mur") {
     try {
       const url = new URL(/^[a-z]+:\/\//i.test(address) ? address : "http://" + address);

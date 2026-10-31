@@ -18,6 +18,13 @@ import { validateLiveAddress } from "./dataSources/LiveAddress";
 import { LiveDataSourceStatus } from "./dataSources/LiveDataSource";
 import { getAvailableLiveSources } from "./dataSources/LiveSourceRegistry";
 import { Freshness, LiveStatusProvider, LiveStatusSummary, SimAction } from "./dataSources/LiveStatus";
+import {
+  DEFAULT_MQTT_SETTINGS,
+  MQTTSettings,
+  mqttCredentials,
+  normaliseMQTTSettings,
+  validateTopicFilter
+} from "./dataSources/mqtt/MQTTConfig";
 
 // ------------------------------------------------------------------------------------------------
 // Connect dialog
@@ -48,6 +55,11 @@ export class ConnectDialog {
             <td class="label">Address</td>
             <td class="input"><input class="connect-address" type="text" spellcheck="false" title="Address of the live source" /></td>
           </tr>
+          <tr class="mqtt-option"><td class="label">Username</td><td class="input"><input class="mqtt-username" aria-label="MQTT username" autocomplete="off" title="Session-only broker username" /></td></tr>
+          <tr class="mqtt-option"><td class="label">Password</td><td class="input"><input class="mqtt-password" aria-label="MQTT password" type="password" autocomplete="off" title="Session-only broker password" /></td></tr>
+          <tr class="mqtt-option"><td class="label">Topic filter</td><td class="input"><input class="mqtt-topic" aria-label="Topic filter" value="mur/#" spellcheck="false" /></td></tr>
+          <tr class="mqtt-option"><td class="label">Mapping</td><td class="input"><select class="mqtt-mode" aria-label="Mapping mode"><option value="json-per-signal">JSON per signal</option><option value="json-object">JSON object</option><option value="raw-can">Raw CAN + DBC</option><option value="ascii">ASCII name=value</option></select></td></tr>
+          <tr class="mqtt-option"><td class="label">CAN timestamp</td><td class="input"><label><input class="mqtt-timestamp" type="checkbox" /> u64 ns prefix (big endian)</label></td></tr>
         </table>
         <div class="connect-recent-title">Recent</div>
         <div class="connect-recent"></div>
@@ -62,6 +74,8 @@ export class ConnectDialog {
     this.recentList = this.backdrop.querySelector(".connect-recent") as HTMLElement;
 
     this.addressInput.addEventListener("input", () => this.validate());
+    this.addressInput.addEventListener("change", () => this.loadMQTT());
+    this.backdrop.querySelector(".mqtt-topic")!.addEventListener("input", () => this.validate());
     window.setInterval(() => {
       if (!this.pending) return;
       const status = window.liveStatus?.getLiveStatus();
@@ -129,6 +143,9 @@ export class ConnectDialog {
 
   private setBusy(busy: boolean) {
     this.sourceSelect.disabled = this.addressInput.disabled = busy;
+    this.backdrop
+      .querySelectorAll<HTMLInputElement | HTMLSelectElement>(".mqtt-option input, .mqtt-option select")
+      .forEach((input) => (input.disabled = busy));
     const button = this.backdrop.querySelector(".connect-confirm") as HTMLButtonElement;
     button.disabled = busy;
     button.innerText = busy ? "Connecting…" : "Connect";
@@ -154,6 +171,7 @@ export class ConnectDialog {
     const recent = this.getRecent().find((entry) => entry.source === source.id);
     this.addressInput.placeholder = source.defaultAddress;
     this.addressInput.value = recent?.address ?? source.defaultAddress;
+    this.loadMQTT();
     this.validate();
   }
 
@@ -182,21 +200,42 @@ export class ConnectDialog {
       row.addEventListener("click", () => {
         this.sourceSelect.value = entry.source;
         this.addressInput.value = entry.address;
+        this.loadMQTT();
+        this.validate();
       });
       row.addEventListener("dblclick", () => {
         this.sourceSelect.value = entry.source;
         this.addressInput.value = entry.address;
+        this.loadMQTT();
+        this.validate();
         this.confirm();
       });
       this.recentList.appendChild(row);
     });
   }
 
+  private mqttInput<T extends HTMLInputElement | HTMLSelectElement>(name: string): T {
+    return this.backdrop.querySelector(".mqtt-" + name) as T;
+  }
+  private loadMQTT() {
+    const enabled = this.sourceSelect.value === "mqtt";
+    this.backdrop.querySelectorAll<HTMLElement>(".mqtt-option").forEach((row) => (row.hidden = !enabled));
+    if (!enabled) return;
+    const address = this.addressInput.value;
+    const settings = normaliseMQTTSettings(window.preferences?.mqttConnections?.[address] ?? DEFAULT_MQTT_SETTINGS);
+    this.mqttInput("topic").value = settings.topic;
+    this.mqttInput("mode").value = settings.mode;
+    this.mqttInput<HTMLInputElement>("timestamp").checked = settings.timestampPrefix;
+    this.mqttInput("username").value = mqttCredentials.get(address)?.username ?? "";
+    this.mqttInput("password").value = mqttCredentials.get(address)?.password ?? "";
+  }
   private validate(): boolean {
-    const error = validateLiveAddress(
+    let error = validateLiveAddress(
       this.sourceSelect.value,
       this.addressInput.value.trim() || this.addressInput.placeholder
     );
+    if (this.sourceSelect.value === "mqtt" && !validateTopicFilter(this.mqttInput("topic").value))
+      error = "Enter a valid MQTT topic filter (for example mur/#).";
     this.message.innerText = error ?? "";
     this.addressInput.setAttribute("aria-invalid", String(error !== null));
     return error === null;
@@ -206,6 +245,19 @@ export class ConnectDialog {
     if (this.pending || !this.validate()) return;
     const sourceId = this.sourceSelect.value;
     const address = this.addressInput.value.trim() || this.addressInput.placeholder;
+    if (sourceId === "mqtt" && window.preferences) {
+      const settings = normaliseMQTTSettings({
+        topic: this.mqttInput("topic").value,
+        mode: this.mqttInput("mode").value as MQTTSettings["mode"],
+        timestampPrefix: this.mqttInput<HTMLInputElement>("timestamp").checked
+      });
+      window.preferences.mqttConnections = { ...window.preferences.mqttConnections, [address]: settings };
+      window.sendMainMessage("update-preferences", { mqttConnections: window.preferences.mqttConnections });
+      mqttCredentials.set(address, {
+        username: this.mqttInput("username").value,
+        password: this.mqttInput("password").value
+      });
+    }
     this.pending = true;
     this.setBusy(true);
     this.message.innerText = "Connecting…";
@@ -348,7 +400,11 @@ export class LiveStatusPill {
       segments.push({ tone: "idle", text: "Connect…", title: "Connect to a live source (Cmd/Ctrl+K)" });
     } else {
       const backend = getBackend(state, summary);
-      segments.push({ tone: backend.tone, text: backend.label, title: "Backend: " + backend.detail });
+      segments.push({
+        tone: backend.tone,
+        text: state.sourceName.startsWith("MQTT") ? backend.label.replace("Backend", "Broker") : backend.label,
+        title: (state.sourceName.startsWith("MQTT") ? "Broker: " : "Backend: ") + backend.detail
+      });
       if (summary !== null) {
         if (summary.car !== null) {
           const counts = summary.signalCounts;
@@ -415,7 +471,10 @@ export class LiveStatusPill {
     const rows: [string, string][] = [];
 
     const backend = getBackend(state, summary);
-    rows.push(["Backend", toneDot(backend.tone) + htmlEncode(backend.detail)]);
+    rows.push([
+      state.sourceName.startsWith("MQTT") ? "Broker" : "Backend",
+      toneDot(backend.tone) + htmlEncode(backend.detail)
+    ]);
     if (summary !== null) {
       const counts = summary.signalCounts;
       rows.push([

@@ -118,7 +118,7 @@ export function decodeMQTTCAN(bytes: Uint8Array, timestampPrefix: boolean): MQTT
   const message = mqttDBC.get(id, extended);
   if (!message) return [{ path: getUnknownFrameKey(id, extended), value: data, tNs }];
   const mux = message.signals.find((signal) => signal.isMultiplexor);
-  return message.signals.flatMap((signal) => {
+  return message.signals.flatMap<MQTTValue>((signal) => {
     if (signal.multiplexValue !== null && mux && extractRaw(mux, data) !== signal.multiplexValue) return [];
     const value = decodeSignal(signal, data);
     if (value === null) return [];
