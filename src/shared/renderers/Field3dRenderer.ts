@@ -1,5 +1,3 @@
-import { Transform } from "../spatial/Transform";
-import { URDFRobot } from "../spatial/URDF";
 // Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
@@ -9,6 +7,8 @@ import { URDFRobot } from "../spatial/URDF";
 
 import { AnnotatedPose3d, ModuleVelocity } from "../geometry";
 import { MechanismState } from "../log/LogMechanismState";
+import { Transform } from "../spatial/Transform";
+import { URDFRobot } from "../spatial/URDF";
 import Field3dRendererImpl from "./Field3dRendererImpl";
 import TabRenderer from "./TabRenderer";
 

@@ -1,4 +1,3 @@
-import { writeSpatialMessage } from "../../../shared/spatial/SpatialLog";
 // Copyright (c) 2026 Melbourne University Motorsports. Based on AdvantageScope (BSD-3-Clause, © Littleton Robotics).
 // https://github.com/Melbourne-University-Motorsports/mur-voir
 //
@@ -14,6 +13,7 @@ import descriptor from "protobufjs/ext/descriptor";
 import Log from "../../../shared/log/Log";
 import LoggableType from "../../../shared/log/LoggableType";
 import ProtoDecoder from "../../../shared/log/ProtoDecoder";
+import { writeSpatialMessage } from "../../../shared/spatial/SpatialLog";
 import { runLazyWorker, sendProgress, setMetadata } from "../ImporterUtil";
 import {
   RAW_ONLY_TYPES,

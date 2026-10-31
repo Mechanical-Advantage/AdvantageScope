@@ -23,6 +23,9 @@ const Field3dController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "#ffffff",
       sourceTypes: [
+        "Pose3d",
+        "Pose3d[]",
+        "Translation3d[]",
         "geometry_msgs/PoseStamped",
         "nav_msgs/Odometry",
         "nav_msgs/Path",

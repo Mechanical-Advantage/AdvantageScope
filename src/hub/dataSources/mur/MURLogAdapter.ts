@@ -148,6 +148,13 @@ export function deleteField(log: Log, path: string) {
 /** Writes one sample value. Returns false if the value doesn't match the descriptor type. */
 export function writeValue(log: Log, descriptor: SignalDescriptor, timestamp: number, value: unknown): boolean {
   const key = pathToKey(descriptor.path);
+  if (["pose3", "trajectory", "cone_array"].includes(descriptor.type)) {
+    log.putString(
+      key + "/spatial",
+      timestamp,
+      JSON.stringify({ ...(value as object), header: { frame_id: descriptor.frame_id } })
+    );
+  }
   switch (descriptor.type) {
     case "float64":
       if (typeof value !== "number") return false;

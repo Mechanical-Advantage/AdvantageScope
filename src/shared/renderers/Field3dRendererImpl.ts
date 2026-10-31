@@ -1,6 +1,3 @@
-import CloudManager from "./field3d/objectManagers/CloudManager";
-import MarkerManager from "./field3d/objectManagers/MarkerManager";
-import URDFManager from "./field3d/objectManagers/URDFManager";
 // Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
@@ -26,11 +23,14 @@ import makeEvergreenField from "./field3d/EvergreenField";
 import ObjectManager from "./field3d/ObjectManager";
 import AprilTagManager from "./field3d/objectManagers/AprilTagManager";
 import AxesManager from "./field3d/objectManagers/AxesManager";
+import CloudManager from "./field3d/objectManagers/CloudManager";
 import ConeManager from "./field3d/objectManagers/ConeManager";
 import GamePieceManager from "./field3d/objectManagers/GamePieceManager";
 import HeatmapManager from "./field3d/objectManagers/HeatmapManager";
+import MarkerManager from "./field3d/objectManagers/MarkerManager";
 import RobotManager from "./field3d/objectManagers/RobotManager";
 import TrajectoryManager from "./field3d/objectManagers/TrajectoryManager";
+import URDFManager from "./field3d/objectManagers/URDFManager";
 
 export const FTC_GRID_COLOR = "#888";
 

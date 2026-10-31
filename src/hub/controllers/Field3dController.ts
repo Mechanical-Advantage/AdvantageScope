@@ -1,8 +1,3 @@
-import { DEFAULT_CAR_URDF } from "../../shared/spatial/DefaultCar";
-import { metadata } from "../../shared/spatial/SpatialLog";
-import { compose, identity } from "../../shared/spatial/Transform";
-import { computeLinkPoses, parseURDF, resolveMeshPath } from "../../shared/spatial/URDF";
-import { SpatialLayers } from "./SpatialLayers";
 // Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
@@ -26,9 +21,14 @@ import { MechanismState, getMechanismState, mergeMechanismStates } from "../../s
 import { getOrDefault } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
 import { Field3dRendererCommand, Field3dRendererCommand_AnyObj } from "../../shared/renderers/Field3dRenderer";
+import { DEFAULT_CAR_URDF } from "../../shared/spatial/DefaultCar";
+import { metadata } from "../../shared/spatial/SpatialLog";
+import { compose, identity } from "../../shared/spatial/Transform";
+import { computeLinkPoses, parseURDF, resolveMeshPath } from "../../shared/spatial/URDF";
 import { clampValue, createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import Field3dController_Config from "./Field3dController_Config";
+import { SpatialLayers } from "./SpatialLayers";
 import TabController from "./TabController";
 
 export default class Field3dController implements TabController {
@@ -305,6 +305,19 @@ export default class Field3dController implements TabController {
     // Get timestamp
     let time = window.selection.getRenderTime();
 
+    const description = window.log.getString("/robot_description", time ?? 0, time ?? 0)?.values[0];
+    if (description && Object.keys(this.robotAssets).length === 0) {
+      try {
+        if (this.robotStatus.textContent !== "/robot_description") {
+          this.robot = parseURDF(description);
+          this.robotStatus.textContent = "/robot_description";
+        }
+      } catch (error) {
+        this.robotStatus.textContent = String(error);
+      }
+    }
+    this.spatial.robot = this.robot;
+    this.spatial.assets = this.robotAssets;
     this.spatial.begin(window.log, time ?? 0);
     const fixed = this.fixedFrame.value;
     const frames = this.fixedFrame.parentElement?.querySelector("datalist");
