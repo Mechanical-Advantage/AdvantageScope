@@ -128,12 +128,6 @@ export default class LineGraphRenderer implements TabRenderer {
   private getAxisValueText(value: number, units: Units.UnitConfig | null, filter: LineGraphFilter): string {
     let valueClean = Math.abs(value) < this.MAX_DECIMAL_VALUE ? cleanFloat(value) : Math.round(value);
     let output = valueClean.toString();
-    if (units !== null) {
-      let suffix = Units.getSuffixForFilter(units.suffix, filter);
-      output += suffix.length > 1 ? " " : "";
-      output += suffix;
-      if (filter === LineGraphFilter.None && units.pluralizeSuffix && value !== 1) output += "s";
-    }
     return output;
   }
 
@@ -143,7 +137,12 @@ export default class LineGraphRenderer implements TabRenderer {
     // Update help overlay
     if (this.HELP_OVERLAY) {
       const hasScrolled = window.preferences?.hasScrolledLineGraph ?? false;
-      this.HELP_OVERLAY.style.display = hasScrolled ? "none" : "flex";
+      this.HELP_OVERLAY.style.display =
+        hasScrolled ||
+        command.selectionMode === SelectionMode.Locked ||
+        command.selectionMode === SelectionMode.Playback
+          ? "none"
+          : "flex";
       if (hasScrolled) {
         this.isFadingOut = false;
         this.zoomInAccumulator = 0;
@@ -174,6 +173,8 @@ export default class LineGraphRenderer implements TabRenderer {
       command.rightRange,
       command.showLeftAxis,
       command.showRightAxis,
+      command.leftTitle,
+      command.rightTitle,
       command.leftUnits,
       command.rightUnits,
       command.priorityAxis,
@@ -207,7 +208,7 @@ export default class LineGraphRenderer implements TabRenderer {
     context.font = "12px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
 
     // Calculate vertical layout (based on discrete fields)
-    let graphTop = this.hasController ? 8 : 20;
+    let graphTop = 32;
     this.SCROLL_OVERLAY.style.top = graphTop.toString() + "px";
     let graphHeight = height - graphTop - 35;
     if (graphHeight < 1) graphHeight = 1;
@@ -396,7 +397,7 @@ export default class LineGraphRenderer implements TabRenderer {
         context.lineCap = "round";
         switch (field.size) {
           case "normal":
-            context.lineWidth = 1;
+            context.lineWidth = 2;
             break;
           case "bold":
             context.lineWidth = 3;
@@ -406,6 +407,9 @@ export default class LineGraphRenderer implements TabRenderer {
             break;
         }
 
+        context.setLineDash(field.dash ?? []);
+        context.globalAlpha = field.dim ? 0.25 : 1;
+        if (field.focus) context.lineWidth += 2;
         switch (field.type) {
           case "stepped":
             context.beginPath();
@@ -479,6 +483,9 @@ export default class LineGraphRenderer implements TabRenderer {
       drawNumericFields(command.leftFields, command.leftRange);
       drawNumericFields(command.rightFields, command.rightRange);
     }
+
+    context.setLineDash([]);
+    context.globalAlpha = 1;
 
     // Update hovered time based on graph layout
     if (this.lastCursorX === null || this.lastCursorX < graphLeft || this.lastCursorX > graphLeft + graphWidth) {
@@ -735,6 +742,11 @@ export default class LineGraphRenderer implements TabRenderer {
       }
     }
 
+    context.globalAlpha = 1;
+    context.textAlign = "left";
+    context.fillText(command.leftTitle ?? "", graphLeft, 15);
+    context.textAlign = "right";
+    context.fillText(command.rightTitle ?? "", graphLeft + graphWidth, 15);
     if (command.lapLabels) {
       let x = graphLeft + 8;
       context.globalAlpha = 1;
@@ -790,6 +802,8 @@ export default class LineGraphRenderer implements TabRenderer {
 }
 
 export type LineGraphRendererCommand = {
+  leftTitle?: string;
+  rightTitle?: string;
   xUnit?: "s" | "m";
   lapTimeline?: { x: number[]; time: number[] };
   lapLabels?: { text: string; color: string }[];
@@ -816,6 +830,9 @@ export type LineGraphRendererCommand = {
 };
 
 export type LineGraphRendererCommand_NumericField = {
+  dash?: number[];
+  focus?: boolean;
+  dim?: boolean;
   timestamps: number[];
   values: number[];
   color: string;

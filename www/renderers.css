@@ -1027,8 +1027,14 @@ table.metadata-table td.no-data {
 .lap-axis-mode {
   position: absolute;
   right: 12px;
-  top: 2px;
+  bottom: 153px;
   z-index: 2;
   max-width: 170px;
+  color-scheme: light dark;
+  color: inherit;
+  background: var(--background-color, Canvas);
+  border: 1px solid #777;
+  border-radius: 3px;
+  padding: 2px 4px;
   font-size: 11px;
 }

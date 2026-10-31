@@ -2401,3 +2401,43 @@ body.trackside-layout div.source-list div.value {
   border-radius: 0;
   min-height: 24px;
 }
+
+.line-graph-axis.source-list .key-container {
+  direction: ltr;
+  text-align: left;
+  height: 30px;
+  line-height: 16px;
+}
+.line-graph-axis.source-list .key-container span {
+  display: block;
+  white-space: nowrap;
+}
+.line-graph-axis.source-list .key-container small {
+  display: block;
+  font-size: 10px;
+  line-height: 12px;
+  opacity: 0.7;
+}
+.line-graph-axis.source-list .value {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: #555;
+}
+@media (prefers-color-scheme: dark) {
+  .line-graph-axis.source-list .value {
+    color: #bbb;
+  }
+}
+.graph-unit-prompt {
+  position: absolute;
+  bottom: 160px;
+  left: 10px;
+  z-index: 20;
+  background: var(--background-color, #333);
+  color: var(--font-color, #eee);
+  padding: 8px;
+  font-size: 12px;
+}
+.graph-unit-prompt button {
+  margin-left: 8px;
+}

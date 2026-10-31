@@ -10,6 +10,7 @@ import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
 import { formatChannelValue } from "../../shared/display/ChannelProfile";
+import { compatibleProfiles, splitLegendName, traceDash } from "../../shared/display/LineGraphStyle";
 import { interpolate } from "../../shared/laps/LapEngine";
 import { getLogValueText } from "../../shared/log/LogUtil";
 import { LogValueSetNumber } from "../../shared/log/LogValueSets";
@@ -168,6 +169,53 @@ export default class LineGraphController implements TabController {
         });
       }
     );
+    for (const [source, other, name] of [
+      [this.leftSourceList, this.rightSourceList, "Right"],
+      [this.rightSourceList, this.leftSourceList, "Left"]
+    ] as const) {
+      source.graphLegend = true;
+      source.beforeAdd = (key) => {
+        const first = source.getState()[0];
+        if (!first || compatibleProfiles(window.log.getChannelProfile(key), window.log.getChannelProfile(first.logKey)))
+          return true;
+        const prompt = document.createElement("div");
+        prompt.className = "graph-unit-prompt";
+        prompt.append(
+          `Different unit (${window.log.getChannelProfile(key).unit} vs ${
+            window.log.getChannelProfile(first.logKey).unit
+          }) — `
+        );
+        for (const [label, target] of [
+          [`Move to ${name} Axis`, other],
+          ["Add anyway", source]
+        ] as const) {
+          const button = document.createElement("button");
+          button.textContent = label;
+          button.onclick = () => {
+            const guard = target.beforeAdd;
+            target.beforeAdd = undefined;
+            target.addField(key);
+            target.beforeAdd = guard;
+            prompt.remove();
+          };
+          prompt.append(button);
+        }
+        const cancel = document.createElement("button");
+        cancel.textContent = "Cancel";
+        cancel.onclick = () => prompt.remove();
+        prompt.append(cancel);
+        root.querySelector(".graph-unit-prompt")?.remove();
+        root.append(prompt);
+        return false;
+      };
+    }
+  }
+
+  private axisTitle(source: SourceList, unit: Units.UnitConfig | null, filter: LineGraphFilter): string {
+    const fields = source.getState().filter((f) => f.visible);
+    const name = fields.length === 1 ? splitLegendName(fields[0].logKey).leaf : "Signals";
+    const suffix = unit ? Units.getSuffixForFilter(unit.suffix, filter) : "";
+    return fields.length ? name + (suffix ? ` [${suffix}]` : "") : "";
   }
 
   saveState(): unknown {
@@ -484,7 +532,7 @@ export default class LineGraphController implements TabController {
       }
 
       // Process fields
-      source.forEach((fieldItem) => {
+      source.forEach((fieldItem, index) => {
         let data = window.log.getNumber(
           fieldItem.logKey,
           filter === LineGraphFilter.Integrate ? -Infinity : timeRange[0],
@@ -656,6 +704,11 @@ export default class LineGraphController implements TabController {
           color: ensureThemeContrast(fieldItem.options.color),
           type: fieldItem.type as "smooth" | "stepped" | "points",
           size: (fieldItem.options.size ?? "normal") as "normal" | "bold" | "verybold",
+          dash: traceDash(index),
+          focus: (this.leftSourceList.hoveredKey ?? this.rightSourceList.hoveredKey) === fieldItem.logKey,
+          dim:
+            (this.leftSourceList.hoveredKey ?? this.rightSourceList.hoveredKey) !== null &&
+            (this.leftSourceList.hoveredKey ?? this.rightSourceList.hoveredKey) !== fieldItem.logKey,
           hasUnit: hasUnit
         };
         if (fieldItem.visible) command.push(itemCommand);
@@ -867,6 +920,8 @@ export default class LineGraphController implements TabController {
     leftFieldsCommand.reverse();
     rightFieldsCommand.reverse();
     const result: LineGraphRendererCommand = {
+      leftTitle: this.axisTitle(this.leftSourceList, this.leftUnitCache, this.leftFilter),
+      rightTitle: this.axisTitle(this.rightSourceList, this.rightUnitCache, this.rightFilter),
       timeRange: timeRange,
       displayOffset: window.log.getTimestampDisplayOffset(),
       selectionMode: window.selection.getMode(),
@@ -905,6 +960,7 @@ export default class LineGraphController implements TabController {
             const xs = distance ? ds : times;
             return {
               ...field,
+              dash: traceDash(i),
               color: LAP_COLORS[i % LAP_COLORS.length],
               timestamps: xs,
               values: times.map((t) => interpolate(field.timestamps, field.values, lap.start + t))
@@ -917,6 +973,7 @@ export default class LineGraphController implements TabController {
         result.rightFields = laps.map((lap, i) => ({
           timestamps: lap.grid.map((p) => p.distance),
           values: lap.grid.map((p) => lapService.delta(lap.index, p.distance)),
+          dash: traceDash(i),
           color: LAP_COLORS[i % LAP_COLORS.length],
           type: "smooth",
           size: "normal"
@@ -927,6 +984,7 @@ export default class LineGraphController implements TabController {
         result.rightRange = [min - 0.1, max + 0.1];
         result.showRightAxis = true;
         result.rightUnits = null;
+        result.rightTitle = "ΔT [s]";
       }
       const end = Math.max(1, ...laps.map((l) => (distance ? l.distance : l.end - l.start)));
       result.timeRange = [0, end];
