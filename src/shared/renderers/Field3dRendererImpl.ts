@@ -730,6 +730,19 @@ export default class Field3dRendererImpl implements TabRenderer {
       }
     }
 
+    if (!this.primaryRobotGroup.visible) {
+      const urdf = command.objects.find((object) => object.type === "urdf");
+      if (urdf?.type === "urdf") {
+        const pose = urdf.links[urdf.robot.rootLink];
+        if (pose) {
+          this.primaryRobotModel = "";
+          this.primaryRobotGroup.position.set(...pose.translation);
+          this.primaryRobotGroup.rotation.setFromQuaternion(rotation3dToQuaternion(pose.rotation));
+          this.primaryRobotGroup.visible = true;
+        }
+      }
+    }
+
     // Update camera override
     this.fixedCameraOverrideObj.visible = command.cameraOverride !== null;
     if (command.cameraOverride !== null) {
