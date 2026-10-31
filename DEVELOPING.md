@@ -87,7 +87,7 @@ File → Connect… (`Cmd/Ctrl+K`) opens an in-page dialog (source, address, rec
 - `MURDedup.ts`: `(path, stream_id, seq)` dedup with a bounded window.
 - `MURSegments.ts`: a sim reset (or a clock rewind / new stream in sim mode) starts a new **segment**: the Log is replaced and the selection is reset (`Selection.resetLiveSegment`). The previous run is discarded; late samples from its streams are dropped.
 
-Unit tests for the pure modules: `npm test` (node:test with type stripping, `test/resolveTs.mjs` resolves extensionless imports).
+Unit tests for the pure modules: `npm test` (`tools/run-tests.mjs` bundles `test/**/*.test.ts` with rolldown and runs node:test; `npm test -- csv` filters by path).
 
 ## Formatting and licence headers
 
