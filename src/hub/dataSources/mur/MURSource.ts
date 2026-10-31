@@ -41,7 +41,7 @@ import {
   keyToPath,
   writeValue
 } from "./MURLogAdapter";
-import { SegmentTracker } from "./MURSegments";
+import { RetainedRuns, SegmentTracker } from "./MURSegments";
 import { LiveClock, SessionTimeBase } from "./MURTime";
 
 const API_VERSION = 1;
@@ -72,6 +72,12 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
   private periodicActive = false;
   private shouldRunOutputCallback = false;
 
+  private runs = new RetainedRuns<Log>();
+  private receiptTimes = new Map<string, number>();
+  private lastReceipt: number | null = null;
+  private retryAttempt = 0;
+  private retryAt = 0;
+  private receivingAgainUntil = 0;
   private backend: BackendState = "connecting";
   private backendDetail = "";
 
@@ -104,6 +110,8 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     super.connect(address, statusCallback, outputCallback, false);
     this.baseUrl = normaliseBaseUrl(address);
     this.log = new Log();
+    this.runs = new RetainedRuns<Log>();
+    this.runs.append(this.log);
     this.openSocket();
 
     // Periodic subscription updates and output (same scheduling as NT4Source)
@@ -187,6 +195,8 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
 
   private scheduleReconnect() {
     if (this.status === LiveDataSourceStatus.Stopped || this.reconnectTimeout !== null) return;
+    this.retryAttempt++;
+    this.retryAt = Date.now() + this.reconnectDelayMs;
     this.reconnectTimeout = window.setTimeout(() => {
       this.reconnectTimeout = null;
       this.openSocket();
@@ -330,6 +340,10 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     }
 
     const now = Date.now();
+    if (this.retryAttempt > 0) this.receivingAgainUntil = now + 3000;
+    this.retryAttempt = 0;
+    this.lastReceipt = now;
+    this.receiptTimes.set(sample.path, now);
     if (time.approximate) {
       this.unsynchronised.set(sample.path, now);
     } else {
@@ -341,11 +355,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     this.shouldRunOutputCallback = true;
   }
 
-  /**
-   * Starts a new segment. The minimal correct option: replace the Log (so its timestamp range and zero restart),
-   * forget dedup/time state, and ask the hub to reset the selection and live edge. The old run is not kept;
-   * keeping previous runs under "/RunN/" prefixes is a possible extension.
-   */
+  /** Starts a new run, retaining the previous Log and preserving a past-run selection. */
   private startNewSegment() {
     this.segments.startNewSegment();
     this.dedup.clear();
@@ -355,10 +365,13 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     this.historyRequested.clear();
 
     this.log = new Log();
+    const following = this.runs.append(this.log);
+    this.receiptTimes.clear();
+    this.availability.clear();
     this.descriptors.forEach((descriptor) => createField(this.log!, descriptor));
     console.log("[MUR] Starting segment " + this.segments.getSegmentIndex().toString());
     this.runOutputCallback();
-    this.newSegmentCallback?.();
+    if (following) this.newSegmentCallback?.();
   }
 
   // ------------------------------------------------------------------------------------------
@@ -367,7 +380,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
   private periodic() {
     if (this.status === LiveDataSourceStatus.Stopped || !this.log) return;
 
-    if (this.catalogue !== null && window.log === this.log) {
+    if (this.catalogue !== null) {
       // Active fields (same sources as NT4Source.periodic): tabs plus visible sidebar fields
       const isKnownPath = (path: string) => this.descriptors.has(path);
       const tabPaths = new Set<string>();
@@ -423,6 +436,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
 
   private runOutputCallback() {
     if (this.status === LiveDataSourceStatus.Stopped || !this.outputCallback || !this.log) return;
+    if (this.runs.selected !== this.runs.entries.length - 1) return;
     this.outputCallback(this.log, () => {
       const now = this.clock.now(Date.now());
       return now !== null ? now : this.log!.getTimestampRange()[1];
@@ -487,16 +501,15 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
   getLiveStatus(): LiveStatusSummary {
     const counts = { online: 0, stale: 0, offline: 0, neverSeen: 0 };
     this.descriptors.forEach((_, path) => {
-      const availability = this.availability.get(path);
-      if (availability === undefined || availability.lastSeenNs === null) {
-        counts.neverSeen++;
-      } else {
-        counts[availability.state]++;
-      }
+      const state = this.getFieldFreshness(path);
+      if (state === null || state === "unknown") counts.neverSeen++;
+      else counts[state]++;
     });
     let car: Freshness | null = null;
-    if (this.backend === "connected" && this.descriptors.size > 0) {
-      if (counts.online === 0) {
+    if (this.descriptors.size > 0) {
+      if (counts.online + counts.stale + counts.offline === 0) {
+        car = "unknown";
+      } else if (counts.online === 0) {
         car = counts.stale > 0 ? "stale" : "offline";
       } else {
         car = counts.stale + counts.offline > 0 ? "stale" : "online";
@@ -510,7 +523,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     });
 
     let sim: LiveStatusSummary["sim"] = null;
-    if (this.sim !== null && this.timeBase.getDomain() === "sim" && this.backend === "connected") {
+    if (this.sim !== null && this.timeBase.getDomain() === "sim") {
       sim = {
         state: now < this.simResetUntil ? "reset" : this.sim.state,
         timeS: this.clock.now(now) ?? 0,
@@ -520,6 +533,19 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     }
 
     return {
+      oldestAgeS:
+        this.descriptors.size === 0
+          ? null
+          : Array.from(this.descriptors.keys()).reduce<number | null>((oldest, path) => {
+              const age = this.getFieldAge(path);
+              return age === null ? oldest : Math.max(oldest ?? 0, age);
+            }, null),
+      lastReceiptAgeS: this.lastReceipt === null ? null : (now - this.lastReceipt) / 1000,
+      retryAttempt: this.retryAttempt,
+      retryInS: Math.max(0, (this.retryAt - now) / 1000),
+      receivingAgain: now < this.receivingAgainUntil,
+      viewedRun: this.runs.selected,
+      runCount: this.runs.entries.length,
       backend: this.backend,
       backendDetail: this.backendDetail,
       car: car,
@@ -540,7 +566,33 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     const path = key.startsWith("/") ? key.slice(1) : key;
     if (!this.descriptors.has(path)) return null;
     if (this.backend !== "connected") return "offline";
-    return this.availability.get(path)?.state ?? "offline";
+    const availability = this.availability.get(path);
+    if (!availability || availability.lastSeenNs === null) return "unknown";
+    return availability.state;
+  }
+
+  getFieldAge(key: string): number | null {
+    const path = key.startsWith("/") ? key.slice(1) : key;
+    const received = this.receiptTimes.get(path);
+    if (received !== undefined) return Math.max(0, (Date.now() - received) / 1000);
+    const lastSeen = this.availability.get(path)?.lastSeenNs;
+    // Availability timestamps use the backend's clock domain. In sim mode use the live clock.
+    if (!lastSeen) return null;
+    const seconds = Number(BigInt(lastSeen)) / 1e9;
+    const now = this.timeBase.getDomain() === "sim" ? this.clock.now(Date.now()) : Date.now() / 1000;
+    return now === null ? null : Math.max(0, now - seconds);
+  }
+
+  selectRun(index: number) {
+    if (!this.outputCallback || !this.runs.select(index)) return;
+    const log = this.runs.entries[index];
+    this.outputCallback(log, () =>
+      index === this.runs.entries.length - 1
+        ? this.clock.now(Date.now()) ?? log.getTimestampRange()[1]
+        : log.getTimestampRange()[1]
+    );
+    this.newSegmentCallback?.();
+    if (index !== this.runs.entries.length - 1) window.selection.setLiveDisconnected();
   }
 
   isFieldUnsynchronised(key: string): boolean {

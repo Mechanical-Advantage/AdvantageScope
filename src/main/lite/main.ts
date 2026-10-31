@@ -322,6 +322,10 @@ async function handleHubMessage(message: NamedMessage) {
       liveSources = message.data;
       break;
 
+    case "show-open-log":
+      openDownload();
+      break;
+
     case "open-files-request":
       sendMessage(hubPort, "open-files", { files: message.data.files, merge: false });
       break;

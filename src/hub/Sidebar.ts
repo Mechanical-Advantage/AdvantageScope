@@ -421,6 +421,24 @@ export default class Sidebar {
     }
   }
 
+  private freshnessFilter: "stale" | "offline" | null = null;
+
+  toggleFreshnessFilter(filter: "stale" | "offline") {
+    this.freshnessFilter = this.freshnessFilter === filter ? null : filter;
+    this.SEARCH_INPUT.placeholder = this.freshnessFilter
+      ? `Showing ${this.freshnessFilter} · click count to clear`
+      : "Search";
+    this.refresh(true);
+  }
+
+  private matchesFreshness(field: LogFieldTree): boolean {
+    return (
+      this.freshnessFilter === null ||
+      (field.fullKey !== null && window.liveStatus?.getFieldFreshness(field.fullKey) === this.freshnessFilter) ||
+      Object.values(field.children).some((child) => this.matchesFreshness(child))
+    );
+  }
+
   /** Refresh based on new log data or expanded field list. */
   refresh(forceRefresh: boolean = false) {
     let fieldKeys = window.log.getFieldKeys();
@@ -488,6 +506,7 @@ export default class Sidebar {
     indent: number,
     generated = false
   ) {
+    if (!this.matchesFreshness(field)) return;
     let hasChildren = Object.keys(field.children).length > 0;
     let childrenGenerated = generated || (field.fullKey !== null && window.log.isGeneratedParent(field.fullKey));
 
@@ -633,8 +652,13 @@ export default class Sidebar {
             lastFreshness = freshness;
             freshnessDot.hidden = freshness === null;
             freshnessDot.className = "field-item-freshness" + (freshness === null ? "" : " " + freshness);
-            freshnessDot.title = freshness === null ? "" : "Signal " + freshness;
+            freshnessDot.innerText =
+              freshness === "online" ? "●" : freshness === "stale" ? "◇" : freshness === "offline" ? "⊘" : "?";
           }
+          const age = window.liveStatus?.getFieldAge(field.fullKey!);
+          freshnessDot.title = `${freshness ?? "unknown"} · ${
+            age === null || age === undefined ? "No sample received" : `sample age ${age.toFixed(1)} s`
+          }`;
           let unsync = window.liveStatus?.isFieldUnsynchronised(field.fullKey!) ?? false;
           if (unsync !== lastUnsync) {
             lastUnsync = unsync;
@@ -1075,6 +1099,7 @@ export default class Sidebar {
         }
       };
       this.searchExpandCallbacks.push(expandForSearch);
+      if (this.freshnessFilter !== null) setExpanded(true);
       expandForSearch(); // Try immediately in case this field was generating while expanding for search
 
       // User controls

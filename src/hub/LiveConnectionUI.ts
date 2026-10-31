@@ -14,6 +14,7 @@
 import { LiveRecentServer } from "../shared/Preferences";
 import { IS_LITE } from "../shared/buildConstants";
 import { htmlEncode } from "../shared/util";
+import { validateLiveAddress } from "./dataSources/LiveAddress";
 import { LiveDataSourceStatus } from "./dataSources/LiveDataSource";
 import { getAvailableLiveSources } from "./dataSources/LiveSourceRegistry";
 import { Freshness, LiveStatusProvider, LiveStatusSummary, SimAction } from "./dataSources/LiveStatus";
@@ -26,6 +27,8 @@ export class ConnectDialog {
   private sourceSelect: HTMLSelectElement;
   private addressInput: HTMLInputElement;
   private recentList: HTMLElement;
+  private pending = false;
+  private message: HTMLElement;
   private onConnect: (sourceId: string, address: string) => void;
 
   constructor(onConnect: (sourceId: string, address: string) => void) {
@@ -48,15 +51,25 @@ export class ConnectDialog {
         </table>
         <div class="connect-recent-title">Recent</div>
         <div class="connect-recent"></div>
-        <button class="connect-cancel" title="Cancel"><img src="symbols/close.svg" /></button>
-        <button class="connect-confirm" title="Connect"><img src="symbols/check.svg" /></button>
+        <div class="connect-message" role="status" aria-live="polite"></div><button class="connect-cancel" title="Cancel">Cancel</button>
+        <button class="connect-confirm" title="Connect">Connect</button>
       </div>`;
     document.body.appendChild(this.backdrop);
 
+    this.message = this.backdrop.querySelector(".connect-message") as HTMLElement;
     this.sourceSelect = this.backdrop.querySelector(".connect-source") as HTMLSelectElement;
     this.addressInput = this.backdrop.querySelector(".connect-address") as HTMLInputElement;
     this.recentList = this.backdrop.querySelector(".connect-recent") as HTMLElement;
 
+    this.addressInput.addEventListener("input", () => this.validate());
+    window.setInterval(() => {
+      if (!this.pending) return;
+      const status = window.liveStatus?.getLiveStatus();
+      if (status?.backend === "connected") {
+        this.pending = false;
+        this.hide();
+      } else if (status?.backend === "error") this.connectionFailed(status.backendDetail);
+    }, 100);
     this.sourceSelect.addEventListener("change", () => this.applySourceDefaults());
     (this.backdrop.querySelector(".connect-cancel") as HTMLElement).addEventListener("click", () => this.hide());
     (this.backdrop.querySelector(".connect-confirm") as HTMLElement).addEventListener("click", () => this.confirm());
@@ -79,6 +92,7 @@ export class ConnectDialog {
   }
 
   show() {
+    this.message.innerText = "";
     const prefs = window.preferences;
     const sources = getAvailableLiveSources(IS_LITE);
     this.sourceSelect.innerHTML = "";
@@ -97,7 +111,35 @@ export class ConnectDialog {
     this.addressInput.select();
   }
 
+  updateStatus(status: LiveDataSourceStatus) {
+    if (!this.pending) return;
+    if (status === LiveDataSourceStatus.Active) {
+      this.pending = false;
+      this.hide();
+    }
+    if (status === LiveDataSourceStatus.Error)
+      this.connectionFailed("Connection failed. Edit the address and try again.");
+  }
+
+  private connectionFailed(error: string) {
+    this.pending = false;
+    this.message.innerText = error;
+    this.setBusy(false);
+  }
+
+  private setBusy(busy: boolean) {
+    this.sourceSelect.disabled = this.addressInput.disabled = busy;
+    const button = this.backdrop.querySelector(".connect-confirm") as HTMLButtonElement;
+    button.disabled = busy;
+    button.innerText = busy ? "Connecting…" : "Connect";
+  }
+
   hide() {
+    if (this.pending) {
+      window.dispatchEvent(new Event("cancel-live-connect"));
+      this.pending = false;
+    }
+    this.setBusy(false);
     this.backdrop.hidden = true;
   }
 
@@ -112,12 +154,15 @@ export class ConnectDialog {
     const recent = this.getRecent().find((entry) => entry.source === source.id);
     this.addressInput.placeholder = source.defaultAddress;
     this.addressInput.value = recent?.address ?? source.defaultAddress;
+    this.validate();
   }
 
   private renderRecent() {
     const sources = getAvailableLiveSources(IS_LITE);
     const recent = this.getRecent();
     this.recentList.innerHTML = "";
+    this.recentList.classList.toggle("empty", recent.length === 0);
+    (this.backdrop.querySelector(".connect-recent-title") as HTMLElement).hidden = recent.length === 0;
     if (recent.length === 0) {
       const empty = document.createElement("div");
       empty.classList.add("connect-recent-empty");
@@ -147,10 +192,23 @@ export class ConnectDialog {
     });
   }
 
+  private validate(): boolean {
+    const error = validateLiveAddress(
+      this.sourceSelect.value,
+      this.addressInput.value.trim() || this.addressInput.placeholder
+    );
+    this.message.innerText = error ?? "";
+    this.addressInput.setAttribute("aria-invalid", String(error !== null));
+    return error === null;
+  }
+
   private confirm() {
+    if (this.pending || !this.validate()) return;
     const sourceId = this.sourceSelect.value;
     const address = this.addressInput.value.trim() || this.addressInput.placeholder;
-    this.hide();
+    this.pending = true;
+    this.setBusy(true);
+    this.message.innerText = "Connecting…";
     this.onConnect(sourceId, address);
   }
 }
@@ -168,7 +226,12 @@ export interface LivePillState {
 
 type Tone = "good" | "warn" | "bad" | "idle";
 
-const FRESHNESS_TONE: { [key in Freshness]: Tone } = { online: "good", stale: "warn", offline: "bad" };
+const FRESHNESS_TONE: { [key in Freshness]: Tone } = {
+  online: "good",
+  stale: "warn",
+  offline: "idle",
+  unknown: "idle"
+};
 
 export class LiveStatusPill {
   private pill: HTMLButtonElement;
@@ -179,8 +242,13 @@ export class LiveStatusPill {
   private lastPillHtml = "";
   private lastPopoverHtml = "";
   private simMessage = "";
+  private detailsOpen = false;
+  private runLabel: HTMLElement;
 
   constructor(getState: () => LivePillState, onConnectRequest: () => void, onDisconnect: () => void) {
+    this.runLabel = document.createElement("span");
+    this.runLabel.className = "live-run-label";
+    document.body.appendChild(this.runLabel);
     this.getState = getState;
     this.onConnectRequest = onConnectRequest;
     this.onDisconnect = onDisconnect;
@@ -211,6 +279,17 @@ export class LiveStatusPill {
     window.addEventListener("keydown", (event) => {
       if (event.key === "Escape") this.popover.hidden = true;
     });
+    this.popover.addEventListener("change", (event) => {
+      if (event.target instanceof HTMLSelectElement && event.target.className === "live-run-select")
+        this.getState().provider?.selectRun(Number(event.target.value));
+    });
+    this.popover.addEventListener(
+      "toggle",
+      (event) => {
+        if (event.target instanceof HTMLDetailsElement) this.detailsOpen = event.target.open;
+      },
+      true
+    );
     this.popover.addEventListener("click", (event) => {
       const target = event.target instanceof HTMLElement ? event.target.closest("button") : null;
       if (target === null) return;
@@ -221,6 +300,11 @@ export class LiveStatusPill {
       } else if (action === "disconnect") {
         this.popover.hidden = true;
         this.onDisconnect();
+      } else if (action === "stale" || action === "offline") {
+        window.sidebar.toggleFreshnessFilter(action);
+      } else if (action === "live") {
+        const summary = this.getState().provider?.getLiveStatus();
+        if (summary) this.getState().provider?.selectRun(summary.runCount - 1);
       } else if (action === "pause" || action === "resume" || action === "reset") {
         this.runSimAction(action);
       }
@@ -246,10 +330,22 @@ export class LiveStatusPill {
     const state = this.getState();
     const summary = state.provider?.getLiveStatus() ?? null;
 
+    const timeline = document.querySelector(".timeline")?.getBoundingClientRect();
+    this.runLabel.style.top = (timeline && timeline.height > 0 ? timeline.top + 2 : 66).toString() + "px";
+    this.runLabel.hidden = summary?.sim === null || summary === null;
+    this.runLabel.innerText = summary
+      ? `Run ${summary.viewedRun + 1}${
+          summary.viewedRun < summary.runCount - 1
+            ? " · past run"
+            : summary.sim?.state === "reset"
+            ? " · reset"
+            : " · live"
+        }`
+      : "";
     // Pill
     let segments: { tone: Tone; text: string; title: string; glyph?: string }[] = [];
     if (!state.active) {
-      segments.push({ tone: "idle", text: "Not connected", title: "Connect to a live source (Cmd/Ctrl+K)" });
+      segments.push({ tone: "idle", text: "Connect…", title: "Connect to a live source (Cmd/Ctrl+K)" });
     } else {
       const backend = getBackend(state, summary);
       segments.push({ tone: backend.tone, text: backend.label, title: "Backend: " + backend.detail });
@@ -258,18 +354,34 @@ export class LiveStatusPill {
           const counts = summary.signalCounts;
           segments.push({
             tone: FRESHNESS_TONE[summary.car],
-            text: "Car " + summary.car,
+            text: "Car " + (summary.car === "stale" ? "PARTIAL" : summary.car.toUpperCase()),
             title: `Car: ${counts.online} online, ${counts.stale} stale, ${counts.offline} offline, ${counts.neverSeen} never seen`
           });
         }
         if (summary.sim !== null) {
           segments.push({
-            tone: summary.sim.state === "running" ? "good" : summary.sim.state === "paused" ? "warn" : "bad",
-            glyph: summary.sim.state === "running" ? "▶" : summary.sim.state === "paused" ? "❙❙" : "↺",
+            tone: summary.sim.state === "running" ? "good" : summary.sim.state === "paused" ? "warn" : "idle",
+
             text: "Sim " + summary.sim.state,
             title: "Simulation clock: " + summary.sim.state
           });
         }
+        if (summary.oldestAgeS !== null)
+          segments.push({
+            tone: "idle",
+            text: `oldest ${summary.oldestAgeS.toFixed(1)} s`,
+            title: "Oldest known sample age"
+          });
+        if (summary.retryAttempt > 0)
+          segments.push({
+            tone: "warn",
+            text: `Retry ${summary.retryAttempt} in ${summary.retryInS.toFixed(1)} s · last receipt ${
+              summary.lastReceiptAgeS?.toFixed(1) ?? "unknown"
+            } s`,
+            title: summary.backendDetail
+          });
+        if (summary.receivingAgain)
+          segments.push({ tone: "good", text: "Receiving again", title: "Samples are arriving again" });
         if (summary.unsynchronisedCount > 0) {
           segments.push({
             tone: "warn",
@@ -301,27 +413,15 @@ export class LiveStatusPill {
     // Popover
     if (this.popover.hidden) return;
     const rows: [string, string][] = [];
-    rows.push(["Source", htmlEncode(state.sourceName)]);
-    rows.push(["Address", htmlEncode(state.address)]);
+
     const backend = getBackend(state, summary);
     rows.push(["Backend", toneDot(backend.tone) + htmlEncode(backend.detail)]);
     if (summary !== null) {
-      if (summary.catalogue !== null) {
-        rows.push([
-          "Catalogue",
-          htmlEncode(
-            `${summary.catalogue.signals} signals, ${summary.catalogue.epoch} rev ${summary.catalogue.revision}`
-          )
-        ]);
-      }
       const counts = summary.signalCounts;
       rows.push([
         "Car",
         (summary.car !== null ? toneDot(FRESHNESS_TONE[summary.car]) + htmlEncode(summary.car) + " &middot; " : "") +
-          htmlEncode(
-            `${counts.online} online, ${counts.stale} stale, ${counts.offline} offline` +
-              (counts.neverSeen > 0 ? `, ${counts.neverSeen} never seen` : "")
-          )
+          `${counts.online} fresh, <button class="text-button" data-action="stale">${counts.stale} stale</button>, <button class="text-button" data-action="offline">${counts.offline} offline</button>, ${counts.neverSeen} unknown`
       ]);
       if (summary.sim !== null) {
         rows.push([
@@ -335,18 +435,6 @@ export class LiveStatusPill {
       } else {
         rows.push(["Clock", "Unix time"]);
       }
-      rows.push([
-        "Segment",
-        (summary.segmentIndex + 1).toString() + (summary.segmentIndex > 0 ? " (since reset)" : "")
-      ]);
-      rows.push([
-        "History",
-        summary.historyAvailable === false
-          ? "Unavailable (501): live buffer only"
-          : summary.historyAvailable === true
-          ? "Available"
-          : "Not requested yet"
-      ]);
       if (summary.unsynchronisedCount > 0) {
         rows.push([
           "Clock sync",
@@ -358,6 +446,37 @@ export class LiveStatusPill {
       `<table>` +
       rows.map(([label, value]) => `<tr><td class="label">${label}</td><td>${value}</td></tr>`).join("") +
       `</table>`;
+    html += `<div class="live-freshness-legend">● fresh · ◇ stale · ⊘ offline · ? unknown · ⚠ clock quality</div>`;
+    html += `<details ${
+      this.detailsOpen ? "open" : ""
+    }><summary>Details</summary><table><tr><td class="label">Source</td><td>${htmlEncode(
+      state.sourceName
+    )}</td></tr><tr><td class="label">Address</td><td>${htmlEncode(state.address)}</td></tr>`;
+    if (summary)
+      html += `<tr><td class="label">Catalogue</td><td>${htmlEncode(
+        JSON.stringify(summary.catalogue)
+      )}</td></tr><tr><td class="label">Segment</td><td>${
+        summary.segmentIndex + 1
+      }</td></tr><tr><td class="label">History</td><td>${
+        summary.historyAvailable === false
+          ? "Unavailable (501): live buffer only"
+          : summary.historyAvailable
+          ? "Available"
+          : "Not requested yet"
+      }</td></tr>`;
+    html += `</table></details>`;
+    if (summary?.sim)
+      html += `<div class="live-run-controls"><label>Run <select class="live-run-select">${Array.from(
+        { length: summary.runCount },
+        (_, i) =>
+          `<option value="${i}" ${i === summary.viewedRun ? "selected" : ""}>Run ${i + 1}${
+            i === summary.runCount - 1 ? " · live" : ""
+          }</option>`
+      ).join("")}</select></label>${
+        summary.viewedRun < summary.runCount - 1
+          ? '<button class="text-button" data-action="live">Back to live</button>'
+          : ""
+      }</div>`;
     if (summary !== null && summary.simControls && summary.sim !== null) {
       const paused = summary.sim.state === "paused";
       html +=
@@ -371,8 +490,11 @@ export class LiveStatusPill {
     if (this.simMessage !== "") html += `<div class="live-popover-error">${htmlEncode(this.simMessage)}</div>`;
     html +=
       `<div class="live-popover-actions">` +
-      `<button class="text-button" data-action="connect">Connect…</button>` +
+      `<button class="text-button" data-action="connect">${
+        summary?.backend === "error" ? "Edit address…" : "Connect…"
+      }</button>` +
       `<button class="text-button" data-action="disconnect">Disconnect</button></div>`;
+    if (this.popover.querySelector("select") === document.activeElement) return;
     if (html !== this.lastPopoverHtml) {
       this.lastPopoverHtml = html;
       this.popover.innerHTML = html;
@@ -387,28 +509,28 @@ function getBackend(
   if (summary !== null) {
     switch (summary.backend) {
       case "connected":
-        return { tone: "good", label: "Connected", detail: "Connected to " + state.address };
+        return { tone: "good", label: "Backend ✓", detail: "Connected to " + state.address };
       case "connecting":
         return {
           tone: "warn",
-          label: "Connecting",
+          label: "Backend connecting",
           detail: summary.backendDetail !== "" ? summary.backendDetail : "Connecting to " + state.address
         };
       case "error":
         return {
           tone: "bad",
-          label: "Error",
+          label: "Backend error",
           detail: (summary.backendDetail !== "" ? summary.backendDetail : "Connection failed") + " (retrying)"
         };
     }
   }
   switch (state.status) {
     case LiveDataSourceStatus.Active:
-      return { tone: "good", label: "Connected", detail: "Connected to " + state.address };
+      return { tone: "good", label: "Backend ✓", detail: "Connected to " + state.address };
     case LiveDataSourceStatus.Error:
-      return { tone: "bad", label: "Error", detail: "Connection failed" };
+      return { tone: "bad", label: "Backend error", detail: "Connection failed" };
     default:
-      return { tone: "warn", label: "Connecting", detail: "Searching for " + state.address };
+      return { tone: "warn", label: "Backend connecting", detail: "Searching for " + state.address };
   }
 }
 
