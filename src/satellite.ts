@@ -306,6 +306,9 @@ class MockSelection implements Selection {
   setLiveDisconnected(): void {
     throw new Error("Method not implemented.");
   }
+  resetLiveSegment(): void {
+    throw new Error("Method not implemented.");
+  }
 
   getCurrentLiveTime(): number | null {
     throw new Error("Method not implemented.");

@@ -8,7 +8,7 @@
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { HubState } from "../shared/HubState";
 import NamedMessage from "../shared/NamedMessage";
-import Preferences from "../shared/Preferences";
+import Preferences, { MAX_LIVE_RECENT } from "../shared/Preferences";
 import Selection from "../shared/Selection";
 import { SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
 import { IS_LITE } from "../shared/buildConstants";
@@ -16,6 +16,7 @@ import Log from "../shared/log/Log";
 import { MERGE_PREFIX } from "../shared/log/LogKeyUtils";
 import { AKIT_TIMESTAMP_KEYS, getEnabledData } from "../shared/log/RobotState";
 import { calcMockProgress, clampValue, htmlEncode, scaleValue } from "../shared/util";
+import { ConnectDialog, LiveStatusPill } from "./LiveConnectionUI";
 import SelectionImpl from "./SelectionImpl";
 import Sidebar from "./Sidebar";
 import SourceList from "./SourceList";
@@ -25,6 +26,7 @@ import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
 import LiveDataTuner from "./dataSources/LiveDataTuner";
 import { getLiveSource, getLiveSourceInfo } from "./dataSources/LiveSourceRegistry";
+import { LiveStatusProvider } from "./dataSources/LiveStatus";
 
 // Constants
 const STATE_SAVE_PERIOD_MS = 250;
@@ -51,6 +53,7 @@ declare global {
     sidebar: Sidebar;
     tabs: Tabs;
     tuner: LiveDataTuner | null;
+    liveStatus: LiveStatusProvider | null;
     getLoadingFields(): Set<string>;
 
     messagePort: MessagePort | null;
@@ -84,6 +87,7 @@ window.sidebar = new Sidebar(() =>
 );
 window.tabs = new Tabs();
 window.tuner = null;
+window.liveStatus = null;
 window.messagePort = null;
 
 let historicalSources: {
@@ -98,6 +102,22 @@ let logFriendlyName: string | null = null;
 let liveActive = false;
 let liveConnected = false;
 let liveAutoStartComplete = false;
+let liveSourceName = "";
+let liveAddress = "";
+let liveStatus: LiveDataSourceStatus = LiveDataSourceStatus.Stopped;
+
+const connectDialog = new ConnectDialog((sourceId, address) => connectLive(sourceId, address));
+new LiveStatusPill(
+  () => ({
+    active: liveActive,
+    sourceName: liveSourceName,
+    address: liveAddress,
+    status: liveStatus,
+    provider: window.liveStatus
+  }),
+  () => connectDialog.show(),
+  () => stopLive()
+);
 
 let dragActive = false;
 let dragOffsetX = 0;
@@ -314,6 +334,7 @@ function startHistorical(path: string, clear = true, merge = false) {
 
   liveSource?.stop();
   window.tuner = null;
+  window.liveStatus = null;
   liveActive = false;
   liveConnected = false;
   setLoading(null);
@@ -411,8 +432,34 @@ function startHistorical(path: string, clear = true, merge = false) {
   );
 }
 
+/** Connects from the connection dialog, remembering the choice as the most recent server. */
+function connectLive(sourceId: string, address: string) {
+  if (!window.preferences) return;
+  const recent = [
+    { source: sourceId, address: address },
+    ...(window.preferences.liveRecent ?? []).filter((entry) => entry.source !== sourceId || entry.address !== address)
+  ].slice(0, MAX_LIVE_RECENT);
+  window.preferences.liveMode = sourceId;
+  window.preferences.liveRecent = recent;
+  window.sendMainMessage("update-preferences", { liveMode: sourceId, liveRecent: recent });
+  startLive("robot", { sourceId: sourceId, address: address });
+}
+
+/** Disconnects the live source, keeping the received data visible. */
+function stopLive() {
+  liveSource?.stop();
+  liveSource = null;
+  window.tuner = null;
+  window.liveStatus = null;
+  liveActive = false;
+  liveConnected = false;
+  liveStatus = LiveDataSourceStatus.Stopped;
+  window.selection.setLiveDisconnected();
+  setWindowTitle(liveAddress, "Disconnected");
+}
+
 /** Connects to a live data source. */
-function startLive(sourceType: "robot" | "sim") {
+function startLive(sourceType: "robot" | "sim", target?: { sourceId: string; address: string }) {
   historicalSources.forEach((entry) => entry.source.stop());
   historicalSources = [];
   liveSource?.stop();
@@ -420,22 +467,41 @@ function startLive(sourceType: "robot" | "sim") {
   setLoading(null);
 
   if (!window.preferences) return;
-  const sourceDefinition = getLiveSource(window.preferences.liveMode, IS_LITE);
+  const sourceDefinition = getLiveSource(target?.sourceId ?? window.preferences.liveMode, IS_LITE);
   liveSource = sourceDefinition.create();
 
+  const recentAddress = (window.preferences.liveRecent ?? []).find((entry) => entry.source === sourceDefinition.id)
+    ?.address;
   let address = "";
-  if (IS_LITE) {
+  if (target !== undefined) {
+    address = target.address;
+  } else if (IS_LITE && sourceDefinition.id === "nt4") {
     address = window.location.hostname;
   } else if (sourceType === "sim") {
-    address = "127.0.0.1";
+    address = sourceDefinition.id === "nt4" ? "127.0.0.1" : sourceDefinition.defaultAddress;
+  } else if (recentAddress !== undefined) {
+    address = recentAddress;
   } else {
     address =
-      window.preferences.robotAddress !== "" ? window.preferences.robotAddress : sourceDefinition.defaultAddress;
+      window.preferences.robotAddress !== "" && sourceDefinition.id === "nt4"
+        ? window.preferences.robotAddress
+        : sourceDefinition.defaultAddress;
   }
+  liveSourceName = sourceDefinition.name;
+  liveAddress = address;
+  liveStatus = LiveDataSourceStatus.Connecting;
+  window.liveStatus = liveSource.getStatusProvider();
+  liveSource.newSegmentCallback = () => {
+    // Time jumped backwards (e.g. sim reset): restart the timeline at the new live edge
+    window.selection.resetLiveSegment();
+    window.sidebar.refresh();
+    window.tabs.refresh();
+  };
 
   liveSource.connect(
     address,
     (status: LiveDataSourceStatus) => {
+      liveStatus = status;
       switch (status) {
         case LiveDataSourceStatus.Connecting:
           setWindowTitle(address, "Searching");
@@ -716,6 +782,17 @@ async function handleMainMessage(message: NamedMessage) {
             startHistorical(file, index === 0, files.length > 1);
           }
         });
+      }
+      break;
+
+    case "show-connect-dialog":
+      if (isExporting) {
+        window.sendMainMessage("error", {
+          title: "Cannot connect",
+          content: "Please wait for the export to finish, then try again."
+        });
+      } else {
+        connectDialog.show();
       }
       break;
 

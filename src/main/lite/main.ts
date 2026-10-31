@@ -471,9 +471,9 @@ async function handleHubMessage(message: NamedMessage) {
                 }
               },
               {
-                content: `Connect Live (${modifier} K)`,
+                content: `Connect\u2026 (${modifier} K)`,
                 callback() {
-                  sendMessage(hubPort, "start-live", "robot");
+                  sendMessage(hubPort, "show-connect-dialog");
                 }
               },
               {
@@ -1167,7 +1167,7 @@ function processKeydown(event: KeyboardEvent): boolean {
   if (event.shiftKey && modifier && lowerKey === "o") {
     openDownload();
   } else if (!event.shiftKey && modifier && lowerKey === "k") {
-    sendMessage(hubPort, "start-live", false);
+    sendMessage(hubPort, "show-connect-dialog");
   } else if (!event.shiftKey && modifier && lowerKey === "\\") {
     sendMessage(hubPort, "zoom-enabled");
   } else if (!event.shiftKey && modifier && lowerKey === ".") {

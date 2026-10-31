@@ -612,6 +612,36 @@ export default class Sidebar {
         this.updateTypeWarningCallbacks.push(updateTypeWarning);
         updateTypeWarning();
       }
+      {
+        // Live freshness dot (online/stale/offline) and unsynchronised clock flag (mur-voir)
+        let freshnessDot = document.createElement("div");
+        fieldElement.appendChild(freshnessDot);
+        freshnessDot.classList.add("field-item-freshness");
+        freshnessDot.hidden = true;
+        let unsyncSpan = document.createElement("span");
+        label.appendChild(unsyncSpan);
+        unsyncSpan.classList.add("field-item-unsync");
+        unsyncSpan.innerHTML = " &#x26A0;";
+        unsyncSpan.title =
+          "Unsynchronised clock: this source's timestamps are not synchronised, so receive time is shown instead (approximate alignment only).";
+        unsyncSpan.hidden = true;
+        let lastFreshness: string | null = null;
+        let lastUnsync = false;
+        this.updateValueCallbacks.push(() => {
+          let freshness = window.liveStatus?.getFieldFreshness(field.fullKey!) ?? null;
+          if (freshness !== lastFreshness) {
+            lastFreshness = freshness;
+            freshnessDot.hidden = freshness === null;
+            freshnessDot.className = "field-item-freshness" + (freshness === null ? "" : " " + freshness);
+            freshnessDot.title = freshness === null ? "" : "Signal " + freshness;
+          }
+          let unsync = window.liveStatus?.isFieldUnsynchronised(field.fullKey!) ?? false;
+          if (unsync !== lastUnsync) {
+            lastUnsync = unsync;
+            unsyncSpan.hidden = !unsync;
+          }
+        });
+      }
       let structuredType = window.log.getStructuredType(field.fullKey);
       if (structuredType !== null) {
         let typeLabel = document.createElement("span");

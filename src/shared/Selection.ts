@@ -51,6 +51,12 @@ export default interface Selection {
   /** Records that the live connection has stopped. */
   setLiveDisconnected(): void;
 
+  /**
+   * Resets the selection for a new live segment (time jumped backwards, e.g. a sim reset): clears the selected,
+   * hovered and zoomed times and re-locks to the new live edge.
+   */
+  resetLiveSegment(): void;
+
   /** Returns the latest live timestamp if available. */
   getCurrentLiveTime(): number | null;
 
