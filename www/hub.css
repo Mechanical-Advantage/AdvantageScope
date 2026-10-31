@@ -2462,3 +2462,37 @@ body.trackside-layout div.source-list div.value {
     color: #eee;
   }
 }
+
+div.source-list div.item button.expander {
+  position: absolute;
+  top: 0;
+  right: 56px;
+  width: 20px;
+  height: 30px;
+  padding: 0;
+  font-size: 12px;
+}
+div.source-list div.item div.inline-settings {
+  position: absolute;
+  left: 30px;
+  right: 4px;
+  bottom: 2px;
+  height: 28px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+  overflow: hidden;
+}
+div.source-list div.item div.inline-settings select {
+  font-size: 12px;
+  max-width: 76px;
+}
+div.source-list .spatial-warn .value {
+  color: #c98a00;
+}
+@media (prefers-color-scheme: dark) {
+  div.source-list .spatial-warn .value {
+    color: #ffb938;
+  }
+}

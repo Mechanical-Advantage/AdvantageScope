@@ -431,9 +431,24 @@ export default class Field3dController implements TabController {
         try {
           const result = this.spatial.objects(window.log, source.logKey, time, fixed, source.options);
           objects.push(...result.objects);
+          const origin = window.log.getTimestampRange()[0];
+          const recent = window.log.getString(source.logKey + "/spatial", time - 1, time)?.timestamps ?? [];
+          const rawRecent = recent.length ? recent : window.log.getRaw(source.logKey, time - 1, time)?.timestamps ?? [];
+          const hz = rawRecent.filter((t) => t > time - 1 && t <= time).length;
+          const lag = time - result.stamp;
+          const stale = lag > 1;
           this.sourceList.itemStatus.set(source.logKey, {
-            text: result.frame + " · " + result.stamp.toFixed(3) + " s",
-            error: false
+            text:
+              result.frame +
+              " · t+" +
+              (result.stamp - origin).toFixed(2) +
+              " s · " +
+              hz +
+              " Hz" +
+              (stale ? " · LAG " + lag.toFixed(1) + " s" : ""),
+            title: "Stamp " + result.stamp.toFixed(6) + " s (epoch), session start " + origin.toFixed(6) + " s",
+            error: false,
+            warn: stale
           });
         } catch (error) {
           this.sourceList.itemStatus.set(source.logKey, { text: String(error), error: true });

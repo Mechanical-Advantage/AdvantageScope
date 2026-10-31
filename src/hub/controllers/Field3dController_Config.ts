@@ -19,6 +19,7 @@ const Field3dController_Config: SourceListConfig = {
       key: "spatial",
       previewType: null,
       showDocs: false,
+      inlineSettings: true,
       display: "Spatial topic",
       symbol: "nearme",
       showInTypeName: true,
@@ -37,24 +38,28 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "field",
+          forTypes: ["sensor_msgs/PointCloud2"],
           display: "Colour",
           showInTypeName: false,
           values: ["intensity", "z", "rgb"].map((key) => ({ key, display: key }))
         },
         {
           key: "map",
+          forTypes: ["sensor_msgs/PointCloud2"],
           display: "Map",
           showInTypeName: false,
           values: ["viridis", "turbo"].map((key) => ({ key, display: key }))
         },
         {
           key: "size",
+          forTypes: ["sensor_msgs/PointCloud2"],
           display: "Point px",
           showInTypeName: false,
           values: ["3", "1", "5", "8"].map((key) => ({ key, display: key }))
         },
         {
           key: "decay",
+          forTypes: ["sensor_msgs/PointCloud2"],
           display: "Scans",
           showInTypeName: false,
           values: ["1", "3", "5", "10", "20"].map((key) => ({ key, display: key }))
