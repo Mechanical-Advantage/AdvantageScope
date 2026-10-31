@@ -507,7 +507,10 @@ export default class LineGraphController implements TabController {
     } else if (!unitsConsistent) {
       return { status: "inconsistent" };
     } else {
-      return { status: "success", unit: firstUnit };
+      // Prefer the channel profile's display unit (e.g. °C over raw K) so the axis matches the legend
+      const display = window.log.getChannelProfile(sourceVisible[0].logKey).to;
+      const useDisplay = display !== null && Units.GROUP_BY_UNIT[display] === firstUnitGroup;
+      return { status: "success", unit: useDisplay ? display : firstUnit };
     }
   }
 

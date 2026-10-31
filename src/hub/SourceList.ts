@@ -1014,7 +1014,10 @@ export default class SourceList {
         parent = document.createElement("small");
         keyContainer.append(parent);
       }
-      parent.innerText = middleEllipsis(name.parent, Math.max(12, Math.floor(this.ROOT.clientWidth / 7)));
+      parent.innerText = middleEllipsis(
+        name.parent,
+        this.ROOT.clientWidth > 0 ? Math.max(16, Math.floor(this.ROOT.clientWidth / 7)) : 48
+      );
       item.onmouseenter = () => (this.hoveredKey = state.logKey);
       item.onmouseleave = () => (this.hoveredKey = null);
       const swatch = item.querySelector("button.type") as HTMLElement;
