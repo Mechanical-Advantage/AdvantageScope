@@ -20,6 +20,8 @@ import TabController from "./TabController";
 export default class LapController implements TabController {
   UUID = createUUID();
   private field = "";
+  private cached?: LapCommand;
+  private cacheKey = "";
   constructor(
     root: HTMLElement,
     private map: boolean
@@ -121,9 +123,21 @@ export default class LapController implements TabController {
     lapService.update();
     this.field ||= lapService.settings.speed || lapService.settings.frontLeft;
     const data = window.log.getNumber(this.field, -Infinity, Infinity);
+    const cacheKey = JSON.stringify([
+      data?.timestamps.length,
+      data?.timestamps.at(-1),
+      data?.values.at(-1),
+      lapService.version,
+      this.field,
+      lapService.reference,
+      lapService.overlays,
+      lapService.selected
+    ]);
+    if (this.cached && cacheKey === this.cacheKey) return { ...this.cached, time: window.selection.getSelectedTime() };
+    this.cacheKey = cacheKey;
     const samples = lapService.result.samples;
     const values = samples.map((p) => (data ? interpolate(data.timestamps, data.values, p.t) : NaN));
-    return {
+    this.cached = {
       map: this.map,
       result: lapService.result,
       settings: lapService.settings,
@@ -142,5 +156,6 @@ export default class LapController implements TabController {
           : [NaN, NaN, NaN];
       })
     };
+    return this.cached;
   }
 }

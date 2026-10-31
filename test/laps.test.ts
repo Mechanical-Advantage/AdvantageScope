@@ -62,3 +62,42 @@ test("ENU projection uses metres at local latitude", () => {
   assert.deepEqual(project(-37, 145, { lat: -37, lon: 145 }), { x: 0, y: 0 });
   assert.ok(Math.abs(project(-36.999, 145, { lat: -37, lon: 145 }).y - 111.195) < 0.01);
 });
+
+test("acceleration ends at interpolated 75 m and excludes between-run intervals", () => {
+  const ss: Sample[] = Array.from({ length: 201 }, (_, i) => ({ t: i / 10, x: 0, y: 0, speed: i === 0 ? 0 : 10 }));
+  const r = analyze(ss, { mode: "accel" });
+  const run = r.laps.find((l) => l.complete)!;
+  assert.ok(run);
+  assert.ok(Math.abs(run.distance - 75) < 1e-8);
+  assert.ok(run.valid);
+});
+test("manual markers beat distance fallback and retain partial intervals", () => {
+  const ss = Array.from({ length: 101 }, (_, i) => ({ t: i / 10, x: i, y: 0, speed: 10 }));
+  const r = analyze(ss, { manual: [2, 5, 8], minTime: 1, length: 30 });
+  assert.equal(r.laps[1].source, "manual");
+  assert.equal(r.laps[1].end - r.laps[1].start, 3);
+  assert.equal(r.laps[0].complete, false);
+  assert.equal(r.laps.at(-1)!.complete, false);
+});
+test("active partial laps retain their travelled distance", () => {
+  const ss = Array.from({ length: 101 }, (_, i) => ({ t: i / 10, x: i, y: 0, speed: 10, counter: Math.floor(i / 40) }));
+  const r = analyze(ss, { minTime: 1, length: 100 });
+  assert.equal(r.laps[1].distance, 100);
+  assert.ok(r.laps.at(-1)!.distance < 100);
+});
+test("GPS gaps exclude laps from bests", () => {
+  const ss = [0, 1, 2, 5, 6, 7, 8].map((t) => ({ t, x: t, y: 0, counter: t < 1 ? 0 : t < 7 ? 1 : 2 }));
+  assert.equal(analyze(ss, { minTime: 1 }).best, undefined);
+});
+test("endurance increments stint after driver-change standstill", () => {
+  const ss = Array.from({ length: 1001 }, (_, i) => ({
+    t: i / 10,
+    x: i / 10,
+    y: 0,
+    speed: i >= 100 && i < 800 ? 0 : 5,
+    counter: Math.floor(i / 50)
+  }));
+  const r = analyze(ss, { mode: "endurance", minTime: 1 });
+  assert.ok(r.laps.some((l) => l.stint === 2));
+  assert.ok(r.laps.some((l) => !l.valid));
+});

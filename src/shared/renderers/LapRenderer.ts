@@ -37,6 +37,7 @@ export default class LapRenderer implements TabRenderer {
   private canvas: HTMLCanvasElement;
   private command?: LapCommand;
   private last = "";
+  private lastDraw = "";
   private transform = (p: Point) => p;
   private inverse = (p: Point) => p;
   private dragging?: { index: number; endpoint: "a" | "b"; gate: Gate };
@@ -122,6 +123,7 @@ export default class LapRenderer implements TabRenderer {
     if (command.map) this.draw();
   }
   private build() {
+    this.lastDraw = "";
     const c = this.command!;
     this.toolbar.replaceChildren();
     this.content.replaceChildren();
@@ -304,6 +306,17 @@ export default class LapRenderer implements TabRenderer {
     const c = this.command!,
       ss = c.result.samples;
     if (!ss.length) return;
+    const drawKey = JSON.stringify([
+      c.version,
+      c.field,
+      c.selected,
+      c.time,
+      this.content.clientWidth,
+      this.content.clientHeight,
+      this.dragging
+    ]);
+    if (drawKey === this.lastDraw) return;
+    this.lastDraw = drawKey;
     const rect = this.content.getBoundingClientRect(),
       w = Math.max(1, rect.width),
       h = Math.max(1, rect.height),

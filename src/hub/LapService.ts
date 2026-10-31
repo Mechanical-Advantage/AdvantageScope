@@ -11,7 +11,7 @@
 // - LiveStatusPill: title-bar pill with three separate indicators (backend, car, sim), plus a popover with
 //   details, sim controls (only when the backend has sim endpoints) and connect/disconnect.
 
-import { analyze, deltaTime, interpolate, LapConfig, LapResult, project, Sample } from "../shared/laps/LapEngine";
+import { analyze, interpolate, LapConfig, LapResult, project, Sample } from "../shared/laps/LapEngine";
 import Log from "../shared/log/Log";
 
 export type LapSettings = {
@@ -54,12 +54,13 @@ class LapService {
   private nextUpdate = 0;
   private derivedEnd = -Infinity;
   private derivedSignature = "";
+  private grids = new WeakMap<object, { d: number[]; t: number[] }>();
   fields(): string[] {
     const keys = window.log.getFieldKeys().filter((k) => !k.startsWith("Laps/"));
     const find = (pattern: RegExp) => keys.find((k) => pattern.test(k)) ?? "";
     const s = this.settings;
-    s.latitude ||= find(/(?:front.*latitude|gps\/latitude|latitude)$/i);
-    s.longitude ||= find(/(?:front.*longitude|gps\/longitude|longitude)$/i);
+    s.latitude ||= find(/front.*latitude$/i) || find(/(?:gps\/latitude|latitude)$/i);
+    s.longitude ||= find(/front.*longitude$/i) || find(/(?:gps\/longitude|longitude)$/i);
     s.frontLeft ||= find(/(?:DASH_SpeedFL|wheel_speed_fl)$/i);
     s.frontRight ||= find(/(?:DASH_SpeedFR|wheel_speed_fr)$/i);
     s.speed ||= find(/(?:vehicle_speed|ground_speed|gps.*speed)$/i);
@@ -103,8 +104,9 @@ class LapService {
     const speed = (key: string, t: number) => {
       let v = at(key, t);
       const unit = window.log.getUnit(key)?.toLowerCase();
-      if (unit === "km/h" || unit === "kph") v /= 3.6;
-      if (unit === "rad/s") v *= s.radius;
+      if (unit === "kilometers/hour" || unit === "km/h" || unit === "kph") v /= 3.6;
+      if (unit === "radians/second" || unit === "rad/s") v *= s.radius;
+      if (unit === "rotations/minute") v *= (Math.PI / 30) * s.radius;
       return v;
     };
     const lat = data.get(s.latitude),
@@ -124,7 +126,10 @@ class LapService {
     };
     const samples: Sample[] = [];
     if (base) {
-      const origin = { lat: lat?.values.find(Number.isFinite) ?? 0, lon: lon?.values.find(Number.isFinite) ?? 0 };
+      const firstFix =
+        base.timestamps.find((t) => Math.abs(at(s.latitude, t)) > 0.001 || Math.abs(at(s.longitude, t)) > 0.001) ??
+        base.timestamps[0];
+      const origin = { lat: at(s.latitude, firstFix) || 0, lon: at(s.longitude, firstFix) || 0 };
       base.timestamps.forEach((t) => {
         const latitude = at(s.latitude, t),
           longitude = at(s.longitude, t);
@@ -134,14 +139,14 @@ class LapService {
             !Number.isFinite(longitude) ||
             Math.abs(latitude) > 90 ||
             Math.abs(longitude) > 180 ||
-            (latitude === 0 && longitude === 0))
+            (Math.abs(latitude) < 0.001 && Math.abs(longitude) < 0.001))
         )
           return;
         let v = (speed(s.frontLeft, t) + speed(s.frontRight, t)) / 2;
         if (!Number.isFinite(v)) {
           const rpm = at(s.rpm, t),
             unit = window.log.getUnit(s.rpm);
-          v = (rpm * (unit === "rad/s" ? 1 : Math.PI / 30) * s.radius) / s.ratio;
+          v = (rpm * (unit === "radians/second" || unit === "rad/s" ? 1 : Math.PI / 30) * s.radius) / s.ratio;
         }
         if (!Number.isFinite(v)) v = speed(s.speed, t);
         const point = lat ? project(latitude, longitude, origin) : { x: 0, y: 0 };
@@ -224,7 +229,16 @@ class LapService {
   delta(lap: number, distance: number) {
     const l = this.result.laps.find((l) => l.index === lap),
       r = this.result.laps.find((l) => l.index === this.reference);
-    return l && r ? deltaTime(l, r, distance) : NaN;
+    if (!l || !r) return NaN;
+    const at = (lap: typeof l) => {
+      let grid = this.grids.get(lap);
+      if (!grid) {
+        grid = { d: lap.grid.map((p) => p.distance), t: lap.grid.map((p) => p.time) };
+        this.grids.set(lap, grid);
+      }
+      return interpolate(grid.d, grid.t, distance);
+    };
+    return at(l) - at(r);
   }
 }
 export const lapService = new LapService();

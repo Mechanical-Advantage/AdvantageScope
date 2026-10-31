@@ -161,7 +161,7 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
   const times = samples.map((p) => p.t),
     distances = samples.map((p) => p.distance);
   const dAt = (t: number) => interpolate(times, distances, t);
-  const min = config.minTime ?? (config.mode === "skidpad" ? 4 : 20);
+  const min = config.minTime ?? (config.mode === "skidpad" ? 4 : config.mode === "accel" ? 0 : 20);
   let boundaries: number[] = [],
     source = "gps";
   if (samples.some((p) => Number.isFinite(p.counter))) {
@@ -191,6 +191,7 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
     boundaries = config.manual.filter((t) => t >= times[0] && t <= times.at(-1)!);
   } else if (config.length && config.length > 0) {
     source = "distance";
+    boundaries.push(times[0]);
     for (let d = config.length; d < distances.at(-1)!; d += config.length)
       boundaries.push(interpolate(distances, times, d));
   }
@@ -217,6 +218,10 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
       return end === undefined ? [] : [start, end];
     });
   }
+  const runPairs =
+    config.mode === "accel" || (config.mode === "autocross" && config.finish)
+      ? boundaries.filter((_, i) => i % 2 === 0).map((start, i) => [start, boundaries[i * 2 + 1]])
+      : undefined;
   const edges = [times[0], ...boundaries.filter((t) => t > times[0] && t < times.at(-1)!), times.at(-1)!];
   let stint = 1,
     stopStart: number | undefined;
@@ -231,12 +236,14 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
   for (let i = 0; i < edges.length - 1; i++) {
     const start = edges[i],
       end = edges[i + 1],
-      complete = boundaries.includes(start) && boundaries.includes(end);
+      complete = runPairs
+        ? runPairs.some((pair) => pair[0] === start && pair[1] === end)
+        : boundaries.includes(start) && boundaries.includes(end);
     if (config.mode === "endurance") stint = 1 + stops.filter((t) => t <= start).length;
     const inside = samples.filter((p) => p.t > start && p.t < end);
     const ts = [start, ...inside.map((p) => p.t), end],
       ds = ts.map(dAt);
-    const length = config.length ?? ds.at(-1)! - ds[0];
+    const length = complete && config.mode !== "accel" ? config.length ?? ds.at(-1)! - ds[0] : ds.at(-1)! - ds[0];
     const grid = resample(ds, ts, length);
     let splits = (config.fractions ?? [1 / 3, 2 / 3])
       .filter((f) => f > 0 && f < 1)
