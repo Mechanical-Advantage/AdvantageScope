@@ -2173,9 +2173,13 @@ button.connect-confirm {
   }
 }
 
-.sidebar .value,
-.data-table td,
-.tab-container .value,
-.statistics-values td {
-  font-variant-numeric: tabular-nums;
+.channel-display-dialog {
+  color-scheme: light dark;
+  color: CanvasText;
+  background: Canvas;
+  border: 1px solid currentColor;
+  font-size: 13px;
+}
+.channel-display-dialog::backdrop {
+  background: #0008;
 }

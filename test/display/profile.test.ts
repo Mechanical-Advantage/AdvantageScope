@@ -40,6 +40,7 @@ test("engineering units and precision", () => {
   assert.equal(fmt(0.0007, "rad/s", "yaw", { precision: 3 }), "0.001 rad/s");
   assert.equal(fmt(-0.00001, "V"), "0.00 V");
   assert.equal(fmt(12.3, "N*m"), "12.30 Nm");
+  assert.equal(fmt(123456, "W"), "123500 W");
 });
 test("booleans, enums and raw tooltips", () => {
   const profile = channelProfile({ name: "state", enumLabels: { 1: "Driving" } });
@@ -73,4 +74,11 @@ test("CSV matches qualified or unique signal names; sidecar wins", () => {
   assert.deepEqual(csvChannelMetadata("DASH_State", "", [db], { DASH_State: { 1: "Override" } }).enumLabels, {
     1: "Override"
   });
+});
+
+test("legend retains ratio range metadata when the axis unit has an empty suffix", () => {
+  const log = new Log();
+  log.putNumber("soc", 0, 0.737);
+  log.setMetadataString("soc", JSON.stringify({ unit: "1", min: 0, max: 1 }));
+  assert.equal(formatChannelValue(0.737, log.getChannelProfile("soc", "")), "73.7 %");
 });

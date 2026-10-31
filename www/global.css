@@ -115,3 +115,8 @@ button:not(:disabled):active {
     background-color: #444;
   }
 }
+
+/* Keep channel values aligned in the hub and satellite renderers. */
+body {
+  font-variant-numeric: tabular-nums;
+}

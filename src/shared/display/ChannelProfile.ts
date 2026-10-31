@@ -102,10 +102,15 @@ export function formatChannelValue(value: unknown, profile: ChannelProfile, conv
   if (!Number.isFinite(number)) text = String(number);
   else {
     const digits = profile.precision ?? Math.max(0, Math.min(12, 3 - Math.floor(Math.log10(Math.abs(number) || 1))));
-    text = (Math.abs(number) < 0.5 * 10 ** -digits ? 0 : number).toFixed(digits);
+    const rounded = profile.precision === undefined ? Number(number.toPrecision(4)) : number;
+    text = (Math.abs(rounded) < 0.5 * 10 ** -digits ? 0 : rounded).toFixed(digits);
   }
   return text + (profile.unit && profile.unit !== "1" ? " " + profile.unit : "");
 }
 export function rawChannelValue(value: unknown, profile: ChannelProfile): string {
+  if (typeof value === "string" && profile.enumLabels) {
+    const entry = Object.entries(profile.enumLabels).find(([, label]) => label === value);
+    if (entry) value = entry[0];
+  }
   return `Raw: ${String(value)}${profile.rawUnit ? " " + profile.rawUnit : ""}`;
 }

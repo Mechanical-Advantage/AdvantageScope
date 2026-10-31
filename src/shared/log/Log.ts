@@ -264,16 +264,17 @@ export default class Log {
     Log.channelOverrides = value;
   }
 
-  getChannelProfile(key: string): ChannelProfile {
+  getChannelProfile(key: string, sourceUnit?: string): ChannelProfile {
     let metadata: any = {};
     try {
-      metadata = JSON.parse(this.getMetadataString(key));
+      const parsed = JSON.parse(this.getMetadataString(key));
+      if (parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)) metadata = parsed;
     } catch {}
     return channelProfile(
       {
         ...metadata,
         name: key,
-        unit: metadata.unit ?? this.getUnit(key),
+        unit: sourceUnit || metadata.unit || (key in this.fields ? this.getUnit(key) : null),
         enumLabels: metadata.enumLabels ?? metadata.values
       },
       this.displayOverrides[canonicalChannelPath(key)]
