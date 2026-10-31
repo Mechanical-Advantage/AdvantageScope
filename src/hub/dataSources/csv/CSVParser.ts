@@ -389,7 +389,9 @@ export function detectLayout(text: string): CSVLayout {
   let headerIndex = 0;
   for (let i = 0; i < sampleRows.length; i++) {
     const fields = sampleRows[i].fields;
-    if (fields.length >= Math.max(2, columnCount - 1) && isTextRow(fields)) {
+    // (A trailing delimiter can drop one column on wide files, so allow one less there)
+    const minColumns = Math.max(2, columnCount >= 5 ? columnCount - 1 : columnCount);
+    if (fields.length >= minColumns && isTextRow(fields)) {
       headerIndex = i;
       break;
     }

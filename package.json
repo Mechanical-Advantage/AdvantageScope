@@ -21,7 +21,8 @@
     "check-format": "license-check-and-add check -f file-header-config.json && prettier --check .",
     "wasm:compile": "node wasmCompile.mjs",
     "mock-backend": "node tools/mock-backend/src/main.ts",
-    "postinstall": "node installElectron.mjs && node getLicenses.mjs && node bundleLiteAssets.mjs"
+    "postinstall": "node installElectron.mjs && node getLicenses.mjs && node bundleLiteAssets.mjs",
+    "test": "node tools/run-tests.mjs"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.26.0",
