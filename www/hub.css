@@ -2183,7 +2183,7 @@ div.connect-message {
   background: var(--background-color, #222);
   color: #aaa;
   pointer-events: none;
-  z-index: 2;
+  z-index: 100;
 }
 div.live-popover details {
   margin: 6px 0;
