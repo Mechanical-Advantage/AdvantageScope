@@ -1,3 +1,10 @@
+// Copyright (c) 2026 Melbourne University Motorsports. Based on AdvantageScope (BSD-3-Clause, © Littleton Robotics).
+// https://github.com/Melbourne-University-Motorsports/mur-voir
+//
+// Use of this source code is governed by a BSD
+// license that can be found in the LICENSE file
+// at the root directory of this project.
+
 // A small closed FSAE-style circuit (~1 km) built from straights and arcs.
 //
 // Map frame: x = east, y = north, z = up (ENU, right-handed), origin at the end of the last

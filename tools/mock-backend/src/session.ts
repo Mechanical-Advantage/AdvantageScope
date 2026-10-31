@@ -1,3 +1,10 @@
+// Copyright (c) 2026 Melbourne University Motorsports. Based on AdvantageScope (BSD-3-Clause, © Littleton Robotics).
+// https://github.com/Melbourne-University-Motorsports/mur-voir
+//
+// Use of this source code is governed by a BSD
+// license that can be found in the LICENSE file
+// at the root directory of this project.
+
 // One live WebSocket client (spec 01 §5.2): hello/snapshot, subscriptions with replace
 // semantics, max_rate_hz throttling (newest wins), batching, and bounded buffering.
 

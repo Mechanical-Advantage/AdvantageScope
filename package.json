@@ -4,7 +4,7 @@
   "version": "27.0.0-alpha-6",
   "description": "Telemetry dashboard for Melbourne Uni Motorsport (based on AdvantageScope)",
   "author": {
-    "name": "Melbourne University Motorsport",
+    "name": "Melbourne University Motorsports",
     "url": "https://github.com/Melbourne-University-Motorsports/mur-voir"
   },
   "license": "BSD-3-Clause",
@@ -83,7 +83,7 @@
   },
   "build": {
     "appId": "io.github.melbourne-university-motorsports.mur-voir",
-    "copyright": "Copyright © 2026 Melbourne University Motorsport. Based on AdvantageScope, © 2021-2026 Littleton Robotics.",
+    "copyright": "Copyright © 2026 Melbourne University Motorsports. Based on AdvantageScope, © 2021-2026 Littleton Robotics.",
     "npmRebuild": false,
     "publish": [],
     "electronFuses": {

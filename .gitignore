@@ -95,4 +95,4 @@ $RECYCLE.BIN/
 build/*
 *.pbxuser
 *.mode1v3
-xcuserdata
+xcuserdata.claude/

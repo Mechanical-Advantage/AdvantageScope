@@ -1,3 +1,10 @@
+// Copyright (c) 2026 Melbourne University Motorsports. Based on AdvantageScope (BSD-3-Clause, © Littleton Robotics).
+// https://github.com/Melbourne-University-Motorsports/mur-voir
+//
+// Use of this source code is governed by a BSD
+// license that can be found in the LICENSE file
+// at the root directory of this project.
+
 import { MockBackend, type BackendOptions } from "../src/backend.ts";
 import type { SamplesOp, ServerOp, TelemetrySample } from "../src/contract.ts";
 import { Session, type SessionOptions } from "../src/session.ts";

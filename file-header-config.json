@@ -5,7 +5,8 @@
     "lite/static/bundles",
     "lite/ipk/overlay/**/bundles",
     "runOwletDownload.js",
-    "src/hub/dataSources/schema/spark/*"
+    "src/hub/dataSources/schema/spark/*",
+    ".claude/**"
   ],
   "license": "file-header.txt",
   "regexIdentifier": "##",

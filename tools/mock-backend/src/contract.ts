@@ -1,3 +1,10 @@
+// Copyright (c) 2026 Melbourne University Motorsports. Based on AdvantageScope (BSD-3-Clause, © Littleton Robotics).
+// https://github.com/Melbourne-University-Motorsports/mur-voir
+//
+// Use of this source code is governed by a BSD
+// license that can be found in the LICENSE file
+// at the root directory of this project.
+
 // MUR live telemetry contract (spec 01 §3–§5, with the spec 02 sim extensions).
 //
 // Pure types plus a few tiny helpers with no runtime dependencies, so the dashboard can import

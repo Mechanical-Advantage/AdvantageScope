@@ -1,6 +1,6 @@
 # mur-voir
 
-mur-voir is the telemetry dashboard for **Melbourne University Motorsport (MUR)**, our Formula SAE team. It is one workbench for the whole car:
+mur-voir is the telemetry dashboard for **Melbourne University Motorsports (MUR)**, our Formula SAE team. It is one workbench for the whole car:
 
 - live telemetry from the car
 - recorded logs
