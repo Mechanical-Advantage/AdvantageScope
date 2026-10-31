@@ -6,9 +6,9 @@
 // at the root directory of this project.
 
 import { LiveSourceInfo } from "../../shared/LiveSourceInfo";
+import FoxgloveSource from "./foxglove/FoxgloveSource";
 import { LiveDataSource } from "./LiveDataSource";
 import MQTTSource from "./mqtt/MQTTSource";
-import FoxgloveSource from "./foxglove/FoxgloveSource";
 import MURSource from "./mur/MURSource";
 import NT4Source, { NT4Mode } from "./nt4/NT4Source";
 
