@@ -1023,3 +1023,12 @@ table.metadata-table td.no-data {
     color: #72d6a0;
   }
 }
+
+.lap-axis-mode {
+  position: absolute;
+  right: 12px;
+  top: 2px;
+  z-index: 2;
+  max-width: 170px;
+  font-size: 11px;
+}

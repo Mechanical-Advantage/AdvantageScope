@@ -9,6 +9,7 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
+import { interpolate } from "../../shared/laps/LapEngine";
 import { getLogValueText } from "../../shared/log/LogUtil";
 import { LogValueSetNumber } from "../../shared/log/LogValueSets";
 import { AKIT_TIMESTAMP_KEYS, getRobotStateRanges } from "../../shared/log/RobotState";
@@ -21,6 +22,7 @@ import {
 } from "../../shared/renderers/LineGraphRenderer";
 import { Units } from "../../shared/units";
 import { clampValue, createUUID, scaleValueClamped } from "../../shared/util";
+import { LAP_COLORS, lapService } from "../LapService";
 import SourceList from "../SourceList";
 import { LineGraphController_DiscreteConfig, LineGraphController_NumericConfig } from "./LineGraphController_Config";
 import TabController from "./TabController";
@@ -55,8 +57,21 @@ export default class LineGraphController implements TabController {
   private leftUnitCache: Units.UnitConfig | null = null;
   private rightUnitCache: Units.UnitConfig | null = null;
   private showRobotMode = false;
+  private lapMode = "time";
+  private lapSelect: HTMLSelectElement;
 
   constructor(root: HTMLElement) {
+    const mode = document.createElement("select");
+    this.lapSelect = mode;
+    mode.className = "lap-axis-mode";
+    mode.setAttribute("aria-label", "Line graph x-axis mode");
+    [
+      ["time", "Time"],
+      ["lapTime", "Lap time overlay"],
+      ["distance", "Lap distance + ΔT"]
+    ].forEach(([value, label]) => mode.add(new Option(label, value)));
+    mode.onchange = () => (this.lapMode = mode.value);
+    root.append(mode);
     // Make source lists
     this.leftSourceList = new SourceList(
       root.getElementsByClassName("line-graph-left")[0] as HTMLElement,
@@ -147,6 +162,7 @@ export default class LineGraphController implements TabController {
           rect: rect,
           legend: "discrete",
           showRobotMode: this.showRobotMode,
+          lapMode: this.lapMode,
           config: LineGraphController_DiscreteConfig
         });
       }
@@ -194,6 +210,10 @@ export default class LineGraphController implements TabController {
     }
     if ("showRobotMode" in state) {
       this.showRobotMode = state.showRobotMode as boolean;
+    }
+    if ("lapMode" in state && ["time", "lapTime", "distance"].includes(String(state.lapMode))) {
+      this.lapMode = String(state.lapMode);
+      this.lapSelect.value = this.lapMode;
     }
     this.updateAxisLabels();
 
@@ -434,7 +454,7 @@ export default class LineGraphController implements TabController {
     let leftFieldsCommand: LineGraphRendererCommand_NumericField[] = [];
     let rightFieldsCommand: LineGraphRendererCommand_NumericField[] = [];
     let discreteFieldsCommand: LineGraphRendererCommand_DiscreteField[] = [];
-    const timeRange = window.selection.getTimelineRange();
+    const timeRange = this.lapMode === "time" ? window.selection.getTimelineRange() : window.log.getTimestampRange();
 
     // Add numeric fields
     this.leftNumericCommandCache = {};
@@ -843,7 +863,7 @@ export default class LineGraphController implements TabController {
     // Return command
     leftFieldsCommand.reverse();
     rightFieldsCommand.reverse();
-    return {
+    const result: LineGraphRendererCommand = {
       timeRange: timeRange,
       displayOffset: window.log.getTimestampDisplayOffset(),
       selectionMode: window.selection.getMode(),
@@ -869,6 +889,78 @@ export default class LineGraphController implements TabController {
       discreteFields: discreteFieldsCommand,
       alerts: alerts
     };
+    if (this.lapMode !== "time") {
+      lapService.update();
+      const reference = lapService.result.laps.find((l) => l.index === lapService.reference);
+      const laps = lapService.result.laps.filter((l) => lapService.overlays.includes(l.index));
+      const distance = this.lapMode === "distance";
+      const convert = (fields: LineGraphRendererCommand_NumericField[]) =>
+        fields.flatMap((field) =>
+          laps.map((lap, i) => {
+            const times = lap.grid.map((p) => p.time),
+              ds = lap.grid.map((p) => p.distance);
+            const xs = distance ? ds : times;
+            return {
+              ...field,
+              color: LAP_COLORS[i % LAP_COLORS.length],
+              timestamps: xs,
+              values: times.map((t) => interpolate(field.timestamps, field.values, lap.start + t))
+            };
+          })
+        );
+      result.leftFields = convert(result.leftFields);
+      result.rightFields = convert(result.rightFields);
+      if (distance && reference) {
+        result.rightFields = laps.map((lap, i) => ({
+          timestamps: lap.grid.map((p) => p.distance),
+          values: lap.grid.map((p) => lapService.delta(lap.index, p.distance)),
+          color: LAP_COLORS[i % LAP_COLORS.length],
+          type: "smooth",
+          size: "normal"
+        }));
+        const vs = result.rightFields.flatMap((f) => f.values).filter(Number.isFinite);
+        const min = Math.min(0, ...vs),
+          max = Math.max(0, ...vs);
+        result.rightRange = [min - 0.1, max + 0.1];
+        result.showRightAxis = true;
+        result.rightUnits = null;
+      }
+      const end = Math.max(1, ...laps.map((l) => (distance ? l.distance : l.end - l.start)));
+      result.timeRange = [0, end];
+      result.displayOffset = 0;
+      result.xUnit = distance ? "m" : "s";
+      result.lapLabels = laps.map((lap, i) => ({
+        text: `Lap ${lap.index}${lap.index === lapService.reference ? " (ref)" : ""}`,
+        color: LAP_COLORS[i % LAP_COLORS.length]
+      }));
+      if (distance) result.lapLabels.push({ text: "Right axis: ΔT [s], positive = slower", color: "#aaa" });
+      const cursorLap =
+        lapService.result.laps.find(
+          (l) => result.selectedTime !== null && result.selectedTime >= l.start && result.selectedTime <= l.end
+        ) ?? reference;
+      const transform = (t: number | null) =>
+        t === null || !cursorLap
+          ? null
+          : distance
+          ? interpolate(
+              cursorLap.grid.map((p) => p.time),
+              cursorLap.grid.map((p) => p.distance),
+              t - cursorLap.start
+            )
+          : t - cursorLap.start;
+      result.selectedTime = transform(result.selectedTime);
+      result.hoveredTime = transform(result.hoveredTime);
+      result.grabZoomRange = null;
+      const seekLap = lapService.result.laps.find((l) => l.index === lapService.selected) ?? reference;
+      if (seekLap)
+        result.lapTimeline = {
+          x: seekLap.grid.map((p) => (distance ? p.distance : p.time)),
+          time: seekLap.grid.map((p) => seekLap.start + p.time)
+        };
+      result.discreteFields = [];
+      result.alerts = [];
+    }
+    return result;
   }
 
   /** Adjusts the range to fit the extreme limits. */

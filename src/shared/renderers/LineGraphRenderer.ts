@@ -13,6 +13,8 @@ import { Units } from "../units";
 import { calcAxisStepSize, clampValue, cleanFloat, scaleValue, shiftColor, ValueScaler } from "../util";
 import TabRenderer from "./TabRenderer";
 
+import { interpolate } from "../laps/LapEngine";
+
 export default class LineGraphRenderer implements TabRenderer {
   private Y_STEP_TARGET_PX = 50;
   private X_STEP_TARGET_PX = 100;
@@ -85,7 +87,7 @@ export default class LineGraphRenderer implements TabRenderer {
     this.SCROLL_OVERLAY.addEventListener("click", (event) => {
       if (Math.abs(event.clientX - this.SCROLL_OVERLAY.getBoundingClientRect().x - this.mouseDownX) <= 5) {
         let hoveredTime = this.lastHoveredTime;
-        if (hoveredTime) {
+        if (hoveredTime !== null) {
           window.selection.setSelectedTime(hoveredTime);
         }
       }
@@ -178,6 +180,8 @@ export default class LineGraphRenderer implements TabRenderer {
       this.lastCursorX,
       window.preferences?.timestamps,
       command.displayOffset,
+      command.xUnit,
+      command.lapLabels,
       command.leftFields.map((field) => [field.values.length, field.color, field.type, field.size]),
       command.discreteFields.map((field) => [
         field.values.length,
@@ -500,7 +504,9 @@ export default class LineGraphRenderer implements TabRenderer {
           hoveredTime = nearestDiscreteBorder;
         }
       }
-      window.selection.setHoveredTime(hoveredTime);
+      window.selection.setHoveredTime(
+        command.lapTimeline ? interpolate(command.lapTimeline.x, command.lapTimeline.time, hoveredTime) : hoveredTime
+      );
       this.didClearHoveredTime = false;
       command.hoveredTime = hoveredTime;
     }
@@ -521,7 +527,7 @@ export default class LineGraphRenderer implements TabRenderer {
     let formatMarkedTimestampText = (time: number, isDelta: boolean = false): string => {
       let displayTime = isDelta ? time : time + displayOffset;
       let fractionDigits = Math.max(0, -Math.floor(Math.log10(timeStepSize / 10)));
-      let text = displayTime.toFixed(fractionDigits) + "s";
+      let text = displayTime.toFixed(fractionDigits) + (command.xUnit ?? "s");
       if (isStartAt0 && !isDelta) {
         text = "+" + text;
       }
@@ -645,7 +651,12 @@ export default class LineGraphRenderer implements TabRenderer {
       // No valid selected time, only write hovered time
       writeCenteredTime(hoveredText!, hoveredX!, 0.35, true);
     }
-    this.lastHoveredTime = command.hoveredTime;
+    this.lastHoveredTime =
+      command.hoveredTime === null
+        ? null
+        : command.lapTimeline
+        ? interpolate(command.lapTimeline.x, command.lapTimeline.time, command.hoveredTime)
+        : command.hoveredTime;
 
     // Clear overflow & draw graph outline
     context.lineWidth = 1;
@@ -724,6 +735,17 @@ export default class LineGraphRenderer implements TabRenderer {
       }
     }
 
+    if (command.lapLabels) {
+      let x = graphLeft + 8;
+      context.globalAlpha = 1;
+      context.textAlign = "left";
+      for (const label of command.lapLabels) {
+        context.fillStyle = label.color;
+        context.fillText(label.text, x, graphTop + 16);
+        x += context.measureText(label.text).width + 18;
+      }
+      context.fillStyle = light ? "#222" : "#eee";
+    }
     // Render x axis
     context.textAlign = "center";
     let stepPos = Math.ceil(cleanFloat(displayTimeRange[0] / timeStepSize)) * timeStepSize;
@@ -738,7 +760,7 @@ export default class LineGraphRenderer implements TabRenderer {
         x = graphLeft + graphWidth;
       }
 
-      let text = cleanFloat(stepPos).toString() + "s";
+      let text = cleanFloat(stepPos).toString() + (command.xUnit ?? "s");
       if (isStartAt0) {
         text = "+" + text;
       }
@@ -768,6 +790,9 @@ export default class LineGraphRenderer implements TabRenderer {
 }
 
 export type LineGraphRendererCommand = {
+  xUnit?: "s" | "m";
+  lapTimeline?: { x: number[]; time: number[] };
+  lapLabels?: { text: string; color: string }[];
   timeRange: [number, number];
   displayOffset: number;
   selectionMode: SelectionMode;
