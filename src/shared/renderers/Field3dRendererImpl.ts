@@ -1,3 +1,4 @@
+import URDFManager from "./field3d/objectManagers/URDFManager";
 // Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
@@ -406,6 +407,9 @@ export default class Field3dRendererImpl implements TabRenderer {
     ] as const;
     let manager: ObjectManager<Field3dRendererCommand_AnyObj>;
     switch (type) {
+      case "urdf":
+        manager = new URDFManager(...args);
+        break;
       case "robot":
       case "ghost":
         manager = new RobotManager(

@@ -10,7 +10,7 @@ import { SourceListConfig } from "../../shared/SourceListConfig";
 import { SwerveArrangementValues } from "./Field2dController_Config";
 
 const Field3dController_Config: SourceListConfig = {
-  title: "Poses",
+  title: "Layers",
   autoAdvance: true,
   allowChildrenFromDrag: false,
   typeMemoryId: "field3d",

@@ -1,3 +1,5 @@
+import { Transform } from "../spatial/Transform";
+import { URDFRobot } from "../spatial/URDF";
 // Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
@@ -123,6 +125,7 @@ export type Field3dRendererCommand = {
 };
 
 export type Field3dRendererCommand_AnyObj =
+  | Field3dRendererCommand_URDFObj
   | Field3dRendererCommand_RobotObj
   | Field3dRendererCommand_GhostObj
   | Field3dRendererCommand_GamePieceObj
@@ -200,4 +203,11 @@ export type Field3dRendererCommand_ConeObj = {
   color: string;
   position: "center" | "back" | "front";
   poses: AnnotatedPose3d[];
+};
+
+export type Field3dRendererCommand_URDFObj = {
+  type: "urdf";
+  robot: URDFRobot;
+  assets: Record<string, string>;
+  links: Record<string, Transform>;
 };

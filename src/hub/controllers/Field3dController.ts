@@ -1,3 +1,6 @@
+import { DEFAULT_CAR_URDF } from "../../shared/spatial/DefaultCar";
+import { identity } from "../../shared/spatial/Transform";
+import { computeLinkPoses, parseURDF, resolveMeshPath } from "../../shared/spatial/URDF";
 // Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
@@ -29,6 +32,9 @@ import TabController from "./TabController";
 export default class Field3dController implements TabController {
   UUID = createUUID();
 
+  private robot = parseURDF(DEFAULT_CAR_URDF);
+  private robotAssets: Record<string, string> = {};
+  private robotStatus = document.createElement("div");
   private FIELD_SELECT: HTMLSelectElement;
 
   private sourceList: SourceList;
@@ -42,6 +48,57 @@ export default class Field3dController implements TabController {
     let settings = root.getElementsByClassName("field-3d-settings")[0] as HTMLElement;
     this.FIELD_SELECT = settings.getElementsByClassName("field-select")[0] as HTMLSelectElement;
 
+    const folder = document.createElement("input");
+    folder.type = "file";
+    folder.multiple = true;
+    folder.setAttribute("webkitdirectory", "");
+    folder.hidden = true;
+    const load = document.createElement("button");
+    load.textContent = "Load URDF folder…";
+    load.onclick = () => folder.click();
+    folder.onchange = async () => {
+      try {
+        const files = Array.from(folder.files ?? []);
+        const urdf = files.find((file) => file.name.endsWith(".urdf"));
+        if (!urdf) throw new Error("Folder must contain a .urdf file (expand xacro first)");
+        const robot = parseURDF(await urdf.text());
+        const assets: Record<string, string> = {};
+        const entries = await Promise.all(
+          files.map(
+            async (file) =>
+              [
+                file.webkitRelativePath,
+                await new Promise<string>((resolve, reject) => {
+                  const reader = new FileReader();
+                  reader.onload = () => resolve(String(reader.result));
+                  reader.onerror = reject;
+                  reader.readAsDataURL(file);
+                })
+              ] as const
+          )
+        );
+        entries.forEach(([name, url]) => {
+          assets[name] = url;
+          assets[name.split("/").pop()!] = url;
+        });
+        const base = urdf.webkitRelativePath.split("/").slice(0, -1).join("/");
+        robot.links.forEach((link) =>
+          link.visuals.forEach((visual) => {
+            if (visual.geometry.type !== "mesh") return;
+            const name = visual.geometry.filename;
+            const match = resolveMeshPath(name, base).find((candidate) => assets[candidate]);
+            if (match) assets[name] = assets[match];
+          })
+        );
+        this.robot = robot;
+        this.robotAssets = assets;
+        this.robotStatus.textContent = robot.name;
+      } catch (error) {
+        this.robotStatus.textContent = String(error);
+      }
+    };
+    settings.append(load, folder, this.robotStatus);
+    this.robotStatus.textContent = "MUR car · URDF";
     // Set up game select
     this.FIELD_SELECT.addEventListener("change", () => {
       let isFTC = [...(window.assets === null ? [] : window.assets.field3ds), ...BuiltIn3dFields].find(
@@ -121,6 +178,7 @@ export default class Field3dController implements TabController {
     if (robotList.length === 0) {
       robotList.push("KitBot");
     }
+    robotList.unshift("MUR car");
     let sourceListValues: SourceListOptionValueConfig[] = robotList.map((name) => {
       return { key: name, display: name };
     });
@@ -170,6 +228,8 @@ export default class Field3dController implements TabController {
   saveState(): unknown {
     return {
       sources: this.sourceList.getState(),
+      robot: this.robot,
+      robotAssets: this.robotAssets,
       game: this.FIELD_SELECT.value
     };
   }
@@ -177,6 +237,8 @@ export default class Field3dController implements TabController {
   restoreState(state: unknown): void {
     if (typeof state !== "object" || state === null) return;
 
+    if ("robot" in state) this.robot = state.robot as typeof this.robot;
+    if ("robotAssets" in state) this.robotAssets = state.robotAssets as typeof this.robotAssets;
     this.updateFieldOptions();
     if ("sources" in state) {
       this.sourceList.setState(state.sources as SourceListState);
@@ -359,6 +421,17 @@ export default class Field3dController implements TabController {
       // Add object
       switch (source.type) {
         case "robot":
+          if (source.options.model === "MUR car") {
+            poses.forEach((pose) =>
+              objects.push({
+                type: "urdf",
+                robot: this.robot,
+                assets: this.robotAssets,
+                links: computeLinkPoses(this.robot, {}, pose.pose).links
+              })
+            );
+            break;
+          }
           objects.push({
             type: "robot",
             model: source.options.model,
@@ -444,6 +517,13 @@ export default class Field3dController implements TabController {
       }
     }
 
+    if (sources.length === 0)
+      objects.push({
+        type: "urdf",
+        robot: this.robot,
+        assets: this.robotAssets,
+        links: computeLinkPoses(this.robot, {}, identity()).links
+      });
     // Add built-in AprilTag objects
     if (fieldData !== undefined) {
       new Set(fieldData.aprilTags.map((x) => x.variant)).forEach((variant) => {
