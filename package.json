@@ -22,7 +22,8 @@
     "wasm:compile": "node wasmCompile.mjs",
     "mock-backend": "node tools/mock-backend/src/main.ts",
     "postinstall": "node installElectron.mjs && node getLicenses.mjs && node bundleLiteAssets.mjs",
-    "test": "node tools/run-tests.mjs"
+    "test": "node tools/run-tests.mjs",
+    "mqtt-mock": "node tools/mqtt-mock/main.mjs"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.26.0",

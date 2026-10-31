@@ -75,7 +75,7 @@ All live sources are registered once, in `src/hub/dataSources/LiveSourceRegistry
 - The hub sends the serializable list (`set-live-sources`) to the Electron and Lite main processes, which build the File → Live Source menus from it.
 - The `liveMode` preference stores the selected ID. Unknown IDs fall back to the first registered source.
 
-Registered sources: NT4 and **MUR Telemetry** (`mur`, default `http://localhost:8090`, spec 01 §5).
+Registered sources: NT4, **MQTT direct (debug)** and **MUR Telemetry** (`mur`, default `http://localhost:8090`, spec 01 §5).
 
 File → Connect… (`Cmd/Ctrl+K`) opens an in-page dialog (source, address, recent servers stored in the `liveRecent` preference). The title-bar status pill shows backend, car and sim state; its popover has sim pause/resume/reset when the backend has `/api/v1/sim/status`.
 
@@ -118,3 +118,16 @@ Historical importers are workers in `src/hub/dataSources/` registered in `Histor
 All scalar readouts use `src/shared/display/ChannelProfile.ts`. Double-click a numeric value in the sidebar to override its display unit or decimal places; blank precision and Automatic unit restore the defaults. Overrides are saved in layout `channelProfiles`, keyed by canonical slash-separated field paths, and survive source replacement.
 
 CSV imports match bundled DBC metadata by message/signal suffix or unambiguous signal name. A sibling `<file>.enums.json` can override labels, for example `{"ECU_Status.ECU_ECUState":{"0":"Init","1":"Standby"}}`. Keys may also be complete CSV names or bare signal names. Samples stay numeric; labels and engineering conversions are applied when displaying values.
+
+### MQTT direct debug source
+
+`src/hub/dataSources/mqtt/` uses the mqtt.js browser bundle over `ws://` / `wss://` in Electron and Lite. Connect accepts a broker URL, optional session-only username/password, topic filter (default `mur/#`), mapping and raw-CAN timestamp option. Credentials cannot be embedded in URLs and are never saved to preferences, recent servers or layout JSON. Mapping settings are saved per broker in `mqttConnections` preferences. Re-enter credentials after restarting. A Lite page served over HTTPS needs a `wss://` broker.
+
+- JSON per signal: `<prefix>/<NODE>/<Signal>` and `{ "t": <Unix seconds or nanoseconds>, "v": <scalar> }`, or a bare number.
+- JSON object: `<prefix>/<NODE>` and `{ "t": ..., "Signal": <scalar>, ... }`.
+- The literal topic-filter prefix before the first wildcard is stripped. With an exact filter, its parent is stripped. ASCII uses explicit `name=value` paths, one per line.
+- Raw CAN: `id(u32 BE) | dlc(u8) | data[8]`, optionally preceded by `timestamp(u64 BE ns)`. Standard IDs are at most 0x7FF; larger IDs or SocketCAN bit 31 select extended IDs. Bundled DBC paths, labels, enum `/raw` fields and sentinels match candump. Remote/error frames are ignored; unknown data frames remain raw under `CAN/Unknown`.
+- Use decimal strings for exact nanoseconds; numeric JSON timestamps may have already lost precision. Missing/invalid timestamps use the existing receive-time helper and unsynchronised warning. ASCII and bare numbers are always unsynchronised.
+- Field discovery is dynamic. Matching canonical DBC paths receive channel metadata. Incompatible type changes are ignored to protect existing history. The debug source subscribes to the whole filter, has no history endpoint, and retains received data across reconnects with exponential backoff (0.5–30 s). Freshness is receive-based: stale after 1 s, offline after 5 s or broker loss.
+
+Run `npm run mqtt-mock`; see `tools/mqtt-mock/README.md` for filters for all four modes. `npm test -- mqtt` tests payloads and bundled CAN decoding.
