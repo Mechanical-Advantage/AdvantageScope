@@ -119,6 +119,7 @@ export default class Field3dController implements TabController {
     const axesLabel = document.createElement("label");
     axesLabel.textContent = "Frame axes ";
     this.frameAxes.type = "checkbox";
+    this.frameAxes.className = "mv-checkbox";
     axesLabel.append(this.frameAxes);
     const trackInput = document.createElement("input");
     trackInput.type = "file";

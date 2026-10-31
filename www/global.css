@@ -120,3 +120,106 @@ button:not(:disabled):active {
 body {
   font-variant-numeric: tabular-nums;
 }
+
+/* MUR form controls: flat, token-based replacements for native checkbox / radio / select */
+
+:root {
+  --mv-control-bg: #fff;
+  --mv-control-border: #767676;
+  --mv-control-fg: #222;
+  --mv-control-accent: #446ce3;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --mv-control-bg: #2a2a2a;
+    --mv-control-border: #8a8a8a;
+    --mv-control-fg: #eee;
+    --mv-control-accent: #6c8cf0;
+  }
+}
+input.mv-checkbox,
+input.mv-radio {
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-block;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  margin: 0 4px;
+  padding: 0;
+  vertical-align: middle;
+  box-sizing: border-box;
+  background: var(--mv-control-bg);
+  border: 1px solid var(--mv-control-border);
+  border-radius: 3px;
+  position: relative;
+}
+input.mv-radio {
+  border-radius: 50%;
+}
+input.mv-checkbox:checked,
+input.mv-radio:checked {
+  background: var(--mv-control-accent);
+  border-color: var(--mv-control-accent);
+}
+input.mv-checkbox:checked::after {
+  content: "";
+  position: absolute;
+  left: 3.5px;
+  top: 0.5px;
+  width: 3px;
+  height: 7px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+input.mv-radio:checked::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: #fff;
+}
+input.mv-checkbox:focus-visible,
+input.mv-radio:focus-visible,
+select.mv-select:focus-visible {
+  outline: 2px solid var(--mv-control-accent);
+  outline-offset: 1px;
+}
+input.mv-checkbox:disabled,
+input.mv-radio:disabled,
+select.mv-select:disabled {
+  opacity: 0.5;
+}
+select.mv-select {
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+  min-height: 22px;
+  padding: 2px 22px 2px 6px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--mv-control-fg);
+  background-color: var(--mv-control-bg);
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position:
+    calc(100% - 11px) 50%,
+    calc(100% - 7px) 50%;
+  background-size:
+    4px 4px,
+    4px 4px;
+  background-repeat: no-repeat;
+  border: 1px solid var(--mv-control-border);
+  border-radius: 4px;
+}
+select.mv-select option {
+  background: var(--mv-control-bg);
+  color: var(--mv-control-fg);
+}
+div.connect-dialog input.mv-checkbox,
+div.setting-blocks input.mv-checkbox {
+  display: inline-block;
+  width: 14px;
+  margin: 0 4px;
+}

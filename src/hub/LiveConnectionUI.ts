@@ -49,7 +49,7 @@ export class ConnectDialog {
         <table>
           <tr>
             <td class="label">Source</td>
-            <td class="input"><select class="connect-source" title="Select the live source"></select></td>
+            <td class="input"><select class="connect-source mv-select" title="Select the live source"></select></td>
           </tr>
           <tr>
             <td class="label">Address</td>
@@ -58,8 +58,8 @@ export class ConnectDialog {
           <tr class="mqtt-option"><td class="label">Username</td><td class="input"><input class="mqtt-username" aria-label="MQTT username" autocomplete="off" title="Session-only broker username" /></td></tr>
           <tr class="mqtt-option"><td class="label">Password</td><td class="input"><input class="mqtt-password" aria-label="MQTT password" type="password" autocomplete="off" title="Session-only broker password" /></td></tr>
           <tr class="mqtt-option"><td class="label">Topic filter</td><td class="input"><input class="mqtt-topic" aria-label="Topic filter" value="mur/#" spellcheck="false" /></td></tr>
-          <tr class="mqtt-option"><td class="label">Mapping</td><td class="input"><select class="mqtt-mode" aria-label="Mapping mode"><option value="json-per-signal">JSON per signal</option><option value="json-object">JSON object</option><option value="raw-can">Raw CAN + DBC</option><option value="ascii">ASCII name=value</option></select></td></tr>
-          <tr class="mqtt-option"><td class="label">CAN timestamp</td><td class="input"><label><input class="mqtt-timestamp" type="checkbox" /> u64 ns prefix (big endian)</label></td></tr>
+          <tr class="mqtt-option"><td class="label">Mapping</td><td class="input"><select class="mqtt-mode mv-select" aria-label="Mapping mode"><option value="json-per-signal">JSON per signal</option><option value="json-object">JSON object</option><option value="raw-can">Raw CAN + DBC</option><option value="ascii">ASCII name=value</option></select></td></tr>
+          <tr class="mqtt-option"><td class="label">CAN timestamp</td><td class="input"><label><input class="mqtt-timestamp mv-checkbox" type="checkbox" /> u64 ns prefix (big endian)</label></td></tr>
         </table>
         <div class="connect-recent-title">Recent</div>
         <div class="connect-recent"></div>
@@ -436,8 +436,8 @@ export class LiveStatusPill {
           segments.push({
             tone: "warn",
             text: `Retry ${summary.retryAttempt} in ${summary.retryInS.toFixed(1)} s · last receipt ${
-              summary.lastReceiptAgeS?.toFixed(1) ?? "unknown"
-            } s`,
+              summary.lastReceiptAgeS == null ? "no data yet" : summary.lastReceiptAgeS.toFixed(1) + " s"
+            }`,
             title: summary.backendDetail
           });
         if (summary.receivingAgain)
@@ -484,7 +484,7 @@ export class LiveStatusPill {
       rows.push([
         "Car",
         (summary.car !== null ? toneDot(FRESHNESS_TONE[summary.car]) + htmlEncode(summary.car) + " &middot; " : "") +
-          `${counts.online} fresh, <button class="text-button" data-action="stale">${counts.stale} stale</button>, <button class="text-button" data-action="offline">${counts.offline} offline</button>, ${counts.neverSeen} unknown`
+          `${counts.online} fresh &middot; <button class="text-button" data-action="stale">${counts.stale} stale</button> &middot; <button class="text-button" data-action="offline">${counts.offline} offline</button> &middot; ${counts.neverSeen} unknown`
       ]);
       if (summary.sim !== null) {
         rows.push([
@@ -529,7 +529,7 @@ export class LiveStatusPill {
       }</td></tr>`;
     html += `</table></details>`;
     if (summary?.sim)
-      html += `<div class="live-run-controls"><label>Run <select class="live-run-select">${Array.from(
+      html += `<div class="live-run-controls"><label>Run <select class="live-run-select mv-select">${Array.from(
         { length: summary.runCount },
         (_, i) =>
           `<option value="${i}" ${i === summary.viewedRun ? "selected" : ""}>Run ${i + 1}${

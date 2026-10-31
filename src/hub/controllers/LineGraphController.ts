@@ -9,7 +9,12 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
-import { canonicalChannelPath, channelProfile, formatChannelValue } from "../../shared/display/ChannelProfile";
+import {
+  axisDisplayUnit,
+  canonicalChannelPath,
+  channelProfile,
+  formatChannelValue
+} from "../../shared/display/ChannelProfile";
 import { compatibleProfiles, splitLegendName, traceDash } from "../../shared/display/LineGraphStyle";
 import { interpolate } from "../../shared/laps/LapEngine";
 import { getLogValueText } from "../../shared/log/LogUtil";
@@ -66,7 +71,7 @@ export default class LineGraphController implements TabController {
   constructor(root: HTMLElement) {
     const mode = document.createElement("select");
     this.lapSelect = mode;
-    mode.className = "lap-axis-mode";
+    mode.className = "lap-axis-mode mv-select";
     mode.setAttribute("aria-label", "Line graph x-axis mode");
     [
       ["time", "Time"],
@@ -80,6 +85,7 @@ export default class LineGraphController implements TabController {
     const toggle = document.createElement("label");
     const check = document.createElement("input");
     check.type = "checkbox";
+    check.className = "mv-checkbox";
     check.checked = this.showThresholds;
     check.onchange = () => (this.showThresholds = check.checked);
     toggle.append(check, "Health limits");
@@ -508,9 +514,10 @@ export default class LineGraphController implements TabController {
       return { status: "inconsistent" };
     } else {
       // Prefer the channel profile's display unit (e.g. °C over raw K) so the axis matches the legend
-      const display = window.log.getChannelProfile(sourceVisible[0].logKey).to;
-      const useDisplay = display !== null && Units.GROUP_BY_UNIT[display] === firstUnitGroup;
-      return { status: "success", unit: useDisplay ? display : firstUnit };
+      return {
+        status: "success",
+        unit: axisDisplayUnit(firstUnit, window.log.getChannelProfile(sourceVisible[0].logKey))
+      };
     }
   }
 

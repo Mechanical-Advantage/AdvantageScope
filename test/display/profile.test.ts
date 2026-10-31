@@ -10,12 +10,14 @@ import test from "node:test";
 import { parseDBC } from "../../src/hub/dataSources/can/DBC";
 import { csvChannelMetadata, matchDBCChannel } from "../../src/hub/dataSources/csv/CSVChannelMetadata";
 import {
+  axisDisplayUnit,
   canonicalChannelPath,
   channelProfile,
   formatChannelValue,
   rawChannelValue
 } from "../../src/shared/display/ChannelProfile";
 import Log from "../../src/shared/log/Log";
+import { Units } from "../../src/shared/units";
 
 const fmt = (value: unknown, unit: string, name = "x", extra = {}) =>
   formatChannelValue(value, channelProfile({ name, unit, ...extra }));
@@ -97,4 +99,18 @@ test("dimension precision is stable across magnitudes and supports explicit over
   assert.equal(formatChannelValue(300, channelProfile(metadata, { unit: "V" })), "26.9 °C");
   assert.equal(formatChannelValue(10, channelProfile(metadata), false, true), "10.0 °C");
   assert.equal(formatChannelValue(300, channelProfile(metadata, { precision: 3 })), "26.850 °C");
+});
+test("axis unit matches the legend display profile for every dimension", () => {
+  const cases: [string, string, string, string][] = [
+    ["K", "motor/temperature", "kelvin", "°C"],
+    ["Pa", "pack/pressure", "pascals", "kPa"],
+    ["V", "pack/voltage", "volts", "V"],
+    ["rpm", "motor/rpm", "rotations/minute", "rpm"]
+  ];
+  for (const [rawUnit, name, axisBase, legendSuffix] of cases) {
+    const profile = channelProfile({ name, unit: rawUnit });
+    const unit = axisDisplayUnit(axisBase, profile);
+    assert.equal(Units.ALL_UNITS[unit].suffix, profile.unit, name);
+    assert.equal(profile.unit, legendSuffix, name);
+  }
 });

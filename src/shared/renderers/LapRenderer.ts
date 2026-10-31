@@ -174,6 +174,7 @@ export default class LapRenderer implements TabRenderer {
         const l = document.createElement("label");
         l.textContent = title;
         const input = options ? document.createElement("select") : document.createElement("input");
+        if (input instanceof HTMLSelectElement) input.classList.add("mv-select");
         if (input instanceof HTMLSelectElement) options!.forEach((v) => input.add(new Option(v, v)));
         input.value = String(value ?? "");
         input.onchange = () => this.action({ type: "setting", key, value: input.value });
@@ -287,14 +288,20 @@ export default class LapRenderer implements TabRenderer {
       if (lap.index === c.selected) r.classList.add("lap-selected");
       if (lap.valid && time < previousBest) {
         r.cells[3].className = "lap-personal";
+        r.cells[3].textContent += " PB";
         previousBest = time;
       }
-      if (lap.index === c.result.best) r.cells[3].className = "lap-best";
+      if (lap.index === c.result.best) {
+        r.cells[3].className = "lap-best";
+        if (!r.cells[3].textContent!.endsWith(" SB"))
+          r.cells[3].textContent = r.cells[3].textContent!.replace(/ PB$/, "") + " SB";
+      }
       lap.sectors.forEach((t, j) => {
         if (lap.valid && t === c.result.theoretical[j]) r.cells[4 + j].className = "lap-best";
       });
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
+      checkbox.className = "mv-checkbox";
       checkbox.checked = c.overlays.includes(lap.index);
       checkbox.setAttribute("aria-label", `Overlay lap ${lap.index}`);
       checkbox.onclick = (e) => e.stopPropagation();
@@ -306,6 +313,7 @@ export default class LapRenderer implements TabRenderer {
       r.cells[0].append(checkbox);
       const radio = document.createElement("input");
       radio.type = "radio";
+      radio.className = "mv-radio";
       radio.name = "reference-lap";
       radio.checked = c.reference === lap.index;
       radio.setAttribute("aria-label", `Reference lap ${lap.index}`);

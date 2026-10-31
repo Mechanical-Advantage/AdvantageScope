@@ -72,7 +72,7 @@ export default class HealthStripUI {
     this.editor.innerHTML = `<form method="dialog"><strong>Edit health tile</strong>
       <label>Field <input name="path" required value="${e(tile.path)}"></label>
       <label>Label <input name="label" required value="${e(tile.label)}"></label>
-      <label>Direction <select name="direction"><option value="high">Above limit</option><option value="low">Below limit</option></select></label>
+      <label>Direction <select class="mv-select" name="direction"><option value="high">Above limit</option><option value="low">Below limit</option></select></label>
       <label>Warning <input name="warn" type="number" step="any" value="${tile.warn ?? ""}"></label>
       <label>Critical <input name="critical" type="number" step="any" value="${tile.critical ?? ""}"></label>
       <label>Display unit <input name="unit" value="${e(tile.profile?.unit ?? "")}" placeholder="Automatic"></label>
@@ -80,10 +80,12 @@ export default class HealthStripUI {
         tile.profile?.precision ?? ""
       }"></label>
       <div>Limits use the displayed unit. Blank means no limit.</div>
-      <label><input name="fault" type="checkbox" ${
+      <label><input class="mv-checkbox" name="fault" type="checkbox" ${
         tile.fault ? "checked" : ""
       }> Fault enum / bitfield (zero or Normal clears)</label>
-      <label><input name="latch" type="checkbox" ${tile.latch ? "checked" : ""}> Latch until acknowledged</label>
+      <label><input class="mv-checkbox" name="latch" type="checkbox" ${
+        tile.latch ? "checked" : ""
+      }> Latch until acknowledged</label>
       <footer><button type="button" data-remove>Remove</button><button value="cancel" formnovalidate>Cancel</button><button value="save">Save</button></footer></form>`;
     const form = this.editor.querySelector("form")!;
     (form.elements.namedItem("direction") as HTMLSelectElement).value = tile.direction;
@@ -158,7 +160,7 @@ export default class HealthStripUI {
         cell.className = "health-tile";
         const value = document.createElement("button");
         value.className = "health-reading";
-        value.innerHTML = `<span class="health-label"></span><span class="health-value"></span><span class="health-status"></span>`;
+        value.innerHTML = `<span class="health-label"></span><span class="health-value"></span><span class="health-state"></span><span class="health-status"></span>`;
         value.title = "Click to acknowledge a latched fault";
         value.addEventListener("click", () => {
           this.latched.delete(tile);
@@ -216,11 +218,22 @@ export default class HealthStripUI {
       cell.title = tile.path;
       cell.querySelector(".health-label")!.textContent =
         tile.label + (profile.unit && profile.unit !== "1" ? ` · ${profile.unit}` : "");
-      cell.querySelector(".health-value")!.textContent = unknown ? "UNKNOWN" : text;
+      const latchedNow = Boolean(tile.latch) && held.severity !== "ok";
+      const liveText = unknown ? "UNKNOWN" : text;
+      cell.dataset.latched = latchedNow ? "true" : "false";
+      cell.dataset.unknown = unknown ? "true" : "false";
+      cell.querySelector(".health-value")!.textContent = latchedNow ? `LATCHED · ${held.text}` : liveText;
+      cell.querySelector(".health-state")!.textContent = unknown
+        ? "? NO DATA"
+        : held.severity === "critical"
+        ? "■ CRIT"
+        : held.severity === "warn"
+        ? "▲ WARN"
+        : "● OK";
       cell.querySelector(".health-status")!.textContent = [
-        unknown ? `age ${age == null ? "unknown" : age.toFixed(1) + " s"}` : "",
-        held.severity === "critical" ? "CRIT" : held.severity === "warn" ? "WARN" : unknown ? "" : "OK",
-        tile.latch && held.severity !== "ok" ? `LATCHED ${held.text} · click to ack` : ""
+        latchedNow ? `now ${liveText}` : "",
+        unknown ? `age ${age == null ? "no data yet" : age.toFixed(1) + " s"}` : "",
+        latchedNow ? "click to ack" : ""
       ]
         .filter(Boolean)
         .join(" · ");
