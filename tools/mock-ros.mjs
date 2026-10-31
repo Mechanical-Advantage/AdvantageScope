@@ -88,11 +88,14 @@ const timer = setInterval(() => {
   const data = new Uint8Array(2400 * 16),
     view = new DataView(data.buffer);
   for (let i = 0; i < 2400; i++) {
-    const a = (i / 2400) * Math.PI * 2,
-      r = 7 + 2 * Math.sin(5 * a + t);
-    [r * Math.cos(a), r * Math.sin(a), 0.6 + 0.5 * Math.sin(3 * a), i % 256].forEach((v, j) =>
-      view.setFloat32(i * 16 + j * 4, v, true)
-    );
+    const a = ((i % 240) / 240) * Math.PI * 2,
+      r = 3 + Math.floor(i / 240) * 0.45 + 0.15 * Math.sin(5 * a + t);
+    [
+      r * Math.cos(a),
+      r * Math.sin(a),
+      -0.55 + 0.08 * Math.floor(i / 240) + 0.1 * Math.sin(3 * a),
+      (i * 17) % 256
+    ].forEach((v, j) => view.setFloat32(i * 16 + j * 4, v, true));
   }
   const messages = {
     "/clock": { clock: stamp },

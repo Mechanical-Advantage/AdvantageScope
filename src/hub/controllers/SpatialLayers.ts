@@ -219,7 +219,15 @@ export class SpatialLayers {
     const objects: Field3dRendererCommand_AnyObj[] = [];
     let frame = "",
       stamp = 0;
-    for (const { t, i } of indexes) {
+    // Only resolve the retained decoded scans. Older scans may no longer have TF history.
+    const field = options.field ?? "intensity";
+    const retained = new Set(
+      indexes
+        .filter(({ t }) => this.clouds.has(key + ":" + t + ":" + field))
+        .slice(-decay)
+        .map(({ t }) => t)
+    );
+    for (const { t, i } of indexes.filter(({ t }) => newest.has(t) || retained.has(t))) {
       const cacheKey = key + ":" + t + ":" + (options.field ?? "intensity");
       const result = this.clouds.get(cacheKey);
       if (!result && !newest.has(t)) continue;
