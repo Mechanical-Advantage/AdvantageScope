@@ -160,9 +160,10 @@ class LapService {
       // constant latitude does not hide wheel-speed or longitude changes.
       const timestamps = [...new Set([...data.values()].flatMap((d) => d?.timestamps ?? []))].sort((a, b) => a - b);
       const firstFix =
-        timestamps.find((t) => Math.abs(at(s.latitude, t)) > 0.001 || Math.abs(at(s.longitude, t)) > 0.001) ??
-        timestamps[0];
-      const origin = { lat: at(s.latitude, firstFix) || 0, lon: at(s.longitude, firstFix) || 0 };
+        timestamps.find(
+          (t) => Math.abs(coordinate(s.latitude, t)) > 0.001 || Math.abs(coordinate(s.longitude, t)) > 0.001
+        ) ?? timestamps[0];
+      const origin = { lat: coordinate(s.latitude, firstFix) || 0, lon: coordinate(s.longitude, firstFix) || 0 };
       timestamps.forEach((t) => {
         const latitude = coordinate(s.latitude, t),
           longitude = coordinate(s.longitude, t);
