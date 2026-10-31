@@ -35,6 +35,10 @@ import TabController, { NoopController } from "./controllers/TabController";
 import TableController from "./controllers/TableController";
 import VideoController from "./controllers/VideoController";
 
+import LapRenderer from "../shared/renderers/LapRenderer";
+import { lapService } from "./LapService";
+import LapController from "./controllers/LapController";
+
 export default class Tabs {
   private TAB_DRAG_THRESHOLD_PX = 5;
   private DEFAULT_CONTROLS_HEIGHT = 200;
@@ -86,6 +90,8 @@ export default class Tabs {
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Video, 85);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Points, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Metadata, 0);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.TrackMap, 0);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.Laps, 0);
 
     // Hover and click handling
     let mouseDownInfo: [number, number] | null = null;
@@ -301,6 +307,7 @@ export default class Tabs {
 
     // Add timeline
     this.timeline = new Timeline(this.TIMELINE_CONTAINER);
+    this.setTimelineBandSupplier(() => lapService.bands());
 
     // Periodic function
     let periodic = () => {
@@ -434,7 +441,7 @@ export default class Tabs {
 
   /** Returns the set of fields currently being displayed. */
   getActiveFields(): Set<string> {
-    let activeFields = new Set<string>(window.healthStrip?.getActiveFields());
+    let activeFields = new Set<string>([...(window.healthStrip?.getActiveFields() ?? []), ...lapService.fields()]);
     this.tabList.forEach((tab) => {
       tab.controller.getActiveFields().forEach((field) => {
         activeFields.add(field);
@@ -521,6 +528,11 @@ export default class Tabs {
       case TabType.Points:
         controller = new PointsController(controlsElement);
         renderer = new PointsRenderer(rendererElement);
+        break;
+      case TabType.TrackMap:
+      case TabType.Laps:
+        controller = new LapController(rendererElement, type === TabType.TrackMap);
+        renderer = new LapRenderer(rendererElement);
         break;
       case TabType.Metadata:
         controller = new MetadataController();

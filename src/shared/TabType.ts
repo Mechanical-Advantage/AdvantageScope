@@ -16,7 +16,9 @@ enum TabType {
   Video,
   // 8-10 were Joysticks, Swerve and Mechanism (removed); values kept stable for saved layouts
   Points = 11,
-  Metadata = 12
+  Metadata = 12,
+  TrackMap = 13,
+  Laps = 14
 }
 
 export default TabType;
@@ -34,7 +36,9 @@ export const LITE_COMPATIBLE_TABS = [
   TabType.Console,
   TabType.Statistics,
   TabType.Points,
-  TabType.Metadata
+  TabType.Metadata,
+  TabType.TrackMap,
+  TabType.Laps
 ];
 
 export function getDefaultTabTitle(type: TabType): string {
@@ -57,6 +61,10 @@ export function getDefaultTabTitle(type: TabType): string {
       return "Video";
     case TabType.Points:
       return "Points";
+    case TabType.TrackMap:
+      return "Track Map";
+    case TabType.Laps:
+      return "Laps";
     case TabType.Metadata:
       return "Metadata";
     default:
@@ -84,6 +92,10 @@ export function getTabIcon(type: TabType): string {
       return "🎬";
     case TabType.Points:
       return "📍";
+    case TabType.TrackMap:
+      return "";
+    case TabType.Laps:
+      return "";
     case TabType.Metadata:
       return "🔍";
     default:

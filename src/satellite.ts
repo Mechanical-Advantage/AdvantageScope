@@ -14,6 +14,7 @@ import ConsoleRenderer from "./shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "./shared/renderers/DocumentationRenderer";
 import Field2dRenderer from "./shared/renderers/Field2dRenderer";
 import Field3dRenderer from "./shared/renderers/Field3dRenderer";
+import LapRenderer from "./shared/renderers/LapRenderer";
 import LineGraphRenderer from "./shared/renderers/LineGraphRenderer";
 import MetadataRenderer from "./shared/renderers/MetadataRenderer";
 import PointsRenderer from "./shared/renderers/PointsRenderer";
@@ -86,6 +87,10 @@ function updateVisualizer() {
       break;
     case TabType.Points:
       renderer = new PointsRenderer(root);
+      break;
+    case TabType.TrackMap:
+    case TabType.Laps:
+      renderer = new LapRenderer(root, false);
       break;
     case TabType.Metadata:
       renderer = new MetadataRenderer(root);

@@ -902,3 +902,133 @@ table.metadata-table td.no-data {
     border-right: 1px solid #eee;
   }
 }
+
+/* Lap analysis shares the workbench's flat, compact controls. */
+.lap-view:not([hidden]) {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+.lap-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 12px;
+  background: var(--background-color);
+  font-size: 13px;
+}
+.lap-toolbar button {
+  padding: 4px 8px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  color: inherit;
+  cursor: pointer;
+}
+.lap-toolbar details {
+  margin-left: auto;
+}
+.lap-toolbar summary {
+  cursor: pointer;
+}
+.lap-setup {
+  position: absolute;
+  right: 8px;
+  top: 38px;
+  z-index: 5;
+  padding: 12px;
+  width: 520px;
+  max-height: 70%;
+  overflow: auto;
+  background: #eee;
+  border: 1px solid #888;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.lap-setup label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.lap-setup input,
+.lap-setup select {
+  width: 100%;
+  box-sizing: border-box;
+}
+.lap-content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  position: relative;
+}
+.lap-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.lap-table td {
+  padding: 7px 10px;
+  text-align: right;
+  border-bottom: 1px solid #8884;
+}
+.lap-table td:nth-child(3),
+.lap-table td:nth-child(9) {
+  text-align: left;
+}
+.lap-table tr {
+  cursor: pointer;
+}
+.lap-table tr:hover,
+.lap-selected {
+  background: #8882;
+}
+.lap-heading {
+  position: sticky;
+  top: 0;
+  background: #eee;
+  font-weight: 600;
+}
+.lap-best {
+  color: #a642d8;
+  font-weight: 600;
+}
+.lap-personal {
+  color: #187b43;
+  font-weight: 600;
+}
+.lap-hint,
+.lap-empty {
+  padding: 12px;
+  font-size: 13px;
+}
+.lap-empty {
+  position: absolute;
+  top: 40%;
+  left: 10%;
+  right: 10%;
+  text-align: center;
+}
+@media (prefers-color-scheme: dark) {
+  .lap-setup,
+  .lap-heading {
+    background: #222;
+  }
+  .lap-best {
+    color: #d49bff;
+  }
+  .lap-personal {
+    color: #72d6a0;
+  }
+}
+
+.lap-axis-mode {
+  position: absolute;
+  right: 12px;
+  top: 2px;
+  z-index: 2;
+  max-width: 170px;
+  font-size: 11px;
+}
