@@ -41,6 +41,7 @@
     "@types/download": "^8.0.2",
     "@types/heatmap.js": "2.0.38",
     "@types/jsonfile": "^6.1.2",
+    "@types/lz4js": "^0.2.2",
     "@types/lzma-native": "^4.0.4",
     "@types/pngjs": "^6.0.5",
     "@types/three": "^0.168.0",
@@ -54,11 +55,13 @@
     "compare-versions": "^6.1.1",
     "electron": "^39.2.7",
     "electron-builder": "^26.15.3",
+    "fflate": "^0.8.3",
     "fuse.js": "^7.0.0",
     "fzstd": "^0.1.1",
     "gunzip-file": "^0.1.1",
     "heatmap.js": "github:jwbonner/heatmap.js#24b4455c95f5e54cb50ab8bb06f9229d30426362",
     "license-check-and-add": "^4.0.5",
+    "lz4js": "^0.2.0",
     "mathjs": "11.3.0",
     "prettier": "3.0.3",
     "prettier-plugin-organize-imports": "^4.0.0",
@@ -72,7 +75,8 @@
     "type-fest": "^4.26.1",
     "typescript": "5.6.3",
     "ws": "^8.22.1",
-    "xz-decompress": "^0.2.3"
+    "xz-decompress": "^0.2.3",
+    "zstddec": "^0.3.4"
   },
   "dependencies": {
     "@types/emscripten": "^1.39.13",

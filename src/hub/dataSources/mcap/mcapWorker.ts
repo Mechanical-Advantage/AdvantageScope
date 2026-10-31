@@ -8,13 +8,13 @@
 import { parse as parseRosMsg } from "@foxglove/rosmsg";
 import { MessageReader } from "@foxglove/rosmsg2-serialization";
 import { McapIndexedReader, McapTypes } from "@mcap/core";
-import { decompress as zstdDecompress } from "fzstd";
 import descriptor from "protobufjs/ext/descriptor";
 import Log from "../../../shared/log/Log";
 import LoggableType from "../../../shared/log/LoggableType";
 import ProtoDecoder from "../../../shared/log/ProtoDecoder";
 import { writeSpatialMessage } from "../../../shared/spatial/SpatialLog";
 import { runLazyWorker, sendProgress, setMetadata } from "../ImporterUtil";
+import { createDecompressHandlers } from "./Compression";
 import {
   RAW_ONLY_TYPES,
   RosSchema,
@@ -57,12 +57,6 @@ const channelByKey = new Map<string, ChannelInfo>();
 const decodedChannels = new Set<number>();
 const protoDecoder = new ProtoDecoder();
 
-// Decompressed chunk cache: each topic read touches most chunks, so keep them for later topics
-const CHUNK_CACHE_LIMIT = 512 * 1024 * 1024;
-// Keyed by the underlying buffer (the file) and offset, so copies never alias
-const chunkCache = new WeakMap<ArrayBufferLike, Map<number, Uint8Array>>();
-let chunkCacheSize = 0;
-
 runLazyWorker(start, decode, () => log);
 
 async function start(files: (Uint8Array | null)[]): Promise<Log> {
@@ -73,23 +67,7 @@ async function start(files: (Uint8Array | null)[]): Promise<Log> {
   };
   reader = await McapIndexedReader.Initialize({
     readable,
-    decompressHandlers: {
-      zstd: (buffer, decompressedSize) => {
-        let cacheForBuffer = chunkCache.get(buffer.buffer);
-        if (cacheForBuffer === undefined) {
-          cacheForBuffer = new Map();
-          chunkCache.set(buffer.buffer, cacheForBuffer);
-        }
-        const cached = cacheForBuffer.get(buffer.byteOffset);
-        if (cached && cached.byteLength === Number(decompressedSize)) return cached;
-        const output = zstdDecompress(buffer, new Uint8Array(Number(decompressedSize)));
-        if (chunkCacheSize + output.byteLength <= CHUNK_CACHE_LIMIT) {
-          cacheForBuffer.set(buffer.byteOffset, output);
-          chunkCacheSize += output.byteLength;
-        }
-        return output;
-      }
-    }
+    decompressHandlers: await createDecompressHandlers()
   });
   sendProgress(0.5);
 
