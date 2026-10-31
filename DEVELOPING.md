@@ -85,7 +85,7 @@ File → Connect… (`Cmd/Ctrl+K`) opens an in-page dialog (source, address, rec
 - `MURLogAdapter.ts`: the only place MUR types map to Log fields (`pose3` → Pose3d, `trajectory` → Pose3d[], `cone_array` → Translation3d[] with a `class` child, `enum` → label string; unit into metadata).
 - `MURTime.ts`: BigInt session-relative seconds; `unsynchronised` samples use receive time (scaled onto the sim clock in sim mode) and are flagged.
 - `MURDedup.ts`: `(path, stream_id, seq)` dedup with a bounded window.
-- `MURSegments.ts`: a sim reset (or a clock rewind / new stream in sim mode) starts a new **segment**: the Log is replaced and the selection is reset (`Selection.resetLiveSegment`). The previous run is discarded; late samples from its streams are dropped.
+- `MURSegments.ts`: a sim reset (or a clock rewind / new stream in sim mode) starts a new **run**. Each run retains its Log for the connection lifetime; the status popover selects past runs or returns to live. Incoming samples continue buffering into the current run. Late samples from retired streams are dropped. The live discard preference trims only the current run.
 
 Unit tests for the pure modules: `npm test` (`tools/run-tests.mjs` bundles `test/**/*.test.ts` with rolldown and runs node:test; `npm test -- csv` filters by path).
 

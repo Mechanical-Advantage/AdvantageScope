@@ -194,6 +194,12 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       });
       break;
 
+    case "show-open-log": {
+      const item = Menu.getApplicationMenu()?.getMenuItemById("open-log");
+      item?.click(undefined, window, undefined);
+      break;
+    }
+
     case "open-files-request":
       openFilesSmart(message.data.files, window);
       break;
@@ -1362,6 +1368,7 @@ function setupMenu() {
       label: "File",
       submenu: [
         {
+          id: "open-log",
           label: "Open Log(s)...",
           accelerator: "CmdOrCtrl+O",
           click(_, baseWindow) {

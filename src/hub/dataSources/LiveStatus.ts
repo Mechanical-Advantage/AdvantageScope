@@ -9,11 +9,18 @@
 // backend connected vs car online vs signal fresh, plus sim clock state. Read by the status pill and sidebar.
 
 export type BackendState = "connecting" | "connected" | "error";
-export type Freshness = "online" | "stale" | "offline";
+export type Freshness = "online" | "stale" | "offline" | "unknown";
 export type SimClockState = "running" | "paused" | "reset";
 export type SimAction = "pause" | "resume" | "reset";
 
 export interface LiveStatusSummary {
+  oldestAgeS: number | null;
+  lastReceiptAgeS: number | null;
+  retryAttempt: number;
+  retryInS: number;
+  receivingAgain: boolean;
+  viewedRun: number;
+  runCount: number;
   backend: BackendState;
   /** Human-readable detail for the backend state (e.g. the last error). */
   backendDetail: string;
@@ -38,6 +45,8 @@ export interface LiveStatusSummary {
 }
 
 export interface LiveStatusProvider {
+  getFieldAge(key: string): number | null;
+  selectRun(index: number): void;
   getLiveStatus(): LiveStatusSummary;
   /** Freshness of a sidebar field, or null if the key is not a signal. */
   getFieldFreshness(key: string): Freshness | null;

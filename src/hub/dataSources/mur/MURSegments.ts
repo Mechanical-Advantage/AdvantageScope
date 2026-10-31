@@ -110,3 +110,22 @@ export class SegmentTracker {
     });
   }
 }
+
+/** Retains completed runs independently of which run the viewer has selected. */
+export class RetainedRuns<T> {
+  readonly entries: T[] = [];
+  selected = 0;
+
+  append(run: T): boolean {
+    const following = this.entries.length === 0 || this.selected === this.entries.length - 1;
+    this.entries.push(run);
+    if (following) this.selected = this.entries.length - 1;
+    return following;
+  }
+
+  select(index: number): boolean {
+    if (!Number.isInteger(index) || index < 0 || index >= this.entries.length) return false;
+    this.selected = index;
+    return true;
+  }
+}

@@ -119,6 +119,10 @@ new LiveStatusPill(
   () => stopLive()
 );
 
+window.addEventListener("cancel-live-connect", () => stopLive());
+window.addEventListener("welcome-connect", () => connectDialog.show());
+window.addEventListener("welcome-open-log", () => window.sendMainMessage("show-open-log"));
+
 let dragActive = false;
 let dragOffsetX = 0;
 let dragOffsetY = 0;
@@ -504,6 +508,7 @@ function startLive(sourceType: "robot" | "sim", target?: { sourceId: string; add
     address,
     (status: LiveDataSourceStatus) => {
       liveStatus = status;
+      connectDialog.updateStatus(status);
       switch (status) {
         case LiveDataSourceStatus.Connecting:
           setWindowTitle(address, "Searching");
@@ -513,11 +518,12 @@ function startLive(sourceType: "robot" | "sim", target?: { sourceId: string; add
           break;
         case LiveDataSourceStatus.Error:
           setWindowTitle(address, "Error");
-          window.sendMainMessage("error", {
-            title: "Problem with live source",
-            content:
-              "There was a problem while connecting to the live source. Please check your connection settings and try again."
-          });
+          if (!connectDialog.isVisible())
+            window.sendMainMessage("error", {
+              title: "Problem with live source",
+              content:
+                "There was a problem while connecting to the live source. Please check your connection settings and try again."
+            });
           break;
       }
 

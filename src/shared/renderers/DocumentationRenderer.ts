@@ -56,6 +56,12 @@ export default class DocumentationRenderer implements TabRenderer {
       this.IFRAME.src = "welcome.html";
       this.IFRAME.addEventListener("load", () => {
         this.loaded = true;
+        this.IFRAME.contentDocument
+          ?.querySelector("#welcome-connect")
+          ?.addEventListener("click", () => window.dispatchEvent(new Event("welcome-connect")));
+        this.IFRAME.contentDocument
+          ?.querySelector("#welcome-open-log")
+          ?.addEventListener("click", () => window.dispatchEvent(new Event("welcome-open-log")));
       });
     }
 
