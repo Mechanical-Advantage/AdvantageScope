@@ -59,6 +59,21 @@ class LapService {
     const keys = window.log.getFieldKeys().filter((k) => !k.startsWith("Laps/"));
     const find = (pattern: RegExp) => keys.find((k) => pattern.test(k)) ?? "";
     const s = this.settings;
+    if (keys.length) {
+      for (const key of [
+        "latitude",
+        "longitude",
+        "frontLeft",
+        "frontRight",
+        "speed",
+        "rpm",
+        "yaw",
+        "counter",
+        "beacon"
+      ] as const) {
+        if (s[key] && !keys.includes(s[key])) s[key] = "";
+      }
+    }
     s.latitude ||= find(/front.*latitude$/i) || find(/(?:gps\/latitude|latitude)$/i);
     s.longitude ||= find(/front.*longitude$/i) || find(/(?:gps\/longitude|longitude)$/i);
     s.frontLeft ||= find(/(?:DASH_SpeedFL|wheel_speed_fl)$/i);

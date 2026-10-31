@@ -122,6 +122,7 @@ export default class LapController implements TabController {
   }
   getCommand(): LapCommand {
     lapService.update();
+    if (this.field && !window.log.getFieldKeys().includes(this.field)) this.field = "";
     this.field ||= lapService.settings.speed || lapService.settings.frontLeft;
     const data = window.log.getNumber(this.field, -Infinity, Infinity);
     const cacheKey = JSON.stringify([
