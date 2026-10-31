@@ -308,6 +308,7 @@ export default class StatisticsController implements TabController {
 
           // Add field
           fields.push({
+            profile: window.log.getChannelProfile(source.logKey),
             title: source.logKey,
             color: source.options.color,
             histogramCounts: histogramCounts,

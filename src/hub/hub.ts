@@ -203,6 +203,7 @@ function setExporting(exporting: boolean) {
 /** Returns the current state. */
 function saveState(): HubState {
   return {
+    channelProfiles: window.log.displayOverrides,
     sidebar: window.sidebar.saveState(),
     tabs: window.tabs.saveState()
   };
@@ -210,6 +211,7 @@ function saveState(): HubState {
 
 /** Restores to the provided state. */
 function restoreState(state: HubState) {
+  window.log.displayOverrides = state.channelProfiles ?? {};
   window.sidebar.restoreState(state.sidebar);
   window.tabs.restoreState(state.tabs);
 }

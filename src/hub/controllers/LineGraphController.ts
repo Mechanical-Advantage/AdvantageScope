@@ -9,6 +9,7 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
+import { channelProfile, formatChannelValue } from "../../shared/display/ChannelProfile";
 import { getLogValueText } from "../../shared/log/LogUtil";
 import { LogValueSetNumber } from "../../shared/log/LogValueSets";
 import { AKIT_TIMESTAMP_KEYS, getRobotStateRanges } from "../../shared/log/RobotState";
@@ -356,13 +357,14 @@ export default class LineGraphController implements TabController {
     if (index === -1) {
       return null;
     }
-    let output = this.PREVIEW_FORMAT.format(command.values[index]);
-    if (unitCache !== null && command.hasUnit) {
-      let suffix = Units.getSuffixForFilter(unitCache.suffix, filter);
-      output += suffix.length > 1 ? " " : "";
-      output += suffix;
-      if (filter === LineGraphFilter.None && unitCache.pluralizeSuffix && command.values[index] !== 1) output += "s";
-    }
+    const profile =
+      unitCache !== null && command.hasUnit
+        ? channelProfile(
+            { name: key, unit: Units.getSuffixForFilter(unitCache.suffix, filter) },
+            window.log.displayOverrides[key]
+          )
+        : window.log.getChannelProfile(key);
+    let output = formatChannelValue(command.values[index], profile);
     return output;
   }
 

@@ -2172,3 +2172,10 @@ button.connect-confirm {
     background-color: #333;
   }
 }
+
+.sidebar .value,
+.data-table td,
+.tab-container .value,
+.statistics-values td {
+  font-variant-numeric: tabular-nums;
+}

@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import { IS_LITE } from "../shared/buildConstants";
+import { canonicalChannelPath, formatChannelValue, rawChannelValue } from "../shared/display/ChannelProfile";
 import { SidebarState } from "../shared/HubState";
 import LogFieldTree from "../shared/log/LogFieldTree";
 import LoggableType from "../shared/log/LoggableType";
@@ -790,6 +791,8 @@ export default class Sidebar {
         line.setAttributeNS(null, "stroke", "white");
         line.setAttributeNS(null, "clip-path", "url(#booleanCircleClip)");
 
+        const booleanText = document.createElement("span");
+        valueElement.appendChild(booleanText);
         // Update values periodically
         let firstUpdate = true;
         let lastValue: boolean | null = null;
@@ -811,6 +814,8 @@ export default class Sidebar {
             circle.setAttributeNS(null, "fill", value ? (darkMode ? "lightgreen" : "green") : "red");
             line.style.display = value ? "none" : "initial";
           }
+          booleanText.textContent = formatChannelValue(value, window.log.getChannelProfile(field.fullKey!));
+          valueElement.title = rawChannelValue(value, window.log.getChannelProfile(field.fullKey!));
           let hidden = value === null;
           valueElement.hidden = hidden;
           if (hidden !== lastHidden) {
@@ -853,6 +858,24 @@ export default class Sidebar {
         numValueSpan = document.createElement("span");
         valueElement.appendChild(numValueSpan);
 
+        valueElement.addEventListener("dblclick", () => {
+          const key = canonicalChannelPath(field.fullKey!);
+          const current = window.log.displayOverrides[key] ?? {};
+          const unit = prompt("Display unit (blank = automatic)", current.unit ?? "");
+          if (unit === null) return;
+          const precision = prompt("Decimal places (blank = automatic)", current.precision?.toString() ?? "");
+          if (precision === null) return;
+          if (
+            precision !== "" &&
+            (!Number.isInteger(Number(precision)) || Number(precision) < 0 || Number(precision) > 12)
+          )
+            return;
+          window.log.displayOverrides[key] = {
+            unit: unit || undefined,
+            precision: precision === "" ? undefined : Number(precision)
+          };
+          firstUpdate = true;
+        });
         // Add callback
         let firstUpdate = true;
         let lastValue: number | null = null;
@@ -869,18 +892,9 @@ export default class Sidebar {
           firstUpdate = false;
           lastValue = value;
 
-          let valueStr = "";
-          if (value !== null) {
-            if (Math.abs(value) < 1e-9) {
-              valueStr = "0";
-            } else if (Math.abs(value) >= 1e5 || Math.abs(value) < 1e-3) {
-              valueStr = value.toExponential(1).replace("+", "");
-            } else if (value % 1 === 0) {
-              valueStr = value.toString();
-            } else {
-              valueStr = value.toFixed(3);
-            }
-          }
+          const profile = window.log.getChannelProfile(field.fullKey!);
+          let valueStr = formatChannelValue(value, profile);
+          valueElement.title = rawChannelValue(value, profile) + " · Double-click to change display unit/precision";
           numValueInput!.placeholder = valueStr;
           numValueSpan!.innerText = valueStr;
           let charCount = valueStr.length;

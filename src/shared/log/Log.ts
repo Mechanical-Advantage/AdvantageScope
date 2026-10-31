@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import { Decoder } from "@msgpack/msgpack";
+import { ChannelOverride, ChannelProfile, canonicalChannelPath, channelProfile } from "../display/ChannelProfile";
 import { Pose2d, Translation2d } from "../geometry";
 import { Units } from "../units";
 import { arraysEqual, checkArrayType } from "../util";
@@ -253,6 +254,30 @@ export default class Log {
       this.fields[key].wpilibType = type;
       this.changedFields.add(key);
     }
+  }
+
+  private static channelOverrides: Record<string, ChannelOverride> = {};
+  get displayOverrides(): Record<string, ChannelOverride> {
+    return Log.channelOverrides;
+  }
+  set displayOverrides(value: Record<string, ChannelOverride>) {
+    Log.channelOverrides = value;
+  }
+
+  getChannelProfile(key: string): ChannelProfile {
+    let metadata: any = {};
+    try {
+      metadata = JSON.parse(this.getMetadataString(key));
+    } catch {}
+    return channelProfile(
+      {
+        ...metadata,
+        name: key,
+        unit: metadata.unit ?? this.getUnit(key),
+        enumLabels: metadata.enumLabels ?? metadata.values
+      },
+      this.displayOverrides[canonicalChannelPath(key)]
+    );
   }
 
   /** Returns the metadata string for a field. */

@@ -5,11 +5,13 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { ChannelOverride } from "./display/ChannelProfile";
 import TabType from "./TabType";
 
 export interface HubState {
   sidebar: SidebarState;
   tabs: TabsState;
+  channelProfiles?: Record<string, ChannelOverride>;
 }
 
 export interface SidebarState {

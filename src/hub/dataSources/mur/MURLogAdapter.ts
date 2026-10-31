@@ -106,11 +106,16 @@ export function getMetadataString(descriptor: SignalDescriptor): string {
   if (descriptor.unit !== null && descriptor.unit !== "") {
     metadata.unit = UNIT_ALIASES[descriptor.unit] ?? descriptor.unit;
   }
+  metadata.precision = descriptor.display?.precision;
+  metadata.scale = descriptor.display?.scale;
+  metadata.min = descriptor.min;
+  metadata.max = descriptor.max;
   if (descriptor.display?.label) metadata.label = descriptor.display.label;
   if (descriptor.nominal_rate_hz !== null) metadata.nominal_rate_hz = descriptor.nominal_rate_hz;
   metadata.stale_after_ms = descriptor.stale_after_ms;
   if (descriptor.frame_id !== undefined) metadata.frame_id = descriptor.frame_id;
   if (descriptor.enum_values !== undefined) {
+    metadata.enumLabels = descriptor.enum_values;
     metadata.enum_values = Object.entries(descriptor.enum_values)
       .map(([value, label]) => value + "=" + label)
       .join(", ");
@@ -170,7 +175,7 @@ export function writeValue(log: Log, descriptor: SignalDescriptor, timestamp: nu
     case "enum": {
       if (typeof value !== "number" && typeof value !== "string") return false;
       const label = descriptor.enum_values?.[String(value)];
-      log.putString(key, timestamp, label ?? String(value));
+      log.putString(key, timestamp, label ?? `Unknown (${value})`);
       return true;
     }
     case "vector3":

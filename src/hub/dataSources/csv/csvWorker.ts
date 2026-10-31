@@ -7,7 +7,10 @@
 
 import Log from "../../../shared/log/Log";
 import LoggableType from "../../../shared/log/LoggableType";
+import { BUNDLED_DBCS } from "../can/BundledDBCs";
+import { parseDBC } from "../can/DBC";
 import { runLazyWorker, sendProgress, setMetadata } from "../ImporterUtil";
+import { csvChannelMetadata } from "./CSVChannelMetadata";
 import { parseLegacyEntry } from "./CSVDecoder";
 import {
   CSVLayout,
@@ -26,6 +29,8 @@ import {
  * share one pass over the file.
  */
 
+const databases = Object.entries(BUNDLED_DBCS).map(([name, text]) => parseDBC(text, name));
+let enumSidecar: Record<string, Record<string, string>> = {};
 let log = new Log(false);
 let text = "";
 let layout: CSVLayout;
@@ -40,6 +45,7 @@ const decodedKeys = new Set<string>();
 runLazyWorker(start, decode, () => log);
 
 function start(files: (Uint8Array | null)[]): Log {
+  if (files[1]) enumSidecar = JSON.parse(decodeCSVText(files[1]));
   text = decodeCSVText(files[0]!);
   layout = detectLayout(text);
   fastPath = text.indexOf('"', layout.dataStart) === -1;
@@ -176,7 +182,7 @@ function indexWide() {
     const type = inferType(sampleRows.map((row) => row[columnIndex]));
     wideColumns.set(key, { column, type });
     log.createBlankField(key, type);
-    setMetadata(log, key, { unit: header.unit ?? undefined, column: header.name });
+    setMetadata(log, key, csvChannelMetadata(header.name, header.unit, databases, enumSidecar));
   });
 }
 
@@ -204,10 +210,8 @@ function indexLong() {
       longRows.delete(rawKey);
     }
     log.createBlankField(key, type);
-    if (layout.unitColumn !== -1) {
-      const unit = getCells(rows[0], [layout.unitColumn])[0].trim();
-      setMetadata(log, key, { unit: unit });
-    }
+    const unit = layout.unitColumn === -1 ? "" : getCells(rows[0], [layout.unitColumn])[0].trim();
+    setMetadata(log, key, csvChannelMetadata(rawKey, unit, databases, enumSidecar));
   });
 }
 

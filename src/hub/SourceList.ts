@@ -15,6 +15,7 @@ import {
   SourceListTypeConfig,
   SourceListTypeMemoryEntry
 } from "../shared/SourceListConfig";
+import { formatChannelValue, rawChannelValue } from "../shared/display/ChannelProfile";
 import {
   grabModuleVelocities,
   grabPosesAuto,
@@ -1248,12 +1249,18 @@ export default class SourceList {
               " \u2014 " +
               getLogValueText(value, logType);
           } else {
-            text = getLogValueText(value, logType);
+            text = formatChannelValue(value, window.log.getChannelProfile(state.logKey));
           }
         }
       }
     }
 
+    const rawTime = window.selection.getRenderTime();
+    if (rawTime !== null) {
+      const type = window.log.getType(state.logKey);
+      const raw = type === null ? null : getOrDefault(window.log, state.logKey, type, rawTime, null);
+      valueText.title = rawChannelValue(raw, window.log.getChannelProfile(state.logKey));
+    }
     // Update state
     valueSymbol.hidden = text === null;
     valueText.hidden = text === null;

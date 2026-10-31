@@ -382,6 +382,10 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           // Normal log, open normally
           targetCount += 1;
           openPath(logPath, (buffer) => (results[0] = buffer));
+          if (logPath.endsWith(".csv")) {
+            const enumPath = logPath + ".enums.json";
+            results.push(fs.existsSync(enumPath) ? fs.readFileSync(enumPath) : null);
+          }
           if (logPath.endsWith(".log")) {
             // candump sidecars and DBC folder (see importerFiles.ts)
             let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);

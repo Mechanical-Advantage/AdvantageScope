@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import { SelectionMode } from "../Selection";
+import { ChannelProfile, formatChannelValue, rawChannelValue } from "../display/ChannelProfile";
 import { getLogValueText } from "../log/LogUtil";
 import { LogValueSetAny } from "../log/LogValueSets";
 import LoggableType from "../log/LoggableType";
@@ -298,6 +299,7 @@ export default class TableRenderer implements TabRenderer {
 
     // Get cell text
     let cellText: string[][] = [];
+    let cellTitles: string[][] = [];
     this.dataRowTimestamps = [];
     let displayOffset = command.displayOffset;
     let isStartAt0 = window.preferences?.timestamps !== "original";
@@ -309,6 +311,7 @@ export default class TableRenderer implements TabRenderer {
         text = "+" + text;
       }
       cellText.push([text]);
+      cellTitles.push([text]);
     }
     this.timestampRange =
       this.dataRowTimestamps.length > 0
@@ -327,10 +330,13 @@ export default class TableRenderer implements TabRenderer {
             cellText[i - dataRowStart].push("null");
           } else {
             let value = field.data!.values[nextIndex - 1];
-            let text = getLogValueText(value, field.type);
-            if (field.type === LoggableType.Boolean) {
-              text = (value ? "🟩" : "🟥") + " " + text;
-            }
+            let text =
+              field.profile && !Array.isArray(value)
+                ? formatChannelValue(value, field.profile)
+                : getLogValueText(value, field.type);
+            cellTitles[i - dataRowStart][cellText[i - dataRowStart].length] = field.profile
+              ? rawChannelValue(value, field.profile)
+              : String(value);
             cellText[i - dataRowStart].push(text);
           }
         }
@@ -349,6 +355,7 @@ export default class TableRenderer implements TabRenderer {
       }
       cellText[rowIndex].forEach((text, cellIndex) => {
         let cell = row.children[cellIndex] as HTMLElement;
+        cell.title = cellTitles[rowIndex]?.[cellIndex] ?? "";
         if (cell.textContent !== text) {
           cell.textContent = text;
         }
@@ -406,6 +413,7 @@ export type TableRendererCommand = {
   timestamps: number[];
   displayOffset: number;
   fields: {
+    profile?: ChannelProfile;
     key: string;
     isAvailable: boolean;
     data: LogValueSetAny | null;
