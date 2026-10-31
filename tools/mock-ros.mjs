@@ -130,7 +130,7 @@ const timer = setInterval(() => {
         type: 3,
         action: 0,
         pose: {
-          position: { x: i < 40 ? (i % 20) - 5 : -3 + (i % 2), y: i < 20 ? 2 : -2, z: i >= 42 ? 0.25 : 0.16 },
+          position: { x: i < 40 ? (i % 20) - 5 : -4 + (i - 40) * 0.7, y: i < 20 ? 2 : -2, z: i >= 42 ? 0.25 : 0.16 },
           orientation: { x: 0, y: 0, z: 0, w: 1 }
         },
         scale: { x: i >= 42 ? 0.4 : 0.25, y: i >= 42 ? 0.4 : 0.25, z: i >= 42 ? 0.5 : 0.32 },

@@ -15,7 +15,14 @@ export function coneStyle(
   if (label === "0" || label.includes("blue")) color = { r: 0.05, g: 0.3, b: 1, a: 1 };
   else if (label === "1" || label.includes("yellow")) color = { r: 1, g: 0.8, b: 0, a: 1 };
   else if (label === "2" || label === "3" || label.includes("orange")) color = { r: 1, g: 0.35, b: 0, a: 1 };
-  else if (/cone/.test(label) && marker.color?.a > 0) color = marker.color;
+  else if (
+    (/cone/.test(label) || marker.type === 3) &&
+    marker.color?.a > 0 &&
+    Math.max(marker.color.r, marker.color.g, marker.color.b) -
+      Math.min(marker.color.r, marker.color.g, marker.color.b) >
+      0.2
+  )
+    color = marker.color;
   else return null;
   return { color, large };
 }
