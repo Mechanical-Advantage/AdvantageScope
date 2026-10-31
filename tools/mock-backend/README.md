@@ -192,3 +192,5 @@ Where spec 01 is silent or ambiguous, the mock does the following:
     `HistoryResponse.stream_id`, `ErrorOp.paths`, and the `sim_status` op.
 15. **Units:** motor speed is `rad/s` (convert to rpm in the UI), temperatures are `K`, pressures `Pa`,
     fractions `"1"`, and lat/lon `deg`. The torque unit string is `N*m`.
+
+`--fault-demo` injects 100 °C motor (WARN), 65 °C cell (CRIT) and an Earth Fault IMD enum from 10–20 seconds. Values recover after 20 seconds so latch acknowledgement can be exercised. Combine with `--stale-test --stale-source ennoid-bms` for stale health tiles after 30 seconds.

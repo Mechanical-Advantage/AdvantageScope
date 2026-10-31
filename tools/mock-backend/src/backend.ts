@@ -39,6 +39,7 @@ export interface BackendOptions {
   speed: number;
   dropRate: number;
   duplicate: boolean;
+  faultDemo: boolean;
   staleTest: boolean;
   staleSource: Source;
   catalogueChurn: boolean;
@@ -57,6 +58,7 @@ export const DEFAULT_OPTIONS: BackendOptions = {
   speed: 1,
   dropRate: 0,
   duplicate: false,
+  faultDemo: false,
   staleTest: false,
   staleSource: "sbg-ins",
   catalogueChurn: false,
@@ -332,7 +334,13 @@ export class MockBackend {
       if (rate !== null && this.tick % Math.max(1, Math.round(TICK_HZ / rate)) !== 0) continue;
       const src = def.desc.source as Source;
       if (this.opts.staleTest && this.sourceDown && src === this.opts.staleSource) continue;
-      const value = def.read(ctx);
+      let value = def.read(ctx);
+      // 10 seconds normal, 10 seconds fault, then recovery (latches remain visible).
+      if (this.opts.faultDemo && this.tick >= 1000 && this.tick < 2000) {
+        if (path.endsWith("/motor_temperature")) value = 373.15;
+        if (path.endsWith("/temperature_max")) value = 338.15;
+        if (path.endsWith("/imd_state")) value = 4;
+      }
       if (value === undefined) continue;
       this.produce(path, def.desc, src, tTrue, value);
     }
