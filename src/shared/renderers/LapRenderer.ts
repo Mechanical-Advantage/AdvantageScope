@@ -38,6 +38,7 @@ export default class LapRenderer implements TabRenderer {
   private command?: LapCommand;
   private last = "";
   private lastDraw = "";
+  private toolbarKey = "";
   private transform = (p: Point) => p;
   private inverse = (p: Point) => p;
   private dragging?: { index: number; endpoint: "a" | "b"; gate: Gate };
@@ -134,85 +135,90 @@ export default class LapRenderer implements TabRenderer {
     this.lastDraw = "";
     const setupOpen = this.toolbar.querySelector("details")?.open ?? false;
     const c = this.command!;
-    this.toolbar.replaceChildren();
     this.content.replaceChildren();
-    const label = document.createElement("span");
-    label.textContent =
-      (c.map ? "Colour: " : "Metrics: ") +
-      (c.field.split("/").at(-1) || "drag a numeric field") +
-      (c.unit ? ` [${c.unit}]` : "");
-    label.title = c.field;
-    this.toolbar.append(label);
-    this.button(this.toolbar, "Clear field", () => this.action({ type: "field", field: "" }));
-    const details = document.createElement("details"),
-      summary = document.createElement("summary");
-    details.open = setupOpen;
-    summary.textContent = "Lap setup";
-    details.append(summary);
-    const panel = document.createElement("div");
-    panel.className = "lap-setup";
-    details.append(panel);
-    this.toolbar.append(details);
-    const setting = (key: string, title: string, value: unknown, options?: string[]) => {
-      const l = document.createElement("label");
-      l.textContent = title;
-      const input = options ? document.createElement("select") : document.createElement("input");
-      if (input instanceof HTMLSelectElement) options!.forEach((v) => input.add(new Option(v, v)));
-      input.value = String(value ?? "");
-      input.onchange = () => this.action({ type: "setting", key, value: input.value });
-      l.append(input);
-      panel.append(l);
-    };
-    setting("mode", "Event", c.settings.config.mode ?? "circuit", [
-      "circuit",
-      "accel",
-      "skidpad",
-      "autocross",
-      "endurance"
-    ]);
-    for (const key of [
-      "latitude",
-      "longitude",
-      "frontLeft",
-      "frontRight",
-      "speed",
-      "rpm",
-      "yaw",
-      "counter",
-      "beacon"
-    ] as const)
-      setting(key, key, c.settings[key]);
-    setting("radius", "Wheel radius [m]", c.settings.radius);
-    setting("ratio", "Motor / wheel ratio", c.settings.ratio);
-    setting("minTime", "Minimum lap [s]", c.settings.config.minTime ?? 20);
-    setting("length", "Reference length [m]", c.settings.config.length);
-    setting("fractions", "Sector fractions", (c.settings.config.fractions ?? [1 / 3, 2 / 3]).join(","));
-    setting("manual", "Manual splits [log seconds]", c.settings.config.manual?.join(","));
-    this.button(panel, "Split at cursor", () => this.action({ type: "marker" }));
-    this.button(panel, "Auto start gate", () => this.action({ type: "auto" }));
-    const addGate = (finish: boolean) => {
-      const ss = c.result.samples;
-      if (!ss.length) return;
-      const i = ss.reduce(
-          (best, p, j) => (Math.abs(p.t - (c.time ?? 0)) < Math.abs(ss[best].t - (c.time ?? 0)) ? j : best),
-          0
-        ),
-        p = ss[i],
-        q = ss[Math.min(i + 1, ss.length - 1)],
-        dx = q.x - p.x,
-        dy = q.y - p.y,
-        n = Math.hypot(dx, dy) || 1;
-      this.action({
-        type: "gate",
-        index: finish ? -2 : c.settings.config.sectors?.length ?? 0,
-        gate: {
-          a: { x: p.x - (dy / n) * 12, y: p.y + (dx / n) * 12 },
-          b: { x: p.x + (dy / n) * 12, y: p.y - (dx / n) * 12 }
-        }
-      });
-    };
-    this.button(panel, "Add sector at cursor", () => addGate(false));
-    this.button(panel, "Set finish at cursor", () => addGate(true));
+    const toolbarKey = JSON.stringify([c.field, c.unit, c.map, c.settings]);
+    if (toolbarKey !== this.toolbarKey) {
+      this.toolbarKey = toolbarKey;
+      this.toolbar.replaceChildren();
+      const label = document.createElement("span");
+      label.textContent =
+        (c.map ? "Colour: " : "Metrics: ") +
+        (c.field.split("/").at(-1) || "drag a numeric field") +
+        (c.unit ? ` [${c.unit}]` : "");
+      label.title = c.field;
+      this.toolbar.append(label);
+      this.button(this.toolbar, "Clear field", () => this.action({ type: "field", field: "" }));
+      const details = document.createElement("details"),
+        summary = document.createElement("summary");
+      details.open = setupOpen;
+      summary.textContent = "Lap setup";
+      details.append(summary);
+      const panel = document.createElement("div");
+      panel.className = "lap-setup";
+      details.append(panel);
+      this.toolbar.append(details);
+      const setting = (key: string, title: string, value: unknown, options?: string[]) => {
+        const l = document.createElement("label");
+        l.textContent = title;
+        const input = options ? document.createElement("select") : document.createElement("input");
+        if (input instanceof HTMLSelectElement) options!.forEach((v) => input.add(new Option(v, v)));
+        input.value = String(value ?? "");
+        input.onchange = () => this.action({ type: "setting", key, value: input.value });
+        l.append(input);
+        panel.append(l);
+      };
+      setting("mode", "Event", c.settings.config.mode ?? "circuit", [
+        "circuit",
+        "accel",
+        "skidpad",
+        "autocross",
+        "endurance"
+      ]);
+      for (const key of [
+        "latitude",
+        "longitude",
+        "frontLeft",
+        "frontRight",
+        "speed",
+        "rpm",
+        "yaw",
+        "counter",
+        "beacon"
+      ] as const)
+        setting(key, key, c.settings[key]);
+      setting("radius", "Wheel radius [m]", c.settings.radius);
+      setting("ratio", "Motor / wheel ratio", c.settings.ratio);
+      setting("minTime", "Minimum lap [s]", c.settings.config.minTime ?? 20);
+      setting("length", "Reference length [m]", c.settings.config.length);
+      setting("fractions", "Sector fractions", (c.settings.config.fractions ?? [1 / 3, 2 / 3]).join(","));
+      setting("manual", "Manual splits [log seconds]", c.settings.config.manual?.join(","));
+      this.button(panel, "Split at cursor", () => this.action({ type: "marker" }));
+      this.button(panel, "Auto start gate", () => this.action({ type: "auto" }));
+      const addGate = (finish: boolean) => {
+        const c = this.command!;
+        const ss = c.result.samples;
+        if (!ss.length) return;
+        const i = ss.reduce(
+            (best, p, j) => (Math.abs(p.t - (c.time ?? 0)) < Math.abs(ss[best].t - (c.time ?? 0)) ? j : best),
+            0
+          ),
+          p = ss[i],
+          q = ss[Math.min(i + 1, ss.length - 1)],
+          dx = q.x - p.x,
+          dy = q.y - p.y,
+          n = Math.hypot(dx, dy) || 1;
+        this.action({
+          type: "gate",
+          index: finish ? -2 : c.settings.config.sectors?.length ?? 0,
+          gate: {
+            a: { x: p.x - (dy / n) * 12, y: p.y + (dx / n) * 12 },
+            b: { x: p.x + (dy / n) * 12, y: p.y - (dx / n) * 12 }
+          }
+        });
+      };
+      this.button(panel, "Add sector at cursor", () => addGate(false));
+      this.button(panel, "Set finish at cursor", () => addGate(true));
+    }
     if (c.map) {
       this.content.append(this.canvas);
       if (!c.result.samples.length) {
