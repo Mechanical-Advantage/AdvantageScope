@@ -5,12 +5,6 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-// In-page live connection UI (works the same in Electron and Lite):
-// - ConnectDialog: File -> Connect... (Cmd/Ctrl+K). Pick a registered source, enter an address, or pick a
-//   recent server. Styled like the Preferences prompt.
-// - LiveStatusPill: title-bar pill with three separate indicators (backend, car, sim), plus a popover with
-//   details, sim controls (only when the backend has sim endpoints) and connect/disconnect.
-
 import { DBCDatabase, DBCSignal } from "../can/DBC";
 
 /** Match qualified message/signal names, falling back to unambiguous signal names. */

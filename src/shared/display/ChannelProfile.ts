@@ -5,12 +5,6 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-// In-page live connection UI (works the same in Electron and Lite):
-// - ConnectDialog: File -> Connect... (Cmd/Ctrl+K). Pick a registered source, enter an address, or pick a
-//   recent server. Styled like the Preferences prompt.
-// - LiveStatusPill: title-bar pill with three separate indicators (backend, car, sim), plus a popover with
-//   details, sim controls (only when the backend has sim endpoints) and connect/disconnect.
-
 import { Units } from "../units";
 
 export interface ChannelMetadata {
@@ -49,31 +43,36 @@ export function channelProfile(metadata: ChannelMetadata, override: ChannelOverr
   if (from === "kelvin") to = "celsius";
   if (from === "pascals") to = "kilopascals";
   if (from === "meters" && /shock|suspension|damper/i.test(metadata.name)) to = "millimeters";
-  if (
-    from === "ratio" &&
-    /soc|state_of_charge|duty|throttle|pedal/i.test(metadata.name) &&
-    metadata.min === 0 &&
-    metadata.max === 1
-  )
-    to = "percent";
+  if (from === "ratio" && /soc|state_?of_?charge|duty|throttle|pedal/i.test(metadata.name)) to = "percent";
   if (override.unit !== undefined) {
     const requested = resolveUnit(override.unit);
     if (requested && from && Units.GROUP_BY_UNIT[requested] === Units.GROUP_BY_UNIT[from]) to = requested;
   }
   const dimension = metadata.dimension?.toLowerCase() ?? (to ? Units.GROUP_BY_UNIT[to] : "");
-  let precision =
-    to === "rotations/minute" || /rpm/i.test(metadata.name)
+  const dimensionPrecision: Record<string, number> = {
+    temperature: 1,
+    voltage: 2,
+    current: 1,
+    angle: 1,
+    velocity: 2,
+    "angular velocity": 4,
+    acceleration: 2,
+    "angular acceleration": 4,
+    length: to === "millimeters" ? 1 : 3,
+    pressure: 1,
+    torque: 1,
+    power: 0,
+    energy: 1,
+    time: 3,
+    frequency: 1
+  };
+  let precision: number | undefined =
+    metadata.precision ??
+    (to === "rotations/minute" || /rpm/i.test(metadata.name)
       ? 0
       : to === "percent"
       ? 1
-      : dimension === "temperature"
-      ? 1
-      : dimension === "voltage"
-      ? 2
-      : dimension === "current" || dimension === "angle"
-      ? 1
-      : undefined;
-  if (precision === undefined) precision = metadata.precision;
+      : dimensionPrecision[dimension]);
   if (precision === undefined && metadata.scale && metadata.scale < 1)
     precision = Math.ceil(-Math.log10(metadata.scale));
   precision = override.precision ?? precision;
@@ -111,6 +110,10 @@ export function rawChannelValue(value: unknown, profile: ChannelProfile): string
   if (typeof value === "string" && profile.enumLabels) {
     const entry = Object.entries(profile.enumLabels).find(([, label]) => label === value);
     if (entry) value = entry[0];
+    else {
+      const unknown = value.match(/^Unknown \((-?\d+(?:\.\d+)?)\)$/);
+      if (unknown) value = unknown[1];
+    }
   }
   return `Raw: ${String(value)}${profile.rawUnit ? " " + profile.rawUnit : ""}`;
 }

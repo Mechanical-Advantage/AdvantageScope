@@ -149,7 +149,7 @@ export default class StatisticsRenderer implements TabRenderer {
               field.profile && !dimensionless
                 ? formatChannelValue(value, { ...field.profile, enumLabels: undefined }, false, delta)
                 : value.toFixed(digits);
-            valueCell.title = field.profile ? rawChannelValue(value, field.profile) : String(value);
+            valueCell.title = field.profile && !dimensionless ? rawChannelValue(value, field.profile) : String(value);
           }
           valueCell.style.color = color;
         });
@@ -209,7 +209,17 @@ export default class StatisticsRenderer implements TabRenderer {
         const x = item.parsed.x!;
         const min = x - command.stepSize / 2;
         const max = x + command.stepSize / 2;
-        return cleanFloat(min).toString() + " to " + cleanFloat(max).toString();
+        const profile = command.fields[item.datasetIndex]?.profile;
+        return profile
+          ? formatChannelValue(min, profile) +
+              " to " +
+              formatChannelValue(max, profile) +
+              " (" +
+              rawChannelValue(min, profile) +
+              " to " +
+              rawChannelValue(max, profile) +
+              ")"
+          : cleanFloat(min).toString() + " to " + cleanFloat(max).toString();
       };
       this.histogram.update();
     }
