@@ -2216,3 +2216,11 @@ button.sidebar-freshness-filter:not([hidden]) {
   font-size: 11px;
   color: inherit;
 }
+
+/* Keep the MQTT timestamp checkbox aligned with its inline label. */
+div.connect-dialog input.mqtt-timestamp {
+  display: inline-block;
+  width: auto;
+  margin: 0 4px 0 5px;
+  vertical-align: middle;
+}

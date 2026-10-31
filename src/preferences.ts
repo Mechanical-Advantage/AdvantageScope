@@ -100,6 +100,7 @@ window.addEventListener("message", (event) => {
             liveSubscribeMode: liveSubscribeMode,
             liveDiscard: Number(LIVE_DISCARD.value),
             liveRecent: oldPrefs.liveRecent ?? [],
+            mqttConnections: oldPrefs.mqttConnections ?? {},
             field3dModeAc: field3dModeAc,
             field3dModeBattery: field3dModeBattery,
             field3dAntialiasing: FIELD_3D_ANTIALIASING.value === "true",

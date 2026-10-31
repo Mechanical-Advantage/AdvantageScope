@@ -5,6 +5,8 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { MQTTSettings, normaliseMQTTSettings } from "../hub/dataSources/mqtt/MQTTConfig";
+
 /** A set of application preferences. */
 export default interface Preferences {
   theme: "light" | "dark" | "system";
@@ -13,6 +15,7 @@ export default interface Preferences {
   liveMode: string; // Live source ID (see LiveSourceRegistry), empty for the default source
   liveSubscribeMode: "low-bandwidth" | "logging";
   liveDiscard: number;
+  mqttConnections: Record<string, MQTTSettings>;
   liveRecent: LiveRecentServer[]; // Most recent first (see ConnectDialog)
   field3dModeAc: "cinematic" | "standard" | "low-power";
   field3dModeBattery: "" | "cinematic" | "standard" | "low-power";
@@ -41,6 +44,7 @@ export const DEFAULT_PREFS: Preferences = {
   liveSubscribeMode: "low-bandwidth",
   liveDiscard: 1200,
   liveRecent: [],
+  mqttConnections: {},
   field3dModeAc: "standard",
   field3dModeBattery: "",
   field3dAntialiasing: true,
@@ -53,6 +57,13 @@ export const DEFAULT_PREFS: Preferences = {
 };
 
 export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
+  if ("mqttConnections" in newPrefs && newPrefs.mqttConnections && typeof newPrefs.mqttConnections === "object") {
+    basePrefs.mqttConnections = Object.fromEntries(
+      Object.entries(newPrefs.mqttConnections)
+        .filter(([, value]) => value && typeof value === "object")
+        .map(([key, value]) => [key, normaliseMQTTSettings(value)])
+    );
+  }
   if ("theme" in newPrefs && (newPrefs.theme === "light" || newPrefs.theme === "dark" || newPrefs.theme === "system")) {
     basePrefs.theme = newPrefs.theme;
   }

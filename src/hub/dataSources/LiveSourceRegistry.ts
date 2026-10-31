@@ -7,6 +7,7 @@
 
 import { LiveSourceInfo } from "../../shared/LiveSourceInfo";
 import { LiveDataSource } from "./LiveDataSource";
+import MQTTSource from "./mqtt/MQTTSource";
 import MURSource from "./mur/MURSource";
 import NT4Source, { NT4Mode } from "./nt4/NT4Source";
 
@@ -35,6 +36,13 @@ export const LIVE_SOURCES: LiveSourceDefinition[] = [
     defaultAddress: "http://localhost:8090",
     liteCompatible: true,
     create: () => new MURSource()
+  },
+  {
+    id: "mqtt",
+    name: "MQTT direct (debug)",
+    defaultAddress: "ws://localhost:1884",
+    liteCompatible: true,
+    create: () => new MQTTSource()
   }
 ];
 
