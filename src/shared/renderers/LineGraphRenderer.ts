@@ -13,6 +13,7 @@ import { Units } from "../units";
 import { calcAxisStepSize, clampValue, cleanFloat, scaleValue, shiftColor, ValueScaler } from "../util";
 import TabRenderer from "./TabRenderer";
 
+import { decimateColumns, isDense } from "../display/Decimate";
 import { interpolate } from "../laps/LapEngine";
 
 export default class LineGraphRenderer implements TabRenderer {
@@ -178,6 +179,10 @@ export default class LineGraphRenderer implements TabRenderer {
       command.displayOffset,
       command.xUnit,
       command.lapLabels,
+      command.smoothPx,
+      command.sectorMarks,
+      command.deltaStrip?.range,
+      command.deltaStrip?.fields.map((f) => [f.values.length, f.color, f.size]),
       command.thresholds,
       command.leftFields.map((field) => [
         field.values.length,
@@ -226,6 +231,10 @@ export default class LineGraphRenderer implements TabRenderer {
     if (graphHeight < 1) graphHeight = 1;
     let discreteRowCount = command.discreteFields.length + command.alerts.length;
     let graphHeightOpen = graphHeight - discreteRowCount * 20 - (discreteRowCount > 0 ? 5 : 0);
+    // Lap mode: a short strip for ΔT under the overlay, sharing the distance axis
+    const stripHeight = command.deltaStrip ? Math.max(44, Math.round(graphHeight * 0.22)) : 0;
+    const stripGap = stripHeight ? 14 : 0;
+    graphHeightOpen -= stripHeight + stripGap;
     if (graphHeightOpen < 1) graphHeightOpen = 1;
 
     // Calculate Y step sizes
@@ -422,6 +431,41 @@ export default class LineGraphRenderer implements TabRenderer {
         context.setLineDash(field.dash ?? []);
         context.globalAlpha = field.dim ? 0.25 : 1;
         if (field.focus) context.lineWidth += 2;
+        const smoothCols = command.smoothPx ?? 0;
+        if (
+          field.type !== "points" &&
+          (isDense(field.timestamps.length, graphWidth) || (smoothCols > 1 && field.type === "smooth"))
+        ) {
+          // Dense data: faint min/max envelope per pixel column plus a mean line
+          const cols = decimateColumns(
+            field.timestamps,
+            field.values,
+            (x) => xScaler.calculate(x) * devicePixelRatio,
+            graphLeft * devicePixelRatio,
+            (graphLeft + graphWidth) * devicePixelRatio,
+            smoothCols * devicePixelRatio
+          );
+          const px = 1 / devicePixelRatio;
+          const baseAlpha = context.globalAlpha;
+          context.globalAlpha = baseAlpha * 0.28;
+          context.setLineDash([]);
+          for (const c of cols) {
+            const y0 = yScaler.calculate(c.max),
+              y1 = yScaler.calculate(c.min);
+            context.fillRect(c.x * px, y0, px, Math.max(px, y1 - y0));
+          }
+          context.globalAlpha = baseAlpha;
+          context.setLineDash(field.dash ?? []);
+          context.beginPath();
+          cols.forEach((c, i) => {
+            const x = (c.x + 0.5) * px,
+              y = yScaler.calculate(c.mean);
+            if (i === 0 || c.x - cols[i - 1].x > 8 * devicePixelRatio) context.moveTo(x, y);
+            else context.lineTo(x, y);
+          });
+          context.stroke();
+          return;
+        }
         switch (field.type) {
           case "stepped":
             context.beginPath();
@@ -498,6 +542,69 @@ export default class LineGraphRenderer implements TabRenderer {
 
     context.setLineDash([]);
     context.globalAlpha = 1;
+
+    // Sector gates on the distance axis (dotted verticals through plot and strip)
+    if (command.sectorMarks?.length) {
+      context.lineWidth = 1;
+      context.textAlign = "center";
+      context.setLineDash([2, 3]);
+      for (const mark of command.sectorMarks) {
+        const x = xScaler.calculate(mark.x);
+        if (x < graphLeft || x > graphLeft + graphWidth) continue;
+        context.globalAlpha = 0.7;
+        context.strokeStyle = light ? "#555" : "#bbb";
+        context.beginPath();
+        context.moveTo(x, graphTop);
+        context.lineTo(x, graphTop + graphHeight);
+        context.stroke();
+        context.globalAlpha = 1;
+        context.fillStyle = light ? "#222" : "#eee";
+        context.fillText(mark.label, x, graphTop + graphHeight + 28);
+      }
+      context.setLineDash([]);
+    }
+    if (command.deltaStrip) {
+      const top = graphTop + graphHeightOpen + stripGap;
+      const bottom = graphTop + graphHeight;
+      const strip = command.deltaStrip;
+      const yScaler = new ValueScaler(strip.range, [bottom, top]);
+      context.globalAlpha = 1;
+      context.lineWidth = 1;
+      context.strokeStyle = light ? "#8886" : "#8888";
+      context.strokeRect(graphLeft + 0.5, top + 0.5, graphWidth - 1, bottom - top - 1);
+      const zero = yScaler.calculate(0);
+      if (zero > top && zero < bottom) {
+        context.setLineDash([4, 3]);
+        context.beginPath();
+        context.moveTo(graphLeft, zero);
+        context.lineTo(graphLeft + graphWidth, zero);
+        context.stroke();
+        context.setLineDash([]);
+      }
+      context.save();
+      context.beginPath();
+      context.rect(graphLeft, top, graphWidth, bottom - top);
+      context.clip();
+      strip.fields.forEach((field) => {
+        context.strokeStyle = field.color;
+        context.lineWidth = field.size === "bold" ? 3 : 2;
+        context.beginPath();
+        for (let i = 0; i < field.timestamps.length; i++) {
+          const x = xScaler.calculate(field.timestamps[i]),
+            y = yScaler.calculate(field.values[i]);
+          if (i === 0 || isNaN(field.values[i - 1])) context.moveTo(x, y);
+          else context.lineTo(x, y);
+        }
+        context.stroke();
+      });
+      context.restore();
+      context.fillStyle = light ? "#222" : "#eee";
+      context.textAlign = "left";
+      context.fillText(strip.title, graphLeft + 6, top + 12);
+      context.textAlign = "right";
+      context.fillText(cleanFloat(strip.range[1]).toString(), graphLeft - 4, top + 6);
+      context.fillText(cleanFloat(strip.range[0]).toString(), graphLeft - 4, bottom - 2);
+    }
 
     for (const threshold of command.thresholds ?? []) {
       const range = threshold.axis === "left" ? command.leftRange : command.rightRange;
@@ -775,15 +882,20 @@ export default class LineGraphRenderer implements TabRenderer {
     context.fillText(command.leftTitle ?? "", graphLeft, 15);
     context.textAlign = "right";
     context.fillText(command.rightTitle ?? "", graphLeft + graphWidth, 15);
-    if (command.lapLabels) {
-      let x = graphLeft + 8;
+    if (command.lapLabels?.length) {
+      // Stacked legend panel: one row per lap, coloured to match its traces
+      const rowHeight = 15;
+      let panelWidth = 0;
+      for (const label of command.lapLabels) panelWidth = Math.max(panelWidth, context.measureText(label.text).width);
+      context.globalAlpha = 0.85;
+      context.fillStyle = light ? "#ffffff" : "#1c1c1e";
+      context.fillRect(graphLeft + 4, graphTop + 3, panelWidth + 12, command.lapLabels.length * rowHeight + 6);
       context.globalAlpha = 1;
       context.textAlign = "left";
-      for (const label of command.lapLabels) {
+      command.lapLabels.forEach((label, i) => {
         context.fillStyle = label.color;
-        context.fillText(label.text, x, graphTop + 16);
-        x += context.measureText(label.text).width + 18;
-      }
+        context.fillText(label.text, graphLeft + 10, graphTop + 3 + rowHeight * (i + 0.5) + 3);
+      });
       context.fillStyle = light ? "#222" : "#eee";
     }
     // Render x axis
@@ -836,6 +948,12 @@ export type LineGraphRendererCommand = {
   xUnit?: "s" | "m";
   lapTimeline?: { x: number[]; time: number[] };
   lapLabels?: { text: string; color: string }[];
+  /** Moving-average window (CSS px) applied to the mean line of dense/smooth traces. */
+  smoothPx?: number;
+  /** Sector gate markers on the x axis (x in axis units). */
+  sectorMarks?: { x: number; label: string }[];
+  /** Lap mode: ΔT drawn in its own strip under the overlay. */
+  deltaStrip?: { fields: LineGraphRendererCommand_NumericField[]; range: [number, number]; title: string };
   timeRange: [number, number];
   displayOffset: number;
   selectionMode: SelectionMode;

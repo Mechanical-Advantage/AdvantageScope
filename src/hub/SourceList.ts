@@ -1286,6 +1286,18 @@ export default class SourceList {
       const type = window.log.getType(state.logKey);
       const raw = type === null ? null : getOrDefault(window.log, state.logKey, type, rawTime, null);
       valueText.title = rawChannelValue(raw, window.log.getChannelProfile(state.logKey));
+      if (type === LoggableType.Number) {
+        // Sample age and rate, so a held value from a stalled source is not mistaken for a live one
+        const recent = window.log.getNumber(state.logKey, rawTime - 10, rawTime);
+        const ts = recent?.timestamps ?? [];
+        const last = ts.at(-1);
+        if (last === undefined) valueText.title += "\nno sample in the last 10 s";
+        else {
+          const recentRate = ts.filter((t) => t > last - 1).length - 1;
+          valueText.title +=
+            `\nsample age ${(rawTime - last).toFixed(2)} s` + (recentRate > 0 ? ` · ${recentRate} Hz` : "");
+        }
+      }
     }
     const status = this.itemStatus.get(state.logKey);
     if (status) {

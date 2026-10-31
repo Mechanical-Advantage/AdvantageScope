@@ -62,6 +62,8 @@ export default class LineGraphController implements TabController {
   private showRobotMode = false;
   private lapMode = "time";
   private lapSelect: HTMLSelectElement;
+  private smoothPx = 0;
+  private smoothSelect: HTMLSelectElement;
 
   constructor(root: HTMLElement) {
     const mode = document.createElement("select");
@@ -77,6 +79,19 @@ export default class LineGraphController implements TabController {
     const controls = document.createElement("div");
     controls.className = "graph-inline-controls";
     controls.append(mode);
+    const smooth = document.createElement("select");
+    this.smoothSelect = smooth;
+    smooth.className = "lap-axis-mode";
+    smooth.setAttribute("aria-label", "Line graph smoothing");
+    smooth.title = "Smoothing of the mean line on dense traces (min/max envelope is unaffected)";
+    [
+      ["0", "Smooth: off"],
+      ["6", "Smooth: 6 px"],
+      ["20", "Smooth: 20 px"],
+      ["60", "Smooth: 60 px"]
+    ].forEach(([value, label]) => smooth.add(new Option(label, value)));
+    smooth.onchange = () => (this.smoothPx = Number(smooth.value));
+    controls.append(smooth);
     const toggle = document.createElement("label");
     const check = document.createElement("input");
     check.type = "checkbox";
@@ -188,6 +203,25 @@ export default class LineGraphController implements TabController {
     ] as const) {
       source.graphLegend = true;
       source.beforeAdd = (key) => {
+        if (this.lapMode === "distance" && source === this.rightSourceList) {
+          // The right axis is locked to ΔT in lap-distance mode
+          const lock = document.createElement("div");
+          lock.className = "graph-unit-prompt";
+          lock.append("Right axis is locked to ΔT in Lap distance mode — ");
+          const move = document.createElement("button");
+          move.textContent = "Move to Left Axis";
+          move.onclick = () => {
+            other.addField(key);
+            lock.remove();
+          };
+          const cancel = document.createElement("button");
+          cancel.textContent = "Cancel";
+          cancel.onclick = () => lock.remove();
+          lock.append(move, cancel);
+          root.querySelector(".graph-unit-prompt")?.remove();
+          root.append(lock);
+          return false;
+        }
         const first = source.getState()[0];
         if (!first || compatibleProfiles(window.log.getChannelProfile(key), window.log.getChannelProfile(first.logKey)))
           return true;
@@ -247,7 +281,8 @@ export default class LineGraphController implements TabController {
       rightFilter: this.rightFilter,
       showRobotMode: this.showRobotMode,
       showThresholds: this.showThresholds,
-      lapMode: this.lapMode
+      lapMode: this.lapMode,
+      smoothPx: this.smoothPx
     };
   }
 
@@ -279,6 +314,10 @@ export default class LineGraphController implements TabController {
     if ("lapMode" in state && ["time", "lapTime", "distance"].includes(String(state.lapMode))) {
       this.lapMode = String(state.lapMode);
       this.lapSelect.value = this.lapMode;
+    }
+    if ("smoothPx" in state && [0, 6, 20, 60].includes(Number(state.smoothPx))) {
+      this.smoothPx = Number(state.smoothPx);
+      this.smoothSelect.value = String(this.smoothPx);
     }
     this.updateAxisLabels();
 
@@ -1006,22 +1045,25 @@ export default class LineGraphController implements TabController {
         else result.rightRange = range;
       }
     }
+    result.smoothPx = this.smoothPx;
     if (this.lapMode !== "time") {
       result.thresholds = [];
       lapService.update();
       const reference = lapService.result.laps.find((l) => l.index === lapService.reference);
       const laps = lapService.result.laps.filter((l) => lapService.overlays.includes(l.index));
       const distance = this.lapMode === "distance";
+      // One hue per lap; signals on the same axis are told apart by dash. The reference lap is bold.
       const convert = (fields: LineGraphRendererCommand_NumericField[]) =>
-        fields.flatMap((field) =>
+        fields.flatMap((field, fi) =>
           laps.map((lap, i) => {
             const times = lap.grid.map((p) => p.time),
               ds = lap.grid.map((p) => p.distance);
             const xs = distance ? ds : times;
             return {
               ...field,
-              dash: traceDash(i),
+              dash: traceDash(fi),
               color: LAP_COLORS[i % LAP_COLORS.length],
+              size: lap.index === lapService.reference ? ("bold" as const) : ("normal" as const),
               timestamps: xs,
               values: times.map((t) => interpolate(field.timestamps, field.values, lap.start + t))
             };
@@ -1029,32 +1071,61 @@ export default class LineGraphController implements TabController {
         );
       result.leftFields = convert(result.leftFields);
       result.rightFields = convert(result.rightFields);
-      if (distance && reference) {
-        result.rightFields = laps.map((lap, i) => ({
-          timestamps: lap.grid.map((p) => p.distance),
-          values: lap.grid.map((p) => lapService.delta(lap.index, p.distance)),
-          dash: traceDash(i),
-          color: LAP_COLORS[i % LAP_COLORS.length],
-          type: "smooth",
-          size: "normal"
-        }));
-        const vs = result.rightFields.flatMap((f) => f.values).filter(Number.isFinite);
-        const min = Math.min(0, ...vs),
-          max = Math.max(0, ...vs);
-        result.rightRange = [min - 0.1, max + 0.1];
-        result.showRightAxis = true;
+      if (distance) {
+        // The right axis is locked to ΔT, which is drawn in its own strip under the overlay
+        result.rightFields = [];
+        result.showRightAxis = false;
+        result.rightTitle = "";
         result.rightUnits = null;
-        result.rightTitle = "ΔT [s]";
+        if (reference) {
+          const stripFields = laps
+            .filter((lap) => lap.index !== reference.index)
+            .map((lap) => ({
+              timestamps: lap.grid.map((p) => p.distance),
+              values: lap.grid.map((p) => lapService.delta(lap.index, p.distance)),
+              dash: [] as number[],
+              color: LAP_COLORS[laps.indexOf(lap) % LAP_COLORS.length],
+              type: "smooth" as const,
+              size: "normal" as const
+            }));
+          const vs = stripFields.flatMap((f) => f.values).filter(Number.isFinite);
+          const pad = 0.05;
+          result.deltaStrip = {
+            fields: stripFields,
+            range: [Math.min(0, ...vs) - pad, Math.max(0, ...vs) + pad],
+            title: `ΔT vs Lap ${reference.index} [s], + = slower`
+          };
+        }
       }
       const end = Math.max(1, ...laps.map((l) => (distance ? l.distance : l.end - l.start)));
       result.timeRange = [0, end];
       result.displayOffset = 0;
       result.xUnit = distance ? "m" : "s";
+      const split = (lap: (typeof laps)[number]) =>
+        lap.sectors.map((t, j) => `S${j + 1} ${Number.isFinite(t) ? t.toFixed(2) : "—"}`).join(" · ");
       result.lapLabels = laps.map((lap, i) => ({
-        text: `Lap ${lap.index}${lap.index === lapService.reference ? " (ref)" : ""}`,
+        text: `Lap ${lap.index}${lap.index === lapService.reference ? " (ref)" : ""}  ${(lap.end - lap.start).toFixed(
+          2
+        )} s  ${split(lap)}`,
         color: LAP_COLORS[i % LAP_COLORS.length]
       }));
-      if (distance) result.lapLabels.push({ text: "Right axis: ΔT [s], positive = slower", color: "#aaa" });
+      const sectorRef = reference ?? laps[0];
+      if (sectorRef) {
+        let cumulative = 0;
+        result.sectorMarks = sectorRef.sectors.slice(0, -1).map((t, j) => {
+          cumulative += t;
+          return {
+            x: distance
+              ? interpolate(
+                  sectorRef.grid.map((p) => p.time),
+                  sectorRef.grid.map((p) => p.distance),
+                  cumulative
+                )
+              : cumulative,
+            label: `S${j + 2}`
+          };
+        });
+      }
       const cursorLap =
         lapService.result.laps.find(
           (l) => result.selectedTime !== null && result.selectedTime >= l.start && result.selectedTime <= l.end
