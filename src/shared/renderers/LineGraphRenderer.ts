@@ -140,7 +140,7 @@ export default class LineGraphRenderer implements TabRenderer {
 
     // Update help overlay
     if (this.HELP_OVERLAY) {
-      const hasScrolled = window.preferences?.hasScrolledLineGraph ?? false;
+      const hasScrolled = (window.preferences?.hasScrolledLineGraph ?? false) || this.scrollSensor.shouldHideHint();
       this.HELP_OVERLAY.style.display = hasScrolled ? "none" : "flex";
       if (hasScrolled) {
         this.isFadingOut = false;
