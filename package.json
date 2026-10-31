@@ -21,6 +21,7 @@
     "check-format": "license-check-and-add check -f file-header-config.json && prettier --check .",
     "wasm:compile": "node wasmCompile.mjs",
     "mock-backend": "node tools/mock-backend/src/main.ts",
+    "test": "node --import ./test/resolveTs.mjs --test test/**/*.test.ts",
     "postinstall": "node installElectron.mjs && node getLicenses.mjs && node bundleLiteAssets.mjs"
   },
   "devDependencies": {
