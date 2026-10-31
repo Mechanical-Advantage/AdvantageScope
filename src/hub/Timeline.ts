@@ -9,6 +9,8 @@ import ScrollSensor from "./ScrollSensor";
 
 /** A colored range drawn behind the timeline (e.g. a lap). Times are in log seconds. */
 export type TimelineBand = {
+  label?: string;
+  highlighted?: boolean;
   start: number;
   end?: number; // Undefined extends to the end of the visible range
   color: string;
@@ -161,7 +163,18 @@ export default class Timeline {
       context.fillStyle = light ? range.color : range.darkColor;
       let startX = clampValue(scaleValue(startTime, timeRange, [0, width]), 0, width);
       let endX = clampValue(scaleValue(endTime, timeRange, [0, width]), 0, width);
+      context.globalAlpha = range.highlighted ? 0.22 : 0.09;
       context.fillRect(startX, 0, endX - startX, height);
+      context.globalAlpha = 1;
+      if (range.label && endX - startX > 30) {
+        // Small label in the top-left corner, clear of the vertically centred tick labels
+        context.font = "600 9px ui-sans-serif, system-ui";
+        context.textAlign = "left";
+        context.textBaseline = "top";
+        context.fillStyle = light ? "#555" : "#aaa";
+        context.fillText(range.label, startX + 3, 1, endX - startX - 6);
+        context.textBaseline = "alphabetic";
+      }
 
       if (!rangeBorders.includes(range.start)) {
         rangeBorders.push(range.start);

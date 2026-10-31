@@ -9,7 +9,8 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
-import { formatChannelValue } from "../../shared/display/ChannelProfile";
+import { canonicalChannelPath, channelProfile, formatChannelValue } from "../../shared/display/ChannelProfile";
+import { compatibleProfiles, splitLegendName, traceDash } from "../../shared/display/LineGraphStyle";
 import { interpolate } from "../../shared/laps/LapEngine";
 import { getLogValueText } from "../../shared/log/LogUtil";
 import { LogValueSetNumber } from "../../shared/log/LogValueSets";
@@ -57,6 +58,7 @@ export default class LineGraphController implements TabController {
   private rightNumericCommandCache: { [key: string]: NumericCommandCacheValue } = {};
   private leftUnitCache: Units.UnitConfig | null = null;
   private rightUnitCache: Units.UnitConfig | null = null;
+  private showThresholds = true;
   private showRobotMode = false;
   private lapMode = "time";
   private lapSelect: HTMLSelectElement;
@@ -72,7 +74,19 @@ export default class LineGraphController implements TabController {
       ["distance", "Lap distance + ΔT"]
     ].forEach(([value, label]) => mode.add(new Option(label, value)));
     mode.onchange = () => (this.lapMode = mode.value);
-    root.append(mode);
+    const controls = document.createElement("div");
+    controls.className = "graph-inline-controls";
+    controls.append(mode);
+    const toggle = document.createElement("label");
+    const check = document.createElement("input");
+    check.type = "checkbox";
+    check.checked = this.showThresholds;
+    check.onchange = () => (this.showThresholds = check.checked);
+    toggle.append(check, "Health limits");
+    toggle.title = "Draw health-strip warn/crit thresholds on matching axes";
+    mode.title = "X axis: session time, lap time, or lap distance with ΔT";
+    controls.append(toggle);
+    root.append(controls);
     // Make source lists
     this.leftSourceList = new SourceList(
       root.getElementsByClassName("line-graph-left")[0] as HTMLElement,
@@ -168,6 +182,53 @@ export default class LineGraphController implements TabController {
         });
       }
     );
+    for (const [source, other, name] of [
+      [this.leftSourceList, this.rightSourceList, "Right"],
+      [this.rightSourceList, this.leftSourceList, "Left"]
+    ] as const) {
+      source.graphLegend = true;
+      source.beforeAdd = (key) => {
+        const first = source.getState()[0];
+        if (!first || compatibleProfiles(window.log.getChannelProfile(key), window.log.getChannelProfile(first.logKey)))
+          return true;
+        const prompt = document.createElement("div");
+        prompt.className = "graph-unit-prompt";
+        prompt.append(
+          `Different unit (${window.log.getChannelProfile(key).unit} vs ${
+            window.log.getChannelProfile(first.logKey).unit
+          }) — `
+        );
+        for (const [label, target] of [
+          [`Move to ${name} Axis`, other],
+          ["Add anyway", source]
+        ] as const) {
+          const button = document.createElement("button");
+          button.textContent = label;
+          button.onclick = () => {
+            const guard = target.beforeAdd;
+            if (target === source) target.beforeAdd = undefined;
+            target.addField(key);
+            target.beforeAdd = guard;
+            prompt.remove();
+          };
+          prompt.append(button);
+        }
+        const cancel = document.createElement("button");
+        cancel.textContent = "Cancel";
+        cancel.onclick = () => prompt.remove();
+        prompt.append(cancel);
+        root.querySelector(".graph-unit-prompt")?.remove();
+        root.append(prompt);
+        return false;
+      };
+    }
+  }
+
+  private axisTitle(source: SourceList, unit: Units.UnitConfig | null, filter: LineGraphFilter): string {
+    const fields = source.getState().filter((f) => f.visible);
+    const name = fields.length === 1 ? splitLegendName(fields[0].logKey).leaf : "Signals";
+    const suffix = unit ? Units.getSuffixForFilter(unit.suffix, filter) : "";
+    return fields.length ? name + (suffix ? ` [${suffix}]` : "") : "";
   }
 
   saveState(): unknown {
@@ -185,6 +246,7 @@ export default class LineGraphController implements TabController {
       leftFilter: this.leftFilter,
       rightFilter: this.rightFilter,
       showRobotMode: this.showRobotMode,
+      showThresholds: this.showThresholds,
       lapMode: this.lapMode
     };
   }
@@ -213,6 +275,7 @@ export default class LineGraphController implements TabController {
     if ("showRobotMode" in state) {
       this.showRobotMode = state.showRobotMode as boolean;
     }
+    if ("showThresholds" in state) this.showThresholds = Boolean(state.showThresholds);
     if ("lapMode" in state && ["time", "lapTime", "distance"].includes(String(state.lapMode))) {
       this.lapMode = String(state.lapMode);
       this.lapSelect.value = this.lapMode;
@@ -444,7 +507,10 @@ export default class LineGraphController implements TabController {
     } else if (!unitsConsistent) {
       return { status: "inconsistent" };
     } else {
-      return { status: "success", unit: firstUnit };
+      // Prefer the channel profile's display unit (e.g. °C over raw K) so the axis matches the legend
+      const display = window.log.getChannelProfile(sourceVisible[0].logKey).to;
+      const useDisplay = display !== null && Units.GROUP_BY_UNIT[display] === firstUnitGroup;
+      return { status: "success", unit: useDisplay ? display : firstUnit };
     }
   }
 
@@ -484,7 +550,7 @@ export default class LineGraphController implements TabController {
       }
 
       // Process fields
-      source.forEach((fieldItem) => {
+      source.forEach((fieldItem, index) => {
         let data = window.log.getNumber(
           fieldItem.logKey,
           filter === LineGraphFilter.Integrate ? -Infinity : timeRange[0],
@@ -656,6 +722,11 @@ export default class LineGraphController implements TabController {
           color: ensureThemeContrast(fieldItem.options.color),
           type: fieldItem.type as "smooth" | "stepped" | "points",
           size: (fieldItem.options.size ?? "normal") as "normal" | "bold" | "verybold",
+          dash: traceDash(index),
+          focus: (this.leftSourceList.hoveredKey ?? this.rightSourceList.hoveredKey) === fieldItem.logKey,
+          dim:
+            (this.leftSourceList.hoveredKey ?? this.rightSourceList.hoveredKey) !== null &&
+            (this.leftSourceList.hoveredKey ?? this.rightSourceList.hoveredKey) !== fieldItem.logKey,
           hasUnit: hasUnit
         };
         if (fieldItem.visible) command.push(itemCommand);
@@ -867,6 +938,8 @@ export default class LineGraphController implements TabController {
     leftFieldsCommand.reverse();
     rightFieldsCommand.reverse();
     const result: LineGraphRendererCommand = {
+      leftTitle: this.axisTitle(this.leftSourceList, this.leftUnitCache, this.leftFilter),
+      rightTitle: this.axisTitle(this.rightSourceList, this.rightUnitCache, this.rightFilter),
       timeRange: timeRange,
       displayOffset: window.log.getTimestampDisplayOffset(),
       selectionMode: window.selection.getMode(),
@@ -892,7 +965,49 @@ export default class LineGraphController implements TabController {
       discreteFields: discreteFieldsCommand,
       alerts: alerts
     };
+    result.thresholds = [];
+    if (this.showThresholds) {
+      for (const [axis, source, units, filter] of [
+        ["left", this.leftSourceList, this.leftUnitCache, this.leftFilter],
+        ["right", this.rightSourceList, this.rightUnitCache, this.rightFilter]
+      ] as const) {
+        if (filter !== LineGraphFilter.None) continue;
+        for (const tile of window.healthStrip?.state.tiles ?? []) {
+          if (
+            tile.fault ||
+            !source
+              .getState()
+              .some((f) => f.visible && canonicalChannelPath(f.logKey) === canonicalChannelPath(tile.path))
+          )
+            continue;
+          const base = window.log.getChannelProfile(tile.path);
+          const profile = tile.profile ? channelProfile({ name: tile.path, unit: base.rawUnit }, tile.profile) : base;
+          const target = units ? Object.keys(Units.ALL_UNITS).find((u) => Units.ALL_UNITS[u] === units) : null;
+          for (const [limit, critical] of [
+            [tile.warn, false],
+            [tile.critical, true]
+          ] as const) {
+            if (limit === undefined || !Number.isFinite(limit)) continue;
+            if (profile.to && target && Units.GROUP_BY_UNIT[profile.to] !== Units.GROUP_BY_UNIT[target]) continue;
+            const value = profile.to && target ? Units.convert(limit, profile.to, target) : limit;
+            result.thresholds.push({ axis, value, label: `${tile.label} ${critical ? "CRIT" : "WARN"}`, critical });
+          }
+        }
+      }
+      // Auto-scaled axes stretch to keep the warning line in view (untick "Health limits" for a tight fit)
+      for (const [axis, dataRange, locked] of [
+        ["left", leftDataRange, this.leftLockedRange],
+        ["right", rightDataRange, this.rightLockedRange]
+      ] as const) {
+        const warn = result.thresholds.filter((t) => t.axis === axis && !t.critical).map((t) => t.value);
+        if (locked !== null || warn.length === 0 || !isFinite(dataRange[0])) continue;
+        const range = calcRange([Math.min(dataRange[0], ...warn), Math.max(dataRange[1], ...warn)], null);
+        if (axis === "left") result.leftRange = range;
+        else result.rightRange = range;
+      }
+    }
     if (this.lapMode !== "time") {
+      result.thresholds = [];
       lapService.update();
       const reference = lapService.result.laps.find((l) => l.index === lapService.reference);
       const laps = lapService.result.laps.filter((l) => lapService.overlays.includes(l.index));
@@ -905,6 +1020,7 @@ export default class LineGraphController implements TabController {
             const xs = distance ? ds : times;
             return {
               ...field,
+              dash: traceDash(i),
               color: LAP_COLORS[i % LAP_COLORS.length],
               timestamps: xs,
               values: times.map((t) => interpolate(field.timestamps, field.values, lap.start + t))
@@ -917,6 +1033,7 @@ export default class LineGraphController implements TabController {
         result.rightFields = laps.map((lap, i) => ({
           timestamps: lap.grid.map((p) => p.distance),
           values: lap.grid.map((p) => lapService.delta(lap.index, p.distance)),
+          dash: traceDash(i),
           color: LAP_COLORS[i % LAP_COLORS.length],
           type: "smooth",
           size: "normal"
@@ -927,6 +1044,7 @@ export default class LineGraphController implements TabController {
         result.rightRange = [min - 0.1, max + 0.1];
         result.showRightAxis = true;
         result.rightUnits = null;
+        result.rightTitle = "ΔT [s]";
       }
       const end = Math.max(1, ...laps.map((l) => (distance ? l.distance : l.end - l.start)));
       result.timeRange = [0, end];

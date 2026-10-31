@@ -140,7 +140,7 @@ export namespace Units {
         value: 3600 / 1000,
         suffix: "kph",
         pluralizeSuffix: false,
-        names: ["kph", "kilometer per hour", "kilometers per hour", "ki per hour"]
+        names: ["km/h", "kph", "kilometer per hour", "kilometers per hour", "ki per hour"]
       }
     },
     "angular velocity": {

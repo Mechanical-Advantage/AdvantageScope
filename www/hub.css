@@ -2401,3 +2401,64 @@ body.trackside-layout div.source-list div.value {
   border-radius: 0;
   min-height: 24px;
 }
+
+.line-graph-axis.source-list .key-container {
+  direction: ltr;
+  text-align: left;
+  height: 30px;
+  line-height: 16px;
+}
+.line-graph-axis.source-list .key-container span {
+  display: block;
+  white-space: nowrap;
+}
+.line-graph-axis.source-list .key-container small {
+  display: block;
+  font-size: 10px;
+  line-height: 12px;
+  opacity: 0.7;
+}
+.line-graph-axis.source-list .value {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: #555;
+}
+@media (prefers-color-scheme: dark) {
+  .line-graph-axis.source-list .value {
+    color: #bbb;
+  }
+}
+.graph-unit-prompt {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  color: #222;
+  border: 1px solid #dba957;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+.graph-unit-prompt button {
+  font-size: 12px;
+  padding: 1px 8px;
+  border: 1px solid rgba(128, 128, 128, 0.6);
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.graph-unit-prompt button:first-of-type {
+  border-color: #dba957;
+}
+@media (prefers-color-scheme: dark) {
+  .graph-unit-prompt {
+    background: #333;
+    color: #eee;
+  }
+}

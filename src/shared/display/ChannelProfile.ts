@@ -22,6 +22,7 @@ export interface ChannelOverride {
   precision?: number;
 }
 export interface ChannelProfile {
+  dimension?: string;
   rawUnit: string;
   unit: string;
   from: string | null;
@@ -79,6 +80,7 @@ export function channelProfile(metadata: ChannelMetadata, override: ChannelOverr
   if (precision !== undefined) precision = Math.max(0, Math.min(12, Math.round(precision)));
   return {
     rawUnit,
+    dimension,
     unit: to ? Units.ALL_UNITS[to].suffix : rawUnit,
     from,
     to,

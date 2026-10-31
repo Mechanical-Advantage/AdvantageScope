@@ -13,7 +13,20 @@
 
 import type { LapSettings } from "../../hub/LapService";
 import { Gate, LapResult, Point } from "../laps/LapEngine";
+import { Units } from "../units";
 import TabRenderer from "./TabRenderer";
+function viridis(value: number): string {
+  const stops = [
+    [68, 1, 84],
+    [59, 82, 139],
+    [33, 145, 140],
+    [94, 201, 98],
+    [253, 231, 37]
+  ];
+  const x = Math.max(0, Math.min(1, value)) * 4,
+    i = Math.min(3, Math.floor(x));
+  return `rgb(${stops[i].map((v, j) => Math.round(v + (stops[i + 1][j] - v) * (x - i))).join(",")})`;
+}
 export type LapCommand = {
   map: boolean;
   result: LapResult;
@@ -372,9 +385,7 @@ export default class LapRenderer implements TabRenderer {
       const lap = c.result.laps.find((l) => ss[i].t >= l.start && ss[i].t < l.end);
       ctx.lineWidth = lap?.index === c.selected ? 4 : 2;
       ctx.globalAlpha = c.selected === null || lap?.index === c.selected ? 1 : 0.3;
-      ctx.strokeStyle = Number.isFinite(c.values[i])
-        ? `hsl(${230 - (230 * (c.values[i] - min)) / (max - min || 1)},75%,62%)`
-        : colors[0];
+      ctx.strokeStyle = Number.isFinite(c.values[i]) ? viridis((c.values[i] - min) / (max - min || 1)) : colors[0];
       ctx.beginPath();
       ctx.moveTo(a.x, a.y);
       ctx.lineTo(b.x, b.y);
@@ -383,13 +394,20 @@ export default class LapRenderer implements TabRenderer {
     ctx.globalAlpha = 1;
     ctx.font = "12px system-ui";
     ctx.fillStyle = matchMedia("(prefers-color-scheme: dark)").matches ? "#eee" : "#222";
-    ctx.fillText(
-      `${Number.isFinite(min) ? min.toFixed(2) : "—"} → ${Number.isFinite(max) ? max.toFixed(2) : "—"} ${
-        c.unit
-      } · blue → red`,
-      16,
-      24
-    );
+    const text = matchMedia("(prefers-color-scheme: dark)").matches ? "#eee" : "#222";
+    const unit = Units.ALL_UNITS[c.unit]?.suffix ?? c.unit;
+    ctx.fillStyle = text;
+    ctx.textAlign = "left";
+    ctx.fillText(unit ? `Colour scale [${unit}]` : "Colour scale", 16, 24);
+    for (let i = 0; i < 160; i++) {
+      ctx.fillStyle = viridis(i / 159);
+      ctx.fillRect(16 + i, 32, 1, 10);
+    }
+    ctx.fillStyle = text;
+    ctx.fillText(Number.isFinite(min) ? min.toFixed(1) : "—", 16, 56);
+    ctx.textAlign = "right";
+    ctx.fillText(Number.isFinite(max) ? max.toFixed(1) : "—", 176, 56);
+    ctx.textAlign = "left";
     const gates = [c.result.gate, ...(c.settings.config.sectors ?? []), c.settings.config.finish];
     gates.forEach((g, index) => {
       if (!g) return;

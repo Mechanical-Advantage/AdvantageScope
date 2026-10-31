@@ -128,12 +128,6 @@ export default class LineGraphRenderer implements TabRenderer {
   private getAxisValueText(value: number, units: Units.UnitConfig | null, filter: LineGraphFilter): string {
     let valueClean = Math.abs(value) < this.MAX_DECIMAL_VALUE ? cleanFloat(value) : Math.round(value);
     let output = valueClean.toString();
-    if (units !== null) {
-      let suffix = Units.getSuffixForFilter(units.suffix, filter);
-      output += suffix.length > 1 ? " " : "";
-      output += suffix;
-      if (filter === LineGraphFilter.None && units.pluralizeSuffix && value !== 1) output += "s";
-    }
     return output;
   }
 
@@ -174,6 +168,8 @@ export default class LineGraphRenderer implements TabRenderer {
       command.rightRange,
       command.showLeftAxis,
       command.showRightAxis,
+      command.leftTitle,
+      command.rightTitle,
       command.leftUnits,
       command.rightUnits,
       command.priorityAxis,
@@ -182,7 +178,16 @@ export default class LineGraphRenderer implements TabRenderer {
       command.displayOffset,
       command.xUnit,
       command.lapLabels,
-      command.leftFields.map((field) => [field.values.length, field.color, field.type, field.size]),
+      command.thresholds,
+      command.leftFields.map((field) => [
+        field.values.length,
+        field.color,
+        field.type,
+        field.size,
+        field.dash,
+        field.focus,
+        field.dim
+      ]),
       command.discreteFields.map((field) => [
         field.values.length,
         field.color,
@@ -190,7 +195,15 @@ export default class LineGraphRenderer implements TabRenderer {
         field.toggleReference,
         field.colorMap ? field.values : null // Specific values affect color-mapped fields so serialize full state
       ]),
-      command.rightFields.map((field) => [field.values.length, field.color, field.type, field.size]),
+      command.rightFields.map((field) => [
+        field.values.length,
+        field.color,
+        field.type,
+        field.size,
+        field.dash,
+        field.focus,
+        field.dim
+      ]),
       command.alerts.map((row) => row.map((alert) => [alert.type, alert.text, alert.range]))
     ];
     let renderStateString = JSON.stringify(renderState);
@@ -207,7 +220,7 @@ export default class LineGraphRenderer implements TabRenderer {
     context.font = "12px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
 
     // Calculate vertical layout (based on discrete fields)
-    let graphTop = this.hasController ? 8 : 20;
+    let graphTop = 32;
     this.SCROLL_OVERLAY.style.top = graphTop.toString() + "px";
     let graphHeight = height - graphTop - 35;
     if (graphHeight < 1) graphHeight = 1;
@@ -396,7 +409,7 @@ export default class LineGraphRenderer implements TabRenderer {
         context.lineCap = "round";
         switch (field.size) {
           case "normal":
-            context.lineWidth = 1;
+            context.lineWidth = 2;
             break;
           case "bold":
             context.lineWidth = 3;
@@ -406,6 +419,9 @@ export default class LineGraphRenderer implements TabRenderer {
             break;
         }
 
+        context.setLineDash(field.dash ?? []);
+        context.globalAlpha = field.dim ? 0.25 : 1;
+        if (field.focus) context.lineWidth += 2;
         switch (field.type) {
           case "stepped":
             context.beginPath();
@@ -480,6 +496,25 @@ export default class LineGraphRenderer implements TabRenderer {
       drawNumericFields(command.rightFields, command.rightRange);
     }
 
+    context.setLineDash([]);
+    context.globalAlpha = 1;
+
+    for (const threshold of command.thresholds ?? []) {
+      const range = threshold.axis === "left" ? command.leftRange : command.rightRange;
+      const y = scaleValue(threshold.value, range, [graphTop + graphHeightOpen, graphTop]);
+      if (y < graphTop || y > graphTop + graphHeight) continue;
+      context.strokeStyle = threshold.critical ? "#e66" : "#dba957";
+      context.fillStyle = context.strokeStyle;
+      context.lineWidth = 1;
+      context.setLineDash([6, 4]);
+      context.beginPath();
+      context.moveTo(graphLeft, y);
+      context.lineTo(graphLeft + graphWidth, y);
+      context.stroke();
+      context.textAlign = "left";
+      context.fillText(threshold.label, graphLeft + 6, y - 5);
+    }
+    context.setLineDash([]);
     // Update hovered time based on graph layout
     if (this.lastCursorX === null || this.lastCursorX < graphLeft || this.lastCursorX > graphLeft + graphWidth) {
       if (!this.didClearHoveredTime) {
@@ -735,6 +770,11 @@ export default class LineGraphRenderer implements TabRenderer {
       }
     }
 
+    context.globalAlpha = 1;
+    context.textAlign = "left";
+    context.fillText(command.leftTitle ?? "", graphLeft, 15);
+    context.textAlign = "right";
+    context.fillText(command.rightTitle ?? "", graphLeft + graphWidth, 15);
     if (command.lapLabels) {
       let x = graphLeft + 8;
       context.globalAlpha = 1;
@@ -790,6 +830,9 @@ export default class LineGraphRenderer implements TabRenderer {
 }
 
 export type LineGraphRendererCommand = {
+  thresholds?: { axis: "left" | "right"; value: number; label: string; critical: boolean }[];
+  leftTitle?: string;
+  rightTitle?: string;
   xUnit?: "s" | "m";
   lapTimeline?: { x: number[]; time: number[] };
   lapLabels?: { text: string; color: string }[];
@@ -816,6 +859,9 @@ export type LineGraphRendererCommand = {
 };
 
 export type LineGraphRendererCommand_NumericField = {
+  dash?: number[];
+  focus?: boolean;
+  dim?: boolean;
   timestamps: number[];
   values: number[];
   color: string;

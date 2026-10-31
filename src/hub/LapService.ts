@@ -257,8 +257,10 @@ class LapService {
     return this.result.laps.map((l) => ({
       start: l.start,
       end: l.end,
-      color: l.index === this.result.best ? "#b56cff" : LAP_COLORS[l.index % LAP_COLORS.length],
-      darkColor: l.index === this.result.best ? "#b56cff" : LAP_COLORS[l.index % LAP_COLORS.length]
+      color: l.index % 2 ? "#637986" : "#8a9299",
+      darkColor: l.index % 2 ? "#637986" : "#8a9299",
+      label: `L${l.index}${l.index === this.reference ? " ref" : ""}`,
+      highlighted: l.index === this.selected || l.index === this.reference
     }));
   }
   delta(lap: number, distance: number) {

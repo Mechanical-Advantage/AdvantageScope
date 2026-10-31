@@ -5,6 +5,8 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { middleEllipsis, splitLegendName } from "../shared/display/LineGraphStyle";
+
 import ButtonRect from "../shared/ButtonRect";
 import { ensureThemeContrast } from "../shared/Colors";
 import {
@@ -411,7 +413,12 @@ export default class SourceList {
    * @param logKey The key for the field to add
    * @param parentIndex The index of the parent item (optional)
    */
+  beforeAdd?: (key: string) => boolean;
+  graphLegend = false;
+  hoveredKey: string | null = null;
+
   addField(logKey: string, parentIndex?: number) {
+    if (this.beforeAdd && !this.beforeAdd(logKey)) return;
     let logType = window.log.getType(logKey);
     let logTypeString = logType === null ? null : LoggableType[logType];
     let structuredType = window.log.getStructuredType(logKey);
@@ -999,6 +1006,23 @@ export default class SourceList {
     let keyContainer = item.getElementsByClassName("key-container")[0] as HTMLElement;
     let keySpan = keyContainer.firstElementChild as HTMLElement;
     keySpan.innerText = state.logKey;
+    if (this.graphLegend) {
+      const name = splitLegendName(state.logKey);
+      keySpan.innerText = name.leaf;
+      let parent = keyContainer.querySelector("small");
+      if (!parent) {
+        parent = document.createElement("small");
+        keyContainer.append(parent);
+      }
+      parent.innerText = middleEllipsis(
+        name.parent,
+        this.ROOT.clientWidth > 0 ? Math.max(16, Math.floor((this.ROOT.clientWidth - 100) / 6)) : 48
+      );
+      item.onmouseenter = () => (this.hoveredKey = state.logKey);
+      item.onmouseleave = () => (this.hoveredKey = null);
+      const swatch = item.querySelector("button.type") as HTMLElement;
+      swatch.style.borderBottom = `2px ${["solid", "dashed", "dotted"][this.state.indexOf(state) % 3]} ${color}`;
+    }
     keySpan.style.textDecoration = this.isFieldAvailable(state) ? "" : "line-through";
     keyContainer.title = state.logKey;
 

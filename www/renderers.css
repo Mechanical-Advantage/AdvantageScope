@@ -1024,11 +1024,45 @@ table.metadata-table td.no-data {
   }
 }
 
-.lap-axis-mode {
+.graph-inline-controls {
   position: absolute;
-  right: 12px;
-  top: 2px;
+  right: 8px;
+  bottom: 6px;
   z-index: 2;
-  max-width: 170px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.85);
   font-size: 11px;
+  opacity: 0.8;
+}
+.graph-inline-controls:hover,
+.graph-inline-controls:focus-within {
+  opacity: 1;
+}
+.graph-inline-controls label {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.lap-axis-mode {
+  max-width: 150px;
+  height: 20px;
+  font-size: 11px;
+  color: inherit;
+  background: transparent;
+  border: 1px solid rgba(128, 128, 128, 0.5);
+  border-radius: 4px;
+  padding: 0 4px;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  .graph-inline-controls {
+    background: rgba(34, 34, 34, 0.85);
+  }
+  .lap-axis-mode option {
+    background: #333;
+  }
 }
