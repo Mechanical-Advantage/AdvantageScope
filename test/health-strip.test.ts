@@ -37,6 +37,7 @@ test("defaults match canonical mock and DBC names without raw enum duplicates", 
     "vehicles/mur27/accumulator/temperature_max",
     "ECU/ECU_MotorTemp",
     "ECU.ECU_ECUState",
+    "ECU/ECU_FaultFlags",
     "TTCS/TTCS_IMDState/raw",
     "TTCS/TTCS_IMDState"
   ];

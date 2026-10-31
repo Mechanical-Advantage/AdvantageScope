@@ -129,4 +129,4 @@ View → Trackside Layout adds or updates Speed/RPM and Torque graph tabs while 
 
 The existing state API supports bold (3px) traces, used here. Exact 2px traces and threshold lines are deferred: they require renderer changes outside this workstream. No line-graph controller or renderer is modified.
 
-Health verification mock: `npm run mock-backend -- --port 8090 --seed 1 --stale-test --stale-source ennoid-bms --sim-clock --lap-counter --fault-demo`. The fault pulse runs at 10–20 seconds and recovers; BMS-source silence begins at 30 seconds. Pure threshold, latch and canonical matching tests live in `test/health-strip.test.ts`.
+Install the mock's own dependencies with `npm install --prefix tools/mock-backend` first. Health verification mock: `npm run mock-backend -- --port 8090 --seed 1 --stale-test --stale-source ennoid-bms --sim-clock --lap-counter --fault-demo`. The fault pulse runs at 10–20 seconds and recovers; BMS-source silence begins at 30 seconds. Pure threshold, latch and canonical matching tests live in `test/health-strip.test.ts`.

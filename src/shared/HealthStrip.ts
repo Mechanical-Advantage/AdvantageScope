@@ -59,7 +59,7 @@ const defaults: [string, RegExp, "high" | "low", number?, number?, boolean?][] =
   ["HV pack", /(?:pack_voltage|(?:ennoid_)?packvoltage)$/, "low", 350, 320],
   [
     "BMS fault",
-    /(?:bms_fault|bms_faults|(?:ennoid_)?faultflags|imd_state|ttcs_imdstate)$/,
+    /(?:bms_faults?|bms\/faultflags|ennoid_faultflags|imd_state|ttcs_imdstate)$/,
     "high",
     undefined,
     undefined,
