@@ -42,7 +42,8 @@ export default class LapController implements TabController {
         lapService.overlays = a.indices;
       }
       if (a.type === "gate") {
-        if (a.index < 0) lapService.settings.config.gate = a.gate;
+        if (a.index === -2) lapService.settings.config.finish = a.gate;
+        else if (a.index < 0) lapService.settings.config.gate = a.gate;
         else {
           const gates = lapService.settings.config.sectors ?? [];
           gates[a.index] = a.gate;

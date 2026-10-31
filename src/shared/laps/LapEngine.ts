@@ -192,8 +192,8 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
   } else if (config.length && config.length > 0) {
     source = "distance";
     boundaries.push(times[0]);
-    for (let d = config.length; d < distances.at(-1)!; d += config.length)
-      boundaries.push(interpolate(distances, times, d));
+    for (let d = config.length; d <= distances.at(-1)!; d += config.length)
+      boundaries.push(Math.abs(d - distances.at(-1)!) < 1e-8 ? times.at(-1)! : interpolate(distances, times, d));
   }
   boundaries = [...new Set(boundaries)].sort((a, b) => a - b);
   if (config.mode === "accel") {
@@ -239,6 +239,7 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
       complete = runPairs
         ? runPairs.some((pair) => pair[0] === start && pair[1] === end)
         : boundaries.includes(start) && boundaries.includes(end);
+    if (end - start < 1e-8) continue;
     if (config.mode === "endurance") stint = 1 + stops.filter((t) => t <= start).length;
     const inside = samples.filter((p) => p.t > start && p.t < end);
     const ts = [start, ...inside.map((p) => p.t), end],

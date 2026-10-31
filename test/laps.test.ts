@@ -101,3 +101,19 @@ test("endurance increments stint after driver-change standstill", () => {
   assert.ok(r.laps.some((l) => l.stint === 2));
   assert.ok(r.laps.some((l) => !l.valid));
 });
+
+test("distance fallback includes an exact final split", () => {
+  const ss = Array.from({ length: 101 }, (_, i) => ({ t: i / 10, x: i, y: 0, speed: 10 }));
+  const laps = analyze(ss, { length: 50, minTime: 1 }).laps;
+  assert.equal(laps.length, 2);
+  assert.ok(laps.every((lap) => lap.complete));
+});
+
+test("autocross times only start-to-finish runs", () => {
+  const ss = Array.from({ length: 401 }, (_, i) => ({ t: i / 10, x: (i % 200) - 20, y: 0, speed: 10 }));
+  const finish = { a: { x: 100, y: -10 }, b: { x: 100, y: 10 }, direction: 1 };
+  const laps = analyze(ss, { mode: "autocross", gate, finish, minTime: 1, rearm: 5 }).laps;
+  const runs = laps.filter((lap) => lap.complete);
+  assert.equal(runs.length, 2);
+  assert.ok(runs.every((lap) => Math.abs(lap.end - lap.start - 10) < 1e-9));
+});

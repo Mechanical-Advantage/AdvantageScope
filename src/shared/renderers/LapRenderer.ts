@@ -57,13 +57,21 @@ export default class LapRenderer implements TabRenderer {
       if (!this.command || !this.interactive) return;
       const rect = this.canvas.getBoundingClientRect(),
         p = { x: e.clientX - rect.left, y: e.clientY - rect.top };
-      const gates = [this.command.result.gate, ...(this.command.settings.config.sectors ?? [])];
+      const gates = [
+        this.command.result.gate,
+        ...(this.command.settings.config.sectors ?? []),
+        this.command.settings.config.finish
+      ];
       gates.forEach((g, index) => {
         if (g)
           for (const endpoint of ["a", "b"] as const) {
             const q = this.transform(g[endpoint]);
             if (Math.hypot(p.x - q.x, p.y - q.y) < 14)
-              this.dragging = { index: index - 1, endpoint, gate: structuredClone(g) };
+              this.dragging = {
+                index: index === gates.length - 1 ? -2 : index - 1,
+                endpoint,
+                gate: structuredClone(g)
+              };
           }
       });
       if (this.dragging) {
@@ -180,7 +188,7 @@ export default class LapRenderer implements TabRenderer {
     setting("manual", "Manual splits [log seconds]", c.settings.config.manual?.join(","));
     this.button(panel, "Split at cursor", () => this.action({ type: "marker" }));
     this.button(panel, "Auto start gate", () => this.action({ type: "auto" }));
-    this.button(panel, "Add sector at cursor", () => {
+    const addGate = (finish: boolean) => {
       const ss = c.result.samples;
       if (!ss.length) return;
       const i = ss.reduce(
@@ -194,13 +202,15 @@ export default class LapRenderer implements TabRenderer {
         n = Math.hypot(dx, dy) || 1;
       this.action({
         type: "gate",
-        index: c.settings.config.sectors?.length ?? 0,
+        index: finish ? -2 : c.settings.config.sectors?.length ?? 0,
         gate: {
           a: { x: p.x - (dy / n) * 12, y: p.y + (dx / n) * 12 },
           b: { x: p.x + (dy / n) * 12, y: p.y - (dx / n) * 12 }
         }
       });
-    });
+    };
+    this.button(panel, "Add sector at cursor", () => addGate(false));
+    this.button(panel, "Set finish at cursor", () => addGate(true));
     if (c.map) {
       this.content.append(this.canvas);
       if (!c.result.samples.length) {
@@ -370,10 +380,11 @@ export default class LapRenderer implements TabRenderer {
       16,
       24
     );
-    const gates = [c.result.gate, ...(c.settings.config.sectors ?? [])];
+    const gates = [c.result.gate, ...(c.settings.config.sectors ?? []), c.settings.config.finish];
     gates.forEach((g, index) => {
       if (!g) return;
-      const gate = this.dragging?.index === index - 1 ? this.dragging.gate : g,
+      const finish = index === gates.length - 1,
+        gate = this.dragging?.index === (finish ? -2 : index - 1) ? this.dragging.gate : g,
         a = this.transform(gate.a),
         b = this.transform(gate.b);
       ctx.strokeStyle = index ? "#f4b860" : "#72d6a0";
@@ -387,7 +398,7 @@ export default class LapRenderer implements TabRenderer {
         ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
         ctx.stroke();
       }
-      ctx.fillText(index ? `S${index}` : "Start / finish", a.x + 8, a.y - 8);
+      ctx.fillText(finish ? "Finish" : index ? `S${index}` : "Start / finish", a.x + 8, a.y - 8);
     });
     if (c.time !== null) {
       const p = ss.reduce((a, b) => (Math.abs(b.t - c.time!) < Math.abs(a.t - c.time!) ? b : a)),
