@@ -41,6 +41,7 @@ export default class Field3dController implements TabController {
   private frameAxes = document.createElement("input");
   private layerStatus = document.createElement("div");
   private robot = parseURDF(DEFAULT_CAR_URDF);
+  private localRobotLoaded = false;
   private robotAssets: Record<string, string> = {};
   private robotStatus = document.createElement("div");
   private FIELD_SELECT: HTMLSelectElement;
@@ -99,6 +100,7 @@ export default class Field3dController implements TabController {
           })
         );
         this.robot = robot;
+        this.localRobotLoaded = true;
         this.robotAssets = assets;
         this.robotStatus.textContent = robot.name;
       } catch (error) {
@@ -270,6 +272,7 @@ export default class Field3dController implements TabController {
       staticTrack: this.staticTrack,
       fixedFrame: this.fixedFrame.value,
       frameAxes: this.frameAxes.checked,
+      localRobotLoaded: this.localRobotLoaded,
       robot: this.robot,
       robotAssets: this.robotAssets,
       game: this.FIELD_SELECT.value
@@ -282,6 +285,7 @@ export default class Field3dController implements TabController {
     if ("staticTrack" in state) this.staticTrack = state.staticTrack as StaticTrack | null;
     if ("fixedFrame" in state) this.fixedFrame.value = String(state.fixedFrame);
     if ("frameAxes" in state) this.frameAxes.checked = Boolean(state.frameAxes);
+    if ("localRobotLoaded" in state) this.localRobotLoaded = Boolean(state.localRobotLoaded);
     if ("robot" in state) this.robot = state.robot as typeof this.robot;
     if ("robotAssets" in state) this.robotAssets = state.robotAssets as typeof this.robotAssets;
     this.updateFieldOptions();
@@ -329,7 +333,7 @@ export default class Field3dController implements TabController {
     const description =
       window.log.getString("/robot_description/xml", time ?? 0, time ?? 0)?.values[0] ??
       window.log.getString("/robot_description", time ?? 0, time ?? 0)?.values[0];
-    if (description && Object.keys(this.robotAssets).length === 0) {
+    if (description && !this.localRobotLoaded) {
       try {
         if (this.robotStatus.textContent !== "/robot_description") {
           this.robot = parseURDF(description);

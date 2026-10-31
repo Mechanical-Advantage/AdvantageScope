@@ -9,7 +9,7 @@ import { AnnotatedPose3d } from "../../shared/geometry";
 import Log from "../../shared/log/Log";
 import { Field3dRendererCommand_AnyObj } from "../../shared/renderers/Field3dRenderer";
 import { metadata, rosPose, spatialSnapshot } from "../../shared/spatial/SpatialLog";
-import { TFTree } from "../../shared/spatial/TFTree";
+import { TFTree, normalizeFrameId } from "../../shared/spatial/TFTree";
 import { Transform, compose, identity } from "../../shared/spatial/Transform";
 import { URDFRobot, computeLinkPoses } from "../../shared/spatial/URDF";
 import WorkerManager from "../WorkerManager";
@@ -65,7 +65,7 @@ export class SpatialLayers {
   }
   resolve(frame: string, fixed: string, time: number): Transform {
     if (!frame) throw new Error("missing frame");
-    if (frame === fixed) return identity();
+    if (normalizeFrameId(frame) === normalizeFrameId(fixed)) return identity();
     const result = this.tree.lookup(fixed, frame, time);
     if (result.status !== "ok") throw new Error(result.status + ": " + frame + " → " + fixed);
     return result.transform;
@@ -235,6 +235,7 @@ export class SpatialLayers {
             if (this.clouds.size > 60) this.clouds.delete(this.clouds.keys().next().value!);
           })
           .catch(() => {
+            if (generation !== this.generation) return;
             this.pending.delete(cacheKey);
             this.clouds.set(cacheKey, { error: "cloud worker failed" });
           });
@@ -246,7 +247,7 @@ export class SpatialLayers {
       objects.push({
         type: "cloud",
         ...result,
-        transform: this.resolve(frame, fixed, time),
+        transform: this.resolve(frame, fixed, t),
         size: Number(options.size ?? 3),
         map: options.map ?? "viridis"
       });
