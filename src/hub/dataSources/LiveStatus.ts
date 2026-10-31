@@ -44,7 +44,17 @@ export interface LiveStatusSummary {
   catalogue: { epoch: string; revision: number; signals: number } | null;
 }
 
+/** A period when the backend link was down, in log time (seconds). `end` is null while it is still down. */
+export interface LiveOutage {
+  start: number;
+  end: number | null;
+}
+
 export interface LiveStatusProvider {
+  /** Link outages, for shading gaps in graphs. */
+  getOutages?(): LiveOutage[];
+  /** History backfill progress after a reconnect, or null when nothing is pending or recently finished. */
+  getBackfill?(): { done: number; total: number } | null;
   getFieldAge(key: string): number | null;
   selectRun(index: number): void;
   getLiveStatus(): LiveStatusSummary;

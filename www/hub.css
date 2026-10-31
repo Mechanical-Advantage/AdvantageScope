@@ -2491,3 +2491,78 @@ body.trackside-layout div.line-graph-help {
     color: #eee;
   }
 }
+
+/* Stale health tiles: grey hatching, age at 14px, last good value struck through */
+.health-tile[data-stale="true"] {
+  background: repeating-linear-gradient(135deg, rgba(128, 128, 128, 0.35) 0 6px, rgba(128, 128, 128, 0.12) 6px 12px);
+}
+.health-tile[data-stale="true"] .health-value {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+.health-tile[data-stale="true"] .health-status {
+  font-size: 14px;
+  font-weight: 600;
+  max-width: none;
+}
+
+/* Trackside severity banner (full width of the content area, above the health strip) */
+.severity-banner {
+  --banner-h: 36px;
+  position: absolute;
+  top: 0;
+  left: var(--side-bar-width);
+  right: 0;
+  height: var(--banner-h);
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  box-sizing: border-box;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
+}
+.severity-banner[hidden] {
+  display: none;
+}
+body:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-bar-lite) .severity-banner {
+  top: 38px;
+}
+.severity-banner[data-level="green"] {
+  background: #1d7a35;
+}
+.severity-banner[data-level="amber"] {
+  background: #a96d00;
+}
+.severity-banner[data-level="red"] {
+  background: #b32323;
+}
+.severity-banner[data-flash="true"] {
+  animation: banner-flash 0.8s steps(2, jump-none) infinite;
+}
+@keyframes banner-flash {
+  0% {
+    filter: brightness(1);
+  }
+  100% {
+    filter: brightness(1.7);
+  }
+}
+body.has-severity-banner .health-strip {
+  top: 36px;
+}
+body.has-severity-banner:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-bar-lite) .health-strip {
+  top: 74px;
+}
+body.has-severity-banner.health-visible div.viewer {
+  top: 142px;
+}
+body.has-severity-banner.health-visible:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-bar-lite)
+  div.viewer {
+  top: 180px;
+}

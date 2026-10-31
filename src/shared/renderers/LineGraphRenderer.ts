@@ -121,6 +121,47 @@ export default class LineGraphRenderer implements TabRenderer {
     );
   }
 
+  /** Shades link outages grey with their duration, plus backfill progress after reconnecting. */
+  private drawOutages(
+    context: CanvasRenderingContext2D,
+    timeRange: [number, number],
+    xScaler: ValueScaler,
+    graphTop: number,
+    graphHeight: number,
+    graphLeft: number,
+    graphWidth: number
+  ) {
+    const outages = window.liveStatus?.getOutages?.() ?? [];
+    if (outages.length === 0) return;
+    const backfill = window.liveStatus?.getBackfill?.() ?? null;
+    const edge = window.selection?.getCurrentLiveTime?.() ?? timeRange[1];
+    outages.forEach((outage, index) => {
+      const end = outage.end ?? Math.max(outage.start, edge);
+      if (end < timeRange[0] || outage.start > timeRange[1]) return;
+      const x0 = Math.max(graphLeft, xScaler.calculate(outage.start));
+      const x1 = Math.min(graphLeft + graphWidth, xScaler.calculate(end));
+      if (x1 - x0 < 1) return;
+      context.save();
+      context.fillStyle = "rgba(128, 128, 128, 0.3)";
+      context.fillRect(x0, graphTop, x1 - x0, graphHeight);
+      context.strokeStyle = "rgba(128, 128, 128, 0.8)";
+      context.lineWidth = 1;
+      context.strokeRect(x0, graphTop, x1 - x0, graphHeight);
+      const lines = [`offline ${Math.round(end - outage.start)} s`];
+      if (backfill && index === outages.length - 1 && outage.end !== null)
+        lines.push(`backfilling… ${backfill.done}/${backfill.total}`);
+      context.fillStyle = "#777";
+      context.font = "bold 14px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
+      context.textAlign = "center";
+      context.textBaseline = "top";
+      lines.forEach((line, i) => {
+        if (context.measureText(line).width < x1 - x0 || i === 0)
+          context.fillText(line, (x0 + x1) / 2, graphTop + 8 + i * 18);
+      });
+      context.restore();
+    });
+  }
+
   getAspectRatio(): number | null {
     return null;
   }
@@ -217,7 +258,8 @@ export default class LineGraphRenderer implements TabRenderer {
     this.CANVAS.height = height * devicePixelRatio;
     context.scale(devicePixelRatio, devicePixelRatio);
     context.clearRect(0, 0, width, height);
-    context.font = "12px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
+    const trackside = document.body.classList.contains("trackside-layout");
+    context.font = `${trackside ? 14 : 12}px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont`;
 
     // Calculate vertical layout (based on discrete fields)
     let graphTop = 32;
@@ -401,6 +443,7 @@ export default class LineGraphRenderer implements TabRenderer {
 
     // Render continuous data
     const xScaler = new ValueScaler(timeRange, [graphLeft, graphLeft + graphWidth]);
+    this.drawOutages(context, timeRange, xScaler, graphTop, graphHeight, graphLeft, graphWidth);
     let drawNumericFields = (fields: LineGraphRendererCommand_NumericField[], yRange: [number, number]) => {
       const yScaler = new ValueScaler(yRange, [graphTop + graphHeightOpen, graphTop]);
       fields.forEach((field) => {
@@ -422,6 +465,7 @@ export default class LineGraphRenderer implements TabRenderer {
         context.setLineDash(field.dash ?? []);
         context.globalAlpha = field.dim ? 0.25 : 1;
         if (field.focus) context.lineWidth += 2;
+        if (trackside) context.lineWidth = Math.max(3, context.lineWidth);
         switch (field.type) {
           case "stepped":
             context.beginPath();
@@ -488,6 +532,21 @@ export default class LineGraphRenderer implements TabRenderer {
         }
       });
     };
+    const drawEndValues = (fields: LineGraphRendererCommand_NumericField[], yRange: [number, number]) => {
+      if (!trackside) return;
+      const yScaler = new ValueScaler(yRange, [graphTop + graphHeightOpen, graphTop]);
+      context.font = "bold 20px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
+      context.textAlign = "right";
+      context.textBaseline = "bottom";
+      fields.forEach((field) => {
+        const last = field.values[field.values.length - 1];
+        if (field.dim || last === undefined || !Number.isFinite(last)) return;
+        context.fillStyle = field.color;
+        const y = Math.min(graphTop + graphHeightOpen, Math.max(graphTop + 22, yScaler.calculate(last) - 4));
+        context.fillText(cleanFloat(Number(last.toPrecision(4))).toString(), graphLeft + graphWidth - 6, y);
+      });
+      context.font = "14px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
+    };
     if (command.priorityAxis === "left") {
       drawNumericFields(command.rightFields, command.rightRange);
       drawNumericFields(command.leftFields, command.leftRange);
@@ -496,6 +555,8 @@ export default class LineGraphRenderer implements TabRenderer {
       drawNumericFields(command.rightFields, command.rightRange);
     }
 
+    drawEndValues(command.leftFields, command.leftRange);
+    drawEndValues(command.rightFields, command.rightRange);
     context.setLineDash([]);
     context.globalAlpha = 1;
 

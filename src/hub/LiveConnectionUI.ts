@@ -434,7 +434,14 @@ export class LiveStatusPill {
             title: "Simulation clock: " + summary.sim.state
           });
         }
-        if (summary.oldestAgeS !== null)
+        const critical = window.healthStrip?.getOldestCriticalAge() ?? null;
+        if (critical !== null)
+          segments.push({
+            tone: "idle",
+            text: `oldest critical ${critical.toFixed(1)} s`,
+            title: "Oldest age among the health-strip signals (same figure as the tiles and banner)"
+          });
+        else if (summary.oldestAgeS !== null)
           segments.push({
             tone: "idle",
             text: `oldest ${summary.oldestAgeS.toFixed(1)} s`,
