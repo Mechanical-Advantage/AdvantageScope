@@ -7,7 +7,7 @@
 
 // Optional binary extension: uint32 LE JSON-header length, UTF-8 header, interleaved Float32 xyzi.
 // Only the header is JSON. The point payload stays binary from producer to worker.
-export function cloudPacket(timeNs: bigint, run: number): Uint8Array {
+export function cloudPacket(timeNs: bigint, run: number, center = { x: 0, y: 0 }): Uint8Array {
   const count = 1200;
   const header = new TextEncoder().encode(
     JSON.stringify({
@@ -29,10 +29,10 @@ export function cloudPacket(timeNs: bigint, run: number): Uint8Array {
   bytes.set(header, 4);
   const t = Number(timeNs % 100000000000n) / 1e9;
   for (let i = 0; i < count; i++) {
-    const a = (i / count) * Math.PI * 2;
-    const r = 8 + Math.sin(a * 5 + t);
-    [r * Math.cos(a), r * Math.sin(a), 0.5 + 0.4 * Math.sin(a * 4), i % 256].forEach((v, j) =>
-      view.setFloat32(4 + header.length + i * 16 + j * 4, v, true)
+    const a = ((i % 120) / 120) * Math.PI * 2;
+    const r = 3 + Math.floor(i / 120) * 0.45 + 0.1 * Math.sin(a * 5 + t);
+    [center.x + r * Math.cos(a), center.y + r * Math.sin(a), 0.1 + 0.08 * Math.floor(i / 120), (i * 17) % 256].forEach(
+      (v, j) => view.setFloat32(4 + header.length + i * 16 + j * 4, v, true)
     );
   }
   return bytes;
