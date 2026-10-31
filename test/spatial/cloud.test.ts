@@ -29,3 +29,20 @@ for (const big of [false, true])
     assert.equal(result.min, 10);
     assert.throws(() => decodePointCloud2({ ...cloud, row_step: 1 }));
   });
+
+test("MUR binary cloud retains xyzi and follows the map-frame vehicle position", async () => {
+  const { cloudPacket } = await import("../../tools/mock-backend/src/pointcloud");
+  const packet = cloudPacket(1000000000n, 0, { x: 40, y: 30 });
+  const length = new DataView(packet.buffer).getUint32(0, true);
+  const cloud = JSON.parse(new TextDecoder().decode(packet.subarray(4, 4 + length)));
+  cloud.data = packet.subarray(4 + length);
+  const result = decodePointCloud2(cloud, "intensity");
+  assert.equal(result.positions.length, 3600);
+  assert.equal(result.frame, "map");
+  assert.equal(result.min, 0);
+  assert.equal(result.max, 255);
+  for (let i = 0; i < result.positions.length; i += 3) {
+    assert.ok(Math.abs(result.positions[i] - 40) < 8);
+    assert.ok(Math.abs(result.positions[i + 1] - 30) < 8);
+  }
+});
