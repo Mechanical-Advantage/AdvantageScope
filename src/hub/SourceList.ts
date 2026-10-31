@@ -1016,7 +1016,7 @@ export default class SourceList {
       }
       parent.innerText = middleEllipsis(
         name.parent,
-        this.ROOT.clientWidth > 0 ? Math.max(16, Math.floor(this.ROOT.clientWidth / 7)) : 48
+        this.ROOT.clientWidth > 0 ? Math.max(16, Math.floor((this.ROOT.clientWidth - 100) / 6)) : 48
       );
       item.onmouseenter = () => (this.hoveredKey = state.logKey);
       item.onmouseleave = () => (this.hoveredKey = null);
