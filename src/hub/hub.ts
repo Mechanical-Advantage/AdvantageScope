@@ -22,6 +22,7 @@ import SelectionImpl from "./SelectionImpl";
 import Sidebar from "./Sidebar";
 import SourceList from "./SourceList";
 import Tabs from "./Tabs";
+import { applyTracksideLayout } from "./TracksideLayout";
 import WorkerManager from "./WorkerManager";
 import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
@@ -827,6 +828,10 @@ async function handleMainMessage(message: NamedMessage) {
 
     case "toggle-sidebar":
       window.sidebar.toggleVisible();
+      break;
+
+    case "trackside-layout":
+      applyTracksideLayout();
       break;
 
     case "toggle-health-strip":

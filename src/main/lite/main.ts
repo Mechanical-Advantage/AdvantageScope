@@ -521,6 +521,12 @@ async function handleHubMessage(message: NamedMessage) {
                 }
               },
               {
+                content: "Trackside Layout",
+                callback() {
+                  sendMessage(hubPort, "trackside-layout");
+                }
+              },
+              {
                 content: "Toggle Health Strip",
                 callback() {
                   sendMessage(hubPort, "toggle-health-strip");
