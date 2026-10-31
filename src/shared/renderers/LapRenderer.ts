@@ -13,6 +13,7 @@
 
 import type { LapSettings } from "../../hub/LapService";
 import { Gate, LapResult, Point } from "../laps/LapEngine";
+import { Units } from "../units";
 import TabRenderer from "./TabRenderer";
 function viridis(value: number): string {
   const stops = [
@@ -393,18 +394,20 @@ export default class LapRenderer implements TabRenderer {
     ctx.globalAlpha = 1;
     ctx.font = "12px system-ui";
     ctx.fillStyle = matchMedia("(prefers-color-scheme: dark)").matches ? "#eee" : "#222";
+    const text = matchMedia("(prefers-color-scheme: dark)").matches ? "#eee" : "#222";
+    const unit = Units.ALL_UNITS[c.unit]?.suffix ?? c.unit;
+    ctx.fillStyle = text;
+    ctx.textAlign = "left";
+    ctx.fillText(unit ? `Colour scale [${unit}]` : "Colour scale", 16, 24);
     for (let i = 0; i < 160; i++) {
       ctx.fillStyle = viridis(i / 159);
-      ctx.fillRect(16 + i, 32, 1, 8);
+      ctx.fillRect(16 + i, 32, 1, 10);
     }
-    ctx.fillStyle = matchMedia("(prefers-color-scheme: dark)").matches ? "#eee" : "#222";
-    ctx.fillText(
-      `${Number.isFinite(min) ? min.toFixed(2) : "—"} → ${Number.isFinite(max) ? max.toFixed(2) : "—"} ${
-        c.unit
-      } · viridis`,
-      16,
-      24
-    );
+    ctx.fillStyle = text;
+    ctx.fillText(Number.isFinite(min) ? min.toFixed(1) : "—", 16, 56);
+    ctx.textAlign = "right";
+    ctx.fillText(Number.isFinite(max) ? max.toFixed(1) : "—", 176, 56);
+    ctx.textAlign = "left";
     const gates = [c.result.gate, ...(c.settings.config.sectors ?? []), c.settings.config.finish];
     gates.forEach((g, index) => {
       if (!g) return;
