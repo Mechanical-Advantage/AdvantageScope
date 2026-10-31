@@ -34,14 +34,14 @@ export default class MarkerManager extends ObjectManager<Field3dRendererCommand_
     if (m.type === 2) geometry = new THREE.SphereGeometry(0.5, 16, 12);
     if (m.type === 3) {
       geometry = new THREE.CylinderGeometry(m.shape === "cone" ? 0 : 0.5, 0.5, 1, 24);
-      geometry.rotateX(-Math.PI / 2);
+      geometry.rotateX(Math.PI / 2);
     }
     if (geometry) {
       const mesh = new THREE.Mesh(geometry, material);
       mesh.scale.set(m.scale.x, m.scale.y, m.scale.z);
       if (m.shape === "cone") {
         const stripe = new THREE.CylinderGeometry(0.18, 0.28, 0.2, 24);
-        stripe.rotateX(-Math.PI / 2);
+        stripe.rotateX(Math.PI / 2);
         const band = new THREE.Mesh(stripe, new THREE.MeshPhongMaterial({ color: 0xffffff }));
         band.position.z = 0.04;
         mesh.add(band);
