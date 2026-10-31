@@ -124,7 +124,7 @@ export default class LapRenderer implements TabRenderer {
       command.map,
       command.settings
     ]);
-    if (this.last !== key) {
+    if (this.last !== key && !this.toolbar.contains(document.activeElement)) {
       this.last = key;
       this.build();
     }
@@ -132,6 +132,7 @@ export default class LapRenderer implements TabRenderer {
   }
   private build() {
     this.lastDraw = "";
+    const setupOpen = this.toolbar.querySelector("details")?.open ?? false;
     const c = this.command!;
     this.toolbar.replaceChildren();
     this.content.replaceChildren();
@@ -145,6 +146,7 @@ export default class LapRenderer implements TabRenderer {
     this.button(this.toolbar, "Clear field", () => this.action({ type: "field", field: "" }));
     const details = document.createElement("details"),
       summary = document.createElement("summary");
+    details.open = setupOpen;
     summary.textContent = "Lap setup";
     details.append(summary);
     const panel = document.createElement("div");
