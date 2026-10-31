@@ -42,6 +42,10 @@ test("bus logging shares candump DBC decode", () => {
   assert.equal(log.getNumber(key, 0, 2)?.values.length, 0);
   importer.decode([key]);
   assert.deepEqual(log.getNumber(key, 0, 2)?.values, [1000, 2000, 3000, 4000]);
+  importer.decode(["ECU/ECU_ECUState", "ECU/ECU_ECUState/raw", "DASH/DASH_WheelSpeedFL"]);
+  assert.deepEqual(log.getNumber("ECU/ECU_ECUState/raw", 0, 6)?.values, [0, 1, 2, 3]);
+  assert.equal(typeof log.getString("ECU/ECU_ECUState", 0, 6)?.values[0], "string");
+  assert.ok(log.getNumber("DASH/DASH_WheelSpeedFL", 0, 6)?.values.every(Number.isNaN));
 });
 
 test("conversion functions", () => {
@@ -69,4 +73,46 @@ test("unaligned signed integer endian decoding and malformed headers", () => {
   bad[8] = 51;
   assert.throws(() => new MDF(bad), /3.x/);
   assert.throws(() => new MDF(fixture("decoded-0.mf4").subarray(0, 100)), /Truncated/);
+});
+
+test("unsorted CG records with distinct IDs (validated by asammdf)", () => {
+  const m = new MDF(fixture("unsorted.mf4"));
+  assert.equal(m.groups.length, 2);
+  for (const [i, expected] of [
+    [0, [1, 2, 3, 4]],
+    [1, [4, 3, 2, 1]]
+  ] as const) {
+    const group = m.groups[i];
+    assert.deepEqual(
+      group.records.map((r) => sample(group, group.channels[1], r)),
+      expected
+    );
+    assert.deepEqual(
+      group.records.map((r) => timestamp(group, r)),
+      [0, 0.5, 1, 1.5]
+    );
+  }
+});
+
+test("float and string storage types in both byte orders", () => {
+  const template = new MDF(fixture("decoded-0.mf4")).groups[0].channels[1];
+  for (const type of [4, 5])
+    for (const bits of [32, 64]) {
+      const bytes = new Uint8Array(bits / 8);
+      const v = new DataView(bytes.buffer);
+      if (bits === 32) v.setFloat32(0, -12.5, type === 4);
+      else v.setFloat64(0, -12.5, type === 4);
+      assert.equal(rawValue(bytes, 0, { ...template, offset: 0, bit: 0, type, bits }), -12.5);
+    }
+  for (const [type, bytes] of [
+    [6, [65, 0]],
+    [7, [65, 0]],
+    [8, [65, 0, 0, 0]],
+    [9, [0, 65, 0, 0]]
+  ] as const) {
+    assert.equal(
+      rawValue(new Uint8Array(bytes), 0, { ...template, offset: 0, bit: 0, type, bits: bytes.length * 8 }),
+      "A"
+    );
+  }
 });

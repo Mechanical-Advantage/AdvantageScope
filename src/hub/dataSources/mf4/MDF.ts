@@ -20,6 +20,7 @@ export interface Conversion {
 }
 export interface Channel {
   name: string;
+  source?: string;
   unit: string;
   kind: number;
   sync: number;
@@ -64,7 +65,7 @@ export class MDF {
       for (const cg of this.chain(dg.links[1], "CG")) {
         const v = view(cg.data);
         const source = cg.links[3] ? this.block(cg.links[3]) : null;
-        const name =
+        let name =
           this.text(cg.links[2]) ||
           (source?.type === "SI" ? this.text(source.links[0]) : "") ||
           "Group" + (this.groups.length + groups.length + 1);
@@ -80,6 +81,7 @@ export class MDF {
             const conversion = this.conversion(cn.links[4]);
             channels.push({
               name: this.text(cn.links[2]),
+              source: cn.links[3] ? this.text(this.block(cn.links[3]).links[0]) : "",
               unit: conversion.unit || this.text(cn.links[6]),
               kind: c.getUint8(0),
               sync: c.getUint8(1),
@@ -95,6 +97,15 @@ export class MDF {
           }
         };
         readChannels(cg.links[1]);
+        if (!this.text(cg.links[2]) && !source && channels.some((c) => c.source))
+          name = channels.find((c) => c.source)!.source!;
+        const recordSize = v.getUint32(24, true);
+        for (const c of channels) {
+          if (c.kind !== 3 && c.offset + Math.ceil((c.bit + c.bits) / 8) > recordSize)
+            throw new Error("MDF channel outside record: " + c.name);
+          if (![0, 1, 2, 4, 5, 6, 7, 8].includes(c.conversion.type))
+            throw new Error("Unsupported MDF conversion " + c.conversion.type);
+        }
         const flags = v.getUint16(16, true);
         if (flags & 1) throw new Error("MDF variable length record groups are unsupported");
         groups.push({
@@ -280,6 +291,7 @@ export function convert(x: number, c: Conversion): number | string {
 }
 
 export function sample(group: Group, channel: Channel, record: number): number | string | Uint8Array {
+  if (channel.flags & 1) return NaN;
   if (channel.kind === 3) return convert(group.records.indexOf(record), channel.conversion);
   if (channel.flags & 2 && group.invalidSize) {
     const byte = group.data[record + group.size + (channel.invalidBit >> 3)];
