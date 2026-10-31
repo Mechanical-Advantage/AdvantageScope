@@ -138,7 +138,9 @@ The 231 MB long CSV was opened in Electron, not added to tests or git. Initial r
 13.588 s launch-to-catalogue, 13.712 s launch-to-derived channels. A later run under concurrent
 workspace build load took 32.996 s / 35.166 s respectively. These include Electron startup and
 lazy parsing of lap inputs; they are not isolated importer benchmarks. A final clean launch
-with the timestamp-union analysis took 7.646 s to catalogue and 15.704 s to derived channels. No importer rewrite was
+with the timestamp-union analysis took 7.646 s to catalogue and 15.704 s to derived channels.
+The final paired-fix build measured 3.245 s / 3.246 s; its asserted map bounds were 29.45 m east
+by 49.83 m north. Timing varies substantially with other builds running on this shared machine. No importer rewrite was
 needed. Front GPS covers a short, non-returning trace (about 60 m); no complete GPS lap can be
 inferred. Rear coordinates drift from approximately (48.87, 2.16) to (65.60, -33.03) and are unsuitable.
 
