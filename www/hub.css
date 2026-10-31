@@ -2430,14 +2430,35 @@ body.trackside-layout div.source-list div.value {
 }
 .graph-unit-prompt {
   position: absolute;
-  bottom: 160px;
-  left: 10px;
+  bottom: 8px;
+  left: 8px;
   z-index: 20;
-  background: var(--background-color, #333);
-  color: var(--font-color, #eee);
-  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  color: #222;
+  border: 1px solid #dba957;
+  border-radius: 4px;
+  padding: 4px 8px;
   font-size: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 .graph-unit-prompt button {
-  margin-left: 8px;
+  font-size: 12px;
+  padding: 1px 8px;
+  border: 1px solid rgba(128, 128, 128, 0.6);
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.graph-unit-prompt button:first-of-type {
+  border-color: #dba957;
+}
+@media (prefers-color-scheme: dark) {
+  .graph-unit-prompt {
+    background: #333;
+    color: #eee;
+  }
 }
