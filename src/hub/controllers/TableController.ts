@@ -240,6 +240,7 @@ export default class TableController implements TabController {
         });
         return {
           key: key,
+          profile: window.log.getChannelProfile(key),
           isAvailable: true,
           data: data,
           type: window.log.getType(key)

@@ -9,6 +9,7 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
+import { formatChannelValue } from "../../shared/display/ChannelProfile";
 import { getLogValueText } from "../../shared/log/LogUtil";
 import { LogValueSetNumber } from "../../shared/log/LogValueSets";
 import { AKIT_TIMESTAMP_KEYS, getRobotStateRanges } from "../../shared/log/RobotState";
@@ -356,13 +357,11 @@ export default class LineGraphController implements TabController {
     if (index === -1) {
       return null;
     }
-    let output = this.PREVIEW_FORMAT.format(command.values[index]);
-    if (unitCache !== null && command.hasUnit) {
-      let suffix = Units.getSuffixForFilter(unitCache.suffix, filter);
-      output += suffix.length > 1 ? " " : "";
-      output += suffix;
-      if (filter === LineGraphFilter.None && unitCache.pluralizeSuffix && command.values[index] !== 1) output += "s";
-    }
+    const profile =
+      unitCache !== null && command.hasUnit
+        ? window.log.getChannelProfile(key, Units.getSuffixForFilter(unitCache.suffix, filter))
+        : window.log.getChannelProfile(key);
+    let output = formatChannelValue(command.values[index], profile);
     return output;
   }
 
@@ -737,7 +736,10 @@ export default class LineGraphController implements TabController {
       // Convert to text
       let logType = window.log.getType(fieldItem.logKey);
       if (logType === null) return;
-      data.values = data.values.map((value) => getLogValueText(value, logType!));
+      const profile = window.log.getChannelProfile(fieldItem.logKey);
+      data.values = data.values.map((value) =>
+        profile.enumLabels ? formatChannelValue(value, profile) : getLogValueText(value, logType!)
+      );
 
       // Add field command
       discreteFieldsCommand.push({

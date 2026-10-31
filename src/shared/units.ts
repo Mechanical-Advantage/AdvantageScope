@@ -747,12 +747,20 @@ export namespace Units {
         names: ["pot", "potato", "potatoes"]
       }
     },
+    pressure: {
+      pascals: { value: 1, suffix: "Pa", pluralizeSuffix: false, names: ["pa", "pascal", "pascals"] },
+      kilopascals: { value: 0.001, suffix: "kPa", pluralizeSuffix: false, names: ["kpa", "kilopascal", "kilopascals"] }
+    },
+    torque: {
+      newtonmeters: { value: 1, suffix: "Nm", pluralizeSuffix: false, names: ["nm", "n*m", "n·m"] }
+    },
     ratio: {
       ratio: {
         value: 1,
         suffix: "",
         pluralizeSuffix: false,
         names: [
+          "1",
           "ratio",
           "ratios",
           "fraction",

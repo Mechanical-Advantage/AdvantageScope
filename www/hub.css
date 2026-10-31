@@ -2172,3 +2172,14 @@ button.connect-confirm {
     background-color: #333;
   }
 }
+
+.channel-display-dialog {
+  color-scheme: light dark;
+  color: CanvasText;
+  background: Canvas;
+  border: 1px solid currentColor;
+  font-size: 13px;
+}
+.channel-display-dialog::backdrop {
+  background: #0008;
+}

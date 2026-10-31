@@ -7,6 +7,7 @@
 
 import { Chart, ChartDataset, LegendOptions, LinearScaleOptions, TooltipCallbacks, registerables } from "chart.js";
 import { ensureThemeContrast } from "../Colors";
+import { ChannelProfile, formatChannelValue, rawChannelValue } from "../display/ChannelProfile";
 import { cleanFloat } from "../util";
 import TabRenderer from "./TabRenderer";
 
@@ -142,7 +143,13 @@ export default class StatisticsRenderer implements TabRenderer {
           if (isNaN(value)) {
             valueCell.innerText = "-";
           } else {
-            valueCell.innerText = value.toFixed(digits);
+            const dimensionless = title === "Count" || title === "Skewness";
+            const delta = ["Standard Deviation", "Median Absolute Deviation", "Interquartile Range"].includes(title);
+            valueCell.innerText =
+              field.profile && !dimensionless
+                ? formatChannelValue(value, { ...field.profile, enumLabels: undefined }, false, delta)
+                : value.toFixed(digits);
+            valueCell.title = field.profile && !dimensionless ? rawChannelValue(value, field.profile) : String(value);
           }
           valueCell.style.color = color;
         });
@@ -202,7 +209,17 @@ export default class StatisticsRenderer implements TabRenderer {
         const x = item.parsed.x!;
         const min = x - command.stepSize / 2;
         const max = x + command.stepSize / 2;
-        return cleanFloat(min).toString() + " to " + cleanFloat(max).toString();
+        const profile = command.fields[item.datasetIndex]?.profile;
+        return profile
+          ? formatChannelValue(min, profile) +
+              " to " +
+              formatChannelValue(max, profile) +
+              " (" +
+              rawChannelValue(min, profile) +
+              " to " +
+              rawChannelValue(max, profile) +
+              ")"
+          : cleanFloat(min).toString() + " to " + cleanFloat(max).toString();
       };
       this.histogram.update();
     }
@@ -214,6 +231,7 @@ export type StatisticsRendererCommand = {
   bins: number[];
   stepSize: number;
   fields: {
+    profile?: ChannelProfile;
     title: string;
     color: string;
     histogramCounts: number[];
