@@ -381,7 +381,10 @@ export function detectLayout(text: string): CSVLayout {
     fields.filter((cell) => isNumberCell(cell, decimalComma)).length >= Math.max(1, fields.length * 0.3);
   const isTextRow = (fields: string[]) => {
     const nonEmpty = fields.filter((cell) => cell.trim().length > 0);
-    return nonEmpty.length > 0 && nonEmpty.filter((cell) => !isNumberCell(cell, decimalComma)).length >= nonEmpty.length * 0.6;
+    return (
+      nonEmpty.length > 0 &&
+      nonEmpty.filter((cell) => !isNumberCell(cell, decimalComma)).length >= nonEmpty.length * 0.6
+    );
   };
 
   // Header: first row with (about) the modal column count that is mostly text,
@@ -405,7 +408,11 @@ export function detectLayout(text: string): CSVLayout {
   const preamble: { [key: string]: string } = {};
   for (let i = 0; i < Math.max(headerIndex, 0); i++) {
     const fields = sampleRows[i].fields.map((cell) => cell.trim());
-    if (fields.length >= 2 && fields[0].length > 0) preamble[fields[0]] = fields.slice(1).filter((x) => x).join(" ");
+    if (fields.length >= 2 && fields[0].length > 0)
+      preamble[fields[0]] = fields
+        .slice(1)
+        .filter((x) => x)
+        .join(" ");
   }
 
   let headers: ParsedHeader[];

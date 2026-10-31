@@ -138,7 +138,10 @@ test("bundled DBCs parse and merge by ID", () => {
   const position = pedal.signals.find((s) => s.name === "PEDAL_Position1")!;
   // 10 bits at 0, scale 0.1: 1000 → 100.0 %
   assert.equal(decodeSignal(position, Uint8Array.from([0xe8, 0x03, 0, 0, 0, 0, 0, 0])), 100);
-  assert.equal(getSignalKey(pedal, position, () => false), "PEDALBOX/PEDAL_Position1");
+  assert.equal(
+    getSignalKey(pedal, position, () => false),
+    "PEDALBOX/PEDAL_Position1"
+  );
   // ENNOID uses 29-bit IDs
   assert.ok(set.getAll().some((m) => m.extended && m.name.startsWith("ENNOID_")));
   // Telemetry IDs win over the dashboard DBC that mirrors them

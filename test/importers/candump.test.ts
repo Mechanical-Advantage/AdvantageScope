@@ -36,7 +36,7 @@ test("29-bit, remote, FD and error frames", () => {
   const remote = parseCandumpLine("(1.5) can0 123#R")!;
   assert.equal(remote.kind, CandumpFrameKind.Remote);
   assert.equal(remote.data.length, 0);
-  const fd = parseCandumpLine("(2.0) can0 123##1112233")!;
+  const fd = parseCandumpLine("(2.0) can0 123#" + "#1112233")!;
   assert.equal(fd.fd, true);
   assert.equal(fd.fdFlags, 1);
   assert.deepEqual([...fd.data], [0x11, 0x22, 0x33]);
@@ -54,7 +54,7 @@ test("indexer matches the line parser", () => {
     "not a frame",
     "(1792040000.002000) can0 123#R",
     "(1792040000.003000) can0 20000004#0000000000000000",
-    "(1792040000.004000) can1 7FF##3DEADBEEF",
+    "(1792040000.004000) can1 7FF#" + "#3DEADBEEF",
     ""
   ].join("\r\n");
   const index = indexCandump(new TextEncoder().encode(text));

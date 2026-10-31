@@ -262,7 +262,7 @@ function parseLineBytes(
 
   // Data
   if (bytes[i] === 35) {
-    // "##<flags><data>" = CAN FD
+    // A second "#" then <flags><data> = CAN FD
     flags |= FLAG_FD;
     i += 2; // Skip second "#" and the flags nibble
   } else if (bytes[i] === 82) {

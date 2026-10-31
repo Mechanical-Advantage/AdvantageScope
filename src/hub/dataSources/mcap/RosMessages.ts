@@ -97,7 +97,10 @@ export function getEnumTables(definition: MessageDefinition): Map<string, Map<nu
     const type = [...unmatched][0].type;
     const candidates = fields.filter((field) => field.type === type && !tables.has(field.name));
     if (candidates.length === 1 && [...unmatched].every((constant) => constant.type === type)) {
-      tables.set(candidates[0].name, new Map([...unmatched].map((constant) => [Number(constant.value), constant.name])));
+      tables.set(
+        candidates[0].name,
+        new Map([...unmatched].map((constant) => [Number(constant.value), constant.name]))
+      );
     }
   }
   return tables;
@@ -210,7 +213,12 @@ function writePrimitive(log: Log, key: string, timestamp: number, value: unknown
 /** Writes schemaless data (JSON, protobuf) with the same caps. */
 export function writeUnknown(log: Log, key: string, timestamp: number, value: unknown, depth = 0) {
   if (depth > MAX_DEPTH || value === null || value === undefined) return;
-  if (typeof value === "number" || typeof value === "bigint" || typeof value === "boolean" || typeof value === "string") {
+  if (
+    typeof value === "number" ||
+    typeof value === "bigint" ||
+    typeof value === "boolean" ||
+    typeof value === "string"
+  ) {
     if (depth === 0) return;
     writePrimitive(log, key, timestamp, value, false);
     return;
@@ -218,8 +226,7 @@ export function writeUnknown(log: Log, key: string, timestamp: number, value: un
   if (ArrayBuffer.isView(value) || Array.isArray(value)) {
     const items = value as ArrayLike<unknown>;
     const allPrimitive =
-      ArrayBuffer.isView(value) ||
-      Array.from(items).every((item) => typeof item !== "object" || item === null);
+      ArrayBuffer.isView(value) || Array.from(items).every((item) => typeof item !== "object" || item === null);
     if (allPrimitive) {
       writePrimitive(log, key, timestamp, value, true);
     } else {
@@ -248,7 +255,10 @@ export function getHeaderStamp(message: any): number | null {
   return sec + nanosec * 1e-9;
 }
 
-type Pose = { position: { x: number; y: number; z: number }; orientation: { x: number; y: number; z: number; w: number } };
+type Pose = {
+  position: { x: number; y: number; z: number };
+  orientation: { x: number; y: number; z: number; w: number };
+};
 
 /** Finds the pose in geometry messages, or null for other types. */
 export function extractPose(type: string, message: any): Pose | null {

@@ -5,9 +5,9 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { McapIndexedReader, McapTypes } from "@mcap/core";
 import { parse as parseRosMsg } from "@foxglove/rosmsg";
 import { MessageReader } from "@foxglove/rosmsg2-serialization";
+import { McapIndexedReader, McapTypes } from "@mcap/core";
 import { decompress as zstdDecompress } from "fzstd";
 import descriptor from "protobufjs/ext/descriptor";
 import Log from "../../../shared/log/Log";

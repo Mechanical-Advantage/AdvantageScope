@@ -68,7 +68,7 @@ function start(files: (Uint8Array | null)[]): Log {
         pos = next;
         continue;
       }
-      timeCell = layout.timeColumn === -1 ? "" : (row.fields[layout.timeColumn] ?? "");
+      timeCell = layout.timeColumn === -1 ? "" : row.fields[layout.timeColumn] ?? "";
     }
     const time = layout.timeColumn === -1 ? rowIndex : parseTimeCell(timeCell, layout.timeUnit, layout.decimalComma);
     if (isFinite(time)) {

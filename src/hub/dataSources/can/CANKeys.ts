@@ -45,5 +45,11 @@ export function getSignalKey(message: DBCMessage, signal: DBCSignal, isTaken: (k
 }
 
 export function getUnknownFrameKey(id: number, extended: boolean): string {
-  return "CAN/Unknown/0x" + id.toString(16).toUpperCase().padStart(extended ? 8 : 3, "0");
+  return (
+    "CAN/Unknown/0x" +
+    id
+      .toString(16)
+      .toUpperCase()
+      .padStart(extended ? 8 : 3, "0")
+  );
 }

@@ -10,16 +10,9 @@ import LoggableType from "../../../shared/log/LoggableType";
 import { runLazyWorker, sendProgress, setMetadata } from "../ImporterUtil";
 import { decodeCSVText, detectDelimiter, readRows } from "../csv/CSVParser";
 import { BUNDLED_DBCS } from "./BundledDBCs";
-import {
-  CandumpIndex,
-  DATA_STRIDE,
-  FLAG_ERROR,
-  FLAG_EXTENDED,
-  FLAG_REMOTE,
-  indexCandump
-} from "./Candump";
-import { DBCMessage, DBCSet, DBCSignal, decodeSignal, extractRaw, parseDBC, sortDBCFiles } from "./DBC";
 import { CANDUMP_ENUM_RAW_SUFFIX, getSignalKey, getUnknownFrameKey } from "./CANKeys";
+import { CandumpIndex, DATA_STRIDE, FLAG_ERROR, FLAG_EXTENDED, FLAG_REMOTE, indexCandump } from "./Candump";
+import { DBCMessage, DBCSet, DBCSignal, decodeSignal, extractRaw, parseDBC, sortDBCFiles } from "./DBC";
 
 /**
  * candump -L importer.

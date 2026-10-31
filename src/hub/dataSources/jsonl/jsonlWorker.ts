@@ -133,8 +133,8 @@ function createField(
     typeof firstValue === "string"
       ? LoggableType.String
       : typeof firstValue === "boolean"
-        ? LoggableType.Boolean
-        : LoggableType.Number;
+      ? LoggableType.Boolean
+      : LoggableType.Number;
   log.createBlankField(key, type);
   setMetadata(log, key, { unit: unit, signal: signal });
   return key;
@@ -144,9 +144,10 @@ function decode(keys: string[]): string[] {
   const sendKeys: string[] = [];
   keys.forEach((requested) => {
     // Enum raw children are decoded with their label field
-    const key = requested.endsWith(CANDUMP_ENUM_RAW_SUFFIX) && enumSignals.has(requested.slice(0, -4))
-      ? requested.slice(0, -4)
-      : requested;
+    const key =
+      requested.endsWith(CANDUMP_ENUM_RAW_SUFFIX) && enumSignals.has(requested.slice(0, -4))
+        ? requested.slice(0, -4)
+        : requested;
     if (decoded.has(key)) return;
     decoded.add(key);
     const series = samples.get(key);

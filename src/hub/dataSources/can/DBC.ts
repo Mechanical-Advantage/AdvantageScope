@@ -285,7 +285,9 @@ export class DBCSet {
       if (existing !== undefined) {
         if (existing.name !== message.name) {
           this.duplicates.push(
-            `0x${message.id.toString(16)} ${message.name} (${message.source}) shadowed by ${existing.name} (${existing.source})`
+            `0x${message.id.toString(16)} ${message.name} (${message.source}) shadowed by ${existing.name} (${
+              existing.source
+            })`
           );
         }
         return;
