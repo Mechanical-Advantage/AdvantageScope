@@ -436,7 +436,7 @@ export default class Field3dController implements TabController {
           const rawRecent = recent.length ? recent : window.log.getRaw(source.logKey, time - 1, time)?.timestamps ?? [];
           const hz = rawRecent.filter((t) => t > time - 1 && t <= time).length;
           const lag = time - result.stamp;
-          const stale = lag > 1;
+          const stale = lag > 1 && !source.logKey.endsWith("tf_static");
           this.sourceList.itemStatus.set(source.logKey, {
             text:
               result.frame +
