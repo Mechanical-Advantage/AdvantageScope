@@ -24,6 +24,7 @@ import {
   UTILITY_KEYS
 } from "../../shared/log/RobotState";
 import { calcMockProgress, createUUID, scaleValue, setsEqual } from "../../shared/util";
+import { isCandump } from "./can/Candump";
 
 /** A provider of historical log data (i.e. all the data is returned at once). */
 export class HistoricalDataSource {
@@ -32,8 +33,10 @@ export class HistoricalDataSource {
     ".rlog": "rlogWorker.js",
     ".wpilog": "wpilogWorker.js",
     ".wpilogxz": "wpilogWorker.js", // Decompressed by main process
-    ".log": "roadRunnerWorker.js",
-    ".csv": "csvWorker.js"
+    ".log": "roadRunnerWorker.js", // Or candumpWorker.js, see selectWorker()
+    ".csv": "csvWorker.js",
+    ".mcap": "mcapWorker.js",
+    ".jsonl": "jsonlWorker.js"
   };
 
   private path = "";
@@ -76,7 +79,7 @@ export class HistoricalDataSource {
     this.refreshCallback = refreshCallback;
 
     this.setStatus(HistoricalDataSourceStatus.Reading);
-    if (["wpilog", "rlog", "csv", "log"].includes(extension)) {
+    if (["wpilog", "rlog", "csv", "log", "mcap", "jsonl"].includes(extension)) {
       setTimeout(() => {
         this.handleMainMessage({
           uuid: this.UUID,
@@ -211,6 +214,10 @@ export class HistoricalDataSource {
     if (selectedWorkerName === null) {
       this.setStatus(HistoricalDataSourceStatus.Error);
       return;
+    }
+    if (selectedWorkerName === "roadRunnerWorker.js" && fileContents[0] !== null && isCandump(fileContents[0])) {
+      // ".log" is shared by Road Runner and candump -L; sniff the contents
+      selectedWorkerName = "candumpWorker.js";
     }
     this.worker = new Worker("../bundles/" + selectedWorkerName, { type: "module" });
     let request: HistoricalDataSource_WorkerRequest = {
