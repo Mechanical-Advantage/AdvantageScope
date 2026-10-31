@@ -113,6 +113,7 @@ export class SpatialLayers {
           frameTransform: transform,
           marker: {
             type: 3,
+            shape: "cone",
             pose: compose(transform, {
               translation: [cone.position.x, cone.position.y, cone.position.z + (large ? 0.25 : 0.16)],
               rotation: [1, 0, 0, 0]

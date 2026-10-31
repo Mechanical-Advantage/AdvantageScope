@@ -23,6 +23,7 @@ import LoggableType from "../../shared/log/LoggableType";
 import { Field3dRendererCommand, Field3dRendererCommand_AnyObj } from "../../shared/renderers/Field3dRenderer";
 import { DEFAULT_CAR_URDF } from "../../shared/spatial/DefaultCar";
 import { metadata } from "../../shared/spatial/SpatialLog";
+import { StaticTrack, parseStaticTrack } from "../../shared/spatial/StaticTrack";
 import { compose, identity } from "../../shared/spatial/Transform";
 import { computeLinkPoses, parseURDF, resolveMeshPath } from "../../shared/spatial/URDF";
 import { clampValue, createUUID } from "../../shared/util";
@@ -34,6 +35,7 @@ import TabController from "./TabController";
 export default class Field3dController implements TabController {
   UUID = createUUID();
 
+  private staticTrack: StaticTrack | null = null;
   private spatial = new SpatialLayers();
   private fixedFrame = document.createElement("input");
   private frameAxes = document.createElement("input");
@@ -115,7 +117,23 @@ export default class Field3dController implements TabController {
     axesLabel.textContent = "Frame axes ";
     this.frameAxes.type = "checkbox";
     axesLabel.append(this.frameAxes);
-    settings.append(fixedLabel, axesLabel, load, folder, this.robotStatus);
+    const trackInput = document.createElement("input");
+    trackInput.type = "file";
+    trackInput.accept = ".csv,.geojson,.json";
+    trackInput.hidden = true;
+    const trackButton = document.createElement("button");
+    trackButton.textContent = "Load metric track…";
+    trackButton.title = "CSV x,y,z,class or metric GeoJSON in the fixed frame";
+    trackButton.onclick = () => trackInput.click();
+    trackInput.onchange = async () => {
+      try {
+        this.staticTrack = parseStaticTrack(await trackInput.files![0].text());
+        this.FIELD_SELECT.value = "MUR:Track";
+      } catch (error) {
+        this.robotStatus.textContent = String(error);
+      }
+    };
+    settings.append(fixedLabel, axesLabel, load, folder, trackButton, trackInput, this.robotStatus);
     this.layerStatus.hidden = true;
     root.append(this.layerStatus);
     this.layerStatus.style.cssText = "position:absolute;bottom:4px;left:12px;font-size:12px;pointer-events:none";
@@ -249,6 +267,7 @@ export default class Field3dController implements TabController {
   saveState(): unknown {
     return {
       sources: this.sourceList.getState(),
+      staticTrack: this.staticTrack,
       fixedFrame: this.fixedFrame.value,
       frameAxes: this.frameAxes.checked,
       robot: this.robot,
@@ -260,6 +279,7 @@ export default class Field3dController implements TabController {
   restoreState(state: unknown): void {
     if (typeof state !== "object" || state === null) return;
 
+    if ("staticTrack" in state) this.staticTrack = state.staticTrack as StaticTrack | null;
     if ("fixedFrame" in state) this.fixedFrame.value = String(state.fixedFrame);
     if ("frameAxes" in state) this.frameAxes.checked = Boolean(state.frameAxes);
     if ("robot" in state) this.robot = state.robot as typeof this.robot;
@@ -638,6 +658,40 @@ export default class Field3dController implements TabController {
         }
       }
       objects.push({ type: "axes", poses });
+    }
+    if (this.staticTrack && this.FIELD_SELECT.value === "MUR:Track") {
+      if (this.staticTrack.centreline)
+        objects.push({
+          type: "trajectory",
+          color: "#aaa",
+          size: "normal",
+          poses: this.staticTrack.points.map((point) => ({
+            pose: { translation: point.position, rotation: [1, 0, 0, 0] },
+            annotation: { is2DSource: false }
+          }))
+        });
+      else
+        for (const point of this.staticTrack.points) {
+          objects.push({
+            type: "marker",
+            frameTransform: identity(),
+            marker: {
+              type: 3,
+              shape: "cone",
+              pose: {
+                translation: [point.position[0], point.position[1], point.position[2] + 0.16],
+                rotation: [1, 0, 0, 0]
+              },
+              scale: { x: 0.25, y: 0.25, z: 0.32 },
+              color:
+                point.class === "blue"
+                  ? { r: 0.05, g: 0.3, b: 1, a: 1 }
+                  : point.class === "yellow"
+                  ? { r: 1, g: 0.8, b: 0, a: 1 }
+                  : { r: 1, g: 0.4, b: 0, a: 1 }
+            }
+          });
+        }
     }
     // Add built-in AprilTag objects
     if (fieldData !== undefined) {

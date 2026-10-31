@@ -33,7 +33,7 @@ export default class MarkerManager extends ObjectManager<Field3dRendererCommand_
     if (m.type === 1) geometry = new THREE.BoxGeometry(1, 1, 1);
     if (m.type === 2) geometry = new THREE.SphereGeometry(0.5, 16, 12);
     if (m.type === 3) {
-      geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 24);
+      geometry = new THREE.CylinderGeometry(m.shape === "cone" ? 0 : 0.5, 0.5, 1, 24);
       geometry.rotateX(Math.PI / 2);
     }
     if (geometry) {

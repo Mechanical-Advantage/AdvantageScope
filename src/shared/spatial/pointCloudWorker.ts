@@ -11,10 +11,18 @@ import { decodePointCloud2 } from "./PointCloud2";
 self.onmessage = (event) => {
   const { id, payload } = event.data;
   try {
+    let cloud = payload.cloud;
+    if (payload.encoding === "mur-points-v1") {
+      const bytes = payload.bytes as Uint8Array;
+      const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+      const length = view.getUint32(0, true);
+      cloud = JSON.parse(new TextDecoder().decode(bytes.subarray(4, 4 + length)));
+      cloud.data = bytes.subarray(4 + length);
+    }
     const message =
       payload.encoding === "cdr"
         ? new MessageReader(parse(payload.definition, { ros2: true })).readMessage(payload.bytes)
-        : payload.cloud;
+        : cloud;
     const result = decodePointCloud2(message, payload.field);
     // @ts-expect-error worker transfer overload
     self.postMessage({ id, payload: result }, [

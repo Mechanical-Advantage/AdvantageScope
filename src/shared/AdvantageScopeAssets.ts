@@ -98,7 +98,7 @@ export interface Config3d_Rotation {
 }
 
 export const BuiltIn3dFields: Config3dField[] = [
-  ...["Grid", "None"].map((name) => ({
+  ...["Grid", "Track", "None"].map((name) => ({
     name,
     path: "",
     id: "MUR:" + name,
