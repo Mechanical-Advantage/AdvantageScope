@@ -510,7 +510,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     });
 
     let sim: LiveStatusSummary["sim"] = null;
-    if (this.sim !== null && this.timeBase.getDomain() === "sim") {
+    if (this.sim !== null && this.timeBase.getDomain() === "sim" && this.backend === "connected") {
       sim = {
         state: now < this.simResetUntil ? "reset" : this.sim.state,
         timeS: this.clock.now(now) ?? 0,
