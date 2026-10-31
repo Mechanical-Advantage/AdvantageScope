@@ -233,6 +233,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
         break;
       case "availability":
         this.availability.set(message.path, { state: message.state, lastSeenNs: message.last_seen_ns });
+        this.shouldRunOutputCallback = true;
         break;
       case "sim_status":
         this.handleSimStatus(message);
@@ -327,7 +328,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     let decision = this.segments.observe(sample.path, sample.stream_id, sample.seq, time.seconds, !time.approximate);
     if (decision === "drop") return;
     if (decision === "new-segment") {
-      this.startNewSegment();
+      this.startNewSegment(false);
       time = this.timeBase.sampleTime(sample)!;
       this.segments.observe(sample.path, sample.stream_id, sample.seq, time.seconds, !time.approximate);
     }
@@ -344,6 +345,9 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     this.retryAttempt = 0;
     this.lastReceipt = now;
     this.receiptTimes.set(sample.path, now);
+    if (!this.availability.has(sample.path)) {
+      this.availability.set(sample.path, { state: "online", lastSeenNs: sample.t_ns });
+    }
     if (time.approximate) {
       this.unsynchronised.set(sample.path, now);
     } else {
@@ -356,7 +360,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
   }
 
   /** Starts a new run, retaining the previous Log and preserving a past-run selection. */
-  private startNewSegment() {
+  private startNewSegment(clearAvailability = true) {
     this.segments.startNewSegment();
     this.dedup.clear();
     this.timeBase.resetSegment();
@@ -367,7 +371,9 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     this.log = new Log();
     const following = this.runs.append(this.log);
     this.receiptTimes.clear();
-    this.availability.clear();
+    // A reconnect snapshot precedes samples from the new stream. Keep its health;
+    // an explicit sim reset instead waits for receipts from the new run.
+    if (clearAvailability) this.availability.clear();
     this.descriptors.forEach((descriptor) => createField(this.log!, descriptor));
     console.log("[MUR] Starting segment " + this.segments.getSegmentIndex().toString());
     this.runOutputCallback();

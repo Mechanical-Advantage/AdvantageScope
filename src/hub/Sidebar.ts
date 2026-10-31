@@ -422,12 +422,24 @@ export default class Sidebar {
   }
 
   private freshnessFilter: "stale" | "offline" | null = null;
+  private freshnessMatches = "";
+  private freshnessFilterButton: HTMLButtonElement | null = null;
 
   toggleFreshnessFilter(filter: "stale" | "offline") {
     this.freshnessFilter = this.freshnessFilter === filter ? null : filter;
     this.SEARCH_INPUT.placeholder = this.freshnessFilter
       ? `Showing ${this.freshnessFilter} · click count to clear`
       : "Search";
+    if (this.freshnessFilterButton === null) {
+      this.freshnessFilterButton = document.createElement("button");
+      this.freshnessFilterButton.className = "sidebar-freshness-filter text-button";
+      this.SEARCH_INPUT.parentElement!.appendChild(this.freshnessFilterButton);
+      this.freshnessFilterButton.addEventListener("click", () => {
+        if (this.freshnessFilter) this.toggleFreshnessFilter(this.freshnessFilter);
+      });
+    }
+    this.freshnessFilterButton.hidden = this.freshnessFilter === null;
+    this.freshnessFilterButton.innerText = `Showing ${this.freshnessFilter} · Clear`;
     this.refresh(true);
   }
 
@@ -442,7 +454,15 @@ export default class Sidebar {
   /** Refresh based on new log data or expanded field list. */
   refresh(forceRefresh: boolean = false) {
     let fieldKeys = window.log.getFieldKeys();
-    let fieldsChanged = forceRefresh || !arraysEqual(fieldKeys, this.lastFieldKeys);
+    // Availability changes without catalogue changes. Keep a filtered tree current as
+    // producers go stale, disconnect, or recover, including newly matching fields.
+    const freshnessMatches =
+      this.freshnessFilter === null
+        ? ""
+        : JSON.stringify(fieldKeys.filter((key) => window.liveStatus?.getFieldFreshness(key) === this.freshnessFilter));
+    let fieldsChanged =
+      forceRefresh || freshnessMatches !== this.freshnessMatches || !arraysEqual(fieldKeys, this.lastFieldKeys);
+    this.freshnessMatches = freshnessMatches;
     this.lastFieldKeys = fieldKeys;
 
     if (fieldsChanged) {

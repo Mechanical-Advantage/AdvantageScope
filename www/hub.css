@@ -2198,3 +2198,10 @@ div.connect-dialog button {
   border: 1px solid #888;
   font-family: inherit;
 }
+
+button.sidebar-freshness-filter:not([hidden]) {
+  display: block;
+  margin: 0 16px 5px;
+  font-size: 11px;
+  color: inherit;
+}
