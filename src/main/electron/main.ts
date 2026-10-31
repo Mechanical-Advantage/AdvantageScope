@@ -392,7 +392,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             const enumPath = logPath + ".enums.json";
             results.push(fs.existsSync(enumPath) ? fs.readFileSync(enumPath) : null);
           }
-          if (logPath.endsWith(".log")) {
+          if (logPath.endsWith(".log") || /\.(mf4|mdf)$/i.test(logPath)) {
             // candump sidecars and DBC folder (see importerFiles.ts)
             let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
             results.push(...readCandumpExtras(logPath, prefs.dbcFolder ?? ""));
@@ -1382,7 +1382,7 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv", "mcap", "jsonl"]
+                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv", "mcap", "jsonl", "mf4", "mdf"]
                   }
                 ]
               })
@@ -1406,7 +1406,7 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv", "mcap", "jsonl"]
+                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv", "mcap", "jsonl", "mf4", "mdf"]
                   }
                 ]
               })
@@ -2694,6 +2694,8 @@ app.whenReady().then(async () => {
       x.endsWith(".log") ||
       x.endsWith(".csv") ||
       x.endsWith(".mcap") ||
+      x.endsWith(".mf4") ||
+      x.endsWith(".mdf") ||
       x.endsWith(".jsonl")
   );
   if (fileArgs.length > 0) {

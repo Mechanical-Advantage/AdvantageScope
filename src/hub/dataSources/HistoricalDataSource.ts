@@ -36,6 +36,8 @@ export class HistoricalDataSource {
     ".log": "roadRunnerWorker.js", // Or candumpWorker.js, see selectWorker()
     ".csv": "csvWorker.js",
     ".mcap": "mcapWorker.js",
+    ".mf4": "mf4Worker.js",
+    ".mdf": "mf4Worker.js",
     ".jsonl": "jsonlWorker.js"
   };
 
@@ -79,7 +81,7 @@ export class HistoricalDataSource {
     this.refreshCallback = refreshCallback;
 
     this.setStatus(HistoricalDataSourceStatus.Reading);
-    if (["wpilog", "rlog", "csv", "log", "mcap", "jsonl"].includes(extension)) {
+    if (["wpilog", "rlog", "csv", "log", "mcap", "jsonl", "mf4", "mdf"].includes(extension)) {
       setTimeout(() => {
         this.handleMainMessage({
           uuid: this.UUID,
@@ -249,6 +251,7 @@ export class HistoricalDataSource {
           break;
 
         case "failed":
+          this.customError = message.error ?? null;
           this.setStatus(HistoricalDataSourceStatus.Error);
           return; // Exit immediately
 
@@ -504,6 +507,7 @@ export type HistoricalDataSource_WorkerResponse =
     }
   | {
       type: "failed";
+      error?: string;
     }
   | {
       type: "fields";

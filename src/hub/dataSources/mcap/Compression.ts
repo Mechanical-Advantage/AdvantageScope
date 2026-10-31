@@ -43,6 +43,6 @@ export async function createDecompressHandlers(useWasm = true) {
   }
   return {
     zstd: cached((bytes, size) => (ready ? decoder.decode(bytes, size) : fallback(bytes, new Uint8Array(size)))),
-    lz4: cached((bytes, size) => lz4(bytes, size))
+    lz4: cached((bytes, size) => lz4(bytes))
   };
 }
