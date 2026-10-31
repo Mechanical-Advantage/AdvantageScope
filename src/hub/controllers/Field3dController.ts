@@ -42,6 +42,7 @@ export default class Field3dController implements TabController {
   private layerStatus = document.createElement("div");
   private robot = parseURDF(DEFAULT_CAR_URDF);
   private localRobotLoaded = false;
+  private robotLog: unknown = null;
   private robotAssets: Record<string, string> = {};
   private robotStatus = document.createElement("div");
   private FIELD_SELECT: HTMLSelectElement;
@@ -330,6 +331,15 @@ export default class Field3dController implements TabController {
     // Get timestamp
     let time = window.selection.getRenderTime();
 
+    // A source-provided robot belongs to that Log, not to later live connections.
+    if (this.robotLog !== window.log) {
+      this.robotLog = window.log;
+      if (!this.localRobotLoaded) {
+        this.robot = parseURDF(DEFAULT_CAR_URDF);
+        this.robotAssets = {};
+        this.robotStatus.textContent = "MUR car · URDF";
+      }
+    }
     const description =
       window.log.getString("/robot_description/xml", time ?? 0, time ?? 0)?.values[0] ??
       window.log.getString("/robot_description/data", time ?? 0, time ?? 0)?.values[0] ??
