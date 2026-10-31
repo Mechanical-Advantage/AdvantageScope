@@ -18,7 +18,10 @@ enum TabType {
   Points = 11,
   Metadata = 12,
   TrackMap = 13,
-  Laps = 14
+  Laps = 14,
+  RawMessages = 20,
+  RosLog = 21,
+  RosImage = 22
 }
 
 export default TabType;
@@ -38,7 +41,10 @@ export const LITE_COMPATIBLE_TABS = [
   TabType.Points,
   TabType.Metadata,
   TabType.TrackMap,
-  TabType.Laps
+  TabType.Laps,
+  TabType.RawMessages,
+  TabType.RosLog,
+  TabType.RosImage
 ];
 
 export function getDefaultTabTitle(type: TabType): string {
@@ -67,6 +73,12 @@ export function getDefaultTabTitle(type: TabType): string {
       return "Laps";
     case TabType.Metadata:
       return "Metadata";
+    case TabType.RawMessages:
+      return "Raw Messages";
+    case TabType.RosLog:
+      return "Log";
+    case TabType.RosImage:
+      return "Image";
     default:
       return "";
   }
