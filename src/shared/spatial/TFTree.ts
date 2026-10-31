@@ -101,6 +101,17 @@ export class TFTree {
     return [...frames].sort();
   }
 
+  /** Parent/child links with the newest sample time at or before `time` (null if none), for the tree popover. */
+  getEdges(time: number): { parent: string; child: string; isStatic: boolean; stamp: number | null }[] {
+    const result: { parent: string; child: string; isStatic: boolean; stamp: number | null }[] = [];
+    this.edges.forEach((edge, child) => {
+      let stamp: number | null = null;
+      for (const t of edge.times) if (t <= time) stamp = t;
+      result.push({ parent: edge.parent, child, isStatic: edge.isStatic, stamp });
+    });
+    return result.sort((a, b) => a.parent.localeCompare(b.parent) || a.child.localeCompare(b.child));
+  }
+
   hasFrame(frame: string): boolean {
     frame = normalizeFrameId(frame);
     if (this.edges.has(frame)) return true;
