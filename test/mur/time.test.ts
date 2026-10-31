@@ -98,6 +98,14 @@ test("sim domain unsynchronised samples map receive time onto the sim clock", ()
   assert.equal(t.seconds, 10.5);
 });
 
+test("sim domain receive-time mapping scales by the sim speed", () => {
+  const base = new SessionTimeBase("sim");
+  base.setSimRate(3);
+  base.sampleTime({ t_ns: "10000000000", received_ns: "1793328600000000000", time_quality: "synchronised" });
+  const t = base.sampleTime({ t_ns: "0", received_ns: "1793328598000000000", time_quality: "unsynchronised" })!;
+  assert.equal(t.seconds, 4);
+});
+
 test("resetSegment re-derives the unix epoch and forgets the receive offset", () => {
   const base = new SessionTimeBase("sim");
   base.sampleTime({ t_ns: "10000000000", received_ns: "1793328600000000000", time_quality: "synchronised" });

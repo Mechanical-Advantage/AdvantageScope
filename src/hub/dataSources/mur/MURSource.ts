@@ -99,7 +99,9 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     statusCallback: (status: LiveDataSourceStatus) => void,
     outputCallback: (log: Log, timeSupplier: () => number) => void
   ) {
-    super.connect(address, statusCallback, outputCallback);
+    // The base class trims with clearBeforeTime(max(0, now - discard)), which pins the range start to 0 even
+    // when the session starts later. Trim here instead, only once there is data older than the discard window.
+    super.connect(address, statusCallback, outputCallback, false);
     this.baseUrl = normaliseBaseUrl(address);
     this.log = new Log();
     this.openSocket();
@@ -302,6 +304,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     this.segments.registerStreams(Object.values(status.stream_ids));
     this.sim = status;
     this.clock.setRunning(status.state === "running", status.speed, now);
+    this.timeBase.setSimRate(status.speed);
   }
 
   private handleSample(sample: TelemetrySample) {
@@ -404,6 +407,14 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
       });
     }
 
+    // Discard old data (Preferences -> live discard)
+    const discardS = window.preferences?.liveDiscard;
+    const liveEdge = this.clock.now(Date.now());
+    if (discardS !== undefined && discardS !== -1 && liveEdge !== null) {
+      const minTime = liveEdge - discardS;
+      if (minTime > this.log.getTimestampRange()[0]) this.log.clearBeforeTime(minTime, false);
+    }
+
     if (this.shouldRunOutputCallback) {
       this.shouldRunOutputCallback = false;
       this.runOutputCallback();
@@ -459,6 +470,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
         const status: SimStatus = await response.json();
         this.sim = status;
         this.clock.setRunning(status.state === "running", status.speed, Date.now());
+        this.timeBase.setSimRate(status.speed);
       }
     } catch {
       this.simControls = false;

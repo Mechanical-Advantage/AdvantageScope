@@ -60,13 +60,15 @@ export interface SampleTime {
  *
  * Samples with `time_quality: "unsynchronised"` use their receive time instead (spec 01 §4.1 allows this for
  * approximate live display). `received_ns` is always Unix time, so in the sim domain it is mapped onto the sim
- * clock using the offset (received - t) of the most recent trusted sample. Until such an offset is known, the
- * source's own `t_ns` is used, still flagged approximate.
+ * clock from the most recent trusted sample (its t and receive time) and the sim speed:
+ * `t_ref + (received - received_ref) * speed`. Until a trusted sample is known, the source's own `t_ns` is
+ * used, still flagged approximate.
  */
 export class SessionTimeBase {
   private domain: ClockDomain = "unix";
   private epochNs: bigint | null = null;
-  private receiveOffsetNs: bigint | null = null;
+  private reference: { tNs: bigint; receivedNs: bigint } | null = null;
+  private simRate = 1;
 
   constructor(domain: ClockDomain = "unix") {
     this.setDomain(domain);
@@ -81,7 +83,12 @@ export class SessionTimeBase {
     if (domain === this.domain && this.epochNs !== null) return;
     this.domain = domain;
     this.epochNs = domain === "sim" ? 0n : null;
-    this.receiveOffsetNs = null;
+    this.reference = null;
+  }
+
+  /** Sets the sim speed (sim seconds per wall second), used to map receive times onto the sim clock. */
+  setSimRate(rate: number) {
+    this.simRate = rate > 0 ? rate : 1;
   }
 
   /** Returns the epoch, or null if no time reference has been seen yet (unix domain only). */
@@ -99,7 +106,7 @@ export class SessionTimeBase {
   /** Forgets everything learned from samples (new segment). Unix epochs are re-derived from the next sample. */
   resetSegment() {
     this.epochNs = this.domain === "sim" ? 0n : null;
-    this.receiveOffsetNs = null;
+    this.reference = null;
   }
 
   /** Returns the session time of a sample, or null if its timestamps can't be parsed. */
@@ -110,7 +117,7 @@ export class SessionTimeBase {
 
     if (sample.time_quality !== "unsynchronised") {
       this.observeReference(tNs);
-      if (receivedNs !== null) this.receiveOffsetNs = receivedNs - tNs;
+      if (receivedNs !== null) this.reference = { tNs: tNs, receivedNs: receivedNs };
       return { seconds: nsToSessionSeconds(tNs, this.epochNs!), approximate: false };
     }
 
@@ -119,8 +126,9 @@ export class SessionTimeBase {
     if (receivedNs !== null) {
       if (this.domain === "unix") {
         fallbackNs = receivedNs;
-      } else if (this.receiveOffsetNs !== null) {
-        fallbackNs = receivedNs - this.receiveOffsetNs;
+      } else if (this.reference !== null) {
+        const wallDeltaNs = Number(receivedNs - this.reference.receivedNs);
+        fallbackNs = this.reference.tNs + BigInt(Math.round(wallDeltaNs * this.simRate));
       }
     }
     this.observeReference(fallbackNs);
