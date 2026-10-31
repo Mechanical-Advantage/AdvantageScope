@@ -112,3 +112,47 @@ Historical importers are workers in `src/hub/dataSources/` registered in `Histor
 - **CAN decoding.** The merged DBC set is decoded by ID, so the bench naming (`can1` = Control) and the radio naming (`can0` = Control) give the same paths. The DBCs are bundled from mur-msgs (`src/hub/dataSources/can/dbc/SOURCE.txt` records the commit), or come from the DBC folder set in Preferences. No-data sentinels become `NaN`, which the line graph draws as a gap: the `0xFFFF (6553.5) = invalid` values named in DBC comments, plus all-ones (or max-positive) raw values that fall outside the signal's declared range.
 - **MCAP time.** Each message uses its `header.stamp` if it has a non-zero one; otherwise its log time. `PointCloud2`, `Image`, `CompressedImage`, `LaserScan` and `OccupancyGrid` are kept as raw CDR only, and their `.msg` definition is stored in the field metadata. Arrays are capped at 64 items.
 - **Tests.** Run `npm test`. It bundles `test/**/*.test.ts` with rolldown and runs them with `node --test`.
+
+## Lap analysis
+
+Track Map and Laps share `LapService`; dragging a numeric channel selects map colour or table metrics.
+Lap setup accepts canonical field paths, event mode, wheel radius/ratio, minimum lap time, manual
+markers and sector fractions. Place sector gates or an autocross finish at the cursor, then drag
+endpoints on Track Map. Start gates can be regenerated automatically. Laps chooses reference and
+overlays; the Line Graph axis selector switches between log time, lap time and distance (with ΔT
+on the right axis). Layout state stores field paths and lap setup. Timeline bands use the same laps.
+
+`src/shared/laps/LapEngine.ts` is pure and tested by `npm test -- laps`. It implements ENU gate
+intersections, interpolated crossings, direction/rearm checks, counter/beacon priority, manual and
+distance fallbacks, sectors/bests, 75 m acceleration runs, skidpad yaw labels, point-to-point finish
+gates and endurance stop-based stints. Distance uses front-wheel speed, motor speed and GPS in that
+order, rescales complete laps to reference length, and produces a 1 m grid. Derived channels append
+between updates and rebuild after gate/reference edits. Analysis currently recomputes the loaded
+sample set at most twice per second; it is not a bounded incremental lap detector. Large live
+histories may need a retained-tail analyzer. Skidpad requires the operator to place the centre gate;
+endurance driver changes use a standstill longer than 60 seconds, not a driver identity signal.
+
+### Real Marple recording verification (31 October 2026)
+
+The 231 MB long CSV was opened in Electron, not added to tests or git. Initial resumed run:
+13.588 s launch-to-catalogue, 13.712 s launch-to-derived channels. A later run under concurrent
+workspace build load took 32.996 s / 35.166 s respectively. These include Electron startup and
+lazy parsing of lap inputs; they are not isolated importer benchmarks. No importer rewrite was
+needed. Front GPS covers a short, non-returning trace (about 60 m); no complete GPS lap can be
+inferred. Rear coordinates drift from approximately (48.87, 2.16) to (65.60, -33.03) and are unsuitable.
+
+Steering investigation: the raw file contains 30,136 samples of
+`bus1.Dashboard_Dynamics.DASH_SteeringAngle`, and no bus0 Dashboard_Dynamics signals. Raw range is
+295.3–296.4 degrees, mean 295.825567, population standard deviation 0.289082 degrees, median sample
+interval 10.001 ms. The jitter is already in the source, consistent with sensor/quantization noise
+around a non-zero absolute reading. The CSV cannot establish a physical steering zero or whether
+an upstream calibration offset is missing. No arbitrary zero correction is applied.
+`columnNameToKey` changes dots to slashes and retains `bus0`/`bus1`; `indexLong` groups by the full
+signal name. The worker-level test imports interleaved two-bus steering data and verifies separate
+fields with unchanged values. Duplicate DBC definitions exist on both CAN networks, but this CSV
+has only the bus1 message: the importer is not merging buses.
+
+Screenshots are saved outside the worktree under `research/mur-voir/screenshots/` with `laps_`
+prefix: real_track, real_table, mock_track, mock_table, distance_delta, lap_time, timeline, live.
+For Electron automation, use the reference Playwright driver described above. `ws` is a declared
+dev dependency for the mock backend. Use a spare port if 8090 is already occupied.

@@ -183,7 +183,8 @@ export default class LineGraphController implements TabController {
 
       leftFilter: this.leftFilter,
       rightFilter: this.rightFilter,
-      showRobotMode: this.showRobotMode
+      showRobotMode: this.showRobotMode,
+      lapMode: this.lapMode
     };
   }
 

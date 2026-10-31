@@ -139,6 +139,21 @@ class LapService {
       }
       return lo ? d.values[lo - 1] : undefined;
     };
+    const coordinate = (key: string, t: number) => {
+      const d = data.get(key);
+      if (!d?.timestamps.length) return NaN;
+      let i = 0,
+        hi = d.timestamps.length;
+      while (i < hi) {
+        const m = (i + hi) >>> 1;
+        if (d.timestamps[m] <= t) i = m + 1;
+        else hi = m;
+      }
+      // Hold across a GPS outage; interpolating through it invents a shortcut.
+      return i > 0 && i < d.timestamps.length && d.timestamps[i] - d.timestamps[i - 1] > 1
+        ? d.values[i - 1]
+        : at(key, t);
+    };
     const samples: Sample[] = [];
     if (base) {
       // Log compresses unchanged values independently per channel. Use the union so a
@@ -149,8 +164,8 @@ class LapService {
         timestamps[0];
       const origin = { lat: at(s.latitude, firstFix) || 0, lon: at(s.longitude, firstFix) || 0 };
       timestamps.forEach((t) => {
-        const latitude = at(s.latitude, t),
-          longitude = at(s.longitude, t);
+        const latitude = coordinate(s.latitude, t),
+          longitude = coordinate(s.longitude, t);
         if (
           lat &&
           (!Number.isFinite(latitude) ||

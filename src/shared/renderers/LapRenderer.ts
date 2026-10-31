@@ -357,6 +357,8 @@ export default class LapRenderer implements TabRenderer {
       max = Math.max(...values);
     const stride = Math.max(1, Math.floor(ss.length / 15000));
     for (let i = stride; i < ss.length; i += stride) {
+      if (ss[i].t - ss[i - stride].t > 1 || Math.hypot(ss[i].x - ss[i - stride].x, ss[i].y - ss[i - stride].y) > 40)
+        continue;
       const a = this.transform(ss[i - stride]),
         b = this.transform(ss[i]);
       const lap = c.result.laps.find((l) => ss[i].t >= l.start && ss[i].t < l.end);
