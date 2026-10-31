@@ -167,10 +167,13 @@ export default class Timeline {
       context.fillRect(startX, 0, endX - startX, height);
       context.globalAlpha = 1;
       if (range.label && endX - startX > 30) {
-        context.font = "11px system-ui";
+        // Small label in the top-left corner, clear of the vertically centred tick labels
+        context.font = "600 9px ui-sans-serif, system-ui";
         context.textAlign = "left";
-        context.fillStyle = light ? "#444" : "#bbb";
-        context.fillText(range.label, startX + 4, height - 4, endX - startX - 8);
+        context.textBaseline = "top";
+        context.fillStyle = light ? "#555" : "#aaa";
+        context.fillText(range.label, startX + 3, 1, endX - startX - 6);
+        context.textBaseline = "alphabetic";
       }
 
       if (!rangeBorders.includes(range.start)) {
