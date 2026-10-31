@@ -8,7 +8,50 @@
 import { parse } from "@foxglove/rosmsg";
 import { MessageWriter } from "@foxglove/rosmsg2-serialization";
 import { FoxgloveServer } from "@foxglove/ws-protocol";
+import zlib from "node:zlib";
 import { WebSocketServer } from "ws";
+
+// Tiny gradient PNG for the Image panel.
+function makePng(w, h) {
+  const crcTable = Array.from({ length: 256 }, (_, n) => {
+    let c = n;
+    for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+    return c >>> 0;
+  });
+  const crc = (buf) => {
+    let c = 0xffffffff;
+    for (const b of buf) c = crcTable[(c ^ b) & 255] ^ (c >>> 8);
+    return (c ^ 0xffffffff) >>> 0;
+  };
+  const chunk = (type, data) => {
+    const out = Buffer.alloc(12 + data.length);
+    out.writeUInt32BE(data.length, 0);
+    out.write(type, 4, "ascii");
+    data.copy(out, 8);
+    out.writeUInt32BE(crc(out.subarray(4, 8 + data.length)), 8 + data.length);
+    return out;
+  };
+  const raw = Buffer.alloc((w * 3 + 1) * h);
+  for (let y = 0; y < h; y++)
+    for (let x = 0; x < w; x++) {
+      const o = y * (w * 3 + 1) + 1 + x * 3;
+      raw[o] = (x * 255) / w;
+      raw[o + 1] = (y * 255) / h;
+      raw[o + 2] = (x + y) % 32 < 16 ? 200 : 60;
+    }
+  const ihdr = Buffer.alloc(13);
+  ihdr.writeUInt32BE(w, 0);
+  ihdr.writeUInt32BE(h, 4);
+  ihdr[8] = 8;
+  ihdr[9] = 2;
+  return Buffer.concat([
+    Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
+    chunk("IHDR", ihdr),
+    chunk("IDAT", zlib.deflateSync(raw)),
+    chunk("IEND", Buffer.alloc(0))
+  ]);
+}
+const png = makePng(160, 90);
 
 const defs = {
   "builtin_interfaces/Time": "int32 sec\nuint32 nanosec",
@@ -29,7 +72,10 @@ const defs = {
   "sensor_msgs/PointField": "string name\nuint32 offset\nuint8 datatype\nuint32 count",
   "sensor_msgs/PointCloud2":
     "std_msgs/Header header\nuint32 height\nuint32 width\nsensor_msgs/PointField[] fields\nbool is_bigendian\nuint32 point_step\nuint32 row_step\nuint8[] data\nbool is_dense",
-  "rosgraph_msgs/Clock": "builtin_interfaces/Time clock"
+  "rosgraph_msgs/Clock": "builtin_interfaces/Time clock",
+  "rcl_interfaces/Log":
+    "byte DEBUG=10\nbyte INFO=20\nbyte WARN=30\nbyte ERROR=40\nbyte FATAL=50\nbuiltin_interfaces/Time stamp\nuint8 level\nstring name\nstring msg\nstring file\nstring function\nuint32 line",
+  "sensor_msgs/CompressedImage": "std_msgs/Header header\nstring format\nuint8[] data"
 };
 function schema(type) {
   const seen = new Set([type]);
@@ -66,7 +112,9 @@ for (const [topic, type] of [
   ["/vehicle/pose", "geometry_msgs/PoseStamped"],
   ["/planning/path", "nav_msgs/Path"],
   ["/perception/cones", "visualization_msgs/MarkerArray"],
-  ["/lidar/points", "sensor_msgs/PointCloud2"]
+  ["/lidar/points", "sensor_msgs/PointCloud2"],
+  ["/rosout", "rcl_interfaces/Log"],
+  ["/camera/front/compressed", "sensor_msgs/CompressedImage"]
 ]) {
   const definition = schema(type);
   channels.set(topic, {
@@ -144,6 +192,26 @@ const timer = setInterval(() => {
         mesh_use_embedded_materials: false
       }))
     },
+    "/rosout": {
+      stamp,
+      level: [20, 20, 30, 40, 10][Math.floor(t) % 5],
+      name: ["planner", "perception", "controller"][Math.floor(t) % 3],
+      msg:
+        ["Path replanned", "Cone detected: blue", "Steering rate limited", "Lidar frame dropped", "tick"][
+          Math.floor(t) % 5
+        ] +
+        " (t=" +
+        t.toFixed(1) +
+        ")",
+      file: "node.cpp",
+      function: "spin",
+      line: 42 + (Math.floor(t) % 5)
+    },
+    "/camera/front/compressed": {
+      header: { ...header, frame_id: "camera_front" },
+      format: "png",
+      data: new Uint8Array(png)
+    },
     "/lidar/points": {
       header: { ...header, frame_id: "lidar" },
       height: 1,
@@ -159,7 +227,9 @@ const timer = setInterval(() => {
   const ns = BigInt(Math.round(t * 1e9));
   server.broadcastTime(ns);
   for (const [topic, channel] of channels)
-    if (active.has(channel.id)) server.sendMessage(channel.id, ns, channel.writer.writeMessage(messages[topic]));
+    if (topic === "/rosout" && tick % 10 !== 0) continue;
+    else if (topic === "/camera/front/compressed" && tick % 4 !== 0) continue;
+    else if (active.has(channel.id)) server.sendMessage(channel.id, ns, channel.writer.writeMessage(messages[topic]));
 }, 50);
 function close() {
   clearInterval(timer);
