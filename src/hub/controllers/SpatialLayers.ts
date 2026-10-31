@@ -208,16 +208,15 @@ export class SpatialLayers {
     const decay = Math.max(1, Math.min(20, Number(options.decay ?? 1)));
     const raw = log.getRaw(key, -Infinity, time);
     if (!raw) throw new Error("waiting for cloud");
-    const indexes = raw.timestamps
-      .map((t, i) => ({ t, i }))
-      .filter(({ t }) => t <= time)
-      .slice(-decay);
+    const indexes = raw.timestamps.map((t, i) => ({ t, i })).filter(({ t }) => t <= time);
+    const newest = new Set(indexes.slice(-decay).map(({ t }) => t));
     const objects: Field3dRendererCommand_AnyObj[] = [];
     let frame = "",
       stamp = 0;
     for (const { t, i } of indexes) {
       const cacheKey = key + ":" + t + ":" + (options.field ?? "intensity");
       const result = this.clouds.get(cacheKey);
+      if (!result && !newest.has(t)) continue;
       if (!result && !this.pending.has(cacheKey)) {
         this.pending.add(cacheKey);
         const generation = this.generation;
@@ -253,6 +252,6 @@ export class SpatialLayers {
       });
     }
     if (!objects.length) throw new Error("decoding cloud…");
-    return { objects, frame, stamp };
+    return { objects: objects.slice(-decay), frame, stamp };
   }
 }

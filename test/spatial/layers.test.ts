@@ -28,6 +28,9 @@ test("retained scans use TF at acquisition time and reset clears decoded scans",
     const result = layers.objects(log, "/cloud", 2, "map");
     assert.equal(result.objects[0].type, "cloud");
     if (result.objects[0].type === "cloud") assert.deepEqual(result.objects[0].transform.translation, [1, 0, 0]);
+    log.putRaw("/cloud", 2, new Uint8Array([2]));
+    const pending = layers.objects(log, "/cloud", 2, "map");
+    assert.equal(pending.objects.length, 1, "keep the decoded scan visible while the newest scan decodes");
     layers.begin(new Log(), 0);
     assert.deepEqual(layers.tree.getFrames(), []);
     assert.throws(() => layers.objects(log, "/cloud", 2, "map"), /decoding/);
