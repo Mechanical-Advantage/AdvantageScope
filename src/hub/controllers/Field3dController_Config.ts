@@ -17,6 +17,7 @@ const Field3dController_Config: SourceListConfig = {
   types: [
     {
       key: "spatial",
+      previewType: null,
       showDocs: false,
       display: "Spatial topic",
       symbol: "nearme",

@@ -116,6 +116,7 @@ export default class Field3dController implements TabController {
     this.frameAxes.type = "checkbox";
     axesLabel.append(this.frameAxes);
     settings.append(fixedLabel, axesLabel, load, folder, this.robotStatus);
+    this.layerStatus.hidden = true;
     root.append(this.layerStatus);
     this.layerStatus.style.cssText = "position:absolute;bottom:4px;left:12px;font-size:12px;pointer-events:none";
     this.robotStatus.textContent = "MUR car · URDF";
@@ -305,7 +306,9 @@ export default class Field3dController implements TabController {
     // Get timestamp
     let time = window.selection.getRenderTime();
 
-    const description = window.log.getString("/robot_description", time ?? 0, time ?? 0)?.values[0];
+    const description =
+      window.log.getString("/robot_description/xml", time ?? 0, time ?? 0)?.values[0] ??
+      window.log.getString("/robot_description", time ?? 0, time ?? 0)?.values[0];
     if (description && Object.keys(this.robotAssets).length === 0) {
       try {
         if (this.robotStatus.textContent !== "/robot_description") {
@@ -348,13 +351,27 @@ export default class Field3dController implements TabController {
       let typeConfig = Field3dController_Config.types.find((typeConfig) => typeConfig.key === source.type);
       if (typeConfig?.childOf !== undefined) continue; // This is a child, don't render
 
+      if (
+        source.type === "spatial" &&
+        !source.logType.includes("/") &&
+        !window.log.getString(source.logKey + "/spatial", time ?? 0, time ?? 0)
+      ) {
+        source = {
+          ...source,
+          type: source.logType.endsWith("[]") ? "trajectory" : "robot",
+          options: { ...source.options, model: "MUR car", color: "#aaa", size: "normal" }
+        };
+      }
       if (source.type === "spatial" && time !== null) {
         try {
           const result = this.spatial.objects(window.log, source.logKey, time, fixed, source.options);
           objects.push(...result.objects);
-          status(source.logKey + " · " + result.frame + " · " + result.stamp.toFixed(3) + " s");
+          this.sourceList.itemStatus.set(source.logKey, {
+            text: result.frame + " · " + result.stamp.toFixed(3) + " s",
+            error: false
+          });
         } catch (error) {
-          status(source.logKey + " · " + String(error), true);
+          this.sourceList.itemStatus.set(source.logKey, { text: String(error), error: true });
         }
         continue;
       }
@@ -401,7 +418,7 @@ export default class Field3dController implements TabController {
           poses = poses.map((pose) => ({ ...pose, pose: compose(transform, pose.pose) }));
           status(source.logKey + " · " + frame + " · cursor " + time.toFixed(3) + " s");
         } catch (error) {
-          status(source.logKey + " · " + String(error), true);
+          this.sourceList.itemStatus.set(source.logKey, { text: String(error), error: true });
           poses = [];
         }
       }

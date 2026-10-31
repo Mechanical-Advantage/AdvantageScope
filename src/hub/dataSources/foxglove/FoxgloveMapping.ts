@@ -59,6 +59,7 @@ export function mapMessage(log: Log, mapped: MappedChannel, time: number, bytes:
   if (mapped.schema) writeRosMessage(log, key, time, value, mapped.schema);
   else writeUnknown(log, key, time, value);
   writeSpatialMessage(log, key, time, mapped.type, value);
+  if (key === "/robot_description" && typeof value.data === "string") log.putString(key + "/xml", time, value.data);
   const pose = extractPose(mapped.type, value);
   if (pose?.position && pose?.orientation) putPose3d(log, key + "/pose3d", time, pose);
   if (mapped.type === "nav_msgs/Path")

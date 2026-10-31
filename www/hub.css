@@ -2172,3 +2172,38 @@ button.connect-confirm {
     background-color: #333;
   }
 }
+
+/* Spatial controls retain the compact workbench appearance. */
+div.field-3d-settings > label {
+  display: block;
+  margin: 6px 10px;
+  font-size: 12px;
+}
+div.field-3d-settings input:not([type="checkbox"]) {
+  width: 105px;
+  background: transparent;
+  color: inherit;
+  border: 1px solid #888;
+  border-radius: 2px;
+  padding: 2px 4px;
+}
+div.field-3d-settings > button {
+  color: inherit;
+  border: 1px solid #888;
+  border-radius: 3px;
+  padding: 3px 6px;
+  margin: 4px 10px;
+  font-size: 12px;
+}
+div.field-3d-settings > div:last-child {
+  margin: 2px 10px;
+  font-size: 12px;
+}
+div.source-list .spatial-error .value {
+  color: #d75b53;
+}
+@media (prefers-color-scheme: dark) {
+  div.source-list .spatial-error .value {
+    color: #ff8c84;
+  }
+}

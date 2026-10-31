@@ -144,8 +144,20 @@ export class SpatialLayers {
           .map((name) => ({ pose: this.resolve(name, fixed, time), annotation: { is2DSource: false } }))
       });
     } else if (type === "visualization_msgs/MarkerArray") {
-      for (const marker of msg.markers ?? []) {
-        if (marker.action === 2 || marker.action === 3) continue;
+      const active = new Map<string, { marker: any; stamp: number }>();
+      const history = log.getString(key + "/spatial", -Infinity, time);
+      history?.timestamps.forEach((stamp, i) => {
+        if (stamp > time) return;
+        for (const marker of JSON.parse(history.values[i]).markers ?? []) {
+          const id = (marker.ns ?? "") + ":" + marker.id;
+          if (marker.action === 3) active.clear();
+          else if (marker.action === 2) active.delete(id);
+          else active.set(id, { marker, stamp });
+        }
+      });
+      for (const { marker, stamp } of active.values()) {
+        const lifetime = Number(marker.lifetime?.sec ?? 0) + Number(marker.lifetime?.nanosec ?? 0) * 1e-9;
+        if (lifetime > 0 && time > stamp + lifetime) continue;
         const tf = this.resolve(marker.header?.frame_id, fixed, time);
         objects.push({ type: "marker", marker: { ...marker, pose: pose(marker.pose, tf).pose }, frameTransform: tf });
       }

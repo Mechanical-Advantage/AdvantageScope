@@ -46,6 +46,8 @@ export default class SourceList {
   private DRAG_HIGHLIGHT: HTMLElement;
   private DRAG_ITEM = document.getElementById("dragItem") as HTMLElement;
 
+  /** Optional spatial-layer diagnostics; other lists keep their normal value preview. */
+  itemStatus = new Map<string, { text: string; error: boolean }>();
   private stopped = false;
   private config: SourceListConfig;
   private configStr: string;
@@ -1254,6 +1256,10 @@ export default class SourceList {
       }
     }
 
+    const status = this.itemStatus.get(state.logKey);
+    if (status) text = status.text;
+    item.classList.toggle("spatial-error", status?.error === true);
+    valueText.title = status?.text ?? "";
     // Update state
     valueSymbol.hidden = text === null;
     valueText.hidden = text === null;
