@@ -44,6 +44,7 @@ export function registerChannel(log: Log, channel: Channel) {
   if (schema && !RAW_ONLY_TYPES.has(type)) createFieldsFromSchema(log, channel.topic, schema);
   return {
     channel,
+    lastTime: null as number | null,
     type,
     schema,
     decode: (bytes: Uint8Array): any =>
@@ -54,8 +55,17 @@ export type MappedChannel = ReturnType<typeof registerChannel>;
 export function mapMessage(log: Log, mapped: MappedChannel, time: number, bytes: Uint8Array): any {
   const key = mapped.channel.topic;
   log.putRaw(key, time, bytes);
+  const metadata = JSON.parse(log.getMetadataString(key) || "{}");
+  metadata.time_basis = "Foxglove message timestamp / server clock";
+  if (mapped.lastTime !== null && time > mapped.lastTime)
+    metadata.observed_hz = Number((1 / (time - mapped.lastTime)).toFixed(1));
+  mapped.lastTime = time;
+  log.setMetadataString(key, JSON.stringify(metadata));
   if (RAW_ONLY_TYPES.has(mapped.type)) return null;
   const value = mapped.decode(bytes);
+  const frame =
+    value.header?.frame_id ?? value.transforms?.[0]?.header?.frame_id ?? value.markers?.[0]?.header?.frame_id;
+  if (frame) log.setMetadataString(key, JSON.stringify({ ...metadata, frame_id: frame }));
   if (mapped.schema) writeRosMessage(log, key, time, value, mapped.schema);
   else writeUnknown(log, key, time, value);
   writeSpatialMessage(log, key, time, mapped.type, value);

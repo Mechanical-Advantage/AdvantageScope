@@ -24,6 +24,10 @@ test("Foxglove maps whole topics, numeric leaves and shared spatial snapshots", 
     pose: { position: { x: 2, y: 3, z: 0 }, orientation: { w: 1, x: 0, y: 0, z: 0 } }
   };
   mapMessage(log, channel, 4, new TextEncoder().encode(JSON.stringify(value)));
+  mapMessage(log, channel, 4.1, new TextEncoder().encode(JSON.stringify(value)));
+  const metadata = JSON.parse(log.getMetadataString("/pose"));
+  assert.equal(metadata.frame_id, "map");
+  assert.equal(metadata.observed_hz, 10);
   assert.equal(log.getStructuredType("/pose"), "geometry_msgs/PoseStamped");
   assert.equal(log.getNumber("/pose/pose/position/x", 4, 4)?.values[0], 2);
   assert.equal(log.getStructuredType("/pose/pose3d"), "Pose3d");
