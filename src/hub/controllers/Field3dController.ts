@@ -1,6 +1,8 @@
 import { DEFAULT_CAR_URDF } from "../../shared/spatial/DefaultCar";
-import { identity } from "../../shared/spatial/Transform";
+import { metadata } from "../../shared/spatial/SpatialLog";
+import { compose, identity } from "../../shared/spatial/Transform";
 import { computeLinkPoses, parseURDF, resolveMeshPath } from "../../shared/spatial/URDF";
+import { SpatialLayers } from "./SpatialLayers";
 // Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
@@ -32,6 +34,10 @@ import TabController from "./TabController";
 export default class Field3dController implements TabController {
   UUID = createUUID();
 
+  private spatial = new SpatialLayers();
+  private fixedFrame = document.createElement("input");
+  private frameAxes = document.createElement("input");
+  private layerStatus = document.createElement("div");
   private robot = parseURDF(DEFAULT_CAR_URDF);
   private robotAssets: Record<string, string> = {};
   private robotStatus = document.createElement("div");
@@ -97,7 +103,21 @@ export default class Field3dController implements TabController {
         this.robotStatus.textContent = String(error);
       }
     };
-    settings.append(load, folder, this.robotStatus);
+    const fixedLabel = document.createElement("label");
+    fixedLabel.textContent = "Fixed frame ";
+    this.fixedFrame.value = "map";
+    this.fixedFrame.size = 12;
+    this.fixedFrame.setAttribute("list", this.UUID + "-frames");
+    const frames = document.createElement("datalist");
+    frames.id = this.UUID + "-frames";
+    fixedLabel.append(this.fixedFrame, frames);
+    const axesLabel = document.createElement("label");
+    axesLabel.textContent = "Frame axes ";
+    this.frameAxes.type = "checkbox";
+    axesLabel.append(this.frameAxes);
+    settings.append(fixedLabel, axesLabel, load, folder, this.robotStatus);
+    root.append(this.layerStatus);
+    this.layerStatus.style.cssText = "position:absolute;bottom:4px;left:12px;font-size:12px;pointer-events:none";
     this.robotStatus.textContent = "MUR car · URDF";
     // Set up game select
     this.FIELD_SELECT.addEventListener("change", () => {
@@ -228,6 +248,8 @@ export default class Field3dController implements TabController {
   saveState(): unknown {
     return {
       sources: this.sourceList.getState(),
+      fixedFrame: this.fixedFrame.value,
+      frameAxes: this.frameAxes.checked,
       robot: this.robot,
       robotAssets: this.robotAssets,
       game: this.FIELD_SELECT.value
@@ -237,6 +259,8 @@ export default class Field3dController implements TabController {
   restoreState(state: unknown): void {
     if (typeof state !== "object" || state === null) return;
 
+    if ("fixedFrame" in state) this.fixedFrame.value = String(state.fixedFrame);
+    if ("frameAxes" in state) this.frameAxes.checked = Boolean(state.frameAxes);
     if ("robot" in state) this.robot = state.robot as typeof this.robot;
     if ("robotAssets" in state) this.robotAssets = state.robotAssets as typeof this.robotAssets;
     this.updateFieldOptions();
@@ -262,7 +286,15 @@ export default class Field3dController implements TabController {
   }
 
   getActiveFields(): string[] {
-    return this.sourceList.getActiveFields();
+    return [
+      ...this.sourceList.getActiveFields(),
+      ...window.log
+        .getFieldKeys()
+        .filter((key) =>
+          ["tf2_msgs/TFMessage", "sensor_msgs/JointState"].includes(window.log.getStructuredType(key) ?? "")
+        ),
+      "/robot_description"
+    ];
   }
 
   showTimeline(): boolean {
@@ -273,6 +305,24 @@ export default class Field3dController implements TabController {
     // Get timestamp
     let time = window.selection.getRenderTime();
 
+    this.spatial.begin(window.log, time ?? 0);
+    const fixed = this.fixedFrame.value;
+    const frames = this.fixedFrame.parentElement?.querySelector("datalist");
+    if (frames)
+      frames.replaceChildren(
+        ...this.spatial.tree.getFrames().map((frame) => {
+          const option = document.createElement("option");
+          option.value = frame;
+          return option;
+        })
+      );
+    this.layerStatus.replaceChildren();
+    const status = (text: string, error = false) => {
+      const chip = document.createElement("div");
+      chip.textContent = text;
+      chip.style.color = error ? "var(--red, #e66)" : "var(--subtle-text, #aaa)";
+      this.layerStatus.append(chip);
+    };
     // Get field data
     let fieldData = [...(window.assets === null ? [] : window.assets.field3ds), ...BuiltIn3dFields].find(
       (game) => game.id === this.FIELD_SELECT.value
@@ -285,6 +335,16 @@ export default class Field3dController implements TabController {
       let typeConfig = Field3dController_Config.types.find((typeConfig) => typeConfig.key === source.type);
       if (typeConfig?.childOf !== undefined) continue; // This is a child, don't render
 
+      if (source.type === "spatial" && time !== null) {
+        try {
+          const result = this.spatial.objects(window.log, source.logKey, time, fixed);
+          objects.push(...result.objects);
+          status(source.logKey + " · " + result.frame + " · " + result.stamp.toFixed(3) + " s");
+        } catch (error) {
+          status(source.logKey + " · " + String(error), true);
+        }
+        continue;
+      }
       // Find children
       let children: SourceListItemState[] = [];
       while (
@@ -321,6 +381,17 @@ export default class Field3dController implements TabController {
         poses = grabHeatmapData(window.log, source.logKey, source.logType, timeRange, this.UUID);
       }
 
+      const frame = metadata(window.log, source.logKey).frame_id;
+      if (frame && time !== null) {
+        try {
+          const transform = this.spatial.resolve(frame, fixed, time);
+          poses = poses.map((pose) => ({ ...pose, pose: compose(transform, pose.pose) }));
+          status(source.logKey + " · " + frame + " · cursor " + time.toFixed(3) + " s");
+        } catch (error) {
+          status(source.logKey + " · " + String(error), true);
+          poses = [];
+        }
+      }
       // Add data from children
       let components: AnnotatedPose3d[] = [];
       let mechanismsXZ: MechanismState[] = [];
@@ -427,7 +498,10 @@ export default class Field3dController implements TabController {
                 type: "urdf",
                 robot: this.robot,
                 assets: this.robotAssets,
-                links: computeLinkPoses(this.robot, {}, pose.pose).links
+                links: computeLinkPoses(this.robot, this.spatial.joints, pose.pose, (link) => {
+                  const result = this.spatial.tree.lookup(fixed, link, time ?? 0);
+                  return result.status === "ok" ? result.transform : null;
+                }).links
               })
             );
             break;
@@ -524,6 +598,17 @@ export default class Field3dController implements TabController {
         assets: this.robotAssets,
         links: computeLinkPoses(this.robot, {}, identity()).links
       });
+    if (this.frameAxes.checked && time !== null) {
+      const poses: AnnotatedPose3d[] = [];
+      for (const frame of this.spatial.tree.getFrames()) {
+        try {
+          poses.push({ pose: this.spatial.resolve(frame, fixed, time), annotation: { is2DSource: false } });
+        } catch (error) {
+          status(String(error), true);
+        }
+      }
+      objects.push({ type: "axes", poses });
+    }
     // Add built-in AprilTag objects
     if (fieldData !== undefined) {
       new Set(fieldData.aprilTags.map((x) => x.variant)).forEach((variant) => {

@@ -1,3 +1,4 @@
+import MarkerManager from "./field3d/objectManagers/MarkerManager";
 import URDFManager from "./field3d/objectManagers/URDFManager";
 // Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
@@ -407,6 +408,9 @@ export default class Field3dRendererImpl implements TabRenderer {
     ] as const;
     let manager: ObjectManager<Field3dRendererCommand_AnyObj>;
     switch (type) {
+      case "marker":
+        manager = new MarkerManager(...args);
+        break;
       case "urdf":
         manager = new URDFManager(...args);
         break;
@@ -669,7 +673,17 @@ export default class Field3dRendererImpl implements TabRenderer {
       };
 
       // Load new field
-      if (fieldId === "FRC:Evergreen" || fieldId === "FTC:Evergreen") {
+      if (fieldId.startsWith("MUR:")) {
+        this.isFieldLoading = false;
+        this.field = new THREE.Group();
+        this.fieldStagedPieces = new THREE.Group();
+        if (fieldId === "MUR:Grid") {
+          const grid = new THREE.GridHelper(100, 100, 0x666666, 0x444444);
+          grid.rotateX(Math.PI / 2);
+          this.field.add(grid);
+        }
+        newFieldReady();
+      } else if (fieldId === "FRC:Evergreen" || fieldId === "FTC:Evergreen") {
         this.isFieldLoading = false;
         this.field = makeEvergreenField(this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS, fieldId === "FTC:Evergreen");
         this.fieldStagedPieces = new THREE.Object3D();

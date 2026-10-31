@@ -16,6 +16,23 @@ const Field3dController_Config: SourceListConfig = {
   typeMemoryId: "field3d",
   types: [
     {
+      key: "spatial",
+      showDocs: false,
+      display: "Spatial topic",
+      symbol: "nearme",
+      showInTypeName: true,
+      color: "#ffffff",
+      sourceTypes: [
+        "geometry_msgs/PoseStamped",
+        "nav_msgs/Odometry",
+        "nav_msgs/Path",
+        "visualization_msgs/MarkerArray",
+        "tf2_msgs/TFMessage",
+        "sensor_msgs/PointCloud2"
+      ],
+      options: []
+    },
+    {
       key: "robot",
       display: "Robot",
       symbol: "nearme",

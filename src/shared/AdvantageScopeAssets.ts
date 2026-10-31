@@ -98,6 +98,19 @@ export interface Config3d_Rotation {
 }
 
 export const BuiltIn3dFields: Config3dField[] = [
+  ...["Grid", "None"].map((name) => ({
+    name,
+    path: "",
+    id: "MUR:" + name,
+    isFTC: false,
+    useGrid: false,
+    rotations: [],
+    position: [0, 0, 0] as [number, number, number],
+    widthInches: 1600,
+    heightInches: 800,
+    gamePieces: [],
+    aprilTags: []
+  })),
   {
     name: "Evergreen",
     path: "",

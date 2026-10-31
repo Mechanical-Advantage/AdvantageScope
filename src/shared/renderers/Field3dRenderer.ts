@@ -125,6 +125,7 @@ export type Field3dRendererCommand = {
 };
 
 export type Field3dRendererCommand_AnyObj =
+  | Field3dRendererCommand_MarkerObj
   | Field3dRendererCommand_URDFObj
   | Field3dRendererCommand_RobotObj
   | Field3dRendererCommand_GhostObj
@@ -211,3 +212,5 @@ export type Field3dRendererCommand_URDFObj = {
   assets: Record<string, string>;
   links: Record<string, Transform>;
 };
+
+export type Field3dRendererCommand_MarkerObj = { type: "marker"; marker: any; frameTransform: Transform };

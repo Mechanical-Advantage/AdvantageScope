@@ -1,3 +1,4 @@
+import { writeSpatialMessage } from "../../../shared/spatial/SpatialLog";
 // Copyright (c) 2026 Melbourne University Motorsports. Based on AdvantageScope (BSD-3-Clause, © Littleton Robotics).
 // https://github.com/Melbourne-University-Motorsports/mur-voir
 //
@@ -205,6 +206,7 @@ async function decode(keys: string[]): Promise<string[]> {
     const timestamp = getHeaderStamp(decoded) ?? logTime;
     log.putRaw(info.key, timestamp, message.data.slice());
     if (decoded === null) continue;
+    writeSpatialMessage(log, info.key, timestamp, info.rosType, decoded);
     if (info.rosSchema) {
       writeRosMessage(log, info.key, timestamp, decoded, info.rosSchema);
     } else {
