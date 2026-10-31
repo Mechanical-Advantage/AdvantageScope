@@ -8,6 +8,7 @@
 import { AnnotatedPose3d } from "../../shared/geometry";
 import Log from "../../shared/log/Log";
 import { Field3dRendererCommand_AnyObj } from "../../shared/renderers/Field3dRenderer";
+import { coneStyle } from "../../shared/spatial/ConeStyle";
 import { metadata, rosPose, spatialSnapshot } from "../../shared/spatial/SpatialLog";
 import { TFTree, normalizeFrameId } from "../../shared/spatial/TFTree";
 import { Transform, compose, identity } from "../../shared/spatial/Transform";
@@ -98,16 +99,9 @@ export class SpatialLayers {
     if (murType === "trajectory") {
       objects.push({ type: "trajectory", color: "#eeeeee", size: "normal", poses: msg.poses.map((p: any) => pose(p)) });
     } else if (murType === "cone_array") {
-      const colors: Record<string, string> = {
-        blue: "#287eff",
-        yellow: "#ffcf20",
-        small_orange: "#ff7f20",
-        big_orange: "#ff7f20",
-        orange_small: "#ff7f20",
-        orange_big: "#ff7f20"
-      };
       for (const cone of msg.cones) {
-        const large = String(cone.class).includes("big");
+        const style = coneStyle(cone);
+        const large = style?.large ?? false;
         objects.push({
           type: "marker",
           frameTransform: transform,
@@ -119,12 +113,7 @@ export class SpatialLayers {
               rotation: [1, 0, 0, 0]
             }),
             scale: { x: large ? 0.4 : 0.25, y: large ? 0.4 : 0.25, z: large ? 0.5 : 0.32 },
-            color:
-              cone.class === "blue"
-                ? { r: 0.05, g: 0.3, b: 1, a: 1 }
-                : cone.class === "yellow"
-                ? { r: 1, g: 0.8, b: 0, a: 1 }
-                : { r: 1, g: 0.4, b: 0, a: 1 }
+            color: style?.color ?? { r: 0.5, g: 0.5, b: 0.5, a: 1 }
           }
         });
       }
@@ -163,7 +152,16 @@ export class SpatialLayers {
         const lifetime = Number(marker.lifetime?.sec ?? 0) + Number(marker.lifetime?.nanosec ?? 0) * 1e-9;
         if (lifetime > 0 && time > stamp + lifetime) continue;
         const tf = this.resolve(marker.header?.frame_id, fixed, time);
-        objects.push({ type: "marker", marker: { ...marker, pose: pose(marker.pose, tf).pose }, frameTransform: tf });
+        const style = coneStyle(marker);
+        objects.push({
+          type: "marker",
+          marker: {
+            ...marker,
+            ...(style ? { shape: "cone", color: style.color } : {}),
+            pose: pose(marker.pose, tf).pose
+          },
+          frameTransform: tf
+        });
       }
     } else if (type === "geometry_msgs/PoseStamped" || type === "nav_msgs/Odometry") {
       const p = type === "nav_msgs/Odometry" ? msg.pose.pose : msg.pose;
@@ -219,7 +217,15 @@ export class SpatialLayers {
     const objects: Field3dRendererCommand_AnyObj[] = [];
     let frame = "",
       stamp = 0;
-    for (const { t, i } of indexes) {
+    // Only resolve the retained decoded scans. Older scans may no longer have TF history.
+    const field = options.field ?? "intensity";
+    const retained = new Set(
+      indexes
+        .filter(({ t }) => this.clouds.has(key + ":" + t + ":" + field))
+        .slice(-decay)
+        .map(({ t }) => t)
+    );
+    for (const { t, i } of indexes.filter(({ t }) => newest.has(t) || retained.has(t))) {
       const cacheKey = key + ":" + t + ":" + (options.field ?? "intensity");
       const result = this.clouds.get(cacheKey);
       if (!result && !newest.has(t)) continue;

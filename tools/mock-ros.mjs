@@ -88,11 +88,14 @@ const timer = setInterval(() => {
   const data = new Uint8Array(2400 * 16),
     view = new DataView(data.buffer);
   for (let i = 0; i < 2400; i++) {
-    const a = (i / 2400) * Math.PI * 2,
-      r = 7 + 2 * Math.sin(5 * a + t);
-    [r * Math.cos(a), r * Math.sin(a), 0.6 + 0.5 * Math.sin(3 * a), i % 256].forEach((v, j) =>
-      view.setFloat32(i * 16 + j * 4, v, true)
-    );
+    const a = ((i % 240) / 240) * Math.PI * 2,
+      r = 3 + Math.floor(i / 240) * 0.45 + 0.15 * Math.sin(5 * a + t);
+    [
+      r * Math.cos(a),
+      r * Math.sin(a),
+      -0.55 + 0.08 * Math.floor(i / 240) + 0.1 * Math.sin(3 * a),
+      (i * 17) % 256
+    ].forEach((v, j) => view.setFloat32(i * 16 + j * 4, v, true));
   }
   const messages = {
     "/clock": { clock: stamp },
@@ -120,15 +123,18 @@ const timer = setInterval(() => {
       }))
     },
     "/perception/cones": {
-      markers: Array.from({ length: 40 }, (_, i) => ({
+      markers: Array.from({ length: 44 }, (_, i) => ({
         header,
-        ns: "cones",
+        ns: i < 20 ? "cones_blue" : i < 40 ? "cones_yellow" : i < 42 ? "cones_small_orange" : "cones_big_orange",
         id: i,
         type: 3,
         action: 0,
-        pose: { position: { x: (i % 20) - 5, y: i < 20 ? -2 : 18, z: 0.16 }, orientation: { x: 0, y: 0, z: 0, w: 1 } },
-        scale: { x: 0.25, y: 0.25, z: 0.32 },
-        color: { r: i < 20 ? 0 : 1, g: i < 20 ? 0.3 : 0.8, b: i < 20 ? 1 : 0, a: 1 },
+        pose: {
+          position: { x: i < 40 ? (i % 20) - 5 : -4 + (i - 40) * 0.7, y: i < 20 ? 2 : -2, z: i >= 42 ? 0.25 : 0.16 },
+          orientation: { x: 0, y: 0, z: 0, w: 1 }
+        },
+        scale: { x: i >= 42 ? 0.4 : 0.25, y: i >= 42 ? 0.4 : 0.25, z: i >= 42 ? 0.5 : 0.32 },
+        color: { r: i < 20 ? 0 : 1, g: i < 20 ? 0.3 : i < 40 ? 0.8 : 0.35, b: i < 20 ? 1 : 0, a: 1 },
         lifetime: { sec: 0, nanosec: 0 },
         frame_locked: false,
         points: [],

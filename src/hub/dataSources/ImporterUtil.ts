@@ -134,7 +134,7 @@ export function runLazyWorker(
           sendResponse({ type: "initial", log: result.toSerialized(), isPartial: true });
         } catch (error) {
           console.error(error);
-          sendResponse({ type: "failed" });
+          sendResponse({ type: "failed", error: error instanceof Error ? error.message : String(error) });
         }
         break;
       case "parseField":

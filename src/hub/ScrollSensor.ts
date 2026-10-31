@@ -6,6 +6,13 @@
 // at the root directory of this project.
 
 export default class ScrollSensor {
+  private hintDismissed = false;
+
+  /** Shared navigation hints disappear on first interaction or while receiving live data. */
+  shouldHideHint(): boolean {
+    return this.hintDismissed || window.selection?.getCurrentLiveTime() != null;
+  }
+
   private SIZE_PX = 1000000;
   private RESET_MS = 1000;
 
@@ -35,6 +42,11 @@ export default class ScrollSensor {
     callback: (dx: number, dy: number, isPan: boolean, cursorX: number, cursorY: number) => void,
     mouseControl: ScrollSensorMouseControl = ScrollSensorMouseControl.PanX
   ) {
+    const dismissHint = () => {
+      this.hintDismissed = true;
+    };
+    container.addEventListener("pointerdown", dismissHint, { once: true });
+    container.addEventListener("wheel", dismissHint, { once: true, passive: true });
     this.container = container;
     this.callback = callback;
 

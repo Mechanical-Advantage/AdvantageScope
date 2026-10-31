@@ -49,14 +49,64 @@ Use `_electron` from `playwright`:
 
 The hub window is the one whose URL ends in `hub.html`.
 
-## Build Lite (web)
+## Build and deploy Lite (web)
+
+Build on a development machine (Node and npm required):
 
 ```bash
-ASCOPE_DISTRIBUTION=LITE npm run compile    # bundles into lite/static/bundles/
-cd lite
-pip install -r requirements.txt
-python3 lite_server.py                      # serves http://localhost:5808
+npm install
+npm run lite-build
+npm run lite-serve -- --port 5808 --backend http://127.0.0.1:8090
 ```
+
+Open `http://<base-station-host>:5808/` from a pit browser. The Node server binds to
+all interfaces, serves the bundled assets and proxies `/api/` HTTP and WebSocket
+requests to the MUR backend. The MUR connection dialog defaults to the page's
+own origin, so remote browsers connect to the base station rather than their own
+localhost. The address is editable: `http://base:8090/prefix` uses
+`/prefix/api/v1/...`, for a reverse proxy deployment. Serve at the origin root.
+For HTTPS, terminate TLS at a reverse proxy with WebSocket upgrades enabled;
+ROS and MQTT addresses must then use WSS.
+
+For a Linux/Raspberry Pi deployment, copy `lite/static/` (dereference its `www`
+symlink, e.g. `cp -RL lite/static staging/lite/static`) and
+`tools/lite-serve/main.mjs` preserving that directory structure. Run the Node
+server with a recent Node LTS; it needs no npm packages at runtime. The mock and
+build dependencies are development-only. The server has no host filesystem log
+browser or asset upload endpoint; logs and URDF folders are selected locally.
+
+The existing Python server is also supported:
+
+```bash
+cd lite
+python3 -m pip install -r requirements.txt
+python3 lite_server.py
+```
+
+It serves on port 5808. Enter the MUR backend address explicitly, or put both
+behind a reverse proxy routing `/api/` to the backend; Python does not proxy it.
+The optional `--enable-file-access` enables the original base-station log browser
+and asset ZIP uploads. Use File → Browse Base Station Logs for that flow.
+
+File → Open Log uses the browser file picker. Select CSV, candump `.log`, MCAP,
+JSONL, WPILOG or RLOG; select companion `.dbc`, `<stem>.json`,
+`<stem>.markers.csv` and `<file>.enums.json` alongside the log when needed.
+Without custom DBCs, CAN decoding uses the bundled mur-msgs set. File → Export
+Layout downloads desktop-compatible JSON; Import Layout restores its first hub.
+Preferences and the current layout persist in this browser's local storage.
+The 3D tab's Load URDF folder uses Chromium's directory picker and embeds local
+meshes in layouts; expand xacro first.
+
+```bash
+npm run lite-smoke                 # builds, starts isolated servers and Chromium
+npm run lite-smoke -- --skip-build # reuse the last Lite build
+```
+
+Install Chromium with `npx playwright install chromium` if it is not cached.
+The smoke script is separate from `npm test`; it checks same-host MUR HTTP/WS,
+a live value, graph, health strip, layout download/upload and CSV import, then
+closes its browser and servers. Override `LITE_SMOKE_PORT` and
+`LITE_SMOKE_MOCK_PORT` if its defaults (15808 and 18091) are occupied.
 
 ## Package the desktop app
 
@@ -106,12 +156,32 @@ Historical importers are workers in `src/hub/dataSources/` registered in `Histor
 | ----------------------------------------------------------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | CSV (wide or long, `,` `;` tab, quoted, BOM, `name [unit]`/`name (unit)`/MoTeC units row) | `csv/csvWorker.ts`     | the column name; dotted names (`Car.Data.Motor.MotorRPM`) become tree paths (`Car/Data/Motor/MotorRPM`); file info is under `Metadata`                                                                                                              |
 | candump `-L` + DBCs                                                                       | `can/candumpWorker.ts` | `<NODE>/<Signal>` (NODE = transmitter on the DBC `BO_` line); enum signals hold the label, with the number at `<NODE>/<Signal>/raw`; `CAN/Unknown/0x<ID>`, `CAN/<iface>/ErrorFrame`, `Markers`, `Metadata/Run` (`.json` sidecar), `Metadata/Import` |
-| MCAP (ros2msg/cdr, protobuf, json; zstd chunks)                                           | `mcap/mcapWorker.ts`   | `<topic>` (raw message bytes, `structuredType` = ROS type) plus decoded children; ROS enum fields hold the constant name, with the number at `/raw`; `<topic>/pose3d` (Pose3d) and `<topic>/poses3d` (Pose3d[]) for pose and path types             |
+| MCAP (ros2msg/cdr, protobuf, json; zstd/LZ4 chunks)                                       | `mcap/mcapWorker.ts`   | `<topic>` (raw message bytes, `structuredType` = ROS type) plus decoded children; ROS enum fields hold the constant name, with the number at `/raw`; `<topic>/pose3d` (Pose3d) and `<topic>/poses3d` (Pose3d[]) for pose and path types             |
 | Base-station JSONL                                                                        | `jsonl/jsonlWorker.ts` | the same `<NODE>/<Signal>` paths as candump for `can<bus>.<Msg>.<Sig>`; other signals are dotted names turned into tree paths                                                                                                                       |
 
 - **CAN decoding.** The merged DBC set is decoded by ID, so the bench naming (`can1` = Control) and the radio naming (`can0` = Control) give the same paths. The DBCs are bundled from mur-msgs (`src/hub/dataSources/can/dbc/SOURCE.txt` records the commit), or come from the DBC folder set in Preferences. No-data sentinels become `NaN`, which the line graph draws as a gap: the `0xFFFF (6553.5) = invalid` values named in DBC comments, plus all-ones (or max-positive) raw values that fall outside the signal's declared range.
 - **MCAP time.** Each message uses its `header.stamp` if it has a non-zero one; otherwise its log time. `PointCloud2`, `Image`, `CompressedImage`, `LaserScan` and `OccupancyGrid` are kept as raw CDR only, and their `.msg` definition is stored in the field metadata. Arrays are capped at 64 items.
 - **Tests.** Run `npm test`. It bundles `test/**/*.test.ts` with rolldown and runs them with `node --test`.
+
+### MDF4 / MF4 recordings
+
+`.mf4` and `.mdf` use `mf4/mf4Worker.ts` in desktop and Lite. The parser validates block bounds and linked lists, indexes fixed-size records (sorted or interleaved record IDs), and decodes requested fields only. DT, DL, HL and zlib DZ storage, including transposed DZ, are supported. Channels include endian-aware integers, floats, strings and byte arrays, master time, units from CC/TX/MD, and identity, linear, rational, interpolated/nearest/range tables and enum conversions. Unsupported MDF 3.x files produce an explicit error; export them as MDF4 first. Algebraic/text-to-value conversions, variable-length records, external data and newer compression codecs are unsupported and should be exported to fixed-record MDF4/zlib.
+
+Decoded channels use `<acquisition name or source>/<channel>` (a numbered group when unnamed). Enum labels have a numeric `/raw` child. `CAN_DataFrame` compositions are indexed into the **same candump importer**, using bundled DBC paths, multiplexing, enum labels and no-data sentinels. A Preferences DBC folder also applies on desktop. CAN remote/error groups are currently skipped. Multipart Wireless-telem files open individually; automatic concatenation and manifest/DBC snapshot discovery are not implemented. Their timestamps retain the shared run-relative time, so no per-part timestamp rebasing occurs.
+
+Fixtures under `test/fixtures/mf4/` are below 3 KB each. Regenerate with `python tools/mf4/generate.py` in an environment containing `asammdf` and `numpy` (for example, create `refs/venvs/mf4` with `python3 -m venv`, then install those packages). The generator independently reads back the unsorted fixture with asammdf. Tests check physical values/timestamps against its output, endian/bit fields, conversions, enums, CAN sentinels and compression variants.
+
+Validation on the supplied Wireless-telem run: all three parts opened (31,605 / 31,689 / 17,232 records, 387 CAN fields each). The decoded live MF4's **80 channels / 2,242 samples and timestamps matched asammdf exactly**.
+
+### MCAP decompression performance
+
+`mcap/Compression.ts` uses embedded WASM `zstddec` (MIT and BSD-3-Clause), with `fzstd` if WASM initialization is unavailable, and `lz4js` (ISC) for LZ4 frames. The worker retains a 512 MB bounded decompressed cache. `McapIndexedReader.readMessages({topics})` uses chunk/channel message indexes before decompression; an integration test proves an unrelated topic's LZ4 chunk is skipped.
+
+On `refs/foxglove-sample-data/mur_fsae_synthetic.mcap` (80 MB, 101 chunks), cold `/vehicle/state` first-field delivery in Electron went from **3.54 s to 1.27 s** (indexing + decode + worker serialization; excludes disk IO and drawing). The decode phase alone was **3.46 s to 1.18 s**. A Node indexed-reader benchmark over all 2,001 messages went from **6.87 s to 0.73 s**. Timings vary with machine load and are not a CI assertion. Reproduce the reader comparison from the worktree with:
+
+```bash
+node tools/mcap/benchmark.mjs /path/to/mur_fsae_synthetic.mcap
+```
 
 ### Channel display profiles
 

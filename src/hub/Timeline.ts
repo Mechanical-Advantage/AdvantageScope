@@ -252,7 +252,7 @@ export default class Timeline {
     let helpTextWidth = context.measureText(helpText).width;
 
     // Reset scrollTime once preference is set
-    let hasScrolledTimeline = window.preferences?.hasScrolledTimeline ?? false;
+    let hasScrolledTimeline = (window.preferences?.hasScrolledTimeline ?? false) || this.scrollSensor.shouldHideHint();
     if (hasScrolledTimeline) {
       this.scrollTime = null;
       this.zoomInAccumulator = 0;

@@ -33,7 +33,6 @@ export default class LineGraphRenderer implements TabRenderer {
   private mouseDownX = 0;
   private grabZoomActive = false;
   private grabZoomStartTime = 0;
-  private interacted = false;
   private lastCursorX: number | null = null;
   private lastHoveredTime: number | null = null;
   private lastCursorInRect = false;
@@ -62,7 +61,6 @@ export default class LineGraphRenderer implements TabRenderer {
 
     // Selection handling
     this.SCROLL_OVERLAY.addEventListener("mousedown", (event) => {
-      this.interacted = true;
       this.mouseDownX = event.clientX - this.SCROLL_OVERLAY.getBoundingClientRect().x;
       if (event.shiftKey && this.lastHoveredTime !== null) {
         this.grabZoomActive = true;
@@ -105,7 +103,6 @@ export default class LineGraphRenderer implements TabRenderer {
       this.SCROLL_OVERLAY,
       (dx: number, dy: number, isPan: boolean, _cursorX: number, _cursorY: number) => {
         if (root.hidden) return;
-        this.interacted = true;
         window.selection.applyTimelineScroll(dx, isPan ? 0 : dy, this.SCROLL_OVERLAY.clientWidth);
 
         if (window.preferences && !window.preferences.hasScrolledLineGraph && !this.isFadingOut) {
@@ -139,14 +136,8 @@ export default class LineGraphRenderer implements TabRenderer {
 
     // Update help overlay
     if (this.HELP_OVERLAY) {
-      const hasScrolled = window.preferences?.hasScrolledLineGraph ?? false;
-      this.HELP_OVERLAY.style.display =
-        this.interacted ||
-        hasScrolled ||
-        command.selectionMode === SelectionMode.Locked ||
-        command.selectionMode === SelectionMode.Playback
-          ? "none"
-          : "flex";
+      const hasScrolled = (window.preferences?.hasScrolledLineGraph ?? false) || this.scrollSensor.shouldHideHint();
+      this.HELP_OVERLAY.style.display = hasScrolled ? "none" : "flex";
       if (hasScrolled) {
         this.isFadingOut = false;
         this.zoomInAccumulator = 0;

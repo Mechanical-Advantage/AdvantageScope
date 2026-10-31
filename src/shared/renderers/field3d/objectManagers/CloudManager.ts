@@ -27,7 +27,7 @@ export default class CloudManager extends ObjectManager<Field3dRendererCommand_C
     );
     const material = new THREE.ShaderMaterial({
       uniforms: {
-        pointSize: { value: object.size },
+        pointSize: { value: object.size * window.devicePixelRatio },
         low: { value: object.min },
         high: { value: object.max },
         rgb: { value: object.colors !== null },
@@ -36,7 +36,7 @@ export default class CloudManager extends ObjectManager<Field3dRendererCommand_C
       vertexShader: `attribute float value; attribute vec3 pointColor; varying float v; varying vec3 c; uniform float pointSize; uniform float low; uniform float high;
       void main(){v=clamp((value-low)/max(high-low,0.00001),0.,1.);c=pointColor;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);gl_PointSize=pointSize;}`,
       fragmentShader: `varying float v; varying vec3 c; uniform bool rgb; uniform bool turbo;
-      void main(){vec3 col=mix(mix(vec3(.267,.005,.329),vec3(.128,.567,.551),clamp(v*2.,0.,1.)),vec3(.993,.906,.144),clamp(v*2.-1.,0.,1.));
+      void main(){if(length(gl_PointCoord-vec2(.5))>.5) discard;vec3 col=mix(mix(vec3(.267,.005,.329),vec3(.128,.567,.551),clamp(v*2.,0.,1.)),vec3(.993,.906,.144),clamp(v*2.-1.,0.,1.));
       if(turbo) col=clamp(vec3(1.5)-abs(4.*v-vec3(3.,2.,1.)),0.,1.);gl_FragColor=vec4(rgb?c:col,1.);}`
     });
     this.points = new THREE.Points(geo, material);
