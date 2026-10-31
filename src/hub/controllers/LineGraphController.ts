@@ -83,6 +83,8 @@ export default class LineGraphController implements TabController {
     check.checked = this.showThresholds;
     check.onchange = () => (this.showThresholds = check.checked);
     toggle.append(check, "Health limits");
+    toggle.title = "Draw health-strip warn/crit thresholds on matching axes";
+    mode.title = "X axis: session time, lap time, or lap distance with ΔT";
     controls.append(toggle);
     root.append(controls);
     // Make source lists
@@ -988,6 +990,17 @@ export default class LineGraphController implements TabController {
             result.thresholds.push({ axis, value, label: `${tile.label} ${critical ? "CRIT" : "WARN"}`, critical });
           }
         }
+      }
+      // Auto-scaled axes stretch to keep the warning line in view (untick "Health limits" for a tight fit)
+      for (const [axis, dataRange, locked] of [
+        ["left", leftDataRange, this.leftLockedRange],
+        ["right", rightDataRange, this.rightLockedRange]
+      ] as const) {
+        const warn = result.thresholds.filter((t) => t.axis === axis && !t.critical).map((t) => t.value);
+        if (locked !== null || warn.length === 0 || !isFinite(dataRange[0])) continue;
+        const range = calcRange([Math.min(dataRange[0], ...warn), Math.max(dataRange[1], ...warn)], null);
+        if (axis === "left") result.leftRange = range;
+        else result.rightRange = range;
       }
     }
     if (this.lapMode !== "time") {

@@ -1027,11 +1027,20 @@ table.metadata-table td.no-data {
 .graph-inline-controls {
   position: absolute;
   right: 8px;
-  top: -27px;
+  bottom: 6px;
+  z-index: 2;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.85);
   font-size: 11px;
+  opacity: 0.8;
+}
+.graph-inline-controls:hover,
+.graph-inline-controls:focus-within {
+  opacity: 1;
 }
 .graph-inline-controls label {
   display: flex;
@@ -1039,12 +1048,21 @@ table.metadata-table td.no-data {
   gap: 3px;
 }
 .lap-axis-mode {
-  max-width: 170px;
+  max-width: 150px;
+  height: 20px;
   font-size: 11px;
-  color-scheme: light dark;
   color: inherit;
-  background: Canvas;
-  border: 1px solid #777;
-  border-radius: 3px;
-  padding: 2px 4px;
+  background: transparent;
+  border: 1px solid rgba(128, 128, 128, 0.5);
+  border-radius: 4px;
+  padding: 0 4px;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  .graph-inline-controls {
+    background: rgba(34, 34, 34, 0.85);
+  }
+  .lap-axis-mode option {
+    background: #333;
+  }
 }
