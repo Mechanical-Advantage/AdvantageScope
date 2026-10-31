@@ -14,19 +14,17 @@ import { AUTONOMOUS_KEYS, ENABLED_KEYS, UTILITY_KEYS } from "../../../shared/log
 import { checkArrayType } from "../../../shared/util";
 import { LiveDataSource, LiveDataSourceStatus } from "../LiveDataSource";
 import CustomSchemas from "../schema/CustomSchemas";
-import { NT4_Client, NT4_PORTS_DEFAULT, NT4_PORTS_DS, NT4_PORTS_SYSTEMCORE, NT4_Topic } from "./NT4";
+import { NT4_Client, NT4_PORTS_DEFAULT, NT4_PORTS_SYSTEMCORE, NT4_Topic } from "./NT4";
 import NT4Tuner from "./NT4Tuner";
 
 export const WPILOG_PREFIX = "NT:";
-export const DS_PREFIX = "DS:";
 export const AKIT_PREFIX = "/AdvantageKit";
 export const AKIT_TUNING_PREFIX = "/Tuning";
 
 export enum NT4Mode {
   Default,
   AdvantageKit,
-  Systemcore,
-  DriverStation
+  Systemcore
 }
 
 export default class NT4Source extends LiveDataSource {
@@ -108,9 +106,6 @@ export default class NT4Source extends LiveDataSource {
           switch (this.mode) {
             case NT4Mode.AdvantageKit:
               initialKeys = ["/.schema", "/Timestamp"];
-              break;
-            case NT4Mode.DriverStation:
-              initialKeys = [DS_PREFIX + "/.schema"];
               break;
             default:
               initialKeys = [
@@ -220,9 +215,6 @@ export default class NT4Source extends LiveDataSource {
         case NT4Mode.Systemcore:
           ports = NT4_PORTS_SYSTEMCORE;
           break;
-        case NT4Mode.DriverStation:
-          ports = NT4_PORTS_DS;
-          break;
         default:
           ports = NT4_PORTS_DEFAULT;
           break;
@@ -230,7 +222,7 @@ export default class NT4Source extends LiveDataSource {
       this.client = new NT4_Client(
         address,
         ports,
-        IS_LITE ? "AdvantageScopeLite" : "AdvantageScope",
+        IS_LITE ? "mur-voir-lite" : "mur-voir",
         (topic: NT4_Topic) => {
           // Announce
           if (!this.log) return;
@@ -421,7 +413,7 @@ export default class NT4Source extends LiveDataSource {
   }
 
   private getLogPrefix(): string {
-    return this.mode === NT4Mode.DriverStation ? DS_PREFIX : WPILOG_PREFIX;
+    return WPILOG_PREFIX;
   }
 
   /** Gets the name of the topic, depending on whether we're running in AdvantageKit mode. */

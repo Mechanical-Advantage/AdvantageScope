@@ -7,37 +7,30 @@
 
 import { TabsState } from "../shared/HubState";
 import LineGraphFilter from "../shared/LineGraphFilter";
-import TabType, { getDefaultTabTitle, getTabIcon } from "../shared/TabType";
-import { Distribution, DISTRIBUTION } from "../shared/buildConstants";
+import TabType, { getAllTabTypes, getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import { getAutonomousKey, getEnabledKey, getUtilityKey } from "../shared/log/RobotState";
 import ConsoleRenderer from "../shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
 import Field2dRenderer from "../shared/renderers/Field2dRenderer";
 import Field3dRenderer from "../shared/renderers/Field3dRenderer";
-import JoysticksRenderer from "../shared/renderers/JoysticksRenderer";
 import LineGraphRenderer from "../shared/renderers/LineGraphRenderer";
-import MechanismRenderer from "../shared/renderers/MechanismRenderer";
 import MetadataRenderer from "../shared/renderers/MetadataRenderer";
 import PointsRenderer from "../shared/renderers/PointsRenderer";
 import StatisticsRenderer from "../shared/renderers/StatisticsRenderer";
-import SwerveRenderer from "../shared/renderers/SwerveRenderer";
 import TabRenderer, { NoopRenderer } from "../shared/renderers/TabRenderer";
 import TableRenderer from "../shared/renderers/TableRenderer";
 import VideoRenderer from "../shared/renderers/VideoRenderer";
 import { Units } from "../shared/units";
 import { clampValue } from "../shared/util";
 import ScrollSensor, { ScrollSensorMouseControl } from "./ScrollSensor";
-import Timeline from "./Timeline";
+import Timeline, { TimelineBand } from "./Timeline";
 import ConsoleController from "./controllers/ConsoleController";
 import Field2dController from "./controllers/Field2dController";
 import Field3dController from "./controllers/Field3dController";
-import JoysticksController from "./controllers/JoysticksController";
 import LineGraphController from "./controllers/LineGraphController";
-import MechanismController from "./controllers/MechanismController";
 import MetadataController from "./controllers/MetadataController";
 import PointsController from "./controllers/PointsController";
 import StatisticsController from "./controllers/StatisticsController";
-import SwerveController from "./controllers/SwerveController";
 import TabController, { NoopController } from "./controllers/TabController";
 import TableController from "./controllers/TableController";
 import VideoController from "./controllers/VideoController";
@@ -79,7 +72,6 @@ export default class Tabs {
   }[] = [];
   private selectedTab = 0;
   private activeSatellites: string[] = [];
-  private activeXRUUID: string | null = null;
   private controlsHandleActive = false;
 
   constructor() {
@@ -92,9 +84,6 @@ export default class Tabs {
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Field2d, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Field3d, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Video, 85);
-    this.FIXED_CONTROL_HEIGHTS.set(TabType.Joysticks, 85);
-    this.FIXED_CONTROL_HEIGHTS.set(TabType.Swerve, undefined);
-    this.FIXED_CONTROL_HEIGHTS.set(TabType.Mechanism, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Points, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Metadata, 0);
 
@@ -158,7 +147,7 @@ export default class Tabs {
             tabIndex = index;
           }
         });
-        if (tabIndex === 0 && DISTRIBUTION !== Distribution.LiteDS) return;
+        if (tabIndex === 0) return;
 
         // Trigger drag event
         while (this.DRAG_ITEM.firstChild) {
@@ -186,7 +175,7 @@ export default class Tabs {
     this.SCROLL_OVERLAY.addEventListener("contextmenu", (event) => {
       mouseDownInfo = null;
       this.tabList.forEach((tab, index) => {
-        if (index === 0 && DISTRIBUTION !== Distribution.LiteDS) return;
+        if (index === 0) return;
         let rect = tab.titleElement.getBoundingClientRect();
         if (
           event.clientX >= rect.left &&
@@ -268,10 +257,6 @@ export default class Tabs {
 
       let closestDist = Infinity;
       let closestIndex = 0;
-      if (DISTRIBUTION === Distribution.LiteDS && this.tabList.length > 0) {
-        closestDist = Math.abs(x - this.tabList[0].titleElement.getBoundingClientRect().left);
-        closestIndex = -1;
-      }
       this.tabList.forEach((tab, index) => {
         let dist = Math.abs(x - tab.titleElement.getBoundingClientRect().right);
         if (dist < closestDist) {
@@ -290,34 +275,20 @@ export default class Tabs {
       } else {
         this.DRAG_HIGHLIGHT.hidden = false;
         let highlightX = 0;
-        if (closestIndex === -1) {
-          highlightX =
-            this.tabList[0].titleElement.getBoundingClientRect().left -
-            this.SCROLL_OVERLAY.getBoundingClientRect().left +
-            10;
-        } else {
-          highlightX =
-            this.tabList[closestIndex].titleElement.getBoundingClientRect().right -
-            this.SCROLL_OVERLAY.getBoundingClientRect().left +
-            10;
-        }
+        highlightX =
+          this.tabList[closestIndex].titleElement.getBoundingClientRect().right -
+          this.SCROLL_OVERLAY.getBoundingClientRect().left +
+          10;
         this.DRAG_HIGHLIGHT.style.left = highlightX.toString() + "px";
       }
     });
 
     // Add default tabs
-    if (DISTRIBUTION === Distribution.LiteDS) {
-      this.addTab(TabType.LineGraph);
-      this.addTab(TabType.Console);
-      this.addTab(TabType.Joysticks);
-      this.setSelected(0);
-    } else {
-      this.addTab(TabType.Documentation);
-      this.addTab(TabType.LineGraph);
-      this.addTab(TabType.Field2d);
-      this.addTab(TabType.Field3d);
-      this.setSelected(1);
-    }
+    this.addTab(TabType.Documentation);
+    this.addTab(TabType.LineGraph);
+    this.addTab(TabType.Field2d);
+    this.addTab(TabType.Field3d);
+    this.setSelected(1);
 
     // Scroll management
     this.tabsScrollSensor = new ScrollSensor(
@@ -348,8 +319,7 @@ export default class Tabs {
       this.tabList.forEach((tab, index) => {
         let activeLocal = index === this.selectedTab;
         let activeSatellite = this.activeSatellites.includes(tab.controller.UUID);
-        let activeXR = tab.controller.UUID === this.activeXRUUID;
-        if (activeLocal || activeSatellite || activeXR) {
+        if (activeLocal || activeSatellite) {
           if (tab.type === TabType.Table) {
             // Update range from renderer
             let renderer = tab.renderer as TableRenderer;
@@ -372,9 +342,6 @@ export default class Tabs {
               command: command,
               title: title
             });
-          }
-          if (activeXR) {
-            window.sendMainMessage("update-xr-command", command);
           }
         }
       });
@@ -431,18 +398,21 @@ export default class Tabs {
     });
     this.tabList = [];
     this.selectedTab = 0;
-    state.tabs.forEach((tabState, index) => {
-      this.addTab(tabState.type);
-      if (tabState.title) this.renameTab(index, tabState.title);
-      this.tabList[index].controller.UUID = tabState.controllerUUID;
-      this.tabList[index].controller.restoreState(tabState.controller);
-      this.tabList[index].renderer.restoreState(tabState.renderer);
+    const supportedTypes = getAllTabTypes();
+    state.tabs
+      .filter((tabState) => supportedTypes.includes(tabState.type)) // Skip tabs that have been removed
+      .forEach((tabState, index) => {
+        this.addTab(tabState.type);
+        if (tabState.title) this.renameTab(index, tabState.title);
+        this.tabList[index].controller.UUID = tabState.controllerUUID;
+        this.tabList[index].controller.restoreState(tabState.controller);
+        this.tabList[index].renderer.restoreState(tabState.renderer);
 
-      let tabConfig = this.FIXED_CONTROL_HEIGHTS.get(tabState.type);
-      if (tabState.controlsHeight === 0 || tabConfig === undefined) {
-        this.tabList[index].controlsHeight = tabState.controlsHeight;
-      }
-    });
+        let tabConfig = this.FIXED_CONTROL_HEIGHTS.get(tabState.type);
+        if (tabState.controlsHeight === 0 || tabConfig === undefined) {
+          this.tabList[index].controlsHeight = tabState.controlsHeight;
+        }
+      });
     this.selectedTab = state.selected >= this.tabList.length ? this.tabList.length - 1 : state.selected;
     this.updateElements();
     this.updateControlsHeight();
@@ -548,18 +518,6 @@ export default class Tabs {
         controller = new VideoController(controlsElement);
         renderer = new VideoRenderer(rendererElement);
         break;
-      case TabType.Joysticks:
-        controller = new JoysticksController(controlsElement);
-        renderer = new JoysticksRenderer(rendererElement);
-        break;
-      case TabType.Swerve:
-        controller = new SwerveController(controlsElement);
-        renderer = new SwerveRenderer(rendererElement);
-        break;
-      case TabType.Mechanism:
-        controller = new MechanismController(controlsElement);
-        renderer = new MechanismRenderer(rendererElement);
-        break;
       case TabType.Points:
         controller = new PointsController(controlsElement);
         renderer = new PointsRenderer(rendererElement);
@@ -621,21 +579,15 @@ export default class Tabs {
   }
 
   /** Closes the specified tab. */
-  close(index: number, force = false) {
-    let minIndex = DISTRIBUTION === Distribution.LiteDS ? (this.tabList.length > 1 ? 0 : 1) : 1;
-    if (index < minIndex || index > this.tabList.length - 1) return;
+  close(index: number) {
+    if (index < 1 || index > this.tabList.length - 1) return;
 
-    // If active XR, confirm before closing
-    if (!force && this.tabList[index].controller.UUID === this.activeXRUUID) {
-      window.sendMainMessage("confirm-xr-close", this.activeXRUUID);
-    } else {
-      this.RENDERER_CONTENT.removeChild(this.tabList[index].rendererElement);
-      this.CONTROLS_CONTENT.removeChild(this.tabList[index].controlsElement);
-      this.tabList.splice(index, 1);
-      if (this.selectedTab > index) this.selectedTab--;
-      if (this.selectedTab > this.tabList.length - 1) this.selectedTab = this.tabList.length - 1;
-      this.updateElements();
-    }
+    this.RENDERER_CONTENT.removeChild(this.tabList[index].rendererElement);
+    this.CONTROLS_CONTENT.removeChild(this.tabList[index].controlsElement);
+    this.tabList.splice(index, 1);
+    if (this.selectedTab > index) this.selectedTab--;
+    if (this.selectedTab > this.tabList.length - 1) this.selectedTab = this.tabList.length - 1;
+    this.updateElements();
   }
 
   /** Returns the index of the selected tab. */
@@ -657,7 +609,7 @@ export default class Tabs {
 
   /** Moves the specified tab left or right. */
   shift(index: number, shift: number) {
-    let minIndex = DISTRIBUTION === Distribution.LiteDS ? 0 : 1;
+    const minIndex = 1;
     if (index < minIndex) return;
     if (index + shift < minIndex) shift = minIndex - index;
     if (index + shift > this.tabList.length - 1) shift = this.tabList.length - 1 - index;
@@ -674,19 +626,14 @@ export default class Tabs {
     this.updateElements();
   }
 
+  /** Sets the source of bands drawn behind the timeline (e.g. laps). */
+  setTimelineBandSupplier(supplier: () => TimelineBand[]) {
+    this.timeline.setBandSupplier(supplier);
+  }
+
   /** Updates the list of active satellites for data publishing. */
   setActiveSatellites(activeSatellites: string[]) {
     this.activeSatellites = activeSatellites;
-  }
-
-  /** Updates the UUID for the tab broadcasting to XR. */
-  setActiveXRUUID(uuid: string | null) {
-    this.activeXRUUID = uuid;
-    this.tabList.forEach((tab) => {
-      if (tab.type === TabType.Field3d) {
-        (tab.controller as Field3dController).setXRActive(tab.controller.UUID === uuid);
-      }
-    });
   }
 
   /** Check whether the UUID is associated with a tab. */

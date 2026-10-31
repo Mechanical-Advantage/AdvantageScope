@@ -10,7 +10,6 @@ import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUti
 import { getSpiralIndex } from "../../util";
 import { disposeObject } from "../Field3dRendererImpl";
 
-export const XR_MAX_RADIUS = 0.08;
 export const LOW_POWER_MAX_RADIUS = 0.08;
 export const STANDARD_MAX_RADIUS = 0.04;
 export const CINEMATIC_MAX_RADIUS = 0.02;

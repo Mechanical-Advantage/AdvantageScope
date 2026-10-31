@@ -11,21 +11,18 @@ import fs from "fs";
 import { replacePlugin } from "rolldown/plugins";
 import cleanup from "rollup-plugin-cleanup";
 
-const isWpilib = process.env.ASCOPE_DISTRIBUTION === "WPILIB";
-const isDS = process.env.ASCOPE_DISTRIBUTION === "LITEDS";
-const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE" || isDS;
+const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE";
 const licenseHeader =
-  "// Copyright (c) 2021-2026 Littleton Robotics\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the resources directory of this application.\n";
+  "// Copyright (c) 2021-2026 Littleton Robotics\n// Copyright (c) 2026 Melbourne University Motorsport\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the resources directory of this application.\n";
 
 /**
  * @import { RolldownOptions } from "rolldown"
  * @param input {string[]}
  * @param isMain {boolean}
- * @param isXRClient {boolean}
  * @param external {string[]}
  * @returns {RolldownOptions}
  */
-function bundle(input, isMain, isXRClient, external = []) {
+function bundle(input, isMain, external = []) {
   const packageJson = JSON.parse(
     fs.readFileSync("package.json", {
       encoding: "utf-8"
@@ -38,8 +35,8 @@ function bundle(input, isMain, isXRClient, external = []) {
       chunkFileNames: "chunk/[name].js",
       format: isMain ? "cjs" : "es",
       banner: licenseHeader,
-      minify: isXRClient || isLite || "dce-only",
-      minifyInternalExports: isXRClient || isLite
+      minify: isLite || "dce-only",
+      minifyInternalExports: isLite
     },
     context: "this",
     external: external,
@@ -48,13 +45,7 @@ function bundle(input, isMain, isXRClient, external = []) {
     },
     plugins: [
       typescript(),
-      isXRClient
-        ? getBabelOutputPlugin({
-            presets: [["@babel/preset-env", { modules: false }]],
-            compact: true,
-            targets: "iOS 16" // AdvantageScope XR is built for iOS 16
-          })
-        : isLite
+      isLite
         ? getBabelOutputPlugin({
             presets: [["@babel/preset-env", { modules: false }]],
             compact: true,
@@ -63,7 +54,7 @@ function bundle(input, isMain, isXRClient, external = []) {
         : cleanup(),
       replacePlugin(
         {
-          __distribution__: isWpilib ? "WPILib" : isDS ? "LiteDS" : isLite ? "Lite" : "FRC6328",
+          __distribution__: isLite ? "Lite" : "FRC6328",
           __version__: packageJson.version,
           __build_date__: new Date().toISOString(),
           __copyright__: packageJson.build.copyright
@@ -82,46 +73,24 @@ function bundle(input, isMain, isXRClient, external = []) {
   };
 }
 
-export default (cliArgs) => {
-  // Owlet download
-  if (cliArgs.configRunOwletDownload === true) {
-    return [
-      {
-        input: "src/runOwletDownload.ts",
-        output: {
-          file: "runOwletDownload.js",
-          format: "cjs"
-        },
-        context: "this",
-        external: ["download"],
-        plugins: [typescript()],
-        onwarn() {}
-      }
-    ];
-  }
-
+export default () => {
   return [
     // Main bundles
     ...(isLite
-      ? [bundle(["main/lite/main.ts"], false, false)]
+      ? [bundle(["main/lite/main.ts"], false)]
       : [
-          bundle(["main/electron/main.ts"], true, false, [
+          bundle(["main/electron/main.ts"], true, [
             "electron",
             "fs",
             "jsonfile",
             "net",
             "os",
-            "ws",
             "http",
             "path",
-            "ssh2",
             "download",
-            "youtube-dl-exec",
-            "tesseract.js",
-            "lzma-native",
-            "@rev-robotics/revlog-converter"
+            "lzma-native"
           ]),
-          bundle(["preload.ts"], true, false, ["electron"])
+          bundle(["preload.ts"], true, ["electron"])
         ]),
 
     // App bundles
@@ -134,32 +103,23 @@ export default (cliArgs) => {
         "unitConversion.ts",
         "renameTab.ts",
         "sourceListHelp.ts",
-        "betaWelcome.ts",
         "licenses.ts",
-        "download.ts",
-        ...(!isLite ? ["export.ts", "xrControls.ts"] : []),
-        ...(!isDS ? ["preferences.ts", "editFov.ts"] : []),
-        ...(isLite && !isDS ? ["uploadAsset.ts"] : []),
+        ...(!isLite ? ["export.ts"] : []),
+        "preferences.ts",
+        "editFov.ts",
+        ...(isLite ? ["download.ts"] : []),
+        ...(isLite ? ["uploadAsset.ts"] : []),
 
         "hub/dataSources/wpilog/wpilogWorker.ts",
         ...(isLite ? ["main/lite/xzWorker.ts"] : []),
         ...(!isLite ? ["hub/exportWorker.ts"] : []),
-        ...(!isDS
-          ? [
-              "hub/dataSources/csv/csvWorker.ts",
-              "hub/dataSources/rlog/rlogWorker.ts",
-              "hub/dataSources/roadrunnerlog/roadRunnerWorker.ts",
-              "hub/dataSources/dslog/dsLogWorker.ts",
-              "shared/renderers/field3d/workers/loadField.ts",
-              "shared/renderers/field3d/workers/loadRobot.ts"
-            ]
-          : [])
+        "hub/dataSources/csv/csvWorker.ts",
+        "hub/dataSources/rlog/rlogWorker.ts",
+        "hub/dataSources/roadrunnerlog/roadRunnerWorker.ts",
+        "shared/renderers/field3d/workers/loadField.ts",
+        "shared/renderers/field3d/workers/loadRobot.ts"
       ],
-      false,
       false
-    ),
-
-    // XR client
-    ...(!isLite ? [bundle(["xrClient/xrClient.ts"], false, true)] : [])
+    )
   ];
 };

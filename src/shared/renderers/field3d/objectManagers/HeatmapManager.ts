@@ -7,7 +7,7 @@
 
 import * as THREE from "three";
 import { Config3dField } from "../../../AdvantageScopeAssets";
-import { annotatedPose3dTo2d, convertFromCoordinateSystem } from "../../../geometry";
+import { annotatedPose3dTo2d } from "../../../geometry";
 import { Units } from "../../../units";
 import { Field3dRendererCommand_HeatmapObj } from "../../Field3dRenderer";
 import { disposeObject } from "../../Field3dRendererImpl";
@@ -15,28 +15,24 @@ import Heatmap from "../../Heatmap";
 import ObjectManager from "../ObjectManager";
 
 export default class HeatmapManager extends ObjectManager<Field3dRendererCommand_HeatmapObj> {
-  private HEIGHT_PIXELS: number;
+  private HEIGHT_PIXELS = 800;
 
   private getFieldConfig: () => Config3dField | null;
   private container = document.createElement("div");
   private heatmap = new Heatmap(this.container);
   private canvas: HTMLCanvasElement | null = null;
   private mesh: THREE.Mesh | null = null;
-  private isRedAlliance = false;
 
   constructor(
     root: THREE.Object3D,
     materialSpecular: THREE.Color,
     materialShininess: number,
     mode: "low-power" | "standard" | "cinematic",
-    isXR: boolean,
     requestRender: () => void,
     getFieldConfig: () => Config3dField | null
   ) {
-    super(root, materialSpecular, materialShininess, mode, isXR, requestRender);
+    super(root, materialSpecular, materialShininess, mode, requestRender);
     this.getFieldConfig = getFieldConfig;
-    this.isXR = isXR;
-    this.HEIGHT_PIXELS = isXR ? 25 : 800; // Canvas texture updates are very slow in XR
     this.container.hidden = true;
     document.body.appendChild(this.container);
   }
@@ -47,10 +43,6 @@ export default class HeatmapManager extends ObjectManager<Field3dRendererCommand
       disposeObject(this.mesh);
     }
     document.body.removeChild(this.container);
-  }
-
-  setIsRedAlliance(isRedAlliance: boolean) {
-    this.isRedAlliance = isRedAlliance;
   }
 
   setObjectData(object: Field3dRendererCommand_HeatmapObj): void {
@@ -66,20 +58,7 @@ export default class HeatmapManager extends ObjectManager<Field3dRendererCommand
       Math.round(this.HEIGHT_PIXELS * (fieldDimensions[0] / fieldDimensions[1])),
       this.HEIGHT_PIXELS
     ];
-    let coordinateSystem =
-      (window.preferences?.coordinateSystem === "automatic"
-        ? fieldConfig.coordinateSystem
-        : window.preferences?.coordinateSystem) ?? "center-red";
-    let translations = object.poses.map(
-      (x) =>
-        convertFromCoordinateSystem(
-          annotatedPose3dTo2d(x),
-          coordinateSystem,
-          this.isRedAlliance ? "red" : "blue",
-          fieldDimensions[0],
-          fieldDimensions[1]
-        ).pose.translation
-    );
+    let translations = object.poses.map((x) => annotatedPose3dTo2d(x).pose.translation);
     this.heatmap.update(translations, pixelDimensions, fieldDimensions);
 
     // Update texture

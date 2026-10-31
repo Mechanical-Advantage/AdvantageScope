@@ -7,7 +7,7 @@
 
 import { IS_LITE } from "./shared/buildConstants";
 import NamedMessage from "./shared/NamedMessage";
-import Preferences, { getRobotAddress } from "./shared/Preferences";
+import Preferences from "./shared/Preferences";
 import { zfill } from "./shared/util";
 
 const FILE_LIST: HTMLElement = document.getElementsByClassName("file-list")[0] as HTMLElement;
@@ -62,13 +62,6 @@ function handleMainMessage(message: NamedMessage) {
       preferences = message.data;
       let path = "";
       if (preferences) {
-        if (!IS_LITE) {
-          // https://github.com/Mechanical-Advantage/AdvantageScope/issues/167
-          address = getRobotAddress(preferences, platform)
-            .split(".")
-            .map((part) => part.replace(/^0+/, "") || "0")
-            .join(".");
-        }
         path = preferences.remotePath;
       }
       sendMainMessage("start", {

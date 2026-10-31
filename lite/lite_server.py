@@ -216,14 +216,14 @@ if __name__ == "__main__":
 
     # Warn if filesystem access disabled
     if not ENABLE_FILESYSTEM_ACCESS:
-        print("Log downloads and custom asset uploads are currently disabled. Pass \"--enable-file-access\" to override.\nWARNING: When enabled, AdvantageScope Lite provides unrestricted access to all log files on the host filesystem and upload access to the ascope_assets folder.\n")
+        print("Log downloads and custom asset uploads are currently disabled. Pass \"--enable-file-access\" to override.\nWARNING: When enabled, mur-voir Lite provides unrestricted access to all log files on the host filesystem and upload access to the ascope_assets folder.\n")
 
     # Start server
     os.chdir(ROOT)
     httpd = socketserver.ThreadingTCPServer(("", PORT), Handler, bind_and_activate=False)
     httpd.allow_reuse_address = True
     httpd.daemon_threads = True
-    print(f"Serving AdvantageScope Lite on port {PORT}: http://localhost:{PORT}{WEBROOT}")
+    print(f"Serving mur-voir Lite on port {PORT}: http://localhost:{PORT}{WEBROOT}")
     try:
         httpd.server_bind()
         httpd.server_activate()

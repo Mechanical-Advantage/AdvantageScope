@@ -15,8 +15,6 @@
   --show-tab-controls: 1;
   --show-tuning-button: 0;
   --show-lock-buttons: 0;
-  --show-update-button: 0;
-  --show-feedback-button: 0;
   --show-loading-glow: 0;
   --loading-glow-progress: 1;
 }
@@ -61,17 +59,12 @@ div.title-bar-text {
 
 body.fancy-title-bar-mac div.title-bar-text {
   left: calc(var(--side-bar-width) + 20px + ((1 - var(--show-side-bar)) * 60px));
-  right: calc(
-    154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px
-  );
+  right: calc(154px + var(--show-lock-buttons) * 28px);
 }
 
 body.fancy-title-bar-lite div.title-bar-text {
   left: calc(var(--side-bar-width) + 20px);
-  right: calc(
-    154px - 33px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) *
-      38px
-  );
+  right: calc(154px - 33px + var(--show-lock-buttons) * 28px);
 }
 
 body.fancy-title-bar-win div.title-bar-text {
@@ -663,9 +656,7 @@ div.search-results-item.hovered {
 div.tab-bar {
   position: absolute;
   left: 10px;
-  right: calc(
-    154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px
-  );
+  right: calc(154px + var(--show-lock-buttons) * 28px);
   top: 0px;
   height: 50px;
 
@@ -699,9 +690,7 @@ div.tab-bar-shadow-left {
 }
 
 div.tab-bar-shadow-right {
-  right: calc(
-    154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px
-  );
+  right: calc(154px + var(--show-lock-buttons) * 28px);
   background-image: linear-gradient(to left, white, rgba(255, 255, 255, 0.75), transparent);
 }
 
@@ -736,9 +725,7 @@ div.tab-bar-drag-highlight {
 div.tab-bar-scroll {
   position: absolute;
   left: 10px;
-  right: calc(
-    154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px
-  );
+  right: calc(154px + var(--show-lock-buttons) * 28px);
   top: 0px;
   height: 50px;
   overflow: scroll;
@@ -841,46 +828,6 @@ body.fancy-title-bar-win button.tab-control {
   top: 49px;
 }
 
-button.update {
-  right: calc(154px + var(--show-lock-buttons) * 28px + var(--show-feedback-button) * 38px);
-}
-
-body.fancy-title-bar-lite button.update {
-  right: calc(154px + var(--show-lock-buttons) * 28px + var(--show-feedback-button) * 38px - 33px);
-}
-
-button.update > img {
-  /* https://codepen.io/sosuke/pen/Pjoqqp */
-  filter: invert(60%) sepia(41%) saturate(3324%) hue-rotate(356deg) brightness(96%) contrast(112%);
-}
-
-button.update.blurred > img {
-  /* https://codepen.io/sosuke/pen/Pjoqqp */
-  filter: invert(85%) sepia(44%) saturate(1384%) hue-rotate(314deg) brightness(114%) contrast(101%);
-}
-
-button.feedback {
-  right: calc(154px + var(--show-lock-buttons) * 28px);
-}
-
-body.fancy-title-bar-lite button.feedback {
-  right: calc(154px + var(--show-lock-buttons) * 28px - 33px);
-}
-
-button.feedback > img {
-  transform: translate(-50%, -50%) scale(90%);
-}
-
-button.feedback > img {
-  /* https://codepen.io/sosuke/pen/Pjoqqp */
-  filter: invert(45%) sepia(26%) saturate(2440%) hue-rotate(246deg) brightness(88%) contrast(91%);
-}
-
-button.feedback.blurred > img {
-  /* https://codepen.io/sosuke/pen/Pjoqqp */
-  filter: invert(89%) sepia(17%) saturate(2426%) hue-rotate(196deg) brightness(93%) contrast(95%);
-}
-
 button.play,
 button.pause {
   right: calc(116px + var(--show-lock-buttons) * 28px);
@@ -912,21 +859,6 @@ button.unlock.blurred > img {
 }
 
 @media (prefers-color-scheme: dark) {
-  button.update.blurred > img {
-    /* https://codepen.io/sosuke/pen/Pjoqqp */
-    filter: invert(30%) sepia(37%) saturate(3821%) hue-rotate(26deg) brightness(97%) contrast(101%);
-  }
-
-  button.feedback > img {
-    /* https://codepen.io/sosuke/pen/Pjoqqp */
-    filter: invert(57%) sepia(42%) saturate(2311%) hue-rotate(232deg) brightness(90%) contrast(95%);
-  }
-
-  button.feedback.blurred > img {
-    /* https://codepen.io/sosuke/pen/Pjoqqp */
-    filter: invert(31%) sepia(7%) saturate(5761%) hue-rotate(239deg) brightness(98%) contrast(77%);
-  }
-
   button.unlock.blurred > img {
     /* https://codepen.io/sosuke/pen/Pjoqqp */
     filter: invert(37%) sepia(16%) saturate(1793%) hue-rotate(314deg) brightness(98%) contrast(77%);
@@ -1658,34 +1590,6 @@ div.field-3d-settings {
     border-left: 1px solid black;
   }
 }
-div.setting-blocks div.split div.xr-button img {
-  /* https://codepen.io/sosuke/pen/Pjoqqp */
-  filter: invert(56%) sepia(51%) saturate(1742%) hue-rotate(225deg) brightness(101%) contrast(101%);
-}
-
-div.setting-blocks div.split div.xr-button.active {
-  animation: xr-active 1s ease-in-out infinite;
-}
-
-div.setting-blocks div.split div.xr-button.active img {
-  filter: invert(100%);
-}
-
-@keyframes xr-active {
-  0% {
-    background-color: #800080;
-    border: 1px solid #500050;
-  }
-  50% {
-    background-color: #c880ff;
-    border: 1px solid #9850cf;
-  }
-  100% {
-    background-color: #800080;
-    border: 1px solid #500050;
-  }
-}
-
 /* Statistics */
 
 div.stats-sources {
@@ -1744,9 +1648,11 @@ div.video-synchronization {
 div.video-source > button {
   position: absolute;
   height: 70%;
-  width: calc(80% / 3);
+  width: 80%;
   top: 15%;
+  left: 10%;
   overflow: hidden;
+  background-color: #666666;
 }
 
 div.video-source > button > img {
@@ -1756,61 +1662,12 @@ div.video-source > button > img {
   filter: brightness(0%) saturate(0%) invert(100%);
 }
 
-div.video-source > button > svg > path {
-  fill: none;
-  stroke-width: 0px;
-  transition: stroke-width 0.3s;
-}
-
-div.video-source > button.animating > svg > path {
-  stroke-width: 8px;
-}
-
-div.video-source > button:nth-child(2) > svg > path {
-  stroke: #ffb8b8;
-}
-
-div.video-source > button:nth-child(3) > svg > path {
-  stroke: #9aacff;
-}
-
-div.video-source > button:nth-child(1) {
-  left: 5%;
-  background-color: #666666;
-}
-
-div.video-source > button:nth-child(2) {
-  left: calc(5% + 80% / 3 + 5%);
-  background-color: #ff0000;
-}
-
-div.video-source > button:nth-child(3) {
-  left: calc(5% + 80% / 3 + 5% + 80% / 3 + 5%);
-  background-color: #4556a5;
-}
-
-div.video-source > button:nth-child(1):hover {
+div.video-source > button:hover {
   background-color: #565656;
 }
 
-div.video-source > button:nth-child(2):hover {
-  background-color: #e00000;
-}
-
-div.video-source > button:nth-child(3):hover {
-  background-color: #354695;
-}
-
-div.video-source > button:nth-child(1):active {
+div.video-source > button:active {
   background-color: #464646;
-}
-
-div.video-source > button:nth-child(2):active {
-  background-color: #c00000;
-}
-
-div.video-source > button:nth-child(3):active {
-  background-color: #253685;
 }
 
 div.video-timeline-section {
@@ -1895,65 +1752,6 @@ div.video-timeline-controls button {
   height: 30px;
   width: 30px;
   transform: translateY(-50%);
-}
-
-/* Joysticks */
-
-table.joystick-selector {
-  position: absolute;
-  left: 0%;
-  top: 0%;
-  width: 100%;
-  height: 100%;
-}
-
-table.joystick-selector td {
-  text-align: center;
-  font-weight: bold;
-}
-
-table.joystick-selector select {
-  width: calc(100% - 30px);
-}
-
-/* Swerve */
-
-div.swerve-sources {
-  position: absolute;
-  top: 0%;
-  height: 100%;
-  left: 0%;
-  width: 60%;
-  min-width: calc(100% - 200px);
-}
-
-div.swerve-settings {
-  position: absolute;
-  top: 0%;
-  height: 100%;
-  right: 0%;
-  width: 40%;
-  max-width: 200px;
-  border-left: 1px solid #ddd;
-
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-@media (prefers-color-scheme: dark) {
-  div.swerve-settings {
-    border-left: 1px solid black;
-  }
-}
-
-/* Mechanism */
-
-div.mechanism-sources {
-  position: absolute;
-  left: 0%;
-  top: 0%;
-  width: 100%;
-  height: 100%;
 }
 
 /* Points */

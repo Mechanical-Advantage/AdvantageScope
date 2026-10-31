@@ -1,0 +1,117 @@
+<!--
+  Copyright (c) 2026 Melbourne University Motorsports. Based on AdvantageScope (BSD-3-Clause, © Littleton Robotics).
+  https://github.com/Melbourne-University-Motorsports/mur-voir
+
+  Use of this source code is governed by a BSD
+  license that can be found in the LICENSE file
+  at the root directory of this project.
+-->
+
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'" />
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="global.css" />
+    <title>Welcome &mdash; mur-voir</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 32px 40px;
+        max-width: 720px;
+        overflow-y: auto;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+        color: #222;
+        background-color: white;
+        user-select: text;
+        -webkit-user-select: text;
+      }
+      h1 {
+        margin: 0 0 4px 0;
+        font-size: 26px;
+        font-weight: 600;
+      }
+      .subtitle {
+        margin: 0 0 24px 0;
+        color: #666;
+      }
+      h2 {
+        margin: 24px 0 6px 0;
+        font-size: 15px;
+        font-weight: 600;
+      }
+      ul {
+        margin: 0;
+        padding-left: 20px;
+      }
+      kbd {
+        padding: 0 4px;
+        border: 1px solid #bbb;
+        border-radius: 3px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 12px;
+      }
+      .credit {
+        margin-top: 32px;
+        font-size: 12px;
+        color: #888;
+      }
+      @media (prefers-color-scheme: dark) {
+        body {
+          color: #e6e6e6;
+          background-color: #222;
+        }
+        .subtitle,
+        .credit {
+          color: #999;
+        }
+        kbd {
+          border-color: #555;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>mur-voir</h1>
+    <p class="subtitle">Telemetry dashboard for Melbourne University Motorsport.</p>
+
+    <h2>Open data</h2>
+    <ul>
+      <li>
+        Open a log with <kbd>File &rsaquo; Open Log(s)...</kbd>, or drag a WPILOG, RLOG or CSV file onto the window.
+      </li>
+      <li>
+        Connect to a live source with <kbd>File &rsaquo; Connect to Live Source</kbd>. NetworkTables 4 is available
+        while the MUR telemetry backend is being built.
+      </li>
+    </ul>
+
+    <h2>Explore</h2>
+    <ul>
+      <li>Signals appear in the sidebar. Drag a field onto a tab's source list to plot or visualise it.</li>
+      <li>All tabs share one timeline. Click to select a time, scroll to zoom and drag to pan.</li>
+      <li>
+        Add tabs with the <kbd>+</kbd> button: Line Graph, 2D/3D Field, Table, Console, Statistics, Points, Metadata and
+        Video.
+      </li>
+      <li>Save and share layouts with <kbd>File &rsaquo; Export Layout...</kbd>.</li>
+    </ul>
+
+    <h2>Field coordinates</h2>
+    <p>Poses use one right-handed frame: origin at the field centre, +X forward, +Y left, +Z up.</p>
+
+    <p class="credit">
+      Based on AdvantageScope (BSD-3-Clause), &copy; Littleton Robotics. mur-voir is an independent fork and is not
+      endorsed by Littleton Robotics.
+    </p>
+  </body>
+</html>

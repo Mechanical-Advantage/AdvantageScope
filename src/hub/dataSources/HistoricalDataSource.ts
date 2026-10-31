@@ -18,13 +18,8 @@ import { getURCLKeys } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
 import {
   AKIT_TIMESTAMP_KEYS,
-  ALLIANCE_KEYS,
   AUTONOMOUS_KEYS,
-  DRIVER_STATION_KEYS,
   ENABLED_KEYS,
-  EVENT_KEYS,
-  MATCH_NUMBER_KEYS,
-  MATCH_TYPE_KEYS,
   SYSTEM_TIME_KEYS,
   UTILITY_KEYS
 } from "../../shared/log/RobotState";
@@ -37,12 +32,8 @@ export class HistoricalDataSource {
     ".rlog": "rlogWorker.js",
     ".wpilog": "wpilogWorker.js",
     ".wpilogxz": "wpilogWorker.js", // Decompressed by main process
-    ".hoot": "wpilogWorker.js", // Converted to WPILOG by main process
-    ".revlog": "wpilogWorker.js", // Converted to WPILOG by main process
     ".log": "roadRunnerWorker.js",
-    ".csv": "csvWorker.js",
-    ".dslog": "dsLogWorker.js",
-    ".dsevents": "dsLogWorker.js"
+    ".csv": "csvWorker.js"
   };
 
   private path = "";
@@ -370,18 +361,9 @@ export class HistoricalDataSource {
             requestFields.add(key);
           }
         });
-        [
-          ...ENABLED_KEYS,
-          ...AUTONOMOUS_KEYS,
-          ...UTILITY_KEYS,
-          ...ALLIANCE_KEYS,
-          ...DRIVER_STATION_KEYS,
-          ...SYSTEM_TIME_KEYS,
-          ...AKIT_TIMESTAMP_KEYS,
-          ...EVENT_KEYS,
-          ...MATCH_TYPE_KEYS,
-          ...MATCH_NUMBER_KEYS
-        ].forEach((key) => requestFields.add(key));
+        [...ENABLED_KEYS, ...AUTONOMOUS_KEYS, ...UTILITY_KEYS, ...SYSTEM_TIME_KEYS, ...AKIT_TIMESTAMP_KEYS].forEach(
+          (key) => requestFields.add(key)
+        );
 
         // Compare to existing fields
         requestFields.forEach((field) => {

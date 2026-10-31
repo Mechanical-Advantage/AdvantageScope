@@ -1,33 +1,27 @@
 {
-  "name": "advantagescope",
-  "productName": "AdvantageScope",
+  "name": "mur-voir",
+  "productName": "mur-voir",
   "version": "27.0.0-alpha-6",
-  "description": "Robot telemetry application",
+  "description": "Telemetry dashboard for Melbourne Uni Motorsport (based on AdvantageScope)",
   "author": {
-    "name": "Littleton Robotics",
-    "email": "software@littletonrobotics.org",
-    "url": "https://littletonrobotics.org"
+    "name": "Melbourne University Motorsport",
+    "url": "https://github.com/Melbourne-University-Motorsports/mur-voir"
   },
   "license": "BSD-3-Clause",
   "main": "bundles/main.js",
   "scripts": {
     "start": "electron bundles/main.js",
     "compile": "rolldown -c",
-    "build": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build",
-    "build-linux": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build -c.electronVersion=37.10.3",
-    "fast-build": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build --dir",
+    "typecheck": "tsc --noEmit --skipLibCheck -p .",
+    "build": "npm run compile && npm run wasm:compile && electron-builder build",
+    "build-linux": "npm run compile && npm run wasm:compile && electron-builder build -c.electronVersion=37.10.3",
+    "fast-build": "npm run compile && npm run wasm:compile && electron-builder build --dir",
     "watch": "rolldown -c -w",
-    "download-owlet": "rolldown -c --configRunOwletDownload && node runOwletDownload.js",
-    "format": "license-check-and-add add -f file-header-config.json && prettier --write .",
+    "format": "license-check-and-add add -f file-header-config.json -r \"2026 Melbourne University Motorsports. Based on AdvantageScope (BSD-3-Clause, © Littleton Robotics).\" \"https://github.com/Melbourne-University-Motorsports/mur-voir\" && prettier --write .",
     "check-format": "license-check-and-add check -f file-header-config.json && prettier --check .",
     "wasm:compile": "node wasmCompile.mjs",
     "mock-backend": "node tools/mock-backend/src/main.ts",
-    "docs:start": "cd docs && npm run start && cd ..",
-    "docs:build": "cd docs && npm run build && cd ..",
-    "docs:build-embed": "cd docs && npm run build-embed && cd ..",
-    "docs:clear": "cd docs && npm run clear && cd ..",
-    "docs:serve": "cd docs && npm run serve && cd ..",
-    "postinstall": "cd docs && npm install && cd .. && node getLicenses.mjs && node tesseractLangDownload.mjs && node bundleLiteAssets.mjs && npm run download-owlet"
+    "postinstall": "node installElectron.mjs && node getLicenses.mjs && node bundleLiteAssets.mjs"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.26.0",
@@ -44,7 +38,6 @@
     "@types/jsonfile": "^6.1.2",
     "@types/lzma-native": "^4.0.4",
     "@types/pngjs": "^6.0.5",
-    "@types/ssh2": "^1.11.13",
     "@types/three": "^0.168.0",
     "ansi_up": "^6.0.6",
     "bignumber.js": "^9.1.2",
@@ -63,7 +56,6 @@
     "prettier": "3.0.3",
     "prettier-plugin-organize-imports": "^4.0.0",
     "protobufjs": "^8.3.0",
-    "qr-code-styling": "^1.8.4",
     "rolldown": "1.0.2",
     "rollup-plugin-cleanup": "^3.2.1",
     "simple-statistics": "^7.8.7",
@@ -75,18 +67,12 @@
     "xz-decompress": "^0.2.3"
   },
   "dependencies": {
-    "@rev-robotics/revlog-converter": "^2.0.0",
     "@types/emscripten": "^1.39.13",
-    "@types/ws": "^8.5.13",
     "check-disk-space": "^3.4.0",
     "download": "^8.0.0",
     "jsonfile": "^6.1.0",
     "lzma-native": "^8.0.6",
-    "pngjs": "^7.0.0",
-    "ssh2": "^1.14.0",
-    "tesseract.js": "^6.0.0",
-    "ws": "^8.18.0",
-    "youtube-dl-exec": "github:jwbonner/youtube-dl-exec#708fe6410c4c9fa22cf09ab424b15546b178bdbe"
+    "pngjs": "^7.0.0"
   },
   "prettier": {
     "printWidth": 120,
@@ -96,8 +82,8 @@
     ]
   },
   "build": {
-    "appId": "org.littletonrobotics.advantagescope",
-    "copyright": "Copyright © 2021-2026 Littleton Robotics",
+    "appId": "io.github.melbourne-university-motorsports.mur-voir",
+    "copyright": "Copyright © 2026 Melbourne University Motorsport. Based on AdvantageScope, © 2021-2026 Littleton Robotics.",
     "npmRebuild": false,
     "publish": [],
     "electronFuses": {
@@ -114,19 +100,11 @@
       "icons/**/*.png",
       "!icons/**/*.iconset",
       "bundledAssets/**/*",
-      "docs/build/**/*",
-      {
-        "filter": [
-          "owlet/${os}-${arch}/*"
-        ]
-      },
-      "@rev-robotics/revlog-converter/**/*",
       "!**/.*"
     ],
     "extraResources": [
       "LICENSE",
-      "ThirdPartyLicenses.txt",
-      "eng.traineddata.gz"
+      "ThirdPartyLicenses.txt"
     ],
     "fileAssociations": [
       {
@@ -154,65 +132,23 @@
         "icon": "icons/app/rlog-icon"
       },
       {
-        "ext": "hoot",
-        "name": "Hoot robot log",
-        "description": "Hoot robot log",
-        "mimeType": "application/x-hoot",
-        "role": "Viewer",
-        "icon": "icons/app/hoot-icon"
-      },
-      {
-        "ext": "revlog",
-        "name": "REV Robotics CAN log",
-        "description": "REV Robotics CAN log",
-        "mimeType": "application/x-revlog",
-        "role": "Viewer",
-        "icon": "icons/app/revlog-icon"
-      },
-      {
         "ext": "csv",
         "name": "Comma-separated values",
         "description": "Comma-separated values",
         "mimeType": "text/csv",
         "role": "Viewer"
-      },
-      {
-        "ext": "dslog",
-        "name": "NI Driver Station log",
-        "description": "NI Driver Station log",
-        "mimeType": "application/x-dslog",
-        "role": "Viewer",
-        "icon": "icons/app/dslog-icon"
-      },
-      {
-        "ext": "dsevents",
-        "name": "NI Driver Station events",
-        "description": "NI Driver Station events",
-        "mimeType": "application/x-dsevents",
-        "role": "Viewer",
-        "icon": "icons/app/dsevents-icon"
       }
     ],
     "mac": {
       "target": "dmg",
-      "icon": "icons/app/app-icon.icon",
+      "icon": "icons/app/app-icon.icns",
       "entitlements": "entitlements.mac.plist",
       "entitlementsInherit": "entitlements.mac.plist",
       "extendInfo": {
         "CFBundleLocalizations": [
           "en"
         ],
-        "NSLocalNetworkUsageDescription": "AdvantageScope uses the local network to communicate with robots.",
-        "NSUpdateSecurityPolicy": {
-          "AllowPackages": [
-            "58SET3NSX7"
-          ],
-          "AllowProcesses": {
-            "58SET3NSX7": [
-              "WPILibInstaller"
-            ]
-          }
-        }
+        "NSLocalNetworkUsageDescription": "mur-voir uses the local network to receive live telemetry."
       }
     },
     "linux": {
@@ -235,5 +171,11 @@
       "target": "nsis",
       "icon": "icons/app/app-icon.ico"
     }
+  },
+  "allowScripts": {
+    "electron": true,
+    "lzma-native": true,
+    "protobufjs": true,
+    "electron-winstaller": false
   }
 }

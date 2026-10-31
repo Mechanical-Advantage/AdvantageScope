@@ -10,11 +10,11 @@ import jsonfile from "jsonfile";
 import path from "path";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import Preferences from "../../shared/Preferences";
-import { filterAndSortAssets, parseField2d, parseField3d, parseJoystick, parseRobot } from "../assetUtil";
-import { AUTO_ASSETS, BUNDLED_ASSETS, DEFAULT_USER_ASSETS, PREFS_FILENAME } from "./ElectronConstants";
+import { filterAndSortAssets, parseField2d, parseField3d, parseRobot } from "../assetUtil";
+import { BUNDLED_ASSETS, DEFAULT_USER_ASSETS, PREFS_FILENAME } from "./ElectronConstants";
 
 const USER_ASSETS_README =
-  'This folder contains extra assets for the 2D field, 3D field, and joystick views. For more details, see the "Custom Fields/Robots/Joysticks" page in the AdvantageScope documentation (available through the documentation tab in the app or the URL below).\n\nhttps://docs.advantagescope.org/more-features/custom-assets';
+  'This folder contains extra assets for the 2D and 3D field views. For more details, see the "Custom Fields/Robots/Joysticks" page in the mur-voir documentation (available through the documentation tab in the app or the URL below).\n\nhttps://docs.advantagescope.org/more-features/custom-assets';
 
 /** Returns the path to the user assets folder. */
 export function getUserAssetsPath() {
@@ -26,29 +26,25 @@ export function getUserAssetsPath() {
   }
 }
 
-/** Creates folders for user and automatic assets. */
+/** Creates the folder for user assets. */
 export function createAssetFolders() {
-  if (!fs.existsSync(AUTO_ASSETS)) {
-    fs.mkdirSync(AUTO_ASSETS);
-  }
   if (!fs.existsSync(DEFAULT_USER_ASSETS)) {
     fs.mkdirSync(DEFAULT_USER_ASSETS);
   }
   fs.writeFileSync(path.join(DEFAULT_USER_ASSETS, "README.txt"), USER_ASSETS_README);
 }
 
-/** Loads all current assets (bundled, auto downloaded, and user). */
+/** Loads all current assets (bundled and user). */
 export function loadAssets(): AdvantageScopeAssets {
   let assets: AdvantageScopeAssets = {
     field2ds: [],
     field3ds: [],
     robots: [],
-    joysticks: [],
     loadFailures: []
   };
 
   // Highest priority is first
-  [getUserAssetsPath(), AUTO_ASSETS, BUNDLED_ASSETS].forEach((parentFolder) => {
+  [getUserAssetsPath(), BUNDLED_ASSETS].forEach((parentFolder) => {
     if (!fs.existsSync(parentFolder)) return;
     fs.readdirSync(parentFolder, { withFileTypes: true })
       .sort((a, b) => (a.name < b.name ? 1 : a.name > b.name ? -1 : 0)) // Inverse order so newer versions take priority
@@ -58,7 +54,6 @@ export function loadAssets(): AdvantageScopeAssets {
         let isField2d = object.name.startsWith("Field2d_");
         let isField3d = object.name.startsWith("Field3d_");
         let isRobot = object.name.startsWith("Robot_");
-        let isJoystick = object.name.startsWith("Joystick_");
 
         let configPath = path.join(parentFolder, object.name, "config.json");
         if (!fs.existsSync(configPath)) return;
@@ -114,15 +109,6 @@ export function loadAssets(): AdvantageScopeAssets {
             )
           ) {
             assets.robots.push(config);
-            assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
-          }
-        } else if (isJoystick) {
-          // ***** JOYSTICK *****
-          let config = parseJoystick(configRaw);
-          if (config === "invalid") return;
-          config.path = encodePath(path.join(parentFolder, object.name, "image.png"));
-          if (fs.existsSync(decodeURIComponent(config.path))) {
-            assets.joysticks.push(config);
             assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
           }
         }

@@ -5,12 +5,9 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import MatchInfo, { MatchType } from "../MatchInfo";
 import Log from "./Log";
 import { findKey } from "./LogKeyUtils";
-import { getOrDefault } from "./LogUtil";
 import { LogValueSetBoolean } from "./LogValueSets";
-import LoggableType from "./LoggableType";
 
 export const ENABLED_KEYS = [
   "/DriverStation/Enabled", // AdvantageKit
@@ -49,24 +46,6 @@ export const UTILITY_KEYS = [
   "NT:/DriverStation/ControlWord/robotMode", // NT, post-2027
   "NT:/FMSInfo/FMSControlData" // NT, pre-2027
 ];
-export const ALLIANCE_KEYS = [
-  "/DriverStation/AllianceStation", // AdvantageKit
-  "NT:/AdvantageKit/DriverStation/AllianceStation", // AdvantageKit
-  "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
-  "NT:/DriverStation/IsRedAlliance", // NT, post-2027
-  "NT:/FMSInfo/IsRedAlliance", // NT, pre-2027
-  "DS:allianceStation", // Phoenix
-  "AllianceStation" // Phoenix
-];
-export const DRIVER_STATION_KEYS = [
-  "/DriverStation/AllianceStation", // AdvantageKit
-  "NT:/AdvantageKit/DriverStation/AllianceStation", // AdvantageKit
-  "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
-  "NT:/DriverStation/StationNumber", // NT, post-2027
-  "NT:/FMSInfo/StationNumber", // NT, pre-2027
-  "DS:allianceStation", // Phoenix
-  "AllianceStation" // Phoenix
-];
 export const SYSTEM_TIME_KEYS = [
   "/SystemStats/EpochTimeMicros", // AdvantageKit
   "NT:/AdvantageKit/SystemStats/EpochTimeMicros", // AdvantageKit
@@ -80,33 +59,6 @@ export const METADATA_KEYS = [
   "NT:/Metadata",
   "NT:/AdvantageKit/RealMetadata",
   "NT:/AdvantageKit/ReplayMetadata"
-];
-export const EVENT_KEYS = [
-  "/DriverStation/EventName", // AdvantageKit
-  "NT:/AdvantageKit/DriverStation/EventName", // AdvantageKit
-  "DS:/Dscomm/Control/Robot/MatchInfo/EventName", // FIRST DS
-  "NT:/DriverStation/EventName", // NT, post-2027
-  "NT:/FMSInfo/EventName", // NT, pre-2027
-  "NT:/Netcomm/Control/MatchInfo/EventName", // Systemcore
-  "DS:matchInfo/eventName" // Phoenix
-];
-export const MATCH_TYPE_KEYS = [
-  "/DriverStation/MatchType", // AdvantageKit
-  "NT:/AdvantageKit/DriverStation/MatchType", // AdvantageKit
-  "DS:/Dscomm/Control/Robot/MatchInfo/MatchType", // FIRST DS
-  "NT:/DriverStation/MatchType", // NT, post-2027
-  "NT:/FMSInfo/MatchType", // NT, pre-2027
-  "NT:/Netcomm/Control/MatchInfo/MatchType", // Systemcore
-  "DS:matchInfo/matchType" // Phoenix
-];
-export const MATCH_NUMBER_KEYS = [
-  "/DriverStation/MatchNumber", // AdvantageKit
-  "NT:/AdvantageKit/DriverStation/MatchNumber", // AdvantageKit
-  "DS:/Dscomm/Control/Robot/MatchInfo/MatchNumber", // FIRST DS
-  "NT:/DriverStation/MatchNumber", // NT, post-2027
-  "NT:/FMSInfo/MatchNumber", // NT, pre-2027
-  "NT:/Netcomm/Control/MatchInfo/MatchNumber", // Systemcore
-  "DS:matchInfo/matchNumber" // Phoenix
 ];
 export const PROGRAM_START_TIME_KEYS = ["NT:/Robot/ProgramStartTime", "/Robot/ProgramStartTime"];
 
@@ -310,182 +262,4 @@ export function getRobotStateRanges(
     }
   });
   return ranges;
-}
-
-/** Determines if the robot is on the red alliance at a given time. */
-export function getIsRedAlliance(log: Log, time: number): boolean {
-  let allianceKey = findKey(log, ALLIANCE_KEYS);
-  if (!allianceKey) return false;
-
-  if (allianceKey.endsWith("ControlWord")) {
-    // Integer value (station) from control word
-    let tempAllianceData = log.getNumber(allianceKey, time, time);
-    if (tempAllianceData && tempAllianceData.values.length > 0) {
-      let value = tempAllianceData.values[tempAllianceData.values.length - 1];
-      return ((value >> 8) & 15) <= 2;
-    }
-  } else if (allianceKey.endsWith("DriverStation/AllianceStation")) {
-    // Integer value (station) from AdvantageKit
-    let tempAllianceData = log.getNumber(allianceKey, time, time);
-    if (tempAllianceData && tempAllianceData.values.length > 0) {
-      return (
-        tempAllianceData.values[tempAllianceData.values.length - 1] <= 3 &&
-        tempAllianceData.values[tempAllianceData.values.length - 1] > 0
-      );
-    }
-  } else if (allianceKey.endsWith("AllianceStation") || allianceKey.endsWith("allianceStation")) {
-    // String value (station) from Phoenix
-    let tempAllianceData = log.getString(allianceKey, time, time);
-    if (tempAllianceData && tempAllianceData.values.length > 0) {
-      return tempAllianceData.values[tempAllianceData.values.length - 1].startsWith("Red");
-    }
-  } else {
-    // Boolean value from NT
-    let tempAllianceData = log.getBoolean(allianceKey, time, time);
-    if (tempAllianceData && tempAllianceData.values.length > 0) {
-      return tempAllianceData.values[tempAllianceData.values.length - 1];
-    }
-  }
-
-  return false;
-}
-
-/** Determines the driver station number at a given time. */
-export function getDriverStation(log: Log, time: number): number {
-  let dsKey = findKey(log, DRIVER_STATION_KEYS);
-  if (!dsKey) return -1;
-  if (dsKey.endsWith("ControlWord")) {
-    // Integer value (station) from control word
-    let tempDSData = log.getNumber(dsKey, time, time);
-    if (tempDSData && tempDSData.values.length > 0) {
-      let value = tempDSData.values[tempDSData.values.length - 1];
-      value = (value >> 8) & 15;
-      switch (value) {
-        case 0:
-          return 3; // Red 1
-        case 1:
-          return 4; // Red 2
-        case 2:
-          return 5; // Red 3
-        case 3:
-          return 0; // Blue 1
-        case 4:
-          return 1; // Blue 2
-        case 5:
-          return 2; // Blue 3
-      }
-    }
-  } else if (dsKey.endsWith("DriverStation/AllianceStation")) {
-    // AdvantageKit, alliance station ID
-    let tempDSData = log.getNumber(dsKey, time, time);
-    if (tempDSData && tempDSData.values.length > 0) {
-      let value = tempDSData.values[tempDSData.values.length - 1];
-      switch (value) {
-        case 1:
-          return 3; // Red 1
-        case 2:
-          return 4; // Red 2
-        case 3:
-          return 5; // Red 3
-        case 4:
-          return 0; // Blue 1
-        case 5:
-          return 1; // Blue 2
-        case 6:
-          return 2; // Blue 3
-      }
-    }
-  } else if (dsKey.endsWith("StationNumber")) {
-    // WPILib, station number
-    let tempDSData = log.getNumber(dsKey, time, time);
-    if (tempDSData && tempDSData.values.length > 0) {
-      let value = tempDSData.values[tempDSData.values.length - 1];
-      if (getIsRedAlliance(log, time)) {
-        switch (value) {
-          case 1:
-            return 3;
-          case 2:
-            return 4;
-          case 3:
-            return 5;
-        }
-      } else {
-        switch (value) {
-          case 1:
-            return 0;
-          case 2:
-            return 1;
-          case 3:
-            return 2;
-        }
-      }
-    }
-  } else if (dsKey.endsWith("AllianceStation") || dsKey.endsWith("allianceStation")) {
-    // Phoenix, string value
-    let tempDSData = log.getString(dsKey, time, time);
-    if (tempDSData && tempDSData.values.length > 0) {
-      let value = tempDSData.values[tempDSData.values.length - 1];
-      switch (value) {
-        case "Blue 1":
-          return 0;
-        case "Blue 2":
-          return 1;
-        case "Blue 3":
-          return 2;
-        case "Red 1":
-          return 3;
-        case "Red 2":
-          return 4;
-        case "Red 3":
-          return 5;
-      }
-    }
-  }
-  return -1;
-}
-
-/** Extracts metadata information about the match (e.g. year, event, match number). */
-export function getMatchInfo(log: Log): MatchInfo | null {
-  // Get first enable time
-  let enabledData = getEnabledData(log);
-  let enabledTime: null | number = null;
-  enabledData?.values.forEach((enabled, index) => {
-    if (enabledTime === null && enabled) {
-      enabledTime = enabledData!.timestamps[index];
-    }
-  });
-  if (enabledTime === null) {
-    return null;
-  }
-
-  // Get match info keys
-  let systemTimeKey = findKey(log, SYSTEM_TIME_KEYS);
-  let eventKey = findKey(log, EVENT_KEYS);
-  let matchTypeKeys = findKey(log, MATCH_TYPE_KEYS);
-  let matchNumberKeys = findKey(log, MATCH_NUMBER_KEYS);
-  if (!eventKey || !matchTypeKeys || !matchNumberKeys) return null;
-
-  // Read match info
-  let info: MatchInfo = {
-    year: 2022, // Default to 2022 for AdvantageKit logs that didn't include system time
-    event: "",
-    matchType: MatchType.Qualification,
-    matchNumber: 1
-  };
-  if (systemTimeKey) {
-    let epochMicros = getOrDefault(log, systemTimeKey, LoggableType.Number, enabledTime, info.year);
-    info.year = new Date(epochMicros / 1000).getUTCFullYear();
-    // Reset to current year if the logged year is clearly wrong
-    if (info.year < 2022) info.year = new Date().getUTCFullYear();
-  }
-  info.event = getOrDefault(log, eventKey, LoggableType.String, enabledTime, info.event);
-  let matchType = getOrDefault(log, matchTypeKeys, LoggableType.Number, enabledTime, 0);
-  if ([1, 2, 3].includes(matchType)) {
-    info.matchType = matchType;
-  } else {
-    // Not a match
-    return null;
-  }
-  info.matchNumber = getOrDefault(log, matchNumberKeys, LoggableType.Number, enabledTime, info.matchNumber);
-  return info;
 }

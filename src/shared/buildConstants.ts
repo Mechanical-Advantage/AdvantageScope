@@ -7,14 +7,12 @@
 
 export enum Distribution {
   FRC6328,
-  WPILib,
-  Lite,
-  LiteDS
+  Lite
 }
 
 // @ts-ignore
 export const DISTRIBUTION: Distribution = Distribution.__distribution__;
-export const IS_LITE: boolean = DISTRIBUTION === Distribution.Lite || DISTRIBUTION === Distribution.LiteDS;
+export const IS_LITE: boolean = DISTRIBUTION === Distribution.Lite;
 export const LITE_VERSION: string = "__version__"; // Only use for Lite since we can't check if the app is packaged
 export const BUILD_DATE: string = "__build_date__";
 export const COPYRIGHT: string = "__copyright__";

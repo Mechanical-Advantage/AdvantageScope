@@ -5,7 +5,6 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { parseREVLOG } from "@rev-robotics/revlog-converter";
 import { hex } from "color-convert";
 import {
   app,
@@ -28,70 +27,41 @@ import {
 } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
-import net from "net";
 import os from "os";
 import path from "path";
-import { Client, FileEntry, Stats } from "ssh2";
-import { Readable, Writable } from "stream";
+import { Readable } from "stream";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
 import ExportOptions from "../../shared/ExportOptions";
 import { Field2dCameraMode } from "../../shared/Field2dCameraMode";
 import LineGraphFilter from "../../shared/LineGraphFilter";
+import { LiveSourceInfo } from "../../shared/LiveSourceInfo";
 import NamedMessage from "../../shared/NamedMessage";
-import Preferences, { DEFAULT_PREFS, getLiveModeName, LiveMode, mergePreferences } from "../../shared/Preferences";
+import Preferences, { DEFAULT_PREFS, mergePreferences } from "../../shared/Preferences";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../../shared/TabType";
-import { BUILD_DATE, COPYRIGHT, DISTRIBUTION, Distribution } from "../../shared/buildConstants";
+import { BUILD_DATE, COPYRIGHT } from "../../shared/buildConstants";
 import { Units } from "../../shared/units";
 import { createUUID, formatDate } from "../../shared/util";
 import { GITHUB_REPOSITORY } from "../github";
-import DEFAULT_DS_LAYOUT from "../lite/dsLayout";
 import {
   AKIT_PATH_INPUT,
   AKIT_PATH_INPUT_PERIOD,
   AKIT_PATH_OUTPUT,
   APP_VERSION,
-  DOWNLOAD_CONNECT_TIMEOUT_MS,
-  DOWNLOAD_REFRESH_INTERVAL_MS,
-  DOWNLOAD_RETRY_DELAY_MS,
-  DOWNLOAD_ROBORIO_PASSWORD,
-  DOWNLOAD_ROBORIO_USERNAME,
-  DOWNLOAD_SYSTEMCORE_PASSWORD,
-  DOWNLOAD_SYSTEMCORE_USERNAME,
   HUB_DEFAULT_HEIGHT,
   HUB_DEFAULT_WIDTH,
   PREFS_FILENAME,
   RECENT_UNITS_FILENAME,
-  RLOG_CONNECT_TIMEOUT_MS,
-  RLOG_DATA_TIMEOUT_MS,
-  RLOG_HEARTBEAT_DATA,
-  RLOG_HEARTBEAT_DELAY_MS,
   SATELLITE_DEFAULT_HEIGHT,
   SATELLITE_DEFAULT_WIDTH,
   TYPE_MEMORY_FILENAME,
   WINDOW_ICON
 } from "./ElectronConstants";
 import StateTracker, { ApplicationState, SatelliteWindowState, WindowState } from "./StateTracker";
-import UpdateChecker from "./UpdateChecker";
 import { VideoProcessor } from "./VideoProcessor";
-import { XRControls } from "./XRControls";
-import { XRServer } from "./XRServer";
-import { getAssetDownloadStatus, startAssetDownloadLoop } from "./assetDownloader";
 import { createAssetFolders, getUserAssetsPath, loadAssets } from "./assetLoader";
-import {
-  delayBetaSurvey,
-  isAlpha,
-  isBeta,
-  isBetaExpired,
-  isBetaWelcomeComplete,
-  openBetaSurvey,
-  saveBetaWelcomeComplete,
-  shouldPromptBetaSurvey
-} from "./betaUtil";
-import { getOwletDownloadStatus, startOwletDownloadLoop } from "./owletDownloadLoop";
-import { checkHootIsPro, convertHoot, CTRE_LICENSE_URL } from "./owletInterface";
 
 // Dynamically load lzma-native to handle platforms without prebuilt binaries
 let lzma: typeof import("lzma-native") | null = null;
@@ -101,43 +71,26 @@ try {
 
 // Global variables
 let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
-let downloadWindow: BrowserWindow | null = null;
 let prefsWindow: BrowserWindow | null = null;
 let licensesWindow: BrowserWindow | null = null;
 let satelliteWindows: { [id: string]: BrowserWindow[] } = {};
 let windowPorts: { [id: number]: MessagePortMain } = {};
 let hubTouchBarSliders: { [id: number]: TouchBarSlider } = {};
 let hubExportingIds: Set<number> = new Set();
-let ctreLicensePrompt: Promise<void> | null = null;
 let menuTemplate: (Electron.MenuItemConstructorOptions | Electron.MenuItem)[] | null = null;
 
 let stateTracker = new StateTracker();
-let updateChecker = new UpdateChecker();
 let firstOpenPath: string | null = null; // Cache path to open immediately
 
 let advantageScopeAssets: AdvantageScopeAssets = {
   field2ds: [],
   field3ds: [],
   robots: [],
-  joysticks: [],
   loadFailures: []
 };
-XRServer.assetsSupplier = () => advantageScopeAssets;
 
-// Live RLOG variables
-let rlogSockets: { [id: number]: net.Socket } = {};
-let rlogSocketTimeouts: { [id: number]: NodeJS.Timeout } = {};
-let rlogDataArrays: { [id: number]: Uint8Array } = {};
-
-// Download variables
-let downloadClient: Client | null = null;
-let downloadRetryTimeout: NodeJS.Timeout | null = null;
-let downloadRefreshInterval: NodeJS.Timeout | null = null;
-let downloadAddress: string = "";
-let downloadPath: string = "";
-let downloadFileSizeCache: { [id: string]: number } = {};
-let downloadDevice: "systemcore" | "roborio" = "systemcore";
-let downloadAuthFailedOnce: boolean = false;
+// Live sources (from LiveSourceRegistry, reported by the hub)
+let liveSources: LiveSourceInfo[] = [];
 
 // WINDOW MESSAGE HANDLING
 
@@ -173,22 +126,13 @@ function sendAllPreferences() {
       }
     });
   });
-  if (downloadWindow !== null && !downloadWindow.isDestroyed()) sendMessage(downloadWindow, "set-preferences", data);
   if (menuTemplate !== null) {
-    let autoString = "Default: " + getLiveModeName(data.liveMode);
-    (
-      (menuTemplate[1].submenu as Electron.MenuItemConstructorOptions[])[2]
-        .submenu as Electron.MenuItemConstructorOptions[]
-    )[0].label = autoString;
-    (
-      (menuTemplate[1].submenu as Electron.MenuItemConstructorOptions[])[3]
-        .submenu as Electron.MenuItemConstructorOptions[]
-    )[0].label = autoString;
-    (menuTemplate[0].submenu as Electron.MenuItemConstructorOptions[])[7].checked = data.userAssetsFolder !== null;
-    (menuTemplate[1].submenu as Electron.MenuItemConstructorOptions[])[7].checked =
-      data.systemcoreStaticAddress === "usb";
-    (menuTemplate[1].submenu as Electron.MenuItemConstructorOptions[])[8].checked =
-      data.systemcoreStaticAddress === "wifi";
+    const selectedLiveSource = getSelectedLiveSourceId(data);
+    liveSources.forEach((source) => {
+      const item = findMenuTemplateItem(menuTemplate!, "live-source-" + source.id);
+      if (item !== undefined) item.checked = source.id === selectedLiveSource;
+    });
+    findMenuTemplateItem(menuTemplate, "custom-assets-folder")!.checked = data.userAssetsFolder !== null;
     let menu = Menu.buildFromTemplate(menuTemplate);
     Menu.setApplicationMenu(menu);
     BrowserWindow.getAllWindows().forEach((w) => {
@@ -225,13 +169,6 @@ function sendActiveSatellites() {
     sendMessage(window, "set-active-satellites", activeSatellites);
   });
 }
-
-// Send XR state to all hub windows
-XRControls.addSourceUUIDCallback((uuid) => {
-  hubWindows.forEach((window) => {
-    sendMessage(window, "set-active-xr-uuid", uuid);
-  });
-});
 
 /**
  * Process a message from a hub window.
@@ -301,12 +238,11 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       }
       break;
 
-    case "prompt-update":
-      updateChecker.showPrompt();
-      break;
-
-    case "open-feedback":
-      shell.openExternal("https://github.com/" + GITHUB_REPOSITORY + "/issues/new/choose");
+    case "set-live-sources":
+      if (JSON.stringify(liveSources) !== JSON.stringify(message.data)) {
+        liveSources = message.data;
+        setupMenu();
+      }
       break;
 
     case "historical-start-raw":
@@ -322,32 +258,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             error: "Invalid log extension",
             uuid: uuid
           });
-          break;
-        }
-
-        if (extension === "revlog") {
-          let chunks: Buffer[] = [];
-          let writable = new Writable({
-            write(chunk, encoding, callback) {
-              chunks.push(chunk);
-              callback();
-            }
-          });
-          parseREVLOG(Buffer.from(data), writable)
-            .then(() => {
-              sendMessage(window, "historical-data", {
-                files: [Buffer.concat(chunks)],
-                error: null,
-                uuid: uuid
-              });
-            })
-            .catch((err: any) => {
-              sendMessage(window, "historical-data", {
-                files: [null],
-                error: err.message,
-                uuid: uuid
-              });
-            });
           break;
         }
 
@@ -388,7 +298,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         let completedCount = 0;
         let targetCount = 0;
         let errorMessage: null | string = null;
-        let hasHootNonPro = false;
         let paths: string[] = typeof logPath === "string" ? [logPath] : logPath;
         let pathsToRemove: string[] = [];
         if (message.data.deleteAfterRead) {
@@ -397,14 +306,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
         let sendIfReady = () => {
           if (completedCount === targetCount) {
-            if (message.data.deleteAfterRead) {
-              paths.forEach((p) => {
-                if (p.endsWith(".dslog")) {
-                  let eventsPath = p.slice(0, p.length - 5) + "dsevents";
-                  if (fs.existsSync(eventsPath)) pathsToRemove.push(eventsPath);
-                }
-              });
-            }
             pathsToRemove.forEach((p) => {
               if (fs.existsSync(p)) fs.rmSync(p, { force: true });
             });
@@ -414,28 +315,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               error: errorMessage,
               uuid: uuid
             });
-            if (hasHootNonPro) {
-              let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-              if (!prefs.skipHootNonProWarning) {
-                dialog
-                  .showMessageBox(window, {
-                    type: "info",
-                    title: "Alert",
-                    message: "Limited Signals Available",
-                    detail:
-                      "This log file includes a limited number of signals from Phoenix devices. Check the Phoenix documentation for details.",
-                    checkboxLabel: "Don't Show Again",
-                    icon: WINDOW_ICON
-                  })
-                  .then((response) => {
-                    if (response.checkboxChecked) {
-                      prefs.skipHootNonProWarning = true;
-                      jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-                      sendAllPreferences();
-                    }
-                  });
-              }
-            }
           }
         };
 
@@ -457,103 +336,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             });
           });
         };
-        if (logPath.endsWith(".dslog")) {
-          // DSLog, open DSEvents too
-          results = [null, null];
-          targetCount += 2;
-          openPath(logPath, (buffer) => (results[0] = buffer));
-          openPath(logPath.slice(0, logPath.length - 5) + "dsevents", (buffer) => (results[1] = buffer));
-        } else if (logPath.endsWith(".hoot")) {
-          // Hoot, convert to WPILOG
-          targetCount += 1;
-
-          // Prompt for CTRE license if not accepted
-          let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-          if (!prefs.ctreLicenseAccepted) {
-            if (ctreLicensePrompt === null) {
-              ctreLicensePrompt = new Promise(async (resolve) => {
-                while (true) {
-                  let response = await dialog.showMessageBox(window, {
-                    type: "question",
-                    title: "Alert",
-                    message: "CTRE License Agreement",
-                    detail:
-                      "Hoot log file decoding requires agreement to CTRE's end user license agreement. Please click the button below to view the full license agreement, then check the box if you agree to the terms.",
-                    checkboxLabel: "I Agree",
-                    buttons: ["View License", "OK"],
-                    defaultId: 1,
-                    icon: WINDOW_ICON
-                  });
-                  if (response.response === 1) {
-                    if (response.checkboxChecked) {
-                      prefs.ctreLicenseAccepted = true;
-                      jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-                      sendAllPreferences();
-                    }
-                    resolve();
-                    break;
-                  } else {
-                    shell.openExternal(CTRE_LICENSE_URL);
-                  }
-                }
-              });
-            }
-            await ctreLicensePrompt;
-            ctreLicensePrompt = null;
-          }
-
-          // Check for license and open file
-          prefs = jsonfile.readFileSync(PREFS_FILENAME);
-          if (!prefs.ctreLicenseAccepted) {
-            errorMessage = "Hoot log files cannot be decoded without agreeing to CTRE's end user license agreement.";
-            completedCount++;
-            sendIfReady();
-          } else {
-            checkHootIsPro(logPath)
-              .then((isPro) => {
-                hasHootNonPro = hasHootNonPro || !isPro;
-              })
-              .finally(() => {
-                convertHoot(logPath)
-                  .then((wpilogPath) => {
-                    pathsToRemove.push(wpilogPath);
-                    openPath(wpilogPath, (buffer) => {
-                      results[0] = buffer;
-                    });
-                  })
-                  .catch((reason) => {
-                    if (typeof reason === "string") {
-                      errorMessage = reason;
-                    } else {
-                      errorMessage = reason.message;
-                    }
-                    completedCount++;
-                    sendIfReady();
-                  });
-              });
-          }
-        } else if (logPath.endsWith(".revlog")) {
-          // REVLOG, convert to WPILOG
-          targetCount += 1;
-
-          try {
-            let chunks: Buffer[] = [];
-            let writable = new Writable({
-              write(chunk, encoding, callback) {
-                chunks.push(chunk);
-                callback();
-              }
-            });
-            await parseREVLOG(logPath, writable);
-            results[0] = Buffer.concat(chunks);
-            completedCount++;
-            sendIfReady();
-          } catch (err: any) {
-            errorMessage = err.message;
-            completedCount++;
-            sendIfReady();
-          }
-        } else if (logPath.endsWith(".wpilogxz")) {
+        if (logPath.endsWith(".wpilogxz")) {
           // Externally compressed WPILOG, decompress
           targetCount += 1;
           if (lzma === null) {
@@ -600,122 +383,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           openPath(logPath, (buffer) => (results[0] = buffer));
         }
       }
-      break;
-
-    case "frc-coordinate-system-warning":
-      {
-        let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-        if (prefs.skipFRCCoordinateSystemWarning) return;
-        dialog
-          .showMessageBox(window, {
-            type: "info",
-            title: "Alert",
-            message: "Legacy Coordinate System",
-            detail:
-              'This field uses a legacy coordinate system by default for compatibility with pre-2027 WPILib. If your robot code uses 2027 WPILib, you can change the "Coordinate System" option in the AdvantageScope preferences. See the documentation for details.',
-            buttons: ["OK"],
-            checkboxLabel: "Don't Show Again",
-            icon: WINDOW_ICON
-          })
-          .then((response) => {
-            if (response.checkboxChecked) {
-              prefs.skipFRCCoordinateSystemWarning = true;
-              jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-              sendAllPreferences();
-            }
-          });
-      }
-      break;
-
-    case "ftc-coordinate-system-warning":
-      {
-        let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-        if (prefs.skipFTCCoordinateSystemWarning) return;
-        dialog
-          .showMessageBox(window, {
-            type: "info",
-            title: "Alert",
-            message: "Systemcore Coordinate System",
-            detail:
-              'This field uses the Systemcore coordinate system by default. If your robot code uses the traditional FTC coordinate system, you can change the "Coordinate System" option in the AdvantageScope preferences. See the documentation for details.',
-            buttons: ["OK"],
-            checkboxLabel: "Don't Show Again",
-            icon: WINDOW_ICON
-          })
-          .then((response) => {
-            if (response.checkboxChecked) {
-              prefs.skipFTCCoordinateSystemWarning = true;
-              jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-              sendAllPreferences();
-            }
-          });
-      }
-      break;
-
-    case "live-rlog-start":
-      rlogSockets[windowId]?.destroy();
-      rlogSockets[windowId] = net.createConnection({
-        host: message.data.address,
-        port: message.data.port
-      });
-
-      rlogSockets[windowId].setTimeout(RLOG_CONNECT_TIMEOUT_MS, () => {
-        sendMessage(window, "live-data", { uuid: message.data.uuid, status: false });
-      });
-
-      let appendArray = (newArray: Uint8Array) => {
-        let fullArray = new Uint8Array(rlogDataArrays[windowId].length + newArray.length);
-        fullArray.set(rlogDataArrays[windowId]);
-        fullArray.set(newArray, rlogDataArrays[windowId].length);
-        rlogDataArrays[windowId] = fullArray;
-      };
-
-      rlogDataArrays[windowId] = new Uint8Array();
-      rlogSockets[windowId].on("data", (data) => {
-        appendArray(data);
-        if (rlogSocketTimeouts[windowId] !== null) clearTimeout(rlogSocketTimeouts[windowId]);
-        rlogSocketTimeouts[windowId] = setTimeout(() => {
-          rlogSockets[windowId]?.destroy();
-        }, RLOG_DATA_TIMEOUT_MS);
-
-        while (true) {
-          let expectedLength;
-          if (rlogDataArrays[windowId].length < 4) {
-            break;
-          } else {
-            expectedLength = new DataView(rlogDataArrays[windowId].buffer).getInt32(0) + 4;
-            if (rlogDataArrays[windowId].length < expectedLength) {
-              break;
-            }
-          }
-
-          let singleArray = rlogDataArrays[windowId].slice(4, expectedLength);
-          rlogDataArrays[windowId] = rlogDataArrays[windowId].slice(expectedLength);
-
-          if (singleArray.length > 0) {
-            let success = sendMessage(window, "live-data", {
-              uuid: message.data.uuid,
-              success: true,
-              raw: new Uint8Array(singleArray)
-            });
-            if (!success) {
-              rlogSockets[windowId]?.destroy();
-            }
-          }
-        }
-      });
-
-      rlogSockets[windowId].on("error", () => {
-        sendMessage(window, "live-data", { uuid: message.data.uuid, success: false });
-      });
-
-      rlogSockets[windowId].on("close", () => {
-        sendMessage(window, "live-data", { uuid: message.data.uuid, success: false });
-      });
-      break;
-
-    case "live-rlog-stop":
-      rlogSockets[windowId]?.destroy();
       break;
 
     case "open-link":
@@ -1369,8 +1036,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         message.data.position,
         message.data.options,
         message.data.selectedIndex,
-        message.data.fov,
-        message.data.isFTC
+        message.data.fov
       );
       break;
 
@@ -1403,7 +1069,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             title: "Warning",
             message: "Incomplete data for export",
             detail:
-              'Some fields will not be available in the exported data. To save all fields from the server, the "Logging" live mode must be selected. Check the AdvantageScope documentation for details.',
+              'Some fields will not be available in the exported data. To save all fields from the server, the "Logging" live mode must be selected. Check the mur-voir documentation for details.',
             buttons: ["Continue", "Cancel"],
             icon: WINDOW_ICON
           })
@@ -1437,14 +1103,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "select-video":
-      VideoProcessor.prepare(
-        window,
-        message.data.uuid,
-        message.data.source,
-        message.data.matchInfo,
-        message.data.menuCoordinates,
-        (data) => sendMessage(window, "video-data", data)
-      );
+      VideoProcessor.prepare(window, message.data.uuid, (data) => sendMessage(window, "video-data", data));
       break;
 
     case "update-touch-bar-slider":
@@ -1454,47 +1113,11 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       }
       break;
 
-    case "open-xr":
-      XRControls.open(message.data, window);
-      break;
-
-    case "confirm-xr-close":
-      {
-        dialog
-          .showMessageBox(window, {
-            type: "question",
-            title: "Alert",
-            message: "Stop XR Server?",
-            detail: "Closing this tab will stop the XR server and disconnect all devices.",
-            buttons: ["Don't Close", "Close"],
-            defaultId: 1,
-            icon: WINDOW_ICON
-          })
-          .then((response) => {
-            if (response.response === 1) {
-              sendMessage(window, "close-tab", true);
-              XRControls.close();
-            }
-          });
-      }
-      break;
-
-    case "update-xr-command":
-      XRServer.setHubCommand(message.data);
-      break;
-
     default:
       console.warn("Unknown message from hub renderer process", message);
       break;
   }
 }
-
-// Send live RLOG heartbeats
-setInterval(() => {
-  Object.values(rlogSockets).forEach((socket) => {
-    socket.write(RLOG_HEARTBEAT_DATA);
-  });
-}, RLOG_HEARTBEAT_DELAY_MS);
 
 /** Shows a popup to create a new tab on a hub window. */
 function newTabPopup(window: BrowserWindow, rect: ButtonRect) {
@@ -1525,8 +1148,7 @@ function select3DCameraPopup(
   position: [number, number],
   options: string[],
   selectedIndex: number,
-  fov: number,
-  isFTC: boolean
+  fov: number
 ) {
   const cameraMenu = new Menu();
   cameraMenu.append(
@@ -1547,104 +1169,6 @@ function select3DCameraPopup(
       click() {
         sendMessage(window, "set-3d-camera", -2);
       }
-    })
-  );
-  cameraMenu.append(
-    new MenuItem({
-      label: isFTC ? "Driver View" : "Driver Station",
-      submenu: isFTC
-        ? [
-            {
-              label: "Blue Left",
-              type: "checkbox",
-              checked: selectedIndex === -4,
-              click() {
-                sendMessage(window, "set-3d-camera", -4);
-              }
-            },
-            {
-              label: "Blue Right",
-              type: "checkbox",
-              checked: selectedIndex === -5,
-              click() {
-                sendMessage(window, "set-3d-camera", -5);
-              }
-            },
-            {
-              label: "Red Left",
-              type: "checkbox",
-              checked: selectedIndex === -6,
-              click() {
-                sendMessage(window, "set-3d-camera", -6);
-              }
-            },
-            {
-              label: "Red Right",
-              type: "checkbox",
-              checked: selectedIndex === -7,
-              click() {
-                sendMessage(window, "set-3d-camera", -7);
-              }
-            }
-          ]
-        : [
-            {
-              label: "Auto",
-              type: "checkbox",
-              checked: selectedIndex === -3,
-              click() {
-                sendMessage(window, "set-3d-camera", -3);
-              }
-            },
-            {
-              label: "Blue 1",
-              type: "checkbox",
-              checked: selectedIndex === -4,
-              click() {
-                sendMessage(window, "set-3d-camera", -4);
-              }
-            },
-            {
-              label: "Blue 2",
-              type: "checkbox",
-              checked: selectedIndex === -5,
-              click() {
-                sendMessage(window, "set-3d-camera", -5);
-              }
-            },
-            {
-              label: "Blue 3",
-              type: "checkbox",
-              checked: selectedIndex === -6,
-              click() {
-                sendMessage(window, "set-3d-camera", -6);
-              }
-            },
-            {
-              label: "Red 1",
-              type: "checkbox",
-              checked: selectedIndex === -7,
-              click() {
-                sendMessage(window, "set-3d-camera", -7);
-              }
-            },
-            {
-              label: "Red 2",
-              type: "checkbox",
-              checked: selectedIndex === -8,
-              click() {
-                sendMessage(window, "set-3d-camera", -8);
-              }
-            },
-            {
-              label: "Red 3",
-              type: "checkbox",
-              checked: selectedIndex === -9,
-              click() {
-                sendMessage(window, "set-3d-camera", -9);
-              }
-            }
-          ]
     })
   );
   cameraMenu.append(
@@ -1722,381 +1246,27 @@ function select2DCameraPopup(window: BrowserWindow, position: [number, number], 
   });
 }
 
-/**
- * Process a message from a download window.
- * @param message The received message
- */
-function handleDownloadMessage(message: NamedMessage) {
-  if (!downloadWindow) return;
-  if (downloadWindow.isDestroyed()) return;
-
-  switch (message.name) {
-    case "start":
-      downloadDevice = "systemcore";
-      downloadAuthFailedOnce = false;
-      downloadAddress = message.data.address;
-      downloadPath = message.data.path;
-      if (!downloadPath.endsWith("/")) downloadPath += "/";
-      downloadStart();
-      break;
-
-    case "close":
-      downloadWindow.destroy();
-      downloadStop();
-      break;
-
-    case "save":
-      downloadSave(message.data);
-      break;
-  }
-}
-
-/** Starts a new SSH connection. */
-function downloadStart() {
-  if (downloadRetryTimeout) clearTimeout(downloadRetryTimeout);
-  if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
-  downloadClient?.end();
-  downloadFileSizeCache = {};
-  downloadClient = new Client()
-    .once("ready", () => {
-      // Successful SSH connection
-      downloadAuthFailedOnce = false;
-      downloadClient?.sftp((error, sftp) => {
-        if (error) {
-          // Failed to start SFTP
-          downloadError(error.message);
-        } else {
-          // Successful SFTP connection
-          let readFiles = () => {
-            sftp.readdir(downloadPath, async (error, list) => {
-              if (error) {
-                // Failed to read directory (not found?)
-                downloadError(error.message);
-              } else {
-                // Return list of files and folders
-                const filesAndFolders = list.filter(
-                  (file) =>
-                    !file.filename.startsWith(".") &&
-                    ((file.attrs as Stats).isDirectory() ||
-                      file.filename.endsWith(".rlog") ||
-                      file.filename.endsWith(".wpilog") ||
-                      file.filename.endsWith(".wpilogxz") ||
-                      file.filename.endsWith(".revlog") ||
-                      file.filename.endsWith(".hoot"))
-                );
-                const listData: { name: string; size: number; isFolder: boolean }[] = [];
-                for (const file of filesAndFolders) {
-                  if ((file.attrs as Stats).isDirectory()) {
-                    let totalSize = 0;
-                    try {
-                      const subFiles = await new Promise<FileEntry[] | undefined>((resolve) => {
-                        sftp.readdir(downloadPath + file.filename, (err, subList) => {
-                          if (err) resolve(undefined);
-                          else resolve(subList);
-                        });
-                      });
-                      if (subFiles) {
-                        subFiles.forEach((subFile) => {
-                          if (!(subFile.attrs as Stats).isDirectory() && !subFile.filename.startsWith(".")) {
-                            totalSize += subFile.attrs.size;
-                          }
-                        });
-                      }
-                    } catch (e) {}
-                    listData.push({ name: file.filename, size: totalSize, isFolder: true });
-                  } else {
-                    listData.push({ name: file.filename, size: file.attrs.size, isFolder: false });
-                  }
-                }
-
-                if (downloadWindow && !downloadWindow.isDestroyed()) {
-                  sendMessage(downloadWindow, "set-list", listData);
-                }
-
-                // Save cache of file sizes
-                listData.forEach((file) => {
-                  downloadFileSizeCache[file.name] = file.size;
-                });
-              }
-            });
-          };
-
-          // Start periodic read
-          downloadRefreshInterval = setInterval(readFiles, DOWNLOAD_REFRESH_INTERVAL_MS);
-          readFiles();
-        }
-      });
-    })
-    .on("error", (error) => {
-      // Failed SSH connection
-      downloadDevice = downloadDevice === "systemcore" ? "roborio" : "systemcore";
-      if (downloadAuthFailedOnce) {
-        downloadAuthFailedOnce = false;
-        downloadError(error.message);
-      } else {
-        downloadAuthFailedOnce = true;
-        if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
-        downloadStart();
-      }
-    })
-    .connect({
-      // Start connection
-      host: downloadAddress,
-      port: 22,
-      forceIPv4: true,
-      readyTimeout: DOWNLOAD_CONNECT_TIMEOUT_MS,
-      username: downloadDevice === "systemcore" ? DOWNLOAD_SYSTEMCORE_USERNAME : DOWNLOAD_ROBORIO_USERNAME,
-      password: downloadDevice === "systemcore" ? DOWNLOAD_SYSTEMCORE_PASSWORD : DOWNLOAD_ROBORIO_PASSWORD
-    });
-}
-
-/** Closes the FTP connection. */
-function downloadStop() {
-  downloadClient?.end();
-  downloadDevice = "systemcore";
-  downloadAuthFailedOnce = false;
-  if (downloadRetryTimeout) clearTimeout(downloadRetryTimeout);
-  if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
-}
-
-/** Problem connecting or reading data, restart after a delay. */
-function downloadError(errorMessage: string) {
-  if (!downloadWindow) return;
-  downloadDevice = "systemcore";
-  downloadAuthFailedOnce = false;
-  sendMessage(downloadWindow, "show-error", errorMessage);
-  if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
-  downloadRetryTimeout = setTimeout(downloadStart, DOWNLOAD_RETRY_DELAY_MS);
-}
-
-/** Guides the user through saving a set of files. */
-function downloadSave(files: string[]) {
-  if (!downloadWindow) return;
-  let selectPromise;
-  let firstExtension = path.extname(files[0]);
-  if (files.length > 1 || firstExtension === "") {
-    selectPromise = dialog.showOpenDialog(downloadWindow, {
-      title: "Select save location for robot logs",
-      buttonLabel: "Save",
-      properties: ["openDirectory", "createDirectory", "dontAddToRecent"]
-    });
-  } else {
-    let extension = firstExtension.slice(1);
-    let name = "";
-    switch (extension) {
-      case "wpilog":
-        name = "WPILib robot log";
-        break;
-      case "wpilogxz":
-        name = "Compressed WPILib robot log";
-        break;
-      case "rlog":
-        name = "Robot log";
-        break;
-      case "hoot":
-        name = "Hoot robot log";
-        break;
-      case "revlog":
-        name = "REV Robotics CAN log";
-        break;
-    }
-    selectPromise = dialog.showSaveDialog(downloadWindow, {
-      title: "Select save location for robot log",
-      defaultPath: files[0],
-      properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
-      filters: [{ name: name, extensions: [extension] }]
-    });
-  }
-
-  // Handle selected save location
-  selectPromise.then((response) => {
-    if (response.canceled) return;
-    let savePath: string = "";
-    if (files.length > 1 || firstExtension === "") {
-      savePath = (response as Electron.OpenDialogReturnValue).filePaths[0];
-    } else {
-      savePath = (response as Electron.SaveDialogReturnValue).filePath as string;
-    }
-    if (savePath !== "") {
-      // Start saving
-      downloadClient?.sftp(async (error, sftp) => {
-        if (error) {
-          downloadError(error.message);
-        } else {
-          if (downloadWindow) sendMessage(downloadWindow, "set-progress", 0);
-          if (files.length === 1 && firstExtension !== "") {
-            // Single file
-            sftp.fastGet(
-              downloadPath + files[0],
-              savePath,
-              {
-                step: (sizeTransferred, _, sizeTotal) => {
-                  if (!downloadWindow) return;
-                  sendMessage(downloadWindow, "set-progress", { current: sizeTransferred, total: sizeTotal });
-                }
-              },
-              (error) => {
-                if (error) {
-                  downloadError(error.message);
-                } else {
-                  if (!downloadWindow) return;
-                  sendMessage(downloadWindow, "set-progress", 1);
-
-                  // Ask if the log should be opened
-                  dialog
-                    .showMessageBox(downloadWindow, {
-                      type: "question",
-                      message: "Open log?",
-                      detail: 'Would you like to open the log file "' + path.basename(savePath) + '"?',
-                      icon: WINDOW_ICON,
-                      buttons: ["Open", "Skip"],
-                      defaultId: 0
-                    })
-                    .then((result) => {
-                      if (result.response === 0) {
-                        downloadWindow?.destroy();
-                        downloadStop();
-                        hubWindows[0].focus();
-                        sendMessage(hubWindows[0], "open-files", { files: [savePath], merge: false });
-                      }
-                    });
-                }
-              }
-            );
-          } else {
-            // Multiple files
-            let downloadTasks: { remote: string; local: string; size: number }[] = [];
-            for (const file of files) {
-              if (path.extname(file) === "") {
-                // Folder
-                try {
-                  const subFiles = await new Promise<FileEntry[] | undefined>((resolve) => {
-                    sftp.readdir(downloadPath + file, (err, subList) => {
-                      if (err) resolve(undefined);
-                      else resolve(subList);
-                    });
-                  });
-                  if (subFiles) {
-                    const localFolderPath = path.join(savePath, file);
-                    if (!fs.existsSync(localFolderPath)) {
-                      fs.mkdirSync(localFolderPath, { recursive: true });
-                    }
-                    for (const subFile of subFiles) {
-                      if (!(subFile.attrs as Stats).isDirectory() && !subFile.filename.startsWith(".")) {
-                        downloadTasks.push({
-                          remote: downloadPath + file + "/" + subFile.filename,
-                          local: path.join(localFolderPath, subFile.filename),
-                          size: subFile.attrs.size
-                        });
-                      }
-                    }
-                  }
-                } catch (e) {
-                  console.error(e);
-                }
-              } else {
-                // File
-                let remoteSize = file in downloadFileSizeCache ? downloadFileSizeCache[file] : 0;
-                downloadTasks.push({
-                  remote: downloadPath + file,
-                  local: path.join(savePath, file),
-                  size: remoteSize
-                });
-              }
-            }
-
-            let totalCount = downloadTasks.length;
-            let completeCount = 0;
-            let skipCount = 0;
-            let allSizesTransferred: number[] = new Array(downloadTasks.length).fill(0);
-            let allSizesTotal = 0;
-
-            let tasksToDownload: { task: { remote: string; local: string; size: number }; index: number }[] = [];
-            for (let i = 0; i < downloadTasks.length; i++) {
-              const task = downloadTasks[i];
-              let shouldSkip = false;
-              try {
-                if (fs.existsSync(task.local) && fs.statSync(task.local).size >= task.size) {
-                  shouldSkip = true;
-                }
-              } catch (e) {}
-
-              if (shouldSkip) {
-                completeCount++;
-                skipCount++;
-              } else {
-                allSizesTotal += task.size;
-                tasksToDownload.push({ task, index: i });
-              }
-            }
-
-            if (tasksToDownload.length === 0) {
-              // All files skipped
-              if (downloadWindow) sendMessage(downloadWindow, "show-alert", "No new logs found.");
-              return;
-            }
-
-            tasksToDownload.forEach(({ task, index }) => {
-              sftp.fastGet(
-                task.remote,
-                task.local,
-                {
-                  step: (sizeTransferred) => {
-                    allSizesTransferred[index] = sizeTransferred;
-                    if (!downloadWindow) return;
-                    let sumSizeTransferred = allSizesTransferred.reduce((a, b) => a + b, 0);
-                    sendMessage(downloadWindow, "set-progress", {
-                      current: sumSizeTransferred,
-                      total: allSizesTotal
-                    });
-                  }
-                },
-                (error) => {
-                  if (error) {
-                    downloadError(error.message);
-                  } else {
-                    completeCount++;
-
-                    if (completeCount >= totalCount) {
-                      let message: string;
-                      let newCount = completeCount - skipCount;
-                      if (skipCount > 0) {
-                        message =
-                          "Saved " +
-                          newCount.toString() +
-                          " new log" +
-                          (newCount === 1 ? "" : "s") +
-                          " (" +
-                          skipCount.toString() +
-                          " skipped) to <u>" +
-                          savePath +
-                          "</u>";
-                      } else {
-                        message =
-                          "Saved " +
-                          completeCount.toString() +
-                          " log" +
-                          (completeCount === 1 ? "" : "s") +
-                          " to <u>" +
-                          savePath +
-                          "</u>";
-                      }
-                      if (!downloadWindow) return;
-                      sendMessage(downloadWindow, "set-progress", 1);
-                      sendMessage(downloadWindow, "show-alert", message);
-                    }
-                  }
-                }
-              );
-            });
-          }
-        }
-      });
-    }
-  });
-}
-
 // CREATE WINDOWS
+
+/** Returns the ID of the selected live source, falling back to the first registered source. */
+function getSelectedLiveSourceId(prefs: Preferences): string | undefined {
+  return liveSources.find((source) => source.id === prefs.liveMode)?.id ?? liveSources[0]?.id;
+}
+
+/** Finds a menu template item by ID (searching submenus recursively). */
+function findMenuTemplateItem(
+  items: (Electron.MenuItemConstructorOptions | Electron.MenuItem)[],
+  id: string
+): Electron.MenuItemConstructorOptions | undefined {
+  for (const item of items) {
+    if (item.id === id) return item as Electron.MenuItemConstructorOptions;
+    if (Array.isArray(item.submenu)) {
+      const result = findMenuTemplateItem(item.submenu, id);
+      if (result !== undefined) return result;
+    }
+  }
+  return undefined;
+}
 
 /** Create the app menu. */
 function setupMenu() {
@@ -2109,7 +1279,7 @@ function setupMenu() {
       label: isMac ? "" : "App",
       submenu: [
         {
-          label: "About AdvantageScope",
+          label: "About mur-voir",
           click() {
             createAboutWindow();
           }
@@ -2124,16 +1294,6 @@ function setupMenu() {
             openPreferences(window);
           }
         },
-        ...(DISTRIBUTION === Distribution.FRC6328
-          ? [
-              {
-                label: "Check for Updates...",
-                click() {
-                  checkForUpdate(true);
-                }
-              }
-            ]
-          : []),
         {
           label: "Show Licenses...",
           click(_, baseWindow) {
@@ -2150,6 +1310,7 @@ function setupMenu() {
           }
         },
         {
+          id: "custom-assets-folder",
           label: "Use Custom Assets Folder",
           type: "checkbox",
           async click(item) {
@@ -2157,7 +1318,7 @@ function setupMenu() {
             let prefs: Preferences = await jsonfile.readFile(PREFS_FILENAME);
             if (isCustom) {
               let result = await dialog.showOpenDialog({
-                title: "Select folder containing custom AdvantageScope assets",
+                title: "Select folder containing custom mur-voir assets",
                 buttonLabel: "Open",
                 properties: ["openDirectory", "createDirectory", "dontAddToRecent"]
               });
@@ -2171,32 +1332,6 @@ function setupMenu() {
             advantageScopeAssets = await loadAssets();
             sendAllPreferences();
             sendAssets();
-          }
-        },
-        {
-          label: "Asset Download Status...",
-          click() {
-            dialog.showMessageBox({
-              type: "info",
-              title: "About",
-              message: "Asset Download Status",
-              detail: getAssetDownloadStatus(),
-              buttons: ["Close"],
-              icon: WINDOW_ICON
-            });
-          }
-        },
-        {
-          label: "Owlet Download Status...",
-          click() {
-            dialog.showMessageBox({
-              type: "info",
-              title: "About",
-              message: "Owlet Download Status",
-              detail: getOwletDownloadStatus(),
-              buttons: ["Close"],
-              icon: WINDOW_ICON
-            });
           }
         },
         ...(isMac
@@ -2230,7 +1365,7 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Robot logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "hoot", "revlog", "log", "csv", "dslog", "dsevents"]
+                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv"]
                   }
                 ]
               })
@@ -2254,7 +1389,7 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Robot logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "hoot", "revlog", "log", "csv", "dslog", "dsevents"]
+                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv"]
                   }
                 ]
               })
@@ -2266,113 +1401,42 @@ function setupMenu() {
           }
         },
         {
-          label: "Connect to Robot",
-          type: "submenu",
-          submenu: [
-            {
-              label: "Default",
-              accelerator: "CmdOrCtrl+K",
-              click(_, baseWindow) {
-                const window = baseWindow as BrowserWindow | undefined;
-                if (window === undefined || !hubWindows.includes(window)) return;
-                sendMessage(window, "start-live", "robot");
-              }
-            },
-            { type: "separator" },
-            ...(["nt4", "nt4-akit", "nt4-systemcore", "phoenix", "rlog", "ftcdashboard"] as const).map(
-              (liveMode: LiveMode) => {
-                let item: Electron.MenuItemConstructorOptions = {
-                  label: getLiveModeName(liveMode),
-                  click(_, baseWindow) {
-                    const window = baseWindow as BrowserWindow | undefined;
-                    if (window === undefined || !hubWindows.includes(window)) return;
-                    let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-                    prefs.liveMode = liveMode;
-                    jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-                    sendAllPreferences();
-                    sendMessage(window, "start-live", "robot");
-                  }
-                };
-                return item;
-              }
-            )
-          ]
-        },
-        {
-          label: "Connect to Simulator",
-          type: "submenu",
-          submenu: [
-            {
-              label: "Default",
-              accelerator: "CmdOrCtrl+Shift+K",
-              click(_, baseWindow) {
-                const window = baseWindow as BrowserWindow | undefined;
-                if (window === undefined || !hubWindows.includes(window)) return;
-                sendMessage(window, "start-live", "sim");
-              }
-            },
-            { type: "separator" },
-            ...(["nt4", "nt4-akit", "nt4-systemcore", "phoenix", "rlog", "ftcdashboard"] as const).map(
-              (liveMode: LiveMode) => {
-                let item: Electron.MenuItemConstructorOptions = {
-                  label: getLiveModeName(liveMode),
-                  click(_, baseWindow) {
-                    const window = baseWindow as BrowserWindow | undefined;
-                    if (window === undefined || !hubWindows.includes(window)) return;
-                    let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-                    prefs.liveMode = liveMode;
-                    jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-                    sendAllPreferences();
-                    sendMessage(window, "start-live", "sim");
-                  }
-                };
-                return item;
-              }
-            )
-          ]
-        },
-        {
-          label: "Connect to Driver Station",
-          accelerator: "CmdOrCtrl+Alt+Shift+K",
+          label: "Connect to Live Source",
+          accelerator: "CmdOrCtrl+K",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined || !hubWindows.includes(window)) return;
-            sendMessage(window, "start-live", "ds");
+            sendMessage(window, "start-live", "robot");
           }
         },
         {
-          label: "Download Logs...",
-          accelerator: "CmdOrCtrl+D",
+          label: "Connect to Localhost",
+          accelerator: "CmdOrCtrl+Shift+K",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
-            if (window === undefined) return;
-            openDownload(window);
-          }
-        },
-        { type: "separator" },
-        {
-          label: "Use Systemcore USB Address",
-          type: "checkbox",
-          checked: prefs.systemcoreStaticAddress === "usb",
-          click(item) {
-            let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-            prefs.systemcoreStaticAddress = item.checked ? "usb" : "";
-            jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-            sendAllPreferences();
+            if (window === undefined || !hubWindows.includes(window)) return;
+            sendMessage(window, "start-live", "sim");
           }
         },
         {
-          label: "Use Systemcore Wi-Fi Address",
-          type: "checkbox",
-          checked: prefs.systemcoreStaticAddress === "wifi",
-          click(item) {
-            let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-            prefs.systemcoreStaticAddress = item.checked ? "wifi" : "";
-            jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-            sendAllPreferences();
-          }
+          label: "Live Source",
+          type: "submenu",
+          submenu: liveSources.map((source) => {
+            let item: Electron.MenuItemConstructorOptions = {
+              id: "live-source-" + source.id,
+              label: source.name,
+              type: "radio",
+              checked: source.id === getSelectedLiveSourceId(prefs),
+              click() {
+                let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+                prefs.liveMode = source.id;
+                jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+                sendAllPreferences();
+              }
+            };
+            return item;
+          })
         },
-        { type: "separator" },
         {
           label: "Export Data...",
           accelerator: "CmdOrCtrl+E",
@@ -2382,38 +1446,6 @@ function setupMenu() {
             sendMessage(window, "start-export");
           }
         },
-        {
-          label: "Publish NT Data",
-          submenu: [
-            {
-              label: "Connect to Robot",
-              accelerator: "CmdOrCtrl+P",
-              click(_, baseWindow) {
-                const window = baseWindow as BrowserWindow | undefined;
-                if (window === undefined || !hubWindows.includes(window)) return;
-                sendMessage(window, "start-publish", false);
-              }
-            },
-            {
-              label: "Connect to Simulator",
-              accelerator: "CmdOrCtrl+Shift+P",
-              click(_, baseWindow) {
-                const window = baseWindow as BrowserWindow | undefined;
-                if (window === undefined || !hubWindows.includes(window)) return;
-                sendMessage(window, "start-publish", true);
-              }
-            },
-            {
-              label: "Stop Publishing",
-              accelerator: "CmdOrCtrl+Alt+P",
-              click(_, baseWindow) {
-                const window = baseWindow as BrowserWindow | undefined;
-                if (window === undefined || !hubWindows.includes(window)) return;
-                sendMessage(window, "stop-publish");
-              }
-            }
-          ]
-        },
         { type: "separator" },
         {
           label: "Export Layout...",
@@ -2421,7 +1453,7 @@ function setupMenu() {
             dialog
               .showSaveDialog({
                 title: "Select export location for layout file",
-                defaultPath: "AdvantageScope " + formatDate() + ".json",
+                defaultPath: "mur-voir " + formatDate() + ".json",
                 properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
                 filters: [{ name: "JSON files", extensions: ["json"] }]
               })
@@ -2463,7 +1495,7 @@ function setupMenu() {
                       title: "Error",
                       message: "Failed to import layout",
                       detail: oldLayout
-                        ? "The selected layout file uses an older format which is not compatible with the current version of AdvantageScope."
+                        ? "The selected layout file uses an older format which is not compatible with the current version of mur-voir."
                         : "The selected layout file was not a recognized format.",
                       icon: WINDOW_ICON
                     });
@@ -2495,7 +1527,7 @@ function setupMenu() {
                       title: "Warning",
                       message: "Version mismatch",
                       detail:
-                        "The layout file was generated by a different version of AdvantageScope. Compatibility is not guaranteed.",
+                        "The layout file was generated by a different version of mur-voir. Compatibility is not guaranteed.",
                       buttons: ["Continue", "Cancel"],
                       icon: WINDOW_ICON
                     });
@@ -2526,25 +1558,6 @@ function setupMenu() {
                   });
                 }
               });
-          }
-        },
-        {
-          label: "Reset to DS Layout",
-          click(_, baseWindow) {
-            const window = baseWindow as BrowserWindow | undefined;
-            if (window === undefined || !hubWindows.includes(window)) return;
-            const result = dialog.showMessageBoxSync(window, {
-              type: "warning",
-              title: "Warning",
-              message: "Reset to DS Layout?",
-              detail: "The layout of this window will be replaced with the DS layout. This cannot be undone.",
-              buttons: ["Reset", "Cancel"],
-              defaultId: 0,
-              cancelId: 1,
-              icon: WINDOW_ICON
-            });
-            if (result !== 0) return;
-            sendMessage(window, "restore-state", DEFAULT_DS_LAYOUT);
           }
         },
         { type: "separator" },
@@ -2696,7 +1709,7 @@ function setupMenu() {
             const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined) return;
             if (hubWindows.includes(window)) {
-              sendMessage(window, "close-tab", false);
+              sendMessage(window, "close-tab");
             } else {
               window.destroy();
             }
@@ -2719,7 +1732,6 @@ function setupMenu() {
                     window.moveTop();
                   }
                 });
-                if (downloadWindow && !downloadWindow.isDestroyed()) downloadWindow.moveTop();
                 if (prefsWindow && !prefsWindow.isDestroyed()) prefsWindow?.moveTop();
                 if (licensesWindow && !licensesWindow.isDestroyed()) licensesWindow?.moveTop();
                 Object.values(satelliteWindows).forEach((windows) =>
@@ -2745,27 +1757,15 @@ function setupMenu() {
           }
         },
         {
-          label: "Contact Us",
-          click() {
-            shell.openExternal("mailto:software@team6328.org");
-          }
-        },
-        {
           label: "GitHub Repository",
           click() {
             shell.openExternal("https://github.com/" + GITHUB_REPOSITORY);
           }
         },
         {
-          label: "WPILib Documentation",
+          label: "Based on AdvantageScope",
           click() {
-            shell.openExternal("https://docs.wpilib.org");
-          }
-        },
-        {
-          label: "Littleton Robotics",
-          click() {
-            shell.openExternal("https://littletonrobotics.org");
+            shell.openExternal("https://github.com/Mechanical-Advantage/AdvantageScope");
           }
         }
       ]
@@ -2779,11 +1779,10 @@ function setupMenu() {
   });
 }
 
-/** Creates the "About AdvantageScope" window. */
+/** Creates the "About mur-voir" window. */
 function createAboutWindow() {
   let detailLines: string[] = [];
   detailLines.push("Version: " + (app.isPackaged ? app.getVersion() : "Development"));
-  detailLines.push("Distribution: " + (DISTRIBUTION === Distribution.WPILib ? "WPILib" : "FRC 6328"));
   detailLines.push("Platform: " + process.platform + "-" + process.arch);
   detailLines.push("Build Date: " + BUILD_DATE);
   detailLines.push("Electron: " + process.versions.electron);
@@ -2794,7 +1793,7 @@ function createAboutWindow() {
     .showMessageBox({
       type: "info",
       title: "About",
-      message: "AdvantageScope",
+      message: "mur-voir",
       detail: COPYRIGHT + "\n\n" + detail,
       buttons: ["Close", process.platform === "win32" ? "Copy and Close" : "Copy & Close"],
       defaultId: 0,
@@ -2944,7 +1943,6 @@ function createHubWindow(state?: WindowState, layoutOverride?: any) {
   window.webContents.on("dom-ready", () => {
     if (!firstLoad) {
       createPorts(); // Create ports on reload
-      rlogSockets[window.id]?.destroy(); // Destroy any existing RLOG sockets
     }
 
     // Launch dev tools
@@ -2962,8 +1960,6 @@ function createHubWindow(state?: WindowState, layoutOverride?: any) {
       platformArch: app.runningUnderARM64Translation ? "arm64" : process.arch, // Arch of OS, not this binary
       appVersion: APP_VERSION
     });
-    sendMessage(window, "show-update-button", updateChecker.getShouldPrompt());
-    sendMessage(window, "show-feedback-button", isBeta());
     sendMessage(window, "show-when-ready");
     sendAllPreferences();
     sendActiveSatellites();
@@ -2981,51 +1977,6 @@ function createHubWindow(state?: WindowState, layoutOverride?: any) {
       }
     }
     firstLoad = false;
-
-    // Beta init
-    if (isBeta()) {
-      if (isBetaExpired()) {
-        dialog
-          .showMessageBox(window, {
-            type: "info",
-            title: "Alert",
-            message: (isAlpha() ? "Alpha" : "Beta") + " is complete",
-            detail:
-              "The AdvantageScope " +
-              (isAlpha() ? "alpha" : "beta") +
-              " is complete. " +
-              (DISTRIBUTION === Distribution.WPILib
-                ? "Please update to the latest stable release of WPILib."
-                : "Please download the latest stable release of AdvantageScope from GitHub."),
-            buttons: ["Quit", "Ignore"],
-            defaultId: 0
-          })
-          .then((result) => {
-            if (result.response === 0) app.quit();
-          });
-      } else if (!isBetaWelcomeComplete()) {
-        openBetaWelcome(window);
-      } else if (shouldPromptBetaSurvey()) {
-        dialog
-          .showMessageBox(window, {
-            type: "info",
-            title: "Alert",
-            message: "Share feedback?",
-            detail: `Please take 30 seconds to share your experience using the AdvantageScope ${
-              isAlpha() ? "alpha" : "beta"
-            }. We'll keep this quick.`,
-            buttons: ["Open", "Not Now"],
-            defaultId: 0
-          })
-          .then((result) => {
-            if (result.response === 0) {
-              openBetaSurvey();
-            } else {
-              delayBetaSurvey();
-            }
-          });
-      }
-    }
   });
   window.on("close", (event) => {
     if (hubExportingIds.has(window.id)) {
@@ -3421,8 +2372,7 @@ function createSatellite(
             message.data.position,
             message.data.options,
             message.data.selectedIndex,
-            message.data.fov,
-            message.data.isFTC
+            message.data.fov
           );
           break;
 
@@ -3560,60 +2510,6 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
 }
 
 /**
- * Creates a new download window if it doesn't already exist.
- * @param parentWindow The parent window to use for alignment
- */
-function openDownload(parentWindow: Electron.BrowserWindow) {
-  if (downloadWindow !== null && !downloadWindow.isDestroyed()) {
-    downloadWindow.focus();
-    return;
-  }
-
-  const width = 500;
-  const height = 500;
-  downloadWindow = new BrowserWindow({
-    width: width,
-    height: height,
-    minWidth: width,
-    minHeight: height,
-    x: Math.floor(parentWindow.getBounds().x + parentWindow.getBounds().width / 2 - width / 2),
-    y: Math.floor(parentWindow.getBounds().y + parentWindow.getBounds().height / 2 - height / 2),
-    resizable: true,
-    alwaysOnTop: true,
-    icon: WINDOW_ICON,
-    show: false,
-    fullscreenable: false,
-    webPreferences: {
-      preload: path.join(__dirname, "preload.js")
-    }
-  });
-
-  // Finish setup
-  downloadWindow.setMenu(null);
-  downloadWindow.setMenuBarVisibility(false);
-  downloadWindow.once("ready-to-show", downloadWindow.show);
-  downloadWindow.once("close", downloadStop);
-  downloadWindow.webContents.on("dom-ready", () => {
-    // Create ports on reload
-    if (downloadWindow === null) return;
-    const { port1, port2 } = new MessageChannelMain();
-    downloadWindow.webContents.postMessage("port", null, [port1]);
-    windowPorts[downloadWindow.id] = port2;
-    port2.on("message", (event) => {
-      if (downloadWindow) handleDownloadMessage(event.data);
-    });
-    port2.start();
-
-    // Init messages
-    sendMessage(downloadWindow, "set-platform", process.platform);
-    sendAllPreferences();
-  });
-  downloadWindow.on("blur", () => sendMessage(downloadWindow!, "set-focused", false));
-  downloadWindow.on("focus", () => sendMessage(downloadWindow!, "set-focused", true));
-  downloadWindow.loadFile(path.join(__dirname, "../www/download.html"));
-}
-
-/**
  * Creates a new licenses window if it doesn't already exist.
  * @param parentWindow The parent window to use for alignment
  */
@@ -3645,7 +2541,6 @@ function openLicenses(parentWindow: Electron.BrowserWindow) {
   licensesWindow.setMenu(null);
   licensesWindow.setMenuBarVisibility(false);
   licensesWindow.once("ready-to-show", licensesWindow.show);
-  licensesWindow.once("close", downloadStop);
   licensesWindow.loadFile(path.join(__dirname, "../www/licenses.html"));
 }
 
@@ -3678,7 +2573,6 @@ function openSourceListHelp(parentWindow: Electron.BrowserWindow, config: Source
   helpWindow.setMenu(null);
   helpWindow.setMenuBarVisibility(false);
   helpWindow.once("ready-to-show", helpWindow.show);
-  helpWindow.once("close", downloadStop);
   helpWindow.webContents.on("dom-ready", () => {
     // Create ports on reload
     if (helpWindow === null) return;
@@ -3694,165 +2588,17 @@ function openSourceListHelp(parentWindow: Electron.BrowserWindow, config: Source
   helpWindow.loadFile(path.join(__dirname, "../www/sourceListHelp.html"));
 }
 
-/**
- * Creates a new beta help window.
- * @param parentWindow The parent window to use for alignment
- */
-function openBetaWelcome(parentWindow: Electron.BrowserWindow) {
-  const width = 450;
-  const height = process.platform === "win32" ? 530 : 490;
-  let betaWelcome = new BrowserWindow({
-    width: width,
-    height: height,
-    useContentSize: true,
-    resizable: false,
-    icon: WINDOW_ICON,
-    show: false,
-    parent: parentWindow,
-    modal: true,
-    webPreferences: {
-      preload: path.join(__dirname, "preload.js")
-    }
-  });
-  // Finish setup
-  betaWelcome.setMenu(null);
-  betaWelcome.setMenuBarVisibility(false);
-  betaWelcome.on("close", () => {
-    app.quit();
-  });
-  betaWelcome.webContents.on("dom-ready", () => {
-    // Create ports on reload
-    if (betaWelcome === null) return;
-    const { port1, port2 } = new MessageChannelMain();
-    betaWelcome.webContents.postMessage("port", null, [port1]);
-    port2.postMessage(isAlpha());
-    port2.on("message", () => {
-      betaWelcome.destroy();
-      saveBetaWelcomeComplete();
-      shouldPromptBetaSurvey(); // Ensures survey is scheduled
-    });
-    port2.start();
-    betaWelcome.show();
-  });
-  betaWelcome.loadFile(path.join(__dirname, "../www/betaWelcome.html"));
-}
-
-// DS LOG HANDLING
-
-/**
- * Returns whether the path is a Driver Station log.
- */
-function isDsLog(path: string): boolean {
-  // Read the extra header from the WPILOG directory. This happens before
-  // actually loading the file normally, so just parse the start of it.
-  const expectedExtra = Buffer.from("DS Log File", "utf8");
-  const buffer = Buffer.alloc(12 + expectedExtra.length);
-  let fd: number | null = null;
-  try {
-    fd = fs.openSync(path, "r");
-    if (fs.readSync(fd, buffer, 0, buffer.length, 0) < buffer.length) return false;
-  } catch {
-    return false;
-  } finally {
-    if (fd !== null) fs.closeSync(fd);
-  }
-  if (buffer.toString("ascii", 0, 6) !== "WPILOG") return false;
-  if (buffer.readUInt8(7) !== 1) return false;
-  if (buffer.readUInt32LE(8) !== expectedExtra.length) return false;
-  return buffer.subarray(12).equals(expectedExtra);
-}
-
-/**
- * Returns whether the window has the default Driver Station layout.
- */
-function isDsWindow(window: BrowserWindow): boolean {
-  const state = stateTracker.getRendererState(window);
-  if (state?.tabs?.tabs === undefined) return false;
-  const signature = (tabs: any[]) => JSON.stringify(tabs.map((tab) => [tab.type, tab.title]));
-  return signature(state.tabs.tabs) === signature(DEFAULT_DS_LAYOUT.tabs.tabs as any[]);
-}
-
-function createDsWindow(files: string[]) {
-  const window = createHubWindow(undefined, DEFAULT_DS_LAYOUT);
-  window.webContents.once("dom-ready", () => sendMessage(window, "open-files", { files: files, merge: false }));
-}
-
-/**
- * Opens files new files without merging. Routes requests to a new or existing
- * window while recommending a DS layout for FIRST DS logs.
- */
+/** Opens files without merging, using the source window if available. */
 function openFilesSmart(files: string[], sourceWindow: BrowserWindow | null) {
-  const hubAlive = (window: BrowserWindow | null): window is BrowserWindow =>
-    window !== null && !window.isDestroyed() && hubWindows.includes(window);
-  if (sourceWindow !== null && !hubAlive(sourceWindow)) sourceWindow = null;
-
-  if (files.length !== 1 || !isDsLog(files[0])) {
-    if (sourceWindow !== null) {
-      sendMessage(sourceWindow, "open-files", { files: files, merge: false });
-    } else {
-      const window = createHubWindow();
-      window.webContents.once("dom-ready", () => sendMessage(window, "open-files", { files: files, merge: false }));
-    }
-    return;
-  }
-
-  const dsWindow = hubWindows.find((window) => hubAlive(window) && isDsWindow(window));
-
-  if (sourceWindow === null && !hubWindows.some(hubAlive)) {
-    createDsWindow(files);
-    return;
-  }
-  if (sourceWindow !== null && isDsWindow(sourceWindow)) {
+  if (sourceWindow !== null && !sourceWindow.isDestroyed() && hubWindows.includes(sourceWindow)) {
     sendMessage(sourceWindow, "open-files", { files: files, merge: false });
-    return;
-  }
-
-  const buttons: string[] = [];
-  const actions: (() => void)[] = [];
-  if (dsWindow !== undefined) {
-    const target = dsWindow;
-    buttons.push("Open in DS Window");
-    actions.push(() => {
-      target.focus();
-      sendMessage(target, "open-files", { files: files, merge: false });
-    });
   } else {
-    buttons.push("Open in New Window");
-    actions.push(() => createDsWindow(files));
+    const window = createHubWindow();
+    window.webContents.once("dom-ready", () => sendMessage(window, "open-files", { files: files, merge: false }));
   }
-  if (sourceWindow !== null) {
-    const source = sourceWindow;
-    buttons.push("Open in This Window");
-    actions.push(() => sendMessage(source, "open-files", { files: files, merge: false }));
-  }
-  buttons.push("Cancel");
-  const options = {
-    type: "question" as const,
-    title: "Open DS log",
-    message: "Open this log using the DS layout?",
-    detail: "The Driver Station layout can be opened in a separate window without changing your current layout.",
-    buttons: buttons,
-    defaultId: 0,
-    cancelId: buttons.length - 1,
-    icon: WINDOW_ICON
-  };
-  const result =
-    sourceWindow !== null ? dialog.showMessageBoxSync(sourceWindow, options) : dialog.showMessageBoxSync(options);
-  if (result < actions.length) actions[result]();
 }
 
 // APPLICATION EVENTS
-
-function checkForUpdate(alwaysPrompt: boolean) {
-  updateChecker.check().then(() => {
-    hubWindows.forEach((window) => {
-      sendMessage(window, "show-update-button", updateChecker.getShouldPrompt());
-    });
-    if (alwaysPrompt) {
-      updateChecker.showPrompt();
-    }
-  });
-}
 
 // "unsafe-eval" is required in the hub for protobufjs
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
@@ -3862,11 +2608,7 @@ process.on("unhandledRejection", () => {});
 
 // Set WM_CLASS for Linux
 if (process.platform === "linux") {
-  if (DISTRIBUTION === Distribution.WPILib) {
-    app.setName("AdvantageScope (WPILib)");
-  } else {
-    app.setName("AdvantageScope");
-  }
+  app.setName("mur-voir");
 }
 
 app.whenReady().then(async () => {
@@ -3887,21 +2629,19 @@ app.whenReady().then(async () => {
     nativeTheme.themeSource = prefs.theme;
   }
 
+  // Use the placeholder icon in the dock during development
+  if (process.platform === "darwin" && !app.isPackaged) {
+    app.dock?.setIcon(path.join(__dirname, "../icons/window-icon.png"));
+  }
+
   // Load assets
   createAssetFolders();
-  startAssetDownloadLoop(async () => {
-    advantageScopeAssets = await loadAssets();
-    sendAssets();
-  });
   setInterval(async () => {
     // Periodically load assets in case they are updated
     advantageScopeAssets = await loadAssets();
     sendAssets();
   }, 5000);
   advantageScopeAssets = await loadAssets();
-
-  // Start owlet download
-  startOwletDownloadLoop();
 
   // Create menu and windows
   setupMenu();
@@ -3925,12 +2665,8 @@ app.whenReady().then(async () => {
       x.endsWith(".wpilog") ||
       x.endsWith(".wpilogxz") ||
       x.endsWith(".rlog") ||
-      x.endsWith(".hoot") ||
-      x.endsWith(".revlog") ||
       x.endsWith(".log") ||
-      x.endsWith(".csv") ||
-      x.endsWith(".dslog") ||
-      x.endsWith(".dsevents")
+      x.endsWith(".csv")
   );
   if (fileArgs.length > 0) {
     firstOpenPath = fileArgs[0];
@@ -3947,11 +2683,6 @@ app.whenReady().then(async () => {
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createHubWindow();
   });
-
-  // Check for update and show button on hub windows (but don't prompt)
-  if (DISTRIBUTION === Distribution.FRC6328) {
-    checkForUpdate(false);
-  }
 });
 
 app.on("window-all-closed", () => {
@@ -3961,10 +2692,6 @@ app.on("window-all-closed", () => {
 // macOS only, Linux & Windows start a new process and pass the file as an argument
 app.on("open-file", (_, path) => {
   if (app.isReady()) {
-    if (isDsLog(path)) {
-      openFilesSmart([path], hubWindows.length > 0 ? hubWindows[0] : null);
-      return;
-    }
     // Already running, create a new window
     let window = createHubWindow();
     window.webContents.once("dom-ready", () => {

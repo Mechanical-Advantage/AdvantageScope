@@ -13,14 +13,7 @@ import {
   Config3dField_GamePiece,
   Config3dRobot,
   Config3dRobot_Camera,
-  Config3dRobot_Component,
-  ConfigJoystick,
-  ConfigJoystick_Axis,
-  ConfigJoystick_Button,
-  ConfigJoystick_Joystick,
-  ConfigJoystick_Touchpad,
-  DEFAULT_DRIVER_STATIONS_FRC,
-  DEFAULT_DRIVER_STATIONS_FTC
+  Config3dRobot_Component
 } from "../shared/AdvantageScopeAssets";
 import { checkArrayType } from "../shared/util";
 
@@ -32,7 +25,6 @@ export function parseField2d(configRaw: unknown): Config2d | "invalid" | "skip" 
     id: "",
     isFTC: false,
     useGrid: true,
-    coordinateSystem: "center-red",
     topLeft: [-1, -1],
     bottomRight: [-1, -1],
     widthInches: 0,
@@ -46,16 +38,6 @@ export function parseField2d(configRaw: unknown): Config2d | "invalid" | "skip" 
   } else {
     // Pre-2026 format, skip
     return "skip";
-  }
-  if (
-    "coordinateSystem" in configRaw &&
-    typeof configRaw.coordinateSystem === "string" &&
-    (configRaw.coordinateSystem === "wall-alliance" ||
-      configRaw.coordinateSystem === "wall-blue" ||
-      configRaw.coordinateSystem === "center-rotated" ||
-      configRaw.coordinateSystem === "center-red")
-  ) {
-    config.coordinateSystem = configRaw.coordinateSystem;
   }
   if ("useGrid" in configRaw && typeof configRaw.useGrid === "boolean") {
     config.useGrid = configRaw.useGrid;
@@ -105,13 +87,11 @@ export function parseField3d(configRaw: unknown): Config3dField | "invalid" | "s
     path: "",
     id: "",
     isFTC: false,
-    coordinateSystem: "center-red",
     useGrid: true,
     rotations: [],
     position: [0, 0, 0],
     widthInches: 0,
     heightInches: 0,
-    driverStations: DEFAULT_DRIVER_STATIONS_FRC,
     gamePieces: [],
     aprilTags: []
   };
@@ -120,22 +100,9 @@ export function parseField3d(configRaw: unknown): Config3dField | "invalid" | "s
   }
   if ("isFTC" in configRaw && typeof configRaw.isFTC === "boolean") {
     config.isFTC = configRaw.isFTC;
-    if (config.isFTC) {
-      config.driverStations = DEFAULT_DRIVER_STATIONS_FTC;
-    }
   } else {
     // Pre-2026 format, skip
     return "skip";
-  }
-  if (
-    "coordinateSystem" in configRaw &&
-    typeof configRaw.coordinateSystem === "string" &&
-    (configRaw.coordinateSystem === "wall-alliance" ||
-      configRaw.coordinateSystem === "wall-blue" ||
-      configRaw.coordinateSystem === "center-rotated" ||
-      configRaw.coordinateSystem === "center-red")
-  ) {
-    config.coordinateSystem = configRaw.coordinateSystem;
   }
   if ("useGrid" in configRaw && typeof configRaw.useGrid === "boolean") {
     config.useGrid = configRaw.useGrid;
@@ -166,14 +133,6 @@ export function parseField3d(configRaw: unknown): Config3dField | "invalid" | "s
   }
   if ("heightInches" in configRaw && typeof configRaw.heightInches === "number") {
     config.heightInches = configRaw.heightInches;
-  }
-  if (
-    "driverStations" in configRaw &&
-    Array.isArray(configRaw.driverStations) &&
-    configRaw.driverStations.length === (config.isFTC ? 4 : 6) &&
-    configRaw.driverStations.every((position) => checkArrayType(position, "number") && position.length === 2)
-  ) {
-    config.driverStations = configRaw.driverStations;
   }
   if ("gamePieces" in configRaw && Array.isArray(configRaw.gamePieces)) {
     configRaw.gamePieces.forEach((gamePieceRaw: any) => {
@@ -417,252 +376,12 @@ export function parseRobot(configRaw: unknown): Config3dRobot | "invalid" {
   return "invalid";
 }
 
-export function parseJoystick(configRaw: unknown): ConfigJoystick | "invalid" {
-  if (configRaw === null || typeof configRaw !== "object") return "invalid";
-  let config: ConfigJoystick = {
-    name: "",
-    path: "",
-    components: []
-  };
-  if ("name" in configRaw && typeof configRaw.name === "string") {
-    config.name = configRaw.name;
-  }
-  if ("components" in configRaw && Array.isArray(configRaw.components)) {
-    configRaw.components.forEach((componentRaw: object) => {
-      let isYellow = false;
-      if ("isYellow" in componentRaw && typeof componentRaw.isYellow === "boolean") {
-        isYellow = componentRaw.isYellow;
-      }
-      let centerPx: [number, number] = [0, 0];
-      if (
-        "centerPx" in componentRaw &&
-        checkArrayType(componentRaw.centerPx, "number") &&
-        (componentRaw.centerPx as number[]).length === 2
-      ) {
-        centerPx = componentRaw.centerPx as [number, number];
-      }
-
-      if ("type" in componentRaw && typeof componentRaw.type === "string") {
-        switch (componentRaw.type) {
-          case "button":
-            let buttonComponent: ConfigJoystick_Button = {
-              type: "button",
-              isYellow: isYellow,
-              isEllipse: false,
-              centerPx: centerPx,
-              sizePx: [0, 0]
-            };
-            if ("isEllipse" in componentRaw && typeof componentRaw.isEllipse === "boolean") {
-              buttonComponent.isEllipse = componentRaw.isEllipse;
-            }
-            if (
-              "sizePx" in componentRaw &&
-              checkArrayType(componentRaw.sizePx, "number") &&
-              (componentRaw.sizePx as number[]).length === 2
-            ) {
-              buttonComponent.sizePx = componentRaw.sizePx as [number, number];
-            }
-            if ("sdlSourceIndex" in componentRaw && typeof componentRaw.sdlSourceIndex === "number") {
-              buttonComponent.sdlSourceIndex = componentRaw.sdlSourceIndex;
-            }
-            if (
-              "sdlSourcePov" in componentRaw &&
-              typeof componentRaw.sdlSourcePov === "string" &&
-              (componentRaw.sdlSourcePov === "up" ||
-                componentRaw.sdlSourcePov === "right" ||
-                componentRaw.sdlSourcePov === "down" ||
-                componentRaw.sdlSourcePov === "left")
-            ) {
-              buttonComponent.sdlSourcePov = componentRaw.sdlSourcePov;
-            }
-            if ("niSourceIndex" in componentRaw && typeof componentRaw.niSourceIndex === "number") {
-              buttonComponent.niSourceIndex = componentRaw.niSourceIndex;
-            } else if ("sourceIndex" in componentRaw && typeof componentRaw.sourceIndex === "number") {
-              buttonComponent.niSourceIndex = componentRaw.sourceIndex;
-            }
-            if (
-              "niSourcePov" in componentRaw &&
-              typeof componentRaw.niSourcePov === "string" &&
-              (componentRaw.niSourcePov === "up" ||
-                componentRaw.niSourcePov === "right" ||
-                componentRaw.niSourcePov === "down" ||
-                componentRaw.niSourcePov === "left")
-            ) {
-              buttonComponent.niSourcePov = componentRaw.niSourcePov;
-            } else if (
-              "sourcePov" in componentRaw &&
-              typeof componentRaw.sourcePov === "string" &&
-              (componentRaw.sourcePov === "up" ||
-                componentRaw.sourcePov === "right" ||
-                componentRaw.sourcePov === "down" ||
-                componentRaw.sourcePov === "left")
-            ) {
-              buttonComponent.niSourcePov = componentRaw.sourcePov;
-            }
-            config.components.push(buttonComponent);
-            break;
-
-          case "joystick":
-            let joystickComponent: ConfigJoystick_Joystick = {
-              type: "joystick",
-              isYellow: isYellow,
-              centerPx: centerPx,
-              radiusPx: 0
-            };
-            if ("radiusPx" in componentRaw && typeof componentRaw.radiusPx === "number") {
-              joystickComponent.radiusPx = componentRaw.radiusPx;
-            }
-            if ("sdlXSourceIndex" in componentRaw && typeof componentRaw.sdlXSourceIndex === "number") {
-              joystickComponent.sdlXSourceIndex = componentRaw.sdlXSourceIndex;
-            }
-            if ("sdlXSourceInverted" in componentRaw && typeof componentRaw.sdlXSourceInverted === "boolean") {
-              joystickComponent.sdlXSourceInverted = componentRaw.sdlXSourceInverted;
-            }
-            if ("sdlYSourceIndex" in componentRaw && typeof componentRaw.sdlYSourceIndex === "number") {
-              joystickComponent.sdlYSourceIndex = componentRaw.sdlYSourceIndex;
-            }
-            if ("sdlYSourceInverted" in componentRaw && typeof componentRaw.sdlYSourceInverted === "boolean") {
-              joystickComponent.sdlYSourceInverted = componentRaw.sdlYSourceInverted;
-            }
-            if ("sdlButtonSourceIndex" in componentRaw && typeof componentRaw.sdlButtonSourceIndex === "number") {
-              joystickComponent.sdlButtonSourceIndex = componentRaw.sdlButtonSourceIndex;
-            }
-            if ("niXSourceIndex" in componentRaw && typeof componentRaw.niXSourceIndex === "number") {
-              joystickComponent.niXSourceIndex = componentRaw.niXSourceIndex;
-            } else if ("xSourceIndex" in componentRaw && typeof componentRaw.xSourceIndex === "number") {
-              joystickComponent.niXSourceIndex = componentRaw.xSourceIndex;
-            }
-            if ("niXSourceInverted" in componentRaw && typeof componentRaw.niXSourceInverted === "boolean") {
-              joystickComponent.niXSourceInverted = componentRaw.niXSourceInverted;
-            } else if ("xSourceInverted" in componentRaw && typeof componentRaw.xSourceInverted === "boolean") {
-              joystickComponent.niXSourceInverted = componentRaw.xSourceInverted;
-            }
-            if ("niYSourceIndex" in componentRaw && typeof componentRaw.niYSourceIndex === "number") {
-              joystickComponent.niYSourceIndex = componentRaw.niYSourceIndex;
-            } else if ("ySourceIndex" in componentRaw && typeof componentRaw.ySourceIndex === "number") {
-              joystickComponent.niYSourceIndex = componentRaw.ySourceIndex;
-            }
-            if ("niYSourceInverted" in componentRaw && typeof componentRaw.niYSourceInverted === "boolean") {
-              joystickComponent.niYSourceInverted = componentRaw.niYSourceInverted;
-            } else if ("ySourceInverted" in componentRaw && typeof componentRaw.ySourceInverted === "boolean") {
-              joystickComponent.niYSourceInverted = componentRaw.ySourceInverted;
-            }
-            if ("niButtonSourceIndex" in componentRaw && typeof componentRaw.niButtonSourceIndex === "number") {
-              joystickComponent.niButtonSourceIndex = componentRaw.niButtonSourceIndex;
-            } else if ("buttonSourceIndex" in componentRaw && typeof componentRaw.buttonSourceIndex === "number") {
-              joystickComponent.niButtonSourceIndex = componentRaw.buttonSourceIndex;
-            }
-            config.components.push(joystickComponent);
-            break;
-
-          case "axis":
-            let axisComponent: ConfigJoystick_Axis = {
-              type: "axis",
-              isYellow: isYellow,
-              centerPx: centerPx,
-              sizePx: [0, 0]
-            };
-            if (
-              "sizePx" in componentRaw &&
-              checkArrayType(componentRaw.sizePx, "number") &&
-              (componentRaw.sizePx as number[]).length === 2
-            ) {
-              axisComponent.sizePx = componentRaw.sizePx as [number, number];
-            }
-            if ("sdlSourceIndex" in componentRaw && typeof componentRaw.sdlSourceIndex === "number") {
-              axisComponent.sdlSourceIndex = componentRaw.sdlSourceIndex;
-            }
-            if (
-              "sdlSourceRange" in componentRaw &&
-              checkArrayType(componentRaw.sdlSourceRange, "number") &&
-              (componentRaw.sdlSourceRange as number[]).length === 2
-            ) {
-              axisComponent.sdlSourceRange = componentRaw.sdlSourceRange as [number, number];
-            }
-            if ("niSourceIndex" in componentRaw && typeof componentRaw.niSourceIndex === "number") {
-              axisComponent.niSourceIndex = componentRaw.niSourceIndex;
-            } else if ("sourceIndex" in componentRaw && typeof componentRaw.sourceIndex === "number") {
-              axisComponent.niSourceIndex = componentRaw.sourceIndex;
-            }
-            if (
-              "niSourceRange" in componentRaw &&
-              checkArrayType(componentRaw.niSourceRange, "number") &&
-              (componentRaw.niSourceRange as number[]).length === 2
-            ) {
-              axisComponent.niSourceRange = componentRaw.niSourceRange as [number, number];
-            } else if (
-              "sourceRange" in componentRaw &&
-              checkArrayType(componentRaw.sourceRange, "number") &&
-              (componentRaw.sourceRange as number[]).length === 2
-            ) {
-              axisComponent.niSourceRange = componentRaw.sourceRange as [number, number];
-            }
-            config.components.push(axisComponent);
-            break;
-
-          case "touchpad":
-            let touchpadComponent: ConfigJoystick_Touchpad = {
-              type: "touchpad",
-              isYellow: isYellow,
-              centerPx: centerPx,
-              sizePx: [0, 0],
-              sdlSourceIndex: -1
-            };
-            if (
-              "sizePx" in componentRaw &&
-              checkArrayType(componentRaw.sizePx, "number") &&
-              (componentRaw.sizePx as number[]).length === 2
-            ) {
-              touchpadComponent.sizePx = componentRaw.sizePx as [number, number];
-            }
-            if ("sdlSourceIndex" in componentRaw && typeof componentRaw.sdlSourceIndex === "number") {
-              touchpadComponent.sdlSourceIndex = componentRaw.sdlSourceIndex;
-            }
-            config.components.push(touchpadComponent);
-            break;
-        }
-      }
-    });
-  }
-  if (
-    config.name.length > 0 &&
-    config.components.every((component) => {
-      switch (component.type) {
-        case "button":
-          return (
-            component.sizePx[0] > 0 &&
-            component.sizePx[1] > 0 &&
-            (component.sdlSourceIndex !== undefined || component.niSourceIndex !== undefined)
-          );
-        case "joystick":
-          return (
-            component.radiusPx > 0 &&
-            ((component.sdlXSourceIndex !== undefined && component.sdlYSourceIndex !== undefined) ||
-              (component.niXSourceIndex !== undefined && component.niYSourceIndex !== undefined))
-          );
-        case "axis":
-          return (
-            component.sizePx[0] > 0 &&
-            component.sizePx[1] > 0 &&
-            (component.sdlSourceIndex !== undefined || component.niSourceIndex !== undefined)
-          );
-        case "touchpad":
-          return component.sizePx[0] > 0 && component.sizePx[1] > 0 && component.sdlSourceIndex >= 0;
-      }
-    })
-  ) {
-    return config;
-  }
-  return "invalid";
-}
-
 export function filterAndSortAssets(assets: AdvantageScopeAssets): AdvantageScopeAssets {
   // Remove duplicate names
   let uniqueAssets: AdvantageScopeAssets = {
     field2ds: [],
     field3ds: [],
     robots: [],
-    joysticks: [],
     loadFailures: assets.loadFailures
   };
   assets.field2ds.forEach((asset) => {
@@ -678,11 +397,6 @@ export function filterAndSortAssets(assets: AdvantageScopeAssets): AdvantageScop
   assets.robots.forEach((asset) => {
     if (uniqueAssets.robots.find((other) => other.name === asset.name) === undefined) {
       uniqueAssets.robots.push(asset);
-    }
-  });
-  assets.joysticks.forEach((asset) => {
-    if (uniqueAssets.joysticks.find((other) => other.name === asset.name) === undefined) {
-      uniqueAssets.joysticks.push(asset);
     }
   });
 
@@ -706,9 +420,6 @@ export function filterAndSortAssets(assets: AdvantageScopeAssets): AdvantageScop
         return a.name.localeCompare(b.name, undefined, { numeric: true });
       }
     });
-
-    // Built-in joysticks added in code to beginning of list
-    uniqueAssets.joysticks.sort((a, b) => (a.name > b.name ? -1 : b.name > a.name ? 1 : 0));
 
     // Sort load failures normally
     uniqueAssets.loadFailures.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));

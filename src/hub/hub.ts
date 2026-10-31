@@ -8,10 +8,10 @@
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { HubState } from "../shared/HubState";
 import NamedMessage from "../shared/NamedMessage";
-import Preferences, { getRobotAddress } from "../shared/Preferences";
+import Preferences from "../shared/Preferences";
 import Selection from "../shared/Selection";
 import { SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
-import { Distribution, DISTRIBUTION, IS_LITE } from "../shared/buildConstants";
+import { IS_LITE } from "../shared/buildConstants";
 import Log from "../shared/log/Log";
 import { MERGE_PREFIX } from "../shared/log/LogKeyUtils";
 import { AKIT_TIMESTAMP_KEYS, getEnabledData } from "../shared/log/RobotState";
@@ -24,18 +24,12 @@ import WorkerManager from "./WorkerManager";
 import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
 import LiveDataTuner from "./dataSources/LiveDataTuner";
-import PhoenixDiagnosticsSource from "./dataSources/PhoenixDiagnosticsSource";
-import FTCDashboardSource from "./dataSources/ftcdashboard/FTCDashboardSource";
-import { NT4Publisher, NT4PublisherStatus } from "./dataSources/nt4/NT4Publisher";
-import NT4Source, { NT4Mode } from "./dataSources/nt4/NT4Source";
-import RLOGServerSource from "./dataSources/rlog/RLOGServerSource";
+import { getLiveSource, getLiveSourceInfo } from "./dataSources/LiveSourceRegistry";
 
 // Constants
 const STATE_SAVE_PERIOD_MS = 250;
 const TYPE_MEMORY_SAVE_PERIOD_MS = 1000;
 const DRAG_ITEM = document.getElementById("dragItem") as HTMLElement;
-const UPDATE_BUTTON = document.getElementsByClassName("update")[0] as HTMLElement;
-const FEEDBACK_BUTTON = document.getElementsByClassName("feedback")[0] as HTMLElement;
 
 // Global variables
 declare global {
@@ -99,7 +93,6 @@ let historicalSources: {
   progressIncluded: boolean;
 }[] = [];
 let liveSource: LiveDataSource | null = null;
-let publisher: NT4Publisher | null = null;
 let isExporting = false;
 let logFriendlyName: string | null = null;
 let liveActive = false;
@@ -117,11 +110,7 @@ let dragData: any = null;
 
 function setWindowTitle(name: string, status?: string) {
   let title =
-    htmlEncode(name) +
-    (status ? " (" + htmlEncode(status) + ")" : "") +
-    " &mdash; AdvantageScope" +
-    (IS_LITE ? " Lite" : "") +
-    (DISTRIBUTION === Distribution.LiteDS ? " (DS)" : "");
+    htmlEncode(name) + (status ? " (" + htmlEncode(status) + ")" : "") + " &mdash; mur-voir" + (IS_LITE ? " Lite" : "");
   document.getElementsByTagName("title")[0].innerHTML = title;
   document.getElementsByClassName("title-bar-text")[0].innerHTML = title;
 }
@@ -295,7 +284,7 @@ window.requestAnimationFrame(periodic);
 
 function checkLiveAutoStart() {
   if (IS_LITE && window.preferences !== null && !liveAutoStartComplete) {
-    startLive(DISTRIBUTION === Distribution.LiteDS ? "ds" : "robot");
+    startLive("robot");
     liveAutoStartComplete = true;
   }
 }
@@ -423,49 +412,25 @@ function startHistorical(path: string, clear = true, merge = false) {
 }
 
 /** Connects to a live data source. */
-function startLive(sourceType: "robot" | "sim" | "ds") {
+function startLive(sourceType: "robot" | "sim") {
   historicalSources.forEach((entry) => entry.source.stop());
   historicalSources = [];
   liveSource?.stop();
-  publisher?.stop();
   liveActive = true;
   setLoading(null);
 
   if (!window.preferences) return;
-  if (sourceType === "ds") {
-    liveSource = new NT4Source(NT4Mode.DriverStation);
-  } else {
-    switch (window.preferences.liveMode) {
-      case "nt4":
-        liveSource = new NT4Source(NT4Mode.Default);
-        break;
-      case "nt4-akit":
-        liveSource = new NT4Source(NT4Mode.AdvantageKit);
-        break;
-      case "nt4-systemcore":
-        liveSource = new NT4Source(NT4Mode.Systemcore);
-        break;
-      case "phoenix":
-        liveSource = new PhoenixDiagnosticsSource();
-        break;
-      case "rlog":
-        liveSource = new RLOGServerSource();
-        break;
-      case "ftcdashboard":
-        liveSource = new FTCDashboardSource();
-        break;
-    }
-  }
+  const sourceDefinition = getLiveSource(window.preferences.liveMode, IS_LITE);
+  liveSource = sourceDefinition.create();
 
   let address = "";
   if (IS_LITE) {
     address = window.location.hostname;
-  } else if (sourceType === "sim" || sourceType === "ds") {
+  } else if (sourceType === "sim") {
     address = "127.0.0.1";
   } else {
-    if (window.preferences) {
-      address = getRobotAddress(window.preferences, window.platform);
-    }
+    address =
+      window.preferences.robotAddress !== "" ? window.preferences.robotAddress : sourceDefinition.defaultAddress;
   }
 
   liveSource.connect(
@@ -538,15 +503,10 @@ window.addEventListener("message", (event) => {
       let message: NamedMessage = event.data;
       handleMainMessage(message);
     };
+
+    // Share the registered live sources for the main process menus
+    window.sendMainMessage("set-live-sources", getLiveSourceInfo(IS_LITE));
   }
-});
-
-UPDATE_BUTTON.addEventListener("click", () => {
-  window.sendMainMessage("prompt-update");
-});
-
-FEEDBACK_BUTTON.addEventListener("click", () => {
-  window.sendMainMessage("open-feedback");
 });
 
 // Update touch bar slider position
@@ -628,7 +588,7 @@ async function handleMainMessage(message: NamedMessage) {
           console.warn(
             "Failed to load: " +
               window.assets!.loadFailures.join(", ") +
-              ". Check that all assets follow the format described in the AdvantageScope documentation."
+              ". Check that all assets follow the format described in the mur-voir documentation."
           );
         }
         if (newHasFailed && !oldHadFailed) {
@@ -645,10 +605,6 @@ async function handleMainMessage(message: NamedMessage) {
 
     case "set-active-satellites":
       window.tabs.setActiveSatellites(message.data);
-      break;
-
-    case "set-active-xr-uuid":
-      window.tabs.setActiveXRUUID(message.data);
       break;
 
     case "call-selection-setter":
@@ -726,16 +682,6 @@ async function handleMainMessage(message: NamedMessage) {
       }
       break;
 
-    case "show-update-button":
-      document.documentElement.style.setProperty("--show-update-button", message.data ? "1" : "0");
-      UPDATE_BUTTON.hidden = !message.data;
-      break;
-
-    case "show-feedback-button":
-      document.documentElement.style.setProperty("--show-feedback-button", message.data ? "1" : "0");
-      FEEDBACK_BUTTON.hidden = !message.data;
-      break;
-
     case "historical-data":
       historicalSources.forEach((entry) => {
         entry.source.handleMainMessage(message.data);
@@ -784,55 +730,6 @@ async function handleMainMessage(message: NamedMessage) {
       }
       break;
 
-    case "start-publish":
-      if (liveActive) {
-        window.sendMainMessage("error", {
-          title: "Cannot publish",
-          content: "Publishing is not allowed from a live source."
-        });
-      } else if (!("NT" in window.log.getFieldTree())) {
-        window.sendMainMessage("error", {
-          title: "Cannot publish",
-          content: "Please open a log file with NetworkTables data, then try again."
-        });
-      } else {
-        // Start mock progress
-        let mockProgress = 0;
-        let mockProgressStart = new Date().getTime();
-        let mockProgressInterval = setInterval(() => {
-          mockProgress = calcMockProgress((new Date().getTime() - mockProgressStart) / 1000, 1);
-          setLoading(mockProgress);
-        }, 1000 / 60);
-
-        // Load missing fields
-        if (historicalSources.length > 0) {
-          await historicalSources[0].source.loadAllFields(); // Root NT table is always from the first source
-        }
-        clearInterval(mockProgressInterval);
-
-        // Start publisher
-        publisher?.stop();
-        publisher = new NT4Publisher(message.data, (status) => {
-          if (logFriendlyName === null) return;
-          switch (status) {
-            case NT4PublisherStatus.Connecting:
-              setWindowTitle(logFriendlyName, "Searching");
-              break;
-            case NT4PublisherStatus.Active:
-              setWindowTitle(logFriendlyName, "Publishing");
-              break;
-            case NT4PublisherStatus.Stopped:
-              setWindowTitle(logFriendlyName);
-              break;
-          }
-        });
-      }
-      break;
-
-    case "stop-publish":
-      publisher?.stop();
-      break;
-
     case "set-playback-options":
       window.selection.setPlaybackSpeed(message.data.speed);
       window.selection.setPlaybackLooping(message.data.looping);
@@ -863,7 +760,7 @@ async function handleMainMessage(message: NamedMessage) {
       break;
 
     case "close-tab":
-      window.tabs.close(window.tabs.getSelectedTab(), message.data);
+      window.tabs.close(window.tabs.getSelectedTab());
       break;
 
     case "rename-tab":
@@ -940,9 +837,7 @@ async function handleMainMessage(message: NamedMessage) {
         });
       } else {
         setExporting(true);
-        const incompleteWarning =
-          liveConnected &&
-          (window.preferences?.liveSubscribeMode === "low-bandwidth" || window.preferences?.liveMode === "phoenix");
+        const incompleteWarning = liveConnected && window.preferences?.liveSubscribeMode === "low-bandwidth";
         const supportsAkit = window.log.getFieldKeys().find((key) => AKIT_TIMESTAMP_KEYS.includes(key)) !== undefined;
         window.sendMainMessage("prompt-export", {
           path: logPath,

@@ -24,12 +24,12 @@
     <link rel="stylesheet" href="hub.css" />
     <link rel="stylesheet" href="renderers.css" />
     <script type="module" src="../bundles/hub.js"></script>
-    <title>AdvantageScope</title>
+    <title>mur-voir</title>
   </head>
 
   <body>
     <div class="title-bar" hidden>
-      <div class="title-bar-text">AdvantageScope</div>
+      <div class="title-bar-text">mur-voir</div>
     </div>
     <div class="title-bar-menu">
       <table>
@@ -42,12 +42,6 @@
       </table>
     </div>
 
-    <button class="tab-control update" title="Update available" hidden>
-      <img src="symbols/update.svg" />
-    </button>
-    <button class="tab-control feedback" title="Share feedback" hidden>
-      <img src="symbols/feedback.svg" />
-    </button>
     <button class="tab-control play" title="Play">
       <img src="symbols/play.svg" />
     </button>
@@ -158,7 +152,7 @@
           <div class="field input">
             <div>
               <select class="field-select" title="Select field image">
-                <optgroup label="FRC Fields"></optgroup>
+                <optgroup label="Fields"></optgroup>
                 <optgroup label="FTC Fields"></optgroup>
               </select>
               <a class="field-source" href="#" title="Open field image source URL">Source</a>
@@ -166,33 +160,16 @@
           </div>
 
           <div class="title">
-            <div class="half">Orientation</div>
-            <div class="half">Size</div>
+            <div class="full">Orientation</div>
           </div>
           <div class="orientation input tall">
-            <div class="half">
+            <div class="full">
               <div class="orientation-switcher split split-2">
                 <div tabindex="0" title="Rotate field counter-clockwise">
                   <img class="invertable" src="symbols/rotateleft.svg" />
                 </div>
                 <div tabindex="0" title="Rotate field clockwise">
                   <img class="invertable" src="symbols/rotateright.svg" />
-                </div>
-              </div>
-            </div>
-            <div class="half">
-              <div class="size-switcher split split-3">
-                <div tabindex="0" title="Large robot size">
-                  <span class="frc-only">30</span>
-                  <span class="ftc-only">18</span>
-                </div>
-                <div tabindex="0" title="Medium robot size">
-                  <span class="frc-only">27</span>
-                  <span class="ftc-only">16</span>
-                </div>
-                <div tabindex="0" title="Small robot size">
-                  <span class="frc-only">24</span>
-                  <span class="ftc-only">14</span>
                 </div>
               </div>
             </div>
@@ -210,22 +187,9 @@
           <div class="field input">
             <div>
               <select class="field-select" title="Select field model">
-                <optgroup label="FRC Fields"></optgroup>
+                <optgroup label="Fields"></optgroup>
                 <optgroup label="FTC Fields"></optgroup>
               </select>
-            </div>
-          </div>
-
-          <div class="xr-control title">
-            <div class="full">XR</div>
-          </div>
-          <div class="xr-control input tall">
-            <div class="full">
-              <div class="split split-1">
-                <div class="xr-button" tabindex="0" title="Start XR streaming">
-                  <img src="symbols/viewinar.svg" />
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -287,14 +251,6 @@
           <button title="Open local video file">
             <img src="symbols/videofile.svg" />
           </button>
-          <button title="Paste YouTube video URL">
-            <img src="symbols/contentpaste.svg" />
-            <svg><path /></svg>
-          </button>
-          <button title="Download match video from The Blue Alliance">
-            <img src="symbols/tbalamp.svg" />
-            <svg><path /></svg>
-          </button>
         </div>
         <div class="video-synchronization">
           <div class="video-timeline-section">
@@ -341,88 +297,6 @@
             </button>
           </div>
         </div>
-      </div>
-
-      <!-- Joysticks -->
-      <div id="controller8">
-        <table class="joystick-selector">
-          <tbody>
-            <tr>
-              <td>
-                0:
-                <select title="Select joystick data source"></select>
-              </td>
-              <td>
-                1:
-                <select title="Select joystick data source"></select>
-              </td>
-              <td>
-                2:
-                <select title="Select joystick data source"></select>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                3:
-                <select title="Select joystick data source"></select>
-              </td>
-              <td>
-                4:
-                <select title="Select joystick data source"></select>
-              </td>
-              <td>
-                5:
-                <select title="Select joystick data source"></select>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Swerve -->
-      <div id="controller9">
-        <div class="swerve-sources"></div>
-        <div class="swerve-settings setting-blocks fix-second">
-          <div class="title">
-            <div class="full">Max Speed (m/s)</div>
-          </div>
-          <div class="input">
-            <div>
-              <input class="max-speed" type="number" value="5" title="Maximum speed (meters per second)" />
-            </div>
-          </div>
-
-          <div class="title">
-            <div class="full">Frame Size (m)</div>
-          </div>
-          <div class="input">
-            <div class="half">
-              <input class="size-x" type="number" value="0.65" step="0.01" title="Robot frame length (meters)" />
-            </div>
-            <div class="half">
-              <input class="size-y" type="number" value="0.65" step="0.01" title="Robot frame width (meters)" />
-            </div>
-          </div>
-
-          <div class="title">
-            <div class="full">Orientation</div>
-          </div>
-          <div class="input">
-            <div class="orientation-switcher split split-2">
-              <div tabindex="0" title="Rotate swerve module layout counter-clockwise">
-                <img class="invertable" src="symbols/rotateleft.svg" />
-              </div>
-              <div tabindex="0" title="Rotate swerve module layout clockwise">
-                <img class="invertable" src="symbols/rotateright.svg" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Mechanism -->
-      <div id="controller10">
-        <div class="mechanism-sources"></div>
       </div>
 
       <!-- Points -->
@@ -627,25 +501,6 @@
       <div id="renderer7">
         <div class="video-container">
           <img />
-        </div>
-      </div>
-
-      <!-- Joysticks -->
-      <div id="renderer8">
-        <canvas class="joysticks-canvas"></canvas>
-      </div>
-
-      <!-- Swerve -->
-      <div id="renderer9">
-        <div class="swerve-canvas-container">
-          <canvas class="swerve-canvas" width="100" height="100"></canvas>
-        </div>
-      </div>
-
-      <!-- Mechanism -->
-      <div id="renderer10">
-        <div class="mechanism-svg-container">
-          <svg class="mechanism-svg"></svg>
         </div>
       </div>
 

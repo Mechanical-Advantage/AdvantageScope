@@ -12,13 +12,11 @@ import {
   ModuleVelocity,
   Translation2d,
   annotatedPose3dTo2d,
-  convertFromCoordinateSystem,
   grabHeatmapData,
   grabModuleVelocities,
   grabPosesAuto,
   rotation3dTo2d
 } from "../../shared/geometry";
-import { ALLIANCE_KEYS, getIsRedAlliance } from "../../shared/log/RobotState";
 import {
   Field2dRendererCommand,
   Field2dRendererCommand_AnyObj,
@@ -36,17 +34,16 @@ export default class Field2dController implements TabController {
   private static TRAIL_LENGTH_SECS = 3;
   private static TRAIL_DT = 0.1;
 
+  private static ROBOT_SIZE_INCHES = 30;
+
   private SETTINGS: HTMLElement;
   private ORIENTATION_SWITCHER: HTMLElement;
-  private SIZE_SWITCHER: HTMLElement;
   private FIELD_SELECT: HTMLSelectElement;
   private FIELD_SOURCE: HTMLElement;
 
   private sourceList: SourceList;
 
   private orientationSetting = Orientation.DEG_0;
-  private sizeSetting: "large" | "medium" | "small" = "large";
-  private lastCoordinateSystemAlert: "none" | "frc" | "ftc" = "none";
 
   constructor(root: HTMLElement) {
     this.sourceList = new SourceList(
@@ -56,7 +53,6 @@ export default class Field2dController implements TabController {
     );
     this.SETTINGS = root.getElementsByClassName("field-2d-settings")[0] as HTMLElement;
     this.ORIENTATION_SWITCHER = this.SETTINGS.getElementsByClassName("orientation-switcher")[0] as HTMLElement;
-    this.SIZE_SWITCHER = this.SETTINGS.getElementsByClassName("size-switcher")[0] as HTMLElement;
     this.FIELD_SELECT = this.SETTINGS.getElementsByClassName("field-select")[0] as HTMLSelectElement;
     this.FIELD_SOURCE = this.SETTINGS.getElementsByClassName("field-source")[0] as HTMLElement;
 
@@ -88,14 +84,6 @@ export default class Field2dController implements TabController {
       this.orientationSetting--;
       if (this.orientationSetting < 0) this.orientationSetting = 3;
     });
-    (["large", "medium", "small"] as const).forEach((value, index) => {
-      setupKeyboardControls(this.SIZE_SWITCHER.children[index] as HTMLElement);
-      this.SIZE_SWITCHER.children[index].addEventListener("click", () => {
-        this.sizeSetting = value;
-        this.updateSwitchers();
-      });
-    });
-    this.updateSwitchers();
   }
 
   /** Updates field select with the latest options. */
@@ -119,6 +107,8 @@ export default class Field2dController implements TabController {
         (field.isFTC ? ftcGroup : frcGroup).appendChild(option);
       });
     }
+    frcGroup.hidden = frcGroup.childElementCount === 0;
+    ftcGroup.hidden = ftcGroup.childElementCount === 0;
     if (options.includes(value)) {
       this.FIELD_SELECT.value = value;
     } else {
@@ -159,28 +149,11 @@ export default class Field2dController implements TabController {
     }
   }
 
-  /** Updates the switcher elements to match the internal state. */
-  private updateSwitchers() {
-    // Size
-    {
-      let selectedIndex = ["large", "medium", "small"].indexOf(this.sizeSetting);
-      if (selectedIndex === -1) selectedIndex = 0;
-      for (let i = 0; i < 3; i++) {
-        if (i === selectedIndex) {
-          this.SIZE_SWITCHER.children[i].classList.add("selected");
-        } else {
-          this.SIZE_SWITCHER.children[i].classList.remove("selected");
-        }
-      }
-    }
-  }
-
   saveState(): unknown {
     return {
       sources: this.sourceList.getState(),
       field: this.FIELD_SELECT.value,
-      orientation: this.orientationSetting,
-      size: this.sizeSetting
+      orientation: this.orientationSetting
     };
   }
 
@@ -206,11 +179,7 @@ export default class Field2dController implements TabController {
     ) {
       this.orientationSetting = state.orientation;
     }
-    if ("size" in state && (state.size === "large" || state.size === "medium" || state.size === "small")) {
-      this.sizeSetting = state.size;
-    }
     this.updateFieldDependentControls();
-    this.updateSwitchers();
   }
 
   refresh(): void {
@@ -222,7 +191,7 @@ export default class Field2dController implements TabController {
   }
 
   getActiveFields(): string[] {
-    return [...this.sourceList.getActiveFields(), ...ALLIANCE_KEYS];
+    return this.sourceList.getActiveFields();
   }
 
   showTimeline(): boolean {
@@ -237,32 +206,6 @@ export default class Field2dController implements TabController {
     let fieldData = window.assets?.field2ds.find((game) => game.id === this.FIELD_SELECT.value);
     let fieldWidth = fieldData === undefined ? 0 : Units.convert(fieldData.widthInches, "inches", "meters");
     let fieldHeight = fieldData === undefined ? 0 : Units.convert(fieldData.heightInches, "inches", "meters");
-    let coordinateSystem =
-      (window.preferences?.coordinateSystem === "automatic"
-        ? fieldData?.coordinateSystem
-        : window.preferences?.coordinateSystem) ?? "center-red";
-    if (fieldData !== undefined && window.preferences !== null) {
-      let currentAlert: "none" | "frc" | "ftc" = "none";
-      if (!fieldData.isFTC && fieldData.coordinateSystem !== "center-red") {
-        currentAlert = "frc";
-      } else if (fieldData.isFTC && fieldData.coordinateSystem === "center-red") {
-        currentAlert = "ftc";
-      }
-      if (currentAlert !== this.lastCoordinateSystemAlert) {
-        if (window.preferences.coordinateSystem === "automatic") {
-          if (currentAlert === "frc") {
-            window.sendMainMessage("frc-coordinate-system-warning");
-          } else if (currentAlert === "ftc") {
-            window.sendMainMessage("ftc-coordinate-system-warning");
-          }
-        }
-        this.lastCoordinateSystemAlert = currentAlert;
-      }
-    }
-
-    // Get alliance
-    let isRedAlliance = time === null ? false : getIsRedAlliance(window.log, time);
-
     // Get objects
     let objects: Field2dRendererCommand_AnyObj[] = [];
     let sources = this.sourceList.getState(true);
@@ -328,15 +271,6 @@ export default class Field2dController implements TabController {
               annotatedPose3dTo2d(x)
             );
             if (poses.length !== trails.length) return;
-            if (fieldData !== undefined) {
-              poses = convertFromCoordinateSystem(
-                poses,
-                coordinateSystem,
-                isRedAlliance ? "red" : "blue",
-                fieldWidth,
-                fieldHeight
-              );
-            }
             poses.forEach((pose, index) => {
               trails[index].push(pose.pose.translation);
             });
@@ -403,24 +337,6 @@ export default class Field2dController implements TabController {
       visionTargets.reverse();
       swerveModuleVelocities.reverse();
 
-      // Apply coordinate system
-      if (fieldData !== undefined) {
-        poses = convertFromCoordinateSystem(
-          poses,
-          coordinateSystem,
-          isRedAlliance ? "red" : "blue",
-          fieldWidth,
-          fieldHeight
-        );
-        visionTargets = convertFromCoordinateSystem(
-          visionTargets,
-          coordinateSystem,
-          isRedAlliance ? "red" : "blue",
-          fieldWidth,
-          fieldHeight
-        );
-      }
-
       // Add object
       switch (source.type) {
         case "robot":
@@ -428,8 +344,7 @@ export default class Field2dController implements TabController {
             type: "robot",
             poses: poses,
             trails: trails,
-            bumperColor:
-              source.options.bumpers === "" ? (isRedAlliance ? "#ff0000" : "#0000ff") : source.options.bumpers,
+            bumperColor: source.options.bumpers,
             visionTargets: visionTargets,
             swerveModuleVelocities: swerveModuleVelocities
           });
@@ -470,19 +385,8 @@ export default class Field2dController implements TabController {
       }
     }
 
-    // Get size setting
-    let size = 0;
-    switch (this.sizeSetting) {
-      case "large":
-        size = fieldData?.isFTC ? 18 : 30;
-        break;
-      case "medium":
-        size = fieldData?.isFTC ? 16 : 27;
-        break;
-      case "small":
-        size = fieldData?.isFTC ? 14 : 24;
-        break;
-    }
+    // Robot footprint size in inches (fixed; the FRC 30/27/24 in size buttons were removed)
+    let size = fieldData?.isFTC ? 18 : Field2dController.ROBOT_SIZE_INCHES;
 
     objects.reverse();
     return {

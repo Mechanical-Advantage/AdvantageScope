@@ -5,8 +5,6 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { Distribution, DISTRIBUTION } from "./buildConstants";
-
 enum TabType {
   Documentation,
   LineGraph,
@@ -16,11 +14,9 @@ enum TabType {
   Console,
   Statistics,
   Video,
-  Joysticks,
-  Swerve,
-  Mechanism,
-  Points,
-  Metadata
+  // 8-10 were Joysticks, Swerve and Mechanism (removed); values kept stable for saved layouts
+  Points = 11,
+  Metadata = 12
 }
 
 export default TabType;
@@ -29,24 +25,17 @@ export function getAllTabTypes(): TabType[] {
   return Object.values(TabType).filter((tabType) => typeof tabType === "number") as TabType[];
 }
 
-export const LITE_COMPATIBLE_TABS =
-  DISTRIBUTION === Distribution.Lite
-    ? [
-        TabType.Documentation,
-        TabType.LineGraph,
-        TabType.Field2d,
-        TabType.Field3d,
-        TabType.Table,
-        TabType.Console,
-        TabType.Statistics,
-        TabType.Joysticks,
-        TabType.Swerve,
-        TabType.Mechanism,
-        TabType.Points,
-        TabType.Metadata
-      ]
-    : // Lite DS
-      [TabType.LineGraph, TabType.Table, TabType.Console, TabType.Statistics, TabType.Joysticks];
+export const LITE_COMPATIBLE_TABS = [
+  TabType.Documentation,
+  TabType.LineGraph,
+  TabType.Field2d,
+  TabType.Field3d,
+  TabType.Table,
+  TabType.Console,
+  TabType.Statistics,
+  TabType.Points,
+  TabType.Metadata
+];
 
 export function getDefaultTabTitle(type: TabType): string {
   switch (type) {
@@ -66,12 +55,6 @@ export function getDefaultTabTitle(type: TabType): string {
       return "Statistics";
     case TabType.Video:
       return "Video";
-    case TabType.Joysticks:
-      return "Joysticks";
-    case TabType.Swerve:
-      return "Swerve";
-    case TabType.Mechanism:
-      return "Mechanism";
     case TabType.Points:
       return "Points";
     case TabType.Metadata:
@@ -99,12 +82,6 @@ export function getTabIcon(type: TabType): string {
       return "📊";
     case TabType.Video:
       return "🎬";
-    case TabType.Joysticks:
-      return "🎮";
-    case TabType.Swerve:
-      return "🦀";
-    case TabType.Mechanism:
-      return "⚙️";
     case TabType.Points:
       return "📍";
     case TabType.Metadata:
@@ -134,12 +111,6 @@ export function getTabAccelerator(type: TabType): string {
           return "S";
         case TabType.Video:
           return "V";
-        case TabType.Joysticks:
-          return "J";
-        case TabType.Swerve:
-          return "D";
-        case TabType.Mechanism:
-          return "M";
         case TabType.Points:
           return "P";
         case TabType.Metadata:

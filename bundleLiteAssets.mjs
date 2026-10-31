@@ -5,74 +5,15 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import download from "download";
 import fs from "fs";
 import path from "path";
 
-// Constants
-const isDS = process.env.ASCOPE_DISTRIBUTION === "LITEDS";
+// Copies the bundled assets into the Lite build. No assets are downloaded.
 const bundledAssetsPath = "bundledAssets";
 const liteAssetsPath = path.join("lite", "static", "bundledAssets");
-const githubAssetsRepository = "Mechanical-Advantage/AdvantageScopeAssets";
-const githubAssetsTag = "archive-v1";
-let githubAssetNames = [
-  "Joystick_LogitechF310V3",
-  "Joystick_PS4ControllerV3",
-  "Joystick_XboxControllerBlueV3",
-  "Joystick_XboxControllerWhiteV3"
-];
-if (!isDS) {
-  // Only include fields and robots in non-DS distribution
-  githubAssetNames = githubAssetNames.concat([
-    "Field2d_2026FRCFieldV2",
-    "Field2d_20262027FTCFieldV1",
-    "Field3d_2026FRCFieldV2",
-    "Field3d_20262027FTCFieldV1",
-    "Robot_2026FRCKitBotV2",
-    "Robot_FTCDriveBaseV2"
-  ]);
-}
 
-// Check if up-to-date
-let shouldExitEarly = false;
-if (fs.existsSync(liteAssetsPath)) {
-  let existingAssetNames = fs.readdirSync(liteAssetsPath);
-
-  // Sort both arrays for reliable comparison
-  existingAssetNames.sort();
-  const targetAssetNames = [...githubAssetNames, ...(isDS ? [] : fs.readdirSync(bundledAssetsPath))].sort();
-
-  // Check if lengths are the same and all elements match
-  if (existingAssetNames.length === targetAssetNames.length) {
-    shouldExitEarly = true;
-    for (let i = 0; i < existingAssetNames.length; i++) {
-      if (existingAssetNames[i] !== targetAssetNames[i]) {
-        shouldExitEarly = false;
-        break;
-      }
-    }
-  }
-}
-if (shouldExitEarly) {
-  console.log("Lite assets are already up-to-date. Skipping download.");
-  process.exit(0);
-}
-
-// Delete existing Lite assets
 if (fs.existsSync(liteAssetsPath)) {
   fs.rmSync(liteAssetsPath, { recursive: true });
 }
-
-// Copy basic bundled assets
-if (!isDS) {
-  fs.cpSync(bundledAssetsPath, liteAssetsPath, { recursive: true });
-}
-
-// Download GitHub assets
-githubAssetNames.forEach((asset) => {
-  const url = `https://github.com/${githubAssetsRepository}/releases/download/${githubAssetsTag}/${asset}.zip`;
-  const destination = path.join(liteAssetsPath, asset);
-  download(url, destination, { extract: true }).then(() => {
-    console.log("Finished downloading '" + asset + "'");
-  });
-});
+fs.cpSync(bundledAssetsPath, liteAssetsPath, { recursive: true });
+console.log("Copied bundled assets to Lite.");

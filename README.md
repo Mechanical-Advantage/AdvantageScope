@@ -1,28 +1,23 @@
-<h1>
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/docs/img/banner-ltr-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="docs/docs/img/banner-ltr-light.png">
-    <img alt="AdvantageScope" src="docs/docs/img/banner-ltr-light.png">
-  </picture>
-</h1>
+# mur-voir
 
-[![Build](https://github.com/Mechanical-Advantage/AdvantageScope/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Mechanical-Advantage/AdvantageScope/actions/workflows/build.yml)
+mur-voir is the telemetry dashboard for **Melbourne University Motorsport (MUR)**, our Formula SAE team. It is one workbench for the whole car:
 
-AdvantageScope is a robot diagnostics, log review/analysis, and data visualization application for FIRST teams developed by Team 6328. It reads logs in WPILOG, Hoot (CTRE), REVLOG (REV Robotics), Road Runner, CSV, NI DS log, and RLOG file formats, plus live robot data viewing using NT4, Phoenix, RLOG, or FTC Dashboard streaming. AdvantageScope can be used with any WPILib project, but is also optimized for use with our [AdvantageKit](https://docs.advantagekit.org) log replay framework. Note that **AdvantageKit is not required to use AdvantageScope**.
+- live telemetry from the car
+- recorded logs
+- autonomy and simulation data
 
-AdvantageScope includes the following tools:
+All of it shares one timeline.
 
-- A wide selection of flexible graphs and charts
-- 2D and 3D field visualizations of pose data, with customizable CAD-based robots
-- Synchronized video playback from a separately loaded match video
-- Joystick visualization, showing driver actions on customizable controller representations
-- Swerve drive module vector displays
-- Console message review
-- Log statistics analysis
-- Flexible export options, with support for CSV and WPILOG
+Current state (foundation):
 
-**View the [online documentation](https://docs.advantagescope.org) or find it offline by clicking the 📖 icon in the tab bar.**
+- **Logs:** opens WPILOG, RLOG and CSV.
+- **Live:** connects to NetworkTables 4 servers for testing the live pipeline. MUR's own telemetry backend, Foxglove bridge (ROS 2) and MQTT sources are planned.
+- **Views:** Line Graph, 2D/3D Field, Table, Console, Statistics, Points, Metadata and Video sync.
 
-Feedback, feature requests, and bug reports are welcome on the [issues page](https://github.com/Mechanical-Advantage/AdvantageScope/issues). See the [contribution page](CONTRIBUTING.md) for more information on contributing to AdvantageScope. For non-public inquiries, please send a message to software@team6328.org.
+See [DEVELOPING.md](DEVELOPING.md) to build and run it.
 
-![Example screenshot](/docs/docs/img/screenshot-light.png)
+Report bugs and feature requests on the [issues page](https://github.com/Melbourne-University-Motorsports/mur-voir/issues).
+
+## Credits
+
+Based on [AdvantageScope](https://github.com/Mechanical-Advantage/AdvantageScope) (BSD-3), © Littleton Robotics. mur-voir is an independent fork. It is not affiliated with, or endorsed by, Littleton Robotics, FRC 6328 or the AdvantageScope contributors. See [LICENSE](LICENSE).

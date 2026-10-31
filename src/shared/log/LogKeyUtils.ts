@@ -14,8 +14,6 @@ export const PHOTON_PREFIX = "photonstruct:";
 export const MERGE_PREFIX = "Log";
 export const SCHEMA_REGEX = /(?:^|\/)\.schema\/(.*)/;
 export const SEPARATOR_REGEX = new RegExp(/\/|:/);
-export const SEPARATOR_REGEX_PHOENIX = new RegExp(/\/|:|_/);
-export const PHOENIX_PREFIX = "Phoenix6";
 
 /** Checks if a given log key represents a schema definition. */
 export function isSchema(key: string): boolean {
@@ -129,12 +127,7 @@ export function applyKeyPrefix(prefix: string, key: string): string {
 
 /** Splits a log key into its component parts. */
 export function splitLogKey(key: string): string[] {
-  let unmergedKey = removeMergePrefix(key);
-  if (unmergedKey.startsWith(PHOENIX_PREFIX) || unmergedKey.startsWith("/" + PHOENIX_PREFIX)) {
-    return key.split(SEPARATOR_REGEX_PHOENIX);
-  } else {
-    return key.split(SEPARATOR_REGEX);
-  }
+  return key.split(SEPARATOR_REGEX);
 }
 
 /** Filters an array of log fields based on a comma-separated list of prefixes. */
