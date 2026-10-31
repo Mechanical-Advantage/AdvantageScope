@@ -1,0 +1,82 @@
+VERSION "MUR_Valeo_OBC_v0.1_from_GEN2.5_quickstart"
+
+
+NS_ :
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: BCU OBC
+
+BO_ 369 BCU_OBC_WakeUp: 8 BCU
+ SG_ BCU_WakeUpPayload : 7|8@0+ (1,0) [0|255] "" OBC
+
+BO_ 609 VCU_OBC_261: 8 BCU
+ SG_ VCUOBCSleep : 7|1@0+ (1,0) [0|1] "" OBC
+ SG_ VCUPlugConnectLamp : 6|1@0+ (1,0) [0|1] "" OBC
+ SG_ VCUChrgStsLamp : 5|1@0+ (1,0) [0|1] "" OBC
+
+BO_ 773 BCU_OBC_305: 8 BCU
+ SG_ BCUChrgUReq : 7|16@0+ (0.1,0) [0|6553.5] "V" OBC
+ SG_ BCUChrgIReq : 23|11@0+ (0.1,0) [0|204.7] "A" OBC
+ SG_ BCUOBCMaxChrgPwrAvl : 28|10@0+ (0.1,0) [0|102.3] "kW" OBC
+ SG_ BCUOBCHeatModeCtrl : 34|1@0+ (1,0) [0|1] "" OBC
+ SG_ BCU305CycCntr : 51|4@0+ (1,0) [0|15] "" OBC
+ SG_ BCUCRCID305 : 63|8@0+ (1,0) [0|255] "" OBC
+
+BO_ 389 BCU_OBC_185: 8 BCU
+ SG_ BCUOBCOperModReq : 43|1@0+ (1,0) [0|1] "" OBC
+
+BO_ 793 OBC1_CCU_1_319: 8 OBC
+ SG_ OBC319_Raw : 7|64@0+ (1,0) [0|18446744073709551615] "" BCU
+
+BO_ 841 OBC1_CCU_2_349: 8 OBC
+ SG_ OBC349_ACVoltage : 7|9@0+ (1,0) [0|511] "V" BCU
+ SG_ OBC349_Unk3 : 31|8@0+ (1,0) [0|255] "" BCU
+ SG_ OBC349_Temp : 47|10@0+ (1,-40) [-40|983] "degC" BCU
+ SG_ OBC349_AliveCntr : 59|4@0+ (1,0) [0|15] "" BCU
+
+CM_ BU_ BCU "Our side: the charge-cart TTCS board (firmware/apps/charger). Valeo's name for the battery control unit that commands the OBC.";
+CM_ BU_ OBC "Valeo Siemens on-board charger. Our unit: 6.6 kW EV29131955A01, SW 1.1.";
+CM_ BO_ 369 "VENDOR (GEN2.5 quick start): wake-up. Send >= 5 frames at 20 ms; payload ignored (all zero). Not needed if the Control Pilot line is held at 12 V. The standard SW variant REQUIRES a permanent CP signal; the SW1-SW4 parallel-operation variants do not. BENCH 2026-10-07 (our 6.6 kW unit): it takes ~0.5 s to boot and needs the wake held until it answers - 5-frame bursts every 2 s left it half-awake (unsteady LV current, no status); 0x171 every 20 ms brought it up. The firmware sends 0x171 every 20 ms until 0x319/0x349 arrive.";
+CM_ BO_ 609 "VENDOR (GEN2.5 quick start): mode request, cycle 100 ms. All zero = Normal mode (lamps off). Sleep = 0x80 in byte 0, which is VCUOBCSleep = 1 here. The guide's CANoe screenshot prints SB 63/62/61 for these three bits, but those are NOT DBC start bits - see the 0x305 comment for the SB-to-DBC mapping. Lamp semantics unconfirmed. BENCH 2026-10-07: Sleep CONFIRMED - with the OBC awake, 0x261 = 80 00 00 00 00 00 00 00 every 100 ms stopped its status within ~0.2 s (two more 0x349 frames), it stayed silent and its LV supply current dropped. (A zero-length frame with ID 0x000 appeared then, but one also appeared without Sleep, so it is most likely a bench-adapter artifact.)";
+CM_ BO_ 773 "VENDOR (GEN2.5 quick start): charge request, cycle 100 ms. Guide example 250 V / 5 A / 3 kW, charging mode, counter 0, CRC 0 = 09 C4 06 40 F0 00 00 00. On-the-wire layout: U bytes 0-1, I byte 2 + byte 3 bits 7-5, PwrAvl byte 3 bits 4-0 + byte 4 bits 7-3, HeatModeCtrl byte 4 bit 2, CycCntr byte 6 bits 3-0, CRC byte 7, byte 5 unused. Verified with cantools 44: loads with no overlapping signals and encodes the guide's example frame exactly. With cantools 45, dbc/generate.py reproduces the committed generated/vendor/valeo_obc.c byte for byte. Scaling 0.1 V / 0.1 A / 0.1 kW from the guide's raw/phys pairs (0x9C4->250 V, 0x32->5 A, 0x1E->3 kW). Widths U 16 / I 11 / P 10. GUIDE SB COLUMN - do not paste those numbers in here: the guide's screenshots print SB 48/37/27/26/8/0, which are the frame-complemented, byte-mirrored positions of each signal's LAST bit (SB = 63 - mirror(plain bit index of the LSB)). Reading them as DBC start bits yields an overlapping, invalid message. OPEN QUESTION: the CRC algorithm, and whether counter/CRC are checked at all (the guide sends both as 0). The rules for choosing the values live in Valeo's CAN protocol specification, which we do not have.";
+CM_ BO_ 389 "VENDOR (GEN2.5 quick start): HV output enable, cycle 10 ms. OperModReq = 1 sets byte 5 bit 3, i.e. 0x08 in byte 5, matching the guide's message-overview row 00 00 00 00 00 08 00 00. The prose's 00 00 00 00 08 00 00 00 (byte 4) is a typo. The guide's screenshot SB 19 maps to DBC start bit 43. Width 1 bit assumed - confirm on the bench.";
+CM_ BO_ 793 "VENDOR (GEN2.5 quick start): OBC status 1, appears once the OBC is awake. Layout NOT in the guide. Example frame: 7D 00 C8 A5 00 40 04 0D. Decode from our own captures. BENCH 2026-10-07 (our 6.6 kW unit, SW1 IDs, LV only, no AC, Normal mode, zero 0x305 request): 100 ms cycle, first frame ~0.5 s after power-on. NON-ZERO REQUEST (bench, no AC, no HV, 0x185 never sent; 300.0 V / 2.0 A / 1.0 kW = 0B B8 02 80 50 00 00 00 for 20 s): 0x319 and 0x349 did not change at all - no echo of the request, and no measurable LV current change (<= 3 mA; waking the OBC adds ~300 mA, which drops again when it sleeps or times out). HYPOTHESIS: bytes 0-1 high 12 bits = 0x8CA = 2250 = 450.0 V at 0.2 V/bit, the OBC's 450 V output ceiling, i.e. 0x319 may carry advertised limits (it zeroes bytes 0-3 when shutting down). Unconfirmed. Triggered by 0x305: woken from a laptop with 0x171 + 0x261 alone, the OBC sent 0x349 but never 0x319. Adding an all-zero 0x305 (no 0x185) made 0x319 appear (first one ~1.2 s later), then every 100 ms, 0x185 is not needed. COMMAND TIMEOUT (bench, laptop sent 0x171/0x261/0x305 at ~60 ms, then stopped): unchanged for ~1.6 s; then bytes 1-2 A1 E1 -> A0 01 (byte 1 bit 0 and byte 2 bits 7-5 all cleared - maybe one 4-bit state field 15 -> 0) and byte 6 84 -> 94 (bit 4 set - comm-loss/fault flag?); at ~2.6 s bytes 0-3 went to 00, then the OBC went silent (stayed silent for the remaining 48 s of the capture) and its LV current dropped. Bytes 0-6 = 8C A1 E1 4A 02 00 84 from the first frame on, unchanged across 11/12/14 V supply and repeated power cycles - expected to move only with AC/HV. Byte 7: low nibble = alive counter 0-E, high nibble = 6 (0 in the guide example - state/flags?). No CRC seen (only byte 7 changes).";
+CM_ BO_ 841 "VENDOR (GEN2.5 quick start): OBC status 2, appears once the OBC is awake. Layout NOT in the guide. Example frame: 00 00 00 3F 00 0F 40 0D. Decoded from our own captures (bench 2026-10-07, 6.6 kW unit, SW1 IDs, LV only, no AC): 100 ms cycle. Bytes 2 and 4 have always read 0; bytes 0-1 are 0 without AC. Byte 6 bit 5 (0x20, just below the temperature bits) set ~1.6 s after the BCU stopped sending commands, together with the 0x319 timeout change - comm-loss flag? PROVISIONAL - none of this is from a Valeo document.";
+CM_ SG_ 841 OBC349_ACVoltage "PROVISIONAL AC input voltage, byte 0 + byte 1 bit 7 as one 9-bit Motorola value, 1 V/bit. Bench 2026-10-07, cart on a wall outlet (no EVSE, no CP): 240-242 V steady (Australian mains), 0 on 12 V-only power-ups. At switch-off: one 285 spike, then a decay 241 -> 205 -> 167 -> ... -> 44 over ~1.1 s before the OBC lost its 12 V. Confirm the scale against a meter on the outlet.";
+CM_ SG_ 841 OBC349_Unk3 "PROVISIONAL, meaning unknown. Power-up 00 -> 1C -> 2B in the first three frames, flickers 2B/2D for ~4 s, then steady. Not the LV supply (same at 11/12/14 V). During a hair-dryer heat test it drifted DOWN 2B -> 2A while OBC349_Temp rose, so possibly a second, inverted temperature reading (NTC raw?) - unconfirmed.";
+CM_ SG_ 841 OBC349_Temp "PROVISIONAL temperature. Byte 5 + byte 6 bits 7-6 as one 10-bit Motorola value: rose one count at a time 59 -> 63 over ~2.5 min of hair-dryer heating (raw 0E C0 -> 0F 00 -> 0F 40 -> 0F 80 -> 0F C0). Earlier captures fit too (0E 80 = 58 on a cold first power-up), and the guide example 0F 40 decodes to 21 degC. The -40 offset (raw 59-63 = 19-23 degC, about room temperature) and 1 degC/bit are guesses; confirm against a thermometer before using it for any limit. Power-up transient: 40 (likely init) -> 65 -> settled value.";
+CM_ SG_ 841 OBC349_AliveCntr "Alive counter, low nibble of byte 7, 0-14 then wraps (15 not seen). High nibble 0. Guide example byte 7 = 0D fits.";
+CM_ SG_ 773 BCUOBCHeatModeCtrl "0 = charging mode (guide). Must be 0 to charge.";
+CM_ SG_ 773 BCUOBCMaxChrgPwrAvl "Power the OBC may draw/deliver. Effectively the outlet limit: 230 V x 10 A = 2.3 kW.";
+VAL_ 609 VCUOBCSleep 0 "Normal" 1 "Sleep" ;
+VAL_ 773 BCUOBCHeatModeCtrl 0 "charging mode" ;
+VAL_ 389 BCUOBCOperModReq 0 "HV output disable" 1 "HV output enable" ;

@@ -442,7 +442,8 @@ export default class LineGraphRenderer implements TabRenderer {
             for (let i = 0; i < field.timestamps.length; i++) {
               let x = xScaler.calculate(field.timestamps[i]);
               let y = yScaler.calculate(field.values[i]);
-              if (i === 0) {
+              if (i === 0 || isNaN(field.values[i - 1])) {
+                // NaN marks "no data" (e.g. CAN sentinels): leave a gap instead of bridging it
                 context.moveTo(x, y);
               } else {
                 context.lineTo(x, y);

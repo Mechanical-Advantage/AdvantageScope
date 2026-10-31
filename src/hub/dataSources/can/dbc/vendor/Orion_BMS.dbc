@@ -1,0 +1,79 @@
+VERSION "MUR_Orion_BMS_v0.1_reconstructed"
+
+
+NS_ :
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: BMS ECU
+
+BO_ 16 BMS_Pack1: 8 BMS
+ SG_ BMS_PackInstantaneousVoltage : 48|16@1+ (1,0) [0|65535] "raw" ECU
+ SG_ BMS_PackOpenVoltage : 32|16@1+ (1,0) [0|65535] "raw" ECU
+ SG_ BMS_PackCurrent : 16|16@1- (1,0) [-32768|32767] "raw" ECU
+ SG_ BMS_PackSOC : 8|8@1- (1,0) [-128|127] "raw" ECU
+
+BO_ 32 BMS_Pack2: 8 BMS
+ SG_ BMS_PackDCL : 48|16@1+ (1,0) [0|65535] "raw" ECU
+ SG_ BMS_PackCCL : 32|16@1+ (1,0) [0|65535] "raw" ECU
+ SG_ BMS_PackResistance : 16|16@1+ (1,0) [0|65535] "raw" ECU
+
+BO_ 48 BMS_Pack3: 8 BMS
+ SG_ BMS_HighCellVoltage : 48|16@1+ (1,0) [0|65535] "raw" ECU
+ SG_ BMS_LowCellVoltage : 32|16@1+ (1,0) [0|65535] "raw" ECU
+ SG_ BMS_InputSupplyVoltage : 16|16@1+ (1,0) [0|65535] "raw" ECU
+ SG_ BMS_CurrentLimitsStatus : 0|16@1+ (1,0) [0|65535] "" ECU
+
+BO_ 64 BMS_Pack4: 8 BMS
+ SG_ BMS_HighCellVoltageID : 56|8@1+ (1,0) [0|255] "" ECU
+ SG_ BMS_LowCellVoltageID : 40|8@1+ (1,0) [0|255] "" ECU
+ SG_ BMS_InternalTemp : 24|8@1- (1,0) [-128|127] "degC" ECU
+
+CM_ BU_ BMS "Orion BMS 2 - reserved ID block per mur_control_can.dbc CM_ BU_ BMS note (0x10,0x20,0x30,0x40,0x36,0x618 are vendor-fixed, do not fall in the 0x130-0x13F MUR-allocated block). This file covers only the four broadcast messages the M25 MoTeC firmware actually consumed (0x10/0x20/0x30/0x40); Orion also emits 0x36 and 0x618 (cell-voltage-array / EEPROM messages) which were never read by that firmware and are NOT modelled here.";
+CM_ BO_ 16 "RECONSTRUCTED from M25-Firmware 01.07.0127 Car.CANIO.BMS.updateBMSStates.m1scr (Orion's own 'little-endian' bit layout branch; a commented-out 'big-endian' alternative existed in source using bit offsets 0/16/32/48 for the same four fields - if live traffic doesn't decode, try that mapping instead).";
+CM_ SG_ 16 BMS_PackInstantaneousVoltage "OPEN QUESTION: source script stored this raw with no scale applied (Car.Data.Battery.PackInstantaneousVoltage = raw). Orion's published CAN protocol commonly documents pack voltage at 0.1 V/bit, but that was NOT verified against this specific pack/firmware config - confirm against Orion's CAN protocol manual before trusting as engineering units.";
+CM_ SG_ 16 BMS_PackCurrent "OPEN QUESTION: same as PackInstantaneousVoltage - stored raw in source, Orion commonly documents 0.1 A/bit signed. Verify before use in any current-based safety/thermal decision.";
+CM_ SG_ 16 BMS_PackSOC "OPEN QUESTION: stored raw (8-bit) in source. Orion commonly documents SOC at 0.5 %/bit (raw/2 = percent). Verify.";
+CM_ BO_ 32 "RECONSTRUCTED from updateBMSStates.m1scr. DCL/CCL = discharge/charge current limit, commonly 1 A/bit unverified; PackResistance scale unverified.";
+CM_ BO_ 48 "RECONSTRUCTED from updateBMSStates.m1scr. Cell voltages commonly documented at 0.1 mV/bit (raw*0.0001 = volts) in Orion's protocol - NOT applied here since source stored raw; verify before use.";
+CM_ BO_ 64 "RECONSTRUCTED from updateBMSStates.m1scr. BMSInternalTemp stored raw signed 8-bit directly as degC in source (no scale) - this one is a plain integer degrees reading in the MoTeC code, kept as-is.";
+
+BA_DEF_ BO_ "GenMsgCycleTime" INT 0 100000;
+BA_DEF_ BO_ "GenMsgSendType" ENUM "Cyclic","OnChange","Event";
+BA_DEF_ "BusType" STRING ;
+BA_DEF_DEF_ "GenMsgCycleTime" 0;
+BA_DEF_DEF_ "GenMsgSendType" "Cyclic";
+BA_DEF_DEF_ "BusType" "CAN";
+BA_ "BusType" "CAN";
+BA_ "GenMsgSendType" BO_ 16 0;
+BA_ "GenMsgSendType" BO_ 32 0;
+BA_ "GenMsgSendType" BO_ 48 0;
+BA_ "GenMsgSendType" BO_ 64 0;

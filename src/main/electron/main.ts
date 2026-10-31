@@ -62,6 +62,7 @@ import {
 import StateTracker, { ApplicationState, SatelliteWindowState, WindowState } from "./StateTracker";
 import { VideoProcessor } from "./VideoProcessor";
 import { createAssetFolders, getUserAssetsPath, loadAssets } from "./assetLoader";
+import { readCandumpExtras } from "./importerFiles";
 
 // Dynamically load lzma-native to handle platforms without prebuilt binaries
 let lzma: typeof import("lzma-native") | null = null;
@@ -381,6 +382,11 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           // Normal log, open normally
           targetCount += 1;
           openPath(logPath, (buffer) => (results[0] = buffer));
+          if (logPath.endsWith(".log")) {
+            // candump sidecars and DBC folder (see importerFiles.ts)
+            let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+            results.push(...readCandumpExtras(logPath, prefs.dbcFolder ?? ""));
+          }
         }
       }
       break;
@@ -1364,8 +1370,8 @@ function setupMenu() {
                 properties: ["openFile", "multiSelections"],
                 filters: [
                   {
-                    name: "Robot logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv"]
+                    name: "Logs",
+                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv", "mcap", "jsonl"]
                   }
                 ]
               })
@@ -1388,8 +1394,8 @@ function setupMenu() {
                 properties: ["openFile", "multiSelections"],
                 filters: [
                   {
-                    name: "Robot logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv"]
+                    name: "Logs",
+                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv", "mcap", "jsonl"]
                   }
                 ]
               })
@@ -2666,7 +2672,9 @@ app.whenReady().then(async () => {
       x.endsWith(".wpilogxz") ||
       x.endsWith(".rlog") ||
       x.endsWith(".log") ||
-      x.endsWith(".csv")
+      x.endsWith(".csv") ||
+      x.endsWith(".mcap") ||
+      x.endsWith(".jsonl")
   );
   if (fileArgs.length > 0) {
     firstOpenPath = fileArgs[0];

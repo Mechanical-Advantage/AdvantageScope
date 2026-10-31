@@ -39,6 +39,9 @@ function bundle(input, isMain, external = []) {
       minifyInternalExports: isLite
     },
     context: "this",
+    moduleTypes: {
+      ".dbc": "text"
+    },
     external: external,
     checks: {
       pluginTimings: false
@@ -114,6 +117,9 @@ export default () => {
         ...(isLite ? ["main/lite/xzWorker.ts"] : []),
         ...(!isLite ? ["hub/exportWorker.ts"] : []),
         "hub/dataSources/csv/csvWorker.ts",
+        "hub/dataSources/can/candumpWorker.ts",
+        "hub/dataSources/mcap/mcapWorker.ts",
+        "hub/dataSources/jsonl/jsonlWorker.ts",
         "hub/dataSources/rlog/rlogWorker.ts",
         "hub/dataSources/roadrunnerlog/roadRunnerWorker.ts",
         "shared/renderers/field3d/workers/loadField.ts",

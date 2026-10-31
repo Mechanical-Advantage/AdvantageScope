@@ -1,0 +1,273 @@
+VERSION "MUR_Cascadia_PM100DZ_v1.0_from_vendor_CAN_Protocol_Rev6.1"
+
+
+NS_ :
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: INVERTER ECU
+
+BO_ 160 INV_Temperatures1: 8 INVERTER
+ SG_ INV_ModuleATemp : 0|16@1- (0.1,0) [-3276.8|3276.7] "degC" ECU
+ SG_ INV_ModuleBTemp : 16|16@1- (0.1,0) [-3276.8|3276.7] "degC" ECU
+ SG_ INV_ModuleCTemp : 32|16@1- (0.1,0) [-3276.8|3276.7] "degC" ECU
+ SG_ INV_GateDriverTemp : 48|16@1- (0.1,0) [-3276.8|3276.7] "degC" ECU
+
+BO_ 161 INV_Temperatures2: 8 INVERTER
+ SG_ INV_ControlBoardTemp : 0|16@1- (0.1,0) [-3276.8|3276.7] "degC" ECU
+ SG_ INV_RTD1Temp : 16|16@1- (0.1,0) [-3276.8|3276.7] "degC" ECU
+ SG_ INV_RTD2Temp : 32|16@1- (0.1,0) [-3276.8|3276.7] "degC" ECU
+ SG_ INV_StallBurstTemp : 48|16@1- (0.1,0) [-3276.8|3276.7] "degC" ECU
+
+BO_ 162 INV_Temperatures3_Torque: 8 INVERTER
+ SG_ INV_CoolantTemp : 0|16@1- (0.1,0) [-3276.8|3276.7] "degC" ECU
+ SG_ INV_HotSpotTemp : 16|16@1- (0.1,0) [-3276.8|3276.7] "degC" ECU
+ SG_ INV_MotorRawTemp : 32|16@1- (1,0) [-32768|32767] "raw" ECU
+ SG_ INV_ShudderCompTorque : 48|16@1- (0.1,0) [-3276.8|3276.7] "Nm" ECU
+
+BO_ 163 INV_AnalogInputs: 8 INVERTER
+ SG_ INV_AnalogInput1 : 0|10@1- (0.01,0) [-5.12|5.11] "V" ECU
+ SG_ INV_AnalogInput2 : 10|10@1- (0.01,0) [-5.12|5.11] "V" ECU
+ SG_ INV_AnalogInput3 : 20|10@1- (0.01,0) [-5.12|5.11] "V" ECU
+ SG_ INV_AnalogInput4 : 32|10@1- (0.01,0) [-5.12|5.11] "V" ECU
+ SG_ INV_AnalogInput5 : 42|10@1- (0.01,0) [-5.12|5.11] "V" ECU
+ SG_ INV_AnalogInput6 : 52|10@1- (0.01,0) [-5.12|5.11] "V" ECU
+
+BO_ 164 INV_DigitalInputs: 8 INVERTER
+ SG_ INV_DigitalInput1 : 0|8@1+ (1,0) [0|1] "" ECU
+ SG_ INV_DigitalInput2 : 8|8@1+ (1,0) [0|1] "" ECU
+ SG_ INV_DigitalInput3 : 16|8@1+ (1,0) [0|1] "" ECU
+ SG_ INV_DigitalInput4 : 24|8@1+ (1,0) [0|1] "" ECU
+ SG_ INV_DigitalInput5 : 32|8@1+ (1,0) [0|1] "" ECU
+ SG_ INV_DigitalInput6 : 40|8@1+ (1,0) [0|1] "" ECU
+ SG_ INV_DigitalInput7 : 48|8@1+ (1,0) [0|1] "" ECU
+ SG_ INV_DigitalInput8 : 56|8@1+ (1,0) [0|1] "" ECU
+
+BO_ 165 INV_MotorPosition: 8 INVERTER
+ SG_ INV_MotorAngleElectrical : 0|16@1- (0.1,0) [-3276.8|3276.7] "deg" ECU
+ SG_ INV_MotorSpeedRPM : 16|16@1- (1,0) [-32768|32767] "rpm" ECU
+ SG_ INV_ElectricalOutputFreq : 32|16@1- (0.1,0) [-3276.8|3276.7] "Hz" ECU
+ SG_ INV_DeltaResolverFiltered : 48|16@1- (0.1,0) [-3276.8|3276.7] "deg" ECU
+
+BO_ 166 INV_Currents: 8 INVERTER
+ SG_ INV_PhaseACurrent : 0|16@1- (0.1,0) [-3276.8|3276.7] "A" ECU
+ SG_ INV_PhaseBCurrent : 16|16@1- (0.1,0) [-3276.8|3276.7] "A" ECU
+ SG_ INV_PhaseCCurrent : 32|16@1- (0.1,0) [-3276.8|3276.7] "A" ECU
+ SG_ INV_DCBusCurrent : 48|16@1- (0.1,0) [-3276.8|3276.7] "A" ECU
+
+BO_ 167 INV_Voltages: 8 INVERTER
+ SG_ INV_DCBusVoltage : 0|16@1- (0.1,0) [-3276.8|3276.7] "V" ECU
+ SG_ INV_OutputVoltage : 16|16@1- (0.1,0) [-3276.8|3276.7] "V" ECU
+ SG_ INV_VAB_Vd_Voltage : 32|16@1- (0.1,0) [-3276.8|3276.7] "V" ECU
+ SG_ INV_VBC_Vq_Voltage : 48|16@1- (0.1,0) [-3276.8|3276.7] "V" ECU
+
+BO_ 168 INV_FluxFeedback: 8 INVERTER
+ SG_ INV_FluxCommand : 0|16@1- (0.001,0) [-32.768|32.767] "Wb" ECU
+ SG_ INV_FluxFeedback : 16|16@1- (0.001,0) [-32.768|32.767] "Wb" ECU
+ SG_ INV_IdFeedback : 32|16@1- (0.1,0) [-3276.8|3276.7] "A" ECU
+ SG_ INV_IqFeedback : 48|16@1- (0.1,0) [-3276.8|3276.7] "A" ECU
+
+BO_ 169 INV_InternalVoltages: 8 INVERTER
+ SG_ INV_Ref1V5 : 0|16@1- (0.01,0) [-327.68|327.67] "V" ECU
+ SG_ INV_Ref2V5 : 16|16@1- (0.01,0) [-327.68|327.67] "V" ECU
+ SG_ INV_Ref5V0 : 32|16@1- (0.01,0) [-327.68|327.67] "V" ECU
+ SG_ INV_System12V : 48|16@1- (0.01,0) [-327.68|327.67] "V" ECU
+
+BO_ 170 INV_InternalStates: 8 INVERTER
+ SG_ INV_VSMState : 0|8@1+ (1,0) [0|255] "" ECU
+ SG_ INV_PWMFrequency : 8|8@1+ (1,0) [0|255] "kHz" ECU
+ SG_ INV_InverterState : 16|8@1+ (1,0) [0|255] "" ECU
+ SG_ INV_Relay1 : 24|1@1+ (1,0) [0|1] "" ECU
+ SG_ INV_Relay2 : 25|1@1+ (1,0) [0|1] "" ECU
+ SG_ INV_Relay3 : 26|1@1+ (1,0) [0|1] "" ECU
+ SG_ INV_Relay4 : 27|1@1+ (1,0) [0|1] "" ECU
+ SG_ INV_Relay5 : 28|1@1+ (1,0) [0|1] "" ECU
+ SG_ INV_Relay6 : 29|1@1+ (1,0) [0|1] "" ECU
+ SG_ INV_RunMode : 32|1@1+ (1,0) [0|1] "" ECU
+ SG_ INV_SelfSensingAssist : 33|1@1+ (1,0) [0|1] "" ECU
+ SG_ INV_ActiveDischargeState : 37|3@1+ (1,0) [0|7] "" ECU
+ SG_ INV_CommandMode : 40|1@1+ (1,0) [0|1] "" ECU
+ SG_ INV_RollingCounter : 44|4@1+ (1,0) [0|15] "" ECU
+ SG_ INV_InverterEnableState : 48|1@1+ (1,0) [0|1] "" ECU
+ SG_ INV_BurstModelMode : 49|1@1+ (1,0) [0|1] "" ECU
+ SG_ INV_StartModeActive : 54|1@1+ (1,0) [0|1] "" ECU
+ SG_ INV_InverterEnableLockout : 55|1@1+ (1,0) [0|1] "" ECU
+ SG_ INV_DirectionCommandState : 56|1@1+ (1,0) [0|1] "" ECU
+ SG_ INV_BMSActive : 57|1@1+ (1,0) [0|1] "" ECU
+ SG_ INV_BMSLimitingTorque : 58|1@1+ (1,0) [0|1] "" ECU
+ SG_ INV_LimitMaxSpeed : 59|1@1+ (1,0) [0|1] "" ECU
+ SG_ INV_LimitHotSpot : 60|1@1+ (1,0) [0|1] "" ECU
+ SG_ INV_LowSpeedLimiting : 61|1@1+ (1,0) [0|1] "" ECU
+ SG_ INV_CoolantTempLimiting : 62|1@1+ (1,0) [0|1] "" ECU
+ SG_ INV_LimitStallBurstModel : 63|1@1+ (1,0) [0|1] "" ECU
+
+BO_ 171 INV_FaultCodes: 8 INVERTER
+ SG_ INV_FaultByte0 : 0|8@1+ (1,0) [0|255] "" ECU
+ SG_ INV_FaultByte1 : 8|8@1+ (1,0) [0|255] "" ECU
+ SG_ INV_FaultByte2 : 16|8@1+ (1,0) [0|255] "" ECU
+ SG_ INV_FaultByte3 : 24|8@1+ (1,0) [0|255] "" ECU
+ SG_ INV_FaultByte4 : 32|8@1+ (1,0) [0|255] "" ECU
+ SG_ INV_FaultByte5 : 40|8@1+ (1,0) [0|255] "" ECU
+ SG_ INV_FaultByte6 : 48|8@1+ (1,0) [0|255] "" ECU
+ SG_ INV_FaultByte7 : 56|8@1+ (1,0) [0|255] "" ECU
+
+BO_ 172 INV_TorqueTimer: 8 INVERTER
+ SG_ INV_CommandedTorque : 0|16@1- (0.1,0) [-3276.8|3276.7] "Nm" ECU
+ SG_ INV_FeedbackTorque : 16|16@1- (0.1,0) [-3276.8|3276.7] "Nm" ECU
+ SG_ INV_PowerOnTimer : 32|32@1+ (0.003,0) [0|12884901.885] "s" ECU
+
+BO_ 173 INV_FluxWeakening: 8 INVERTER
+ SG_ INV_ModulationIndex : 0|16@1- (0.01,0) [-327.68|327.67] "" ECU
+ SG_ INV_FluxWeakeningOutput : 16|16@1- (0.1,0) [-3276.8|3276.7] "A" ECU
+ SG_ INV_IdCommand : 32|16@1- (0.1,0) [-3276.8|3276.7] "A" ECU
+ SG_ INV_IqCommand : 48|16@1- (0.1,0) [-3276.8|3276.7] "A" ECU
+
+BO_ 174 INV_FirmwareInfo: 8 INVERTER
+ SG_ INV_EEPROMVersion : 0|16@1+ (1,0) [0|65535] "" ECU
+ SG_ INV_SoftwareVersion : 16|16@1+ (1,0) [0|65535] "" ECU
+ SG_ INV_DateCodeMMDD : 32|16@1+ (1,0) [0|65535] "" ECU
+ SG_ INV_DateCodeYYYY : 48|16@1+ (1,0) [0|65535] "" ECU
+
+BO_ 176 INV_HighSpeedMessage: 8 INVERTER
+ SG_ INV_HS_TorqueCommand : 0|16@1- (0.1,0) [-3276.8|3276.7] "Nm" ECU
+ SG_ INV_HS_TorqueFeedback : 16|16@1- (0.1,0) [-3276.8|3276.7] "Nm" ECU
+ SG_ INV_HS_MotorSpeed : 32|16@1- (1,0) [-32768|32767] "rpm" ECU
+ SG_ INV_HS_DCBusVoltage : 48|16@1- (0.1,0) [-3276.8|3276.7] "V" ECU
+
+BO_ 192 INV_Command: 8 ECU
+ SG_ INV_CMD_TorqueCommand : 0|16@1- (0.1,0) [-3276.8|3276.7] "Nm" INVERTER
+ SG_ INV_CMD_SpeedCommand : 16|16@1- (1,0) [-32768|32767] "rpm" INVERTER
+ SG_ INV_CMD_DirectionCommand : 32|8@1+ (1,0) [0|1] "" INVERTER
+ SG_ INV_CMD_InverterEnable : 40|1@1+ (1,0) [0|1] "" INVERTER
+ SG_ INV_CMD_InverterDischarge : 41|1@1+ (1,0) [0|1] "" INVERTER
+ SG_ INV_CMD_SpeedModeEnable : 42|1@1+ (1,0) [0|1] "" INVERTER
+ SG_ INV_CMD_TorqueLimit : 48|16@1- (0.1,0) [-3276.8|3276.7] "Nm" INVERTER
+
+BO_ 193 INV_ParamWrite: 8 ECU
+ SG_ INV_PARAM_Address : 0|16@1+ (1,0) [0|65535] "" INVERTER
+ SG_ INV_PARAM_RWCommand : 16|8@1+ (1,0) [0|1] "" INVERTER
+ SG_ INV_PARAM_Data : 32|16@1+ (1,0) [0|65535] "" INVERTER
+
+BO_ 194 INV_ParamResponse: 8 INVERTER
+ SG_ INV_PARAMRSP_Address : 0|16@1+ (1,0) [0|65535] "" ECU
+ SG_ INV_PARAMRSP_WriteSuccess : 16|8@1+ (1,0) [0|1] "" ECU
+ SG_ INV_PARAMRSP_Data : 32|16@1+ (1,0) [0|65535] "" ECU
+
+CM_ BU_ INVERTER "Cascadia Motion PM100DZ motor controller. REBUILT 2026-09-17 directly from the vendor's own 'CAN Protocol' Revision 6.1 (2023-02-24), docs/Inverter/CAN Protocol (V6_1).pdf - this file is no longer a reconstruction. Every byte offset, scale, signedness and bit meaning below cites a page of that document. SUPERSEDES the previous MoTeC-derived reconstruction, which was discovered to be a systematic 64-bit MIRROR of the real layout: for every signal, old_start_bit == 64 - real_start_bit - width. That mirroring is why INV_CMD_TorqueLimit (old bits 0-15) was in fact the real INV_CMD_TorqueCommand (bytes 0,1), which is why setting 'torque_limit = 200' made the motor spin during the 2026-09-15 bench session. Message IDs assume the default CAN ID Offset EEPROM parameter of 0x0A0 (p17); if a second controller is ever put on the bus with a different offset, every ID here shifts.";
+CM_ BO_ 160 "p21. Temperatures #1. IGBT module temperatures per phase + gate driver board. All fields Temperature format (p15): signed int, degC x10. Broadcast 'Slow' rate, typically 10 Hz (p17).";
+CM_ BO_ 161 "p21. Temperatures #2. Control board + RTD inputs 1/2. Byte 6,7 is RTD #3 on Gen 2 and the Stall Burst Model power-module junction estimate on Gen 5/CM - same bytes, different meaning by inverter generation. Broadcast Slow/10 Hz.";
+CM_ BO_ 162 "p21. Temperatures #3 & Torque Shudder. Bytes 0,1 and 2,3 are RTD #4/#5 on Gen 2 and estimated coolant/hot-spot temperature on Gen 5/CM. Broadcast Slow/10 Hz.";
+CM_ SG_ 162 INV_MotorRawTemp "p21 calls this 'Motor Temperature', Temperature format (degC x10). Kept as scale=1 RAW here DELIBERATELY: firmware checks it against the literal sensor-fault sentinel raw == 1381 before scaling (see firmware/apps/main_compute/src/can_inverter.c and ctrl_torque.h's MotorTemp-goes-stale fix). Do not apply the 0.1 scale before that sentinel check.";
+CM_ BO_ 163 "p21-22. Analog Input Voltages. THREE different layouts exist for this one ID and the correct one depends on firmware version - the 6 x 10-bit variant modelled here is 'firmware version 1995 and after'. Pre-1995 firmware instead packs 4 x 16-bit Low Voltage fields (Analog Input #1-#4 at bytes 0,1 / 2,3 / 4,5 / 6,7), and Gen 5/CM firmware running an iM-225 motor packs Oil Temperature (bits 0-15, Temperature) + Oil Pressure (bits 16-31, Pressure) + Analog Inputs #4-#6. Read INV_SoftwareVersion from 0x0AE before trusting this decode. NOT consumed by MUR firmware - no RX filter is registered for it.";
+CM_ BO_ 164 "p22. Digital Input Status. Boolean format (p15): unsigned byte, 1 = true/on. Default switch assignments: DIN1 Forward, DIN2 Reverse, DIN3 Brake, DIN4 REGEN Disable, DIN5 Ignition, DIN6 Start, DIN7 Valet Mode, DIN8 unassigned. DIN1 additionally gates the inverter enable when the CAN Inverter Enable Switch Active EEPROM parameter is set to 1 (p32) - if the inverter refuses to enable despite a correct 0x0C0, check that parameter and DIN1.";
+CM_ BO_ 165 "p22. Motor Position Information. Broadcast Fast, typically 100 Hz.";
+CM_ SG_ 165 INV_MotorSpeedRPM "p22, Angular velocity format (p15): signed int, actual RPM, scale 1. MUR firmware negates this before use ('motor was reversed' per the MoTeC source) and clips to [0,10000] AFTER negating - both are control-logic steps in can_inverter.c, not part of the wire format.";
+CM_ SG_ 165 INV_DeltaResolverFiltered "p22. Used in resolver angle calibration; range is +/-180deg, with 180-360deg reported as the negative equivalent (270deg reads as -90deg). See docs/Inverter/resolver_cal.txt.";
+CM_ BO_ 166 "p23. Current Information. Current format (p15): signed int, amps x10. CONFIRMED against the vendor doc - the previous DBC left these as unscaled raw with an OPEN QUESTION note; 0.1 A/bit is now sourced. Note firmware still clips these to [0,2500] raw = 0..250.0 A.";
+CM_ BO_ 167 "p23. Voltage Information. High Voltage format (p15): signed int, volts x10. CONFIRMED against the vendor doc - previously an unverified OPEN QUESTION. VAB_Vd/VBC_Vq change meaning with inverter state: line-to-line VAB/VBC when the inverter is DISABLED, Vd/Vq when ENABLED.";
+CM_ BO_ 168 "p23. Flux Information. Flux format (p15): signed int, Webers x1000.";
+CM_ BO_ 169 "p23. Internal Voltages - the controller's own low-voltage rail references. Low Voltage format (p15): signed int, volts x100. Broadcast Slow/10 Hz. NOT consumed by MUR firmware.";
+CM_ BO_ 170 "p24-26. Internal States. THE MOST SAFETY-RELEVANT BROADCAST - read INV_InverterEnableLockout and INV_VSMState from here. Broadcast Fast/100 Hz. The previous reconstruction had this message mirrored, putting InverterLock at bit 8 (byte 1 bit 0, which is really PWM Frequency) and VSMState at byte 7 (really the torque-limiting flag byte) - so the ECU's lockout interlock was reading a meaningless bit. Worked example from p35: a received 0x0AA of '04 00 09 00 00 00 80 00' decodes as VSMState=4 (VSM Wait), InverterState=9 (Idle Stop), InverterEnableLockout=1.";
+CM_ SG_ 170 INV_InverterEnableLockout "p25, byte 6 bit 7. 0 = inverter can be enabled, 1 = inverter CANNOT be enabled. This is the power-up safety interlock: before the first Inverter Enable command the controller requires an explicit Inverter Disable command (0x0C0 with byte 5 bit 0 clear). Until it sees that disable, every enable is ignored. It is also RE-ARMED whenever the direction command changes while the inverter is enabled (p33). Any ECU that only ever transmits enable=1 can never clear this - see can_inverter_send_disable()'s callers.";
+CM_ SG_ 170 INV_VSMState "p24, byte 0. Vehicle State Machine state. See the VAL_ table below. Note this is an 8-bit field at byte 0; byte 1 is PWM Frequency, NOT a high byte.";
+CM_ SG_ 170 INV_InverterState "p24, byte 2. Internal inverter state - see the VAL_ table below. Distinct from VSMState.";
+CM_ SG_ 170 INV_CommandMode "p25, byte 5 bit 0. 0 = CAN Mode (controller takes commands from 0x0C0), 1 = VSM Mode (controller takes commands from its own hardware inputs). If this reads 1, no amount of correct 0x0C0 traffic will move the motor - set Inv_Cmd_Mode_EEPROM to 0 via the GUI.";
+CM_ SG_ 170 INV_RunMode "p24, byte 4 bit 0. 0 = Torque Mode, 1 = Speed Mode. MUR commands torque, so this should read 0; if it reads 1 the Torque Command becomes a feedforward to the speed regulator instead of the actual demand (p31).";
+CM_ SG_ 170 INV_BMSLimitingTorque "p26, byte 7 bit 2. 1 = the controller is limiting torque because of its own BMS input - a silent torque cap that is NOT visible in INV_CommandedTorque.";
+CM_ BO_ 171 "p26-28. Fault Codes. The 8 bytes group into four 16-bit words: bytes 0,1 = POST Fault Lo, 2,3 = POST Fault Hi, 4,5 = Run Fault Lo, 6,7 = Run Fault Hi. POST faults occur only at power-up; RUN faults during operation. Kept as 8 byte-wide signals (matching firmware's fault_bytes[8]) rather than 4 words, but at the CORRECTED non-mirrored offsets. Selected bits MUR cares about, by CAN byte and bit: RUN byte4 bit1 Over-current; byte4 bit2 Over-voltage; byte4 bit3 Inverter Over-temperature; byte4 bit6 Direction Command Fault; byte4 bit7 Inverter Response Time-out; byte5 bit2 Under-voltage; byte5 bit3 CAN Command Message Lost (this is what a too-slow or stopped 0x0C0 stream produces); byte5 bit4 Motor Over-temperature; byte7 bit6 Resolver Not Connected. POST byte2 bit6 Pre-charge Timeout; byte2 bit7 Pre-charge Voltage Failure. Full tables on p27-28.";
+CM_ BO_ 172 "p29. Torque & Timer Information. Broadcast Fast/100 Hz. CommandedTorque is the torque the controller has accepted - compare it against what the ECU put in 0x0C0 byte 0,1 to prove the command is landing. Torque format (p15): signed int, Nm x10 - CONFIRMED by the vendor doc, previously an unverified OPEN QUESTION.";
+CM_ SG_ 172 INV_PowerOnTimer "p29, bytes 4-7. Unsigned 32-bit count updated every 3 ms, so 0.003 s/count; rolls over in roughly 5 months.";
+CM_ BO_ 173 "p29. Modulation Index & Flux Weakening Output. ModulationIndex is a Per-unit Value with scale factor x100 (p29). NOT consumed by MUR firmware.";
+CM_ BO_ 174 "p29. Firmware Information. Broadcast Slow/10 Hz. Read INV_SoftwareVersion from here to resolve which 0x0A3 variant applies and whether the Commanded Torque Limit field is supported (added in software version 1953, p32).";
+CM_ BO_ 176 "p29-30. High Speed Message, transmitted every 3 ms in version 2042+. NOT enabled by default: p18 notes its bit in CAN Active Messages High Word must be set to 0 to activate it, i.e. that word normally becomes 0xFFFE. NOT consumed by MUR firmware.";
+CM_ BO_ 192 "p31. Command Message - the frame that actually commands the motor. REBUILT from the vendor doc; supersedes BOTH the original mirrored reconstruction AND the hand-rolled single-byte layout arrived at empirically during the 2026-09-15 bench session. The hand-rolled layout (byte0 = one unsigned torque byte, byte4 = direction, byte5 = enable) is a correct SPECIAL CASE of this one for 0 <= torque < 25.6 Nm, because byte 1 is zero over that range - which is why it appeared to work. It cannot express regen (negative torque) and cannot exceed 25.5 Nm. Transmit requirements (p32): continuously at 500 ms or faster, 10-50 ms recommended; the controller processes it every 3 ms so faster than that gains nothing; DLC must be 8. If the stream is slower than the CAN TimeOut EEPROM parameter, the controller raises a CAN Command Message Lost fault (RUN fault byte 5 bit 3). p32 also warns that in CAN mode the command stream should already be running BEFORE the inverter is powered up, or the Lost fault must be cleared on power-up.";
+CM_ SG_ 192 INV_CMD_TorqueCommand "p31, bytes 0,1, Torque format (p15): SIGNED 16-bit, Nm x10, little-endian. The vendor's own worked example (p14) sends 30 Nm as 300 = byte0 44, byte1 1; p35 sends -10 Nm (regen) as byte0 156, byte1 255. Signedness is the whole point of this field and was lost in both previous layouts.";
+CM_ SG_ 192 INV_CMD_SpeedCommand "p31, bytes 2,3. Used when in Speed Mode. From version 2048/651D onward a Speed Command sent while in TORQUE mode overrides the Max Speed EEPROM parameter and acts as a new maximum speed limit, reverting on return to torque mode - so sending a nonzero value here in torque mode is NOT a no-op on recent firmware. MUR sends 0.";
+CM_ SG_ 192 INV_CMD_DirectionCommand "p31, byte 4. 0 = Reverse, 1 = Forward. NOTE the polarity: 0 is REVERSE, so a frame that leaves this byte zero commands the motor backwards. Changing this value while the inverter is enabled causes the controller to disable itself with no fault raised AND to re-arm the Inverter Enable Lockout (p33) - so direction must only ever be changed while disabled.";
+CM_ SG_ 192 INV_CMD_InverterEnable "p31, byte 5 bit 0. 0 = Inverter Off, 1 = Inverter On. Subject to the Inverter Enable Lockout (p32): at least one frame with this bit CLEAR must be sent before the first frame with it set, or the enable is ignored. Also gated by DIN1 if the CAN Inverter Enable Switch Active EEPROM parameter is 1.";
+CM_ SG_ 192 INV_CMD_InverterDischarge "p31, byte 5 bit 1. 0 = disable discharge, 1 = enable discharge. See the vendor's 'Inverter Discharge Process' document before ever setting this.";
+CM_ SG_ 192 INV_CMD_SpeedModeEnable "p31, byte 5 bit 2. 1 = if the controller is in torque mode, switch it to speed mode. One-way override: it will NOT switch speed mode back to torque mode. MUR commands torque, so this must stay 0.";
+CM_ SG_ 192 INV_CMD_TorqueLimit "p31, bytes 6,7, Torque format, Nm x10. 0 = use the motor/regen torque limits configured in EEPROM. A positive value sets BOTH the motoring and regen torque limits to that value for this frame. Added in software version 1953; on older firmware these two bytes are ignored and should be sent as 0 (p32). This field DOES exist - an earlier note on this branch claiming otherwise was based on the mirrored layout - so a bench torque ceiling can be enforced on the wire here in addition to any software clamp.";
+CM_ BO_ 193 "p37-38. Read/Write Parameter Command, sent to the controller. Byte 2 selects read (0) or write (1); the controller answers on 0x0C2. Data occupies bytes 4,5 (a parameter needing fewer than 4 bytes is loaded from byte 4 upward). Bytes 3 and 6,7 are reserved. MUR uses exactly one parameter: address 20 = Fault Clear (p39), where writing 0 clears any active faults, in CAN or VSM mode - i.e. the fixed triple Address=20, RWCommand=1, Data=0.";
+CM_ BO_ 194 "p38. Read/Write Parameter Response, sent BY the controller in reply to 0x0C1. Byte 2 is Write Success (1 = written). An unrecognised parameter address comes back as 0 in bytes 0 and 1. Not currently subscribed by MUR firmware - subscribe it if fault-clear acknowledgement is ever needed.";
+
+BA_DEF_ BO_ "GenMsgCycleTime" INT 0 100000;
+BA_DEF_ BO_ "GenMsgSendType" ENUM "Cyclic","OnChange","Event";
+BA_DEF_ "BusType" STRING ;
+BA_DEF_DEF_ "GenMsgCycleTime" 0;
+BA_DEF_DEF_ "GenMsgSendType" "Cyclic";
+BA_DEF_DEF_ "BusType" "CAN";
+BA_ "BusType" "CAN";
+BA_ "GenMsgCycleTime" BO_ 160 100;
+BA_ "GenMsgCycleTime" BO_ 161 100;
+BA_ "GenMsgCycleTime" BO_ 162 100;
+BA_ "GenMsgCycleTime" BO_ 163 10;
+BA_ "GenMsgCycleTime" BO_ 164 10;
+BA_ "GenMsgCycleTime" BO_ 165 10;
+BA_ "GenMsgCycleTime" BO_ 166 10;
+BA_ "GenMsgCycleTime" BO_ 167 10;
+BA_ "GenMsgCycleTime" BO_ 168 10;
+BA_ "GenMsgCycleTime" BO_ 169 100;
+BA_ "GenMsgCycleTime" BO_ 170 10;
+BA_ "GenMsgCycleTime" BO_ 171 10;
+BA_ "GenMsgCycleTime" BO_ 172 10;
+BA_ "GenMsgCycleTime" BO_ 173 10;
+BA_ "GenMsgCycleTime" BO_ 174 100;
+BA_ "GenMsgCycleTime" BO_ 176 3;
+BA_ "GenMsgCycleTime" BO_ 192 10;
+BA_ "GenMsgSendType" BO_ 160 0;
+BA_ "GenMsgSendType" BO_ 161 0;
+BA_ "GenMsgSendType" BO_ 162 0;
+BA_ "GenMsgSendType" BO_ 163 0;
+BA_ "GenMsgSendType" BO_ 164 0;
+BA_ "GenMsgSendType" BO_ 165 0;
+BA_ "GenMsgSendType" BO_ 166 0;
+BA_ "GenMsgSendType" BO_ 167 0;
+BA_ "GenMsgSendType" BO_ 168 0;
+BA_ "GenMsgSendType" BO_ 169 0;
+BA_ "GenMsgSendType" BO_ 170 0;
+BA_ "GenMsgSendType" BO_ 171 0;
+BA_ "GenMsgSendType" BO_ 172 0;
+BA_ "GenMsgSendType" BO_ 173 0;
+BA_ "GenMsgSendType" BO_ 174 0;
+BA_ "GenMsgSendType" BO_ 176 0;
+BA_ "GenMsgSendType" BO_ 192 0;
+BA_ "GenMsgSendType" BO_ 193 2;
+BA_ "GenMsgSendType" BO_ 194 2;
+
+VAL_ 170 INV_VSMState 0 "VSM Start" 1 "Pre-charge Init" 2 "Pre-charge Active" 3 "Pre-charge Complete" 4 "VSM Wait" 5 "VSM Ready" 6 "Motor Running" 7 "Blink Fault Code" 14 "Shutdown In Process" 15 "Recycle Power";
+VAL_ 170 INV_InverterState 0 "Power On" 1 "Stop" 2 "Open Loop" 3 "Closed Loop" 4 "Wait" 5 "Internal" 6 "Internal" 7 "Internal" 8 "Idle Run" 9 "Idle Stop" 10 "Internal" 11 "Internal" 12 "Internal";
+VAL_ 170 INV_RunMode 0 "Torque Mode" 1 "Speed Mode";
+VAL_ 170 INV_CommandMode 0 "CAN Mode" 1 "VSM Mode";
+VAL_ 170 INV_InverterEnableLockout 0 "Can Be Enabled" 1 "Lockout Active";
+VAL_ 170 INV_ActiveDischargeState 0 "Discharge Disabled" 1 "Discharge Enabled Waiting" 2 "Performing Speed Check" 3 "Discharge Actively Occurring" 4 "Discharge Completed";
+VAL_ 192 INV_CMD_DirectionCommand 0 "Reverse" 1 "Forward";
+VAL_ 192 INV_CMD_InverterEnable 0 "Inverter Off" 1 "Inverter On";

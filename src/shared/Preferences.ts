@@ -17,6 +17,7 @@ export default interface Preferences {
   field3dModeBattery: "" | "cinematic" | "standard" | "low-power";
   field3dAntialiasing: boolean;
   userAssetsFolder: string | null;
+  dbcFolder: string; // Folder of .dbc files for CAN logs, empty for the bundled mur-msgs DBCs
   hasScrolledLineGraph: boolean;
   hasScrolledTimeline: boolean;
   prefersFTC: boolean;
@@ -34,6 +35,7 @@ export const DEFAULT_PREFS: Preferences = {
   field3dModeBattery: "",
   field3dAntialiasing: true,
   userAssetsFolder: null,
+  dbcFolder: "",
   hasScrolledLineGraph: false,
   hasScrolledTimeline: false,
   prefersFTC: false,
@@ -116,6 +118,9 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   }
   if ("userAssetsFolder" in newPrefs && typeof newPrefs.userAssetsFolder === "string") {
     basePrefs.userAssetsFolder = newPrefs.userAssetsFolder;
+  }
+  if ("dbcFolder" in newPrefs && typeof newPrefs.dbcFolder === "string") {
+    basePrefs.dbcFolder = newPrefs.dbcFolder;
   }
   if ("hasScrolledLineGraph" in newPrefs && typeof newPrefs.hasScrolledLineGraph === "boolean") {
     basePrefs.hasScrolledLineGraph = newPrefs.hasScrolledLineGraph;
