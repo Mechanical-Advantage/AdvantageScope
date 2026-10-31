@@ -128,7 +128,9 @@ export async function startServer(
   const cloudTimer = opts.pointCloud
     ? setInterval(() => {
         if (backend.simStatus().state === "paused") return;
-        const packet = cloudPacket(backend.nowNs(), backend.simStatus().reset_count);
+        const pose = backend.latest.get("vehicles/mur27/autonomy/pose")?.value;
+        const center = pose && typeof pose === "object" && "position" in pose ? pose.position : undefined;
+        const packet = cloudPacket(backend.nowNs(), backend.simStatus().reset_count, center);
         for (const client of clouds.clients)
           if (client.readyState === client.OPEN && client.bufferedAmount < 1_000_000) client.send(packet);
       }, 100)
