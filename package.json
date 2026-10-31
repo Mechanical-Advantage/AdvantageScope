@@ -51,6 +51,7 @@
     "electron": "^39.2.7",
     "electron-builder": "^26.15.3",
     "fuse.js": "^7.0.0",
+    "fzstd": "^0.1.1",
     "gunzip-file": "^0.1.1",
     "heatmap.js": "github:jwbonner/heatmap.js#24b4455c95f5e54cb50ab8bb06f9229d30426362",
     "license-check-and-add": "^4.0.5",
