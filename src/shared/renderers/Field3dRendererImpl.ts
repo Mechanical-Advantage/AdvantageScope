@@ -1,3 +1,4 @@
+import CloudManager from "./field3d/objectManagers/CloudManager";
 import MarkerManager from "./field3d/objectManagers/MarkerManager";
 import URDFManager from "./field3d/objectManagers/URDFManager";
 // Copyright (c) 2021-2026 Littleton Robotics
@@ -408,6 +409,9 @@ export default class Field3dRendererImpl implements TabRenderer {
     ] as const;
     let manager: ObjectManager<Field3dRendererCommand_AnyObj>;
     switch (type) {
+      case "cloud":
+        manager = new CloudManager(...args);
+        break;
       case "marker":
         manager = new MarkerManager(...args);
         break;

@@ -337,7 +337,7 @@ export default class Field3dController implements TabController {
 
       if (source.type === "spatial" && time !== null) {
         try {
-          const result = this.spatial.objects(window.log, source.logKey, time, fixed);
+          const result = this.spatial.objects(window.log, source.logKey, time, fixed, source.options);
           objects.push(...result.objects);
           status(source.logKey + " · " + result.frame + " · " + result.stamp.toFixed(3) + " s");
         } catch (error) {

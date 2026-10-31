@@ -1,3 +1,4 @@
+import WorkerManager from "../WorkerManager";
 // Copyright (c) 2026 Melbourne University Motorsports. Based on AdvantageScope (BSD-3-Clause, © Littleton Robotics).
 // https://github.com/Melbourne-University-Motorsports/mur-voir
 //
@@ -17,9 +18,15 @@ export class SpatialLayers {
   private log: Log | null = null;
   private time = -Infinity;
   private processed = new Map<string, number>();
+  private clouds = new Map<string, any>();
+  private pending = new Set<string>();
+  private generation = 0;
   joints: Record<string, number> = {};
   begin(log: Log, time: number) {
     if (log !== this.log || time < this.time) {
+      this.generation++;
+      this.clouds.clear();
+      this.pending.clear();
       this.tree.clear();
       this.processed.clear();
       this.joints = {};
@@ -67,8 +74,10 @@ export class SpatialLayers {
     log: Log,
     key: string,
     time: number,
-    fixed: string
+    fixed: string,
+    options: Record<string, string> = {}
   ): { objects: Field3dRendererCommand_AnyObj[]; frame: string; stamp: number } {
+    if (log.getStructuredType(key) === "sensor_msgs/PointCloud2") return this.cloud(log, key, time, fixed, options);
     const snapshot = spatialSnapshot(log, key, time);
     if (!snapshot) throw new Error("waiting for spatial sample");
     const msg = snapshot.value;
@@ -107,5 +116,55 @@ export class SpatialLayers {
       objects.push({ type: "axes", poses: [pose(p)] });
     }
     return { objects, frame, stamp: snapshot.time };
+  }
+  private cloud(log: Log, key: string, time: number, fixed: string, options: Record<string, string>) {
+    const decay = Math.max(1, Math.min(20, Number(options.decay ?? 1)));
+    const raw = log.getRaw(key, -Infinity, time);
+    if (!raw) throw new Error("waiting for cloud");
+    const indexes = raw.timestamps
+      .map((t, i) => ({ t, i }))
+      .filter(({ t }) => t <= time)
+      .slice(-decay);
+    const objects: Field3dRendererCommand_AnyObj[] = [];
+    let frame = "",
+      stamp = 0;
+    for (const { t, i } of indexes) {
+      const cacheKey = key + ":" + t + ":" + (options.field ?? "intensity");
+      const result = this.clouds.get(cacheKey);
+      if (!result && !this.pending.has(cacheKey)) {
+        this.pending.add(cacheKey);
+        const generation = this.generation;
+        const meta = metadata(log, key);
+        WorkerManager.request("../bundles/pointCloudWorker.js", {
+          encoding: meta.encoding,
+          definition: meta.definition,
+          bytes: raw.values[i],
+          field: options.field ?? "intensity"
+        })
+          .then((result) => {
+            if (generation !== this.generation) return;
+            this.pending.delete(cacheKey);
+            this.clouds.set(cacheKey, result);
+            if (this.clouds.size > 60) this.clouds.delete(this.clouds.keys().next().value!);
+          })
+          .catch(() => {
+            this.pending.delete(cacheKey);
+            this.clouds.set(cacheKey, { error: "cloud worker failed" });
+          });
+      }
+      if (!result) continue;
+      if (result.error) throw new Error(result.error);
+      frame = result.frame;
+      stamp = t;
+      objects.push({
+        type: "cloud",
+        ...result,
+        transform: this.resolve(frame, fixed, time),
+        size: Number(options.size ?? 3),
+        map: options.map ?? "viridis"
+      });
+    }
+    if (!objects.length) throw new Error("decoding cloud…");
+    return { objects, frame, stamp };
   }
 }

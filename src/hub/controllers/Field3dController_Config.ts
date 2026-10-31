@@ -30,7 +30,32 @@ const Field3dController_Config: SourceListConfig = {
         "tf2_msgs/TFMessage",
         "sensor_msgs/PointCloud2"
       ],
-      options: []
+      options: [
+        {
+          key: "field",
+          display: "Colour",
+          showInTypeName: false,
+          values: ["intensity", "z", "rgb"].map((key) => ({ key, display: key }))
+        },
+        {
+          key: "map",
+          display: "Map",
+          showInTypeName: false,
+          values: ["viridis", "turbo"].map((key) => ({ key, display: key }))
+        },
+        {
+          key: "size",
+          display: "Point px",
+          showInTypeName: false,
+          values: ["3", "1", "5", "8"].map((key) => ({ key, display: key }))
+        },
+        {
+          key: "decay",
+          display: "Scans",
+          showInTypeName: false,
+          values: ["1", "3", "5", "10", "20"].map((key) => ({ key, display: key }))
+        }
+      ]
     },
     {
       key: "robot",
