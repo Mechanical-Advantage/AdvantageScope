@@ -119,7 +119,7 @@ new LiveStatusPill(
     status: liveStatus,
     provider: window.liveStatus
   }),
-  () => connectDialog.show(),
+  (address) => connectDialog.show(address),
   () => stopLive()
 );
 
@@ -513,17 +513,20 @@ function startLive(sourceType: "robot" | "sim", target?: { sourceId: string; add
   liveSource.connect(
     address,
     (status: LiveDataSourceStatus) => {
+      const previousStatus = liveStatus;
       liveStatus = status;
       connectDialog.updateStatus(status);
       switch (status) {
         case LiveDataSourceStatus.Connecting:
+          // Once a connection has failed, "Searching" would be misleading while retrying
+          if (previousStatus === LiveDataSourceStatus.Error) break;
           setWindowTitle(address, "Searching");
           break;
         case LiveDataSourceStatus.Active:
           setWindowTitle(address);
           break;
         case LiveDataSourceStatus.Error:
-          setWindowTitle(address, "Error");
+          setWindowTitle(address, "Connection failed");
           if (!connectDialog.isVisible())
             window.sendMainMessage("error", {
               title: "Problem with live source",

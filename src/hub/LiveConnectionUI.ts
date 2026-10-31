@@ -105,7 +105,7 @@ export class ConnectDialog {
     return !this.backdrop.hidden;
   }
 
-  show() {
+  show(address?: string) {
     this.message.innerText = "";
     const prefs = window.preferences;
     const sources = getAvailableLiveSources(IS_LITE);
@@ -120,6 +120,11 @@ export class ConnectDialog {
     this.sourceSelect.value = selected.id;
     this.applySourceDefaults();
     this.renderRecent();
+    if (address) {
+      this.addressInput.value = address;
+      this.loadMQTT();
+      this.validate();
+    }
     this.backdrop.hidden = false;
     this.addressInput.focus();
     this.addressInput.select();
@@ -289,7 +294,7 @@ export class LiveStatusPill {
   private pill: HTMLButtonElement;
   private popover: HTMLElement;
   private getState: () => LivePillState;
-  private onConnectRequest: () => void;
+  private onConnectRequest: (address?: string) => void;
   private onDisconnect: () => void;
   private lastPillHtml = "";
   private lastPopoverHtml = "";
@@ -297,7 +302,7 @@ export class LiveStatusPill {
   private detailsOpen = false;
   private runLabel: HTMLElement;
 
-  constructor(getState: () => LivePillState, onConnectRequest: () => void, onDisconnect: () => void) {
+  constructor(getState: () => LivePillState, onConnectRequest: (address?: string) => void, onDisconnect: () => void) {
     this.runLabel = document.createElement("span");
     this.runLabel.className = "live-run-label";
     document.body.appendChild(this.runLabel);
@@ -349,6 +354,9 @@ export class LiveStatusPill {
       if (action === "connect") {
         this.popover.hidden = true;
         this.onConnectRequest();
+      } else if (action === "edit-address") {
+        this.popover.hidden = true;
+        this.onConnectRequest(this.getState().address);
       } else if (action === "disconnect") {
         this.popover.hidden = true;
         this.onDisconnect();
@@ -435,9 +443,11 @@ export class LiveStatusPill {
         if (summary.retryAttempt > 0)
           segments.push({
             tone: "warn",
-            text: `Retry ${summary.retryAttempt} in ${summary.retryInS.toFixed(1)} s · last receipt ${
-              summary.lastReceiptAgeS?.toFixed(1) ?? "unknown"
-            } s`,
+            text: `Retry ${summary.retryAttempt} in ${summary.retryInS.toFixed(1)} s · ${
+              summary.lastReceiptAgeS === null
+                ? "no data yet"
+                : `last receipt ${summary.lastReceiptAgeS.toFixed(1)} s ago`
+            }`,
             title: summary.backendDetail
           });
         if (summary.receivingAgain)
@@ -551,12 +561,14 @@ export class LiveStatusPill {
         `<span class="live-popover-hint">Simulation</span></div>`;
     }
     if (this.simMessage !== "") html += `<div class="live-popover-error">${htmlEncode(this.simMessage)}</div>`;
+    const failed = summary?.backend === "error" || summary?.retryAttempt;
     html +=
       `<div class="live-popover-actions">` +
-      `<button class="text-button" data-action="connect">${
-        summary?.backend === "error" ? "Edit address…" : "Connect…"
-      }</button>` +
-      `<button class="text-button" data-action="disconnect">Disconnect</button></div>`;
+      (failed
+        ? `<button class="text-button" data-action="edit-address">Edit address…</button>` +
+          `<button class="text-button" data-action="disconnect">Stop retrying</button></div>`
+        : `<button class="text-button" data-action="connect">Connect…</button>` +
+          `<button class="text-button" data-action="disconnect">Disconnect</button></div>`);
     if (this.popover.querySelector("select") === document.activeElement) return;
     if (html !== this.lastPopoverHtml) {
       this.lastPopoverHtml = html;

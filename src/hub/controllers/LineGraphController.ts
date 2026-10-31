@@ -62,8 +62,10 @@ export default class LineGraphController implements TabController {
   private showRobotMode = false;
   private lapMode = "time";
   private lapSelect: HTMLSelectElement;
+  private rootElement: HTMLElement;
 
   constructor(root: HTMLElement) {
+    this.rootElement = root;
     const mode = document.createElement("select");
     this.lapSelect = mode;
     mode.className = "lap-axis-mode";
@@ -193,11 +195,15 @@ export default class LineGraphController implements TabController {
           return true;
         const prompt = document.createElement("div");
         prompt.className = "graph-unit-prompt";
-        prompt.append(
-          `Different unit (${window.log.getChannelProfile(key).unit} vs ${
-            window.log.getChannelProfile(first.logKey).unit
-          }) — `
-        );
+        const unitOf = (k: string) => window.log.getChannelProfile(k).unit || "no unit";
+        const message = document.createElement("div");
+        message.className = "graph-unit-message";
+        message.textContent = `${splitLegendName(key).leaf} (${unitOf(key)}) has a different unit from ${
+          splitLegendName(first.logKey).leaf
+        } (${unitOf(first.logKey)}) on this axis.`;
+        const buttons = document.createElement("div");
+        buttons.className = "graph-unit-buttons";
+        prompt.append(message, buttons);
         for (const [label, target] of [
           [`Move to ${name} Axis`, other],
           ["Add anyway", source]
@@ -211,14 +217,21 @@ export default class LineGraphController implements TabController {
             target.beforeAdd = guard;
             prompt.remove();
           };
-          prompt.append(button);
+          buttons.append(button);
         }
         const cancel = document.createElement("button");
         cancel.textContent = "Cancel";
         cancel.onclick = () => prompt.remove();
-        prompt.append(cancel);
+        buttons.append(cancel);
+        prompt.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") prompt.remove();
+        });
         root.querySelector(".graph-unit-prompt")?.remove();
-        root.append(prompt);
+        // Anchor to the zone the signal was dropped on
+        (root.querySelector(source === this.leftSourceList ? ".line-graph-left" : ".line-graph-right") ?? root).append(
+          prompt
+        );
+        (buttons.firstElementChild as HTMLElement).focus();
         return false;
       };
     }
@@ -514,7 +527,24 @@ export default class LineGraphController implements TabController {
     }
   }
 
+  /** Marks empty drop zones ("Drag a signal here") and hides the zoom/pan hint until something is plotted. */
+  private updateEmptyState() {
+    const zones: [string, SourceList][] = [
+      [".line-graph-left", this.leftSourceList],
+      [".line-graph-right", this.rightSourceList],
+      [".line-graph-discrete", this.discreteSourceList]
+    ];
+    let empty = true;
+    for (const [selector, list] of zones) {
+      const zoneEmpty = list.getState().length === 0;
+      if (!zoneEmpty) empty = false;
+      this.rootElement.querySelector(selector)?.classList.toggle("zone-empty", zoneEmpty);
+    }
+    document.body.classList.toggle("line-graph-empty", empty);
+  }
+
   getCommand(): LineGraphRendererCommand {
+    this.updateEmptyState();
     let leftDataRange: [number, number] = [Infinity, -Infinity];
     let rightDataRange: [number, number] = [Infinity, -Infinity];
     let leftFieldsCommand: LineGraphRendererCommand_NumericField[] = [];
