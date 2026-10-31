@@ -72,11 +72,14 @@
   },
   "dependencies": {
     "@types/emscripten": "^1.39.13",
+    "aedes": "^1.2.0",
     "check-disk-space": "^3.4.0",
     "download": "^8.0.0",
     "jsonfile": "^6.1.0",
     "lzma-native": "^8.0.6",
-    "pngjs": "^7.0.0"
+    "mqtt": "^5.16.1",
+    "pngjs": "^7.0.0",
+    "websocket-stream": "^5.5.2"
   },
   "prettier": {
     "printWidth": 120,
