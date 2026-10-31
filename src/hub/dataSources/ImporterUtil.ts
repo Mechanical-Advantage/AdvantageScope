@@ -99,20 +99,21 @@ export function resolveRequestedKey(log: Log, key: string): string | null {
  */
 export function runLazyWorker(
   start: (files: (Uint8Array | null)[]) => Promise<Log> | Log,
-  decode: (keys: string[]) => string[],
+  decode: (keys: string[]) => string[] | Promise<string[]>,
   log: () => Log
 ) {
   let pending: string[] = [];
   let scheduled = false;
   let started = false;
-  const flush = () => {
+  let busy: Promise<void> = Promise.resolve();
+  const flush = async () => {
     scheduled = false;
     const keys = pending;
     pending = [];
     const requested = keys.map((key) => resolveRequestedKey(log(), key) ?? key);
     let sendKeys: string[] = [];
     try {
-      sendKeys = decode(requested);
+      sendKeys = await decode(requested);
     } catch (error) {
       console.error("Failed to decode fields", error);
     }
@@ -140,7 +141,8 @@ export function runLazyWorker(
         pending.push(request.key);
         if (!scheduled) {
           scheduled = true;
-          setTimeout(flush, 0);
+          // Batches run one at a time, in order
+          setTimeout(() => (busy = busy.then(flush)), 0);
         }
         break;
     }
