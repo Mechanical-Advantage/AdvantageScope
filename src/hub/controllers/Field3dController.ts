@@ -332,6 +332,7 @@ export default class Field3dController implements TabController {
 
     const description =
       window.log.getString("/robot_description/xml", time ?? 0, time ?? 0)?.values[0] ??
+      window.log.getString("/robot_description/data", time ?? 0, time ?? 0)?.values[0] ??
       window.log.getString("/robot_description", time ?? 0, time ?? 0)?.values[0];
     if (description && !this.localRobotLoaded) {
       try {

@@ -144,6 +144,9 @@ export class SpatialLayers {
           .getFrames()
           .map((name) => ({ pose: this.resolve(name, fixed, time), annotation: { is2DSource: false } }))
       });
+      if (this.robot && this.tree.hasFrame(this.robot.rootLink)) {
+        objects.push(...this.vehicle(log, key, time, fixed, this.resolve(this.robot.rootLink, fixed, time)));
+      }
     } else if (type === "visualization_msgs/MarkerArray") {
       const active = new Map<string, { marker: any; stamp: number }>();
       const history = log.getString(key + "/spatial", -Infinity, time);
@@ -194,7 +197,10 @@ export class SpatialLayers {
       const p = msg.pose?.pose ?? msg.pose ?? msg;
       try {
         poses.push({
-          pose: compose(this.resolve(msg.header?.frame_id, fixed, stamp), rosPose(p)),
+          pose:
+            log.getStructuredType(key) === "tf2_msgs/TFMessage" && this.robot
+              ? this.resolve(this.robot.rootLink, fixed, stamp)
+              : compose(this.resolve(msg.header?.frame_id, fixed, stamp), rosPose(p)),
           annotation: { is2DSource: false }
         });
       } catch {
