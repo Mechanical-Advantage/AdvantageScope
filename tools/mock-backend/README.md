@@ -206,3 +206,5 @@ The header carries PointCloud2 layout/fields, `header.frame_id` (`map`), `t_ns` 
 `run` (the simulation reset count). Scans contain 1,200 deterministic points at 10 Hz;
 pausing stops them and reset updates the run identifier. The payload remains binary
 through Log and the decode worker. Binary scan history is not offered over HTTP.
+
+`--fault-demo` injects 100 °C motor (WARN), 65 °C cell (CRIT) and an Earth Fault IMD enum from 10–20 seconds. Values recover after 20 seconds so latch acknowledgement can be exercised. Combine with `--stale-test --stale-source ennoid-bms` for stale health tiles after 30 seconds.

@@ -383,7 +383,11 @@ export class LiveStatusPill {
     const summary = state.provider?.getLiveStatus() ?? null;
 
     const timeline = document.querySelector(".timeline")?.getBoundingClientRect();
-    this.runLabel.style.top = (timeline && timeline.height > 0 ? timeline.top + 2 : 66).toString() + "px";
+    this.runLabel.style.top =
+      (timeline && timeline.height > 0
+        ? timeline.top + 2
+        : (document.querySelector(".viewer")?.getBoundingClientRect().top ?? 38) + 42
+      ).toString() + "px";
     this.runLabel.hidden = summary?.sim === null || summary === null;
     this.runLabel.innerText = summary
       ? `Run ${summary.viewedRun + 1}${

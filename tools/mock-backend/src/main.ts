@@ -22,6 +22,7 @@ Usage: node tools/mock-backend/src/main.ts [options]
   --speed <x>             simulation time multiplier (default 1)
   --drop-rate <f>         fraction of samples lost on the link, 0..1 (seq gaps remain)
   --duplicate             deliver every live sample twice (rf + cellular) to test dedup
+  --fault-demo            health warning/critical pulse at 10–20 s, then recovery
   --stale-test            periodically stop a source (60 s cycle: 30 s on, 30 s off; offline after 4 s)
   --stale-source <src>    source for --stale-test (default sbg-ins)
   --catalogue-churn       register a probe signal every 40 s and remove it 20 s later
@@ -45,6 +46,7 @@ const { values } = parseArgs({
     speed: { type: "string", default: "1" },
     "drop-rate": { type: "string", default: "0" },
     duplicate: { type: "boolean", default: false },
+    "fault-demo": { type: "boolean", default: false },
     "stale-test": { type: "boolean", default: false },
     "stale-source": { type: "string", default: "sbg-ins" },
     "catalogue-churn": { type: "boolean", default: false },
@@ -88,6 +90,7 @@ const opts = {
   speed: num("speed", values.speed!, 0.01, 100),
   dropRate: num("drop-rate", values["drop-rate"]!, 0, 1),
   duplicate: values.duplicate!,
+  faultDemo: values["fault-demo"]!,
   staleTest: values["stale-test"]!,
   staleSource: source("stale-source", values["stale-source"]!),
   catalogueChurn: values["catalogue-churn"]!,

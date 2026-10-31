@@ -434,7 +434,7 @@ export default class Tabs {
 
   /** Returns the set of fields currently being displayed. */
   getActiveFields(): Set<string> {
-    let activeFields = new Set<string>();
+    let activeFields = new Set<string>(window.healthStrip?.getActiveFields());
     this.tabList.forEach((tab) => {
       tab.controller.getActiveFields().forEach((field) => {
         activeFields.add(field);

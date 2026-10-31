@@ -177,3 +177,15 @@ add its typed pose, path, marker, TF and lidar topics to the same Layers list.
 
 Spatial regression tests live in `test/spatial/`. The backend's own suite is separate:
 `node --test tools/mock-backend/test/*.test.ts`.
+
+### Trackside health
+
+View → Toggle Health Strip pins configurable readouts above every tab, saved in layout `healthStrip`. Defaults match canonical MUR live paths and bundled DBC names. Drag a scalar field onto the strip or use Add tile; ⋯ / right-click opens label, display unit/precision, direction, warn/critical, fault and latch settings. Limits use displayed engineering units. Defaults are illustrative; configure them for the car. Unsupported/missing signals remain unknown. IMD is the mock's available accumulator fault indicator; it is not a complete BMS fault word.
+
+WARN/CRIT use text and backgrounds. Live freshness and age come from LiveStatus, including backend loss. UNKNOWN never holds a plausible numeric value; a latched fault retains its text alongside UNKNOWN until acknowledged. Click the readout to acknowledge; an active fault immediately re-latches. Latches reset on source/run replacement and are not persisted. File readouts follow the shared cursor and request lazy fields through Tabs.getActiveFields.
+
+View → Trackside Layout adds or updates Speed/RPM and Torque graph tabs while preserving other tabs, enables the strip, sets a following 30-second window, and enlarges legend values. LIVE/REVIEW uses Selection.lock/unlock and reflects timeline actions. Speed/RPM use separate axes; torque command/actual share the torque tab because the existing graph supports only two numeric axes. Reapply the preset after connecting if it was applied before signals arrived. Saved profiles, tiles and graph settings persist normally; the timeline follow window is applied by the preset action.
+
+The existing state API supports bold (3px) traces, used here. Exact 2px traces and threshold lines are deferred: they require renderer changes outside this workstream. No line-graph controller or renderer is modified.
+
+Install the mock's own dependencies with `npm install --prefix tools/mock-backend` first. Health verification mock: `npm run mock-backend -- --port 8090 --seed 1 --stale-test --stale-source ennoid-bms --sim-clock --lap-counter --fault-demo`. The fault pulse runs at 10–20 seconds and recovers; BMS-source silence begins at 30 seconds. Pure threshold, latch and canonical matching tests live in `test/health-strip.test.ts`.
