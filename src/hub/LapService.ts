@@ -126,11 +126,14 @@ class LapService {
     };
     const samples: Sample[] = [];
     if (base) {
+      // Log compresses unchanged values independently per channel. Use the union so a
+      // constant latitude does not hide wheel-speed or longitude changes.
+      const timestamps = [...new Set([...data.values()].flatMap((d) => d?.timestamps ?? []))].sort((a, b) => a - b);
       const firstFix =
-        base.timestamps.find((t) => Math.abs(at(s.latitude, t)) > 0.001 || Math.abs(at(s.longitude, t)) > 0.001) ??
-        base.timestamps[0];
+        timestamps.find((t) => Math.abs(at(s.latitude, t)) > 0.001 || Math.abs(at(s.longitude, t)) > 0.001) ??
+        timestamps[0];
       const origin = { lat: at(s.latitude, firstFix) || 0, lon: at(s.longitude, firstFix) || 0 };
-      base.timestamps.forEach((t) => {
+      timestamps.forEach((t) => {
         const latitude = at(s.latitude, t),
           longitude = at(s.longitude, t);
         if (
