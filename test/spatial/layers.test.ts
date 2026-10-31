@@ -38,3 +38,31 @@ test("retained scans use TF at acquisition time and reset clears decoded scans",
     WorkerManager.request = request;
   }
 });
+
+test("expired decoded scans cannot fail TF lookup for the current decay window", async () => {
+  const layers = new SpatialLayers();
+  const log = new Log();
+  log.putRaw("/cloud", 1, new Uint8Array([1]));
+  log.setStructuredType("/cloud", "sensor_msgs/PointCloud2");
+  layers.begin(log, 1);
+  layers.tree.addTransform("map", "retired_lidar", 1, identity());
+  const request = WorkerManager.request;
+  WorkerManager.request = async (_script, payload) => ({
+    frame: payload.bytes[0] === 1 ? "retired_lidar" : "map",
+    positions: new Float32Array([0, 0, 0])
+  });
+  try {
+    assert.throws(() => layers.objects(log, "/cloud", 1, "map"), /decoding/);
+    await Promise.resolve();
+    layers.objects(log, "/cloud", 1, "map");
+    log.putRaw("/cloud", 2, new Uint8Array([2]));
+    layers.objects(log, "/cloud", 2, "map");
+    await Promise.resolve();
+    layers.tree.clear();
+    const result = layers.objects(log, "/cloud", 2, "map");
+    assert.equal(result.objects.length, 1);
+    assert.equal(result.stamp, 2);
+  } finally {
+    WorkerManager.request = request;
+  }
+});
