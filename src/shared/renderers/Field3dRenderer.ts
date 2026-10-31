@@ -7,6 +7,8 @@
 
 import { AnnotatedPose3d, ModuleVelocity } from "../geometry";
 import { MechanismState } from "../log/LogMechanismState";
+import { Transform } from "../spatial/Transform";
+import { URDFRobot } from "../spatial/URDF";
 import Field3dRendererImpl from "./Field3dRendererImpl";
 import TabRenderer from "./TabRenderer";
 
@@ -123,6 +125,9 @@ export type Field3dRendererCommand = {
 };
 
 export type Field3dRendererCommand_AnyObj =
+  | Field3dRendererCommand_CloudObj
+  | Field3dRendererCommand_MarkerObj
+  | Field3dRendererCommand_URDFObj
   | Field3dRendererCommand_RobotObj
   | Field3dRendererCommand_GhostObj
   | Field3dRendererCommand_GamePieceObj
@@ -200,4 +205,25 @@ export type Field3dRendererCommand_ConeObj = {
   color: string;
   position: "center" | "back" | "front";
   poses: AnnotatedPose3d[];
+};
+
+export type Field3dRendererCommand_URDFObj = {
+  type: "urdf";
+  robot: URDFRobot;
+  assets: Record<string, string>;
+  links: Record<string, Transform>;
+};
+
+export type Field3dRendererCommand_MarkerObj = { type: "marker"; marker: any; frameTransform: Transform };
+
+export type Field3dRendererCommand_CloudObj = {
+  type: "cloud";
+  positions: Float32Array;
+  values: Float32Array;
+  colors: Float32Array | null;
+  min: number;
+  max: number;
+  transform: Transform;
+  size: number;
+  map: string;
 };

@@ -131,3 +131,49 @@ CSV imports match bundled DBC metadata by message/signal suffix or unambiguous s
 - Field discovery is dynamic. Matching canonical DBC paths receive channel metadata. Incompatible type changes are ignored to protect existing history. The debug source subscribes to the whole filter, has no history endpoint, and retains received data across reconnects with exponential backoff (0.5–30 s). Freshness is receive-based: stale after 1 s, offline after 5 s or broker loss.
 
 Run `npm run mqtt-mock`; see `tools/mqtt-mock/README.md` for filters for all four modes. `npm test -- mqtt` tests payloads and bundled CAN decoding.
+
+## Shared 3D spatial view
+
+The 3D tab uses the same `SpatialLayers` controller and renderer for MUR live data,
+Foxglove ROS 2 live data and MCAP recordings. Drag whole typed topics into **Layers**.
+Pose topics render the URDF car with a ten-second trail; Path/trajectory topics render
+lines; MUR cone arrays and ROS MarkerArray topics render geometry. Each layer reports
+its frame and sample time, or a visible missing/unknown/extrapolated-frame error.
+
+- **Environment:** MUR Grid, Track or None. **Load metric track…** accepts CSV
+  `x,y,z,class` cones or GeoJSON Point/LineString geometry in local metres (not WGS84
+  longitude/latitude). The imported track is stored with the layout.
+- **Fixed frame:** type a frame or choose a TF frame from the suggestions. **Frame axes**
+  overlays the tree. TF, JointState and robot-description topics are subscribed while
+  the 3D tab is active; other ROS topics follow the active fields.
+- **Load URDF folder…:** choose a folder containing an expanded `.urdf` and local meshes.
+  URDF origins, continuous/revolute/prismatic joints, limits and mimic joints drive
+  kinematics. JointState positions and available TF link poses animate it. STL, OBJ,
+  DAE, GLB and glTF are supported; missing meshes show an error. Xacro must be expanded
+  before loading. The built-in MUR car is used by default because the MURA reference
+  robot is xacro based. `/robot_description` is a fallback; an explicitly loaded folder
+  takes precedence. Mesh data is embedded in saved layouts, which can make them large.
+- **PointCloud2:** CDR stays binary in Log and is decoded in a worker. Layer options
+  choose intensity/z/rgb, viridis/turbo, point size and retained scan count (1–20).
+  Retained scans resolve TF at acquisition time; a rewind or new Log clears the cache.
+  Cloud transfer to satellites currently uses the existing structured-clone channel.
+
+### ROS mock and Foxglove live source
+
+```bash
+node tools/mock-ros.mjs
+# Optional port override and deterministic rewind every 20 simulated seconds:
+ROS_MOCK_PORT=18765 ROS_MOCK_RESET=1 node tools/mock-ros.mjs
+```
+
+Connect with **ROS 2 (Foxglove)** to `ws://localhost:8765` (or the overridden port).
+The protocol is `foxglove.websocket.v1`, using CDR ROS 2 messages. The mock publishes
+`/clock`, `/tf`, `/tf_static`, `/vehicle/pose`, `/planning/path`, `/perception/cones`
+and `/lidar/points`. The server Time operation drives the cursor; clock rewinds
+replace Log and reset selection, TF, markers and cloud retention together.
+
+To compare recordings, open `refs/foxglove-sample-data/mur_fsae_synthetic.mcap` and
+add its typed pose, path, marker, TF and lidar topics to the same Layers list.
+
+Spatial regression tests live in `test/spatial/`. The backend's own suite is separate:
+`node --test tools/mock-backend/test/*.test.ts`.

@@ -11,6 +11,7 @@ import http from "node:http";
 import { WebSocketServer, type WebSocket } from "ws";
 import { MockBackend, type BackendOptions } from "./backend.ts";
 import type { HttpError } from "./contract.ts";
+import { cloudPacket } from "./pointcloud.ts";
 import { Session, type SessionOptions } from "./session.ts";
 
 export const MAX_HISTORY_POINTS = 20_000;
@@ -123,8 +124,23 @@ export async function startServer(
   const server = http.createServer((req, res) => handleHttp(backend, req, res));
   const wss = new WebSocketServer({ noServer: true, maxPayload: 1 << 20 });
 
+  const clouds = new WebSocketServer({ noServer: true });
+  const cloudTimer = opts.pointCloud
+    ? setInterval(() => {
+        if (backend.simStatus().state === "paused") return;
+        const packet = cloudPacket(backend.nowNs(), backend.simStatus().reset_count);
+        for (const client of clouds.clients)
+          if (client.readyState === client.OPEN && client.bufferedAmount < 1_000_000) client.send(packet);
+      }, 100)
+    : null;
   server.on("upgrade", (req, socket, head) => {
     const url = new URL(req.url ?? "/", "http://localhost");
+    if (url.pathname === "/api/v1/points" && opts.pointCloud) {
+      clouds.handleUpgrade(req, socket, head, (client) => {
+        client.on("error", () => client.close());
+      });
+      return;
+    }
     if (url.pathname.replace(/\/+$/, "") !== "/api/v1/live") {
       socket.write("HTTP/1.1 404 Not Found\r\nConnection: close\r\n\r\n");
       return socket.destroy();
@@ -159,6 +175,9 @@ export async function startServer(
     port,
     close: async () => {
       backend.stop();
+      if (cloudTimer) clearInterval(cloudTimer);
+      for (const client of clouds.clients) client.terminate();
+      clouds.close();
       for (const c of wss.clients) c.terminate();
       wss.close();
       await new Promise<void>((resolve) => server.close(() => resolve()));

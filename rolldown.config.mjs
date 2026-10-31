@@ -122,6 +122,7 @@ export default () => {
         "hub/dataSources/jsonl/jsonlWorker.ts",
         "hub/dataSources/rlog/rlogWorker.ts",
         "hub/dataSources/roadrunnerlog/roadRunnerWorker.ts",
+        "shared/spatial/pointCloudWorker.ts",
         "shared/renderers/field3d/workers/loadField.ts",
         "shared/renderers/field3d/workers/loadRobot.ts"
       ],

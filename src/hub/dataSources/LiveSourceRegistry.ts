@@ -8,6 +8,7 @@
 import { LiveSourceInfo } from "../../shared/LiveSourceInfo";
 import { LiveDataSource } from "./LiveDataSource";
 import MQTTSource from "./mqtt/MQTTSource";
+import FoxgloveSource from "./foxglove/FoxgloveSource";
 import MURSource from "./mur/MURSource";
 import NT4Source, { NT4Mode } from "./nt4/NT4Source";
 
@@ -23,6 +24,13 @@ export interface LiveSourceDefinition extends LiveSourceInfo {
  * (see getLiveSourceInfo). To add a source, register it here.
  */
 export const LIVE_SOURCES: LiveSourceDefinition[] = [
+  {
+    id: "foxglove",
+    name: "ROS 2 (Foxglove WebSocket)",
+    defaultAddress: "ws://localhost:8765",
+    liteCompatible: true,
+    create: () => new FoxgloveSource()
+  },
   {
     id: "nt4",
     name: "NetworkTables 4",
@@ -47,7 +55,7 @@ export const LIVE_SOURCES: LiveSourceDefinition[] = [
 ];
 
 /** The source used when the preference is unset or refers to an unknown source. */
-export const DEFAULT_LIVE_SOURCE_ID = LIVE_SOURCES[0].id;
+export const DEFAULT_LIVE_SOURCE_ID = "nt4";
 
 /** Returns the registered sources available on the current platform. */
 export function getAvailableLiveSources(isLite: boolean): LiveSourceDefinition[] {

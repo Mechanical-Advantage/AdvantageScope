@@ -65,6 +65,7 @@ export function normaliseBaseUrl(address: string): string {
 }
 
 export default class MURSource extends LiveDataSource implements LiveStatusProvider {
+  private cloudSocket: WebSocket | null = null;
   private baseUrl = "";
   private socket: WebSocket | null = null;
   private reconnectTimeout: number | null = null;
@@ -133,6 +134,8 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
 
   stop() {
     super.stop();
+    this.cloudSocket?.close();
+    this.cloudSocket = null;
     this.periodicActive = false;
     if (this.reconnectTimeout !== null) window.clearTimeout(this.reconnectTimeout);
     this.reconnectTimeout = null;
@@ -400,6 +403,35 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
         if (path !== null) activePaths.add(path);
       });
 
+      const cloudPath = "vehicles/mur27/perception/points";
+      const wantsCloud = activePaths.has(cloudPath) && this.descriptors.get(cloudPath)?.encoding === "mur-points-v1";
+      if (wantsCloud && !this.cloudSocket) {
+        const socket = new WebSocket(this.baseUrl.replace(/^http/, "ws") + "/api/v1/points");
+        socket.binaryType = "arraybuffer";
+        this.cloudSocket = socket;
+        socket.onmessage = (event) => {
+          if (!this.log || !(event.data instanceof ArrayBuffer)) return;
+          const bytes = new Uint8Array(event.data);
+          try {
+            const size = new DataView(bytes.buffer).getUint32(0, true);
+            const header = JSON.parse(new TextDecoder().decode(bytes.subarray(4, 4 + size)));
+            if (this.sim && header.run !== this.sim.reset_count) return;
+            const time = this.timeBase.sampleTime({ t_ns: header.t_ns, received_ns: "", time_quality: "synchronised" });
+            if (time) {
+              this.log.putRaw("/" + cloudPath, time.seconds, bytes);
+              this.shouldRunOutputCallback = true;
+            }
+          } catch (error) {
+            console.warn("Invalid binary cloud", error);
+          }
+        };
+        socket.onclose = () => {
+          if (this.cloudSocket === socket) this.cloudSocket = null;
+        };
+      } else if (!wantsCloud && this.cloudSocket) {
+        this.cloudSocket.close();
+        this.cloudSocket = null;
+      }
       // Replace the subscription atomically when the set changes
       const paths = Array.from(activePaths).sort();
       if (paths.join("\n") !== this.subscribedPaths.join("\n")) {

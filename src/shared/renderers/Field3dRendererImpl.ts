@@ -23,11 +23,14 @@ import makeEvergreenField from "./field3d/EvergreenField";
 import ObjectManager from "./field3d/ObjectManager";
 import AprilTagManager from "./field3d/objectManagers/AprilTagManager";
 import AxesManager from "./field3d/objectManagers/AxesManager";
+import CloudManager from "./field3d/objectManagers/CloudManager";
 import ConeManager from "./field3d/objectManagers/ConeManager";
 import GamePieceManager from "./field3d/objectManagers/GamePieceManager";
 import HeatmapManager from "./field3d/objectManagers/HeatmapManager";
+import MarkerManager from "./field3d/objectManagers/MarkerManager";
 import RobotManager from "./field3d/objectManagers/RobotManager";
 import TrajectoryManager from "./field3d/objectManagers/TrajectoryManager";
+import URDFManager from "./field3d/objectManagers/URDFManager";
 
 export const FTC_GRID_COLOR = "#888";
 
@@ -406,6 +409,15 @@ export default class Field3dRendererImpl implements TabRenderer {
     ] as const;
     let manager: ObjectManager<Field3dRendererCommand_AnyObj>;
     switch (type) {
+      case "cloud":
+        manager = new CloudManager(...args);
+        break;
+      case "marker":
+        manager = new MarkerManager(...args);
+        break;
+      case "urdf":
+        manager = new URDFManager(...args);
+        break;
       case "robot":
       case "ghost":
         manager = new RobotManager(
@@ -665,7 +677,17 @@ export default class Field3dRendererImpl implements TabRenderer {
       };
 
       // Load new field
-      if (fieldId === "FRC:Evergreen" || fieldId === "FTC:Evergreen") {
+      if (fieldId.startsWith("MUR:")) {
+        this.isFieldLoading = false;
+        this.field = new THREE.Group();
+        this.fieldStagedPieces = new THREE.Group();
+        if (fieldId === "MUR:Grid") {
+          const grid = new THREE.GridHelper(100, 100, 0x666666, 0x444444);
+          grid.rotateX(Math.PI / 2);
+          this.field.add(grid);
+        }
+        newFieldReady();
+      } else if (fieldId === "FRC:Evergreen" || fieldId === "FTC:Evergreen") {
         this.isFieldLoading = false;
         this.field = makeEvergreenField(this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS, fieldId === "FTC:Evergreen");
         this.fieldStagedPieces = new THREE.Object3D();
@@ -705,6 +727,19 @@ export default class Field3dRendererImpl implements TabRenderer {
         this.primaryRobotGroup.position.set(...pose.translation);
         this.primaryRobotGroup.rotation.setFromQuaternion(rotation3dToQuaternion(pose.rotation));
         this.primaryRobotGroup.visible = true;
+      }
+    }
+
+    if (!this.primaryRobotGroup.visible) {
+      const urdf = command.objects.find((object) => object.type === "urdf");
+      if (urdf?.type === "urdf") {
+        const pose = urdf.links[urdf.robot.rootLink];
+        if (pose) {
+          this.primaryRobotModel = "";
+          this.primaryRobotGroup.position.set(...pose.translation);
+          this.primaryRobotGroup.rotation.setFromQuaternion(rotation3dToQuaternion(pose.rotation));
+          this.primaryRobotGroup.visible = true;
+        }
       }
     }
 

@@ -63,6 +63,7 @@ const UNIT_ALIASES: { [unit: string]: string } = {
 };
 
 const STRUCTURED_TYPES: { [type: string]: string } = {
+  pointcloud2: "sensor_msgs/PointCloud2",
   vector3: "Translation3d",
   quaternion: "Rotation3d",
   pose3: "Pose3d",
@@ -83,6 +84,8 @@ function isScalarType(type: string): boolean {
 
 function getLoggableType(type: string): LoggableType {
   switch (type) {
+    case "pointcloud2":
+      return LoggableType.Raw;
     case "float64":
     case "int64":
       return LoggableType.Number;
@@ -103,6 +106,7 @@ export function getMetadataString(descriptor: SignalDescriptor): string {
     description: descriptor.description,
     source: descriptor.source
   };
+  if (descriptor.encoding) metadata.encoding = descriptor.encoding;
   if (descriptor.unit !== null && descriptor.unit !== "") {
     metadata.unit = UNIT_ALIASES[descriptor.unit] ?? descriptor.unit;
   }
@@ -153,6 +157,13 @@ export function deleteField(log: Log, path: string) {
 /** Writes one sample value. Returns false if the value doesn't match the descriptor type. */
 export function writeValue(log: Log, descriptor: SignalDescriptor, timestamp: number, value: unknown): boolean {
   const key = pathToKey(descriptor.path);
+  if (["pose3", "trajectory", "cone_array"].includes(descriptor.type)) {
+    log.putString(
+      key + "/spatial",
+      timestamp,
+      JSON.stringify({ ...(value as object), header: { frame_id: descriptor.frame_id } })
+    );
+  }
   switch (descriptor.type) {
     case "float64":
       if (typeof value !== "number") return false;

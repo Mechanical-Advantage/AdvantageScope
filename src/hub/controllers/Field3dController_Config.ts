@@ -10,11 +10,57 @@ import { SourceListConfig } from "../../shared/SourceListConfig";
 import { SwerveArrangementValues } from "./Field2dController_Config";
 
 const Field3dController_Config: SourceListConfig = {
-  title: "Poses",
+  title: "Layers",
   autoAdvance: true,
   allowChildrenFromDrag: false,
   typeMemoryId: "field3d",
   types: [
+    {
+      key: "spatial",
+      previewType: null,
+      showDocs: false,
+      display: "Spatial topic",
+      symbol: "nearme",
+      showInTypeName: true,
+      color: "#ffffff",
+      sourceTypes: [
+        "Pose3d",
+        "Pose3d[]",
+        "Translation3d[]",
+        "geometry_msgs/PoseStamped",
+        "nav_msgs/Odometry",
+        "nav_msgs/Path",
+        "visualization_msgs/MarkerArray",
+        "tf2_msgs/TFMessage",
+        "sensor_msgs/PointCloud2"
+      ],
+      options: [
+        {
+          key: "field",
+          display: "Colour",
+          showInTypeName: false,
+          values: ["intensity", "z", "rgb"].map((key) => ({ key, display: key }))
+        },
+        {
+          key: "map",
+          display: "Map",
+          showInTypeName: false,
+          values: ["viridis", "turbo"].map((key) => ({ key, display: key }))
+        },
+        {
+          key: "size",
+          display: "Point px",
+          showInTypeName: false,
+          values: ["3", "1", "5", "8"].map((key) => ({ key, display: key }))
+        },
+        {
+          key: "decay",
+          display: "Scans",
+          showInTypeName: false,
+          values: ["1", "3", "5", "10", "20"].map((key) => ({ key, display: key }))
+        }
+      ]
+    },
     {
       key: "robot",
       display: "Robot",
