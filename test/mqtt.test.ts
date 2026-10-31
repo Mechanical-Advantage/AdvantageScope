@@ -54,3 +54,16 @@ test("MQTT bundled CAN uses the candump decoder, enum children, sentinels and ti
   short[4] = 9;
   assert.deepEqual(decodeMQTTCAN(short, false), []);
 });
+
+test("MQTT filter prefixes and exact subscriptions preserve canonical paths", () => {
+  const bytes = new TextEncoder().encode('{"v":3}');
+  for (const topic of ["mur/#", "mur/+/INV_MotorSpeedRPM", "mur/INVERTER/INV_MotorSpeedRPM"]) {
+    const result = parseMQTTPayload("mur/INVERTER/INV_MotorSpeedRPM", bytes, { ...DEFAULT_MQTT_SETTINGS, topic });
+    assert.equal(
+      result[0].path,
+      topic.includes("#") || topic.includes("+") ? "INVERTER/INV_MotorSpeedRPM" : "INV_MotorSpeedRPM"
+    );
+  }
+  assert.equal(mqttTimestamp("1793400000123456789"), "1793400000123456789");
+  assert.equal(mqttTimestamp("invalid"), null);
+});
