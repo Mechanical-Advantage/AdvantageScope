@@ -8,6 +8,7 @@
 import Log from "../../shared/log/Log";
 import { createUUID } from "../../shared/util";
 import LiveDataTuner from "./LiveDataTuner";
+import { LiveStatusProvider } from "./LiveStatus";
 
 /** A provider of live log data (i.e. the data is updated as it is received). */
 export abstract class LiveDataSource {
@@ -18,6 +19,12 @@ export abstract class LiveDataSource {
   protected address: string | null = null;
   protected statusCallback: ((status: LiveDataSourceStatus) => void) | null = null;
   protected outputCallback: ((log: Log, timeSupplier: () => number) => void) | null = null;
+
+  /**
+   * Called after the source starts a new segment (e.g. a sim reset), once the new log has been passed to the
+   * output callback. The hub uses it to reset the selection and live edge, since time has jumped backwards.
+   */
+  newSegmentCallback: (() => void) | null = null;
 
   private clearDataCallback: NodeJS.Timeout | null = null;
   private timeSupplier: (() => number) | null = null;
@@ -64,6 +71,11 @@ export abstract class LiveDataSource {
 
   /** Process new data from the main process, overriden by subclass. */
   handleMainMessage(data: any) {}
+
+  /** Returns detailed connection state (backend/car/signal/sim), or null if the source only has a status. */
+  getStatusProvider(): LiveStatusProvider | null {
+    return null;
+  }
 
   /** Returns an object to be used for sending tuning data, or null if tuning is not supported. */
   getTuner(): LiveDataTuner | null {

@@ -305,6 +305,26 @@ export default class SelectionImpl implements Selection {
     this.setMode(this.mode); // Just update buttons
   }
 
+  /**
+   * Resets for a new live segment. The old state refers to the previous run's timeline: a static time or
+   * timeline range past the new live edge would show "future" data, and the timeline range only grows.
+   */
+  resetLiveSegment() {
+    this.hoveredTime = null;
+    this.staticTime = 0;
+    this.grabZoomRange = null;
+    this.playbackStartLog = 0;
+    this.playbackStartReal = this.now();
+    this.timelineRange = [0, 10];
+    this.timelineMaxZoom = true;
+    if (this.liveConnected) {
+      this.setMode(SelectionMode.Locked);
+    } else {
+      this.setMode(SelectionMode.Idle);
+    }
+    this.applyTimelineScroll(0, 0, 0);
+  }
+
   /** Returns the latest live timestamp if available. */
   getCurrentLiveTime(): number | null {
     if (this.liveTimeSupplier === null) {

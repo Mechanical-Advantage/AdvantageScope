@@ -1407,8 +1407,17 @@ function setupMenu() {
           }
         },
         {
-          label: "Connect to Live Source",
+          label: "Connect\u2026",
           accelerator: "CmdOrCtrl+K",
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
+            if (window === undefined || !hubWindows.includes(window)) return;
+            sendMessage(window, "show-connect-dialog");
+          }
+        },
+        {
+          label: "Reconnect to Live Source",
+          accelerator: "CmdOrCtrl+Alt+K",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined || !hubWindows.includes(window)) return;

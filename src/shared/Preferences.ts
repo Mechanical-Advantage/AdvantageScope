@@ -13,6 +13,7 @@ export default interface Preferences {
   liveMode: string; // Live source ID (see LiveSourceRegistry), empty for the default source
   liveSubscribeMode: "low-bandwidth" | "logging";
   liveDiscard: number;
+  liveRecent: LiveRecentServer[]; // Most recent first (see ConnectDialog)
   field3dModeAc: "cinematic" | "standard" | "low-power";
   field3dModeBattery: "" | "cinematic" | "standard" | "low-power";
   field3dAntialiasing: boolean;
@@ -24,6 +25,14 @@ export default interface Preferences {
   timestamps: "start-zero" | "original";
 }
 
+/** A recently used live connection. */
+export interface LiveRecentServer {
+  source: string; // Live source ID
+  address: string;
+}
+
+export const MAX_LIVE_RECENT = 8;
+
 export const DEFAULT_PREFS: Preferences = {
   theme: "system",
   robotAddress: "",
@@ -31,6 +40,7 @@ export const DEFAULT_PREFS: Preferences = {
   liveMode: "",
   liveSubscribeMode: "low-bandwidth",
   liveDiscard: 1200,
+  liveRecent: [],
   field3dModeAc: "standard",
   field3dModeBattery: "",
   field3dAntialiasing: true,
@@ -76,6 +86,18 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   }
   if ("liveDiscard" in newPrefs && typeof newPrefs.liveDiscard === "number") {
     basePrefs.liveDiscard = newPrefs.liveDiscard;
+  }
+  if ("liveRecent" in newPrefs && Array.isArray(newPrefs.liveRecent)) {
+    basePrefs.liveRecent = newPrefs.liveRecent
+      .filter(
+        (entry: unknown): entry is LiveRecentServer =>
+          typeof entry === "object" &&
+          entry !== null &&
+          typeof (entry as LiveRecentServer).source === "string" &&
+          typeof (entry as LiveRecentServer).address === "string"
+      )
+      .slice(0, MAX_LIVE_RECENT)
+      .map((entry) => ({ source: entry.source, address: entry.address }));
   }
   if (
     "threeDimensionModeAc" in newPrefs &&
