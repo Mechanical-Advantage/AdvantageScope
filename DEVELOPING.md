@@ -344,3 +344,10 @@ unresumed streams and lap-coordinate tests. For visual checks use the mock's
 backend process while a live graph is following. Check the unresumed view, the
 resumed dotted bridge and a zoom inside the gap. `npm run lite-smoke` exercises
 the complete Lite build and live connection flow.
+
+## Unsigned Apple Silicon packaging
+
+Keep `build.electronFuses.resetAdHocDarwinSignature` enabled. Fuse changes invalidate
+Electron's original ad hoc signature; without resetting it, macOS kills the packaged
+app with `SIGKILL (Code Signature Invalid)`. This reset does not sign with a developer
+certificate or notarise the app. Verify the built app itself before publishing.
