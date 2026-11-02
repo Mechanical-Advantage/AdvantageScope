@@ -880,10 +880,6 @@ export default class LineGraphRenderer implements TabRenderer {
           context.stroke();
         }
 
-        context.save();
-        context.beginPath();
-        context.rect(graphLeft, graphTop, graphWidth, graphHeightOpen);
-        context.clip();
         if (command.priorityAxis === "left") {
           context.globalAlpha = 0.1;
           context.beginPath();
