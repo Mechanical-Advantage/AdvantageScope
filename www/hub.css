@@ -2543,3 +2543,8 @@ div.inline-settings select {
     color: #222;
   }
 }
+
+div.field-3d-settings select.field-select {
+  min-width: 110px;
+  color: inherit;
+}
