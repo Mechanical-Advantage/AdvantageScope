@@ -24,6 +24,7 @@ import { Units } from "../shared/units";
 import { clampValue } from "../shared/util";
 import ScrollSensor, { ScrollSensorMouseControl } from "./ScrollSensor";
 import Timeline, { TimelineBand } from "./Timeline";
+import { updateTracksideLayout } from "./TracksideLayout";
 import ConsoleController from "./controllers/ConsoleController";
 import Field2dController from "./controllers/Field2dController";
 import Field3dController from "./controllers/Field3dController";
@@ -431,6 +432,7 @@ export default class Tabs {
 
   /** Refresh based on new log data. */
   refresh() {
+    updateTracksideLayout();
     this.tabList.forEach((tab) => {
       tab.controller.refresh();
     });
