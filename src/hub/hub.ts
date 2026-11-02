@@ -123,6 +123,18 @@ new LiveStatusPill(
   () => stopLive()
 );
 
+// Sources keep retrying in the "Connecting" state; once the backend has failed, drop "(Searching)" from the title
+let titleFailed = false;
+window.setInterval(() => {
+  if (!liveActive || liveStatus === LiveDataSourceStatus.Active) {
+    titleFailed = false;
+    return;
+  }
+  const failed = window.liveStatus?.getLiveStatus().backend === "error";
+  if (failed && !titleFailed) setWindowTitle(liveAddress, "Connection failed");
+  titleFailed = failed;
+}, 500);
+
 window.addEventListener("cancel-live-connect", () => stopLive());
 window.addEventListener("welcome-connect", () => connectDialog.show());
 window.addEventListener("welcome-open-log", () => window.sendMainMessage("show-open-log"));
@@ -519,7 +531,10 @@ function startLive(sourceType: "robot" | "sim", target?: { sourceId: string; add
       switch (status) {
         case LiveDataSourceStatus.Connecting:
           // Once a connection has failed, "Searching" would be misleading while retrying
-          if (previousStatus === LiveDataSourceStatus.Error) break;
+          if (previousStatus === LiveDataSourceStatus.Error || window.liveStatus?.getLiveStatus().backend === "error") {
+            setWindowTitle(address, "Connection failed");
+            break;
+          }
           setWindowTitle(address, "Searching");
           break;
         case LiveDataSourceStatus.Active:

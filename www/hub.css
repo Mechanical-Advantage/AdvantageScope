@@ -2473,7 +2473,11 @@ body.line-graph-empty div.line-graph-help,
 body.trackside-layout div.line-graph-help {
   display: none !important;
 }
-.graph-unit-prompt button {
+div.source-list .graph-unit-prompt button {
+  position: static;
+  width: auto;
+  height: auto;
+  min-height: 24px;
   font-size: 12px;
   padding: 1px 8px;
   border: 1px solid rgba(128, 128, 128, 0.6);

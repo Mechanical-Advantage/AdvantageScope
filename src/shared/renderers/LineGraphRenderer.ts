@@ -135,7 +135,7 @@ export default class LineGraphRenderer implements TabRenderer {
     if (outages.length === 0) return;
     const backfill = window.liveStatus?.getBackfill?.() ?? null;
     const edge = window.selection?.getCurrentLiveTime?.() ?? timeRange[1];
-    outages.forEach((outage, index) => {
+    outages.forEach((outage) => {
       const end = outage.end ?? Math.max(outage.start, edge);
       if (end < timeRange[0] || outage.start > timeRange[1]) return;
       const x0 = Math.max(graphLeft, xScaler.calculate(outage.start));
@@ -148,9 +148,7 @@ export default class LineGraphRenderer implements TabRenderer {
       context.lineWidth = 1;
       context.strokeRect(x0, graphTop, x1 - x0, graphHeight);
       const lines = [`offline ${Math.round(end - outage.start)} s`];
-      if (backfill && index === outages.length - 1 && outage.end !== null)
-        lines.push(`backfilling… ${backfill.done}/${backfill.total}`);
-      context.fillStyle = "#777";
+      context.fillStyle = window.matchMedia("(prefers-color-scheme: dark)").matches ? "#ddd" : "#333";
       context.font = "bold 14px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
       context.textAlign = "center";
       context.textBaseline = "top";
@@ -160,6 +158,16 @@ export default class LineGraphRenderer implements TabRenderer {
       });
       context.restore();
     });
+    // Progress stays readable even when the outage occupies only a few pixels.
+    if (backfill) {
+      context.save();
+      context.font = "bold 14px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
+      context.textAlign = "right";
+      context.textBaseline = "top";
+      context.fillStyle = window.matchMedia("(prefers-color-scheme: dark)").matches ? "#ddd" : "#333";
+      context.fillText(`backfilling… ${backfill.done}/${backfill.total}`, graphLeft + graphWidth - 8, graphTop + 8);
+      context.restore();
+    }
   }
 
   getAspectRatio(): number | null {
