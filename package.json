@@ -24,6 +24,7 @@
     "postinstall": "node installElectron.mjs && node getLicenses.mjs && node bundleLiteAssets.mjs",
     "test": "node tools/run-tests.mjs",
     "mqtt-mock": "node tools/mqtt-mock/main.mjs",
+    "radio-bridge": "node tools/radio-bridge/run.mjs",
     "lite-build": "node bundleLiteAssets.mjs && ASCOPE_DISTRIBUTION=LITE npm run compile",
     "lite-serve": "node tools/lite-serve/main.mjs",
     "lite-smoke": "node tools/lite-smoke.mjs"

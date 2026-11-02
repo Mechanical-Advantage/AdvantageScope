@@ -316,6 +316,14 @@ and `CompressedImage` formats supported by Chromium. Other pixel encodings show 
 Topic hover inspectors show source message totals where available; live totals count received messages,
 and rates describe retained samples. QoS is shown only when supplied by the source.
 
+### Radio JSONL bridge
+
+`npm run radio-bridge -- --input /absolute/path/live.jsonl --port 1885` follows
+Wireless-telem's base-station output and runs a localhost MQTT-over-WebSocket
+broker. Connect with **MQTT direct (debug)**, `ws://127.0.0.1:1885`, topic filter
+`mur/signal/#`, **JSON per signal**. See [the bridge README](tools/radio-bridge/README.md)
+for replay, network binding and simulator commands. Tests: `npm test -- radio-bridge`.
+
 ## Missing numeric trace data
 
 Stepped and smooth line graphs replace missing stretches with a 1px, 45%-alpha
