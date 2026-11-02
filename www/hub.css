@@ -2475,21 +2475,54 @@ body.trackside-layout div.source-list div.value {
 }
 .graph-unit-prompt {
   position: absolute;
-  bottom: 8px;
+  top: 56px;
   left: 8px;
+  right: 8px;
   z-index: 20;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 6px;
   background: #fff;
   color: #222;
   border: 1px solid #dba957;
   border-radius: 4px;
-  padding: 4px 8px;
+  padding: 6px 8px;
   font-size: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
-.graph-unit-prompt button {
+.graph-unit-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.graph-unit-prompt button:focus-visible {
+  outline: 2px solid #dba957;
+  outline-offset: 1px;
+}
+/* Empty drop zones */
+div.line-graph-axis.zone-empty::after {
+  content: "Drag a signal here";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 56px;
+  padding: 10px 8px;
+  border: 1px dashed rgba(128, 128, 128, 0.7);
+  border-radius: 4px;
+  text-align: center;
+  font-size: 13px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+body.line-graph-empty div.line-graph-help,
+body.trackside-layout div.line-graph-help {
+  display: none !important;
+}
+div.source-list .graph-unit-prompt button {
+  position: static;
+  width: auto;
+  height: auto;
+  min-height: 24px;
   font-size: 12px;
   padding: 1px 8px;
   border: 1px solid rgba(128, 128, 128, 0.6);
@@ -2578,6 +2611,7 @@ body:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-bar-lite) div.t
   box-sizing: border-box;
   height: 22px;
   z-index: 6;
+}
 
 div.source-list div.item button.expander {
   position: absolute;
@@ -2670,4 +2704,79 @@ div.connect-bridge-hint > button {
   position: static;
   margin-left: 6px;
   padding: 2px 6px;
+}
+
+/* Stale health tiles: grey hatching, age at 14px, last good value struck through */
+.health-tile[data-stale="true"] {
+  background: repeating-linear-gradient(135deg, rgba(128, 128, 128, 0.35) 0 6px, rgba(128, 128, 128, 0.12) 6px 12px);
+}
+.health-tile[data-stale="true"] .health-value {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+.health-tile[data-stale="true"] .health-status {
+  font-size: 14px;
+  font-weight: 600;
+  max-width: none;
+}
+
+/* Trackside severity banner (full width of the content area, above the health strip) */
+.severity-banner {
+  --banner-h: 36px;
+  position: absolute;
+  top: 0;
+  left: var(--side-bar-width);
+  right: 0;
+  height: var(--banner-h);
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  box-sizing: border-box;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
+}
+.severity-banner[hidden] {
+  display: none;
+}
+body:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-bar-lite) .severity-banner {
+  top: 38px;
+}
+.severity-banner[data-level="green"] {
+  background: #1d7a35;
+}
+.severity-banner[data-level="amber"] {
+  background: #a96d00;
+}
+.severity-banner[data-level="red"] {
+  background: #b32323;
+}
+.severity-banner[data-flash="true"] {
+  animation: banner-flash 0.8s steps(2, jump-none) infinite;
+}
+@keyframes banner-flash {
+  0% {
+    filter: brightness(1);
+  }
+  100% {
+    filter: brightness(1.7);
+  }
+}
+body.has-severity-banner .health-strip {
+  top: 36px;
+}
+body.has-severity-banner:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-bar-lite) .health-strip {
+  top: 74px;
+}
+body.has-severity-banner.health-visible div.viewer {
+  top: 142px;
+}
+body.has-severity-banner.health-visible:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-bar-lite)
+  div.viewer {
+  top: 180px;
 }

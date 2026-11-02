@@ -7,7 +7,7 @@
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { defaultHealthTiles, evaluateThreshold, HealthTile, updateLatch } from "../src/shared/HealthStrip";
+import { bannerState, defaultHealthTiles, evaluateThreshold, HealthTile, updateLatch } from "../src/shared/HealthStrip";
 
 test("thresholds include boundaries and respect direction", () => {
   const tile: HealthTile = { path: "x", label: "x", direction: "high", warn: 50, critical: 60 };
@@ -48,4 +48,12 @@ test("defaults match canonical mock and DBC names without raw enum duplicates", 
   );
   assert.equal(tiles[3].path, "TTCS/TTCS_IMDState");
   assert.deepEqual(defaultHealthTiles(["unrelated/temperature"]), []);
+});
+
+test("banner state uses one oldest-critical age", () => {
+  assert.deepEqual(bannerState([0.2, 0.4], 0, true, 0.1), { state: "ok", oldestCriticalS: 0.4 });
+  assert.equal(bannerState([0.2, 5.2], 2, true, 0.1).state, "partial");
+  assert.equal(bannerState([0.2, 33], 2, true, 0.1).state, "lost");
+  assert.equal(bannerState([null], 1, false, 12).state, "lost");
+  assert.equal(bannerState([], 0, false, null).state, "lost");
 });

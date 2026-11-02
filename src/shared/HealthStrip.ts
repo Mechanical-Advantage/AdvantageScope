@@ -73,3 +73,22 @@ export function defaultHealthTiles(paths: string[]): HealthTile[] {
     return path ? [{ path, label, direction, warn, critical, fault, latch: fault ?? false }] : [];
   });
 }
+
+/** Seconds without data from the oldest critical tile before the banner declares DATA LOST. */
+export const DATA_LOST_AFTER_S = 10;
+
+export type CarBannerState = "ok" | "partial" | "lost";
+
+/** One shared age definition, "oldest critical": the longest time since any health tile's signal was received. */
+export function bannerState(
+  ages: (number | null)[],
+  unknownCount: number,
+  backendConnected: boolean,
+  lastReceiptAgeS: number | null
+): { state: CarBannerState; oldestCriticalS: number | null } {
+  const known = ages.filter((age): age is number => age !== null);
+  let oldest = known.length ? Math.max(...known) : null;
+  if (!backendConnected && lastReceiptAgeS !== null) oldest = Math.max(oldest ?? 0, lastReceiptAgeS);
+  const lost = oldest !== null ? oldest >= DATA_LOST_AFTER_S : !backendConnected;
+  return { state: lost ? "lost" : unknownCount > 0 || !backendConnected ? "partial" : "ok", oldestCriticalS: oldest };
+}

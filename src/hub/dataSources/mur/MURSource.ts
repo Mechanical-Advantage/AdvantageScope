@@ -31,7 +31,7 @@ import type {
 } from "../../../../tools/mock-backend/src/contract";
 import Log from "../../../shared/log/Log";
 import { LiveDataSource, LiveDataSourceStatus } from "../LiveDataSource";
-import { BackendState, Freshness, LiveStatusProvider, LiveStatusSummary, SimAction } from "../LiveStatus";
+import { BackendState, Freshness, LiveOutage, LiveStatusProvider, LiveStatusSummary, SimAction } from "../LiveStatus";
 import { SampleDeduplicator } from "./MURDedup";
 import {
   createField,
@@ -96,6 +96,8 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
   private subscribedPaths: string[] = [];
   private historyRequested = new Set<string>();
   private historyAvailable: boolean | null = null;
+  private outages: LiveOutage[] = [];
+  private backfill = { total: 0, done: 0, finishedAt: 0 };
 
   private sim: SimStatus | null = null;
   private simControls = false;
@@ -188,6 +190,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
       this.catalogue = null;
       this.subscribedPaths = [];
       if (this.backend === "connected") {
+        this.outages.push({ start: this.clock.now(Date.now()) ?? this.log?.getTimestampRange()[1] ?? 0, end: null });
         this.backend = "connecting";
         this.backendDetail = "Connection lost, reconnecting";
       }
@@ -284,6 +287,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     // Subscriptions are not durable across sockets: periodic() replays them. Refetch history to fill the gap.
     this.subscribedPaths = [];
     this.historyRequested.clear();
+    this.backfill = { total: 0, done: 0, finishedAt: 0 };
 
     this.backend = "connected";
     this.backendDetail = "";
@@ -314,6 +318,13 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     if (status.reason === "reset") {
       this.startNewSegment();
       this.simResetUntil = now + SIM_RESET_DISPLAY_MS;
+    } else if (
+      this.sim !== null &&
+      Object.entries(status.stream_ids).some(([source, stream]) => this.sim!.stream_ids[source] !== stream)
+    ) {
+      // Reconcile a restarted backend before registering its streams; otherwise the first sample
+      // starts a segment that retires the new streams along with the old ones.
+      this.startNewSegment(false);
     }
     this.segments.registerStreams(Object.values(status.stream_ids));
     this.sim = status;
@@ -336,6 +347,9 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
       this.segments.observe(sample.path, sample.stream_id, sample.seq, time.seconds, !time.approximate);
     }
     if (!this.dedup.accept(sample.path, sample.stream_id, sample.seq)) return;
+    // The sim live edge caps extrapolation during loss. Close the gap at a real sample, not the snapshot.
+    const openOutage = this.outages[this.outages.length - 1];
+    if (openOutage && openOutage.end === null) openOutage.end = Math.max(openOutage.start, time.seconds);
     if (time.seconds < 0) return;
 
     if (!writeValue(this.log, descriptor, time.seconds, sample.value)) {
@@ -365,6 +379,9 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
   /** Starts a new run, retaining the previous Log and preserving a past-run selection. */
   private startNewSegment(clearAvailability = true) {
     this.segments.startNewSegment();
+    // Outage coordinates and history progress belong to this run's time base.
+    this.outages = [];
+    this.backfill = { total: 0, done: 0, finishedAt: 0 };
     this.dedup.clear();
     this.timeBase.resetSegment();
     this.clock.reset();
@@ -482,6 +499,27 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
   }
 
   private async requestHistory(path: string) {
+    const progress = this.backfill;
+    progress.total++;
+    try {
+      await this.fetchHistory(path);
+    } finally {
+      progress.done++;
+      if (progress.done >= progress.total) progress.finishedAt = Date.now();
+    }
+  }
+
+  getOutages(): LiveOutage[] {
+    return this.outages;
+  }
+
+  getBackfill(): { done: number; total: number } | null {
+    const { total, done, finishedAt } = this.backfill;
+    if (this.outages.length === 0 || total === 0) return null;
+    return done < total || Date.now() - finishedAt < 4000 ? { done, total } : null;
+  }
+
+  private async fetchHistory(path: string) {
     if (this.historyAvailable === false) return;
     const segmentIndex = this.segments.getSegmentIndex();
     const url = this.baseUrl + "/api/v1/history?path=" + encodeURIComponent(path) + "&max_points=" + HISTORY_MAX_POINTS;
