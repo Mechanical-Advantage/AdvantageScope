@@ -868,7 +868,7 @@ export default class LineGraphRenderer implements TabRenderer {
       context.textAlign = "right";
       context.textBaseline = "middle";
       let lastY = -Infinity;
-      const ticks = niceTicks(strip.range[0], strip.range[1], Math.max(2, Math.floor(stripHeight / 22)));
+      const ticks = niceTicks(strip.range[0], strip.range[1], Math.max(2, Math.floor(stripHeight / 16)));
       for (const tick of ticks) {
         const y = scaleValue(tick, strip.range, [top + stripHeight, top]);
         if (y < top + 5 || y > top + stripHeight - 5 || Math.abs(y - lastY) < 12) continue;
