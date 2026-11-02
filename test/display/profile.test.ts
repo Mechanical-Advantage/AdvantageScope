@@ -129,3 +129,8 @@ test("empty catalogue values retain engineering units", () => {
   assert.equal(fmt(null, "m/s", "vehicle_speed"), "— m/s");
   assert.equal(fmt(undefined, "K", "temperature"), "— °C");
 });
+
+test("huge values are capped to four significant figures", () => {
+  assert.equal(fmt(1793600405900000000, "ns"), "1.794e+18 ns");
+  assert.equal(fmt(123456, "m"), "123456.000 m");
+});

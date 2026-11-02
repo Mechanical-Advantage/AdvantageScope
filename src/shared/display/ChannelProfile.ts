@@ -110,7 +110,11 @@ export function formatChannelValue(value: unknown, profile: ChannelProfile, conv
   const number = converted ? value : convertChannelValue(value, profile, delta);
   let text: string;
   if (!Number.isFinite(number)) text = String(number);
-  else {
+  else if (Math.abs(number) >= 1e9) {
+    // Huge values (raw nanosecond timestamps) would overflow the sidebar; cap at 4 significant figures.
+    // The tooltip carries the full raw value.
+    text = number.toExponential(3);
+  } else {
     const digits = profile.precision ?? Math.max(0, Math.min(12, 3 - Math.floor(Math.log10(Math.abs(number) || 1))));
     const rounded = profile.precision === undefined ? Number(number.toPrecision(4)) : number;
     text = (Math.abs(rounded) < 0.5 * 10 ** -digits ? 0 : rounded).toFixed(digits);
