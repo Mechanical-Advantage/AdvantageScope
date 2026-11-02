@@ -336,8 +336,18 @@ export class LiveStatusPill {
   private simMessage = "";
   private detailsOpen = false;
   private runLabel: HTMLElement;
+  private failureBar: HTMLElement;
 
   constructor(getState: () => LivePillState, onConnectRequest: (address?: string) => void, onDisconnect: () => void) {
+    this.failureBar = document.createElement("div");
+    this.failureBar.className = "live-failure-bar";
+    this.failureBar.hidden = true;
+    this.failureBar.addEventListener("click", (event) => {
+      const action = (event.target as HTMLElement).closest("button")?.dataset.action;
+      if (action === "edit-address") this.onConnectRequest(this.getState().address);
+      else if (action === "disconnect") this.onDisconnect();
+    });
+    document.body.appendChild(this.failureBar);
     this.runLabel = document.createElement("span");
     this.runLabel.className = "live-run-label mv-chip";
     document.body.appendChild(this.runLabel);
@@ -424,6 +434,20 @@ export class LiveStatusPill {
   private render() {
     const state = this.getState();
     const summary = state.provider?.getLiveStatus() ?? null;
+
+    // Inline failure message at the top of the content area
+    const failing = state.active && (summary?.backend === "error" || (summary?.retryAttempt ?? 0) > 0);
+    const viewer = document.querySelector("div.viewer") as HTMLElement | null;
+    document.body.classList.toggle("live-failure", failing);
+    this.failureBar.hidden = !failing || viewer === null;
+    if (failing && viewer !== null) {
+      this.failureBar.style.top = (viewer.offsetTop - 26).toString() + "px";
+      const html =
+        `<span class="live-failure-text">Cannot reach ${htmlEncode(state.address ?? "the backend")}</span>` +
+        `<button class="text-button" data-action="edit-address">Edit address</button>` +
+        `<button class="text-button" data-action="disconnect">Stop retrying</button>`;
+      if (html !== this.failureBar.innerHTML) this.failureBar.innerHTML = html;
+    }
 
     const pillRect = this.pill.getBoundingClientRect();
     this.runLabel.style.top = pillRect.top.toString() + "px";

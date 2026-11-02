@@ -2194,10 +2194,13 @@ div.connect-message {
   right: 8px;
   top: 2px;
   font-size: 12px;
-  background: var(--background-color, #222);
-  color: #bbb;
+  box-sizing: border-box;
+  height: 22px;
+  line-height: 18px;
+  background: var(--health-background);
+  color: var(--health-muted);
   pointer-events: none;
-  z-index: 100;
+  z-index: 6;
 }
 div.live-popover details {
   margin: 6px 0;
@@ -2565,10 +2568,6 @@ div.source-list .graph-unit-prompt button {
   font-size: 12px;
   line-height: 18px;
 }
-.live-run-label {
-  background: var(--health-background);
-  color: var(--health-muted);
-}
 div.live-popover {
   width: 450px;
   max-width: calc(100vw - 16px);
@@ -2613,11 +2612,6 @@ img.side-bar-search-icon {
 
 body:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-bar-lite) div.title-bar-text {
   right: calc(154px + var(--show-lock-buttons) * 28px + var(--live-pill-width) + 110px);
-}
-.live-run-label {
-  box-sizing: border-box;
-  height: 22px;
-  z-index: 6;
 }
 
 div.source-list div.item button.expander {
@@ -2790,4 +2784,35 @@ body.has-severity-banner.health-visible div.viewer {
 body.has-severity-banner.health-visible:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-bar-lite)
   div.viewer {
   top: calc(74px + var(--health-h, 106px));
+}
+
+/* Inline failure message at the top of the content area */
+.live-failure-bar {
+  position: absolute;
+  left: var(--side-bar-width);
+  right: 0;
+  height: 26px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  background: var(--health-background);
+  border-bottom: 1px solid var(--health-crit);
+  color: var(--health-crit);
+  font-size: 13px;
+  font-weight: 600;
+}
+.live-failure-bar[hidden] {
+  display: none;
+}
+.live-failure-bar button {
+  position: static;
+  color: inherit;
+  text-decoration: underline;
+  font-weight: 400;
+}
+body.live-failure div.viewer {
+  margin-top: 26px;
 }
