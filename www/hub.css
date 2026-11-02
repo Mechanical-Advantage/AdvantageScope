@@ -2549,3 +2549,9 @@ div.field-3d-settings select.field-select {
   min-width: 110px;
   color: inherit;
 }
+
+div.connect-bridge-hint > button {
+  position: static;
+  margin-left: 6px;
+  padding: 2px 6px;
+}
