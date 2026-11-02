@@ -2529,7 +2529,8 @@ div.source-list div.item button.expander {
 div.field-3d-settings select,
 div.inline-settings select {
   color-scheme: light dark;
-  font: inherit;
+  font-size: 12px;
+  font-family: inherit;
 }
 @media (prefers-color-scheme: dark) {
   div.topic-inspector {

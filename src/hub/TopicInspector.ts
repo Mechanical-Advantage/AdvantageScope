@@ -34,17 +34,19 @@ export function topicInspectorRows(log: Log, key: string): [string, string][] {
   let rate = meta.observed_hz !== undefined ? meta.observed_hz + " Hz" : "n/a";
   if (meta.observed_hz === undefined && count > 1 && stamps[count - 1] > stamps[0])
     rate = ((count - 1) / (stamps[count - 1] - stamps[0])).toFixed(2) + " Hz";
+  const headerFrame = (value: any): string =>
+    value?.header?.frame_id ?? value?.transforms?.[0]?.header?.frame_id ?? value?.markers?.[0]?.header?.frame_id ?? "";
   let frame: string = meta.frame_id ?? "";
   if (!frame) {
     const snap = spatialSnapshot(log, key, Infinity);
-    frame = snap?.value?.header?.frame_id ?? "";
+    frame = headerFrame(snap?.value);
   }
   if (!frame) {
     frame = log.getString(key + "/header/frame_id", Infinity, Infinity)?.values[0] ?? "";
     if (!frame) {
       try {
         const bytes = log.getRaw(key, Infinity, Infinity)?.values[0];
-        if (bytes) frame = decodeRosPayload(bytes, meta)?.header?.frame_id ?? "";
+        if (bytes) frame = headerFrame(decodeRosPayload(bytes, meta));
       } catch {
         /* The publisher may not provide a decodable schema. */
       }

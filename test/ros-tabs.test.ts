@@ -69,3 +69,9 @@ test("raw payload inspection preserves nested JSON and reports unavailable schem
   assert.deepEqual(decodeRosPayload(new TextEncoder().encode(JSON.stringify(value)), { encoding: "json" }), value);
   assert.throws(() => decodeRosPayload(new Uint8Array(), { encoding: "cdr" }), /No ROS/);
 });
+
+test("topic inspector recovers MCAP TF frames from nested transform headers", () => {
+  const log = new Log();
+  log.putString("/tf/spatial", 1, JSON.stringify({ transforms: [{ header: { frame_id: "map" } }] }));
+  assert.equal(Object.fromEntries(topicInspectorRows(log, "/tf")).frame_id, "map");
+});
