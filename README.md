@@ -8,12 +8,14 @@ mur-voir is the telemetry dashboard for **Melbourne University Motorsports (MUR)
 
 All of it shares one timeline.
 
-Current state (foundation):
+Available now (alpha):
 
-- **Logs:** opens WPILOG, RLOG and CSV.
-- **Live:** connects to NetworkTables 4 servers for testing the live pipeline. MUR's own telemetry backend, Foxglove bridge (ROS 2) and MQTT sources are planned.
-- **Views:** Line Graph, 2D/3D Field, Table, Console, Statistics, Points, Metadata and Video sync.
+- Live MUR telemetry, ROS 2 over Foxglove WebSocket, and MQTT direct for debugging; a local bridge follows Wireless-telem JSONL.
+- Recorded CSV, MCAP, candump + DBC, MF4, JSONL, WPILOG and RLOG.
+- Line graphs, health tiles, track maps, laps and overlays; frame-aware 3D with URDF, TF, paths, cones and point clouds, plus ROS messages, logs and images.
+- Electron desktop and Lite browser builds, with shared timelines and saved layouts.
 
+Start with the [alpha how-to](docs/release-notes/0.1.0-alpha.1.md).
 See [DEVELOPING.md](DEVELOPING.md) to build and run it.
 
 Report bugs and feature requests on the [issues page](https://github.com/Melbourne-University-Motorsports/mur-voir/issues).

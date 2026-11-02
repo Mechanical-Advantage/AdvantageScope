@@ -14,7 +14,7 @@ import { filterAndSortAssets, parseField2d, parseField3d, parseRobot } from "../
 import { BUNDLED_ASSETS, DEFAULT_USER_ASSETS, PREFS_FILENAME } from "./ElectronConstants";
 
 const USER_ASSETS_README =
-  'This folder contains extra assets for the 2D and 3D field views. For more details, see the "Custom Fields/Robots/Joysticks" page in the mur-voir documentation (available through the documentation tab in the app or the URL below).\n\nhttps://docs.advantagescope.org/more-features/custom-assets';
+  'This folder contains extra assets for the 2D and 3D field views. For more details, see the "Custom Fields/Robots/Joysticks" page in the upstream AdvantageScope documentation (the asset format is inherited).\n\nhttps://docs.advantagescope.org/more-features/custom-assets';
 
 /** Returns the path to the user assets folder. */
 export function getUserAssetsPath() {
