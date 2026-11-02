@@ -37,7 +37,9 @@ export default class Field3dController implements TabController {
 
   private staticTrack: StaticTrack | null = null;
   private spatial = new SpatialLayers();
-  private fixedFrame = document.createElement("input");
+  private fixedFrame = document.createElement("select");
+  private treePopover = document.createElement("div");
+  private frameSig = "";
   private frameAxes = document.createElement("input");
   private layerStatus = document.createElement("div");
   private robot = parseURDF(DEFAULT_CAR_URDF);
@@ -110,12 +112,22 @@ export default class Field3dController implements TabController {
     };
     const fixedLabel = document.createElement("label");
     fixedLabel.textContent = "Fixed frame ";
-    this.fixedFrame.value = "map";
-    this.fixedFrame.size = 12;
-    this.fixedFrame.setAttribute("list", this.UUID + "-frames");
-    const frames = document.createElement("datalist");
-    frames.id = this.UUID + "-frames";
-    fixedLabel.append(this.fixedFrame, frames);
+    this.fixedFrame.append(new Option("map", "map"));
+    this.fixedFrame.title = "Frame all layers are drawn in. Choices come from the TF tree.";
+    const treeButton = document.createElement("button");
+    treeButton.className = "tf-tree-button";
+    treeButton.textContent = "Tree";
+    treeButton.title = "Show TF parent/child links and transform ages";
+    treeButton.onclick = () => {
+      this.treePopover.hidden = !this.treePopover.hidden;
+    };
+    this.treePopover.hidden = true;
+    this.treePopover.className = "tf-popover";
+    this.treePopover.style.cssText =
+      "position:absolute;top:36px;left:12px;z-index:5;max-height:60%;overflow:auto;padding:6px 8px;font-size:12px;" +
+      "background:var(--background-color,#222);border:1px solid var(--divider-color,#555);font-family:monospace;white-space:pre";
+    root.append(this.treePopover);
+    fixedLabel.append(this.fixedFrame, treeButton);
     const axesLabel = document.createElement("label");
     axesLabel.textContent = "Frame axes ";
     this.frameAxes.type = "checkbox";
@@ -158,6 +170,29 @@ export default class Field3dController implements TabController {
     });
     this.updateFieldOptions();
     this.updateRobotOptions();
+  }
+
+  /** Refreshes the Fixed frame dropdown and TF tree popover from the live TF tree. */
+  private updateFrameControls(time: number) {
+    const frames = this.spatial.tree.getFrames();
+    const current = this.fixedFrame.value || "map";
+    const list = frames.includes(current) ? frames : [current, ...frames];
+    const sig = list.join("|");
+    if (sig !== this.frameSig) {
+      this.frameSig = sig;
+      this.fixedFrame.replaceChildren(
+        ...list.map((frame) => new Option(frames.includes(frame) ? frame : frame + " (not in TF)", frame))
+      );
+      this.fixedFrame.value = current;
+    }
+    if (this.treePopover.hidden) return;
+    const edges = this.spatial.tree.getEdges(time);
+    const lines = edges.map((e) => {
+      const age =
+        (e.isStatic ? "static · " : "") + (e.stamp === null ? "no sample" : (time - e.stamp).toFixed(2) + " s old");
+      return e.parent + " → " + e.child + "   " + age;
+    });
+    this.treePopover.textContent = lines.length ? lines.join("\n") : "No TF data (subscribe to /tf and /tf_static)";
   }
 
   /** Updates field select with the latest options. */
@@ -288,7 +323,12 @@ export default class Field3dController implements TabController {
     if (typeof state !== "object" || state === null) return;
 
     if ("staticTrack" in state) this.staticTrack = state.staticTrack as StaticTrack | null;
-    if ("fixedFrame" in state) this.fixedFrame.value = String(state.fixedFrame);
+    if ("fixedFrame" in state) {
+      const frame = String(state.fixedFrame);
+      if (![...this.fixedFrame.options].some((o) => o.value === frame))
+        this.fixedFrame.append(new Option(frame, frame));
+      this.fixedFrame.value = frame;
+    }
     if ("frameAxes" in state) this.frameAxes.checked = Boolean(state.frameAxes);
     if ("localRobotLoaded" in state) this.localRobotLoaded = Boolean(state.localRobotLoaded);
     if ("robot" in state) this.robot = state.robot as typeof this.robot;
@@ -362,15 +402,7 @@ export default class Field3dController implements TabController {
     this.spatial.assets = this.robotAssets;
     this.spatial.begin(window.log, time ?? 0);
     const fixed = this.fixedFrame.value;
-    const frames = this.fixedFrame.parentElement?.querySelector("datalist");
-    if (frames)
-      frames.replaceChildren(
-        ...this.spatial.tree.getFrames().map((frame) => {
-          const option = document.createElement("option");
-          option.value = frame;
-          return option;
-        })
-      );
+    this.updateFrameControls(time ?? 0);
     this.layerStatus.replaceChildren();
     const status = (text: string, error = false) => {
       const chip = document.createElement("div");
@@ -405,9 +437,24 @@ export default class Field3dController implements TabController {
         try {
           const result = this.spatial.objects(window.log, source.logKey, time, fixed, source.options);
           objects.push(...result.objects);
+          const origin = window.log.getTimestampRange()[0];
+          const recent = window.log.getString(source.logKey + "/spatial", time - 1, time)?.timestamps ?? [];
+          const rawRecent = recent.length ? recent : window.log.getRaw(source.logKey, time - 1, time)?.timestamps ?? [];
+          const hz = rawRecent.filter((t) => t > time - 1 && t <= time).length;
+          const lag = time - result.stamp;
+          const stale = lag > 1 && !source.logKey.endsWith("tf_static");
           this.sourceList.itemStatus.set(source.logKey, {
-            text: result.frame + " · " + result.stamp.toFixed(3) + " s",
-            error: false
+            text:
+              result.frame +
+              " · t+" +
+              (result.stamp - origin).toFixed(2) +
+              " s · " +
+              hz +
+              " Hz" +
+              (stale ? " · LAG " + lag.toFixed(1) + " s" : ""),
+            title: "Stamp " + result.stamp.toFixed(6) + " s (epoch), session start " + origin.toFixed(6) + " s",
+            error: false,
+            warn: stale
           });
         } catch (error) {
           this.sourceList.itemStatus.set(source.logKey, { text: String(error), error: true });

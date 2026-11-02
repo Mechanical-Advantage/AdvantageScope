@@ -61,6 +61,7 @@ export class ConnectDialog {
           <tr class="mqtt-option"><td class="label">Mapping</td><td class="input"><select class="mqtt-mode mv-select" aria-label="Mapping mode"><option value="json-per-signal">JSON per signal</option><option value="json-object">JSON object</option><option value="raw-can">Raw CAN + DBC</option><option value="ascii">ASCII name=value</option></select></td></tr>
           <tr class="mqtt-option"><td class="label">CAN timestamp</td><td class="input"><label><input class="mqtt-timestamp mv-checkbox" type="checkbox" /> u64 ns prefix (big endian)</label></td></tr>
         </table>
+        <div class="connect-bridge-hint" hidden></div>
         <div class="connect-recent-title">Recent</div>
         <div class="connect-recent"></div>
         <div class="connect-message" role="status" aria-live="polite"></div><button class="connect-cancel" title="Cancel">Cancel</button>
@@ -121,8 +122,42 @@ export class ConnectDialog {
     this.applySourceDefaults();
     this.renderRecent();
     this.backdrop.hidden = false;
+    this.probeBridge();
     this.addressInput.focus();
     this.addressInput.select();
+  }
+
+  /** Hints when a Foxglove bridge answers on :8765 so ROS users do not have to know to pick the source. */
+  private probeBridge() {
+    const hint = this.backdrop.querySelector(".connect-bridge-hint") as HTMLElement;
+    hint.hidden = true;
+    let socket: WebSocket;
+    try {
+      socket = new WebSocket("ws://localhost:8765", ["foxglove.websocket.v1"]);
+    } catch {
+      return;
+    }
+    const timer = window.setTimeout(() => socket.close(), 1500);
+    socket.onopen = () => {
+      window.clearTimeout(timer);
+      if (socket.protocol === "foxglove.websocket.v1" && !this.backdrop.hidden) {
+        hint.hidden = false;
+        hint.replaceChildren();
+        const use = document.createElement("button");
+        use.textContent = "Use";
+        use.title = "Select ROS 2 (Foxglove) at ws://localhost:8765";
+        use.onclick = () => {
+          if ([...this.sourceSelect.options].some((o) => o.value === "foxglove")) {
+            this.sourceSelect.value = "foxglove";
+            this.addressInput.value = "ws://localhost:8765";
+            this.validate();
+          }
+        };
+        hint.append("Foxglove bridge detected on localhost:8765. ", use);
+      }
+      socket.close();
+    };
+    socket.onerror = () => window.clearTimeout(timer);
   }
 
   updateStatus(status: LiveDataSourceStatus) {

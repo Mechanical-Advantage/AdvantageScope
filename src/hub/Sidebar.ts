@@ -15,6 +15,7 @@ import { SelectionMode } from "../shared/Selection";
 import { Units } from "../shared/units";
 import { arraysEqual, htmlEncode, setsEqual } from "../shared/util";
 import CustomSchemas from "./dataSources/schema/CustomSchemas";
+import { hideTopicInspector, rosTypeName, showTopicInspector } from "./TopicInspector";
 
 export default class Sidebar {
   private DEFAULT_SIDEBAR_WIDTH = 300;
@@ -693,7 +694,11 @@ export default class Sidebar {
         let typeLabel = document.createElement("span");
         typeLabel.classList.add("field-item-type-label");
         label.appendChild(typeLabel);
-        typeLabel.innerHTML = " &ndash; " + htmlEncode(structuredType);
+        typeLabel.innerHTML = " &ndash; " + htmlEncode(rosTypeName(structuredType));
+        typeLabel.title = structuredType;
+        const inspectKey = field.fullKey;
+        label.addEventListener("mouseenter", () => showTopicInspector(window.log, inspectKey, label));
+        label.addEventListener("mouseleave", hideTopicInspector);
       }
     } else {
       if (title.startsWith(this.MERGED_KEY) && indent === 0) {

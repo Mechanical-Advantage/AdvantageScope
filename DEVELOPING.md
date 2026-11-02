@@ -213,7 +213,7 @@ its frame and sample time, or a visible missing/unknown/extrapolated-frame error
 - **Environment:** MUR Grid, Track or None. **Load metric track…** accepts CSV
   `x,y,z,class` cones or GeoJSON Point/LineString geometry in local metres (not WGS84
   longitude/latitude). The imported track is stored with the layout.
-- **Fixed frame:** type a frame or choose a TF frame from the suggestions. **Frame axes**
+- **Fixed frame:** choose a known TF frame from the dropdown; **Tree** shows parent/child links and transform ages. **Frame axes**
   overlays the tree. TF, JointState and robot-description topics are subscribed while
   the 3D tab is active; other ROS topics follow the active fields.
 - **Load URDF folder…:** choose a folder containing an expanded `.urdf` and local meshes.
@@ -306,3 +306,12 @@ Screenshots are saved outside the worktree under `research/mur-voir/screenshots/
 prefix: real_track, real_table, mock_track, mock_table, distance_delta, lap_time, timeline, live.
 For Electron automation, use the reference Playwright driver described above. `ws` is a declared
 dev dependency for the mock backend. Use a spare port if 8090 is already occupied.
+
+### ROS inspection tabs
+
+Raw Messages expands the latest message at the shared cursor (arrays preview the first 64 entries).
+Log shows `/rosout` with a minimum severity filter; click a row to move the cursor.
+Image supports CDR `sensor_msgs/Image` (rgb8/bgr8/rgba8/bgra8/mono8, including row padding)
+and `CompressedImage` formats supported by Chromium. Other pixel encodings show an explicit error.
+Topic hover inspectors show source message totals where available; live totals count received messages,
+and rates describe retained samples. QoS is shown only when supplied by the source.

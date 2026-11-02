@@ -2578,4 +2578,96 @@ body:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-bar-lite) div.t
   box-sizing: border-box;
   height: 22px;
   z-index: 6;
+
+div.source-list div.item button.expander {
+  position: absolute;
+  top: 0;
+  right: 56px;
+  width: 20px;
+  height: 30px;
+  padding: 0;
+  font-size: 12px;
+}
+div.source-list div.item div.inline-settings {
+  position: absolute;
+  left: 30px;
+  right: 4px;
+  bottom: 2px;
+  height: 28px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+  overflow: hidden;
+}
+div.source-list div.item div.inline-settings select {
+  font-size: 12px;
+  max-width: 76px;
+}
+div.source-list .spatial-warn .value {
+  color: #c98a00;
+}
+@media (prefers-color-scheme: dark) {
+  div.source-list .spatial-warn .value {
+    color: #ffb938;
+  }
+}
+
+div.topic-inspector {
+  position: fixed;
+  z-index: 100;
+  max-width: 320px;
+  padding: 6px 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  word-break: break-all;
+  pointer-events: none;
+  background: var(--background-color, #fff);
+  color: var(--text-color, #000);
+  border: 1px solid #888;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+div.connect-bridge-hint {
+  margin: 6px 0;
+  font-size: 12px;
+}
+
+/* ROS diagnostics follow the surrounding pro-tool controls in either appearance. */
+.tf-tree-button,
+div.source-list div.item button.expander {
+  color: inherit;
+  background: transparent;
+  border: 1px solid #888;
+  border-radius: 3px;
+  cursor: pointer;
+}
+div.field-3d-settings select,
+div.inline-settings select {
+  color-scheme: light dark;
+  font-size: 12px;
+  font-family: inherit;
+}
+@media (prefers-color-scheme: dark) {
+  div.topic-inspector {
+    background: #292929;
+    color: #eee;
+  }
+}
+@media (prefers-color-scheme: light) {
+  div.tf-popover {
+    background: #fff !important;
+    color: #222;
+  }
+}
+
+div.field-3d-settings select.field-select {
+  min-width: 110px;
+  color: inherit;
+}
+
+div.connect-bridge-hint > button {
+  position: static;
+  margin-left: 6px;
+  padding: 2px 6px;
 }

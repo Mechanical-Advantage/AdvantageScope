@@ -30,6 +30,7 @@ import Field3dController from "./controllers/Field3dController";
 import LineGraphController from "./controllers/LineGraphController";
 import MetadataController from "./controllers/MetadataController";
 import PointsController from "./controllers/PointsController";
+import { RawMessagesController, RosImageController, RosLogController } from "./controllers/RosTabs";
 import StatisticsController from "./controllers/StatisticsController";
 import TabController, { NoopController } from "./controllers/TabController";
 import TableController from "./controllers/TableController";
@@ -92,6 +93,9 @@ export default class Tabs {
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Metadata, 0);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.TrackMap, 0);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Laps, 0);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.RawMessages, 0);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.RosLog, 0);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.RosImage, 0);
 
     // Hover and click handling
     let mouseDownInfo: [number, number] | null = null;
@@ -533,6 +537,18 @@ export default class Tabs {
       case TabType.Laps:
         controller = new LapController(rendererElement, type === TabType.TrackMap);
         renderer = new LapRenderer(rendererElement);
+        break;
+      case TabType.RawMessages:
+        controller = new RawMessagesController(rendererElement);
+        renderer = new NoopRenderer();
+        break;
+      case TabType.RosLog:
+        controller = new RosLogController(rendererElement);
+        renderer = new NoopRenderer();
+        break;
+      case TabType.RosImage:
+        controller = new RosImageController(rendererElement);
+        renderer = new NoopRenderer();
         break;
       case TabType.Metadata:
         controller = new MetadataController();
