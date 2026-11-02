@@ -23,11 +23,9 @@ import { htmlEncode } from "../shared/util";
 export default class HealthStripUI {
   private element = document.createElement("section");
   private editor = document.createElement("dialog");
-  private banner = document.createElement("div");
+  private banner = document.createElement("button");
   private latched = new Map<HealthTile, LatchedHealth>();
   private oldestCriticalS: number | null = null;
-  private lastBannerKey = "";
-  private flashUntil = 0;
   private sizeObserver: ResizeObserver | null = null;
   private carState: CarBannerState | null = null;
   private log = window.log;
@@ -157,6 +155,9 @@ export default class HealthStripUI {
         document.documentElement.style.setProperty("--health-h", this.element.offsetHeight + "px")
       );
       this.sizeObserver.observe(this.element);
+      new ResizeObserver(() =>
+        document.documentElement.style.setProperty("--severity-h", this.banner.offsetHeight + "px")
+      ).observe(this.banner);
     }
     if (this.state.trackside && window.selection.getMode() === SelectionMode.Locked) {
       const range = window.selection.getTimelineRange();
@@ -202,7 +203,10 @@ export default class HealthStripUI {
           this.render();
         });
         const edit = document.createElement("button");
-        edit.textContent = "⋯";
+        const icon = document.createElement("img");
+        icon.src = "symbols/morehoriz.svg";
+        icon.alt = "";
+        edit.append(icon);
         edit.className = "health-edit";
         edit.title = "Edit or remove tile";
         edit.setAttribute("aria-label", `Edit ${tile.label}`);
@@ -269,17 +273,25 @@ export default class HealthStripUI {
       const liveText = unknown ? (value === undefined ? "—" : text) : text;
       cell.dataset.latched = latchedNow ? "true" : "false";
       cell.dataset.unknown = unknown ? "true" : "false";
-      cell.querySelector(".health-value")!.textContent = latchedNow ? `LATCHED · ${held.text}` : liveText;
-      cell.querySelector(".health-state")!.textContent = unknown
-        ? "? NO DATA"
-        : held.severity === "critical"
-        ? "■ CRIT"
-        : held.severity === "warn"
-        ? "▲ WARN"
-        : "● OK";
+      cell.querySelector(".health-value")!.textContent = latchedNow ? held.text : liveText;
+      const availability = unknown
+        ? liveRun && (summary.backend !== "connected" || freshness === "offline")
+          ? "OFFLINE"
+          : liveRun && value !== undefined
+          ? "STALE"
+          : "NO DATA"
+        : "";
+      const severityText = held.severity === "critical" ? "CRIT" : held.severity === "warn" ? "WARN" : "OK";
+      cell.querySelector(".health-state")!.textContent = [
+        latchedNow ? "LATCHED" : "",
+        !unknown || held.severity !== "ok" ? severityText : "",
+        availability
+      ]
+        .filter(Boolean)
+        .join(" · ");
       cell.querySelector(".health-status")!.textContent = [
         latchedNow ? `now ${liveText}` : "",
-        unknown ? `STALE ${age == null ? "no data yet" : age.toFixed(1) + " s"}` : "",
+        unknown ? (age == null ? "no data yet" : `last received ${age.toFixed(1)} s ago`) : "",
         latchedNow ? "click to ack" : ""
       ]
         .filter(Boolean)
@@ -301,7 +313,7 @@ export default class HealthStripUI {
     const lost = result.state === "lost";
     const latched = this.state.tiles.some((tile) => tile.latch && this.latched.has(tile));
     const faulted = critical || latched;
-    // Lost data is grey and hatched, never the red of a fault; a fault never says CAR OK.
+    // Unknown data stays neutral; known faults retain explicit severity words.
     const colour = lost ? "lost" : faulted ? "red" : result.state === "partial" || warn ? "amber" : "green";
     const label = lost
       ? "DATA LOST"
@@ -319,15 +331,9 @@ export default class HealthStripUI {
       [label, age, ...(backfill ? [`backfilling ${backfill.done}/${backfill.total}`] : []), ...alerts.slice(0, 3)].join(
         "  ·  "
       ) + (latched ? "  ·  click to ack" : "");
-    const key = colour + label + alerts.join("|");
-    if (key !== this.lastBannerKey) {
-      if (colour === "red" && !this.lastBannerKey.startsWith("red")) this.flashUntil = Date.now() + 4000;
-      this.lastBannerKey = key;
-    }
     this.banner.hidden = false;
     document.body.classList.add("has-severity-banner");
     this.banner.dataset.level = colour;
-    this.banner.dataset.flash = String(lost || Date.now() < this.flashUntil);
     if (this.banner.textContent !== text) this.banner.textContent = text;
   }
 }
