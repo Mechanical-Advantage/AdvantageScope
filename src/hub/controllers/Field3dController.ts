@@ -124,9 +124,8 @@ export default class Field3dController implements TabController {
     this.treePopover.hidden = true;
     this.treePopover.className = "tf-popover";
     this.treePopover.style.cssText =
-      "position:absolute;top:36px;left:12px;z-index:5;max-height:60%;overflow:auto;padding:6px 8px;font-size:12px;" +
-      "background:var(--background-color,#222);border:1px solid var(--divider-color,#555);font-family:monospace;white-space:pre";
-    root.append(this.treePopover);
+      "max-height:96px;overflow:auto;margin:4px 8px;padding:4px 6px;font-size:11px;" +
+      "border:1px solid var(--divider-color,#555);font-family:monospace;white-space:pre-wrap";
     fixedLabel.append(this.fixedFrame, treeButton);
     const axesLabel = document.createElement("label");
     axesLabel.textContent = "Frame axes ";
@@ -152,7 +151,17 @@ export default class Field3dController implements TabController {
     const coneKey = document.createElement("div");
     coneKey.className = "cone-class-key";
     coneKey.textContent = "Cone classes: blue · yellow · orange · large orange · unknown";
-    settings.append(fixedLabel, axesLabel, load, folder, trackButton, trackInput, coneKey, this.robotStatus);
+    settings.append(
+      fixedLabel,
+      this.treePopover,
+      axesLabel,
+      load,
+      folder,
+      trackButton,
+      trackInput,
+      coneKey,
+      this.robotStatus
+    );
     this.layerStatus.hidden = true;
     root.append(this.layerStatus);
     this.layerStatus.style.cssText = "position:absolute;bottom:4px;left:12px;font-size:12px;pointer-events:none";

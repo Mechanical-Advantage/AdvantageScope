@@ -78,6 +78,7 @@ export default class Tabs {
   }[] = [];
   private selectedTab = 0;
   private activeSatellites: string[] = [];
+  private fieldDragHover: { index: number; timer: number } | null = null;
   private controlsHandleActive = false;
 
   constructor() {
@@ -254,6 +255,26 @@ export default class Tabs {
     // Drag handling
     window.addEventListener("drag-update", (event) => {
       let dragData = (event as CustomEvent).detail;
+      if ("fields" in dragData.data) {
+        // A field dragged over a tab header switches to that tab, so Raw Messages can drop onto a Line Graph
+        if (!dragData.end) {
+          const over = this.tabList.findIndex((tab) => {
+            const r = tab.titleElement.getBoundingClientRect();
+            return dragData.x >= r.left && dragData.x <= r.right && dragData.y >= r.top && dragData.y <= r.bottom;
+          });
+          if (over !== this.fieldDragHover?.index) {
+            if (this.fieldDragHover) clearTimeout(this.fieldDragHover.timer);
+            this.fieldDragHover =
+              over < 0 || over === this.selectedTab
+                ? null
+                : { index: over, timer: window.setTimeout(() => this.setSelected(over), 350) };
+          }
+        } else if (this.fieldDragHover) {
+          clearTimeout(this.fieldDragHover.timer);
+          this.fieldDragHover = null;
+        }
+        return;
+      }
       if (!("tabIndex" in dragData.data)) return;
       let end = dragData.end;
       let x = dragData.x;
