@@ -102,7 +102,8 @@ export function convertChannelValue(value: number, profile: ChannelProfile, delt
   return delta ? converted - Units.convert(0, profile.from, profile.to) : converted;
 }
 export function formatChannelValue(value: unknown, profile: ChannelProfile, converted = false, delta = false): string {
-  if (value === null || value === undefined) return "";
+  if (value === null || value === undefined)
+    return "—" + (profile.unit && profile.unit !== "1" ? " " + profile.unit : "");
   if (typeof value === "boolean") return String(value);
   if (typeof value !== "number") return String(value);
   if (profile.enumLabels) return profile.enumLabels[String(value)] ?? `Unknown (${value})`;

@@ -148,6 +148,8 @@ export default class LapRenderer implements TabRenderer {
     this.lastDraw = "";
     const setupOpen = this.toolbar.querySelector("details")?.open ?? false;
     const c = this.command!;
+    const scrollTop = this.content.scrollTop,
+      scrollLeft = this.content.scrollLeft;
     this.content.replaceChildren();
     const toolbarKey = JSON.stringify([c.field, c.unit, c.map, c.settings]);
     if (toolbarKey !== this.toolbarKey) {
@@ -243,6 +245,7 @@ export default class LapRenderer implements TabRenderer {
       }
       return;
     }
+    const signed = (v: number) => (Number.isFinite(v) ? (v > 0 ? "+" : "") + v.toFixed(3) : "—");
     const table = document.createElement("table");
     table.className = "lap-table";
     this.content.append(table);
@@ -258,15 +261,15 @@ export default class LapRenderer implements TabRenderer {
       "Lap / stint",
       "Time",
       ...Array.from({ length: sectors }, (_, i) => `S${i + 1}`),
-      "Δ to best",
+      c.reference === null ? "Δ to ref" : `Δ to L${c.reference}`,
       "Source / status",
       "Min",
       "Max",
       "Avg"
     ]);
     head.className = "lap-heading";
-    const best = c.result.laps.find((l) => l.index === c.result.best),
-      bestTime = best ? best.end - best.start : NaN;
+    const refLap = c.result.laps.find((l) => l.index === c.reference),
+      refTime = refLap ? refLap.end - refLap.start : NaN;
     let previousBest = Infinity;
     c.result.laps.forEach((lap, i) => {
       const time = lap.end - lap.start;
@@ -276,10 +279,11 @@ export default class LapRenderer implements TabRenderer {
         `${lap.index} / ${lap.stint}`,
         duration(time),
         ...Array.from({ length: sectors }, (_, j) => duration(lap.sectors[j])),
-        lap.valid ? (time - bestTime).toFixed(3) : "—",
+        lap.valid && lap.index !== c.reference ? signed(time - refTime) : lap.index === c.reference ? "ref" : "—",
         `${lap.source} · ${lap.label}${lap.valid ? "" : " (excluded)"}`,
         ...c.metrics[i].map((v) => (Number.isFinite(v) ? v.toFixed(2) : "—"))
       ]);
+      r.cells[sectors + 5].className = "lap-source";
       r.onclick = () => this.action({ type: "lap", index: lap.index });
       r.tabIndex = 0;
       r.onkeydown = (e) => {
@@ -340,6 +344,8 @@ export default class LapRenderer implements TabRenderer {
     hint.textContent =
       "Select a row to seek · choose reference and overlays for Line Graph · purple: session best · green: improved personal best. Partial / invalid laps excluded from bests. Drag a numeric field here for metrics.";
     this.content.append(hint);
+    this.content.scrollTop = scrollTop;
+    this.content.scrollLeft = scrollLeft;
   }
   private draw() {
     const c = this.command!,

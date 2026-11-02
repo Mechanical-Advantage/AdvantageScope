@@ -13,7 +13,16 @@
 
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
-import { analyze, classifySkidpad, crossing, deltaTime, project, resample, Sample } from "../src/shared/laps/LapEngine";
+import {
+  analyze,
+  classifySkidpad,
+  crossing,
+  deltaTime,
+  lapSamples,
+  project,
+  resample,
+  Sample
+} from "../src/shared/laps/LapEngine";
 const gate = { a: { x: 0, y: -10 }, b: { x: 0, y: 10 }, direction: 1 };
 test("segment crossing interpolates and rejects reverse direction and outside gate", () => {
   assert.equal(crossing({ x: -2, y: 0, t: 10 }, { x: 6, y: 0, t: 14 }, gate), 11);
@@ -116,4 +125,25 @@ test("autocross times only start-to-finish runs", () => {
   const runs = laps.filter((lap) => lap.complete);
   assert.equal(runs.length, 2);
   assert.ok(runs.every((lap) => Math.abs(lap.end - lap.start - 10) < 1e-9));
+});
+
+test("lap overlay keeps raw sample values and holds the value at the lap start", () => {
+  const lap = {
+    start: 10,
+    end: 12,
+    grid: [
+      { time: 0, distance: 0 },
+      { time: 2, distance: 100 }
+    ]
+  };
+  const timestamps = [9.5, 10.5, 11, 11.5, 12.5];
+  const values = [1, 7, 3, 9, 4];
+  assert.deepEqual(lapSamples(timestamps, values, lap, false), {
+    timestamps: [0, 0.5, 1, 1.5],
+    values: [1, 7, 3, 9]
+  });
+  assert.deepEqual(lapSamples(timestamps, values, lap, true), {
+    timestamps: [0, 25, 50, 75],
+    values: [1, 7, 3, 9]
+  });
 });

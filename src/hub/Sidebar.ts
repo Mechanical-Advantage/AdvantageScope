@@ -866,7 +866,8 @@ export default class Sidebar {
           }
           booleanText.textContent = formatChannelValue(value, window.log.getChannelProfile(field.fullKey!));
           valueElement.title = rawChannelValue(value, window.log.getChannelProfile(field.fullKey!));
-          let hidden = value === null;
+          svg.style.display = value === null ? "none" : "";
+          let hidden = false;
           valueElement.hidden = hidden;
           if (hidden !== lastHidden) {
             lastHidden = hidden;
@@ -999,7 +1000,7 @@ export default class Sidebar {
               valueStr = value;
             }
           } else {
-            valueStr = "";
+            valueStr = "—";
           }
           valueElement.title = rawChannelValue(value, window.log.getChannelProfile(field.fullKey!));
           valueElement.innerText = valueStr;

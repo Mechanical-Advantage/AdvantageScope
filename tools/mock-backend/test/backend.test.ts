@@ -359,3 +359,22 @@ test("sim clock: t_ns from 0; reset jumps back and changes stream_id; pause free
   h.backend.resume();
   assert.equal(h.backend.simStatus().state, "running");
 });
+
+test("wheel-derived vehicle speed and GPS speed agree at the same source timestamp", () => {
+  const h = new Harness({ simClock: true, seed: 1 });
+  const gps = `${P}/gps/ground_speed`;
+  h.send({ op: "hello", api_version: 1 });
+  h.send({ op: "subscribe", subscription_id: "speeds", paths: [SPEED, gps] });
+  h.run(12000);
+  const samples = samplesOf(h.take(), "speeds");
+  const wheel = new Map(samples.filter((s) => s.path === SPEED).map((s) => [s.t_ns, Number(s.value)]));
+  let compared = 0;
+  for (const s of samples.filter((s) => s.path === gps)) {
+    const v = wheel.get(s.t_ns);
+    if (v !== undefined) {
+      assert.ok(Math.abs(v - Number(s.value)) < 0.3, `speed mismatch at ${s.t_ns}`);
+      compared++;
+    }
+  }
+  assert.ok(compared > 1000);
+});

@@ -964,7 +964,8 @@ table.metadata-table td.no-data {
 }
 .lap-table {
   border-collapse: collapse;
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
   font-size: 13px;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -975,8 +976,11 @@ table.metadata-table td.no-data {
   border-bottom: 1px solid #8884;
 }
 .lap-table td:nth-child(3),
-.lap-table td:nth-child(9) {
+.lap-table td.lap-source {
   text-align: left;
+}
+.lap-table td.lap-source {
+  min-width: 240px;
 }
 .lap-table tr {
   cursor: pointer;

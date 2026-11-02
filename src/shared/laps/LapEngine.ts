@@ -309,3 +309,38 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
   );
   return result;
 }
+
+/**
+ * Maps the raw samples inside a lap onto its x axis (lap time or lap distance) without touching the
+ * values. The sample held at the lap start is kept so stepped traces begin at the right level.
+ */
+export function lapSamples(
+  timestamps: number[],
+  values: number[],
+  lap: { start: number; end: number; grid: { time: number; distance: number }[] },
+  distance: boolean
+): { timestamps: number[]; values: number[] } {
+  const gridTimes = lap.grid.map((p) => p.time);
+  const gridDistances = lap.grid.map((p) => p.distance);
+  const x = (lapTime: number) => (distance ? interpolate(gridTimes, gridDistances, lapTime) : lapTime);
+  const result: { timestamps: number[]; values: number[] } = { timestamps: [], values: [] };
+  let held: number | null = null;
+  for (let i = 0; i < timestamps.length; i++) {
+    if (timestamps[i] < lap.start) {
+      held = values[i];
+    } else if (timestamps[i] <= lap.end) {
+      if (held !== null) {
+        if (timestamps[i] > lap.start) {
+          result.timestamps.push(x(0));
+          result.values.push(held);
+        }
+        held = null;
+      }
+      result.timestamps.push(x(timestamps[i] - lap.start));
+      result.values.push(values[i]);
+    } else {
+      break;
+    }
+  }
+  return result;
+}

@@ -124,3 +124,8 @@ test("axis display unit follows every registered unit profile and compatible ove
   }
   assert.equal(axisDisplayUnit("kelvin", channelProfile({ name: "unknown" })), "kelvin");
 });
+
+test("empty catalogue values retain engineering units", () => {
+  assert.equal(fmt(null, "m/s", "vehicle_speed"), "— m/s");
+  assert.equal(fmt(undefined, "K", "temperature"), "— °C");
+});

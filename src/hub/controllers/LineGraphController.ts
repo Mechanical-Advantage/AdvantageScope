@@ -16,7 +16,7 @@ import {
   formatChannelValue
 } from "../../shared/display/ChannelProfile";
 import { compatibleProfiles, splitLegendName } from "../../shared/display/LineGraphStyle";
-import { interpolate } from "../../shared/laps/LapEngine";
+import { interpolate, lapSamples } from "../../shared/laps/LapEngine";
 import { getLogValueText } from "../../shared/log/LogUtil";
 import { LogValueSetNumber } from "../../shared/log/LogValueSets";
 import { AKIT_TIMESTAMP_KEYS, getRobotStateRanges } from "../../shared/log/RobotState";
@@ -80,7 +80,10 @@ export default class LineGraphController implements TabController {
       ["lapTime", "Lap time overlay"],
       ["distance", "Lap distance + ΔT"]
     ].forEach(([value, label]) => mode.add(new Option(label, value)));
-    mode.onchange = () => (this.lapMode = mode.value);
+    mode.onchange = () => {
+      this.lapMode = mode.value;
+      this.updateAxisLabels();
+    };
     const controls = document.createElement("div");
     controls.className = "graph-inline-controls";
     controls.append(mode);
@@ -196,6 +199,25 @@ export default class LineGraphController implements TabController {
     ] as const) {
       source.graphLegend = true;
       source.beforeAdd = (key) => {
+        if (this.lapMode !== "time" && source === this.rightSourceList) {
+          // The right axis is locked to ΔT in lap-distance mode
+          const lock = document.createElement("div");
+          lock.className = "graph-unit-prompt";
+          lock.append("Right axis is locked to ΔT in lap mode — ");
+          const move = document.createElement("button");
+          move.textContent = "Move to Left Axis";
+          move.onclick = () => {
+            other.addField(key);
+            lock.remove();
+          };
+          const cancel = document.createElement("button");
+          cancel.textContent = "Cancel";
+          cancel.onclick = () => lock.remove();
+          lock.append(move, cancel);
+          root.querySelector(".graph-unit-prompt")?.remove();
+          root.append(lock);
+          return false;
+        }
         const first = source.getState()[0];
         if (!first || compatibleProfiles(window.log.getChannelProfile(key), window.log.getChannelProfile(first.logKey)))
           return true;
@@ -339,6 +361,11 @@ export default class LineGraphController implements TabController {
       this.leftSourceList.setTitle("Left Axis");
     }
 
+    for (const item of this.rightSourceList.getState()) {
+      if (this.lapMode !== "time")
+        this.rightSourceList.itemStatus.set(item.logKey, { text: "Hidden in lap mode · ΔT only", error: false });
+      else this.rightSourceList.itemStatus.delete(item.logKey);
+    }
     let rightLabels: string[] = [];
     if (this.rightLockedRange !== null) {
       rightLabels.push("Locked");
@@ -358,7 +385,9 @@ export default class LineGraphController implements TabController {
         rightLabels.push("Integrated");
         break;
     }
-    if (rightLabels.length > 0) {
+    if (this.lapMode !== "time") {
+      this.rightSourceList.setTitle("ΔT [s] · locked (separate strip)");
+    } else if (rightLabels.length > 0) {
       this.rightSourceList.setTitle("Right Axis [" + rightLabels.join(", ") + "]");
     } else {
       this.rightSourceList.setTitle("Right Axis");
@@ -455,6 +484,12 @@ export default class LineGraphController implements TabController {
     ) {
       return null;
     }
+    // The mock's stale-test deliberately stops GPS while wheel speed keeps updating.
+    // Do not present a held last-good GPS value as a current speed measurement.
+    if (window.selection.getMode() === SelectionMode.Locked) {
+      const freshness = window.liveStatus?.getFieldFreshness(key);
+      if (freshness === "stale" || freshness === "offline") return `— (${freshness})`;
+    }
     let command = commandCache[key];
     let index = command.timestamps.findLastIndex((sample) => sample <= time);
     if (index === -1) {
@@ -464,7 +499,11 @@ export default class LineGraphController implements TabController {
       unitCache !== null && command.hasUnit
         ? window.log.getChannelProfile(key, Units.getSuffixForFilter(unitCache.suffix, filter))
         : window.log.getChannelProfile(key);
-    let output = formatChannelValue(command.values[index], profile);
+    const value =
+      command.type === "smooth" && index + 1 < command.timestamps.length
+        ? interpolate(command.timestamps, command.values, time)
+        : command.values[index];
+    let output = formatChannelValue(value, profile);
     return output;
   }
 
@@ -1045,49 +1084,75 @@ export default class LineGraphController implements TabController {
       result.thresholds = [];
       lapService.update();
       const reference = lapService.result.laps.find((l) => l.index === lapService.reference);
-      const laps = lapService.result.laps.filter((l) => lapService.overlays.includes(l.index));
+      const laps = lapService.result.laps.filter(
+        (l) => lapService.overlays.includes(l.index) || l.index === lapService.reference
+      );
       const distance = this.lapMode === "distance";
+      // One hue per lap. Values stay as the raw samples; only the x position is mapped onto the lap.
       const convert = (fields: LineGraphRendererCommand_NumericField[]) =>
         fields.flatMap((field) =>
-          laps.map((lap, i) => {
-            const times = lap.grid.map((p) => p.time),
-              ds = lap.grid.map((p) => p.distance);
-            const xs = distance ? ds : times;
-            return {
-              ...field,
-              color: LAP_COLORS[i % LAP_COLORS.length],
-              timestamps: xs,
-              values: times.map((t) => interpolate(field.timestamps, field.values, lap.start + t))
-            };
-          })
+          laps.map((lap, i) => ({
+            ...field,
+            color: LAP_COLORS[i % LAP_COLORS.length],
+            ...lapSamples(field.timestamps, field.values, lap, distance)
+          }))
         );
       result.leftFields = convert(result.leftFields);
       result.rightFields = convert(result.rightFields);
-      if (distance && reference) {
-        result.rightFields = laps.map((lap, i) => ({
-          timestamps: lap.grid.map((p) => p.distance),
-          values: lap.grid.map((p) => lapService.delta(lap.index, p.distance)),
-          color: LAP_COLORS[i % LAP_COLORS.length],
-          type: "smooth",
-          size: "normal"
-        }));
-        const vs = result.rightFields.flatMap((f) => f.values).filter(Number.isFinite);
-        const min = Math.min(0, ...vs),
-          max = Math.max(0, ...vs);
-        result.rightRange = [min - 0.1, max + 0.1];
-        result.showRightAxis = true;
+      {
+        // The right axis is locked to ΔT, which is drawn in its own strip under the overlay
+        result.rightFields = [];
+        result.showRightAxis = false;
+        result.rightTitle = "";
         result.rightUnits = null;
-        result.rightTitle = "ΔT [s]";
+        if (reference) {
+          const stripFields = laps
+            .filter((lap) => lap.index !== reference.index)
+            .map((lap) => ({
+              timestamps: lap.grid.map((p) => (distance ? p.distance : p.time)),
+              values: lap.grid.map((p) => lapService.delta(lap.index, p.distance)),
+              color: LAP_COLORS[laps.indexOf(lap) % LAP_COLORS.length],
+              type: "smooth" as const,
+              size: "normal" as const
+            }));
+          const vs = stripFields.flatMap((f) => f.values).filter(Number.isFinite);
+          const pad = 0.05;
+          result.deltaStrip = {
+            fields: stripFields,
+            range: [Math.min(0, ...vs) - pad, Math.max(0, ...vs) + pad],
+            title: `ΔT vs Lap ${reference.index} [s], + = slower`
+          };
+        }
       }
       const end = Math.max(1, ...laps.map((l) => (distance ? l.distance : l.end - l.start)));
       result.timeRange = [0, end];
       result.displayOffset = 0;
       result.xUnit = distance ? "m" : "s";
+      const split = (lap: (typeof laps)[number]) =>
+        lap.sectors.map((t, j) => `S${j + 1} ${Number.isFinite(t) ? t.toFixed(2) : "—"}`).join(" · ");
       result.lapLabels = laps.map((lap, i) => ({
-        text: `Lap ${lap.index}${lap.index === lapService.reference ? " (ref)" : ""}`,
+        text: `Lap ${lap.index}${lap.index === lapService.reference ? " (ref)" : ""}  ${(lap.end - lap.start).toFixed(
+          2
+        )} s  ${split(lap)}`,
         color: LAP_COLORS[i % LAP_COLORS.length]
       }));
-      if (distance) result.lapLabels.push({ text: "Right axis: ΔT [s], positive = slower", color: "#aaa" });
+      const sectorRef = reference ?? laps[0];
+      if (sectorRef) {
+        let cumulative = 0;
+        result.sectorMarks = sectorRef.sectors.slice(0, -1).map((t, j) => {
+          cumulative += t;
+          return {
+            x: distance
+              ? interpolate(
+                  sectorRef.grid.map((p) => p.time),
+                  sectorRef.grid.map((p) => p.distance),
+                  cumulative
+                )
+              : cumulative,
+            label: `S${j + 2}`
+          };
+        });
+      }
       const cursorLap =
         lapService.result.laps.find(
           (l) => result.selectedTime !== null && result.selectedTime >= l.start && result.selectedTime <= l.end

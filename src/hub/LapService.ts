@@ -12,6 +12,7 @@
 //   details, sim controls (only when the backend has sim endpoints) and connect/disconnect.
 
 import { analyze, interpolate, LapConfig, LapResult, project, Sample } from "../shared/laps/LapEngine";
+import { slipRatio } from "../shared/laps/SlipRatio";
 import Log from "../shared/log/Log";
 
 export type LapSettings = {
@@ -83,9 +84,18 @@ class LapService {
     s.yaw ||= find(/(?:yaw_rate|YawRate)$/i);
     s.counter ||= find(/(?:lap_counter|lapcounter|lap_count)$/i);
     s.beacon ||= find(/(?:lap_beacon|beacon)$/i);
-    return [s.latitude, s.longitude, s.frontLeft, s.frontRight, s.speed, s.rpm, s.yaw, s.counter, s.beacon].filter(
-      Boolean
-    );
+    return [
+      s.latitude,
+      s.longitude,
+      s.frontLeft,
+      s.frontRight,
+      s.speed,
+      s.rpm,
+      s.yaw,
+      s.counter,
+      s.beacon,
+      find(/(?:gps\/ground_speed|ground_speed)$/i)
+    ].filter(Boolean);
   }
   invalidate() {
     this.signature = "";
@@ -194,6 +204,42 @@ class LapService {
           yaw: at(s.yaw, t)
         });
       });
+    }
+    // Compare front-wheel circumferential speed with independent GPS ground speed.
+    // Never interpolate across a stale source or infer slip at standstill.
+    const gpsKey = fields.find((k) => /ground_speed$/i.test(k)) ?? "";
+    const age = (key: string, t: number) => {
+      const ts = data.get(key)?.timestamps ?? [];
+      let lo = 0,
+        hi = ts.length;
+      while (lo < hi) {
+        const m = (lo + hi) >>> 1;
+        if (ts[m] <= t) lo = m + 1;
+        else hi = m;
+      }
+      return lo ? t - ts[lo - 1] : Infinity;
+    };
+    if (gpsKey && s.frontLeft && s.frontRight) {
+      samples.forEach((p) =>
+        window.log.putNumber(
+          "Laps/SlipRatio",
+          p.t,
+          slipRatio(
+            (speed(s.frontLeft, p.t) + speed(s.frontRight, p.t)) / 2,
+            speed(gpsKey, p.t),
+            Math.max(age(s.frontLeft, p.t), age(s.frontRight, p.t)),
+            age(gpsKey, p.t)
+          )
+        )
+      );
+      window.log.setMetadataString(
+        "Laps/SlipRatio",
+        JSON.stringify({
+          unit: "ratio",
+          description:
+            "(mean front-wheel circumferential speed − GPS ground speed) / GPS ground speed; invalid below 2 m/s or after 250 ms without samples"
+        })
+      );
     }
     this.result = analyze(samples, s.config);
     const ref = this.result.laps.find((l) => l.index === (this.reference ?? this.result.best));
