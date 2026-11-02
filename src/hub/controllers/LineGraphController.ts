@@ -1125,6 +1125,7 @@ export default class LineGraphController implements TabController {
         }
       }
       const end = Math.max(1, ...laps.map((l) => (distance ? l.distance : l.end - l.start)));
+      result.lapMode = this.lapMode;
       result.timeRange = [0, end];
       result.displayOffset = 0;
       result.xUnit = distance ? "m" : "s";
