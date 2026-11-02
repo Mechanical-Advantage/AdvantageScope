@@ -492,7 +492,8 @@ export class LiveStatusPill {
             title: `Car: ${counts.online} online, ${counts.stale} stale, ${counts.offline} offline, ${counts.neverSeen} never seen`
           });
         }
-        if (summary.sim !== null) {
+        // The sim state is unknown while the backend is unreachable, so don't show the last one as current
+        if (summary.sim !== null && backend.tone !== "bad") {
           segments.push({
             tone: summary.sim.state === "running" ? "good" : summary.sim.state === "paused" ? "warn" : "idle",
 
