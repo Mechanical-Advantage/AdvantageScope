@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import {
+  CarBannerState,
   HealthStripState,
   HealthTile,
   LatchedHealth,
@@ -27,6 +28,8 @@ export default class HealthStripUI {
   private oldestCriticalS: number | null = null;
   private lastBannerKey = "";
   private flashUntil = 0;
+  private sizeObserver: ResizeObserver | null = null;
+  private carState: CarBannerState | null = null;
   private log = window.log;
   state: HealthStripState = { visible: false, tiles: [], defaultsApplied: false };
 
@@ -79,6 +82,10 @@ export default class HealthStripUI {
   /** Oldest critical age (seconds since any health tile's signal arrived), shared by the pill and the banner. */
   getOldestCriticalAge(): number | null {
     return this.state.visible ? this.oldestCriticalS : null;
+  }
+  /** Car state shared by the banner and the title-bar pill, or null when not live. */
+  getCarState(): CarBannerState | null {
+    return this.state.visible ? this.carState : null;
   }
   getActiveFields(): Set<string> {
     return new Set(this.state.visible ? this.state.tiles.map((tile) => tile.path) : []);
@@ -140,7 +147,17 @@ export default class HealthStripUI {
     this.element.hidden = !this.state.visible;
     this.banner.hidden = true;
     document.body.classList.remove("has-severity-banner");
-    if (!this.state.visible) return;
+    this.carState = null;
+    if (!this.state.visible) {
+      document.documentElement.style.removeProperty("--health-h");
+      return;
+    }
+    if (!this.sizeObserver) {
+      this.sizeObserver = new ResizeObserver(() =>
+        document.documentElement.style.setProperty("--health-h", this.element.offsetHeight + "px")
+      );
+      this.sizeObserver.observe(this.element);
+    }
     if (this.state.trackside && window.selection.getMode() === SelectionMode.Locked) {
       const range = window.selection.getTimelineRange();
       if (range[1] - range[0] > 30) window.selection.setTimelineRange([range[1] - 30, range[1]], false);
@@ -279,14 +296,29 @@ export default class HealthStripUI {
     }
     const result = bannerState(ages, unknown, summary.backend === "connected", summary.lastReceiptAgeS);
     this.oldestCriticalS = result.oldestCriticalS;
+    this.carState = result.state;
     if (!this.state.trackside) return;
     const lost = result.state === "lost";
     const latched = this.state.tiles.some((tile) => tile.latch && this.latched.has(tile));
-    const colour = lost || critical || latched ? "red" : result.state === "partial" || warn ? "amber" : "green";
-    const label = lost ? "DATA LOST" : result.state === "partial" ? "CAR PARTIAL" : "CAR OK";
+    const faulted = critical || latched;
+    // Lost data is grey and hatched, never the red of a fault; a fault never says CAR OK.
+    const colour = lost ? "lost" : faulted ? "red" : result.state === "partial" || warn ? "amber" : "green";
+    const label = lost
+      ? "DATA LOST"
+      : faulted
+      ? "FAULT"
+      : result.state === "partial"
+      ? "CAR PARTIAL"
+      : warn
+      ? "CAR WARNING"
+      : "CAR OK";
     const age =
       result.oldestCriticalS === null ? "no data yet" : `oldest critical ${result.oldestCriticalS.toFixed(1)} s`;
-    const text = [label, age, ...alerts.slice(0, 3)].join("  ·  ") + (latched ? "  ·  click to ack" : "");
+    const backfill = window.liveStatus?.getBackfill?.() ?? null;
+    const text =
+      [label, age, ...(backfill ? [`backfilling ${backfill.done}/${backfill.total}`] : []), ...alerts.slice(0, 3)].join(
+        "  ·  "
+      ) + (latched ? "  ·  click to ack" : "");
     const key = colour + label + alerts.join("|");
     if (key !== this.lastBannerKey) {
       if (colour === "red" && !this.lastBannerKey.startsWith("red")) this.flashUntil = Date.now() + 4000;

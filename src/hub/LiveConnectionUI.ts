@@ -452,9 +452,14 @@ export class LiveStatusPill {
       if (summary !== null) {
         if (summary.car !== null) {
           const counts = summary.signalCounts;
+          const carState = window.healthStrip?.getCarState() ?? null;
+          const carText =
+            carState === "lost"
+              ? "Car DATA LOST"
+              : "Car " + (summary.car === "stale" ? "PARTIAL" : summary.car.toUpperCase());
           segments.push({
-            tone: FRESHNESS_TONE[summary.car],
-            text: "Car " + (summary.car === "stale" ? "PARTIAL" : summary.car.toUpperCase()),
+            tone: carState === "lost" ? "idle" : FRESHNESS_TONE[summary.car],
+            text: carText,
             title: `Car: ${counts.online} online, ${counts.stale} stale, ${counts.offline} offline, ${counts.neverSeen} never seen`
           });
         }
@@ -521,6 +526,13 @@ export class LiveStatusPill {
 
     // Popover
     if (this.popover.hidden) return;
+    // Sit below the Trackside banner and health strip rather than covering them.
+    const chrome = [document.querySelector(".severity-banner"), document.querySelector(".health-strip")];
+    const bottom = Math.max(
+      40,
+      ...chrome.map((el) => (el instanceof HTMLElement && !el.hidden ? el.getBoundingClientRect().bottom + 4 : 0))
+    );
+    this.popover.style.top = bottom.toString() + "px";
     const rows: [string, string][] = [];
 
     const backend = getBackend(state, summary);
