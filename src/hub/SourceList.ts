@@ -1020,8 +1020,6 @@ export default class SourceList {
       );
       item.onmouseenter = () => (this.hoveredKey = state.logKey);
       item.onmouseleave = () => (this.hoveredKey = null);
-      const swatch = item.querySelector("button.type") as HTMLElement;
-      swatch.style.borderBottom = `2px ${["solid", "dashed", "dotted"][this.state.indexOf(state) % 3]} ${color}`;
     }
     keySpan.style.textDecoration = this.isFieldAvailable(state) ? "" : "line-through";
     keyContainer.title = state.logKey;

@@ -17,7 +17,9 @@ export function applyTracksideLayout() {
   const command = match(/(?:torque_command|inv_torquecommand)$/);
   const actual = match(/(?:torque_feedback|inv_torquefeedback)$/);
   const source = (path: string | undefined, color: string) =>
-    path ? [{ type: "smooth", logKey: path, logType: "Number", visible: true, options: { color, size: "bold" } }] : [];
+    path
+      ? [{ type: "smooth", logKey: path, logType: "Number", visible: true, options: { color, size: "normal" } }]
+      : [];
   const add = (title: string, left: unknown[], right: unknown[], rpmAxis = false) => {
     let state = window.tabs.saveState();
     let index = state.tabs.findIndex((tab) => tab.title === title && tab.type === TabType.LineGraph);

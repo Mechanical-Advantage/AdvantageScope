@@ -10,7 +10,7 @@ import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
 import { canonicalChannelPath, channelProfile, formatChannelValue } from "../../shared/display/ChannelProfile";
-import { compatibleProfiles, splitLegendName, traceDash } from "../../shared/display/LineGraphStyle";
+import { compatibleProfiles, splitLegendName } from "../../shared/display/LineGraphStyle";
 import { interpolate } from "../../shared/laps/LapEngine";
 import { getLogValueText } from "../../shared/log/LogUtil";
 import { LogValueSetNumber } from "../../shared/log/LogValueSets";
@@ -722,8 +722,6 @@ export default class LineGraphController implements TabController {
           color: ensureThemeContrast(fieldItem.options.color),
           type: fieldItem.type as "smooth" | "stepped" | "points",
           size: (fieldItem.options.size ?? "normal") as "normal" | "bold" | "verybold",
-          dash: traceDash(index),
-          focus: (this.leftSourceList.hoveredKey ?? this.rightSourceList.hoveredKey) === fieldItem.logKey,
           dim:
             (this.leftSourceList.hoveredKey ?? this.rightSourceList.hoveredKey) !== null &&
             (this.leftSourceList.hoveredKey ?? this.rightSourceList.hoveredKey) !== fieldItem.logKey,
@@ -1020,7 +1018,6 @@ export default class LineGraphController implements TabController {
             const xs = distance ? ds : times;
             return {
               ...field,
-              dash: traceDash(i),
               color: LAP_COLORS[i % LAP_COLORS.length],
               timestamps: xs,
               values: times.map((t) => interpolate(field.timestamps, field.values, lap.start + t))
@@ -1033,7 +1030,6 @@ export default class LineGraphController implements TabController {
         result.rightFields = laps.map((lap, i) => ({
           timestamps: lap.grid.map((p) => p.distance),
           values: lap.grid.map((p) => lapService.delta(lap.index, p.distance)),
-          dash: traceDash(i),
           color: LAP_COLORS[i % LAP_COLORS.length],
           type: "smooth",
           size: "normal"

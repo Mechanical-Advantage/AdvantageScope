@@ -179,15 +179,7 @@ export default class LineGraphRenderer implements TabRenderer {
       command.xUnit,
       command.lapLabels,
       command.thresholds,
-      command.leftFields.map((field) => [
-        field.values.length,
-        field.color,
-        field.type,
-        field.size,
-        field.dash,
-        field.focus,
-        field.dim
-      ]),
+      command.leftFields.map((field) => [field.values.length, field.color, field.type, field.size, field.dim]),
       command.discreteFields.map((field) => [
         field.values.length,
         field.color,
@@ -195,15 +187,7 @@ export default class LineGraphRenderer implements TabRenderer {
         field.toggleReference,
         field.colorMap ? field.values : null // Specific values affect color-mapped fields so serialize full state
       ]),
-      command.rightFields.map((field) => [
-        field.values.length,
-        field.color,
-        field.type,
-        field.size,
-        field.dash,
-        field.focus,
-        field.dim
-      ]),
+      command.rightFields.map((field) => [field.values.length, field.color, field.type, field.size, field.dim]),
       command.alerts.map((row) => row.map((alert) => [alert.type, alert.text, alert.range]))
     ];
     let renderStateString = JSON.stringify(renderState);
@@ -409,7 +393,7 @@ export default class LineGraphRenderer implements TabRenderer {
         context.lineCap = "round";
         switch (field.size) {
           case "normal":
-            context.lineWidth = 2;
+            context.lineWidth = 1;
             break;
           case "bold":
             context.lineWidth = 3;
@@ -419,9 +403,7 @@ export default class LineGraphRenderer implements TabRenderer {
             break;
         }
 
-        context.setLineDash(field.dash ?? []);
         context.globalAlpha = field.dim ? 0.25 : 1;
-        if (field.focus) context.lineWidth += 2;
         switch (field.type) {
           case "stepped":
             context.beginPath();
@@ -859,8 +841,6 @@ export type LineGraphRendererCommand = {
 };
 
 export type LineGraphRendererCommand_NumericField = {
-  dash?: number[];
-  focus?: boolean;
   dim?: boolean;
   timestamps: number[];
   values: number[];

@@ -8,7 +8,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { channelProfile } from "../src/shared/display/ChannelProfile";
-import { compatibleProfiles, middleEllipsis, splitLegendName, traceDash } from "../src/shared/display/LineGraphStyle";
+import { compatibleProfiles, middleEllipsis, splitLegendName } from "../src/shared/display/LineGraphStyle";
 import { Units } from "../src/shared/units";
 
 test("drop compatibility accepts conversions and rejects different dimensions", () => {
@@ -25,7 +25,4 @@ test("legend preserves the full leaf and abbreviates only the parent", () => {
   });
   assert.deepEqual(splitLegendName("Speed"), { leaf: "Speed", parent: "" });
   assert.equal(middleEllipsis("abcdefghijklmno", 9), "abcd…lmno");
-});
-test("dash assignment cycles solid dashed dotted", () => {
-  assert.deepEqual([0, 1, 2, 3].map(traceDash), [[], [8, 4], [2, 4], []]);
 });

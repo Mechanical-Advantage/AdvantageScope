@@ -256,7 +256,7 @@ WARN/CRIT use text and backgrounds. Live freshness and age come from LiveStatus,
 
 View → Trackside Layout adds or updates Speed/RPM and Torque graph tabs while preserving other tabs, enables the strip, sets a following 30-second window, and enlarges legend values. LIVE/REVIEW uses Selection.lock/unlock and reflects timeline actions. Speed/RPM use separate axes; torque command/actual share the torque tab because the existing graph supports only two numeric axes. Reapply the preset after connecting if it was applied before signals arrived. Saved profiles, tiles and graph settings persist normally; the timeline follow window is applied by the preset action.
 
-The existing state API supports bold (3px) traces, used here. Exact 2px traces and threshold lines are deferred: they require renderer changes outside this workstream. No line-graph controller or renderer is modified.
+Traces use the stock AdvantageScope line: 1px solid unless the user picks a bolder size for a field.
 
 Install the mock's own dependencies with `npm install --prefix tools/mock-backend` first. Health verification mock: `npm run mock-backend -- --port 8090 --seed 1 --stale-test --stale-source ennoid-bms --sim-clock --lap-counter --fault-demo`. The fault pulse runs at 10–20 seconds and recovers; BMS-source silence begins at 30 seconds. Pure threshold, latch and canonical matching tests live in `test/health-strip.test.ts`.
 
