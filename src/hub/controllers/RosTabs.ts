@@ -100,7 +100,7 @@ export class RawMessagesController extends BaseRosTab {
     super(root);
     this.search.type = "search";
     this.search.placeholder = "Search topics";
-    this.search.style.cssText = "width:100%;box-sizing:border-box;margin-bottom:6px";
+    this.search.style.cssText = "color-scheme:light dark;width:100%;box-sizing:border-box;margin-bottom:6px";
     this.search.oninput = () => {
       this.query = this.search.value;
       this.last = 0;
@@ -325,6 +325,7 @@ export class RosLogController extends BaseRosTab {
     label.textContent = "Severity ≥ ";
     const select = document.createElement("select");
     LEVELS.forEach(([name, value]) => select.append(new Option(name, String(value))));
+    select.style.colorScheme = "light dark";
     select.value = String(this.minLevel);
     select.onchange = () => {
       this.minLevel = Number(select.value);
@@ -334,7 +335,7 @@ export class RosLogController extends BaseRosTab {
     const search = document.createElement("input");
     search.type = "search";
     search.placeholder = "Filter text";
-    search.style.cssText = "margin-left:8px";
+    search.style.cssText = "margin-left:8px;color-scheme:light dark";
     search.oninput = () => {
       this.text = search.value;
       this.last = 0;
@@ -343,7 +344,7 @@ export class RosLogController extends BaseRosTab {
       this.node = this.nodeSelect.value;
       this.last = 0;
     };
-    this.nodeSelect.style.marginLeft = "8px";
+    this.nodeSelect.style.cssText = "margin-left:8px;color-scheme:light dark";
     this.nodeSelect.append(new Option("All nodes", ""));
     this.bar.style.cssText = "margin-bottom:6px";
     this.bar.append(label, search, this.nodeSelect);
