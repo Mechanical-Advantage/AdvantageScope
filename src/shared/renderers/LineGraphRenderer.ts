@@ -540,6 +540,7 @@ export default class LineGraphRenderer implements TabRenderer {
         }
       });
     };
+    const endValueYs: number[] = [];
     const drawEndValues = (fields: LineGraphRendererCommand_NumericField[], yRange: [number, number]) => {
       if (!trackside) return;
       const yScaler = new ValueScaler(yRange, [graphTop + graphHeightOpen, graphTop]);
@@ -550,7 +551,20 @@ export default class LineGraphRenderer implements TabRenderer {
         const last = field.values[field.values.length - 1];
         if (field.dim || last === undefined || !Number.isFinite(last)) return;
         context.fillStyle = field.color;
-        const y = Math.min(graphTop + graphHeightOpen, Math.max(graphTop + 22, yScaler.calculate(last) - 4));
+        const minY = graphTop + 44; // Reserve the first row for outage/backfill status.
+        const maxY = graphTop + graphHeightOpen;
+        const desiredY = Math.min(maxY, Math.max(minY, yScaler.calculate(last) - 4));
+        let y = desiredY;
+        for (let offset = 0; offset < graphHeightOpen; offset += 24) {
+          const candidate = [desiredY + offset, desiredY - offset].find(
+            (value) => value >= minY && value <= maxY && endValueYs.every((used) => Math.abs(value - used) >= 24)
+          );
+          if (candidate !== undefined) {
+            y = candidate;
+            break;
+          }
+        }
+        endValueYs.push(y);
         context.fillText(cleanFloat(Number(last.toPrecision(4))).toString(), graphLeft + graphWidth - 6, y);
       });
       context.font = "14px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
