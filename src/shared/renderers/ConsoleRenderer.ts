@@ -208,9 +208,6 @@ export default class ConsoleRenderer implements TabRenderer {
     let placeholder = selectedTime === null ? 0 : selectedTime;
     let displayPlaceholder = placeholder + command.displayOffset;
     let placeholderText = formatTimeWithMS(displayPlaceholder);
-    if (isStartAt0) {
-      placeholderText = "+" + placeholderText;
-    }
     this.JUMP_INPUT.placeholder = placeholderText;
 
     // Scroll to bottom if locked
@@ -226,8 +223,6 @@ export default class ConsoleRenderer implements TabRenderer {
 
   /** Updates the field text and data. */
   updateData() {
-    let isStartAt0 = window.preferences?.timestamps !== "original";
-
     // Update field text
     if (this.key === null) {
       this.FIELD_TEXT.innerText = "";
@@ -348,9 +343,6 @@ export default class ConsoleRenderer implements TabRenderer {
       // Update cell contents
       let displayTime = timestamp + this.displayOffset;
       let text = formatTimeWithMS(displayTime);
-      if (isStartAt0) {
-        text = "+" + text;
-      }
       if ((row.children[0] as HTMLElement).textContent !== text) {
         (row.children[0] as HTMLElement).textContent = text;
       }

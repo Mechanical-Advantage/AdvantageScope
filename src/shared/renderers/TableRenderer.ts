@@ -302,14 +302,10 @@ export default class TableRenderer implements TabRenderer {
     let cellTitles: string[][] = [];
     this.dataRowTimestamps = [];
     let displayOffset = command.displayOffset;
-    let isStartAt0 = window.preferences?.timestamps !== "original";
     for (let i = dataRowStart; i < dataRowEnd; i++) {
       this.dataRowTimestamps.push(this.timestamps[i]);
       let displayTime = this.timestamps[i] + displayOffset;
       let text = formatTimeWithMS(displayTime);
-      if (isStartAt0) {
-        text = "+" + text;
-      }
       cellText.push([text]);
       cellTitles.push([text]);
     }
@@ -396,9 +392,6 @@ export default class TableRenderer implements TabRenderer {
     let placeholder = this.selectedTime === null ? 0 : this.selectedTime;
     let displayPlaceholder = placeholder + displayOffset;
     let placeholderText = formatTimeWithMS(displayPlaceholder);
-    if (isStartAt0) {
-      placeholderText = "+" + placeholderText;
-    }
     this.INPUT_FIELD.placeholder = placeholderText;
   }
 

@@ -540,14 +540,10 @@ export default class LineGraphRenderer implements TabRenderer {
     }
 
     // Use similar logic as main axes but with an extra decimal point of precision to format the popup timestamps
-    let isStartAt0 = window.preferences?.timestamps !== "original";
     let formatMarkedTimestampText = (time: number, isDelta: boolean = false): string => {
       let displayTime = isDelta ? time : time + displayOffset;
       let fractionDigits = Math.max(0, -Math.floor(Math.log10(timeStepSize / 10)));
       let text = displayTime.toFixed(fractionDigits) + (command.xUnit ?? "s");
-      if (isStartAt0 && !isDelta) {
-        text = "+" + text;
-      }
       return text;
     };
 
@@ -783,9 +779,6 @@ export default class LineGraphRenderer implements TabRenderer {
       }
 
       let text = cleanFloat(stepPos).toString() + (command.xUnit ?? "s");
-      if (isStartAt0) {
-        text = "+" + text;
-      }
 
       context.globalAlpha = 1;
       context.fillText(text, x, graphTop + graphHeight + 15);

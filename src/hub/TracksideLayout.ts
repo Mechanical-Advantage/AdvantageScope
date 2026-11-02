@@ -18,7 +18,7 @@ export function applyTracksideLayout() {
   const actual = match(/(?:torque_feedback|inv_torquefeedback)$/);
   const source = (path: string | undefined, color: string) =>
     path
-      ? [{ type: "smooth", logKey: path, logType: "Number", visible: true, options: { color, size: "normal" } }]
+      ? [{ type: "stepped", logKey: path, logType: "Number", visible: true, options: { color, size: "normal" } }]
       : [];
   const add = (title: string, left: unknown[], right: unknown[], rpmAxis = false) => {
     let state = window.tabs.saveState();

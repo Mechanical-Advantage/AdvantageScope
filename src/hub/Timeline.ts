@@ -281,7 +281,6 @@ export default class Timeline {
     context.fillStyle = light ? "#222" : "#eee";
     context.textAlign = "center";
     context.textBaseline = "middle";
-    let isStartAt0 = window.preferences?.timestamps !== "original";
     let stepPos = Math.ceil(cleanFloat(displayTimeRange[0] / stepSize)) * stepSize;
     let iterCount = 0;
     while (iterCount++ < 100) {
@@ -291,9 +290,6 @@ export default class Timeline {
       }
 
       let text = cleanFloat(stepPos).toString() + "s";
-      if (isStartAt0) {
-        text = "+" + text;
-      }
       context.font = labelFont;
       let textWidth = context.measureText(text).width;
       let textX = clampValue(x, textWidth / 2 + 3, width - textWidth / 2 - 3);
