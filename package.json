@@ -1,7 +1,7 @@
 {
   "name": "mur-voir",
   "productName": "mur-voir",
-  "version": "27.0.0-alpha-6",
+  "version": "0.1.0-alpha.1",
   "description": "Telemetry dashboard for Melbourne Uni Motorsport (based on AdvantageScope)",
   "author": {
     "name": "Melbourne University Motorsports",
@@ -109,7 +109,8 @@
     "electronFuses": {
       "runAsNode": false,
       "enableEmbeddedAsarIntegrityValidation": true,
-      "onlyLoadAppFromAsar": true
+      "onlyLoadAppFromAsar": true,
+      "resetAdHocDarwinSignature": true
     },
     "electronLanguages": [
       "en-US"
