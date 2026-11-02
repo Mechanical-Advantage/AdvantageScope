@@ -10,6 +10,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { test } from "node:test";
+import { mqttMetadata, parseMQTTPayload } from "../src/hub/dataSources/mqtt/MQTTPayload";
 import { LineFollower } from "../tools/radio-bridge/follow";
 import { lineToPacket, sampleToMessages } from "../tools/radio-bridge/mapping";
 
@@ -104,4 +105,30 @@ test("invalid samples and lines are dropped", () => {
   assert.deepEqual(sampleToMessages(sample("lvb0.voltage", 1, "nope")), []);
   assert.deepEqual(sampleToMessages({ value: 1 }), []);
   assert.equal(lineToPacket('{"run_id": "r1", "samples": [{"time"'), null);
+});
+
+test("truncate and refill clears a pending fragment even if size grows", async () => {
+  const file = path.join(tmp(), "live.jsonl");
+  fs.writeFileSync(file, "old\npartial");
+  const { follower, lines, resets } = follow(file, true);
+  await follower.poll();
+  fs.writeFileSync(file, "replacement\nnext\n");
+  await follower.poll();
+  assert.deepEqual(lines, ["old", "replacement", "next"]);
+  assert.deepEqual(resets, ["truncated"]);
+});
+
+test("bridge messages decode with the existing MQTT direct mapping and DBC units", () => {
+  const packet = lineToPacket(
+    '{"samples":[{"time":1793337911758980001,"signal":"can0.Pedal_Status.PEDAL_Position1","value":50}]}'
+  )!;
+  const decoded = packet.messages.flatMap((m) =>
+    parseMQTTPayload(m.topic, Buffer.from(m.payload), {
+      topic: "mur/signal/#",
+      mode: "json-per-signal",
+      timestampPrefix: false
+    })
+  );
+  assert.deepEqual(decoded, [{ path: "PEDALBOX/PEDAL_Position1", value: 50, tNs: "1793337911758980001" }]);
+  assert.equal(mqttMetadata(decoded[0].path)?.unit, "%");
 });

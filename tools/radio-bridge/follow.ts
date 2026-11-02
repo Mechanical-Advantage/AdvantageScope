@@ -28,6 +28,7 @@ export class LineFollower {
   private pending = Buffer.alloc(0);
   private skipToNewline = false;
   private first = true;
+  private anchor = Buffer.alloc(0);
   private timer: NodeJS.Timeout | null = null;
   private busy = false;
 
@@ -58,6 +59,7 @@ export class LineFollower {
 
   private reset(reason: "missing" | "truncated" | "replaced" | "appeared") {
     this.offset = 0;
+    this.anchor = Buffer.alloc(0);
     this.pending = Buffer.alloc(0);
     this.skipToNewline = false;
     this.options.onReset?.(reason);
@@ -93,6 +95,12 @@ export class LineFollower {
       } else if (stat.size < this.offset) {
         this.reset("truncated");
       }
+      // Detect truncate-and-refill even when the new file is already larger than our offset.
+      if (this.anchor.length > 0 && this.offset >= this.anchor.length) {
+        const previous = Buffer.alloc(this.anchor.length);
+        await handle.read(previous, 0, previous.length, this.offset - previous.length);
+        if (!previous.equals(this.anchor)) this.reset("truncated");
+      }
       this.ino = stat.ino;
       while (this.offset < stat.size) {
         const chunk = Buffer.alloc(Math.min(1 << 20, stat.size - this.offset));
@@ -100,6 +108,10 @@ export class LineFollower {
         if (bytesRead === 0) break;
         this.offset += bytesRead;
         this.consume(chunk.subarray(0, bytesRead));
+      }
+      if (this.offset > 0) {
+        this.anchor = Buffer.alloc(Math.min(256, this.offset));
+        await handle.read(this.anchor, 0, this.anchor.length, this.offset - this.anchor.length);
       }
     } finally {
       await handle.close();
