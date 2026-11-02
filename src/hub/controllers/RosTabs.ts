@@ -394,6 +394,7 @@ export class RosLogController extends BaseRosTab {
       return row;
     });
     this.list.replaceChildren(...rows);
+    if (rows.length === 0) this.list.textContent = "No messages match the filters.";
   }
 }
 

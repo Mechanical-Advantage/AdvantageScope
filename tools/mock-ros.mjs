@@ -97,6 +97,9 @@ function schema(type) {
       .join("")
   );
 }
+// ROS_MOCK_STALE="/planning/path,/tf" stops those topics after ROS_MOCK_STALE_AFTER s (default 5) so layer lag flags can be tested.
+const STALE = new Set((process.env.ROS_MOCK_STALE ?? "").split(",").filter(Boolean));
+const STALE_AFTER = Number(process.env.ROS_MOCK_STALE_AFTER ?? 5);
 const server = new FoxgloveServer({ name: "MUR ROS mock", capabilities: ["time"] });
 const ws = new WebSocketServer({
   port: Number(process.env.ROS_MOCK_PORT ?? 8765),
@@ -227,7 +230,8 @@ const timer = setInterval(() => {
   const ns = BigInt(Math.round(t * 1e9));
   server.broadcastTime(ns);
   for (const [topic, channel] of channels)
-    if (topic === "/rosout" && tick % 10 !== 0) continue;
+    if (STALE.has(topic) && t > STALE_AFTER) continue;
+    else if (topic === "/rosout" && tick % 10 !== 0) continue;
     else if (topic === "/camera/front/compressed" && tick % 4 !== 0) continue;
     else if (active.has(channel.id)) server.sendMessage(channel.id, ns, channel.writer.writeMessage(messages[topic]));
 }, 50);

@@ -2688,6 +2688,9 @@ div.inline-settings select {
     color: #eee;
   }
 }
+div.tf-popover[hidden] {
+  display: none !important;
+}
 @media (prefers-color-scheme: light) {
   div.tf-popover {
     background: #fff !important;
