@@ -336,8 +336,18 @@ export class LiveStatusPill {
   private simMessage = "";
   private detailsOpen = false;
   private runLabel: HTMLElement;
+  private failureBar: HTMLElement;
 
   constructor(getState: () => LivePillState, onConnectRequest: (address?: string) => void, onDisconnect: () => void) {
+    this.failureBar = document.createElement("div");
+    this.failureBar.className = "live-failure-bar";
+    this.failureBar.hidden = true;
+    this.failureBar.addEventListener("click", (event) => {
+      const action = (event.target as HTMLElement).closest("button")?.dataset.action;
+      if (action === "edit-address") this.onConnectRequest(this.getState().address);
+      else if (action === "disconnect") this.onDisconnect();
+    });
+    document.body.appendChild(this.failureBar);
     this.runLabel = document.createElement("span");
     this.runLabel.className = "live-run-label mv-chip";
     document.body.appendChild(this.runLabel);
@@ -425,10 +435,25 @@ export class LiveStatusPill {
     const state = this.getState();
     const summary = state.provider?.getLiveStatus() ?? null;
 
+    // Inline failure message at the top of the content area
+    const failing = state.active && (summary?.backend === "error" || (summary?.retryAttempt ?? 0) > 0);
+    const viewer = document.querySelector("div.viewer") as HTMLElement | null;
+    document.body.classList.toggle("live-failure", failing);
+    this.failureBar.hidden = !failing || viewer === null;
+    if (failing && viewer !== null) {
+      this.failureBar.style.top = (viewer.offsetTop - 26).toString() + "px";
+      const html =
+        `<span class="live-failure-text">Cannot reach ${htmlEncode(state.address ?? "the backend")}</span>` +
+        `<button class="text-button" data-action="edit-address">Edit address</button>` +
+        `<button class="text-button" data-action="disconnect">Stop retrying</button>`;
+      if (html !== this.failureBar.innerHTML) this.failureBar.innerHTML = html;
+    }
+
     const pillRect = this.pill.getBoundingClientRect();
     this.runLabel.style.top = pillRect.top.toString() + "px";
     this.runLabel.style.right = (window.innerWidth - pillRect.left + 8).toString() + "px";
     this.runLabel.hidden = summary?.sim === null || summary === null;
+    this.runLabel.style.visibility = "";
     this.runLabel.innerText = summary
       ? `Run ${summary.viewedRun + 1}${
           summary.viewedRun < summary.runCount - 1
@@ -438,6 +463,10 @@ export class LiveStatusPill {
             : " · live"
         }`
       : "";
+    // The chip yields to the sidebar menu when the window is too narrow for both.
+    const sideBarWidth = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--side-bar-width"));
+    if (!this.runLabel.hidden && this.runLabel.getBoundingClientRect().left < (sideBarWidth || 0) + 8)
+      this.runLabel.style.visibility = "hidden";
     // Pill
     let segments: { tone: Tone; text: string; title: string; glyph?: string }[] = [];
     if (!state.active) {
@@ -452,9 +481,14 @@ export class LiveStatusPill {
       if (summary !== null) {
         if (summary.car !== null) {
           const counts = summary.signalCounts;
+          const carState = window.healthStrip?.getCarState() ?? null;
+          const carText =
+            carState === "lost"
+              ? "Car DATA LOST"
+              : "Car " + (summary.car === "stale" ? "PARTIAL" : summary.car.toUpperCase());
           segments.push({
-            tone: FRESHNESS_TONE[summary.car],
-            text: "Car " + (summary.car === "stale" ? "PARTIAL" : summary.car.toUpperCase()),
+            tone: carState === "lost" ? "idle" : FRESHNESS_TONE[summary.car],
+            text: carText,
             title: `Car: ${counts.online} online, ${counts.stale} stale, ${counts.offline} offline, ${counts.neverSeen} never seen`
           });
         }
@@ -521,6 +555,17 @@ export class LiveStatusPill {
 
     // Popover
     if (this.popover.hidden) return;
+    // Sit below the Trackside banner and health strip rather than covering them.
+    const chrome = [
+      document.querySelector(".severity-banner"),
+      document.querySelector(".health-strip"),
+      document.querySelector(".live-failure-bar")
+    ];
+    const bottom = Math.max(
+      40,
+      ...chrome.map((el) => (el instanceof HTMLElement && !el.hidden ? el.getBoundingClientRect().bottom + 4 : 0))
+    );
+    this.popover.style.top = bottom.toString() + "px";
     const rows: [string, string][] = [];
 
     const backend = getBackend(state, summary);

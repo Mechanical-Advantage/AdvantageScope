@@ -166,7 +166,8 @@ export default class LineGraphRenderer implements TabRenderer {
       context.restore();
     });
     // Progress stays readable even when the outage occupies only a few pixels.
-    if (backfill) {
+    // In Trackside the banner carries backfill progress, so it never collides with the axis title.
+    if (backfill && !document.body.classList.contains("has-severity-banner")) {
       context.save();
       context.font = "bold 14px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
       context.textAlign = "right";
