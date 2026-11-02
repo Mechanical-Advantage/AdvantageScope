@@ -992,7 +992,7 @@ table.metadata-table td.no-data {
   font-weight: 600;
 }
 .lap-best {
-  color: #a642d8;
+  color: #8430ae;
   font-weight: 600;
 }
 .lap-personal {
@@ -1035,8 +1035,8 @@ table.metadata-table td.no-data {
   padding: 2px 4px;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.85);
-  font-size: 11px;
-  opacity: 0.8;
+  font-size: 12px;
+  opacity: 1;
 }
 .graph-inline-controls:hover,
 .graph-inline-controls:focus-within {
@@ -1050,7 +1050,7 @@ table.metadata-table td.no-data {
 .lap-axis-mode {
   max-width: 150px;
   height: 20px;
-  font-size: 11px;
+  font-size: 12px;
   color: inherit;
   background: transparent;
   border: 1px solid rgba(128, 128, 128, 0.5);

@@ -299,7 +299,7 @@ export class LiveStatusPill {
 
   constructor(getState: () => LivePillState, onConnectRequest: () => void, onDisconnect: () => void) {
     this.runLabel = document.createElement("span");
-    this.runLabel.className = "live-run-label";
+    this.runLabel.className = "live-run-label mv-chip";
     document.body.appendChild(this.runLabel);
     this.getState = getState;
     this.onConnectRequest = onConnectRequest;
@@ -332,7 +332,7 @@ export class LiveStatusPill {
       if (event.key === "Escape") this.popover.hidden = true;
     });
     this.popover.addEventListener("change", (event) => {
-      if (event.target instanceof HTMLSelectElement && event.target.className === "live-run-select")
+      if (event.target instanceof HTMLSelectElement && event.target.classList.contains("live-run-select"))
         this.getState().provider?.selectRun(Number(event.target.value));
     });
     this.popover.addEventListener(
@@ -382,12 +382,9 @@ export class LiveStatusPill {
     const state = this.getState();
     const summary = state.provider?.getLiveStatus() ?? null;
 
-    const timeline = document.querySelector(".timeline")?.getBoundingClientRect();
-    this.runLabel.style.top =
-      (timeline && timeline.height > 0
-        ? timeline.top + 2
-        : (document.querySelector(".viewer")?.getBoundingClientRect().top ?? 38) + 42
-      ).toString() + "px";
+    const pillRect = this.pill.getBoundingClientRect();
+    this.runLabel.style.top = pillRect.top.toString() + "px";
+    this.runLabel.style.right = (window.innerWidth - pillRect.left + 8).toString() + "px";
     this.runLabel.hidden = summary?.sim === null || summary === null;
     this.runLabel.innerText = summary
       ? `Run ${summary.viewedRun + 1}${
@@ -483,8 +480,7 @@ export class LiveStatusPill {
       const counts = summary.signalCounts;
       rows.push([
         "Car",
-        (summary.car !== null ? toneDot(FRESHNESS_TONE[summary.car]) + htmlEncode(summary.car) + " &middot; " : "") +
-          `${counts.online} fresh &middot; <button class="text-button" data-action="stale">${counts.stale} stale</button> &middot; <button class="text-button" data-action="offline">${counts.offline} offline</button> &middot; ${counts.neverSeen} unknown`
+        `<span class="live-signal-counts">${counts.online} fresh &middot; <button class="text-button" data-action="stale">${counts.stale} stale</button> &middot; <button class="text-button" data-action="offline">${counts.offline} offline</button> &middot; ${counts.neverSeen} unknown</span>`
       ]);
       if (summary.sim !== null) {
         rows.push([

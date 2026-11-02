@@ -114,3 +114,13 @@ test("axis unit matches the legend display profile for every dimension", () => {
     assert.equal(profile.unit, legendSuffix, name);
   }
 });
+
+test("axis display unit follows every registered unit profile and compatible override", () => {
+  for (const rawUnit of Object.keys(Units.ALL_UNITS)) {
+    const profile = channelProfile({ name: "signal", unit: rawUnit });
+    assert.equal(Units.ALL_UNITS[axisDisplayUnit(rawUnit, profile)].suffix, profile.unit, rawUnit);
+    const override = channelProfile({ name: "signal", unit: rawUnit }, { unit: rawUnit });
+    assert.equal(axisDisplayUnit(rawUnit, override), rawUnit);
+  }
+  assert.equal(axisDisplayUnit("kelvin", channelProfile({ name: "unknown" })), "kelvin");
+});

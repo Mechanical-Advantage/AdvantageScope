@@ -434,7 +434,7 @@ export default class Sidebar {
       : "Search";
     if (this.freshnessFilterButton === null) {
       this.freshnessFilterButton = document.createElement("button");
-      this.freshnessFilterButton.className = "sidebar-freshness-filter text-button";
+      this.freshnessFilterButton.className = "sidebar-freshness-filter mv-chip";
       this.SEARCH_INPUT.parentElement!.appendChild(this.freshnessFilterButton);
       this.freshnessFilterButton.addEventListener("click", () => {
         if (this.freshnessFilter) this.toggleFreshnessFilter(this.freshnessFilter);
