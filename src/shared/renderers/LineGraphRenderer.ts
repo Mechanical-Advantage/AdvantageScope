@@ -600,7 +600,7 @@ export default class LineGraphRenderer implements TabRenderer {
       context.restore();
       context.fillStyle = light ? "#222" : "#eee";
       context.textAlign = "left";
-      context.fillText(strip.title, graphLeft + 6, top + 12);
+      context.fillText(strip.title, graphLeft + 6, top - 6);
       context.textAlign = "right";
       context.fillText(strip.range[1].toFixed(2), graphLeft - 4, top + 6);
       context.fillText(strip.range[0].toFixed(2), graphLeft - 4, bottom - 2);
@@ -816,7 +816,8 @@ export default class LineGraphRenderer implements TabRenderer {
       context.fillStyle = light ? "#222" : "#eee";
       context.textAlign = "right";
       context.fillText(command.deltaStrip.range[1].toFixed(2), graphLeft - 8, top + 6);
-      context.fillText("0", graphLeft - 8, scaleValue(0, command.deltaStrip.range, [top + stripHeight, top]));
+      const zeroY = scaleValue(0, command.deltaStrip.range, [top + stripHeight, top]);
+      if (zeroY > top + 14 && zeroY < top + stripHeight - 14) context.fillText("0", graphLeft - 8, zeroY);
       context.fillText(command.deltaStrip.range[0].toFixed(2), graphLeft - 8, top + stripHeight - 4);
     }
 
