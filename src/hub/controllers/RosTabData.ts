@@ -68,3 +68,53 @@ export function imageRGBA(msg: {
     }
   return image;
 }
+
+/** Topics whose name or type contains every whitespace-separated term of the query (case-insensitive). */
+export function filterTopics(topics: string[], query: string, typeOf: (topic: string) => string | null): string[] {
+  const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+  if (terms.length === 0) return topics;
+  return topics.filter((topic) => {
+    const text = (topic + " " + (typeOf(topic) ?? "")).toLowerCase();
+    return terms.every((term) => text.includes(term));
+  });
+}
+
+/** Message rate in Hz over the `span` seconds ending at `time`, or null with fewer than two messages. */
+export function topicRateHz(timestamps: number[], time: number, span = 2): number | null {
+  let count = 0;
+  let first = Infinity;
+  let last = -Infinity;
+  for (const t of timestamps) {
+    if (t > time || t < time - span) continue;
+    count++;
+    first = Math.min(first, t);
+    last = Math.max(last, t);
+  }
+  if (count < 2 || last <= first) return null;
+  return (count - 1) / (last - first);
+}
+
+export function formatHz(hz: number | null): string {
+  if (hz === null) return "—";
+  return (hz >= 10 ? hz.toFixed(0) : hz.toFixed(1)) + " Hz";
+}
+
+/** Log filter: severity, free text over message and node, and node name. Empty node means all nodes. */
+export function filterLogRows<T extends { level: number; node: string; message: string }>(
+  rows: T[],
+  text: string,
+  node: string
+): T[] {
+  const needle = text.trim().toLowerCase();
+  return rows.filter(
+    (row) =>
+      (node === "" || row.node === node) &&
+      (needle === "" || (row.message + " " + row.node).toLowerCase().includes(needle))
+  );
+}
+
+/** Scale an image to fit a panel without upscaling beyond `maxScale`. */
+export function fitScale(width: number, height: number, panelW: number, panelH: number, maxScale = Infinity): number {
+  if (width <= 0 || height <= 0 || panelW <= 0 || panelH <= 0) return 1;
+  return Math.min(panelW / width, panelH / height, maxScale);
+}

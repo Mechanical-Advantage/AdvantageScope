@@ -16,7 +16,16 @@ import LoggableType from "../../shared/log/LoggableType";
 import { getOrDefault } from "../../shared/log/LogUtil";
 import { metadata } from "../../shared/spatial/SpatialLog";
 import { createUUID } from "../../shared/util";
-import { decodeRosPayload, imageRGBA, rosLogRows } from "./RosTabData";
+import {
+  decodeRosPayload,
+  filterLogRows,
+  filterTopics,
+  fitScale,
+  formatHz,
+  imageRGBA,
+  rosLogRows,
+  topicRateHz
+} from "./RosTabData";
 import TabController from "./TabController";
 
 const HIDDEN_CHILDREN = ["/spatial", "/pose3d", "/poses3d", "/xml", "/error", "/length"];
@@ -65,6 +74,11 @@ abstract class BaseRosTab implements TabController {
   }
 }
 
+function isNumericField(key: string): boolean {
+  const type = window.log.getType(key);
+  return type === LoggableType.Number || type === LoggableType.Boolean;
+}
+
 function formatValue(value: unknown): string {
   if (Array.isArray(value)) {
     const shown = value.slice(0, 8).map((v) => (typeof v === "number" ? +v.toFixed(4) : String(v)));
@@ -78,20 +92,77 @@ type TreeNode = { children: Map<string, TreeNode>; key?: string };
 
 export class RawMessagesController extends BaseRosTab {
   private open = new Set<string>();
+  private query = "";
+  private search = document.createElement("input");
+  private list = document.createElement("div");
+
+  constructor(root: HTMLElement) {
+    super(root);
+    this.search.type = "search";
+    this.search.placeholder = "Search topics";
+    this.search.style.cssText = "width:100%;box-sizing:border-box;margin-bottom:6px";
+    this.search.oninput = () => {
+      this.query = this.search.value;
+      this.last = 0;
+    };
+    root.append(this.search, this.list);
+  }
 
   getActiveFields(): string[] {
     return rosTopics();
   }
 
+  saveState(): unknown {
+    return { query: this.query };
+  }
+  restoreState(state: unknown): void {
+    this.query = (state as { query?: string } | null)?.query ?? "";
+    this.search.value = this.query;
+  }
+
+  /** Make a numeric leaf draggable onto a graph axis like a sidebar field. */
+  private makeDraggable(row: HTMLElement, key: string) {
+    if (!isNumericField(key)) return;
+    row.style.cursor = "grab";
+    row.title = "Drag onto a Line Graph axis";
+    row.addEventListener("mousedown", (down) => {
+      const startX = down.clientX;
+      const startY = down.clientY;
+      const rect = row.getBoundingClientRect();
+      const move = (event: MouseEvent) => {
+        if (Math.abs(event.clientX - startX) < 4 && Math.abs(event.clientY - startY) < 4) return;
+        cleanup();
+        const item = document.getElementById("dragItem")!;
+        item.replaceChildren();
+        const text = document.createElement("span");
+        text.classList.add("field-text");
+        text.innerText = key.split("/").slice(-2).join("/");
+        item.append(text);
+        window.startDrag(startX, startY, startX - rect.left, startY - rect.top, { fields: [key], children: [] });
+      };
+      const cleanup = () => {
+        window.removeEventListener("mousemove", move);
+        window.removeEventListener("mouseup", cleanup);
+      };
+      window.addEventListener("mousemove", move);
+      window.addEventListener("mouseup", cleanup);
+    });
+  }
+
   protected update() {
     const time = cursor();
-    const topics = rosTopics();
+    const all = rosTopics();
+    if (all.length === 0) {
+      this.list.textContent = "No ROS topics. Connect to a Foxglove bridge or open an MCAP recording.";
+      return;
+    }
+    const topics = filterTopics(all, this.query, (t) => window.log.getStructuredType(t));
     if (topics.length === 0) {
-      this.root.textContent = "No ROS topics. Connect to a Foxglove bridge or open an MCAP recording.";
+      this.list.textContent = "No topics match \u201c" + this.query + "\u201d.";
       return;
     }
     const keys = window.log.getFieldKeys();
-    this.root.replaceChildren(
+    this.list.replaceChildren(
       ...topics.map((topic) => {
         const details = document.createElement("details");
         details.open = this.open.has(topic);
@@ -106,7 +177,12 @@ export class RawMessagesController extends BaseRosTab {
         const type = document.createElement("span");
         type.style.opacity = "0.6";
         type.textContent = "  " + window.log.getStructuredType(topic);
-        summary.append(type);
+        const badge = document.createElement("span");
+        badge.className = "raw-rate-badge";
+        badge.style.cssText =
+          "float:right;margin-left:8px;padding:0 5px;border-radius:3px;font-family:monospace;font-size:11px;background:var(--control-background,#3333)";
+        badge.textContent = formatHz(topicRateHz(window.log.getRaw(topic, time - 2, time)?.timestamps ?? [], time));
+        summary.append(type, badge);
         details.append(summary);
         if (details.open) details.append(this.buildTree(topic, keys, time));
         return details;
@@ -149,6 +225,7 @@ export class RawMessagesController extends BaseRosTab {
               } else {
                 const row = document.createElement("div");
                 row.textContent = name + ": " + formatValue(child);
+                if (typeof child === "number" || typeof child === "boolean") this.makeDraggable(row, key);
                 parent.append(row);
               }
             });
@@ -208,6 +285,7 @@ export class RawMessagesController extends BaseRosTab {
           const type = window.log.getType(child.key);
           const value = type === null ? "" : getOrDefault(window.log, child.key, type, time, "—");
           row.textContent = name + ": " + formatValue(value);
+          this.makeDraggable(row, child.key);
           parent.append(row);
         }
       }
@@ -234,6 +312,10 @@ const LEVEL_COLORS: { [key: number]: string } = {
 
 export class RosLogController extends BaseRosTab {
   private minLevel = 20;
+  private text = "";
+  private node = "";
+  private nodeSelect = document.createElement("select");
+  private nodeSig = "";
   private bar = document.createElement("div");
   private list = document.createElement("div");
 
@@ -249,8 +331,22 @@ export class RosLogController extends BaseRosTab {
       this.last = 0;
     };
     label.append(select);
+    const search = document.createElement("input");
+    search.type = "search";
+    search.placeholder = "Filter text";
+    search.style.cssText = "margin-left:8px";
+    search.oninput = () => {
+      this.text = search.value;
+      this.last = 0;
+    };
+    this.nodeSelect.onchange = () => {
+      this.node = this.nodeSelect.value;
+      this.last = 0;
+    };
+    this.nodeSelect.style.marginLeft = "8px";
+    this.nodeSelect.append(new Option("All nodes", ""));
     this.bar.style.cssText = "margin-bottom:6px";
-    this.bar.append(label);
+    this.bar.append(label, search, this.nodeSelect);
     this.list.style.cssText = "font-family:monospace;font-size:12px;white-space:pre-wrap";
     root.append(this.bar, this.list);
   }
@@ -278,12 +374,20 @@ export class RosLogController extends BaseRosTab {
       return;
     }
     const origin = window.log.getTimestampRange()[0];
-    const rows = rosLogRows(window.log, time, this.minLevel).map(({ stamp, level, node, message }) => {
+    const levelRows = rosLogRows(window.log, time, this.minLevel);
+    const nodes = [...new Set(levelRows.map((r) => r.node))].sort();
+    const sig = nodes.join("|");
+    if (sig !== this.nodeSig) {
+      this.nodeSig = sig;
+      this.nodeSelect.replaceChildren(new Option("All nodes", ""), ...nodes.map((n) => new Option(n, n)));
+      this.nodeSelect.value = this.node;
+    }
+    const rows = filterLogRows(levelRows, this.text, this.node).map(({ stamp, level, node, message }) => {
       const row = document.createElement("div");
       row.style.color = LEVEL_COLORS[level] ?? "inherit";
       const levelName = LEVELS.find(([, v]) => v === level)?.[0] ?? String(level);
-      row.textContent = `t+${(stamp - origin).toFixed(2)} ${levelName.padEnd(5)} [${node}] ${message}`;
-      row.title = "Stamp " + stamp.toFixed(6) + " s (epoch)";
+      row.textContent = `${(stamp - origin).toFixed(2)}s ${levelName.padEnd(5)} [${node}] ${message}`;
+      row.title = "Stamp " + stamp.toFixed(6) + " s (epoch); time shown is seconds from start of log";
       row.onclick = () => window.selection.setSelectedTime(stamp);
       row.style.cursor = "pointer";
       return row;
@@ -296,6 +400,7 @@ export class RosImageController extends BaseRosTab {
   private topic = "";
   private select = document.createElement("select");
   private canvas = document.createElement("canvas");
+  private frame = document.createElement("div");
   private info = document.createElement("div");
   private drawnStamp = NaN;
   private drawnTopic = "";
@@ -312,8 +417,21 @@ export class RosImageController extends BaseRosTab {
     };
     bar.append("Topic ", this.select, this.info);
     this.info.style.cssText = "display:inline-block;margin-left:10px;opacity:0.7";
-    this.canvas.style.cssText = "max-width:100%;image-rendering:auto;background:#000";
-    root.append(bar, this.canvas);
+    this.canvas.style.cssText = "display:block;image-rendering:auto;background:#000";
+    root.style.overflow = "hidden";
+    root.style.display = "flex";
+    root.style.flexDirection = "column";
+    this.frame.style.cssText = "flex:1 1 0;min-height:0;display:flex;align-items:center;justify-content:center";
+    this.frame.append(this.canvas);
+    new ResizeObserver(() => this.fit()).observe(this.frame);
+    root.append(bar, this.frame);
+  }
+
+  /** Scale the canvas to fill the panel, preserving aspect ratio. */
+  private fit() {
+    const scale = fitScale(this.canvas.width, this.canvas.height, this.frame.clientWidth, this.frame.clientHeight);
+    this.canvas.style.width = Math.floor(this.canvas.width * scale) + "px";
+    this.canvas.style.height = Math.floor(this.canvas.height * scale) + "px";
   }
 
   private imageTopics(): string[] {
@@ -377,6 +495,7 @@ export class RosImageController extends BaseRosTab {
       this.canvas.width = bitmap.width;
       this.canvas.height = bitmap.height;
       ctx.drawImage(bitmap, 0, 0);
+      this.fit();
       const description = `${msg.format} ${bitmap.width}×${bitmap.height}`;
       bitmap.close();
       return description;
@@ -392,6 +511,7 @@ export class RosImageController extends BaseRosTab {
     this.canvas.width = width;
     this.canvas.height = height;
     ctx.putImageData(image, 0, 0);
+    this.fit();
     return `${encoding} ${width}×${height}`;
   }
 }
