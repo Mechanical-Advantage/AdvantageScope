@@ -14,6 +14,7 @@ import { calcAxisStepSize, clampValue, cleanFloat, scaleValue, shiftColor, Value
 import TabRenderer from "./TabRenderer";
 
 import { interpolate } from "../laps/LapEngine";
+import { LapViewport } from "../laps/LapViewport";
 
 export default class LineGraphRenderer implements TabRenderer {
   private Y_STEP_TARGET_PX = 50;
@@ -30,6 +31,7 @@ export default class LineGraphRenderer implements TabRenderer {
   private zoomInAccumulator = 0;
   private scrollSensor: ScrollSensor;
   private lastRenderState = "";
+  private lapViewport = new LapViewport();
   private mouseDownX = 0;
   private grabZoomActive = false;
   private grabZoomStartTime = 0;
@@ -62,7 +64,7 @@ export default class LineGraphRenderer implements TabRenderer {
     // Selection handling
     this.SCROLL_OVERLAY.addEventListener("mousedown", (event) => {
       this.mouseDownX = event.clientX - this.SCROLL_OVERLAY.getBoundingClientRect().x;
-      if (event.shiftKey && this.lastHoveredTime !== null) {
+      if (!this.lapViewport.active && event.shiftKey && this.lastHoveredTime !== null) {
         this.grabZoomActive = true;
         this.grabZoomStartTime = this.lastHoveredTime;
       }
@@ -103,7 +105,12 @@ export default class LineGraphRenderer implements TabRenderer {
       this.SCROLL_OVERLAY,
       (dx: number, dy: number, isPan: boolean, _cursorX: number, _cursorY: number) => {
         if (root.hidden) return;
-        window.selection.applyTimelineScroll(dx, isPan ? 0 : dy, this.SCROLL_OVERLAY.clientWidth);
+        const width = this.SCROLL_OVERLAY.clientWidth;
+        if (this.lapViewport.active) {
+          this.lapViewport.scroll(dx, isPan ? 0 : dy, width, _cursorX / width);
+        } else {
+          window.selection.applyTimelineScroll(dx, isPan ? 0 : dy, width);
+        }
 
         if (window.preferences && !window.preferences.hasScrolledLineGraph && !this.isFadingOut) {
           if (dy < 0) {
@@ -181,6 +188,8 @@ export default class LineGraphRenderer implements TabRenderer {
   }
 
   render(command: LineGraphRendererCommand): void {
+    // Commands carry the full lap extent; navigation belongs to this graph, including satellites.
+    command = { ...command, timeRange: this.lapViewport.update(command.lapMode ?? "time", command.timeRange) };
     this.scrollSensor.periodic();
 
     // Update help overlay
@@ -556,6 +565,10 @@ export default class LineGraphRenderer implements TabRenderer {
       });
       context.font = "14px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
     };
+    context.save();
+    context.beginPath();
+    context.rect(graphLeft, graphTop, graphWidth, graphHeightOpen);
+    context.clip();
     if (command.priorityAxis === "left") {
       drawNumericFields(command.rightFields, command.rightRange);
       drawNumericFields(command.leftFields, command.leftRange);
@@ -566,6 +579,7 @@ export default class LineGraphRenderer implements TabRenderer {
 
     drawEndValues(command.leftFields, command.leftRange);
     drawEndValues(command.rightFields, command.rightRange);
+    context.restore();
     context.setLineDash([]);
     context.globalAlpha = 1;
 
@@ -866,6 +880,10 @@ export default class LineGraphRenderer implements TabRenderer {
           context.stroke();
         }
 
+        context.save();
+        context.beginPath();
+        context.rect(graphLeft, graphTop, graphWidth, graphHeightOpen);
+        context.clip();
         if (command.priorityAxis === "left") {
           context.globalAlpha = 0.1;
           context.beginPath();
@@ -979,6 +997,7 @@ export default class LineGraphRenderer implements TabRenderer {
 }
 
 export type LineGraphRendererCommand = {
+  lapMode?: string;
   thresholds?: { axis: "left" | "right"; value: number; label: string; critical: boolean }[];
   leftTitle?: string;
   rightTitle?: string;
