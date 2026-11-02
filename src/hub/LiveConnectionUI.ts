@@ -453,6 +453,7 @@ export class LiveStatusPill {
     this.runLabel.style.top = pillRect.top.toString() + "px";
     this.runLabel.style.right = (window.innerWidth - pillRect.left + 8).toString() + "px";
     this.runLabel.hidden = summary?.sim === null || summary === null;
+    this.runLabel.style.visibility = "";
     this.runLabel.innerText = summary
       ? `Run ${summary.viewedRun + 1}${
           summary.viewedRun < summary.runCount - 1
@@ -462,6 +463,10 @@ export class LiveStatusPill {
             : " · live"
         }`
       : "";
+    // The chip yields to the sidebar menu when the window is too narrow for both.
+    const sideBarWidth = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--side-bar-width"));
+    if (!this.runLabel.hidden && this.runLabel.getBoundingClientRect().left < (sideBarWidth || 0) + 8)
+      this.runLabel.style.visibility = "hidden";
     // Pill
     let segments: { tone: Tone; text: string; title: string; glyph?: string }[] = [];
     if (!state.active) {
@@ -551,7 +556,11 @@ export class LiveStatusPill {
     // Popover
     if (this.popover.hidden) return;
     // Sit below the Trackside banner and health strip rather than covering them.
-    const chrome = [document.querySelector(".severity-banner"), document.querySelector(".health-strip")];
+    const chrome = [
+      document.querySelector(".severity-banner"),
+      document.querySelector(".health-strip"),
+      document.querySelector(".live-failure-bar")
+    ];
     const bottom = Math.max(
       40,
       ...chrome.map((el) => (el instanceof HTMLElement && !el.hidden ? el.getBoundingClientRect().bottom + 4 : 0))

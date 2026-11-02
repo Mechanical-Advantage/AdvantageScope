@@ -1823,6 +1823,9 @@ button.live-pill {
   font-family: inherit;
   color: inherit;
   white-space: nowrap;
+  overflow: hidden;
+  /* Never extend over the menu in the sidebar column */
+  max-width: calc(100vw - var(--side-bar-width) - 154px - var(--show-lock-buttons) * 28px - 12px);
   -webkit-app-region: no-drag;
 }
 
