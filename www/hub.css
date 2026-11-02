@@ -2499,6 +2499,19 @@ body.trackside-layout div.source-list div.value {
   outline: 2px solid #dba957;
   outline-offset: 1px;
 }
+/* Locked right axis in lap modes: a quiet note, no dashed drop target */
+div.line-graph-axis.zone-locked::after {
+  content: "Locked: shows ΔT";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 56px;
+  text-align: center;
+  font-size: 13px;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
 /* Empty drop zones */
 div.line-graph-axis.zone-empty::after {
   content: "Drag a signal here";

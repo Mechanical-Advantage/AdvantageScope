@@ -16,6 +16,7 @@ import {
   formatChannelValue
 } from "../../shared/display/ChannelProfile";
 import { compatibleProfiles, splitLegendName } from "../../shared/display/LineGraphStyle";
+import { formatSignedSeconds, heldValueAt, sectorDeltaText } from "../../shared/laps/LapAnalysis";
 import { interpolate, lapSamples } from "../../shared/laps/LapEngine";
 import { getLogValueText } from "../../shared/log/LogUtil";
 import { LogValueSetNumber } from "../../shared/log/LogValueSets";
@@ -76,7 +77,7 @@ export default class LineGraphController implements TabController {
     mode.className = "lap-axis-mode mv-select";
     mode.setAttribute("aria-label", "Line graph x-axis mode");
     [
-      ["time", "Time"],
+      ["time", "Session time"],
       ["lapTime", "Lap time overlay"],
       ["distance", "Lap distance + ΔT"]
     ].forEach(([value, label]) => mode.add(new Option(label, value)));
@@ -86,7 +87,10 @@ export default class LineGraphController implements TabController {
     };
     const controls = document.createElement("div");
     controls.className = "graph-inline-controls";
-    controls.append(mode);
+    const modeLabel = document.createElement("label");
+    modeLabel.className = "lap-axis-label";
+    modeLabel.append("X axis", mode);
+    controls.append(modeLabel);
     const toggle = document.createElement("label");
     const check = document.createElement("input");
     check.type = "checkbox";
@@ -203,9 +207,9 @@ export default class LineGraphController implements TabController {
           // The right axis is locked to ΔT in lap-distance mode
           const lock = document.createElement("div");
           lock.className = "graph-unit-prompt";
-          lock.append("Right axis is locked to ΔT in lap mode — ");
+          lock.append("Right axis is locked to ΔT in lap modes, so this signal can't go there. ");
           const move = document.createElement("button");
-          move.textContent = "Move to Left Axis";
+          move.textContent = "Add to Left Axis instead";
           move.onclick = () => {
             other.addField(key);
             lock.remove();
@@ -582,9 +586,12 @@ export default class LineGraphController implements TabController {
     ];
     let empty = true;
     for (const [selector, list] of zones) {
-      const zoneEmpty = list.getState().length === 0;
+      const locked = list === this.rightSourceList && this.lapMode !== "time";
+      const zoneEmpty = list.getState().length === 0 && !locked;
       if (!zoneEmpty) empty = false;
-      this.rootElement.querySelector(selector)?.classList.toggle("zone-empty", zoneEmpty);
+      const zone = this.rootElement.querySelector(selector);
+      zone?.classList.toggle("zone-empty", zoneEmpty);
+      zone?.classList.toggle("zone-locked", locked);
     }
     document.body.classList.toggle("line-graph-empty", empty);
   }
@@ -1116,11 +1123,12 @@ export default class LineGraphController implements TabController {
               size: "normal" as const
             }));
           const vs = stripFields.flatMap((f) => f.values).filter(Number.isFinite);
-          const pad = 0.05;
+          const pad = Math.max(0.05, (Math.max(0, ...vs) - Math.min(0, ...vs)) * 0.08);
           result.deltaStrip = {
             fields: stripFields,
             range: [Math.min(0, ...vs) - pad, Math.max(0, ...vs) + pad],
-            title: `ΔT vs Lap ${reference.index} [s], + = slower`
+            title: `ΔT vs Lap ${reference.index} [s], + = slower`,
+            referenceLabel: `Lap ${reference.index} (ref)`
           };
         }
       }
@@ -1130,7 +1138,9 @@ export default class LineGraphController implements TabController {
       result.displayOffset = 0;
       result.xUnit = distance ? "m" : "s";
       const split = (lap: (typeof laps)[number]) =>
-        lap.sectors.map((t, j) => `S${j + 1} ${Number.isFinite(t) ? t.toFixed(2) : "—"}`).join(" · ");
+        reference && lap.index !== reference.index
+          ? sectorDeltaText(lap.sectors, reference.sectors)
+          : lap.sectors.map((t, j) => `S${j + 1} ${Number.isFinite(t) ? t.toFixed(2) + " s" : "—"}`).join(" · ");
       result.lapLabels = laps.map((lap, i) => ({
         text: `Lap ${lap.index}${lap.index === lapService.reference ? " (ref)" : ""}  ${(lap.end - lap.start).toFixed(
           2
@@ -1170,6 +1180,24 @@ export default class LineGraphController implements TabController {
           : t - cursorLap.start;
       result.selectedTime = transform(result.selectedTime);
       result.hoveredTime = transform(result.hoveredTime);
+      // Each lap's own value (and ΔT) at the cursor, so overlaid laps are not collapsed into one number
+      const cursorX = result.hoveredTime ?? result.selectedTime;
+      if (cursorX !== null) {
+        const perLap = laps.map(() => [] as string[]);
+        const lapFields = result.leftFields;
+        lapFields.forEach((field, k) => {
+          const lapIndex = k % laps.length;
+          const v = heldValueAt(field.timestamps, field.values, cursorX);
+          if (Number.isFinite(v)) perLap[lapIndex].push(Number(v.toPrecision(4)).toString());
+        });
+        result.lapValues = perLap.map((v) => v.join(" / "));
+        if (result.deltaStrip) {
+          result.deltaStrip.readout = result.deltaStrip.fields.map((f) => ({
+            text: formatSignedSeconds(interpolate(f.timestamps, f.values, cursorX)),
+            color: f.color
+          }));
+        }
+      }
       result.grabZoomRange = null;
       const seekLap = lapService.result.laps.find((l) => l.index === lapService.selected) ?? reference;
       if (seekLap)

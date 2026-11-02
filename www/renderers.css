@@ -1008,6 +1008,16 @@ table.metadata-table td.no-data {
   padding: 12px;
   font-size: 13px;
 }
+.lap-hint {
+  /* Footer stays pinned inside the scroll area, with room so scrollbars never cover its text */
+  position: sticky;
+  left: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  padding: 8px 20px 18px 12px;
+  background: #eee;
+  border-top: 1px solid #8884;
+}
 .lap-empty {
   position: absolute;
   top: 40%;
@@ -1018,6 +1028,9 @@ table.metadata-table td.no-data {
 @media (prefers-color-scheme: dark) {
   .lap-setup,
   .lap-heading {
+    background: #222;
+  }
+  .lap-hint {
     background: #222;
   }
   .lap-best {
@@ -1050,6 +1063,10 @@ table.metadata-table td.no-data {
   display: flex;
   align-items: center;
   gap: 3px;
+}
+.graph-inline-controls label.lap-axis-label {
+  gap: 5px;
+  font-weight: 600;
 }
 .lap-axis-mode {
   max-width: 150px;
