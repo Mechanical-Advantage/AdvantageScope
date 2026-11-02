@@ -1290,12 +1290,19 @@ export default class SourceList {
         // Sample age and rate, so a held value from a stalled source is not mistaken for a live one
         const recent = window.log.getNumber(state.logKey, rawTime - 10, rawTime);
         const ts = recent?.timestamps ?? [];
-        const last = ts.at(-1);
+        const last = ts.findLast((t) => t <= rawTime);
         if (last === undefined) valueText.title += "\nno sample in the last 10 s";
         else {
-          const recentRate = ts.filter((t) => t > last - 1).length - 1;
+          const recentRate = ts.filter((t) => t <= rawTime && t > last - 1).length - 1;
+          let nominalRate: number | undefined;
+          try {
+            nominalRate = JSON.parse(window.log.getMetadataString(state.logKey)).nominal_rate_hz;
+          } catch {
+            /* Not every imported field has JSON metadata. */
+          }
           valueText.title +=
-            `\nsample age ${(rawTime - last).toFixed(2)} s` + (recentRate > 0 ? ` · ${recentRate} Hz` : "");
+            `\nsample age ${(rawTime - last).toFixed(2)} s` +
+            (nominalRate ? ` · source ${nominalRate} Hz` : recentRate > 0 ? ` · retained ${recentRate} Hz` : "");
         }
       }
     }

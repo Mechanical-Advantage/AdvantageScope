@@ -460,7 +460,8 @@ export default class LineGraphRenderer implements TabRenderer {
           cols.forEach((c, i) => {
             const x = (c.x + 0.5) * px,
               y = yScaler.calculate(c.mean);
-            if (i === 0 || c.x - cols[i - 1].x > 8 * devicePixelRatio) context.moveTo(x, y);
+            if (i === 0 || c.segment !== cols[i - 1].segment || c.x - cols[i - 1].x > 8 * devicePixelRatio)
+              context.moveTo(x, y);
             else context.lineTo(x, y);
           });
           context.stroke();
@@ -518,7 +519,6 @@ export default class LineGraphRenderer implements TabRenderer {
 
           case "points":
             let deltaX = graphWidth / Math.max(1, field.timestamps.length - 1);
-            console.log(deltaX);
             let radius = clampValue(Math.log(deltaX * 3.0), 1.0, 5.0);
             context.beginPath();
             for (let i = 0; i < field.timestamps.length; i++) {
@@ -565,7 +565,7 @@ export default class LineGraphRenderer implements TabRenderer {
     }
     if (command.deltaStrip) {
       const top = graphTop + graphHeightOpen + stripGap;
-      const bottom = graphTop + graphHeight;
+      const bottom = top + stripHeight;
       const strip = command.deltaStrip;
       const yScaler = new ValueScaler(strip.range, [bottom, top]);
       context.globalAlpha = 1;
@@ -602,8 +602,8 @@ export default class LineGraphRenderer implements TabRenderer {
       context.textAlign = "left";
       context.fillText(strip.title, graphLeft + 6, top + 12);
       context.textAlign = "right";
-      context.fillText(cleanFloat(strip.range[1]).toString(), graphLeft - 4, top + 6);
-      context.fillText(cleanFloat(strip.range[0]).toString(), graphLeft - 4, bottom - 2);
+      context.fillText(strip.range[1].toFixed(2), graphLeft - 4, top + 6);
+      context.fillText(strip.range[0].toFixed(2), graphLeft - 4, bottom - 2);
     }
 
     for (const threshold of command.thresholds ?? []) {
@@ -809,6 +809,17 @@ export default class LineGraphRenderer implements TabRenderer {
     context.clearRect(graphLeft + graphWidth, graphTop, width - graphLeft - graphWidth, graphHeight);
     context.strokeRect(graphLeft, graphTop, graphWidth, graphHeight);
 
+    // Labels outside the plot must be painted after clearing overflow.
+    if (command.deltaStrip) {
+      const top = graphTop + graphHeightOpen + stripGap;
+      context.globalAlpha = 1;
+      context.fillStyle = light ? "#222" : "#eee";
+      context.textAlign = "right";
+      context.fillText(command.deltaStrip.range[1].toFixed(2), graphLeft - 8, top + 6);
+      context.fillText("0", graphLeft - 8, scaleValue(0, command.deltaStrip.range, [top + stripHeight, top]));
+      context.fillText(command.deltaStrip.range[0].toFixed(2), graphLeft - 8, top + stripHeight - 4);
+    }
+
     // Render Y axes
     context.lineWidth = 1;
     context.strokeStyle = light ? "#222" : "#eee";
@@ -821,7 +832,7 @@ export default class LineGraphRenderer implements TabRenderer {
       let iterCount = 0;
       while (iterCount++ < 100) {
         let y = scaleValue(stepPos, command.leftRange, [graphTop + graphHeightOpen, graphTop]);
-        if (y > graphTop + graphHeight) break;
+        if (y > graphTop + graphHeightOpen) break;
 
         context.globalAlpha = 1;
         if (Math.abs(stepPos) < this.MAX_DECIMAL_VALUE || stepPos % 1 === 0) {
@@ -850,7 +861,7 @@ export default class LineGraphRenderer implements TabRenderer {
       let iterCount = 0;
       while (iterCount++ < 100) {
         let y = scaleValue(stepPos, command.rightRange, [graphTop + graphHeightOpen, graphTop]);
-        if (y > graphTop + graphHeight) break;
+        if (y > graphTop + graphHeightOpen) break;
 
         context.globalAlpha = 1;
         if (Math.abs(stepPos) < this.MAX_DECIMAL_VALUE || stepPos % 1 === 0) {
@@ -878,6 +889,12 @@ export default class LineGraphRenderer implements TabRenderer {
     }
 
     context.globalAlpha = 1;
+    context.fillStyle = light ? "#222" : "#eee";
+    context.textAlign = "center";
+    for (const mark of command.sectorMarks ?? []) {
+      const x = xScaler.calculate(mark.x);
+      if (x >= graphLeft && x <= graphLeft + graphWidth) context.fillText(mark.label, x, graphTop + graphHeight + 29);
+    }
     context.textAlign = "left";
     context.fillText(command.leftTitle ?? "", graphLeft, 15);
     context.textAlign = "right";

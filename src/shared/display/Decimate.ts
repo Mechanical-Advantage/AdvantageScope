@@ -8,7 +8,7 @@
 // Min/max/mean decimation of a time series into pixel columns, so high-rate data draws as a faint
 // envelope plus a mean line instead of an aliased solid block.
 
-export type Column = { x: number; min: number; max: number; mean: number };
+export type Column = { x: number; min: number; max: number; mean: number; segment: number };
 
 /**
  * Collapse samples into one entry per device-pixel column.
@@ -28,6 +28,7 @@ export function decimateColumns(
   smooth = 0
 ): Column[] {
   const cols: Column[] = [];
+  let segment = 0;
   let sum = 0,
     count = 0,
     current: Column | null = null;
@@ -42,12 +43,16 @@ export function decimateColumns(
   };
   for (let i = 0; i < xs.length; i++) {
     const v = vs[i];
-    if (!Number.isFinite(v)) continue;
+    if (!Number.isFinite(v)) {
+      flush();
+      segment++;
+      continue;
+    }
     const px = Math.floor(toX(xs[i]));
     if (px < left - 1) continue;
     if (px > right + 1) break;
     if (current && current.x !== px) flush();
-    if (!current) current = { x: px, min: v, max: v, mean: v };
+    if (!current) current = { x: px, min: v, max: v, mean: v, segment };
     if (v < current.min) current.min = v;
     if (v > current.max) current.max = v;
     sum += v;
@@ -61,8 +66,8 @@ export function decimateColumns(
       hi = 0,
       total = 0;
     cols.forEach((c, i) => {
-      while (hi < cols.length && cols[hi].x <= c.x + half) total += means[hi++];
-      while (cols[lo].x < c.x - half) total -= means[lo++];
+      while (hi < cols.length && cols[hi].x <= c.x + half && cols[hi].segment <= c.segment) total += means[hi++];
+      while (lo < hi && (cols[lo].x < c.x - half || cols[lo].segment < c.segment)) total -= means[lo++];
       c.mean = total / (hi - lo);
     });
   }

@@ -148,6 +148,8 @@ export default class LapRenderer implements TabRenderer {
     this.lastDraw = "";
     const setupOpen = this.toolbar.querySelector("details")?.open ?? false;
     const c = this.command!;
+    const scrollTop = this.content.scrollTop,
+      scrollLeft = this.content.scrollLeft;
     this.content.replaceChildren();
     const toolbarKey = JSON.stringify([c.field, c.unit, c.map, c.settings]);
     if (toolbarKey !== this.toolbarKey) {
@@ -334,6 +336,8 @@ export default class LapRenderer implements TabRenderer {
     hint.textContent =
       "Select a row to seek · choose reference and overlays for Line Graph · purple: session best · green: improved personal best. Partial / invalid laps excluded from bests. Drag a numeric field here for metrics.";
     this.content.append(hint);
+    this.content.scrollTop = scrollTop;
+    this.content.scrollLeft = scrollLeft;
   }
   private draw() {
     const c = this.command!,

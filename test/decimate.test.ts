@@ -37,3 +37,12 @@ test("density threshold is two samples per pixel", () => {
   assert.equal(isDense(1000, 600), false);
   assert.equal(isDense(1300, 600), true);
 });
+
+test("NaN outages separate dense segments and smoothing does not bridge them", () => {
+  const cols = decimateColumns([0, 1, 2, 3, 4], [10, 10, NaN, 90, 90], (x) => x, 0, 4, 60);
+  assert.deepEqual(
+    cols.map((c) => c.mean),
+    [10, 10, 90, 90]
+  );
+  assert.notEqual(cols[1].segment, cols[2].segment);
+});

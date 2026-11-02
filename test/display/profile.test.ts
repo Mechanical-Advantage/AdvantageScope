@@ -98,3 +98,8 @@ test("dimension precision is stable across magnitudes and supports explicit over
   assert.equal(formatChannelValue(10, channelProfile(metadata), false, true), "10.0 °C");
   assert.equal(formatChannelValue(300, channelProfile(metadata, { precision: 3 })), "26.850 °C");
 });
+
+test("empty catalogue values retain engineering units", () => {
+  assert.equal(fmt(null, "m/s", "vehicle_speed"), "— m/s");
+  assert.equal(fmt(undefined, "K", "temperature"), "— °C");
+});
