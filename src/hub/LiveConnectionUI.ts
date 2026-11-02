@@ -49,7 +49,7 @@ export class ConnectDialog {
         <table>
           <tr>
             <td class="label">Source</td>
-            <td class="input"><select class="connect-source" title="Select the live source"></select></td>
+            <td class="input"><select class="connect-source mv-select" title="Select the live source"></select></td>
           </tr>
           <tr>
             <td class="label">Address</td>
@@ -58,8 +58,8 @@ export class ConnectDialog {
           <tr class="mqtt-option"><td class="label">Username</td><td class="input"><input class="mqtt-username" aria-label="MQTT username" autocomplete="off" title="Session-only broker username" /></td></tr>
           <tr class="mqtt-option"><td class="label">Password</td><td class="input"><input class="mqtt-password" aria-label="MQTT password" type="password" autocomplete="off" title="Session-only broker password" /></td></tr>
           <tr class="mqtt-option"><td class="label">Topic filter</td><td class="input"><input class="mqtt-topic" aria-label="Topic filter" value="mur/#" spellcheck="false" /></td></tr>
-          <tr class="mqtt-option"><td class="label">Mapping</td><td class="input"><select class="mqtt-mode" aria-label="Mapping mode"><option value="json-per-signal">JSON per signal</option><option value="json-object">JSON object</option><option value="raw-can">Raw CAN + DBC</option><option value="ascii">ASCII name=value</option></select></td></tr>
-          <tr class="mqtt-option"><td class="label">CAN timestamp</td><td class="input"><label><input class="mqtt-timestamp" type="checkbox" /> u64 ns prefix (big endian)</label></td></tr>
+          <tr class="mqtt-option"><td class="label">Mapping</td><td class="input"><select class="mqtt-mode mv-select" aria-label="Mapping mode"><option value="json-per-signal">JSON per signal</option><option value="json-object">JSON object</option><option value="raw-can">Raw CAN + DBC</option><option value="ascii">ASCII name=value</option></select></td></tr>
+          <tr class="mqtt-option"><td class="label">CAN timestamp</td><td class="input"><label><input class="mqtt-timestamp mv-checkbox" type="checkbox" /> u64 ns prefix (big endian)</label></td></tr>
         </table>
         <div class="connect-recent-title">Recent</div>
         <div class="connect-recent"></div>
@@ -299,7 +299,7 @@ export class LiveStatusPill {
 
   constructor(getState: () => LivePillState, onConnectRequest: () => void, onDisconnect: () => void) {
     this.runLabel = document.createElement("span");
-    this.runLabel.className = "live-run-label";
+    this.runLabel.className = "live-run-label mv-chip";
     document.body.appendChild(this.runLabel);
     this.getState = getState;
     this.onConnectRequest = onConnectRequest;
@@ -332,7 +332,7 @@ export class LiveStatusPill {
       if (event.key === "Escape") this.popover.hidden = true;
     });
     this.popover.addEventListener("change", (event) => {
-      if (event.target instanceof HTMLSelectElement && event.target.className === "live-run-select")
+      if (event.target instanceof HTMLSelectElement && event.target.classList.contains("live-run-select"))
         this.getState().provider?.selectRun(Number(event.target.value));
     });
     this.popover.addEventListener(
@@ -382,12 +382,9 @@ export class LiveStatusPill {
     const state = this.getState();
     const summary = state.provider?.getLiveStatus() ?? null;
 
-    const timeline = document.querySelector(".timeline")?.getBoundingClientRect();
-    this.runLabel.style.top =
-      (timeline && timeline.height > 0
-        ? timeline.top + 2
-        : (document.querySelector(".viewer")?.getBoundingClientRect().top ?? 38) + 42
-      ).toString() + "px";
+    const pillRect = this.pill.getBoundingClientRect();
+    this.runLabel.style.top = pillRect.top.toString() + "px";
+    this.runLabel.style.right = (window.innerWidth - pillRect.left + 8).toString() + "px";
     this.runLabel.hidden = summary?.sim === null || summary === null;
     this.runLabel.innerText = summary
       ? `Run ${summary.viewedRun + 1}${
@@ -436,8 +433,8 @@ export class LiveStatusPill {
           segments.push({
             tone: "warn",
             text: `Retry ${summary.retryAttempt} in ${summary.retryInS.toFixed(1)} s · last receipt ${
-              summary.lastReceiptAgeS?.toFixed(1) ?? "unknown"
-            } s`,
+              summary.lastReceiptAgeS == null ? "no data yet" : summary.lastReceiptAgeS.toFixed(1) + " s"
+            }`,
             title: summary.backendDetail
           });
         if (summary.receivingAgain)
@@ -483,8 +480,7 @@ export class LiveStatusPill {
       const counts = summary.signalCounts;
       rows.push([
         "Car",
-        (summary.car !== null ? toneDot(FRESHNESS_TONE[summary.car]) + htmlEncode(summary.car) + " &middot; " : "") +
-          `${counts.online} fresh, <button class="text-button" data-action="stale">${counts.stale} stale</button>, <button class="text-button" data-action="offline">${counts.offline} offline</button>, ${counts.neverSeen} unknown`
+        `<span class="live-signal-counts">${counts.online} fresh &middot; <button class="text-button" data-action="stale">${counts.stale} stale</button> &middot; <button class="text-button" data-action="offline">${counts.offline} offline</button> &middot; ${counts.neverSeen} unknown</span>`
       ]);
       if (summary.sim !== null) {
         rows.push([
@@ -529,7 +525,7 @@ export class LiveStatusPill {
       }</td></tr>`;
     html += `</table></details>`;
     if (summary?.sim)
-      html += `<div class="live-run-controls"><label>Run <select class="live-run-select">${Array.from(
+      html += `<div class="live-run-controls"><label>Run <select class="live-run-select mv-select">${Array.from(
         { length: summary.runCount },
         (_, i) =>
           `<option value="${i}" ${i === summary.viewedRun ? "selected" : ""}>Run ${i + 1}${

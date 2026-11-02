@@ -119,6 +119,7 @@ export default class Field3dController implements TabController {
     const axesLabel = document.createElement("label");
     axesLabel.textContent = "Frame axes ";
     this.frameAxes.type = "checkbox";
+    this.frameAxes.className = "mv-checkbox";
     axesLabel.append(this.frameAxes);
     const trackInput = document.createElement("input");
     trackInput.type = "file";
@@ -136,7 +137,10 @@ export default class Field3dController implements TabController {
         this.robotStatus.textContent = String(error);
       }
     };
-    settings.append(fixedLabel, axesLabel, load, folder, trackButton, trackInput, this.robotStatus);
+    const coneKey = document.createElement("div");
+    coneKey.className = "cone-class-key";
+    coneKey.textContent = "Cone classes: blue · yellow · orange · large orange · unknown";
+    settings.append(fixedLabel, axesLabel, load, folder, trackButton, trackInput, coneKey, this.robotStatus);
     this.layerStatus.hidden = true;
     root.append(this.layerStatus);
     this.layerStatus.style.cssText = "position:absolute;bottom:4px;left:12px;font-size:12px;pointer-events:none";
@@ -371,7 +375,7 @@ export default class Field3dController implements TabController {
     const status = (text: string, error = false) => {
       const chip = document.createElement("div");
       chip.textContent = text;
-      chip.style.color = error ? "var(--red, #e66)" : "var(--subtle-text, #aaa)";
+      chip.style.color = error ? "var(--health-crit)" : "var(--health-muted)";
       this.layerStatus.append(chip);
     };
     // Get field data

@@ -88,6 +88,14 @@ export function channelProfile(metadata: ChannelMetadata, override: ChannelOverr
     enumLabels: metadata.enumLabels
   };
 }
+/**
+ * Unit an axis should use so tick labels and title match the legend: the first signal's display unit
+ * (e.g. celsius, not raw kelvin) provided it is the same unit group as the raw unit. Falls back to the raw unit.
+ */
+export function axisDisplayUnit(rawUnit: string, profile: ChannelProfile): string {
+  const display = profile.to;
+  return display !== null && Units.GROUP_BY_UNIT[display] === Units.GROUP_BY_UNIT[rawUnit] ? display : rawUnit;
+}
 export function convertChannelValue(value: number, profile: ChannelProfile, delta = false): number {
   if (!profile.from || !profile.to) return value;
   const converted = Units.convert(value, profile.from, profile.to);

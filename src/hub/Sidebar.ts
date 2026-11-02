@@ -434,7 +434,7 @@ export default class Sidebar {
       : "Search";
     if (this.freshnessFilterButton === null) {
       this.freshnessFilterButton = document.createElement("button");
-      this.freshnessFilterButton.className = "sidebar-freshness-filter text-button";
+      this.freshnessFilterButton.className = "sidebar-freshness-filter mv-chip";
       this.SEARCH_INPUT.parentElement!.appendChild(this.freshnessFilterButton);
       this.freshnessFilterButton.addEventListener("click", () => {
         if (this.freshnessFilter) this.toggleFreshnessFilter(this.freshnessFilter);
@@ -910,7 +910,7 @@ export default class Sidebar {
           const dialog = document.createElement("dialog");
           dialog.className = "channel-display-dialog";
           dialog.innerHTML = `<form method="dialog"><strong>Channel display</strong><p class="channel-name"></p>
-            <p><label>Unit <select name="unit"><option value="">Automatic</option></select></label></p>
+            <p><label>Unit <select class="mv-select" name="unit"><option value="">Automatic</option></select></label></p>
             <p><label>Decimal places <input name="precision" type="number" min="0" max="12" step="1" placeholder="Automatic" /></label></p>
             <button value="cancel">Cancel</button> <button value="apply">Apply</button></form>`;
           dialog.querySelector(".channel-name")!.textContent = field.fullKey!;

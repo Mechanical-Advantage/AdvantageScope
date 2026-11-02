@@ -344,7 +344,7 @@ div.side-bar-title {
   line-height: 20px;
   text-align: center;
   font-weight: bold;
-  opacity: 50%;
+  color: var(--health-muted);
 
   white-space: nowrap;
   overflow: hidden;
@@ -380,7 +380,7 @@ input.side-bar-search {
 }
 
 input.side-bar-search::placeholder {
-  color: rgba(0, 0, 0, 0.25);
+  color: #666;
 }
 
 input.side-bar-search::-webkit-search-cancel-button {
@@ -421,7 +421,7 @@ button.side-bar-tuning-button.active > img {
   }
 
   input.side-bar-search::placeholder {
-    color: rgba(255, 255, 255, 0.25);
+    color: #bbb;
   }
 
   input.side-bar-search::-webkit-search-cancel-button {
@@ -591,12 +591,12 @@ div.field-item-freshness.online {
   color: #2a9d3a;
 }
 div.field-item-freshness.stale {
-  color: #c98a00;
+  color: #835600;
 }
 span.field-item-unsync {
   cursor: help;
   font-style: normal;
-  color: #c98a00;
+  color: #835600;
 }
 @media (prefers-color-scheme: dark) {
   div.field-item-freshness.online {
@@ -1379,7 +1379,7 @@ div.setting-blocks div.split div span {
   width: 18px;
   height: 18px;
   border-radius: 3px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: bold;
   line-height: 1;
   background-color: #000;
@@ -1819,7 +1819,7 @@ button.live-pill {
   align-items: center;
   border: 1px solid #ccc;
   border-radius: 11px;
-  font-size: 11px;
+  font-size: 12px;
   font-family: inherit;
   color: inherit;
   white-space: nowrap;
@@ -1889,7 +1889,7 @@ span.live-pill-segment.bad span.live-pill-dot {
 
 span.live-pill-segment.warn span.live-pill-glyph,
 span.live-warn {
-  color: #c98a00;
+  color: #835600;
 }
 
 span.live-pill-segment.bad span.live-pill-glyph {
@@ -1972,7 +1972,9 @@ button.text-button {
   font-family: inherit;
   color: inherit;
   padding: 3px 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #999;
+  border-radius: 4px;
+  white-space: nowrap;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -2176,8 +2178,9 @@ div.connect-message {
   min-height: 18px;
 }
 .live-freshness-legend {
-  font-size: 11px;
-  opacity: 0.8;
+  font-size: 12px;
+  opacity: 1;
+  color: #555;
   margin: 8px 0;
 }
 .live-run-controls {
@@ -2190,9 +2193,9 @@ div.connect-message {
   position: absolute;
   right: 8px;
   top: 2px;
-  font-size: 11px;
+  font-size: 12px;
   background: var(--background-color, #222);
-  color: #aaa;
+  color: #bbb;
   pointer-events: none;
   z-index: 100;
 }
@@ -2213,7 +2216,7 @@ div.connect-dialog button {
 button.sidebar-freshness-filter:not([hidden]) {
   display: block;
   margin: 0 16px 5px;
-  font-size: 11px;
+  font-size: 12px;
   color: inherit;
 }
 
@@ -2295,7 +2298,7 @@ body.health-visible:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-
 }
 .health-tile {
   position: relative;
-  flex: 1 0 132px;
+  flex: 1 0 150px;
   border-right: 1px solid var(--health-border);
 }
 .health-reading {
@@ -2312,24 +2315,58 @@ body.health-visible:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-
   text-align: left;
 }
 .health-label {
-  font-size: 11px;
-  padding-right: 12px;
+  font-size: 12px;
+  padding-right: 14px;
+  color: var(--health-muted);
 }
 .health-value {
   font-size: 24px;
   font-variant-numeric: tabular-nums;
-  line-height: 34px;
+  line-height: 30px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.health-state {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 16px;
+  color: var(--health-ok);
 }
 .health-status {
-  font-size: 11px;
-  max-width: 150px;
+  font-size: 12px;
+  line-height: 14px;
+  max-width: 190px;
+  color: var(--health-muted);
+}
+.health-tile {
+  border-left: 3px solid var(--health-ok);
+}
+.health-tile[data-unknown="true"] {
+  border-left-color: var(--health-muted);
+}
+.health-tile[data-unknown="true"] .health-state {
+  color: var(--health-muted);
 }
 .health-tile[data-severity="warn"] {
-  background: #755411;
-  color: #fff;
+  border-left-color: var(--health-warn);
+}
+.health-tile[data-severity="warn"] .health-state {
+  color: var(--health-warn);
 }
 .health-tile[data-severity="critical"] {
+  border-left-color: var(--health-crit);
+}
+.health-tile[data-severity="critical"] .health-state {
+  color: var(--health-crit);
+}
+/* Full fill is reserved for latched CRIT. */
+.health-tile[data-severity="critical"][data-latched="true"] {
   background: #912c2c;
+  color: #fff;
+}
+.health-tile[data-severity="critical"][data-latched="true"] :is(.health-state, .health-label, .health-status) {
   color: #fff;
 }
 .health-edit {
@@ -2370,11 +2407,19 @@ body.health-visible:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-
 :root {
   --health-background: #fff;
   --health-border: #ccc;
+  --health-muted: #555;
+  --health-ok: #1f7a3a;
+  --health-warn: #8a5a00;
+  --health-crit: #b3261e;
 }
 @media (prefers-color-scheme: dark) {
   :root {
     --health-background: #222;
     --health-border: #444;
+    --health-muted: #b0b0b0;
+    --health-ok: #5fd07f;
+    --health-warn: #ffb938;
+    --health-crit: #ff7b72;
   }
 }
 
@@ -2414,9 +2459,9 @@ body.trackside-layout div.source-list div.value {
 }
 .line-graph-axis.source-list .key-container small {
   display: block;
-  font-size: 10px;
-  line-height: 12px;
-  opacity: 0.7;
+  font-size: 12px;
+  line-height: 14px;
+  color: var(--health-muted);
 }
 .line-graph-axis.source-list .value {
   font-size: 12px;
@@ -2461,4 +2506,76 @@ body.trackside-layout div.source-list div.value {
     background: #333;
     color: #eee;
   }
+}
+
+@media (prefers-color-scheme: dark) {
+  .live-freshness-legend {
+    color: #bbb;
+  }
+}
+
+/* Shared compact status chips use the panel palette in both appearances. */
+.mv-chip {
+  padding: 2px 6px;
+  border: 1px solid var(--health-border);
+  border-radius: 4px;
+  background: var(--health-background);
+  color: var(--health-muted);
+  font: inherit;
+  font-size: 12px;
+  line-height: 18px;
+}
+.live-run-label {
+  background: var(--health-background);
+  color: var(--health-muted);
+}
+div.live-popover {
+  width: 450px;
+  max-width: calc(100vw - 16px);
+}
+.live-signal-counts {
+  white-space: nowrap;
+}
+.live-signal-counts button.text-button {
+  padding: 0;
+  border: 0;
+  text-decoration: underline;
+}
+div.live-popover td.label,
+span.live-popover-hint {
+  opacity: 1;
+  color: var(--health-muted);
+}
+.health-tile[data-latched="true"] {
+  flex-basis: 250px;
+}
+.health-tile[data-latched="true"] .health-value {
+  font-size: 18px;
+  line-height: 22px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.health-status {
+  max-width: 100%;
+}
+.cone-class-key {
+  margin: 6px 10px;
+  font-size: 12px;
+  color: var(--health-muted);
+}
+body.fancy-title-bar-lite div.title-bar-menu {
+  max-width: none;
+}
+img.side-bar-search-icon {
+  top: 19.5px;
+  pointer-events: none;
+}
+
+body:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-bar-lite) div.title-bar-text {
+  right: calc(154px + var(--show-lock-buttons) * 28px + var(--live-pill-width) + 110px);
+}
+.live-run-label {
+  box-sizing: border-box;
+  height: 22px;
+  z-index: 6;
 }
