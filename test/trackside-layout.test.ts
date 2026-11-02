@@ -17,7 +17,14 @@ test("Trackside fills delayed signals without replacing user edits", () => {
     log: { getFieldKeys: () => keys, getTimestampRange: () => [0, 30] },
     tabs: {
       saveState: () => structuredClone(state),
-      restoreState: (next: any) => (state = structuredClone(next)),
+      restoreState: (next: any) => {
+        state = structuredClone(next);
+        for (const tab of state.tabs) {
+          for (const axis of ["leftSources", "rightSources"]) {
+            for (const field of tab.controller?.[axis] ?? []) field.normalized = true;
+          }
+        }
+      },
       addTab: () => {
         state.tabs.push({ type: TabType.LineGraph, controllerUUID: String(state.tabs.length) });
         state.selected = state.tabs.length - 1;
@@ -30,7 +37,26 @@ test("Trackside fills delayed signals without replacing user edits", () => {
   trackside.applyTracksideLayout();
   state.tabs[0].controller.rightSources = [{ logKey: "user/rpm" }];
   keys = ["vehicles/mur27/dynamics/vehicle_speed", "vehicles/mur27/powertrain/motor_speed"];
-  (trackside as any).updateTracksideLayout?.();
+  trackside.updateTracksideLayout();
   assert.equal(state.tabs[0].controller.leftSources[0]?.logKey, keys[0]);
   assert.equal(state.tabs[0].controller.rightSources[0]?.logKey, "user/rpm");
+  keys.push("vehicles/mur27/powertrain/torque_command");
+  trackside.updateTracksideLayout();
+  assert.equal(state.tabs[1].controller.leftSources.length, 1);
+  state.selected = 0;
+  state.tabs[1].controller.showThresholds = false;
+  keys.push("vehicles/mur27/powertrain/torque_feedback");
+  trackside.updateTracksideLayout();
+  assert.equal(state.tabs[1].controller.leftSources.length, 2);
+  assert.equal(state.tabs[1].controller.showThresholds, false);
+  assert.equal(state.selected, 0);
+  trackside.updateTracksideLayout();
+  assert.equal(state.tabs[1].controller.leftSources.length, 2);
+  // Removed preset tabs must never be recreated by a late catalogue update.
+  keys = [];
+  trackside.applyTracksideLayout();
+  state.tabs = [];
+  keys.push("vehicles/mur27/dynamics/vehicle_speed");
+  trackside.updateTracksideLayout();
+  assert.equal(state.tabs.length, 0);
 });

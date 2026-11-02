@@ -26,6 +26,17 @@ const source = (path: string | undefined, color: string) =>
 const match = (paths: string[], pattern: RegExp) =>
   paths.find((path) => pattern.test(canonicalChannelPath(path).toLowerCase()));
 
+/** SourceList normalizes options during restore; compare against that actual saved state. */
+function rememberPendingAxes() {
+  const state = window.tabs.saveState();
+  for (const entry of pending) {
+    const controller = state.tabs.find((tab) => tab.controllerUUID === entry.uuid)?.controller as
+      | Record<string, unknown>
+      | undefined;
+    if (controller) entry.expected = JSON.stringify(controller[entry.axis]);
+  }
+}
+
 /** Retry only unresolved preset fields, and abandon an axis as soon as the user changes it. */
 export function updateTracksideLayout() {
   if (!pending.length) return;
@@ -47,7 +58,10 @@ export function updateTracksideLayout() {
     entry.expected = JSON.stringify(controller[entry.axis]);
     return entry.missing.length > 0;
   });
-  if (changed) window.tabs.restoreState(state);
+  if (changed) {
+    window.tabs.restoreState(state);
+    rememberPendingAxes();
+  }
 }
 
 /** Apply only through public tab state and selection APIs; preserve the user's other tabs. */
@@ -94,6 +108,7 @@ export function applyTracksideLayout() {
   };
   const main = add("Trackside · Speed / RPM", source(speed, "#ee9d5b"), source(rpm, "#7db4e8"), true, [[0], [1]]);
   add("Trackside · Torque", [...source(command, "#ee9d5b"), ...source(actual, "#7db4e8")], [], false, [[2, 3]]);
+  rememberPendingAxes();
   window.tabs.setSelected(main);
   window.healthStrip.state.visible = true;
   window.healthStrip.state.trackside = true;
