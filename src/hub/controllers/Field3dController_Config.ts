@@ -41,7 +41,7 @@ const Field3dController_Config: SourceListConfig = {
           forTypes: ["sensor_msgs/PointCloud2"],
           display: "Colour",
           showInTypeName: false,
-          values: ["intensity", "z", "rgb"].map((key) => ({ key, display: key }))
+          values: ["intensity", "z", "class", "rgb"].map((key) => ({ key, display: key }))
         },
         {
           key: "map",
@@ -60,7 +60,7 @@ const Field3dController_Config: SourceListConfig = {
         {
           key: "decay",
           forTypes: ["sensor_msgs/PointCloud2"],
-          display: "Scans",
+          display: "Decay scans",
           showInTypeName: false,
           values: ["1", "3", "5", "10", "20"].map((key) => ({ key, display: key }))
         }

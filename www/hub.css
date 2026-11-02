@@ -2516,3 +2516,30 @@ div.connect-bridge-hint {
   margin: 6px 0;
   font-size: 12px;
 }
+
+/* ROS diagnostics follow the surrounding pro-tool controls in either appearance. */
+.tf-tree-button,
+div.source-list div.item button.expander {
+  color: inherit;
+  background: transparent;
+  border: 1px solid #888;
+  border-radius: 3px;
+  cursor: pointer;
+}
+div.field-3d-settings select,
+div.inline-settings select {
+  color-scheme: light dark;
+  font: inherit;
+}
+@media (prefers-color-scheme: dark) {
+  div.topic-inspector {
+    background: #292929;
+    color: #eee;
+  }
+}
+@media (prefers-color-scheme: light) {
+  div.tf-popover {
+    background: #fff !important;
+    color: #222;
+  }
+}

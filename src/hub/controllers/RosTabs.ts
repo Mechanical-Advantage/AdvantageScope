@@ -16,6 +16,7 @@ import LoggableType from "../../shared/log/LoggableType";
 import { getOrDefault } from "../../shared/log/LogUtil";
 import { metadata } from "../../shared/spatial/SpatialLog";
 import { createUUID } from "../../shared/util";
+import { decodeRosPayload, imageRGBA, rosLogRows } from "./RosTabData";
 import TabController from "./TabController";
 
 const HIDDEN_CHILDREN = ["/spatial", "/pose3d", "/poses3d", "/xml", "/error", "/length"];
@@ -95,6 +96,7 @@ export class RawMessagesController extends BaseRosTab {
         const details = document.createElement("details");
         details.open = this.open.has(topic);
         details.ontoggle = () => {
+          if (details.open === this.open.has(topic)) return;
           if (details.open) this.open.add(topic);
           else this.open.delete(topic);
           this.last = 0;
@@ -113,6 +115,51 @@ export class RawMessagesController extends BaseRosTab {
   }
 
   private buildTree(topic: string, keys: string[], time: number): HTMLElement {
+    const raw = window.log.getRaw(topic, time, time);
+    if (raw?.timestamps.length && raw.timestamps[0] <= time) {
+      try {
+        const value = decodeRosPayload(raw.values[0], metadata(window.log, topic));
+        const container = document.createElement("div");
+        container.style.cssText = "margin-left:14px;font-family:monospace;font-size:12px";
+        const render = (value: any, parent: HTMLElement, path: string) => {
+          Object.entries(value ?? {})
+            .slice(0, 64)
+            .forEach(([name, child]) => {
+              const key = path + "/" + name;
+              if (child !== null && typeof child === "object") {
+                const details = document.createElement("details");
+                details.open = this.open.has(key);
+                const summary = document.createElement("summary");
+                summary.textContent =
+                  name + (Array.isArray(child) || ArrayBuffer.isView(child) ? " [" + (child as any).length + "]" : "");
+                details.append(summary);
+                details.ontoggle = () => {
+                  if (details.open === this.open.has(key)) return;
+                  if (details.open) this.open.add(key);
+                  else this.open.delete(key);
+                  this.last = 0;
+                };
+                if (details.open) {
+                  const inner = document.createElement("div");
+                  inner.style.marginLeft = "14px";
+                  render(child, inner, key);
+                  details.append(inner);
+                }
+                parent.append(details);
+              } else {
+                const row = document.createElement("div");
+                row.textContent = name + ": " + formatValue(child);
+                parent.append(row);
+              }
+            });
+          if (Object.keys(value ?? {}).length > 64) parent.append("… first 64 entries");
+        };
+        render(value, container, topic);
+        return container;
+      } catch {
+        /* Fall back to decoded Log children for adapters without a ROS schema. */
+      }
+    }
     const rootNode: TreeNode = { children: new Map() };
     const prefix = topic + "/";
     for (const key of keys) {
@@ -141,6 +188,7 @@ export class RawMessagesController extends BaseRosTab {
           const details = document.createElement("details");
           details.open = this.open.has(childPath);
           details.ontoggle = () => {
+            if (details.open === this.open.has(childPath)) return;
             if (details.open) this.open.add(childPath);
             else this.open.delete(childPath);
             this.last = 0;
@@ -216,7 +264,10 @@ export class RosLogController extends BaseRosTab {
   }
   restoreState(state: unknown): void {
     const level = (state as { minLevel?: number } | null)?.minLevel;
-    if (level) this.minLevel = level;
+    if (level) {
+      this.minLevel = level;
+      this.bar.querySelector("select")!.value = String(level);
+    }
   }
 
   protected update() {
@@ -226,31 +277,17 @@ export class RosLogController extends BaseRosTab {
       this.list.textContent = "No /rosout messages.";
       return;
     }
-    const names = window.log.getString("/rosout/name", -Infinity, time);
-    const levelNum = window.log.getNumber("/rosout/level", -Infinity, time);
-    const levelStr = window.log.getString("/rosout/level", -Infinity, time);
     const origin = window.log.getTimestampRange()[0];
-    const rows: HTMLElement[] = [];
-    for (let i = msgs.timestamps.length - 1; i >= 0 && rows.length < 500; i--) {
-      const stamp = msgs.timestamps[i];
-      if (stamp > time) continue;
-      let level = levelNum?.values[levelNum.timestamps.indexOf(stamp)];
-      if (level === undefined && levelStr) {
-        const name = levelStr.values[levelStr.timestamps.indexOf(stamp)];
-        level = LEVELS.find(([n]) => n === String(name).toUpperCase())?.[1];
-      }
-      level ??= 20;
-      if (level < this.minLevel) continue;
+    const rows = rosLogRows(window.log, time, this.minLevel).map(({ stamp, level, node, message }) => {
       const row = document.createElement("div");
       row.style.color = LEVEL_COLORS[level] ?? "inherit";
       const levelName = LEVELS.find(([, v]) => v === level)?.[0] ?? String(level);
-      const node = names?.values[names.timestamps.indexOf(stamp)] ?? "";
-      row.textContent = `t+${(stamp - origin).toFixed(2)} ${levelName.padEnd(5)} [${node}] ${msgs.values[i]}`;
+      row.textContent = `t+${(stamp - origin).toFixed(2)} ${levelName.padEnd(5)} [${node}] ${message}`;
       row.title = "Stamp " + stamp.toFixed(6) + " s (epoch)";
       row.onclick = () => window.selection.setSelectedTime(stamp);
       row.style.cursor = "pointer";
-      rows.push(row);
-    }
+      return row;
+    });
     this.list.replaceChildren(...rows);
   }
 }
@@ -340,7 +377,9 @@ export class RosImageController extends BaseRosTab {
       this.canvas.width = bitmap.width;
       this.canvas.height = bitmap.height;
       ctx.drawImage(bitmap, 0, 0);
-      return `${msg.format} ${bitmap.width}×${bitmap.height}`;
+      const description = `${msg.format} ${bitmap.width}×${bitmap.height}`;
+      bitmap.close();
+      return description;
     }
     const { width, height, encoding, data } = msg as {
       width: number;
@@ -348,17 +387,8 @@ export class RosImageController extends BaseRosTab {
       encoding: string;
       data: Uint8Array;
     };
-    const channels = encoding.startsWith("mono") ? 1 : encoding.includes("a8") ? 4 : 3;
     const image = ctx.createImageData(width, height);
-    if (!/^(rgb8|bgr8|rgba8|bgra8|mono8)$/.test(encoding)) throw new Error("Unsupported image encoding " + encoding);
-    const swap = encoding.startsWith("bgr");
-    for (let i = 0; i < width * height; i++) {
-      const o = i * channels;
-      image.data[i * 4] = channels === 1 ? data[o] : data[o + (swap ? 2 : 0)];
-      image.data[i * 4 + 1] = channels === 1 ? data[o] : data[o + 1];
-      image.data[i * 4 + 2] = channels === 1 ? data[o] : data[o + (swap ? 0 : 2)];
-      image.data[i * 4 + 3] = channels === 4 ? data[o + 3] : 255;
-    }
+    image.data.set(imageRGBA(msg));
     this.canvas.width = width;
     this.canvas.height = height;
     ctx.putImageData(image, 0, 0);

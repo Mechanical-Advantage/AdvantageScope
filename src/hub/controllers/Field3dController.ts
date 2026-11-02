@@ -115,6 +115,7 @@ export default class Field3dController implements TabController {
     this.fixedFrame.append(new Option("map", "map"));
     this.fixedFrame.title = "Frame all layers are drawn in. Choices come from the TF tree.";
     const treeButton = document.createElement("button");
+    treeButton.className = "tf-tree-button";
     treeButton.textContent = "Tree";
     treeButton.title = "Show TF parent/child links and transform ages";
     treeButton.onclick = () => {
@@ -183,7 +184,8 @@ export default class Field3dController implements TabController {
     if (this.treePopover.hidden) return;
     const edges = this.spatial.tree.getEdges(time);
     const lines = edges.map((e) => {
-      const age = e.isStatic ? "static" : e.stamp === null ? "no sample" : (time - e.stamp).toFixed(2) + " s old";
+      const age =
+        (e.isStatic ? "static · " : "") + (e.stamp === null ? "no sample" : (time - e.stamp).toFixed(2) + " s old");
       return e.parent + " → " + e.child + "   " + age;
     });
     this.treePopover.textContent = lines.length ? lines.join("\n") : "No TF data (subscribe to /tf and /tf_static)";

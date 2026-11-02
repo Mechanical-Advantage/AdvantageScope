@@ -117,7 +117,8 @@ async function start(files: (Uint8Array | null)[]): Promise<Log> {
       schemaEncoding: schema?.encoding,
       messages: counts?.get(id)?.toString(),
       // The 3D workstream needs the definition to decode raw-only types
-      definition: RAW_ONLY_TYPES.has(rosType) ? definitionText : undefined
+      definition: definitionText,
+      qos: channel.metadata.get("offered_qos_profiles") ?? channel.metadata.get("qos")
     });
     if (info.rosSchema) createFieldsFromSchema(log, key, info.rosSchema);
     if (isPoseType(rosType)) {

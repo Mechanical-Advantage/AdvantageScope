@@ -56,6 +56,7 @@ export function mapMessage(log: Log, mapped: MappedChannel, time: number, bytes:
   const key = mapped.channel.topic;
   log.putRaw(key, time, bytes);
   const metadata = JSON.parse(log.getMetadataString(key) || "{}");
+  metadata.messages = String(Number(metadata.messages ?? 0) + 1);
   metadata.time_basis = "Foxglove message timestamp / server clock";
   if (mapped.lastTime !== null && time > mapped.lastTime)
     metadata.observed_hz = Number((1 / (time - mapped.lastTime)).toFixed(1));

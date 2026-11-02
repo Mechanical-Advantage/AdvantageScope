@@ -8,6 +8,7 @@
 // In-page live connection UI (works the same in Electron and Lite):
 import Log from "../shared/log/Log";
 import { metadata, spatialSnapshot } from "../shared/spatial/SpatialLog";
+import { decodeRosPayload } from "./controllers/RosTabData";
 
 /** ROS names for the AdvantageScope structured types MUR adapters produce, so the tree speaks ROS. */
 const ROS_NAMES: { [key: string]: string } = {
@@ -29,18 +30,29 @@ export function topicInspectorRows(log: Log, key: string): [string, string][] {
   const type = log.getStructuredType(key);
   const stamps = log.getTimestamps([key]);
   const count = stamps.length;
-  let rate = "n/a";
-  if (count > 1 && stamps[count - 1] > stamps[0])
-    rate = ((count - 1) / (stamps[count - 1] - stamps[0])).toFixed(2) + " Hz";
   const meta = metadata(log, key);
+  let rate = meta.observed_hz !== undefined ? meta.observed_hz + " Hz" : "n/a";
+  if (meta.observed_hz === undefined && count > 1 && stamps[count - 1] > stamps[0])
+    rate = ((count - 1) / (stamps[count - 1] - stamps[0])).toFixed(2) + " Hz";
   let frame: string = meta.frame_id ?? "";
   if (!frame) {
     const snap = spatialSnapshot(log, key, Infinity);
     frame = snap?.value?.header?.frame_id ?? "";
   }
-  const rows: [string, string][] = [["Topic", key]];
+  if (!frame) {
+    frame = log.getString(key + "/header/frame_id", Infinity, Infinity)?.values[0] ?? "";
+    if (!frame) {
+      try {
+        const bytes = log.getRaw(key, Infinity, Infinity)?.values[0];
+        if (bytes) frame = decodeRosPayload(bytes, meta)?.header?.frame_id ?? "";
+      } catch {
+        /* The publisher may not provide a decodable schema. */
+      }
+    }
+  }
+  const rows: [string, string][] = [["Topic", meta.topic ?? key]];
   if (type) rows.push(["Type", type + (ROS_NAMES[type] ? " (" + ROS_NAMES[type] + ")" : "")]);
-  rows.push(["frame_id", frame || "n/a"], ["Rate", rate], ["Messages", String(count)]);
+  rows.push(["frame_id", frame || "n/a"], ["Rate", rate], ["Messages", String(meta.messages ?? count)]);
   rows.push(["QoS", meta.qos ? (typeof meta.qos === "string" ? meta.qos : JSON.stringify(meta.qos)) : "not reported"]);
   return rows;
 }
