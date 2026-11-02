@@ -13,6 +13,7 @@ import { Units } from "../units";
 import { calcAxisStepSize, clampValue, cleanFloat, scaleValue, shiftColor, ValueScaler } from "../util";
 import TabRenderer from "./TabRenderer";
 
+import { niceTicks } from "../laps/LapAnalysis";
 import { interpolate } from "../laps/LapEngine";
 import { LapViewport } from "../laps/LapViewport";
 
@@ -237,6 +238,8 @@ export default class LineGraphRenderer implements TabRenderer {
       command.displayOffset,
       command.xUnit,
       command.lapLabels,
+      command.lapValues,
+      command.deltaStrip?.readout,
       command.sectorMarks,
       command.deltaStrip?.range,
       command.deltaStrip?.fields.map((f) => [f.values.length, f.color, f.size]),
@@ -267,7 +270,10 @@ export default class LineGraphRenderer implements TabRenderer {
     context.font = `${trackside ? 14 : 12}px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont`;
 
     // Calculate vertical layout (based on discrete fields)
-    let graphTop = 32;
+    // Lap legend: one opaque row per lap above the plot, so it can never sit on traces
+    const LEGEND_ROW = 15;
+    const legendRows = command.lapLabels?.length ?? 0;
+    let graphTop = 32 + (legendRows ? legendRows * LEGEND_ROW + 4 : 0);
     this.SCROLL_OVERLAY.style.top = graphTop.toString() + "px";
     let graphHeight = height - graphTop - 35;
     if (graphHeight < 1) graphHeight = 1;
@@ -642,9 +648,16 @@ export default class LineGraphRenderer implements TabRenderer {
       context.fillStyle = light ? "#222" : "#eee";
       context.textAlign = "left";
       context.fillText(strip.title, graphLeft + 6, top - 6);
-      context.textAlign = "right";
-      context.fillText(strip.range[1].toFixed(2), graphLeft - 4, top + 6);
-      context.fillText(strip.range[0].toFixed(2), graphLeft - 4, bottom - 2);
+      if (strip.readout?.length) {
+        // Per-lap ΔT at the cursor, right-aligned on the title row above the strip
+        context.textAlign = "right";
+        let rx = graphLeft + graphWidth - 2;
+        for (let i = strip.readout.length - 1; i >= 0; i--) {
+          context.fillStyle = strip.readout[i].color;
+          context.fillText(strip.readout[i].text, rx, top - 6);
+          rx -= context.measureText(strip.readout[i].text).width + 12;
+        }
+      }
     }
 
     for (const threshold of command.thresholds ?? []) {
@@ -849,13 +862,42 @@ export default class LineGraphRenderer implements TabRenderer {
     // Labels outside the plot must be painted after clearing overflow.
     if (command.deltaStrip) {
       const top = graphTop + graphHeightOpen + stripGap;
+      const strip = command.deltaStrip;
       context.globalAlpha = 1;
       context.fillStyle = light ? "#222" : "#eee";
+      context.strokeStyle = light ? "#222" : "#eee";
       context.textAlign = "right";
-      context.fillText(command.deltaStrip.range[1].toFixed(2), graphLeft - 8, top + 6);
-      const zeroY = scaleValue(0, command.deltaStrip.range, [top + stripHeight, top]);
-      if (zeroY > top + 14 && zeroY < top + stripHeight - 14) context.fillText("0", graphLeft - 8, zeroY);
-      context.fillText(command.deltaStrip.range[0].toFixed(2), graphLeft - 8, top + stripHeight - 4);
+      context.textBaseline = "middle";
+      let lastY = -Infinity;
+      const ticks = niceTicks(strip.range[0], strip.range[1], Math.max(2, Math.floor(stripHeight / 16)));
+      for (const tick of ticks) {
+        const y = scaleValue(tick, strip.range, [top + stripHeight, top]);
+        if (y < top + 5 || y > top + stripHeight - 5 || Math.abs(y - lastY) < 12) continue;
+        lastY = y;
+        context.fillText(cleanFloat(tick).toString(), graphLeft - 10, y);
+        context.beginPath();
+        context.moveTo(graphLeft, y);
+        context.lineTo(graphLeft - 5, y);
+        context.stroke();
+        if (tick !== 0) {
+          context.globalAlpha = 0.1;
+          context.beginPath();
+          context.moveTo(graphLeft, y);
+          context.lineTo(graphLeft + graphWidth, y);
+          context.stroke();
+          context.globalAlpha = 1;
+        }
+      }
+      // Zero line label inside the strip, at the right end
+      const zeroY = scaleValue(0, strip.range, [top + stripHeight, top]);
+      if (strip.referenceLabel && zeroY > top && zeroY < top + stripHeight) {
+        context.textAlign = "right";
+        context.textBaseline = "bottom";
+        context.globalAlpha = 0.8;
+        context.fillText("0 = " + strip.referenceLabel, graphLeft + graphWidth - 4, zeroY - 2);
+        context.globalAlpha = 1;
+        context.textBaseline = "middle";
+      }
     }
 
     // Render Y axes
@@ -938,18 +980,18 @@ export default class LineGraphRenderer implements TabRenderer {
     context.textAlign = "right";
     context.fillText(command.rightTitle ?? "", graphLeft + graphWidth, 15);
     if (command.lapLabels?.length) {
-      // Stacked legend panel: one row per lap, coloured to match its traces
-      const rowHeight = 15;
-      let panelWidth = 0;
-      for (const label of command.lapLabels) panelWidth = Math.max(panelWidth, context.measureText(label.text).width);
-      context.globalAlpha = 0.85;
-      context.fillStyle = light ? "#ffffff" : "#1c1c1e";
-      context.fillRect(graphLeft + 4, graphTop + 3, panelWidth + 12, command.lapLabels.length * rowHeight + 6);
-      context.globalAlpha = 1;
-      context.textAlign = "left";
+      // One row per lap above the plot: label on the left, value at the cursor on the right
+      context.textBaseline = "middle";
       command.lapLabels.forEach((label, i) => {
+        const y = 32 + LEGEND_ROW * i + LEGEND_ROW / 2;
         context.fillStyle = label.color;
-        context.fillText(label.text, graphLeft + 10, graphTop + 3 + rowHeight * (i + 0.5) + 3);
+        context.textAlign = "left";
+        context.fillText(label.text, graphLeft, y);
+        const value = command.lapValues?.[i];
+        if (value) {
+          context.textAlign = "right";
+          context.fillText(value, graphLeft + graphWidth, y);
+        }
       });
       context.fillStyle = light ? "#222" : "#eee";
     }
@@ -1004,7 +1046,16 @@ export type LineGraphRendererCommand = {
   /** Sector gate markers on the x axis (x in axis units). */
   sectorMarks?: { x: number; label: string }[];
   /** Lap mode: ΔT drawn in its own strip under the overlay. */
-  deltaStrip?: { fields: LineGraphRendererCommand_NumericField[]; range: [number, number]; title: string };
+  deltaStrip?: {
+    fields: LineGraphRendererCommand_NumericField[];
+    range: [number, number];
+    title: string;
+    referenceLabel?: string;
+    /** ΔT of each lap at the cursor. */
+    readout?: { text: string; color: string }[];
+  };
+  /** Per-lap value(s) at the cursor, aligned with lapLabels. */
+  lapValues?: string[];
   timeRange: [number, number];
   displayOffset: number;
   selectionMode: SelectionMode;

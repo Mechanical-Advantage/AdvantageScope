@@ -155,6 +155,8 @@ export default class Timeline {
     let stepSize = calcAxisStepSize(displayTimeRange, width, this.STEP_TARGET_PX + extraDigits * 12);
 
     // Draw bands (e.g. laps)
+    const bandsLabelled = this.bandSupplier().some((b) => b.label);
+    const tickLabelY = bandsLabelled ? 9 : height / 2;
     context.lineWidth = 1;
     let rangeBorders: number[] = [];
     this.bandSupplier().forEach((range) => {
@@ -167,12 +169,12 @@ export default class Timeline {
       context.fillRect(startX, 0, endX - startX, height);
       context.globalAlpha = 1;
       if (range.label && endX - startX > 30) {
-        // Small label in the top-left corner, clear of the vertically centred tick labels
-        context.font = "600 9px ui-sans-serif, system-ui";
+        // Second row of the band (tick labels move to the first row when labels exist), 11px
+        context.font = "600 11px ui-sans-serif, system-ui";
         context.textAlign = "left";
-        context.textBaseline = "top";
-        context.fillStyle = light ? "#555" : "#aaa";
-        context.fillText(range.label, startX + 3, 1, endX - startX - 6);
+        context.textBaseline = "middle";
+        context.fillStyle = light ? "#333" : "#ddd";
+        context.fillText(range.label, startX + 3, height - 9, endX - startX - 6);
         context.textBaseline = "alphabetic";
       }
 
@@ -320,13 +322,15 @@ export default class Timeline {
 
       let minDistance = Math.min(markDistance, adjustedHelpDistance);
       context.globalAlpha = clampValue(scaleValue(minDistance, [0, 20], [0.2, 0.5]), 0, 1);
-      context.fillText(text, textX, height / 2);
+      context.fillText(text, textX, tickLabelY);
 
       context.beginPath();
       context.moveTo(x, 0);
       context.lineTo(x, 8);
-      context.moveTo(x, height - 8);
-      context.lineTo(x, height);
+      if (!bandsLabelled) {
+        context.moveTo(x, height - 8);
+        context.lineTo(x, height);
+      }
       context.stroke();
 
       stepPos += stepSize;
