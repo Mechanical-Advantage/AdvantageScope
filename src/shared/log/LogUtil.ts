@@ -14,6 +14,16 @@ export const ARRAY_TEXT_SIZE_LIMIT = 500;
 export const TYPE_KEY = ".type";
 export const MAX_SEARCH_RESULTS = 128;
 
+export function keyPresent(log: Log, search: string[]): boolean {
+  let fieldKeys = log.getFieldKeys();
+  let found = false;
+  for (const key of search) {
+    found = fieldKeys.includes(key);
+    if (found) break;
+  }
+  return found;
+}
+
 /** Returns a human-readable string representation of a log value. */
 export function getLogValueText(value: any, type: LoggableType): string {
   if (value === null) {
