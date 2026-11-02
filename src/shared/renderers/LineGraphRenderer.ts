@@ -13,6 +13,7 @@ import { Units } from "../units";
 import { calcAxisStepSize, clampValue, cleanFloat, scaleValue, shiftColor, ValueScaler } from "../util";
 import TabRenderer from "./TabRenderer";
 
+import { prepareTrace, TraceGap } from "../TraceGaps";
 import { niceTicks } from "../laps/LapAnalysis";
 import { interpolate } from "../laps/LapEngine";
 import { LapViewport } from "../laps/LapViewport";
@@ -244,7 +245,14 @@ export default class LineGraphRenderer implements TabRenderer {
       command.deltaStrip?.range,
       command.deltaStrip?.fields.map((f) => [f.values.length, f.color, f.size]),
       command.thresholds,
-      command.leftFields.map((field) => [field.values.length, field.color, field.type, field.size, field.dim]),
+      command.leftFields.map((field) => [
+        field.values.length,
+        field.color,
+        field.type,
+        field.size,
+        field.dim,
+        field.gaps
+      ]),
       command.discreteFields.map((field) => [
         field.values.length,
         field.color,
@@ -252,7 +260,14 @@ export default class LineGraphRenderer implements TabRenderer {
         field.toggleReference,
         field.colorMap ? field.values : null // Specific values affect color-mapped fields so serialize full state
       ]),
-      command.rightFields.map((field) => [field.values.length, field.color, field.type, field.size, field.dim]),
+      command.rightFields.map((field) => [
+        field.values.length,
+        field.color,
+        field.type,
+        field.size,
+        field.dim,
+        field.gaps
+      ]),
       command.alerts.map((row) => row.map((alert) => [alert.type, alert.text, alert.range]))
     ];
     let renderStateString = JSON.stringify(renderState);
@@ -461,85 +476,124 @@ export default class LineGraphRenderer implements TabRenderer {
     this.drawOutages(context, timeRange, xScaler, graphTop, graphHeight, graphLeft, graphWidth);
     let drawNumericFields = (fields: LineGraphRendererCommand_NumericField[], yRange: [number, number]) => {
       const yScaler = new ValueScaler(yRange, [graphTop + graphHeightOpen, graphTop]);
-      fields.forEach((field) => {
-        context.strokeStyle = field.color;
-        context.fillStyle = field.color;
-        context.lineCap = "round";
-        switch (field.size) {
-          case "normal":
-            context.lineWidth = 1;
-            break;
-          case "bold":
-            context.lineWidth = 3;
-            break;
-          case "verybold":
-            context.lineWidth = 6;
-            break;
+      fields.forEach((original) => {
+        const prepared = prepareTrace(original.timestamps, original.values, original.gaps ?? []);
+        const runs: { timestamps: number[]; values: number[]; hold: boolean }[] = [];
+        let start = 0;
+        for (let i = 0; i < prepared.timestamps.length; i++) {
+          if (prepared.gapAfter[i] || i === prepared.timestamps.length - 1) {
+            runs.push({
+              timestamps: prepared.timestamps.slice(start, i + 1),
+              values: prepared.values.slice(start, i + 1),
+              hold: i === prepared.timestamps.length - 1 && !original.gaps?.some((g) => g.t1 > prepared.timestamps[i])
+            });
+            start = i + 1;
+          }
         }
+        // Points retain stock samples (including missing-value breaks).
+        if (original.type === "points" || original.gaps === undefined) {
+          runs.splice(0, runs.length, { timestamps: original.timestamps, values: original.values, hold: true });
+        }
+        runs.forEach((run) => {
+          const field = { ...original, ...run };
+          if (!field.timestamps.length) return;
+          context.strokeStyle = field.color;
+          context.fillStyle = field.color;
+          context.lineCap = "round";
+          switch (field.size) {
+            case "normal":
+              context.lineWidth = 1;
+              break;
+            case "bold":
+              context.lineWidth = 3;
+              break;
+            case "verybold":
+              context.lineWidth = 6;
+              break;
+          }
 
-        context.globalAlpha = field.dim ? 0.25 : 1;
-        switch (field.type) {
-          case "stepped":
-            context.beginPath();
-            context.moveTo(graphLeft + graphWidth, yScaler.calculate(field.values[field.values.length - 1]));
-            let i = field.values.length - 1;
-            while (true) {
-              let x = xScaler.calculate(field.timestamps[i]);
+          context.globalAlpha = field.dim ? 0.25 : 1;
+          switch (field.type) {
+            case "stepped":
+              context.beginPath();
+              context.moveTo(
+                field.hold ? graphLeft + graphWidth : xScaler.calculate(field.timestamps[field.timestamps.length - 1]),
+                yScaler.calculate(field.values[field.values.length - 1])
+              );
+              let i = field.values.length - 1;
+              while (true) {
+                let x = xScaler.calculate(field.timestamps[i]);
 
-              // Render start of current data point
-              let value = field.values[i];
-              context.lineTo(x, yScaler.calculate(value));
-
-              // Find previous data point and vertical range
-              let currentX = Math.floor(x * devicePixelRatio);
-              let newX = currentX;
-              let vertRange = [value, value];
-              do {
-                i--;
+                // Render start of current data point
                 let value = field.values[i];
-                if (value < vertRange[0]) vertRange[0] = value;
-                if (value > vertRange[1]) vertRange[1] = value;
-                newX = Math.floor(xScaler.calculate(field.timestamps[i]) * devicePixelRatio);
-              } while (i >= 0 && newX >= currentX); // Compile values to vertical range until the pixel changes
-              if (i < 0) break;
+                context.lineTo(x, yScaler.calculate(value));
 
-              // Render vertical range
-              context.moveTo(x, yScaler.calculate(vertRange[0]));
-              context.lineTo(x, yScaler.calculate(vertRange[1]));
+                // Find previous data point and vertical range
+                let currentX = Math.floor(x * devicePixelRatio);
+                let newX = currentX;
+                let vertRange = [value, value];
+                do {
+                  i--;
+                  let value = field.values[i];
+                  if (value < vertRange[0]) vertRange[0] = value;
+                  if (value > vertRange[1]) vertRange[1] = value;
+                  newX = Math.floor(xScaler.calculate(field.timestamps[i]) * devicePixelRatio);
+                } while (i >= 0 && newX >= currentX); // Compile values to vertical range until the pixel changes
+                if (i < 0) break;
 
-              // Move to end of previous data point
-              context.moveTo(x, yScaler.calculate(field.values[i]));
-            }
-            context.stroke();
-            break;
+                // Render vertical range
+                context.moveTo(x, yScaler.calculate(vertRange[0]));
+                context.lineTo(x, yScaler.calculate(vertRange[1]));
 
-          case "smooth":
-            context.beginPath();
-            for (let i = 0; i < field.timestamps.length; i++) {
-              let x = xScaler.calculate(field.timestamps[i]);
-              let y = yScaler.calculate(field.values[i]);
-              if (i === 0 || isNaN(field.values[i - 1])) {
-                // NaN marks "no data" (e.g. CAN sentinels): leave a gap instead of bridging it
-                context.moveTo(x, y);
-              } else {
-                context.lineTo(x, y);
+                // Move to end of previous data point
+                context.moveTo(x, yScaler.calculate(field.values[i]));
               }
-            }
-            context.stroke();
-            break;
+              context.stroke();
+              break;
 
-          case "points":
-            let deltaX = graphWidth / Math.max(1, field.timestamps.length - 1);
-            let radius = clampValue(Math.log(deltaX * 3.0), 1.0, 5.0);
-            context.beginPath();
-            for (let i = 0; i < field.timestamps.length; i++) {
-              let x = xScaler.calculate(field.timestamps[i]);
-              let y = yScaler.calculate(field.values[i]);
-              context.moveTo(x + radius, y);
-              context.arc(x, y, radius, 0, Math.PI * 2);
-            }
-            context.fill();
-            break;
+            case "smooth":
+              context.beginPath();
+              for (let i = 0; i < field.timestamps.length; i++) {
+                let x = xScaler.calculate(field.timestamps[i]);
+                let y = yScaler.calculate(field.values[i]);
+                if (i === 0 || isNaN(field.values[i - 1])) {
+                  // NaN marks "no data" (e.g. CAN sentinels): leave a gap instead of bridging it
+                  context.moveTo(x, y);
+                } else {
+                  context.lineTo(x, y);
+                }
+              }
+              context.stroke();
+              break;
+
+            case "points":
+              let deltaX = graphWidth / Math.max(1, field.timestamps.length - 1);
+              let radius = clampValue(Math.log(deltaX * 3.0), 1.0, 5.0);
+              context.beginPath();
+              for (let i = 0; i < field.timestamps.length; i++) {
+                let x = xScaler.calculate(field.timestamps[i]);
+                let y = yScaler.calculate(field.values[i]);
+                context.moveTo(x + radius, y);
+                context.arc(x, y, radius, 0, Math.PI * 2);
+              }
+              context.fill();
+              break;
+          }
+        });
+        if (original.type !== "points" && original.gaps?.length) {
+          context.save();
+          context.strokeStyle = original.color;
+          context.lineWidth = 1;
+          context.globalAlpha = (original.dim ? 0.25 : 1) * 0.45;
+          context.setLineDash([2, 3]);
+          context.beginPath();
+          original.gaps.forEach((gap) => {
+            if (!Number.isFinite(gap.t1)) return;
+            context.moveTo(xScaler.calculate(gap.t0), yScaler.calculate(gap.v0));
+            context.lineTo(xScaler.calculate(gap.t1), yScaler.calculate(gap.v1));
+          });
+          context.stroke();
+          context.restore();
         }
       });
     };
@@ -1079,6 +1133,7 @@ export type LineGraphRendererCommand = {
 };
 
 export type LineGraphRendererCommand_NumericField = {
+  gaps?: TraceGap[];
   dim?: boolean;
   timestamps: number[];
   values: number[];

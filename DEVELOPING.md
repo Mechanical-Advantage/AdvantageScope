@@ -315,3 +315,24 @@ Image supports CDR `sensor_msgs/Image` (rgb8/bgr8/rgba8/bgra8/mono8, including r
 and `CompressedImage` formats supported by Chromium. Other pixel encodings show an explicit error.
 Topic hover inspectors show source message totals where available; live totals count received messages,
 and rates describe retained samples. QoS is shown only when supplied by the source.
+
+## Missing numeric trace data
+
+Stepped and smooth line graphs replace missing stretches with a 1px, 45%-alpha
+straight bridge in the trace colour, dashed `[2, 3]`. Solid trace widths and raw
+steps are unchanged. Points and discrete lanes retain stock behaviour.
+`src/shared/TraceGaps.ts` detects time steps strictly greater than
+`max(1 second, 10 × median period)` and NaN runs. Period statistics use the whole
+field and are cached per log/field, updating when samples arrive. A median above
+1 second means on-change data and retains the stock hold without bridges.
+An unresumed stream stops at its last valid sample after the threshold, or when
+MUR reports the field stale/offline; within the threshold it holds normally.
+Lap time and distance overlays map and clip the same bridges to each lap.
+Hover/cursor values retain their existing semantics.
+
+Run `npm test -- trace-gaps` for detection, cadence caching, zoom, sentinels,
+unresumed streams and lap-coordinate tests. For visual checks use the mock's
+`--stale-test` (GPS source drops out from 30–60 seconds), or suspend/resume the
+backend process while a live graph is following. Check the unresumed view, the
+resumed dotted bridge and a zoom inside the gap. `npm run lite-smoke` exercises
+the complete Lite build and live connection flow.

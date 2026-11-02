@@ -9,6 +9,7 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
+import { clipGaps, findGaps, gapThreshold, PeriodStats } from "../../shared/TraceGaps";
 import {
   axisDisplayUnit,
   canonicalChannelPath,
@@ -39,6 +40,8 @@ type NumericCommandCacheValue = LineGraphRendererCommand_NumericField & { hasUni
 
 export default class LineGraphController implements TabController {
   UUID = createUUID();
+
+  private periodStats = new WeakMap<object, Map<string, PeriodStats>>();
 
   private RANGE_MARGIN = 0.05;
   private MIN_AXIS_RANGE = 1e-5;
@@ -643,6 +646,27 @@ export default class LineGraphController implements TabController {
         );
         if (data === undefined) return;
 
+        // Statistics always use the whole field, independent of viewport and lap selection.
+        const whole = window.log.getNumber(fieldItem.logKey, -Infinity, Infinity)!;
+        let statsByKey = this.periodStats.get(window.log);
+        if (!statsByKey) this.periodStats.set(window.log, (statsByKey = new Map()));
+        let stats = statsByKey.get(fieldItem.logKey);
+        if (!stats) statsByKey.set(fieldItem.logKey, (stats = new PeriodStats()));
+        stats.update(whole.timestamps);
+        const threshold = fieldItem.type === "points" ? null : gapThreshold(stats.median());
+        const freshness = window.liveStatus?.getFieldFreshness(fieldItem.logKey);
+        const gaps =
+          threshold === null
+            ? undefined
+            : findGaps(
+                whole.timestamps,
+                whole.values,
+                threshold,
+                Math.max(timeRange[1], window.log.getTimestampRange()[1]),
+                freshness === "stale" || freshness === "offline"
+              );
+        let convertValue = (value: number) => value;
+
         // Add AdvantageKit samples
         if (akitTimestamps !== undefined) {
           // Only if its needed for rendering intermediate points, or for a filter.
@@ -717,16 +741,17 @@ export default class LineGraphController implements TabController {
             autoTargetResult.unit in Units.GROUP_BY_UNIT &&
             Units.GROUP_BY_UNIT[sourceUnit] === Units.GROUP_BY_UNIT[autoTargetResult.unit]
           ) {
-            data.values = data.values.map((value) => Units.convert(value, sourceUnit, autoTargetResult.unit));
+            convertValue = (value) => Units.convert(value, sourceUnit, autoTargetResult.unit);
+            data.values = data.values.map(convertValue);
             hasUnit = true;
           }
         } else if (unitConversion.preset !== undefined) {
-          data.values = data.values.map((value) =>
+          convertValue = (value) =>
             Units.convertWithPreset(
               value,
               unitConversion.preset === null ? Units.NoopUnitConversion : unitConversion.preset
-            )
-          );
+            );
+          data.values = data.values.map(convertValue);
           hasUnit = true;
         }
 
@@ -734,7 +759,7 @@ export default class LineGraphController implements TabController {
         data.values = data.values.map((value) => clampValue(value, -this.MAX_VALUE, this.MAX_VALUE));
 
         // Trim early point
-        if (data.timestamps.length > 0 && data.timestamps[0] < timeRange[0]) {
+        if (!gaps?.length && data.timestamps.length > 0 && data.timestamps[0] < timeRange[0]) {
           switch (fieldItem.type) {
             case "stepped":
               // Keep, adjust timestamp
@@ -760,7 +785,7 @@ export default class LineGraphController implements TabController {
         }
 
         // Trim late point
-        if (data.timestamps.length > 0 && data.timestamps[data.timestamps.length - 1] > timeRange[1]) {
+        if (!gaps?.length && data.timestamps.length > 0 && data.timestamps[data.timestamps.length - 1] > timeRange[1]) {
           switch (fieldItem.type) {
             case "stepped":
             case "points":
@@ -781,6 +806,7 @@ export default class LineGraphController implements TabController {
               break;
           }
         } else if (
+          !gaps?.some((gap) => gap.t1 === Infinity) &&
           fieldItem.type === "smooth" &&
           data.timestamps.length >= 1 &&
           data.timestamps[data.timestamps.length - 1] < timeRange[1]
@@ -800,6 +826,11 @@ export default class LineGraphController implements TabController {
 
         // Add field command
         let itemCommand: NumericCommandCacheValue = {
+          gaps: gaps?.map((gap) => ({
+            ...gap,
+            v0: clampValue(convertValue(gap.v0), -this.MAX_VALUE, this.MAX_VALUE),
+            v1: clampValue(convertValue(gap.v1), -this.MAX_VALUE, this.MAX_VALUE)
+          })),
           timestamps: data.timestamps,
           values: data.values,
           color: ensureThemeContrast(fieldItem.options.color),
@@ -1101,7 +1132,18 @@ export default class LineGraphController implements TabController {
           laps.map((lap, i) => ({
             ...field,
             color: LAP_COLORS[i % LAP_COLORS.length],
-            ...lapSamples(field.timestamps, field.values, lap, distance)
+            ...lapSamples(field.timestamps, field.values, lap, distance),
+            gaps:
+              field.gaps &&
+              clipGaps(field.gaps, lap.start, lap.end, (t) =>
+                distance
+                  ? interpolate(
+                      lap.grid.map((p) => p.time),
+                      lap.grid.map((p) => p.distance),
+                      t
+                    )
+                  : t
+              )
           }))
         );
       result.leftFields = convert(result.leftFields);
