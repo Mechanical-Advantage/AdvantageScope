@@ -72,6 +72,25 @@ export default class LogField {
     }
   }
 
+  /** Finds the first timestamp above the boundary (or equal, for an inclusive search). */
+  private findTimestampIndex(timestamp: number, inclusive: boolean, from = 0): number {
+    let first = Math.trunc(from);
+    if (first < 0) first = Math.max(this.data.timestamps.length + first, 0);
+    let low = first;
+    let high = this.data.timestamps.length;
+    while (low < high) {
+      let middle = low + Math.floor((high - low) / 2);
+      let value = this.data.timestamps[middle];
+      if (inclusive ? value >= timestamp : value > timestamp) {
+        high = middle;
+      } else {
+        low = middle + 1;
+      }
+    }
+    // Return an index relative to the search start, like slice(from).findIndex().
+    return low === this.data.timestamps.length ? -1 : low - first;
+  }
+
   /** Returns the values in the specified timestamp range.
    *
    * If a UUID is provided, requests for single timestamps will cache
@@ -93,12 +112,12 @@ export default class LogField {
       !(this.data.timestamps[cacheIndex] > start)
     ) {
       // Search from previous location
-      let rawIndex = this.data.timestamps.slice(cacheIndex).findIndex((x) => x > start);
+      let rawIndex = this.findTimestampIndex(start, false, cacheIndex);
       if (rawIndex !== -1) startValueIndex = rawIndex + cacheIndex;
     }
     if (startValueIndex === -1) {
       // Search from start
-      startValueIndex = this.data.timestamps.findIndex((x) => x > start);
+      startValueIndex = this.findTimestampIndex(start, false);
     }
     if (startValueIndex === -1) {
       startValueIndex = this.data.timestamps.length - 1;
@@ -112,12 +131,12 @@ export default class LogField {
     let endValueIndex = -1;
     if (cacheIndex !== null && cacheIndex < this.data.timestamps.length && !(this.data.timestamps[cacheIndex] >= end)) {
       // Search from previous location
-      let rawIndex = this.data.timestamps.slice(cacheIndex).findIndex((x) => x >= end);
+      let rawIndex = this.findTimestampIndex(end, true, cacheIndex);
       if (rawIndex !== -1) endValueIndex = rawIndex + cacheIndex;
     }
     if (endValueIndex === -1) {
       // Search from start
-      endValueIndex = this.data.timestamps.findIndex((x) => x >= end);
+      endValueIndex = this.findTimestampIndex(end, true);
     }
     if (endValueIndex === -1 || endValueIndex === this.data.timestamps.length - 1) {
       // Extend to end of timestamps
