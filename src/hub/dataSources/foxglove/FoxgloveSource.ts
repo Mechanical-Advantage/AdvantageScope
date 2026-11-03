@@ -27,7 +27,7 @@ export default class FoxgloveSource extends LiveDataSource {
     statusCallback: (status: LiveDataSourceStatus) => void,
     outputCallback: (log: Log, timeSupplier: () => number) => void
   ) {
-    super.connect(address, statusCallback, outputCallback, false);
+    super.connect(address, statusCallback, outputCallback);
     this.log = new Log();
     this.open();
     this.timer = setInterval(() => this.periodic(), 100);

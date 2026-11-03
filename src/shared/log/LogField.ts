@@ -23,6 +23,10 @@ import {
 export default class LogField {
   private type: LoggableType;
   private data: LogValueSetAny = { timestamps: [], values: [] };
+  private dataStart = 0;
+  private retainedTimestamps: number[] | null = null;
+  private discardTimestamp = -Infinity;
+  private retainSamples = false;
   public structuredType: string | null = null;
   public wpilibType: string | null = null; // Original type from WPILOG & NT4
   public metadataString = "";
@@ -30,6 +34,8 @@ export default class LogField {
 
   // Toggles when first value is removed, useful for creating striping effects that persist as data is updated
   private stripingReference = false;
+
+  private lazyStrings = new Map<() => string, string>();
 
   private getRangeCache: { [id: string]: number } = {};
 
@@ -49,11 +55,14 @@ export default class LogField {
 
   /** Returns the full set of ordered timestamps. */
   getTimestamps(): number[] {
-    return this.data.timestamps;
+    return this.dataStart === 0
+      ? this.data.timestamps
+      : (this.retainedTimestamps ??= this.data.timestamps.slice(this.dataStart));
   }
 
   /** Clears all data before the provided timestamp. */
   clearBeforeTime(clearTimestamp: number) {
+    this.compactDiscarded();
     for (let i = 0; i < this.data.timestamps.length; i++) {
       // If there is more than 1 timestamps and if it occurs before the given timestamp, remove it
       if (this.data.timestamps.length >= 2 && this.data.timestamps[i + 1] < clearTimestamp) {
@@ -72,11 +81,44 @@ export default class LogField {
     }
   }
 
+  /** Bounded message histories preserve receipt times, including identical payloads. */
+  retainAllSamples() {
+    this.retainSamples = true;
+  }
+
+  /** Removes expired samples without moving their timestamps or extending sample-and-hold. */
+  discardBeforeTime(timestamp: number): boolean {
+    this.discardTimestamp = Math.max(this.discardTimestamp, timestamp);
+    const start = this.dataStart;
+    while (this.dataStart < this.data.timestamps.length && this.data.timestamps[this.dataStart] < timestamp) {
+      this.data.values[this.dataStart++] = undefined;
+    }
+    const count = this.dataStart - start;
+    if (count === 0) return false;
+    this.retainedTimestamps = null;
+    this.lazyStrings.clear();
+    if (count % 2) this.stripingReference = !this.stripingReference;
+    // Compact only when the removed prefix pays for copying the retained suffix.
+    if (this.dataStart * 2 >= this.data.timestamps.length) this.compactDiscarded();
+    return true;
+  }
+
+  private compactDiscarded() {
+    if (this.dataStart === 0) return;
+    this.data.timestamps.splice(0, this.dataStart);
+    this.data.values.splice(0, this.dataStart);
+    for (const uuid in this.getRangeCache) {
+      this.getRangeCache[uuid] = Math.max(0, this.getRangeCache[uuid] - this.dataStart);
+    }
+    this.dataStart = 0;
+    this.retainedTimestamps = null;
+  }
+
   /** Finds the first timestamp above the boundary (or equal, for an inclusive search). */
   private findTimestampIndex(timestamp: number, inclusive: boolean, from = 0): number {
     let first = Math.trunc(from);
     if (first < 0) first = Math.max(this.data.timestamps.length + first, 0);
-    let low = first;
+    let low = Math.max(first, this.dataStart);
     let high = this.data.timestamps.length;
     while (low < high) {
       let middle = low + Math.floor((high - low) / 2);
@@ -121,10 +163,10 @@ export default class LogField {
     }
     if (startValueIndex === -1) {
       startValueIndex = this.data.timestamps.length - 1;
-    } else if (startValueIndex !== 0) {
+    } else if (this.dataStart === 0 ? startValueIndex !== 0 : startValueIndex > this.dataStart) {
       startValueIndex -= 1;
     }
-    if (startOffset !== undefined && startOffset >= -startValueIndex) {
+    if (startOffset !== undefined && startOffset >= this.dataStart - startValueIndex) {
       startValueIndex += startOffset;
     }
 
@@ -151,7 +193,27 @@ export default class LogField {
       this.getRangeCache[uuid] = startValueIndex;
     }
 
-    return { timestamps: timestamps, values: values };
+    return {
+      timestamps,
+      values: this.type === LoggableType.String ? values.map((value) => this.resolveValue(value)) : values
+    };
+  }
+
+  private resolveValue(value: any): any {
+    if (typeof value !== "function") return value;
+    let string = this.lazyStrings.get(value);
+    if (string === undefined) {
+      string = value();
+      this.lazyStrings.set(value, string!);
+      if (this.lazyStrings.size > 2) this.lazyStrings.delete(this.lazyStrings.keys().next().value!);
+    }
+    return string;
+  }
+
+  /** A string derived on demand from an already retained payload. */
+  putLazyString(timestamp: number, value: () => string) {
+    if (this.type === LoggableType.String) this.putData(timestamp, value);
+    else this.typeWarning = true;
   }
 
   /** Reads a set of Raw values from the field. */
@@ -196,7 +258,8 @@ export default class LogField {
 
   /** Inserts a new value at the correct index. */
   private putData(timestamp: number, value: any) {
-    if (value === null) return;
+    if (value === null || timestamp < this.discardTimestamp) return;
+    this.retainedTimestamps = null;
 
     // Find position to insert based on timestamp
     let insertIndex: number;
@@ -219,8 +282,12 @@ export default class LogField {
     }
 
     // Compare to adjacent values
-    let childLog = isChildLog(this.wpilibType, this.structuredType);
-    if (!childLog && insertIndex > 0 && logValuesEqual(this.type, value, this.data.values[insertIndex - 1])) {
+    let childLog = this.retainSamples || isChildLog(this.wpilibType, this.structuredType);
+    if (
+      !childLog &&
+      insertIndex > this.dataStart &&
+      logValuesEqual(this.type, value, this.data.values[insertIndex - 1])
+    ) {
       // Same as the previous value
     } else if (
       !childLog &&
@@ -289,8 +356,8 @@ export default class LogField {
   toSerialized(): any {
     return {
       type: this.type,
-      timestamps: this.data.timestamps,
-      values: this.data.values,
+      timestamps: this.data.timestamps.slice(this.dataStart),
+      values: this.data.values.slice(this.dataStart).map((value) => this.resolveValue(value)),
       structuredType: this.structuredType,
       wpilibType: this.wpilibType,
       metadataString: this.metadataString,

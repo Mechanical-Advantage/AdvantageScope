@@ -59,6 +59,7 @@ export default class Log {
   }
 
   private fields: { [id: string]: LogField } = {};
+  private liveRetention = new Map<string, number>();
   private generatedParents: Set<string> = new Set(); // Children of these fields are generated
   private timestampRange: [number, number] | null = null;
   private timestampZero: number | null = null;
@@ -82,6 +83,7 @@ export default class Log {
     this.fieldKeysCache = null;
     this.profileCache.clear();
     this.fields[key] = new LogField(type);
+    if (this.liveRetention.has(key)) this.fields[key].retainAllSamples();
     this.changedFields.add(key);
     this.checkDSConsoleField(key);
   }
@@ -139,7 +141,7 @@ export default class Log {
   }
 
   /** Clears all data before the provided timestamp. */
-  clearBeforeTime(timestamp: number, updateZero = true) {
+  clearBeforeTime(timestamp: number, updateZero = true, skipBounded = false) {
     if (this.timestampRange === null) {
       this.timestampRange = [timestamp, timestamp];
     } else if (this.timestampRange[0] < timestamp) {
@@ -159,9 +161,30 @@ export default class Log {
         cache.timestamps[0] = timestamp;
       }
     });
-    Object.values(this.fields).forEach((field) => {
-      field.clearBeforeTime(timestamp);
+    Object.entries(this.fields).forEach(([key, field]) => {
+      if (!skipBounded || !this.liveRetention.has(key)) field.clearBeforeTime(timestamp);
     });
+  }
+
+  /** Registers a bounded message history; only the live-source discard loop applies it. */
+  setLiveRetention(key: string, seconds: number) {
+    this.liveRetention.set(key, seconds);
+    this.fields[key]?.retainAllSamples();
+  }
+
+  discardLiveData(time: number, seconds: number | undefined) {
+    // Drop bounded payloads first: clearBeforeTime otherwise holds an expired value at the boundary.
+    let changed = false;
+    for (const [key, retention] of this.liveRetention) {
+      changed =
+        (this.fields[key]?.discardBeforeTime(
+          time - Math.min(retention, seconds === undefined || seconds === -1 ? Infinity : seconds)
+        ) ??
+          false) ||
+        changed;
+    }
+    if (changed) this.timestampSetCache = {};
+    if (seconds !== undefined && seconds !== -1) this.clearBeforeTime(Math.max(0, time - seconds), false, true);
   }
 
   /** Adjusts the timestamp range based on a known timestamp. */
@@ -682,6 +705,14 @@ export default class Log {
     if (this.fields[key].getType() === LoggableType.Number) {
       this.processTimestamp(key, timestamp); // Only update timestamp if type is correct
     }
+  }
+
+  /** Writes a string backed by a retained payload, materialized only for readers and serialization. */
+  putLazyString(key: string, timestamp: number, value: () => string) {
+    this.createBlankField(key, LoggableType.String);
+    this.fields[key].putLazyString(timestamp, value);
+    this.changedFields.add(key);
+    if (this.fields[key].getType() === LoggableType.String) this.processTimestamp(key, timestamp);
   }
 
   /** Writes a new String value to the field. */
