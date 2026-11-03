@@ -70,6 +70,11 @@ try {
   lzma = require("lzma-native");
 } catch (e) {}
 
+const csvFiles = new WeakMap<
+  BrowserWindow,
+  Map<string, { path: string; size: number; mtime: number; remove: boolean }>
+>();
+
 // Global variables
 let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
 let prefsWindow: BrowserWindow | null = null;
@@ -290,6 +295,46 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       }
       break;
 
+    case "historical-csv-read": {
+      const { uuid, id, offset, length } = message.data;
+      const source = csvFiles.get(window)?.get(uuid);
+      (async () => {
+        let file: fs.promises.FileHandle | undefined;
+        try {
+          if (!source) throw new Error("CSV source is closed");
+          if (
+            !Number.isSafeInteger(offset) ||
+            offset < 0 ||
+            !Number.isSafeInteger(length) ||
+            length < 0 ||
+            length > 4 * 1024 * 1024
+          )
+            throw new Error("Invalid CSV read range");
+          file = await fs.promises.open(source.path, "r");
+          const stat = await file.stat();
+          if (stat.size !== source.size || stat.mtimeMs !== source.mtime)
+            throw new Error("CSV file changed while open; reopen it to continue");
+          const data = Buffer.alloc(Math.min(length, Math.max(0, source.size - offset)));
+          const { bytesRead } = await file.read(data, 0, data.length, offset);
+          if (bytesRead !== data.length) throw new Error("Unexpected end of CSV file");
+          sendMessage(window, "historical-data", { uuid, csvRead: { id, data } });
+        } catch (error) {
+          sendMessage(window, "historical-data", {
+            uuid,
+            csvRead: { id, error: "Could not read CSV: " + String(error) }
+          });
+        } finally {
+          await file?.close();
+        }
+      })();
+      break;
+    }
+    case "historical-csv-close": {
+      const source = csvFiles.get(window)?.get(message.data.uuid);
+      csvFiles.get(window)?.delete(message.data.uuid);
+      if (source?.remove) fs.rm(source.path, { force: true }, () => {});
+      break;
+    }
     case "historical-start":
       {
         // Record opened files
@@ -299,6 +344,47 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           app.addRecentDocument(logPath);
           // Writing this file is a supplemental task, so we don't need to block/ensure success
           fs.writeFile(AKIT_PATH_OUTPUT, logPath, () => {});
+        }
+
+        if (logPath.endsWith(".csv")) {
+          try {
+            const stat = fs.statSync(logPath);
+            fs.accessSync(logPath, fs.constants.R_OK);
+            if (!stat.isFile()) throw new Error("CSV source is not a regular file");
+            if (!Number.isSafeInteger(stat.size)) throw new Error("CSV file exceeds the supported byte offset limit");
+            let sources = csvFiles.get(window);
+            if (!sources) {
+              sources = new Map();
+              csvFiles.set(window, sources);
+              window.once("closed", () => {
+                sources!.forEach((source) => {
+                  if (source.remove) fs.rm(source.path, { force: true }, () => {});
+                });
+                sources!.clear();
+              });
+            }
+            sources.set(uuid, {
+              path: logPath,
+              size: stat.size,
+              mtime: stat.mtimeMs,
+              remove: !!message.data.deleteAfterRead
+            });
+            const enumPath = logPath + ".enums.json";
+            const sidecar = fs.existsSync(enumPath) ? fs.readFileSync(enumPath) : null;
+            sendMessage(window, "historical-data", {
+              uuid,
+              files: [new Uint8Array(0), sidecar],
+              csvSize: stat.size,
+              error: null
+            });
+          } catch (error) {
+            sendMessage(window, "historical-data", {
+              uuid,
+              files: [null],
+              error: "Could not open CSV: " + String(error)
+            });
+          }
+          break;
         }
 
         // Send data if all file reads finished
