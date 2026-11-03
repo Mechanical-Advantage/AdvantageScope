@@ -52,24 +52,34 @@ export default class LogField {
     return this.data.timestamps;
   }
 
+  private discardVersion = 0;
+  private firstSampleTimestamp: number | undefined;
+
+  getDiscardVersion(): number {
+    return this.discardVersion;
+  }
+
+  /** Original time of the held sample, before retention moved it forward. */
+  getFirstSampleTimestamp(): number | undefined {
+    return this.firstSampleTimestamp ?? this.data.timestamps[0];
+  }
+
   /** Clears all data before the provided timestamp. */
   clearBeforeTime(clearTimestamp: number) {
-    for (let i = 0; i < this.data.timestamps.length; i++) {
-      // If there is more than 1 timestamps and if it occurs before the given timestamp, remove it
-      if (this.data.timestamps.length >= 2 && this.data.timestamps[i + 1] < clearTimestamp) {
-        this.stripingReference = !this.stripingReference;
-        continue;
-      }
-
-      this.data.timestamps.splice(0, i);
-      this.data.values.splice(0, i);
-      break;
+    const timestamps = this.data.timestamps;
+    if (timestamps.length === 0 || timestamps[0] >= clearTimestamp) return;
+    let removed = 0;
+    while (removed + 1 < timestamps.length && timestamps[removed + 1] < clearTimestamp) removed++;
+    if (removed > 0) {
+      this.firstSampleTimestamp = timestamps[removed];
+      timestamps.splice(0, removed);
+      this.data.values.splice(0, removed);
+      if (removed % 2) this.stripingReference = !this.stripingReference;
+    } else if (this.firstSampleTimestamp === undefined) {
+      this.firstSampleTimestamp = timestamps[0];
     }
-
-    // If there are any left over timestamps, reassign the first timestamp to the given timestamp
-    if (this.data.timestamps.length > 0 && this.data.timestamps[0] < clearTimestamp) {
-      this.data.timestamps[0] = clearTimestamp;
-    }
+    timestamps[0] = clearTimestamp;
+    this.discardVersion++;
   }
 
   /** Finds the first timestamp above the boundary (or equal, for an inclusive search). */
@@ -197,6 +207,7 @@ export default class LogField {
   /** Inserts a new value at the correct index. */
   private putData(timestamp: number, value: any) {
     if (value === null) return;
+    if (timestamp <= this.data.timestamps[0]) this.firstSampleTimestamp = undefined;
 
     // Find position to insert based on timestamp
     let insertIndex: number;

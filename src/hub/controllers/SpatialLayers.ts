@@ -148,7 +148,7 @@ export class SpatialLayers {
       const start = cursor.update(log, key + "/spatial", time, () => active.clear());
       const history = log.getString(key + "/spatial", start, time);
       history?.timestamps.forEach((stamp, i) => {
-        if (stamp > time || stamp <= cursor.stamp) return;
+        if (stamp > time || stamp <= start || (i === 0 && stamp === cursor.heldTimestamp)) return;
         for (const marker of JSON.parse(history.values[i]).markers ?? []) {
           const id = (marker.ns ?? "") + ":" + marker.id;
           if (marker.action === 3) active.clear();
@@ -203,7 +203,7 @@ export class SpatialLayers {
     });
     const history = log.getString(key + "/spatial", Math.max(start, log.getTimestampRange()[0], time - 10), time);
     history?.timestamps.forEach((stamp, i) => {
-      if (stamp > time || stamp <= trail!.cursor.stamp) return;
+      if (stamp > time || stamp <= start || (i === 0 && stamp === trail!.cursor.heldTimestamp)) return;
       trail!.samples.push({ stamp, value: JSON.parse(history.values[i]) });
       trail!.cursor.stamp = stamp;
     });
