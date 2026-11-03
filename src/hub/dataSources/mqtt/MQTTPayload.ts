@@ -25,6 +25,7 @@ mqttDBC.getAll().forEach((message) =>
     const path = getSignalKey(message, signal, (key) => metadata.has(key));
     keys.set(signal, path);
     metadata.set(path, {
+      dbcSignal: signal.name,
       unit: signal.unit,
       message: message.name,
       node: message.transmitter,

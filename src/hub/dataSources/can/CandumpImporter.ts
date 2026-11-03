@@ -118,6 +118,7 @@ export function createCandumpImporter() {
         const enumRaw = signal.valueTable !== null;
         signalsByKey.set(fieldKey, { message, signal, enumRaw: false });
         const metadata = {
+          dbcSignal: signal.name,
           unit: enumRaw ? undefined : signal.unit,
           message: message.name,
           id: "0x" + message.id.toString(16).toUpperCase() + (message.extended ? " (extended)" : ""),

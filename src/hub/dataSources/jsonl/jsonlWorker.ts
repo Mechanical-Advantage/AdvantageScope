@@ -114,7 +114,15 @@ function createField(
   const dbc = lookup.get(parts[parts.length - 1]);
   if (dbc !== undefined && /^can\d+$/.test(parts[0])) {
     const key = getNodeName(dbc.message) + "/" + dbc.signal.name;
-    const metadata = { unit: unit || dbc.signal.unit, message: dbc.message.name, bus: parts[0], signal: signal };
+    const metadata = {
+      dbcSignal: dbc.signal.name,
+      comment: dbc.signal.comment,
+      values: dbc.signal.valueTable ? Object.fromEntries(dbc.signal.valueTable) : undefined,
+      unit: unit || dbc.signal.unit,
+      message: dbc.message.name,
+      bus: parts[0],
+      signal: signal
+    };
     if (dbc.signal.valueTable !== null) {
       log.createBlankField(key, LoggableType.String);
       setMetadata(log, key, { ...metadata, unit: undefined });

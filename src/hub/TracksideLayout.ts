@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import TabType from "../shared/TabType";
+import { tracksideHealthTiles } from "../shared/TracksidePreset";
 import { canonicalChannelPath } from "../shared/display/ChannelProfile";
 
 type PendingAxis = {
@@ -39,6 +40,11 @@ function rememberPendingAxes() {
 
 /** Retry only unresolved preset fields, and abandon an axis as soon as the user changes it. */
 export function updateTracksideLayout() {
+  // Resolve preset tiles that were loaded before their fields arrived.
+  for (const candidate of tracksideHealthTiles(window.log.getFieldKeys())) {
+    const tile = window.healthStrip.state.tiles.find((t) => t.path === "" && t.label === candidate.label);
+    if (tile) tile.path = candidate.path;
+  }
   if (!pending.length) return;
   const paths = window.log.getFieldKeys();
   const state = window.tabs.saveState();
@@ -111,7 +117,13 @@ export function applyTracksideLayout() {
   rememberPendingAxes();
   window.tabs.setSelected(main);
   window.healthStrip.state.visible = true;
-  window.healthStrip.state.trackside = true;
+  // Reapplying fills missing preset roles, preserving edited thresholds.
+  for (const tile of tracksideHealthTiles(paths)) {
+    if (
+      !window.healthStrip.state.tiles.some((t) => (tile.path !== "" && t.path === tile.path) || t.label === tile.label)
+    )
+      window.healthStrip.state.tiles.push(tile);
+  }
   window.healthStrip.render();
   const end = window.selection.getCurrentLiveTime() ?? window.log.getTimestampRange()[1];
   window.selection.setTimelineRange([end - 30, end], false);

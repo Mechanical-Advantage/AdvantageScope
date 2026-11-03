@@ -31,7 +31,7 @@ test("Trackside fills delayed signals without replacing user edits", () => {
       },
       setSelected: (index: number) => (state.selected = index)
     },
-    healthStrip: { state: {}, render() {} },
+    healthStrip: { state: { tiles: [] }, render() {} },
     selection: { getCurrentLiveTime: () => null, setTimelineRange() {}, lock() {} }
   };
   trackside.applyTracksideLayout();
@@ -55,6 +55,11 @@ test("Trackside fills delayed signals without replacing user edits", () => {
   // Removed preset tabs must never be recreated by a late catalogue update.
   keys = [];
   trackside.applyTracksideLayout();
+  const tiles = (globalThis as any).window.healthStrip.state.tiles;
+  tiles[0].warn = 123;
+  trackside.applyTracksideLayout();
+  assert.equal(tiles.length, 9);
+  assert.equal(tiles[0].warn, 123);
   state.tabs = [];
   keys.push("vehicles/mur27/dynamics/vehicle_speed");
   trackside.updateTracksideLayout();

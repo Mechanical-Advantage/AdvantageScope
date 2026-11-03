@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { canonicalChannelPath, ChannelOverride } from "./display/ChannelProfile";
+import { ChannelOverride } from "./display/ChannelProfile";
 
 export type Severity = "ok" | "warn" | "critical";
 export interface HealthTile {
@@ -21,8 +21,6 @@ export interface HealthTile {
 export interface HealthStripState {
   visible: boolean;
   tiles: HealthTile[];
-  defaultsApplied: boolean;
-  trackside?: boolean;
 }
 export function evaluateThreshold(value: unknown, tile: HealthTile): Severity {
   if (tile.fault) {
@@ -49,46 +47,23 @@ export function updateLatch(
     ? previous
     : current;
 }
-const defaults: [string, RegExp, "high" | "low", number?, number?, boolean?][] = [
-  ["SoC", /(?:state_of_charge|(?:ennoid_|ecu_)?(?:soc|accusoc))$/, "low", 25, 15],
-  ["Min cell", /(?:cell_voltage_min|(?:ennoid_)?cellvoltagemin)$/, "low", 3.3, 3.1],
-  ["Max cell", /(?:cell_voltage_max|(?:ennoid_)?cellvoltagemax)$/, "high", 4.15, 4.2],
-  ["Max cell temp", /(?:accumulator\/temperature_max|(?:ennoid_)?tempcellmax|ecu_accutempmax)$/, "high", 50, 60],
-  ["Motor temp", /(?:motor_temperature|(?:inv_|ecu_)?motortemp)$/, "high", 90, 110],
-  ["Inverter temp", /(?:module_temperature|ecu_invertertemp|inv_moduleatemp)$/, "high", 70, 85],
-  ["HV pack", /(?:pack_voltage|(?:ennoid_)?packvoltage)$/, "low", 350, 320],
-  [
-    "BMS fault",
-    /(?:bms_faults?|bms\/faultflags|ennoid_faultflags|imd_state|ttcs_imdstate)$/,
-    "high",
-    undefined,
-    undefined,
-    true
-  ],
-  ["Vehicle state", /(?:car_state|ecu_ecustate)$/, "high"]
-];
-export function defaultHealthTiles(paths: string[]): HealthTile[] {
-  return defaults.flatMap(([label, pattern, direction, warn, critical, fault]) => {
-    const path = paths.find((key) => !key.endsWith("/raw") && pattern.test(canonicalChannelPath(key).toLowerCase()));
-    return path ? [{ path, label, direction, warn, critical, fault, latch: fault ?? false }] : [];
-  });
+
+/** Tiles deliberately have no cursor input. Disk logs use their final sample. */
+export function healthTime(live: number | null, end: number): number {
+  return live ?? end;
 }
-
-/** Seconds without data from the oldest critical tile before the banner declares DATA LOST. */
-export const DATA_LOST_AFTER_S = 10;
-
-export type CarBannerState = "ok" | "partial" | "lost";
-
-/** One shared age definition, "oldest critical": the longest time since any health tile's signal was received. */
-export function bannerState(
-  ages: (number | null)[],
-  unknownCount: number,
-  backendConnected: boolean,
-  lastReceiptAgeS: number | null
-): { state: CarBannerState; oldestCriticalS: number | null } {
-  const known = ages.filter((age): age is number => age !== null);
-  let oldest = known.length ? Math.max(...known) : null;
-  if (!backendConnected && lastReceiptAgeS !== null) oldest = Math.max(oldest ?? 0, lastReceiptAgeS);
-  const lost = oldest !== null ? oldest >= DATA_LOST_AFTER_S : !backendConnected;
-  return { state: lost ? "lost" : unknownCount > 0 || !backendConnected ? "partial" : "ok", oldestCriticalS: oldest };
+export function thresholdOrder(tile: HealthTile): boolean {
+  return (
+    tile.warn === undefined ||
+    tile.critical === undefined ||
+    (tile.direction === "high" ? tile.warn <= tile.critical : tile.warn >= tile.critical)
+  );
+}
+/** Drop retired state flags, retaining every saved tile and display override. */
+export function restoreHealthState(state?: HealthStripState): HealthStripState {
+  return { visible: state?.visible ?? false, tiles: structuredClone(state?.tiles ?? []) };
+}
+export function saveTile(tiles: HealthTile[], tile: HealthTile, changes: HealthTile): void {
+  Object.assign(tile, changes);
+  if (!tiles.includes(tile)) tiles.push(tile);
 }
