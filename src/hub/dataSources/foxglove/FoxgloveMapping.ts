@@ -40,6 +40,9 @@ export function registerChannel(log: Log, channel: Channel) {
     log.setLiveRetention(channel.topic, SPATIAL_RETENTION_SECONDS);
     log.setLiveRetention(channel.topic + "/spatial", SPATIAL_RETENTION_SECONDS);
   }
+  if (type === "nav_msgs/Path" || type === "visualization_msgs/MarkerArray") {
+    log.setLiveChildRetention(channel.topic, SPATIAL_RETENTION_SECONDS);
+  }
   log.setMetadataString(
     channel.topic,
     JSON.stringify({
@@ -53,6 +56,7 @@ export function registerChannel(log: Log, channel: Channel) {
   if (schema && !RAW_ONLY_TYPES.has(type)) createFieldsFromSchema(log, channel.topic, schema);
   return {
     channel,
+    decoded: new Map<Uint8Array, any>(),
     lastTime: null as number | null,
     type,
     schema,
@@ -79,9 +83,14 @@ export function mapMessage(log: Log, mapped: MappedChannel, time: number, bytes:
   if (mapped.schema) writeRosMessage(log, key, time, value, mapped.schema);
   else writeUnknown(log, key, time, value);
   if (SPATIAL_TYPES.includes(mapped.type)) {
+    mapped.decoded.set(bytes, value);
+    if (mapped.decoded.size > 2) mapped.decoded.delete(mapped.decoded.keys().next().value!);
     const decode = mapped.decode;
+    const decoded = mapped.decoded;
     log.putLazyString(key + "/spatial", time, () =>
-      JSON.stringify(decode(bytes), (_, value) => (typeof value === "bigint" ? Number(value) : value))
+      JSON.stringify(decoded.get(bytes) ?? decode(bytes), (_, value) =>
+        typeof value === "bigint" ? Number(value) : value
+      )
     );
     log.setStructuredType(key + "/spatial", "SpatialSnapshot");
   }

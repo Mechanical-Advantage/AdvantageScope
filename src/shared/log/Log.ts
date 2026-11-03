@@ -60,6 +60,7 @@ export default class Log {
 
   private fields: { [id: string]: LogField } = {};
   private liveRetention = new Map<string, number>();
+  private liveChildRetention = new Map<string, number>();
   private generatedParents: Set<string> = new Set(); // Children of these fields are generated
   private timestampRange: [number, number] | null = null;
   private timestampZero: number | null = null;
@@ -83,6 +84,15 @@ export default class Log {
     this.fieldKeysCache = null;
     this.profileCache.clear();
     this.fields[key] = new LogField(type);
+    // Walk ancestors only when a field is created, never during discard.
+    for (let parent = key.slice(0, key.lastIndexOf("/")); parent; parent = parent.slice(0, parent.lastIndexOf("/"))) {
+      const seconds = this.liveChildRetention.get(parent);
+      if (seconds !== undefined) {
+        this.liveRetention.set(key, seconds);
+        break;
+      }
+      if (!parent.includes("/")) break;
+    }
     if (this.liveRetention.has(key)) this.fields[key].retainAllSamples();
     this.changedFields.add(key);
     this.checkDSConsoleField(key);
@@ -170,6 +180,11 @@ export default class Log {
   setLiveRetention(key: string, seconds: number) {
     this.liveRetention.set(key, seconds);
     this.fields[key]?.retainAllSamples();
+  }
+
+  /** Register before decoding creates children, including array items created by later messages. */
+  setLiveChildRetention(key: string, seconds: number) {
+    this.liveChildRetention.set(key, seconds);
   }
 
   discardLiveData(time: number, seconds: number | undefined) {

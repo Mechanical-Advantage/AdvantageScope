@@ -27,10 +27,19 @@ export function writeSpatialMessage(log: Log, key: string, time: number, type: s
   );
   log.setStructuredType(child, "SpatialSnapshot");
 }
+const snapshots = new WeakMap<Log, Map<string, { time: number; source: string; value: any }>>();
 export function spatialSnapshot(log: Log, key: string, time: number): { time: number; value: any } | null {
   const data = log.getString(key + "/spatial", time, time);
   if (!data || !data.timestamps.length || data.timestamps[0] > time) return null;
-  return { time: data.timestamps[0], value: JSON.parse(data.values[0]) };
+  let cache = snapshots.get(log);
+  if (!cache) snapshots.set(log, (cache = new Map()));
+  const source = data.values[0];
+  let snapshot = cache.get(key);
+  if (!snapshot || snapshot.time !== data.timestamps[0] || snapshot.source !== source) {
+    snapshot = { time: data.timestamps[0], source, value: JSON.parse(source) };
+    cache.set(key, snapshot);
+  }
+  return snapshot;
 }
 export function metadata(log: Log, key: string): any {
   try {

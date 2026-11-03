@@ -105,3 +105,53 @@ test("identical bounded messages keep receipt times and remain current until the
   log.discardLiveData(131, 1200);
   assert.equal(getOrDefault(log, "/image", LoggableType.Raw, 131, null), null);
 });
+
+test("Path and MarkerArray children expire, including children created after registration", () => {
+  const log = new Log();
+  for (const type of ["nav_msgs/Path", "visualization_msgs/MarkerArray", "geometry_msgs/PoseStamped"]) {
+    const mapped = channel(log, "/" + type, type);
+    for (const time of [1, 50, 100]) mapMessage(log, mapped, time, bytes({ child: { x: time } }));
+    mapMessage(log, mapped, 100, bytes({ late: { x: 7 } }));
+  }
+  log.discardLiveData(101, 1200);
+  for (const type of ["nav_msgs/Path", "visualization_msgs/MarkerArray"]) {
+    assert.deepEqual(log.getNumber("/" + type + "/child/x", -Infinity, Infinity)?.timestamps, [50, 100]);
+    assert.equal(log.getNumber("/" + type + "/late/x", 101, 101)?.values[0], 7);
+  }
+  assert.deepEqual(log.getNumber("/geometry_msgs/PoseStamped/child/x", -Infinity, Infinity)?.timestamps, [1, 50, 100]);
+  log.discardLiveData(200, -1);
+  assert.equal(log.getNumber("/nav_msgs/Path/late/x", 200, 200)?.values.length, 0);
+  assert.ok(log.getFieldKeys().includes("/nav_msgs/Path/late/x"));
+});
+
+test("lazy ranges resolve only consumed entries and memoize each entry for that use", () => {
+  const log = new Log();
+  let reads = 0;
+  for (let i = 0; i < 10; i++)
+    log.putLazyString("/lazy", i, () => {
+      reads++;
+      return String(i);
+    });
+  const data = log.getString("/lazy", -Infinity, Infinity)!;
+  assert.equal(reads, 0);
+  assert.equal(data.values[0], "0");
+  for (let i = 1; i < 10; i++) assert.equal(data.values[i], String(i));
+  assert.equal(data.values[0], "0");
+  assert.equal(reads, 10);
+});
+
+test("current spatial snapshots reuse eager decode without keeping every decoded message", () => {
+  const log = new Log();
+  const mapped = channel(log, "/pose", "geometry_msgs/PoseStamped");
+  const decode = mapped.decode;
+  let reads = 0;
+  mapped.decode = (data) => {
+    reads++;
+    return decode(data);
+  };
+  for (let i = 0; i < 10; i++) mapMessage(log, mapped, i, bytes({ i }));
+  assert.equal(reads, 10);
+  assert.equal(log.getString("/pose/spatial", 9, 9)?.values[0], '{"i":9}');
+  assert.equal(reads, 10);
+  assert.equal(mapped.decoded.size, 2);
+});

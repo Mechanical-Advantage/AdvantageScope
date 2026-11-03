@@ -12,7 +12,29 @@ import { disposeObject, rotation3dToQuaternion } from "../../Field3dRendererImpl
 import ObjectManager from "../ObjectManager";
 export default class MarkerManager extends ObjectManager<Field3dRendererCommand_MarkerObj> {
   private group = new THREE.Group();
+  private primitive: {
+    type: number;
+    shape: string | undefined;
+    mesh: THREE.Mesh<THREE.BufferGeometry, THREE.MeshPhongMaterial>;
+  } | null = null;
+  private signature = "";
+
+  private updatePrimitive(m: any) {
+    const mesh = this.primitive!.mesh;
+    mesh.scale.set(m.scale.x, m.scale.y, m.scale.z);
+    mesh.position.set(...(m.pose.translation as [number, number, number]));
+    mesh.quaternion.copy(rotation3dToQuaternion(m.pose.rotation));
+    mesh.material.color.setRGB(m.color.r, m.color.g, m.color.b);
+    mesh.material.opacity = m.color.a;
+    const transparent = m.color.a < 1;
+    if (mesh.material.transparent !== transparent) {
+      mesh.material.transparent = transparent;
+      mesh.material.needsUpdate = true;
+    }
+  }
   dispose() {
+    this.primitive = null;
+    this.signature = "";
     this.group.removeFromParent();
     disposeObject(this.group);
     this.group.traverse((n) => {
@@ -23,10 +45,17 @@ export default class MarkerManager extends ObjectManager<Field3dRendererCommand_
     });
   }
   setObjectData(object: Field3dRendererCommand_MarkerObj) {
+    const m = object.marker;
+    if (this.primitive && this.primitive.type === m.type && this.primitive.shape === m.shape) {
+      this.updatePrimitive(m);
+      return;
+    }
+    const signature = JSON.stringify(object);
+    if (signature === this.signature) return;
     this.dispose();
+    this.signature = signature;
     this.group = new THREE.Group();
     this.root.add(this.group);
-    const m = object.marker;
     const color = new THREE.Color(m.color.r, m.color.g, m.color.b);
     const material = new THREE.MeshPhongMaterial({ color, opacity: m.color.a, transparent: m.color.a < 1 });
     let geometry: THREE.BufferGeometry | null = null;
@@ -49,6 +78,7 @@ export default class MarkerManager extends ObjectManager<Field3dRendererCommand_
       this.group.add(mesh);
       mesh.position.set(m.pose.translation[0], m.pose.translation[1], m.pose.translation[2]);
       mesh.quaternion.copy(rotation3dToQuaternion(m.pose.rotation));
+      this.primitive = { type: m.type, shape: m.shape, mesh };
     } else if ([0, 4, 5, 8].includes(m.type)) {
       const tf = m.pose;
       const points = (m.points ?? []).map((p: any) => new THREE.Vector3(...transformPoint(tf, [p.x, p.y, p.z])));

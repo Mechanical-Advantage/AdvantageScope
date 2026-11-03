@@ -72,3 +72,21 @@ test("range results own their outer arrays and survive serialization and later w
   restored.putNumber(3, 30);
   assert.deepEqual(restored.getRange(1, Infinity), { timestamps: [1, 2, 3], values: [11, 20, 30] });
 });
+
+test("held timestamps advance without copying the retained suffix", () => {
+  const field = new LogField(LoggableType.Number);
+  for (let i = 0; i < 1000; i++) field.putNumber(i, i);
+  field.clearBeforeTime(10.5);
+  const data = field as unknown as { data: { timestamps: number[]; values: unknown[] } };
+  const timestamps = data.data.timestamps;
+  const values = data.data.values;
+  const length = timestamps.length;
+  assert.equal(length, 1000, "a small discard must not copy the retained suffix");
+  field.clearBeforeTime(10.75);
+  assert.equal(data.data.timestamps, timestamps);
+  assert.equal(data.data.values, values);
+  assert.equal(timestamps.length, length);
+  assert.equal(field.getTimestamp(0), 10.75);
+  assert.equal(field.getFirstSampleTimestamp(), 10);
+  assert.equal(field.getNumber(11, 11)?.values[0], 11);
+});

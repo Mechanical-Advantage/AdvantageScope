@@ -55,7 +55,7 @@ export abstract class LiveDataSource {
         if (this.log && this.timeSupplier) {
           this.log.discardLiveData(this.timeSupplier(), window.preferences?.liveDiscard);
         }
-      }, 1000 / 60);
+      }, 1000);
     }
   }
 

@@ -37,6 +37,7 @@ export default class LogField {
 
   private lazyStrings = new Map<() => string, string>();
 
+  // Indexes are relative to the retained window, independent of physical compaction.
   private getRangeCache: { [id: string]: number } = {};
 
   constructor(type: LoggableType) {
@@ -85,19 +86,22 @@ export default class LogField {
   clearBeforeTime(clearTimestamp: number) {
     if (this.dataStart === this.data.timestamps.length || this.data.timestamps[this.dataStart] >= clearTimestamp)
       return;
-    this.compactDiscarded();
     const timestamps = this.data.timestamps;
-    let removed = 0;
-    while (removed + 1 < timestamps.length && timestamps[removed + 1] < clearTimestamp) removed++;
-    if (removed > 0) {
-      this.firstSampleTimestamp = timestamps[removed];
-      timestamps.splice(0, removed);
-      this.data.values.splice(0, removed);
-      if (removed % 2) this.stripingReference = !this.stripingReference;
-    } else if (this.firstSampleTimestamp === undefined) {
-      this.firstSampleTimestamp = timestamps[0];
+    const start = this.dataStart;
+    while (this.dataStart + 1 < timestamps.length && timestamps[this.dataStart + 1] < clearTimestamp) {
+      this.data.values[this.dataStart++] = undefined;
     }
-    timestamps[0] = clearTimestamp;
+    const removed = this.dataStart - start;
+    if (removed > 0 || this.firstSampleTimestamp === undefined) {
+      this.firstSampleTimestamp = timestamps[this.dataStart];
+    }
+    if (removed % 2) this.stripingReference = !this.stripingReference;
+    timestamps[this.dataStart] = clearTimestamp;
+    this.retainedTimestamps = null;
+    if (removed > 0) {
+      this.lazyStrings.clear();
+      if (this.dataStart * 2 >= timestamps.length) this.compactDiscarded();
+    }
     this.discardVersion++;
   }
 
@@ -129,9 +133,6 @@ export default class LogField {
     if (this.dataStart === 0) return;
     this.data.timestamps.splice(0, this.dataStart);
     this.data.values.splice(0, this.dataStart);
-    for (const uuid in this.getRangeCache) {
-      this.getRangeCache[uuid] = Math.max(0, this.getRangeCache[uuid] - this.dataStart);
-    }
     this.dataStart = 0;
     this.retainedTimestamps = null;
   }
@@ -162,12 +163,19 @@ export default class LogField {
    */
   getRange(start: number, end: number, uuid?: string, startOffset?: number): LogValueSetAny {
     if (this.dataStart === this.data.timestamps.length) return { timestamps: [], values: [] };
+    // Preserve legacy slice semantics for unusual offsets and NaN cache lookups.
+    if (
+      Number.isNaN(start) ||
+      Number.isNaN(end) ||
+      (startOffset !== undefined && (!Number.isInteger(startOffset) || startOffset < 0))
+    )
+      this.compactDiscarded();
     let timestamps: number[];
     let values: any[];
 
     let cacheIndex: number | null = null;
     if (start === end && uuid !== undefined && uuid in this.getRangeCache) {
-      cacheIndex = this.getRangeCache[uuid];
+      cacheIndex = this.getRangeCache[uuid] + this.dataStart;
     }
 
     let startValueIndex = -1;
@@ -219,13 +227,25 @@ export default class LogField {
     }
 
     if (start === end && uuid !== undefined) {
-      this.getRangeCache[uuid] = startValueIndex;
+      this.getRangeCache[uuid] = startValueIndex - this.dataStart;
     }
 
-    return {
-      timestamps,
-      values: this.type === LoggableType.String ? values.map((value) => this.resolveValue(value)) : values
-    };
+    if (this.type === LoggableType.String) {
+      values.forEach((value, index) => {
+        if (typeof value !== "function") return;
+        // Resolve only consumed entries, once per returned range even if the field cache evicts them.
+        Object.defineProperty(values, index, {
+          configurable: true,
+          enumerable: true,
+          get: () => {
+            const resolved = this.resolveValue(value);
+            Object.defineProperty(values, index, { value: resolved, enumerable: true, configurable: true });
+            return resolved;
+          }
+        });
+      });
+    }
+    return { timestamps, values };
   }
 
   private resolveValue(value: any): any {
@@ -291,6 +311,7 @@ export default class LogField {
     if (timestamp <= this.data.timestamps[this.dataStart]) this.firstSampleTimestamp = undefined;
     this.retainedTimestamps = null;
 
+    if (timestamp <= this.data.timestamps[this.data.timestamps.length - 1]) this.compactDiscarded();
     // Find position to insert based on timestamp
     let insertIndex: number;
     if (this.data.timestamps.length > 0 && timestamp > this.data.timestamps[this.data.timestamps.length - 1]) {
