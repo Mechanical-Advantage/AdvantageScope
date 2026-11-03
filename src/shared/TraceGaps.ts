@@ -5,6 +5,9 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import HistoryCursor from "./log/HistoryCursor";
+import Log from "./log/Log";
+
 // Pure gap detection for line graph traces. A "gap" is a stretch where a numeric field has no data (a long time
 // step, or NaN samples) between two valid samples, or after the last valid sample when the stream has not resumed.
 
@@ -165,4 +168,49 @@ export function prepareTrace(
     }
   }
   return { timestamps: ts, values: vs, gapAfter };
+}
+
+/** Whole-field gap state; only newly appended samples are copied and inspected. */
+export class TraceGapCache {
+  private cursor = new HistoryCursor();
+  private timestamps: number[] = [];
+  private stats = new PeriodStats();
+  private candidates: (TraceGap & { nan: boolean })[] = [];
+  private last: { time: number; value: number } | null = null;
+  private sawNaN = false;
+
+  update(log: Log, key: string, edge: number, streamDown = false): TraceGap[] | undefined {
+    const start = this.cursor.update(log, key, Infinity, () => {
+      this.timestamps = [];
+      this.stats = new PeriodStats();
+      this.candidates = [];
+      this.last = null;
+      this.sawNaN = false;
+    });
+    const data = log.getNumber(key, start, Infinity);
+    data?.timestamps.forEach((time, i) => {
+      if (time <= this.cursor.stamp) return;
+      this.timestamps.push(time);
+      const value = data.values[i];
+      if (Number.isNaN(value)) this.sawNaN = true;
+      else {
+        if (this.last && (this.sawNaN || time - this.last.time > MIN_GAP_SECONDS)) {
+          this.candidates.push({ t0: this.last.time, v0: this.last.value, t1: time, v1: value, nan: this.sawNaN });
+        }
+        this.last = { time, value };
+        this.sawNaN = false;
+      }
+      this.cursor.stamp = time;
+    });
+    this.stats.update(this.timestamps);
+    const threshold = gapThreshold(this.stats.median());
+    if (threshold === null) return undefined;
+    const gaps = this.candidates
+      .filter((gap) => gap.nan || gap.t1 - gap.t0 > threshold)
+      .map(({ t0, v0, t1, v1 }) => ({ t0, v0, t1, v1 }));
+    if (this.last && (this.sawNaN || edge - this.last.time > threshold || (streamDown && edge > this.last.time))) {
+      gaps.push({ t0: this.last.time, v0: this.last.value, t1: Infinity, v1: NaN });
+    }
+    return gaps;
+  }
 }

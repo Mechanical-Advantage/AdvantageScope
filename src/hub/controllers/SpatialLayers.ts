@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import { AnnotatedPose3d } from "../../shared/geometry";
+import HistoryCursor from "../../shared/log/HistoryCursor";
 import Log from "../../shared/log/Log";
 import { Field3dRendererCommand_AnyObj } from "../../shared/renderers/Field3dRenderer";
 import { coneStyle } from "../../shared/spatial/ConeStyle";
@@ -22,12 +23,16 @@ export class SpatialLayers {
   private log: Log | null = null;
   private time = -Infinity;
   private processed = new Map<string, number>();
+  private markers = new Map<string, { cursor: HistoryCursor; active: Map<string, { marker: any; stamp: number }> }>();
+  private trails = new Map<string, { cursor: HistoryCursor; samples: { stamp: number; value: any }[] }>();
   private clouds = new Map<string, any>();
   private pending = new Set<string>();
   private generation = 0;
   joints: Record<string, number> = {};
   begin(log: Log, time: number) {
     if (log !== this.log || time < this.time) {
+      this.markers.clear();
+      this.trails.clear();
       this.generation++;
       this.clouds.clear();
       this.pending.clear();
@@ -137,16 +142,20 @@ export class SpatialLayers {
         objects.push(...this.vehicle(log, key, time, fixed, this.resolve(this.robot.rootLink, fixed, time)));
       }
     } else if (type === "visualization_msgs/MarkerArray") {
-      const active = new Map<string, { marker: any; stamp: number }>();
-      const history = log.getString(key + "/spatial", -Infinity, time);
+      let cache = this.markers.get(key);
+      if (!cache) this.markers.set(key, (cache = { cursor: new HistoryCursor(), active: new Map() }));
+      const { cursor, active } = cache;
+      const start = cursor.update(log, key + "/spatial", time, () => active.clear());
+      const history = log.getString(key + "/spatial", start, time);
       history?.timestamps.forEach((stamp, i) => {
-        if (stamp > time) return;
+        if (stamp > time || stamp <= cursor.stamp) return;
         for (const marker of JSON.parse(history.values[i]).markers ?? []) {
           const id = (marker.ns ?? "") + ":" + marker.id;
           if (marker.action === 3) active.clear();
           else if (marker.action === 2) active.delete(id);
           else active.set(id, { marker, stamp });
         }
+        cursor.stamp = stamp;
       });
       for (const { marker, stamp } of active.values()) {
         const lifetime = Number(marker.lifetime?.sec ?? 0) + Number(marker.lifetime?.nanosec ?? 0) * 1e-9;
@@ -187,11 +196,21 @@ export class SpatialLayers {
           return result.status === "ok" ? result.transform : null;
         }).links
       });
-    const history = log.getString(key + "/spatial", Math.max(log.getTimestampRange()[0], time - 10), time);
-    const poses: AnnotatedPose3d[] = [];
+    let trail = this.trails.get(key);
+    if (!trail) this.trails.set(key, (trail = { cursor: new HistoryCursor(), samples: [] }));
+    const start = trail.cursor.update(log, key + "/spatial", time, () => {
+      trail!.samples = [];
+    });
+    const history = log.getString(key + "/spatial", Math.max(start, log.getTimestampRange()[0], time - 10), time);
     history?.timestamps.forEach((stamp, i) => {
-      if (stamp > time) return;
-      const msg = JSON.parse(history.values[i]);
+      if (stamp > time || stamp <= trail!.cursor.stamp) return;
+      trail!.samples.push({ stamp, value: JSON.parse(history.values[i]) });
+      trail!.cursor.stamp = stamp;
+    });
+    const cutoff = Math.max(log.getTimestampRange()[0], time - 10);
+    while (trail.samples.length > 1 && trail.samples[1].stamp <= cutoff) trail.samples.shift();
+    const poses: AnnotatedPose3d[] = [];
+    trail.samples.forEach(({ stamp, value: msg }) => {
       const p = msg.pose?.pose ?? msg.pose ?? msg;
       try {
         poses.push({
@@ -210,22 +229,29 @@ export class SpatialLayers {
   }
   private cloud(log: Log, key: string, time: number, fixed: string, options: Record<string, string>) {
     const decay = Math.max(1, Math.min(20, Number(options.decay ?? 1)));
-    const raw = log.getRaw(key, -Infinity, time);
-    if (!raw) throw new Error("waiting for cloud");
-    const indexes = raw.timestamps.map((t, i) => ({ t, i })).filter(({ t }) => t <= time);
-    const newest = new Set(indexes.slice(-decay).map(({ t }) => t));
+    const timestamps = log.getField(key)?.getTimestamps() ?? [];
+    let lo = 0,
+      hi = timestamps.length;
+    while (lo < hi) {
+      const mid = (lo + hi) >>> 1;
+      if (timestamps[mid] <= time) lo = mid + 1;
+      else hi = mid;
+    }
+    if (lo === 0) throw new Error("waiting for cloud");
+    const newest = new Set(timestamps.slice(Math.max(0, lo - decay), lo));
+    const field = options.field ?? "intensity";
+    const decoded = [...this.clouds.keys()]
+      .filter((cacheKey) => cacheKey.startsWith(key + ":") && cacheKey.endsWith(":" + field))
+      .map((cacheKey) => Number(cacheKey.slice(key.length + 1, -(field.length + 1))))
+      .filter((stamp) => stamp >= timestamps[0] && stamp <= time)
+      .sort((a, b) => a - b)
+      .slice(-decay);
+    const indexes = [...new Set([...newest, ...decoded])].sort((a, b) => a - b).map((t) => ({ t }));
     const objects: Field3dRendererCommand_AnyObj[] = [];
     let frame = "",
       stamp = 0;
     // Only resolve the retained decoded scans. Older scans may no longer have TF history.
-    const field = options.field ?? "intensity";
-    const retained = new Set(
-      indexes
-        .filter(({ t }) => this.clouds.has(key + ":" + t + ":" + field))
-        .slice(-decay)
-        .map(({ t }) => t)
-    );
-    for (const { t, i } of indexes.filter(({ t }) => newest.has(t) || retained.has(t))) {
+    for (const { t } of indexes) {
       const cacheKey = key + ":" + t + ":" + (options.field ?? "intensity");
       const result = this.clouds.get(cacheKey);
       if (!result && !newest.has(t)) continue;
@@ -236,7 +262,7 @@ export class SpatialLayers {
         WorkerManager.request("../bundles/pointCloudWorker.js", {
           encoding: meta.encoding,
           definition: meta.definition,
-          bytes: raw.values[i],
+          bytes: log.getRaw(key, t, t)!.values[0],
           field: options.field ?? "intensity"
         })
           .then((result) => {

@@ -15,6 +15,10 @@ import StatisticsController_Config from "./StatisticsController_Config";
 import TabController from "./TabController";
 
 export default class StatisticsController implements TabController {
+  dispose() {
+    this.sourceList.stop();
+  }
+
   UUID = createUUID();
 
   private UPDATE_PERIOD_MS = 100;

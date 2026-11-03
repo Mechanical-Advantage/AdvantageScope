@@ -19,6 +19,11 @@ import { interpolate } from "../laps/LapEngine";
 import { LapViewport } from "../laps/LapViewport";
 
 export default class LineGraphRenderer implements TabRenderer {
+  private events = new AbortController();
+  dispose() {
+    this.events.abort();
+  }
+
   private Y_STEP_TARGET_PX = 50;
   private X_STEP_TARGET_PX = 100;
   private MAX_DECIMAL_VALUE = 1e9; // After this, stop trying to display fractional values
@@ -49,10 +54,14 @@ export default class LineGraphRenderer implements TabRenderer {
     this.SCROLL_OVERLAY = root.getElementsByClassName("line-graph-scroll")[0] as HTMLCanvasElement;
 
     // Hover handling
-    window.addEventListener("mousemove", (event) => {
-      if (this.ROOT.hidden || !this.grabZoomActive) return;
-      this.lastCursorX = event.clientX - this.ROOT.getBoundingClientRect().x;
-    });
+    window.addEventListener(
+      "mousemove",
+      (event) => {
+        if (this.ROOT.hidden || !this.grabZoomActive) return;
+        this.lastCursorX = event.clientX - this.ROOT.getBoundingClientRect().x;
+      },
+      { signal: this.events.signal }
+    );
     this.SCROLL_OVERLAY.addEventListener("mousemove", (event) => {
       this.lastCursorX = event.clientX - this.ROOT.getBoundingClientRect().x;
       this.lastCursorInRect = true;
@@ -71,23 +80,31 @@ export default class LineGraphRenderer implements TabRenderer {
         this.grabZoomStartTime = this.lastHoveredTime;
       }
     });
-    window.addEventListener("mousemove", () => {
-      if (this.ROOT.hidden) return;
-      if (this.grabZoomActive && this.lastHoveredTime !== null) {
-        window.selection.setGrabZoomRange([this.grabZoomStartTime, this.lastHoveredTime]);
-      }
-    });
-    window.addEventListener("mouseup", () => {
-      if (this.ROOT.hidden) return;
-      if (this.grabZoomActive) {
-        window.selection.finishGrabZoom();
-        this.grabZoomActive = false;
-        if (!this.lastCursorInRect) {
-          this.lastCursorX = null;
-          window.selection.setHoveredTime(null);
+    window.addEventListener(
+      "mousemove",
+      () => {
+        if (this.ROOT.hidden) return;
+        if (this.grabZoomActive && this.lastHoveredTime !== null) {
+          window.selection.setGrabZoomRange([this.grabZoomStartTime, this.lastHoveredTime]);
         }
-      }
-    });
+      },
+      { signal: this.events.signal }
+    );
+    window.addEventListener(
+      "mouseup",
+      () => {
+        if (this.ROOT.hidden) return;
+        if (this.grabZoomActive) {
+          window.selection.finishGrabZoom();
+          this.grabZoomActive = false;
+          if (!this.lastCursorInRect) {
+            this.lastCursorX = null;
+            window.selection.setHoveredTime(null);
+          }
+        }
+      },
+      { signal: this.events.signal }
+    );
     this.SCROLL_OVERLAY.addEventListener("click", (event) => {
       if (Math.abs(event.clientX - this.SCROLL_OVERLAY.getBoundingClientRect().x - this.mouseDownX) <= 5) {
         let hoveredTime = this.lastHoveredTime;

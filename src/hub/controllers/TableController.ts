@@ -12,6 +12,11 @@ import { checkArrayType, createUUID } from "../../shared/util";
 import TabController from "./TabController";
 
 export default class TableController implements TabController {
+  private events = new AbortController();
+  dispose() {
+    this.events.abort();
+  }
+
   UUID = createUUID();
 
   private DRAG_THRESHOLD_PX = 5;
@@ -34,9 +39,13 @@ export default class TableController implements TabController {
     this.DRAG_HIGHLIGHT = root.getElementsByClassName("data-table-drag-highlight")[0] as HTMLElement;
 
     // Drag handling
-    window.addEventListener("drag-update", (event) => {
-      this.handleDrag((event as CustomEvent).detail);
-    });
+    window.addEventListener(
+      "drag-update",
+      (event) => {
+        this.handleDrag((event as CustomEvent).detail);
+      },
+      { signal: this.events.signal }
+    );
 
     // Close field events
     this.ROOT.addEventListener("close-field", (event) => {

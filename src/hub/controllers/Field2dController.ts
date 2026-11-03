@@ -29,6 +29,10 @@ import Field2dController_Config from "./Field2dController_Config";
 import TabController, { setupKeyboardControls } from "./TabController";
 
 export default class Field2dController implements TabController {
+  dispose() {
+    this.sourceList.stop();
+  }
+
   UUID = createUUID();
 
   private static TRAIL_LENGTH_SECS = 3;

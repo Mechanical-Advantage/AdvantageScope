@@ -41,6 +41,7 @@ const SPATIAL_SYMBOLS: { [key: string]: string } = {
 };
 
 export default class SourceList {
+  private events = new AbortController();
   private DRAG_THRESHOLD_PX = 5;
 
   static typePromptCallbacks: { [key: string]: (state: SourceListItemState) => void } = {};
@@ -62,6 +63,7 @@ export default class SourceList {
   itemStatus = new Map<string, { text: string; error: boolean; warn?: boolean; title?: string }>();
   private expanded = new Set<string>();
   private stopped = false;
+  private animationFrame = 0;
   private config: SourceListConfig;
   private configStr: string;
   private state: SourceListState = [];
@@ -157,122 +159,154 @@ export default class SourceList {
     });
 
     // Edit button
-    this.EDIT_BUTTON.addEventListener("click", () => {
-      let rect = this.EDIT_BUTTON.getBoundingClientRect();
-      if (editButtonCallback !== undefined) {
-        editButtonCallback({
-          x: rect.x,
-          y: rect.y,
-          width: rect.width,
-          height: rect.height
-        });
-      }
-    });
-    this.CLEAR_BUTTON.addEventListener("click", () => {
-      let rect = this.CLEAR_BUTTON.getBoundingClientRect();
-      window.sendMainMessage("source-list-clear-prompt", {
-        uuid: this.UUID,
-        rect: {
-          x: rect.x,
-          y: rect.y,
-          width: rect.width,
-          height: rect.height
-        }
-      });
-      SourceList.clearPromptCallbacks[this.UUID] = () => {
-        delete SourceList.clearPromptCallbacks[this.UUID];
-        this.clear();
-      };
-    });
-    this.HELP_BUTTON.addEventListener("click", () => {
-      window.sendMainMessage("source-list-help", this.config);
-    });
-
-    // Incoming drag handling
-    window.addEventListener("drag-update", (event) => {
-      let dragData = (event as CustomEvent).detail;
-      if ("sourceListUUID" in dragData.data) {
-        this.handleItemDrag(dragData);
-      } else if ("fields" in dragData.data) {
-        this.handleFieldDrag(dragData);
-      }
-    });
-
-    // Entry dragging support
-    this.LIST.addEventListener("mousedown", (event) => {
-      this.mouseDownInfo = [event.clientX, event.clientY];
-    });
-    this.LIST.addEventListener("mouseup", () => {
-      this.mouseDownInfo = null;
-    });
-    this.LIST.addEventListener("mousemove", (event) => {
-      // Start drag
-      if (
-        this.mouseDownInfo !== null &&
-        (Math.abs(event.clientX - this.mouseDownInfo[0]) >= this.DRAG_THRESHOLD_PX ||
-          Math.abs(event.clientY - this.mouseDownInfo[1]) >= this.DRAG_THRESHOLD_PX)
-      ) {
-        // Find item
-        let index = -1;
-        Array.from(this.LIST.children).forEach((element, i) => {
-          let rect = element.getBoundingClientRect();
-          if (
-            this.mouseDownInfo![0] >= rect.left &&
-            this.mouseDownInfo![0] <= rect.right &&
-            this.mouseDownInfo![1] >= rect.top &&
-            this.mouseDownInfo![1] <= rect.bottom
-          ) {
-            index = i;
-          }
-        });
-        this.mouseDownInfo = null;
-        if (index === -1) return;
-
-        // Update drag item
-        while (this.DRAG_ITEM.firstChild) {
-          this.DRAG_ITEM.removeChild(this.DRAG_ITEM.firstChild);
-        }
-        let element = this.LIST.children[index];
-        let dragContainer = document.createElement("div");
-        dragContainer.style.position = "absolute";
-        dragContainer.style.width = element.clientWidth.toString() + "px";
-        dragContainer.style.height = "30px";
-        dragContainer.style.left = "0px";
-        dragContainer.style.top = "0px";
-        dragContainer.style.pointerEvents = "none";
-        dragContainer.style.margin = "none";
-        dragContainer.style.padding = "none";
-        dragContainer.classList.add("source-list");
-        let elementClone = element.cloneNode(true) as HTMLElement;
-        {
-          // Apply icon color
-          Array.from(elementClone.getElementsByTagName("object")).forEach((objElement) => {
-            const color = objElement.getAttribute("type-color");
-            objElement.addEventListener("load", () => {
-              if (color !== null && objElement.contentDocument !== null) {
-                let svgs = objElement.contentDocument.getElementsByTagName("svg");
-                if (svgs.length > 0) {
-                  svgs[0].style.color = color;
-                }
-              }
-            });
+    this.EDIT_BUTTON.addEventListener(
+      "click",
+      () => {
+        let rect = this.EDIT_BUTTON.getBoundingClientRect();
+        if (editButtonCallback !== undefined) {
+          editButtonCallback({
+            x: rect.x,
+            y: rect.y,
+            width: rect.width,
+            height: rect.height
           });
         }
-        dragContainer.appendChild(elementClone);
-        this.DRAG_ITEM.appendChild(dragContainer);
-
-        // Start drag
-        let itemRect = element.getBoundingClientRect();
-        window.startDrag(event.clientX, event.clientY, event.clientX - itemRect.left, event.clientY - itemRect.top, {
-          sourceListUUID: this.UUID,
-          sourceListConfigStr: this.configStr,
-          sourceListIndex: index,
-          sourceListIsChild: this.isChild(index),
-          sourceListElement: this.LIST,
-          sourceListState: this.state
+      },
+      { signal: this.events.signal }
+    );
+    this.CLEAR_BUTTON.addEventListener(
+      "click",
+      () => {
+        let rect = this.CLEAR_BUTTON.getBoundingClientRect();
+        window.sendMainMessage("source-list-clear-prompt", {
+          uuid: this.UUID,
+          rect: {
+            x: rect.x,
+            y: rect.y,
+            width: rect.width,
+            height: rect.height
+          }
         });
-      }
-    });
+        SourceList.clearPromptCallbacks[this.UUID] = () => {
+          delete SourceList.clearPromptCallbacks[this.UUID];
+          this.clear();
+        };
+      },
+      { signal: this.events.signal }
+    );
+    this.HELP_BUTTON.addEventListener(
+      "click",
+      () => {
+        window.sendMainMessage("source-list-help", this.config);
+      },
+      { signal: this.events.signal }
+    );
+
+    // Incoming drag handling
+    window.addEventListener(
+      "drag-update",
+      (event) => {
+        let dragData = (event as CustomEvent).detail;
+        if ("sourceListUUID" in dragData.data) {
+          this.handleItemDrag(dragData);
+        } else if ("fields" in dragData.data) {
+          this.handleFieldDrag(dragData);
+        }
+      },
+      { signal: this.events.signal }
+    );
+
+    // Entry dragging support
+    this.LIST.addEventListener(
+      "mousedown",
+      (event) => {
+        this.mouseDownInfo = [event.clientX, event.clientY];
+      },
+      { signal: this.events.signal }
+    );
+    this.LIST.addEventListener(
+      "mouseup",
+      () => {
+        this.mouseDownInfo = null;
+      },
+      { signal: this.events.signal }
+    );
+    this.LIST.addEventListener(
+      "mousemove",
+      (event) => {
+        // Start drag
+        if (
+          this.mouseDownInfo !== null &&
+          (Math.abs(event.clientX - this.mouseDownInfo[0]) >= this.DRAG_THRESHOLD_PX ||
+            Math.abs(event.clientY - this.mouseDownInfo[1]) >= this.DRAG_THRESHOLD_PX)
+        ) {
+          // Find item
+          let index = -1;
+          Array.from(this.LIST.children).forEach((element, i) => {
+            let rect = element.getBoundingClientRect();
+            if (
+              this.mouseDownInfo![0] >= rect.left &&
+              this.mouseDownInfo![0] <= rect.right &&
+              this.mouseDownInfo![1] >= rect.top &&
+              this.mouseDownInfo![1] <= rect.bottom
+            ) {
+              index = i;
+            }
+          });
+          this.mouseDownInfo = null;
+          if (index === -1) return;
+
+          // Update drag item
+          while (this.DRAG_ITEM.firstChild) {
+            this.DRAG_ITEM.removeChild(this.DRAG_ITEM.firstChild);
+          }
+          let element = this.LIST.children[index];
+          let dragContainer = document.createElement("div");
+          dragContainer.style.position = "absolute";
+          dragContainer.style.width = element.clientWidth.toString() + "px";
+          dragContainer.style.height = "30px";
+          dragContainer.style.left = "0px";
+          dragContainer.style.top = "0px";
+          dragContainer.style.pointerEvents = "none";
+          dragContainer.style.margin = "none";
+          dragContainer.style.padding = "none";
+          dragContainer.classList.add("source-list");
+          let elementClone = element.cloneNode(true) as HTMLElement;
+          {
+            // Apply icon color
+            Array.from(elementClone.getElementsByTagName("object")).forEach((objElement) => {
+              const color = objElement.getAttribute("type-color");
+              objElement.addEventListener(
+                "load",
+                () => {
+                  if (color !== null && objElement.contentDocument !== null) {
+                    let svgs = objElement.contentDocument.getElementsByTagName("svg");
+                    if (svgs.length > 0) {
+                      svgs[0].style.color = color;
+                    }
+                  }
+                },
+                { signal: this.events.signal }
+              );
+            });
+          }
+          dragContainer.appendChild(elementClone);
+          this.DRAG_ITEM.appendChild(dragContainer);
+
+          // Start drag
+          let itemRect = element.getBoundingClientRect();
+          window.startDrag(event.clientX, event.clientY, event.clientX - itemRect.left, event.clientY - itemRect.top, {
+            sourceListUUID: this.UUID,
+            sourceListConfigStr: this.configStr,
+            sourceListIndex: index,
+            sourceListIsChild: this.isChild(index),
+            sourceListElement: this.LIST,
+            sourceListState: this.state
+          });
+        }
+      },
+      { signal: this.events.signal }
+    );
 
     // Periodic method
     let lastIsDark: boolean | null = null;
@@ -287,11 +321,11 @@ export default class SourceList {
       }
 
       // Update value previews
-      this.updateAllPreviews();
+      if (this.ROOT.isConnected && this.ROOT.getClientRects().length > 0) this.updateAllPreviews();
 
-      window.requestAnimationFrame(periodic);
+      this.animationFrame = window.requestAnimationFrame(periodic);
     };
-    window.requestAnimationFrame(periodic);
+    this.animationFrame = window.requestAnimationFrame(periodic);
   }
 
   setTitle(title: string): void {
@@ -338,6 +372,13 @@ export default class SourceList {
 
   stop() {
     this.stopped = true;
+    window.cancelAnimationFrame(this.animationFrame);
+    this.events.abort();
+    delete SourceList.clearPromptCallbacks[this.UUID];
+    delete SourceList.typePromptCallbacks[this.UUID];
+    this.supplementalStateSuppliers = [];
+    this.getNumberPreview = undefined;
+    this.ROOT.replaceChildren();
   }
 
   /** Removes all items in the source list. */
@@ -352,7 +393,7 @@ export default class SourceList {
   /** Call when a new set of log fields may be available. */
   refresh() {
     let displayedFields = this.state.map((item) => item.logKey);
-    let currentFields = new Set(window.log.getFieldKeys().filter((field) => displayedFields.includes(field)));
+    let currentFields = new Set(displayedFields.filter((field) => window.log.getType(field) !== null));
     let structTypes: { [key: string]: string | null } = {};
     currentFields.forEach((field) => {
       structTypes[field] = window.log.getStructuredType(field);
@@ -776,15 +817,19 @@ export default class SourceList {
       // Add a persistent load listener to re-apply the correct color.
       // This is necessary because Safari may unload and reload the SVG when
       // the element is detached or hidden (e.g. switching tabs).
-      objElement.addEventListener("load", () => {
-        let color = objElement.getAttribute("type-color");
-        if (color !== null && objElement.contentDocument !== null) {
-          let svgs = objElement.contentDocument.getElementsByTagName("svg");
-          if (svgs.length > 0) {
-            svgs[0].style.color = color;
+      objElement.addEventListener(
+        "load",
+        () => {
+          let color = objElement.getAttribute("type-color");
+          if (color !== null && objElement.contentDocument !== null) {
+            let svgs = objElement.contentDocument.getElementsByTagName("svg");
+            if (svgs.length > 0) {
+              svgs[0].style.color = color;
+            }
           }
-        }
-      });
+        },
+        { signal: this.events.signal }
+      );
     });
 
     if (insertIndex === undefined) {
@@ -841,24 +886,32 @@ export default class SourceList {
         }
       };
     };
-    typeButton.addEventListener("click", () => {
-      let rect = typeButton.getBoundingClientRect();
-      promptType({
-        x: rect.x,
-        y: rect.y,
-        width: rect.width,
-        height: rect.height
-      });
-    });
-    item.addEventListener("contextmenu", (event) => {
-      this.mouseDownInfo = null; // Prevent dragging
-      promptType({
-        x: event.clientX,
-        y: event.clientY,
-        width: 0,
-        height: 0
-      });
-    });
+    typeButton.addEventListener(
+      "click",
+      () => {
+        let rect = typeButton.getBoundingClientRect();
+        promptType({
+          x: rect.x,
+          y: rect.y,
+          width: rect.width,
+          height: rect.height
+        });
+      },
+      { signal: this.events.signal }
+    );
+    item.addEventListener(
+      "contextmenu",
+      (event) => {
+        this.mouseDownInfo = null; // Prevent dragging
+        promptType({
+          x: event.clientX,
+          y: event.clientY,
+          width: 0,
+          height: 0
+        });
+      },
+      { signal: this.events.signal }
+    );
 
     // Hide button
     let keyContainer = item.getElementsByClassName("key-container")[0] as HTMLElement;
@@ -893,21 +946,29 @@ export default class SourceList {
         }
       }
     };
-    hideButton.addEventListener("click", (event) => {
-      event.preventDefault();
-      toggleHidden();
-    });
+    hideButton.addEventListener(
+      "click",
+      (event) => {
+        event.preventDefault();
+        toggleHidden();
+      },
+      { signal: this.events.signal }
+    );
     let lastClick = 0;
     [typeNameElement, keyContainer].forEach((element) =>
-      element.addEventListener("click", () => {
-        let now = new Date().getTime();
-        if (now - lastClick < 400) {
-          toggleHidden();
-          lastClick = 0;
-        } else {
-          lastClick = now;
-        }
-      })
+      element.addEventListener(
+        "click",
+        () => {
+          let now = new Date().getTime();
+          if (now - lastClick < 400) {
+            toggleHidden();
+            lastClick = 0;
+          } else {
+            lastClick = now;
+          }
+        },
+        { signal: this.events.signal }
+      )
     );
 
     // Child formatting
@@ -919,19 +980,23 @@ export default class SourceList {
     let removeButton = item.getElementsByClassName("remove")[0] as HTMLButtonElement;
     removeButton.title = "Remove field";
     let removeIcon = removeButton.firstElementChild as HTMLElement;
-    removeButton.addEventListener("click", () => {
-      let index = Array.from(this.LIST.children).indexOf(item);
-      let removeCount = 0;
-      while (index + removeCount < this.state.length) {
-        removeCount++;
-        if (isChild || !this.isChild(index + removeCount)) break;
-      }
-      this.state.splice(index, removeCount);
-      for (let i = 0; i < removeCount; i++) {
-        this.LIST.removeChild(this.LIST.children[index]);
-      }
-      this.updateHandIcon();
-    });
+    removeButton.addEventListener(
+      "click",
+      () => {
+        let index = Array.from(this.LIST.children).indexOf(item);
+        let removeCount = 0;
+        while (index + removeCount < this.state.length) {
+          removeCount++;
+          if (isChild || !this.isChild(index + removeCount)) break;
+        }
+        this.state.splice(index, removeCount);
+        for (let i = 0; i < removeCount; i++) {
+          this.LIST.removeChild(this.LIST.children[index]);
+        }
+        this.updateHandIcon();
+      },
+      { signal: this.events.signal }
+    );
     return item;
   }
 
@@ -988,7 +1053,7 @@ export default class SourceList {
             typeIconVisible.classList.add("hidden");
           }
         },
-        { once: true }
+        { signal: this.events.signal, once: true }
       );
     } else if (typeIconVisible.contentDocument !== null) {
       // Replace color on visible icon

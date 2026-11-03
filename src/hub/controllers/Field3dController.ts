@@ -33,6 +33,10 @@ import { SpatialLayers } from "./SpatialLayers";
 import TabController from "./TabController";
 
 export default class Field3dController implements TabController {
+  dispose() {
+    this.sourceList.stop();
+  }
+
   UUID = createUUID();
 
   private staticTrack: StaticTrack | null = null;

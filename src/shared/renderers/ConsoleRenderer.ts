@@ -12,6 +12,11 @@ import { formatTimeWithMS } from "../util";
 import TabRenderer from "./TabRenderer";
 
 export default class ConsoleRenderer implements TabRenderer {
+  private events = new AbortController();
+  dispose() {
+    this.events.abort();
+  }
+
   private TABLE_CONTAINER: HTMLElement;
   private TABLE_BODY: HTMLElement;
   private JUMP_INPUT: HTMLInputElement;
@@ -123,20 +128,24 @@ export default class ConsoleRenderer implements TabRenderer {
     });
 
     // Select filter
-    window.addEventListener("keydown", (event) => {
-      if (
-        root === null ||
-        root.hidden ||
-        event.target instanceof HTMLInputElement ||
-        event.target instanceof HTMLTextAreaElement ||
-        (event.target instanceof HTMLElement && event.target.isContentEditable)
-      ) {
-        return;
-      }
-      if ((window.platform === "darwin" ? event.metaKey : event.ctrlKey) && event.key === "f") {
-        this.FILTER_INPUT.select();
-      }
-    });
+    window.addEventListener(
+      "keydown",
+      (event) => {
+        if (
+          root === null ||
+          root.hidden ||
+          event.target instanceof HTMLInputElement ||
+          event.target instanceof HTMLTextAreaElement ||
+          (event.target instanceof HTMLElement && event.target.isContentEditable)
+        ) {
+          return;
+        }
+        if ((window.platform === "darwin" ? event.metaKey : event.ctrlKey) && event.key === "f") {
+          this.FILTER_INPUT.select();
+        }
+      },
+      { signal: this.events.signal }
+    );
 
     // Update field text
     this.updateData();
