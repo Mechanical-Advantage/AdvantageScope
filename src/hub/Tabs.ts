@@ -426,6 +426,8 @@ export default class Tabs {
   /** Restores to the provided state. */
   restoreState(state: TabsState) {
     this.tabList.forEach((tab) => {
+      tab.controller.dispose?.();
+      tab.renderer.dispose?.();
       this.RENDERER_CONTENT.removeChild(tab.rendererElement);
       this.CONTROLS_CONTENT.removeChild(tab.controlsElement);
     });
@@ -633,6 +635,8 @@ export default class Tabs {
   close(index: number) {
     if (index < 1 || index > this.tabList.length - 1) return;
 
+    this.tabList[index].controller.dispose?.();
+    this.tabList[index].renderer.dispose?.();
     this.RENDERER_CONTENT.removeChild(this.tabList[index].rendererElement);
     this.CONTROLS_CONTENT.removeChild(this.tabList[index].controlsElement);
     this.tabList.splice(index, 1);

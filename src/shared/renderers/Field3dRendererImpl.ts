@@ -257,28 +257,36 @@ export default class Field3dRendererImpl implements TabRenderer {
     }
 
     // Create key bindings
-    window.addEventListener("keydown", (event) => {
-      if (window.platform === "darwin" ? event.metaKey : event.ctrlKey) return;
-      if (
-        event.target instanceof HTMLInputElement ||
-        event.target instanceof HTMLTextAreaElement ||
-        (event.target instanceof HTMLElement && event.target.isContentEditable)
-      ) {
-        return;
-      }
-      if (canvasContainer.clientHeight === 0) return;
-      this.keysPressed.add(event.code);
-    });
-    window.addEventListener("keyup", (event) => {
-      if (
-        event.target instanceof HTMLInputElement ||
-        event.target instanceof HTMLTextAreaElement ||
-        (event.target instanceof HTMLElement && event.target.isContentEditable)
-      ) {
-        return;
-      }
-      this.keysPressed.delete(event.code);
-    });
+    window.addEventListener(
+      "keydown",
+      (event) => {
+        if (window.platform === "darwin" ? event.metaKey : event.ctrlKey) return;
+        if (
+          event.target instanceof HTMLInputElement ||
+          event.target instanceof HTMLTextAreaElement ||
+          (event.target instanceof HTMLElement && event.target.isContentEditable)
+        ) {
+          return;
+        }
+        if (canvasContainer.clientHeight === 0) return;
+        this.keysPressed.add(event.code);
+      },
+      { signal: this.events.signal }
+    );
+    window.addEventListener(
+      "keyup",
+      (event) => {
+        if (
+          event.target instanceof HTMLInputElement ||
+          event.target instanceof HTMLTextAreaElement ||
+          (event.target instanceof HTMLElement && event.target.isContentEditable)
+        ) {
+          return;
+        }
+        this.keysPressed.delete(event.code);
+      },
+      { signal: this.events.signal }
+    );
   }
 
   saveState(): unknown {
@@ -334,7 +342,15 @@ export default class Field3dRendererImpl implements TabRenderer {
     this.shouldRender = true;
   }
 
-  stop() {}
+  private events = new AbortController();
+  stop() {
+    this.events.abort();
+    this.controls.dispose();
+    this.objectManagers.forEach((entry) => entry.manager.dispose());
+    this.objectManagers = [];
+    disposeObject(this.scene);
+    this.renderer.dispose();
+  }
 
   /** Resets the camera position and controls target. */
   private resetCamera(command: Field3dRendererCommand, isFTC: boolean, animate = true) {

@@ -12,6 +12,11 @@ import { createUUID } from "../../shared/util";
 import TabController from "./TabController";
 
 export default class ConsoleController implements TabController {
+  private events = new AbortController();
+  dispose() {
+    this.events.abort();
+  }
+
   UUID = createUUID();
 
   private ROOT: HTMLElement;
@@ -26,29 +31,33 @@ export default class ConsoleController implements TabController {
     this.DRAG_HIGHLIGHT = root.getElementsByClassName("console-table-drag-highlight")[0] as HTMLElement;
 
     // Drag handling
-    window.addEventListener("drag-update", (event) => {
-      if (this.ROOT.hidden) return;
-      let dragData = (event as CustomEvent).detail;
-      if (!("fields" in dragData.data)) return;
-      let rect = this.TABLE_CONTAINER.getBoundingClientRect();
-      let active =
-        dragData.x > rect.left && dragData.x < rect.right && dragData.y > rect.top && dragData.y < rect.bottom;
-      let fieldType = window.log.getType(dragData.data.fields[0]);
-      let structuredType = window.log.getStructuredType(dragData.data.fields[0]);
-      let validType =
-        fieldType === LoggableType.String ||
-        ["Console", "ConsoleLineTimestamp", "ErrorInfoTimestamp", "ProgramCrashInfoTimestamp"].includes(
-          structuredType || ""
-        );
-      this.DRAG_HIGHLIGHT.hidden = true;
-      if (active && validType) {
-        if (dragData.end) {
-          this.field = dragData.data.fields[0];
-        } else {
-          this.DRAG_HIGHLIGHT.hidden = false;
+    window.addEventListener(
+      "drag-update",
+      (event) => {
+        if (this.ROOT.hidden) return;
+        let dragData = (event as CustomEvent).detail;
+        if (!("fields" in dragData.data)) return;
+        let rect = this.TABLE_CONTAINER.getBoundingClientRect();
+        let active =
+          dragData.x > rect.left && dragData.x < rect.right && dragData.y > rect.top && dragData.y < rect.bottom;
+        let fieldType = window.log.getType(dragData.data.fields[0]);
+        let structuredType = window.log.getStructuredType(dragData.data.fields[0]);
+        let validType =
+          fieldType === LoggableType.String ||
+          ["Console", "ConsoleLineTimestamp", "ErrorInfoTimestamp", "ProgramCrashInfoTimestamp"].includes(
+            structuredType || ""
+          );
+        this.DRAG_HIGHLIGHT.hidden = true;
+        if (active && validType) {
+          if (dragData.end) {
+            this.field = dragData.data.fields[0];
+          } else {
+            this.DRAG_HIGHLIGHT.hidden = false;
+          }
         }
-      }
-    });
+      },
+      { signal: this.events.signal }
+    );
 
     // Handle close field event
     this.ROOT.addEventListener("close-field", () => {

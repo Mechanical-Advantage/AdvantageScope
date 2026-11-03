@@ -5,6 +5,9 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import HistoryCursor from "./log/HistoryCursor";
+import Log from "./log/Log";
+
 // Pure gap detection for line graph traces. A "gap" is a stretch where a numeric field has no data (a long time
 // step, or NaN samples) between two valid samples, or after the last valid sample when the stream has not resumed.
 
@@ -48,6 +51,16 @@ export class PeriodStats {
     if (this.seen !== timestamps.length) this.cachedMedian = null;
     this.seen = timestamps.length;
     this.lastTimestamp = timestamps[timestamps.length - 1];
+  }
+
+  /** Adds or removes one period as the retained window changes. */
+  changePeriod(dt: number, delta: 1 | -1) {
+    if (!(dt > 0)) return;
+    const count = (this.counts.get(dt) ?? 0) + delta;
+    if (count === 0) this.counts.delete(dt);
+    else this.counts.set(dt, count);
+    this.total += delta;
+    this.cachedMedian = null;
   }
 
   /** Median sample period in seconds, or null with fewer than two samples. */
@@ -165,4 +178,107 @@ export function prepareTrace(
     }
   }
   return { timestamps: ts, values: vs, gapAfter };
+}
+
+/**
+ * Whole-field gap state; only new samples and discarded periods are inspected.
+ * Period statistics exactly match the retained timestamps, including the clamped first period.
+ */
+export class TraceGapCache {
+  private cursor = new HistoryCursor();
+  private timestamps: number[] = [];
+  private head = 0;
+  private candidateHead = 0;
+  private stats = new PeriodStats();
+  private candidates: (TraceGap & { nan: boolean })[] = [];
+  private last: { time: number; value: number } | null = null;
+  private sawNaN = false;
+
+  update(log: Log, key: string, edge: number, streamDown = false): TraceGap[] | undefined {
+    const start = this.cursor.update(log, key, Infinity, () => {
+      this.timestamps = [];
+      this.head = 0;
+      this.candidateHead = 0;
+      this.stats = new PeriodStats();
+      this.candidates = [];
+      this.last = null;
+      this.sawNaN = false;
+    });
+    const field = log.getField(key);
+    const first = field?.getTimestamps()[0];
+    if (first !== undefined && (field?.getFirstSampleTimestamp() ?? -Infinity) > this.cursor.stamp) {
+      // All previously observed samples have expired; consume only the unseen retained tail below.
+      this.timestamps = [];
+      this.head = 0;
+      this.stats = new PeriodStats();
+      this.candidates = [];
+      this.candidateHead = 0;
+      this.last = null;
+      this.sawNaN = false;
+    }
+    if (first !== undefined && this.timestamps.length > this.head && this.timestamps[this.head] < first) {
+      // Retention keeps the value immediately before the boundary and moves its timestamp.
+      while (this.head + 1 < this.timestamps.length && this.timestamps[this.head + 1] < first) {
+        this.stats.changePeriod(this.timestamps[this.head + 1] - this.timestamps[this.head], -1);
+        this.head++;
+      }
+      if (this.head + 1 < this.timestamps.length) {
+        this.stats.changePeriod(this.timestamps[this.head + 1] - this.timestamps[this.head], -1);
+        this.stats.changePeriod(this.timestamps[this.head + 1] - first, 1);
+      }
+      this.timestamps[this.head] = first;
+      const value = log.getNumber(key, -Infinity, first)!.values[0];
+      while (this.candidateHead < this.candidates.length && this.candidates[this.candidateHead].t1 <= first) {
+        this.candidateHead++;
+      }
+      const candidate = this.candidates[this.candidateHead];
+      if (candidate && candidate.t0 < first) {
+        if (Number.isNaN(value)) this.candidateHead++;
+        else {
+          candidate.t0 = first;
+          candidate.v0 = value;
+        }
+      }
+      if (this.last && this.last.time < first) {
+        this.last = Number.isNaN(value) ? null : { time: first, value };
+      }
+      // Amortized compaction keeps storage within twice the retained sample/candidate count.
+      if (this.head > 0 && this.head * 2 >= this.timestamps.length) {
+        this.timestamps = this.timestamps.slice(this.head);
+        this.head = 0;
+      }
+      if (this.candidateHead > 0 && this.candidateHead * 2 >= this.candidates.length) {
+        this.candidates = this.candidates.slice(this.candidateHead);
+        this.candidateHead = 0;
+      }
+    }
+    const data = log.getNumber(key, start, Infinity);
+    data?.timestamps.forEach((time, i) => {
+      if (time <= start || (i === 0 && time === this.cursor.heldTimestamp)) return;
+      if (this.timestamps.length > this.head) {
+        this.stats.changePeriod(time - this.timestamps[this.timestamps.length - 1], 1);
+      }
+      this.timestamps.push(time);
+      const value = data.values[i];
+      if (Number.isNaN(value)) this.sawNaN = true;
+      else {
+        if (this.last && (this.sawNaN || time - this.last.time > MIN_GAP_SECONDS)) {
+          this.candidates.push({ t0: this.last.time, v0: this.last.value, t1: time, v1: value, nan: this.sawNaN });
+        }
+        this.last = { time, value };
+        this.sawNaN = false;
+      }
+      this.cursor.stamp = time;
+    });
+    const threshold = gapThreshold(this.stats.median());
+    if (threshold === null) return undefined;
+    const gaps = this.candidates
+      .slice(this.candidateHead)
+      .filter((gap) => gap.nan || gap.t1 - gap.t0 > threshold)
+      .map(({ t0, v0, t1, v1 }) => ({ t0, v0, t1, v1 }));
+    if (this.last && (this.sawNaN || edge - this.last.time > threshold || (streamDown && edge > this.last.time))) {
+      gaps.push({ t0: this.last.time, v0: this.last.value, t1: Infinity, v1: NaN });
+    }
+    return gaps;
+  }
 }

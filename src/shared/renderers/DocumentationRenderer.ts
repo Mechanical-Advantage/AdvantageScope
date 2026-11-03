@@ -17,12 +17,18 @@ export default class DocumentationRenderer implements TabRenderer {
   private shouldResetScroll = false;
   private firstRender = true;
 
+  private stopped = false;
+  dispose() {
+    this.stopped = true;
+  }
+
   constructor(content: HTMLElement) {
     this.CONTAINER = content.getElementsByClassName("documentation-container")[0] as HTMLElement;
     this.IFRAME = this.CONTAINER.firstElementChild as HTMLIFrameElement;
 
     // Periodic function to record when tab is hidden
     let periodic = () => {
+      if (this.stopped) return;
       if (this.CONTAINER.getBoundingClientRect().height === 0) {
         this.shouldResetScroll = true;
       }

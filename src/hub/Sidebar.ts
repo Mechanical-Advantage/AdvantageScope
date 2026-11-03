@@ -64,6 +64,8 @@ export default class Sidebar {
   private sidebarWidth = this.DEFAULT_SIDEBAR_WIDTH;
   private fieldCount = 0;
   private isTuningMode = false;
+  private fieldKeysLog: unknown;
+  private fieldKeysVersion = -1;
   private lastFieldKeys: string[] = [];
   private expandedFields = new Set<string>();
   private activeFields = new Set<string>();
@@ -456,7 +458,13 @@ export default class Sidebar {
 
   /** Refresh based on new log data or expanded field list. */
   refresh(forceRefresh: boolean = false) {
-    let fieldKeys = window.log.getFieldKeys();
+    const version = window.log.getFieldKeysVersion();
+    const fieldKeys =
+      window.log === this.fieldKeysLog && version === this.fieldKeysVersion
+        ? this.lastFieldKeys
+        : window.log.getFieldKeys();
+    this.fieldKeysLog = window.log;
+    this.fieldKeysVersion = version;
     // Availability changes without catalogue changes. Keep a filtered tree current as
     // producers go stale, disconnect, or recover, including newly matching fields.
     const freshnessMatches =
@@ -464,7 +472,9 @@ export default class Sidebar {
         ? ""
         : JSON.stringify(fieldKeys.filter((key) => window.liveStatus?.getFieldFreshness(key) === this.freshnessFilter));
     let fieldsChanged =
-      forceRefresh || freshnessMatches !== this.freshnessMatches || !arraysEqual(fieldKeys, this.lastFieldKeys);
+      forceRefresh ||
+      freshnessMatches !== this.freshnessMatches ||
+      (fieldKeys !== this.lastFieldKeys && !arraysEqual(fieldKeys, this.lastFieldKeys));
     this.freshnessMatches = freshnessMatches;
     this.lastFieldKeys = fieldKeys;
 

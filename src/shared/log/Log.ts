@@ -38,6 +38,26 @@ export default class Log {
   private protoDecoder = new ProtoDecoder();
   private photonDecoder = new PhotonStructDecoder();
 
+  private fieldKeysVersion = 0;
+  getFieldKeysVersion() {
+    return this.fieldKeysVersion;
+  }
+  private fieldKeysCache: string[] | null = null;
+  private historyVersions = new Map<string, number>();
+  private historyEnds = new Map<string, number>();
+  private profileCache = new Map<
+    string,
+    { metadata: string; sourceUnit?: string; override: string; profile: ChannelProfile }
+  >();
+
+  getHistoryVersion(key: string): number {
+    if (!this.historyEnds.has(key)) {
+      const timestamps = this.fields[key]?.getTimestamps();
+      if (timestamps?.length) this.historyEnds.set(key, timestamps[timestamps.length - 1]);
+    }
+    return this.historyVersions.get(key) ?? 0;
+  }
+
   private fields: { [id: string]: LogField } = {};
   private generatedParents: Set<string> = new Set(); // Children of these fields are generated
   private timestampRange: [number, number] | null = null;
@@ -58,6 +78,9 @@ export default class Log {
   /** Checks if the field exists and registers it if necessary. */
   createBlankField(key: string, type: LoggableType) {
     if (key in this.fields) return;
+    this.fieldKeysVersion++;
+    this.fieldKeysCache = null;
+    this.profileCache.clear();
     this.fields[key] = new LogField(type);
     this.changedFields.add(key);
     this.checkDSConsoleField(key);
@@ -92,6 +115,9 @@ export default class Log {
   /** Removes all data for a field. */
   deleteField(key: string) {
     if (key in this.fields) {
+      this.fieldKeysVersion++;
+      this.fieldKeysCache = null;
+      this.profileCache.clear();
       delete this.fields[key];
       delete this.fieldUnitCache[key];
       this.generatedParents.delete(key);
@@ -126,16 +152,14 @@ export default class Log {
       this.timestampZero = timestamp;
     }
     Object.values(this.timestampSetCache).forEach((cache) => {
-      while (cache.timestamps.length >= 2 && cache.timestamps[1] <= timestamp) {
-        cache.timestamps.shift();
-      }
+      let removed = 0;
+      while (removed + 1 < cache.timestamps.length && cache.timestamps[removed + 1] <= timestamp) removed++;
+      if (removed > 0) cache.timestamps.splice(0, removed);
       if (cache.timestamps.length > 0 && cache.timestamps[0] < timestamp) {
         cache.timestamps[0] = timestamp;
       }
     });
-    Object.values(this.fields).forEach((field) => {
-      field.clearBeforeTime(timestamp);
-    });
+    for (const key in this.fields) this.fields[key].clearBeforeTime(timestamp);
   }
 
   /** Adjusts the timestamp range based on a known timestamp. */
@@ -154,6 +178,10 @@ export default class Log {
 
   /** Updates the timestamp range and set caches if necessary. */
   private processTimestamp(key: string, timestamp: number) {
+    if (timestamp <= (this.historyEnds.get(key) ?? -Infinity)) {
+      this.historyVersions.set(key, this.getHistoryVersion(key) + 1);
+    }
+    this.historyEnds.set(key, Math.max(timestamp, this.historyEnds.get(key) ?? -Infinity));
     // Update timestamp range
     this.updateRangeWithTimestamp(timestamp);
 
@@ -180,7 +208,7 @@ export default class Log {
 
   /** Returns an array of registered field keys. */
   getFieldKeys(): string[] {
-    return Object.keys(this.fields);
+    return (this.fieldKeysCache ??= Object.keys(this.fields)).slice();
   }
 
   /** Returns the count of fields (excluding array item fields). */
@@ -199,6 +227,9 @@ export default class Log {
 
   /** Adds an existing log field to this log. */
   setField(key: string, field: LogField) {
+    this.fieldKeysVersion++;
+    this.fieldKeysCache = null;
+    this.profileCache.clear();
     this.fields[key] = field;
     this.changedFields.add(key);
     this.checkDSConsoleField(key);
@@ -234,6 +265,10 @@ export default class Log {
   /** Sets the structured type string for a field. */
   setStructuredType(key: string, type: string | null) {
     if (key in this.fields) {
+      if (this.fields[key].structuredType !== type) {
+        this.profileCache.clear();
+        this.fieldUnitCache = {};
+      }
       this.fields[key].structuredType = type;
       this.changedFields.add(key);
     }
@@ -265,12 +300,22 @@ export default class Log {
   }
 
   getChannelProfile(key: string, sourceUnit?: string): ChannelProfile {
+    const metadataString = this.getMetadataString(key);
+    const override = JSON.stringify(this.displayOverrides[canonicalChannelPath(key)]);
+    const cached = this.profileCache.get(key);
+    if (
+      cached &&
+      cached.metadata === metadataString &&
+      cached.sourceUnit === sourceUnit &&
+      cached.override === override
+    )
+      return cached.profile;
     let metadata: any = {};
     try {
-      const parsed = JSON.parse(this.getMetadataString(key));
+      const parsed = JSON.parse(metadataString);
       if (parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)) metadata = parsed;
     } catch {}
-    return channelProfile(
+    const profile = channelProfile(
       {
         ...metadata,
         name: key,
@@ -279,6 +324,8 @@ export default class Log {
       },
       this.displayOverrides[canonicalChannelPath(key)]
     );
+    this.profileCache.set(key, { metadata: metadataString, sourceUnit, override, profile });
+    return profile;
   }
 
   /** Returns the metadata string for a field. */
@@ -293,6 +340,10 @@ export default class Log {
   /** Sets the WPILib metadata string for a field. */
   setMetadataString(key: string, type: string) {
     if (key in this.fields) {
+      if (this.fields[key].metadataString !== type) {
+        this.profileCache.clear();
+        this.fieldUnitCache = {};
+      }
       this.fields[key].metadataString = type;
       this.changedFields.add(key);
       delete this.fieldUnitCache[key];
@@ -1036,6 +1087,9 @@ export default class Log {
     Object.entries(sourceSerialized.fields).forEach(([key, value]) => {
       let targetKey = applyKeyPrefix(prefix, key);
       if (prefix.length > 0 && targetKey === prefix) return;
+      this.fieldKeysVersion++;
+      this.fieldKeysCache = null;
+      this.profileCache.clear();
       this.fields[targetKey] = LogField.fromSerialized(value);
     });
 

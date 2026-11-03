@@ -9,6 +9,11 @@ import { createUUID } from "../../shared/util";
 import TabController from "./TabController";
 
 export default class VideoController implements TabController {
+  private events = new AbortController();
+  dispose() {
+    this.events.abort();
+  }
+
   UUID = createUUID();
 
   private LOCAL_SOURCE: HTMLButtonElement;
@@ -112,38 +117,42 @@ export default class VideoController implements TabController {
     this.FRAME_FORWARD_BUTTON.addEventListener("click", () => changeFrame(1));
     this.SKIP_BACK_BUTTON.addEventListener("click", () => skipTime(-5));
     this.SKIP_FORWARD_BUTTON.addEventListener("click", () => skipTime(5));
-    window.addEventListener("keydown", (event) => {
-      if (
-        root === null ||
-        root.hidden ||
-        event.target instanceof HTMLInputElement ||
-        event.target instanceof HTMLTextAreaElement ||
-        (event.target instanceof HTMLElement && event.target.isContentEditable) ||
-        (window.platform === "darwin" ? event.metaKey : event.ctrlKey)
-      )
-        return;
-      switch (event.code) {
-        case "ArrowUp":
-        case "ArrowDown":
-          toggleLock();
-          break;
-        case "Slash":
-          togglePlayPause();
-          break;
-        case "Comma":
-          skipTime(-5);
-          break;
-        case "Period":
-          skipTime(5);
-          break;
-        case "ArrowLeft":
-          changeFrame(-1);
-          break;
-        case "ArrowRight":
-          changeFrame(1);
-          break;
-      }
-    });
+    window.addEventListener(
+      "keydown",
+      (event) => {
+        if (
+          root === null ||
+          root.hidden ||
+          event.target instanceof HTMLInputElement ||
+          event.target instanceof HTMLTextAreaElement ||
+          (event.target instanceof HTMLElement && event.target.isContentEditable) ||
+          (window.platform === "darwin" ? event.metaKey : event.ctrlKey)
+        )
+          return;
+        switch (event.code) {
+          case "ArrowUp":
+          case "ArrowDown":
+            toggleLock();
+            break;
+          case "Slash":
+            togglePlayPause();
+            break;
+          case "Comma":
+            skipTime(-5);
+            break;
+          case "Period":
+            skipTime(5);
+            break;
+          case "ArrowLeft":
+            changeFrame(-1);
+            break;
+          case "ArrowRight":
+            changeFrame(1);
+            break;
+        }
+      },
+      { signal: this.events.signal }
+    );
     this.updateButtons();
   }
 

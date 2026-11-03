@@ -25,6 +25,7 @@ import Tabs from "./Tabs";
 import { applyTracksideLayout } from "./TracksideLayout";
 import WorkerManager from "./WorkerManager";
 import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
+import { LiveConnection } from "./dataSources/LiveConnection";
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
 import LiveDataTuner from "./dataSources/LiveDataTuner";
 import { getLiveSource, getLiveSourceInfo } from "./dataSources/LiveSourceRegistry";
@@ -101,6 +102,7 @@ let historicalSources: {
   progressIncluded: boolean;
 }[] = [];
 let liveSource: LiveDataSource | null = null;
+let liveConnection: LiveConnection | null = null;
 let isExporting = false;
 let logFriendlyName: string | null = null;
 let liveActive = false;
@@ -356,7 +358,9 @@ function startHistorical(path: string, clear = true, merge = false) {
     window.tabs.refresh();
   }
 
-  liveSource?.stop();
+  liveConnection?.stop();
+  liveConnection = null;
+  liveSource = null;
   window.tuner = null;
   window.liveStatus = null;
   liveActive = false;
@@ -471,8 +475,9 @@ function connectLive(sourceId: string, address: string) {
 
 /** Disconnects the live source, keeping the received data visible. */
 function stopLive() {
-  liveSource?.stop();
+  liveConnection?.stop();
   liveSource = null;
+  liveConnection = null;
   window.tuner = null;
   window.liveStatus = null;
   liveActive = false;
@@ -486,13 +491,17 @@ function stopLive() {
 function startLive(sourceType: "robot" | "sim", target?: { sourceId: string; address: string }) {
   historicalSources.forEach((entry) => entry.source.stop());
   historicalSources = [];
-  liveSource?.stop();
-  liveActive = true;
+  liveConnection?.stop();
+  liveActive = false;
+  liveConnected = false;
+  liveSource = null;
   setLoading(null);
 
   if (!window.preferences) return;
   const sourceDefinition = getLiveSource(target?.sourceId ?? window.preferences.liveMode, IS_LITE);
-  liveSource = sourceDefinition.create();
+  const source = sourceDefinition.create();
+  const connection = new LiveConnection(source);
+  liveConnection = connection;
 
   const recentAddress = (window.preferences.liveRecent ?? []).find((entry) => entry.source === sourceDefinition.id)
     ?.address;
@@ -514,18 +523,19 @@ function startLive(sourceType: "robot" | "sim", target?: { sourceId: string; add
   liveSourceName = sourceDefinition.name;
   liveAddress = address;
   liveStatus = LiveDataSourceStatus.Connecting;
-  window.liveStatus = liveSource.getStatusProvider();
-  liveSource.newSegmentCallback = () => {
+  window.liveStatus = null;
+  source.newSegmentCallback = () => {
     // Time jumped backwards (e.g. sim reset): restart the timeline at the new live edge
     window.selection.resetLiveSegment();
     window.sidebar.refresh();
     window.tabs.refresh();
   };
 
-  liveSource.connect(
+  connection.connect(
     address,
     (status: LiveDataSourceStatus) => {
       const previousStatus = liveStatus;
+      if (liveConnection !== connection) return;
       liveStatus = status;
       connectDialog.updateStatus(status);
       switch (status) {
@@ -538,16 +548,14 @@ function startLive(sourceType: "robot" | "sim", target?: { sourceId: string; add
           setWindowTitle(address, "Searching");
           break;
         case LiveDataSourceStatus.Active:
+          liveSource = source;
+          liveActive = true;
+          window.liveStatus = source.getStatusProvider();
+          window.tuner = source.getTuner();
           setWindowTitle(address);
           break;
         case LiveDataSourceStatus.Error:
           setWindowTitle(address, "Connection failed");
-          if (!connectDialog.isVisible())
-            window.sendMainMessage("error", {
-              title: "Problem with live source",
-              content:
-                "There was a problem while connecting to the live source. Please check your connection settings and try again."
-            });
           break;
       }
 
@@ -561,9 +569,14 @@ function startLive(sourceType: "robot" | "sim", target?: { sourceId: string; add
       window.selection.setLiveConnected(timeSupplier);
       window.sidebar.refresh();
       window.tabs.refresh();
+    },
+    (detail) => {
+      if (liveConnection !== connection) return;
+      stopLive();
+      if (!connectDialog.isVisible()) connectDialog.show(address);
+      connectDialog.connectionFailed(detail);
     }
   );
-  window.tuner = liveSource.getTuner();
 }
 
 // File dropped on window
@@ -791,9 +804,7 @@ async function handleMainMessage(message: NamedMessage) {
       break;
 
     case "live-data":
-      if (liveSource !== null) {
-        liveSource.handleMainMessage(message.data);
-      }
+      (liveSource ?? liveConnection?.source)?.handleMainMessage(message.data);
       break;
 
     case "open-files":

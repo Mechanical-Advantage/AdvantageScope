@@ -52,24 +52,53 @@ export default class LogField {
     return this.data.timestamps;
   }
 
+  private discardVersion = 0;
+  private firstSampleTimestamp: number | undefined;
+
+  getDiscardVersion(): number {
+    return this.discardVersion;
+  }
+
+  /** Original time of the held sample, before retention moved it forward. */
+  getFirstSampleTimestamp(): number | undefined {
+    return this.firstSampleTimestamp ?? this.data.timestamps[0];
+  }
+
   /** Clears all data before the provided timestamp. */
   clearBeforeTime(clearTimestamp: number) {
-    for (let i = 0; i < this.data.timestamps.length; i++) {
-      // If there is more than 1 timestamps and if it occurs before the given timestamp, remove it
-      if (this.data.timestamps.length >= 2 && this.data.timestamps[i + 1] < clearTimestamp) {
-        this.stripingReference = !this.stripingReference;
-        continue;
+    const timestamps = this.data.timestamps;
+    if (timestamps.length === 0 || timestamps[0] >= clearTimestamp) return;
+    let removed = 0;
+    while (removed + 1 < timestamps.length && timestamps[removed + 1] < clearTimestamp) removed++;
+    if (removed > 0) {
+      this.firstSampleTimestamp = timestamps[removed];
+      timestamps.splice(0, removed);
+      this.data.values.splice(0, removed);
+      if (removed % 2) this.stripingReference = !this.stripingReference;
+    } else if (this.firstSampleTimestamp === undefined) {
+      this.firstSampleTimestamp = timestamps[0];
+    }
+    timestamps[0] = clearTimestamp;
+    this.discardVersion++;
+  }
+
+  /** Finds the first timestamp above the boundary (or equal, for an inclusive search). */
+  private findTimestampIndex(timestamp: number, inclusive: boolean, from = 0): number {
+    let first = Math.trunc(from);
+    if (first < 0) first = Math.max(this.data.timestamps.length + first, 0);
+    let low = first;
+    let high = this.data.timestamps.length;
+    while (low < high) {
+      let middle = low + Math.floor((high - low) / 2);
+      let value = this.data.timestamps[middle];
+      if (inclusive ? value >= timestamp : value > timestamp) {
+        high = middle;
+      } else {
+        low = middle + 1;
       }
-
-      this.data.timestamps.splice(0, i);
-      this.data.values.splice(0, i);
-      break;
     }
-
-    // If there are any left over timestamps, reassign the first timestamp to the given timestamp
-    if (this.data.timestamps.length > 0 && this.data.timestamps[0] < clearTimestamp) {
-      this.data.timestamps[0] = clearTimestamp;
-    }
+    // Return an index relative to the search start, like slice(from).findIndex().
+    return low === this.data.timestamps.length ? -1 : low - first;
   }
 
   /** Returns the values in the specified timestamp range.
@@ -93,12 +122,12 @@ export default class LogField {
       !(this.data.timestamps[cacheIndex] > start)
     ) {
       // Search from previous location
-      let rawIndex = this.data.timestamps.slice(cacheIndex).findIndex((x) => x > start);
+      let rawIndex = this.findTimestampIndex(start, false, cacheIndex);
       if (rawIndex !== -1) startValueIndex = rawIndex + cacheIndex;
     }
     if (startValueIndex === -1) {
       // Search from start
-      startValueIndex = this.data.timestamps.findIndex((x) => x > start);
+      startValueIndex = this.findTimestampIndex(start, false);
     }
     if (startValueIndex === -1) {
       startValueIndex = this.data.timestamps.length - 1;
@@ -112,12 +141,12 @@ export default class LogField {
     let endValueIndex = -1;
     if (cacheIndex !== null && cacheIndex < this.data.timestamps.length && !(this.data.timestamps[cacheIndex] >= end)) {
       // Search from previous location
-      let rawIndex = this.data.timestamps.slice(cacheIndex).findIndex((x) => x >= end);
+      let rawIndex = this.findTimestampIndex(end, true, cacheIndex);
       if (rawIndex !== -1) endValueIndex = rawIndex + cacheIndex;
     }
     if (endValueIndex === -1) {
       // Search from start
-      endValueIndex = this.data.timestamps.findIndex((x) => x >= end);
+      endValueIndex = this.findTimestampIndex(end, true);
     }
     if (endValueIndex === -1 || endValueIndex === this.data.timestamps.length - 1) {
       // Extend to end of timestamps
@@ -178,6 +207,7 @@ export default class LogField {
   /** Inserts a new value at the correct index. */
   private putData(timestamp: number, value: any) {
     if (value === null) return;
+    if (timestamp <= this.data.timestamps[0]) this.firstSampleTimestamp = undefined;
 
     // Find position to insert based on timestamp
     let insertIndex: number;

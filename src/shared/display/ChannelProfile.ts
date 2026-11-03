@@ -130,5 +130,6 @@ export function rawChannelValue(value: unknown, profile: ChannelProfile): string
       if (unknown) value = unknown[1];
     }
   }
+  if (value instanceof Uint8Array) return `Raw: ${value.byteLength} bytes`;
   return `Raw: ${String(value)}${profile.rawUnit ? " " + profile.rawUnit : ""}`;
 }

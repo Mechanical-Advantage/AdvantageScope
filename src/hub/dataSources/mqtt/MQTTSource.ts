@@ -69,13 +69,13 @@ export default class MQTTSource extends LiveDataSource implements LiveStatusProv
     client.on("error", (error) => {
       this.detail = "Broker: " + error.message;
       this.backend = "error";
-      // Keep the connection dialog open for edits; the source continues retrying.
+      this.setStatus(LiveDataSourceStatus.Error);
     });
     client.on("close", () => {
       if (this.status === LiveDataSourceStatus.Stopped) return;
       this.backend = "error";
       if (!this.detail.startsWith("Broker:")) this.detail = "Broker disconnected";
-      this.setStatus(LiveDataSourceStatus.Connecting);
+      this.setStatus(LiveDataSourceStatus.Error);
       if (this.retryTimer !== null) return;
       const delay = Math.min(30000, 500 * 2 ** Math.min(this.retryAttempt++, 6));
       this.retryAt = Date.now() + delay;

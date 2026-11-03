@@ -93,6 +93,7 @@ export default class FoxgloveSource extends LiveDataSource {
     client.on("error", () => this.setStatus(LiveDataSourceStatus.Error));
     client.on("close", () => {
       if (this.status === LiveDataSourceStatus.Stopped) return;
+      this.setStatus(LiveDataSourceStatus.Error);
       this.setStatus(LiveDataSourceStatus.Connecting);
       this.reconnect = setTimeout(() => this.open(), 1000);
     });
