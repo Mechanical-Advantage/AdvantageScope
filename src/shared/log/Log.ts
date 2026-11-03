@@ -154,16 +154,16 @@ export default class Log {
       this.timestampZero = timestamp;
     }
     Object.values(this.timestampSetCache).forEach((cache) => {
-      while (cache.timestamps.length >= 2 && cache.timestamps[1] <= timestamp) {
-        cache.timestamps.shift();
-      }
+      let removed = 0;
+      while (removed + 1 < cache.timestamps.length && cache.timestamps[removed + 1] <= timestamp) removed++;
+      if (removed > 0) cache.timestamps.splice(0, removed);
       if (cache.timestamps.length > 0 && cache.timestamps[0] < timestamp) {
         cache.timestamps[0] = timestamp;
       }
     });
-    Object.entries(this.fields).forEach(([key, field]) => {
-      if (!skipBounded || !this.liveRetention.has(key)) field.clearBeforeTime(timestamp);
-    });
+    for (const key in this.fields) {
+      if (!skipBounded || !this.liveRetention.has(key)) this.fields[key].clearBeforeTime(timestamp);
+    }
   }
 
   /** Registers a bounded message history; only the live-source discard loop applies it. */

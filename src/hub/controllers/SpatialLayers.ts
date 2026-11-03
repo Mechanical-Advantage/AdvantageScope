@@ -88,9 +88,11 @@ export class SpatialLayers {
   ): { objects: Field3dRendererCommand_AnyObj[]; frame: string; stamp: number } {
     if (log.getStructuredType(key) === "sensor_msgs/PointCloud2") return this.cloud(log, key, time, fixed, options);
     const snapshot = spatialSnapshot(log, key, time);
-    if (!snapshot) throw new Error("waiting for spatial sample");
-    const msg = snapshot.value;
     const type = log.getStructuredType(key);
+    if (!snapshot && !(type === "visualization_msgs/MarkerArray" && this.markers.has(key))) {
+      throw new Error("waiting for spatial sample");
+    }
+    const msg = snapshot?.value ?? {};
     const murType = metadata(log, key).type;
     const frame =
       msg.header?.frame_id ??
@@ -148,7 +150,7 @@ export class SpatialLayers {
       const start = cursor.update(log, key + "/spatial", time, () => active.clear());
       const history = log.getString(key + "/spatial", start, time);
       history?.timestamps.forEach((stamp, i) => {
-        if (stamp > time || stamp <= cursor.stamp) return;
+        if (stamp > time || stamp <= start || (i === 0 && stamp === cursor.heldTimestamp)) return;
         for (const marker of JSON.parse(history.values[i]).markers ?? []) {
           const id = (marker.ns ?? "") + ":" + marker.id;
           if (marker.action === 3) active.clear();
@@ -176,7 +178,7 @@ export class SpatialLayers {
       const p = type === "nav_msgs/Odometry" ? msg.pose.pose : msg.pose;
       objects.push(...this.vehicle(log, key, time, fixed, pose(p).pose));
     }
-    return { objects, frame, stamp: snapshot.time };
+    return { objects, frame, stamp: snapshot?.time ?? time };
   }
   private vehicle(
     log: Log,
@@ -203,7 +205,7 @@ export class SpatialLayers {
     });
     const history = log.getString(key + "/spatial", Math.max(start, log.getTimestampRange()[0], time - 10), time);
     history?.timestamps.forEach((stamp, i) => {
-      if (stamp > time || stamp <= trail!.cursor.stamp) return;
+      if (stamp > time || stamp <= start || (i === 0 && stamp === trail!.cursor.heldTimestamp)) return;
       trail!.samples.push({ stamp, value: JSON.parse(history.values[i]) });
       trail!.cursor.stamp = stamp;
     });
@@ -229,21 +231,22 @@ export class SpatialLayers {
   }
   private cloud(log: Log, key: string, time: number, fixed: string, options: Record<string, string>) {
     const decay = Math.max(1, Math.min(20, Number(options.decay ?? 1)));
-    const timestamps = log.getField(key)?.getTimestamps() ?? [];
+    const history = log.getField(key);
     let lo = 0,
-      hi = timestamps.length;
+      hi = history?.getTimestampCount() ?? 0;
     while (lo < hi) {
       const mid = (lo + hi) >>> 1;
-      if (timestamps[mid] <= time) lo = mid + 1;
+      if (history!.getTimestamp(mid)! <= time) lo = mid + 1;
       else hi = mid;
     }
     if (lo === 0) throw new Error("waiting for cloud");
-    const newest = new Set(timestamps.slice(Math.max(0, lo - decay), lo));
+    const newest = new Set<number>();
+    for (let i = Math.max(0, lo - decay); i < lo; i++) newest.add(history!.getTimestamp(i)!);
     const field = options.field ?? "intensity";
     const decoded = [...this.clouds.keys()]
       .filter((cacheKey) => cacheKey.startsWith(key + ":") && cacheKey.endsWith(":" + field))
       .map((cacheKey) => Number(cacheKey.slice(key.length + 1, -(field.length + 1))))
-      .filter((stamp) => stamp >= timestamps[0] && stamp <= time)
+      .filter((stamp) => stamp >= history!.getTimestamp(0)! && stamp <= time)
       .sort((a, b) => a - b)
       .slice(-decay);
     const indexes = [...new Set([...newest, ...decoded])].sort((a, b) => a - b).map((t) => ({ t }));

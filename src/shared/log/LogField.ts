@@ -60,25 +60,45 @@ export default class LogField {
       : (this.retainedTimestamps ??= this.data.timestamps.slice(this.dataStart));
   }
 
+  /** Access retained timestamps without materializing the retained window in frame loops. */
+  getTimestamp(index: number): number | undefined {
+    return index < 0 ? undefined : this.data.timestamps[this.dataStart + index];
+  }
+
+  getTimestampCount(): number {
+    return this.data.timestamps.length - this.dataStart;
+  }
+
+  private discardVersion = 0;
+  private firstSampleTimestamp: number | undefined;
+
+  getDiscardVersion(): number {
+    return this.discardVersion;
+  }
+
+  /** Original time of the held sample, before retention moved it forward. */
+  getFirstSampleTimestamp(): number | undefined {
+    return this.firstSampleTimestamp ?? this.getTimestamp(0);
+  }
+
   /** Clears all data before the provided timestamp. */
   clearBeforeTime(clearTimestamp: number) {
+    if (this.dataStart === this.data.timestamps.length || this.data.timestamps[this.dataStart] >= clearTimestamp)
+      return;
     this.compactDiscarded();
-    for (let i = 0; i < this.data.timestamps.length; i++) {
-      // If there is more than 1 timestamps and if it occurs before the given timestamp, remove it
-      if (this.data.timestamps.length >= 2 && this.data.timestamps[i + 1] < clearTimestamp) {
-        this.stripingReference = !this.stripingReference;
-        continue;
-      }
-
-      this.data.timestamps.splice(0, i);
-      this.data.values.splice(0, i);
-      break;
+    const timestamps = this.data.timestamps;
+    let removed = 0;
+    while (removed + 1 < timestamps.length && timestamps[removed + 1] < clearTimestamp) removed++;
+    if (removed > 0) {
+      this.firstSampleTimestamp = timestamps[removed];
+      timestamps.splice(0, removed);
+      this.data.values.splice(0, removed);
+      if (removed % 2) this.stripingReference = !this.stripingReference;
+    } else if (this.firstSampleTimestamp === undefined) {
+      this.firstSampleTimestamp = timestamps[0];
     }
-
-    // If there are any left over timestamps, reassign the first timestamp to the given timestamp
-    if (this.data.timestamps.length > 0 && this.data.timestamps[0] < clearTimestamp) {
-      this.data.timestamps[0] = clearTimestamp;
-    }
+    timestamps[0] = clearTimestamp;
+    this.discardVersion++;
   }
 
   /** Bounded message histories preserve receipt times, including identical payloads. */
@@ -95,6 +115,8 @@ export default class LogField {
     }
     const count = this.dataStart - start;
     if (count === 0) return false;
+    this.discardVersion++;
+    this.firstSampleTimestamp = undefined;
     this.retainedTimestamps = null;
     this.lazyStrings.clear();
     if (count % 2) this.stripingReference = !this.stripingReference;
@@ -139,6 +161,7 @@ export default class LogField {
    * the timestamp index to make searches of chronological data faster.
    */
   getRange(start: number, end: number, uuid?: string, startOffset?: number): LogValueSetAny {
+    if (this.dataStart === this.data.timestamps.length) return { timestamps: [], values: [] };
     let timestamps: number[];
     let values: any[];
 
@@ -150,6 +173,7 @@ export default class LogField {
     let startValueIndex = -1;
     if (
       cacheIndex !== null &&
+      (this.dataStart === 0 || cacheIndex >= this.dataStart) &&
       cacheIndex < this.data.timestamps.length &&
       !(this.data.timestamps[cacheIndex] > start)
     ) {
@@ -171,7 +195,12 @@ export default class LogField {
     }
 
     let endValueIndex = -1;
-    if (cacheIndex !== null && cacheIndex < this.data.timestamps.length && !(this.data.timestamps[cacheIndex] >= end)) {
+    if (
+      cacheIndex !== null &&
+      (this.dataStart === 0 || cacheIndex >= this.dataStart) &&
+      cacheIndex < this.data.timestamps.length &&
+      !(this.data.timestamps[cacheIndex] >= end)
+    ) {
       // Search from previous location
       let rawIndex = this.findTimestampIndex(end, true, cacheIndex);
       if (rawIndex !== -1) endValueIndex = rawIndex + cacheIndex;
@@ -259,6 +288,7 @@ export default class LogField {
   /** Inserts a new value at the correct index. */
   private putData(timestamp: number, value: any) {
     if (value === null || timestamp < this.discardTimestamp) return;
+    if (timestamp <= this.data.timestamps[this.dataStart]) this.firstSampleTimestamp = undefined;
     this.retainedTimestamps = null;
 
     // Find position to insert based on timestamp
