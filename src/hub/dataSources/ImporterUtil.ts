@@ -100,7 +100,8 @@ export function resolveRequestedKey(log: Log, key: string): string | null {
 export function runLazyWorker(
   start: (files: (Uint8Array | null)[]) => Promise<Log> | Log,
   decode: (keys: string[]) => string[] | Promise<string[]>,
-  log: () => Log
+  log: () => Log,
+  configure?: (request: Extract<HistoricalDataSource_WorkerRequest, { type: "start" }>) => void
 ) {
   let pending: string[] = [];
   let scheduled = false;
@@ -116,6 +117,8 @@ export function runLazyWorker(
       sendKeys = await decode(requested);
     } catch (error) {
       console.error("Failed to decode fields", error);
+      sendResponse({ type: "failed", error: error instanceof Error ? error.message : String(error) });
+      return;
     }
     // Always answer every requested key (even if empty) so the hub doesn't wait forever
     sendResponse({ type: "fields", fields: serializeFields(log(), [...sendKeys, ...requested]) });
@@ -128,6 +131,7 @@ export function runLazyWorker(
         if (started) return;
         started = true;
         try {
+          configure?.(request);
           const result = await start(request.data);
           result.getChangedFields(); // Reset
           sendProgress(1);

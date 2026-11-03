@@ -12,10 +12,12 @@ import { parseDBC } from "../can/DBC";
 import { runLazyWorker, sendProgress, setMetadata } from "../ImporterUtil";
 import { csvChannelMetadata } from "./CSVChannelMetadata";
 import { parseLegacyEntry } from "./CSVDecoder";
+import { CSVFile, CSVIndex } from "./CSVFile";
 import {
   CSVLayout,
   columnNameToKey,
   decodeCSVText,
+  detectDelimiter,
   detectLayout,
   isNumberCell,
   parseNumberCell,
@@ -32,78 +34,107 @@ import {
 const databases = Object.entries(BUNDLED_DBCS).map(([name, text]) => parseDBC(text, name));
 let enumSidecar: Record<string, Record<string, string>> = {};
 let log = new Log(false);
-let text = "";
+let file: CSVFile;
 let layout: CSVLayout;
-let rowStarts: number[] = [];
-let rowTimes: Float64Array = new Float64Array(0);
-let fastPath = true; // No quotes in the data, so rows are lines
+let rowStarts = new CSVIndex();
+let rowTimes = new CSVIndex();
 const wideColumns = new Map<string, { column: number; type: LoggableType }>(); // Key → column
-const longRows = new Map<string, number[]>(); // Key → row indices (long layout)
+const longRows = new Map<string, CSVIndex>(); // Key → row indices (long layout)
 const longTypes = new Map<string, LoggableType>();
 const decodedKeys = new Set<string>();
 
-runLazyWorker(start, decode, () => log);
+let csvSize: number | undefined;
+runLazyWorker(
+  start,
+  decode,
+  () => log,
+  (request) => {
+    csvSize = request.csvSize;
+  }
+);
 
-function start(files: (Uint8Array | null)[]): Log {
+async function start(files: (Uint8Array | null)[]): Promise<Log> {
   if (files[1]) enumSidecar = JSON.parse(decodeCSVText(files[1]));
-  text = decodeCSVText(files[0]!);
+  const bytes = files[0]!;
+  file = new CSVFile(
+    csvSize ?? bytes.length,
+    csvSize === undefined ? async (offset, length) => bytes.subarray(offset, offset + length) : readDisk
+  );
+  await file.init();
+  // Layout detection has always sampled the first 200 logical rows.
+  const sample: string[] = [];
+  const starts: number[] = [];
+  let pos = file.bom;
+  let sampleLength = 0;
+  // Determine the delimiter from the same initial text window as the old parser.
+  const delimiter = detectDelimiter(await file.prefix());
+  while (pos < file.size && sample.length < 200) {
+    const row = await file.row(pos, delimiter);
+    starts.push(pos);
+    sample.push(row.text);
+    sampleLength += row.next - pos;
+    if (sampleLength > 32 * 1024 * 1024) throw new Error("CSV layout sample exceeds the supported limit of 32 MiB");
+    pos = row.next;
+  }
+  if (sample.length === 0) throw new Error("No data rows found in CSV");
+  const text = sample.join("");
   layout = detectLayout(text);
-  fastPath = text.indexOf('"', layout.dataStart) === -1;
-
-  // Index rows and parse the time column
-  const times: number[] = [];
-  let pos = layout.dataStart;
+  let chars = 0;
+  let firstData = sample.length;
+  for (let i = 0; i < sample.length; i++) {
+    if (chars === layout.dataStart) {
+      firstData = i;
+      break;
+    }
+    chars += sample[i].length;
+  }
+  pos = starts[firstData] ?? pos;
   let lastProgress = 0;
-  let rowIndex = 0;
-  while (pos < text.length) {
-    let next: number;
-    let timeCell: string;
-    if (fastPath) {
-      next = text.indexOf("\n", pos);
-      if (next === -1) next = text.length;
-      next++;
-      if (next - pos <= 2 && text.slice(pos, next).trim().length === 0) {
-        pos = next;
-        continue;
-      }
-      timeCell = layout.timeColumn === -1 ? "" : getCellFast(pos, next - 1, layout.timeColumn);
-    } else {
-      const row = readRow(text, pos, layout.delimiter);
-      next = row.next;
-      if (row.fields.length === 0 || (row.fields.length === 1 && row.fields[0].trim().length === 0)) {
-        pos = next;
-        continue;
-      }
-      timeCell = layout.timeColumn === -1 ? "" : row.fields[layout.timeColumn] ?? "";
-    }
-    const time = layout.timeColumn === -1 ? rowIndex : parseTimeCell(timeCell, layout.timeUnit, layout.decimalComma);
+  while (pos < file.size) {
+    const start = pos;
+    const result = file.row(pos, layout.delimiter);
+    const row = result instanceof Promise ? await result : result;
+    pos = row.next;
+    const fields = readRow(row.text, 0, layout.delimiter).fields;
+    if (fields.length === 0 || (fields.length === 1 && fields[0].trim().length === 0)) continue;
+    const time =
+      layout.timeColumn === -1
+        ? rowStarts.length
+        : parseTimeCell(fields[layout.timeColumn] ?? "", layout.timeUnit, layout.decimalComma);
     if (isFinite(time)) {
-      rowStarts.push(pos);
-      times.push(time);
-      rowIndex++;
+      if (layout.kind === "long") {
+        const key = (fields[layout.keyColumn] ?? "").trim();
+        if (key.length > 0) {
+          let rows = longRows.get(key);
+          if (!rows) {
+            rows = new CSVIndex(1024);
+            longRows.set(key, rows);
+          }
+          rows.push(rowStarts.length);
+        }
+      }
+      rowStarts.push(start);
+      rowTimes.push(time);
     }
-    pos = next;
-
-    if (pos / text.length - lastProgress > 0.02) {
-      lastProgress = pos / text.length;
+    if (pos / file.size - lastProgress > 0.02) {
+      lastProgress = pos / file.size;
       sendProgress(lastProgress * 0.9);
     }
   }
-  rowTimes = Float64Array.from(times);
   if (rowTimes.length === 0) throw new Error("No data rows found in CSV");
   let minTime = Infinity;
   let maxTime = -Infinity;
   for (let i = 0; i < rowTimes.length; i++) {
-    if (rowTimes[i] < minTime) minTime = rowTimes[i];
-    if (rowTimes[i] > maxTime) maxTime = rowTimes[i];
+    if (rowTimes.get(i) < minTime) minTime = rowTimes.get(i);
+    if (rowTimes.get(i) > maxTime) maxTime = rowTimes.get(i);
   }
   log.updateRangeWithTimestamp(minTime);
   log.updateRangeWithTimestamp(maxTime);
 
   if (layout.kind === "wide") {
-    indexWide();
+    await indexWide();
   } else {
-    indexLong();
+    await indexLong();
   }
 
   // File-level metadata (MoTeC preamble etc.)
@@ -117,37 +148,11 @@ function start(files: (Uint8Array | null)[]): Log {
   return log;
 }
 
-/** Gets one cell from a line with no quotes, by walking delimiters. */
-function getCellFast(start: number, end: number, column: number): string {
-  let cellStart = start;
-  for (let i = 0; i < column; i++) {
-    const index = text.indexOf(layout.delimiter, cellStart);
-    if (index === -1 || index >= end) return "";
-    cellStart = index + 1;
-  }
-  let cellEnd = text.indexOf(layout.delimiter, cellStart);
-  if (cellEnd === -1 || cellEnd > end) cellEnd = end;
-  if (cellEnd > cellStart && text.charCodeAt(cellEnd - 1) === 13) cellEnd--;
-  return text.slice(cellStart, cellEnd);
-}
-
-/** Gets the given cells of a row. */
-function getCells(row: number, columns: number[]): string[] {
-  const start = rowStarts[row];
-  if (fastPath) {
-    let end = text.indexOf("\n", start);
-    if (end === -1) end = text.length;
-    const line = text.slice(start, end);
-    const maxColumn = Math.max(...columns);
-    const fields = line.split(layout.delimiter, maxColumn + 1);
-    return columns.map((column) => {
-      const cell = fields[column] ?? "";
-      return cell.endsWith("\r") ? cell.slice(0, -1) : cell;
-    });
-  } else {
-    const fields = readRow(text, start, layout.delimiter).fields;
-    return columns.map((column) => fields[column] ?? "");
-  }
+/** Gets the given cells using a single bounded disk cache for sequential requests. */
+async function getCells(row: number, columns: number[]): Promise<string[]> {
+  const text = (await file.row(rowStarts.get(row), layout.delimiter)).text;
+  const fields = readRow(text, 0, layout.delimiter).fields;
+  return columns.map((column) => fields[column] ?? "");
 }
 
 /** Picks a field type from sample cells. */
@@ -169,10 +174,11 @@ function sampleRowIndices(count: number): number[] {
   return indices;
 }
 
-function indexWide() {
+async function indexWide() {
   const columns = layout.headers.map((_, index) => index).filter((index) => index !== layout.timeColumn);
   // Sample cells across the file for type inference
-  const sampleRows = sampleRowIndices(400).map((row) => getCells(row, columns));
+  const sampleRows: string[][] = [];
+  for (const row of sampleRowIndices(400)) sampleRows.push(await getCells(row, columns));
   const usedKeys = new Set<string>();
   columns.forEach((column, columnIndex) => {
     const header = layout.headers[column];
@@ -186,33 +192,33 @@ function indexWide() {
   });
 }
 
-function indexLong() {
-  for (let row = 0; row < rowStarts.length; row++) {
-    const [key] = getCells(row, [layout.keyColumn]);
-    const trimmed = key.trim();
-    if (trimmed.length === 0) continue;
-    let rows = longRows.get(trimmed);
-    if (rows === undefined) {
-      rows = [];
-      longRows.set(trimmed, rows);
-    }
-    rows.push(row);
-  }
-  longRows.forEach((rows, rawKey) => {
-    const key = columnNameToKey(rawKey);
+async function indexLong() {
+  const selected = new Map<number, string>();
+  const samples = new Map<string, string[]>();
+  const units = new Map<string, string>();
+  longRows.forEach((rows, key) => {
+    samples.set(key, []);
     const step = Math.max(1, Math.floor(rows.length / 100));
-    const samples: string[] = [];
-    for (let i = 0; i < rows.length; i += step) samples.push(getCells(rows[i], [layout.valueColumn])[0]);
-    const type = inferType(samples);
+    for (let i = 0; i < rows.length; i += step) selected.set(rows.get(i), key);
+  });
+  // Read samples in file order, sharing the cache across all channels.
+  for (const row of Array.from(selected.keys()).sort((a, b) => a - b)) {
+    const key = selected.get(row)!;
+    const cells = await getCells(row, [layout.valueColumn, layout.unitColumn]);
+    samples.get(key)!.push(cells[0]);
+    if (!units.has(key)) units.set(key, cells[1].trim());
+  }
+  for (const [rawKey, rows] of Array.from(longRows)) {
+    const key = columnNameToKey(rawKey);
+    const type = inferType(samples.get(rawKey)!);
     longTypes.set(key, type);
     if (key !== rawKey) {
       longRows.set(key, rows);
       longRows.delete(rawKey);
     }
     log.createBlankField(key, type);
-    const unit = layout.unitColumn === -1 ? "" : getCells(rows[0], [layout.unitColumn])[0].trim();
-    setMetadata(log, key, csvChannelMetadata(rawKey, unit, databases, enumSidecar));
-  });
+    setMetadata(log, key, csvChannelMetadata(key, units.get(rawKey) ?? "", databases, enumSidecar));
+  }
 }
 
 function putCell(key: string, type: LoggableType, timestamp: number, cell: string) {
@@ -237,7 +243,7 @@ function putCell(key: string, type: LoggableType, timestamp: number, cell: strin
   }
 }
 
-function decode(keys: string[]): string[] {
+async function decode(keys: string[]): Promise<string[]> {
   const sendKeys: string[] = [];
   const wanted = keys.filter((key) => !decodedKeys.has(key));
   if (layout.kind === "wide") {
@@ -250,8 +256,8 @@ function decode(keys: string[]): string[] {
     if (targets.length > 0) {
       const columns = targets.map((target) => target.info.column);
       for (let row = 0; row < rowStarts.length; row++) {
-        const cells = getCells(row, columns);
-        const timestamp = rowTimes[row];
+        const cells = await getCells(row, columns);
+        const timestamp = rowTimes.get(row);
         for (let i = 0; i < targets.length; i++) {
           putCell(targets[i].key, targets[i].info.type, timestamp, cells[i]);
         }
@@ -259,16 +265,32 @@ function decode(keys: string[]): string[] {
     }
     targets.forEach((target) => decodedKeys.add(target.key));
   } else {
-    wanted.forEach((key) => {
+    for (const key of wanted) {
       const rows = longRows.get(key);
       const type = longTypes.get(key);
-      if (rows === undefined || type === undefined) return;
-      rows.forEach((row) => {
-        putCell(key, type, rowTimes[row], getCells(row, [layout.valueColumn])[0]);
-      });
+      if (rows === undefined || type === undefined) continue;
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows.get(i);
+        putCell(key, type, rowTimes.get(row), (await getCells(row, [layout.valueColumn]))[0]);
+      }
       decodedKeys.add(key);
-    });
+    }
   }
   log.getChangedFields().forEach((key) => sendKeys.push(key));
   return sendKeys;
+}
+
+let readId = 0;
+function readDisk(offset: number, length: number): Promise<Uint8Array> {
+  const id = readId++;
+  return new Promise((resolve, reject) => {
+    const listener = (event: MessageEvent) => {
+      if (event.data.type !== "csvRead" || event.data.id !== id) return;
+      self.removeEventListener("message", listener);
+      if (event.data.error) reject(new Error(event.data.error));
+      else resolve(event.data.data);
+    };
+    self.addEventListener("message", listener);
+    self.postMessage({ type: "csvRead", id, offset, length });
+  });
 }

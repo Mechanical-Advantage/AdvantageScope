@@ -195,6 +195,13 @@ export class HistoricalDataSource {
       return;
     }
 
+    if (message.csvRead) {
+      this.worker?.postMessage(
+        { type: "csvRead", ...message.csvRead },
+        message.csvRead.data ? [message.csvRead.data.buffer] : []
+      );
+      return;
+    }
     if (this.status !== HistoricalDataSourceStatus.Reading) return;
     this.setStatus(HistoricalDataSourceStatus.DecodingInitial);
     this.customError = message.error;
@@ -222,9 +229,14 @@ export class HistoricalDataSource {
       selectedWorkerName = "candumpWorker.js";
     }
     this.worker = new Worker("../bundles/" + selectedWorkerName, { type: "module" });
+    this.worker.onerror = (event) => {
+      this.customError = "Could not decode log: " + (event.message || "the importer worker stopped unexpectedly");
+      this.setStatus(HistoricalDataSourceStatus.Error);
+    };
     let request: HistoricalDataSource_WorkerRequest = {
       type: "start",
-      data: fileContents as Uint8Array[]
+      data: fileContents as Uint8Array[],
+      csvSize: message.csvSize
     };
     this.worker.postMessage(
       request,
@@ -234,6 +246,10 @@ export class HistoricalDataSource {
     // Process response
     let offset = 0;
     this.worker.onmessage = (event) => {
+      if (event.data.type === "csvRead") {
+        window.sendMainMessage("historical-csv-read", { uuid: this.UUID, ...event.data });
+        return;
+      }
       let message = event.data as HistoricalDataSource_WorkerResponse;
       switch (message.type) {
         case "progress":
@@ -476,6 +492,7 @@ export class HistoricalDataSource {
     if (status !== this.status && this.status !== HistoricalDataSourceStatus.Stopped) {
       this.status = status;
       if (this.status === HistoricalDataSourceStatus.Stopped || this.status === HistoricalDataSourceStatus.Error) {
+        window.sendMainMessage("historical-csv-close", { uuid: this.UUID });
         this.worker?.terminate();
         this.mockProgressActive = false;
         if (this.fieldRequestInterval !== null) window.clearInterval(this.fieldRequestInterval);
@@ -489,6 +506,7 @@ export type HistoricalDataSource_WorkerRequest =
   | {
       type: "start";
       data: Uint8Array[];
+      csvSize?: number;
     }
   | {
       type: "parseField";
