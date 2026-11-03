@@ -2418,7 +2418,7 @@ body.health-visible:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-
 :root {
   --health-background: #fff;
   --health-border: #eee;
-  --health-muted: #777;
+  --health-muted: #666;
   --health-warn: #8a5a00;
   --health-crit: #b3261e;
 }
@@ -2429,22 +2429,6 @@ body.health-visible:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-
     --health-muted: #aaa;
     --health-warn: #ffb938;
     --health-crit: #ff7b72;
-  }
-}
-
-body.trackside-layout div.controls-content div.source-list div.item {
-  min-height: 58px;
-}
-body.trackside-layout div.source-list div.value {
-  font-size: 18px;
-  line-height: 22px;
-  height: 22px;
-  color: #444;
-  font-variant-numeric: tabular-nums;
-}
-@media (prefers-color-scheme: dark) {
-  body.trackside-layout div.source-list div.value {
-    color: #ccc;
   }
 }
 
@@ -2708,7 +2692,7 @@ div.connect-bridge-hint > button {
   color: var(--health-muted);
 }
 
-/* Trackside severity banner (full width of the content area, above the health strip) */
+/* Signal attention summary, shown only for non-clear states. */
 .severity-banner {
   position: absolute;
   top: 0;
@@ -2733,15 +2717,6 @@ div.connect-bridge-hint > button {
 }
 body:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-bar-lite) .severity-banner {
   top: 38px;
-}
-.severity-banner[data-level="amber"] {
-  color: var(--health-warn);
-}
-.severity-banner[data-level="red"] {
-  color: var(--health-crit);
-}
-.severity-banner[data-level="lost"] {
-  color: var(--health-muted);
 }
 body.has-severity-banner .health-strip {
   top: var(--severity-h, 30px);
@@ -2786,4 +2761,105 @@ body.has-severity-banner.health-visible:is(.fancy-title-bar-mac, .fancy-title-ba
 }
 body.live-failure div.viewer {
   margin-top: 26px;
+}
+
+.health-reading {
+  box-sizing: border-box;
+  padding: 4px 8px;
+  gap: 0;
+}
+.health-state:empty,
+.health-status:empty {
+  display: none;
+}
+.health-controls {
+  align-items: center;
+}
+.health-controls span {
+  font-size: 12px;
+  color: var(--health-muted);
+}
+.health-tile[data-severity="warn"] .health-value {
+  color: var(--health-warn);
+}
+.health-tile[data-severity="critical"] {
+  box-shadow: inset 3px 0 var(--health-crit);
+  background: color-mix(in srgb, var(--health-crit) 6%, var(--health-background));
+}
+.health-tile[data-severity="critical"] .health-value {
+  color: var(--health-crit);
+}
+.health-tile[data-severity="critical"] .health-state::before {
+  content: "";
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  background: var(--health-crit);
+  mask: url("symbols/dangerous.svg") center / contain no-repeat;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+.health-ack {
+  position: absolute;
+  bottom: 2px;
+  right: 5px;
+  padding: 2px 5px;
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+}
+.health-editor footer {
+  gap: 5px;
+}
+.health-editor footer button {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  flex-shrink: 0;
+}
+.health-editor footer [data-remove] {
+  margin-right: auto;
+}
+.health-editor [data-error] {
+  color: var(--health-crit);
+}
+.health-editor [data-field-note] {
+  font-size: 12px;
+  color: var(--health-muted);
+}
+.health-editor [hidden],
+.health-ack[hidden] {
+  display: none;
+}
+.severity-banner {
+  font-size: 12px;
+  padding: 4px 8px;
+  min-height: 26px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.severity-banner span {
+  flex: 1;
+}
+.severity-banner button {
+  color: inherit;
+  font: inherit;
+  padding: 3px 6px;
+  white-space: nowrap;
+}
+
+.health-picker {
+  max-height: 140px;
+  overflow: auto;
+  border: 1px solid var(--health-border);
+}
+.health-picker button {
+  display: block;
+  width: 100%;
+  padding: 4px 6px;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  overflow-wrap: anywhere;
 }

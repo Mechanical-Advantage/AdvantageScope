@@ -616,7 +616,7 @@ async function handleHubMessage(message: NamedMessage) {
                 }
               },
               {
-                content: "Toggle Health Strip",
+                content: "Toggle Tiles",
                 callback() {
                   sendMessage(hubPort, "toggle-health-strip");
                 }

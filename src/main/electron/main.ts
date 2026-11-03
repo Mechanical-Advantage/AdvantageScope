@@ -1737,7 +1737,7 @@ function setupMenu() {
           }
         },
         {
-          label: "Toggle Health Strip",
+          label: "Toggle Tiles",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
             if (window && hubWindows.includes(window)) sendMessage(window, "toggle-health-strip");

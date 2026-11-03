@@ -473,14 +473,9 @@ export class LiveStatusPill {
       if (summary !== null) {
         if (summary.car !== null) {
           const counts = summary.signalCounts;
-          const carState = window.healthStrip?.getCarState() ?? null;
-          const carText =
-            carState === "lost"
-              ? "Car DATA LOST"
-              : "Car " + (summary.car === "stale" ? "PARTIAL" : summary.car.toUpperCase());
           segments.push({
-            tone: carState === "lost" ? "idle" : FRESHNESS_TONE[summary.car],
-            text: carText,
+            tone: FRESHNESS_TONE[summary.car],
+            text: "Telemetry " + summary.car.toUpperCase(),
             title: `Car: ${counts.online} online, ${counts.stale} stale, ${counts.offline} offline, ${counts.neverSeen} never seen`
           });
         }
@@ -493,14 +488,7 @@ export class LiveStatusPill {
             title: "Simulation clock: " + summary.sim.state
           });
         }
-        const critical = window.healthStrip?.getOldestCriticalAge() ?? null;
-        if (critical !== null)
-          segments.push({
-            tone: "idle",
-            text: `oldest critical ${critical.toFixed(1)} s`,
-            title: "Oldest age among the health-strip signals (same figure as the tiles and banner)"
-          });
-        else if (summary.oldestAgeS !== null)
+        if (summary.oldestAgeS !== null)
           segments.push({
             tone: "idle",
             text: `oldest ${summary.oldestAgeS.toFixed(1)} s`,
@@ -548,7 +536,7 @@ export class LiveStatusPill {
 
     // Popover
     if (this.popover.hidden) return;
-    // Sit below the Trackside banner and health strip rather than covering them.
+    // Sit below the signal summary and strip.
     const chrome = [
       document.querySelector(".severity-banner"),
       document.querySelector(".health-strip"),

@@ -34,6 +34,8 @@ export function csvChannelMetadata(
     sidecar[leaf] ??
     (signal?.valueTable ? Object.fromEntries(signal.valueTable) : undefined);
   return {
+    dbcSignal: signal?.name,
+    comment: signal?.comment,
     unit: unit || signal?.unit,
     min: signal?.min,
     max: signal?.max,

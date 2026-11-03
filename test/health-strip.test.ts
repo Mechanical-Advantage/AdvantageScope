@@ -7,7 +7,15 @@
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { bannerState, defaultHealthTiles, evaluateThreshold, HealthTile, updateLatch } from "../src/shared/HealthStrip";
+import {
+  evaluateThreshold,
+  HealthTile,
+  healthTime,
+  restoreHealthState,
+  saveTile,
+  thresholdOrder,
+  updateLatch
+} from "../src/shared/HealthStrip";
 
 test("thresholds include boundaries and respect direction", () => {
   const tile: HealthTile = { path: "x", label: "x", direction: "high", warn: 50, critical: 60 };
@@ -31,29 +39,43 @@ test("fault labels and latches retain the fault until acknowledged", () => {
   assert.deepEqual(updateLatch(undefined, clear, true), clear);
   assert.deepEqual(updateLatch(fault, clear, false), clear);
 });
-test("defaults match canonical mock and DBC names without raw enum duplicates", () => {
-  const paths = [
-    "vehicles/mur27/accumulator/state_of_charge",
-    "vehicles/mur27/accumulator/temperature_max",
-    "ECU/ECU_MotorTemp",
-    "ECU.ECU_ECUState",
-    "ECU/ECU_FaultFlags",
-    "TTCS/TTCS_IMDState/raw",
-    "TTCS/TTCS_IMDState"
-  ];
-  const tiles = defaultHealthTiles(paths);
-  assert.deepEqual(
-    tiles.map((t) => t.label),
-    ["SoC", "Max cell temp", "Motor temp", "BMS fault", "Vehicle state"]
-  );
-  assert.equal(tiles[3].path, "TTCS/TTCS_IMDState");
-  assert.deepEqual(defaultHealthTiles(["unrelated/temperature"]), []);
+test("tiles use live time or disk end, never cursor time", () => {
+  for (const cursor of [0, 5, 100]) {
+    assert.equal(healthTime(42, 99), 42);
+  }
+  assert.equal(healthTime(null, 99), 99);
 });
-
-test("banner state uses one oldest-critical age", () => {
-  assert.deepEqual(bannerState([0.2, 0.4], 0, true, 0.1), { state: "ok", oldestCriticalS: 0.4 });
-  assert.equal(bannerState([0.2, 5.2], 2, true, 0.1).state, "partial");
-  assert.equal(bannerState([0.2, 33], 2, true, 0.1).state, "lost");
-  assert.equal(bannerState([null], 1, false, 12).state, "lost");
-  assert.equal(bannerState([], 0, false, null).state, "lost");
+test("layout round trip and old state migration retain tiles only", () => {
+  const old = {
+    visible: true,
+    defaultsApplied: true,
+    trackside: true,
+    tiles: [
+      {
+        path: "missing",
+        label: "Temp",
+        direction: "low" as const,
+        warn: 25,
+        critical: 15,
+        profile: { unit: "%", precision: 2 },
+        latch: true
+      }
+    ]
+  };
+  assert.deepEqual(restoreHealthState(JSON.parse(JSON.stringify(old))), { visible: true, tiles: old.tiles });
+  assert.deepEqual(restoreHealthState(), { visible: false, tiles: [] });
+});
+test("draft cancellation leaves list untouched; save commits once", () => {
+  const tiles: HealthTile[] = [];
+  const draft: HealthTile = { path: "x", label: "x", direction: "high" };
+  assert.equal(tiles.length, 0);
+  saveTile(tiles, draft, draft);
+  saveTile(tiles, draft, draft);
+  assert.equal(tiles.length, 1);
+});
+test("threshold order follows direction", () => {
+  const tile: HealthTile = { path: "x", label: "x", direction: "high", warn: 20, critical: 10 };
+  assert.equal(thresholdOrder(tile), false);
+  assert.equal(thresholdOrder({ ...tile, direction: "low" }), true);
+  assert.equal(thresholdOrder({ ...tile, critical: undefined }), true);
 });
