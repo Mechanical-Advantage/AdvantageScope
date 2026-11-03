@@ -53,13 +53,9 @@ export abstract class LiveDataSource {
     if (enableClearData) {
       this.clearDataCallback = setInterval(() => {
         if (this.log && this.timeSupplier) {
-          let liveDiscardSecs = window.preferences?.liveDiscard;
-          if (liveDiscardSecs !== undefined && liveDiscardSecs !== -1) {
-            let minTime = this.timeSupplier() - liveDiscardSecs;
-            this.log.clearBeforeTime(Math.max(0, minTime), false);
-          }
+          this.log.discardLiveData(this.timeSupplier(), window.preferences?.liveDiscard);
         }
-      }, 1000 / 60);
+      }, 1000);
     }
   }
 

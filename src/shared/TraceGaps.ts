@@ -205,7 +205,7 @@ export class TraceGapCache {
       this.sawNaN = false;
     });
     const field = log.getField(key);
-    const first = field?.getTimestamps()[0];
+    const first = field?.getTimestamp(0);
     if (first !== undefined && (field?.getFirstSampleTimestamp() ?? -Infinity) > this.cursor.stamp) {
       // All previously observed samples have expired; consume only the unseen retained tail below.
       this.timestamps = [];

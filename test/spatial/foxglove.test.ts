@@ -33,3 +33,15 @@ test("Foxglove maps whole topics, numeric leaves and shared spatial snapshots", 
   assert.equal(log.getStructuredType("/pose/pose3d"), "Pose3d");
   assert.equal(spatialSnapshot(log, "/pose", 4)?.value.header.frame_id, "map");
 });
+
+test("spatial snapshots reuse parsed values until the sample changes, including same-time replacement", () => {
+  const log = new Log();
+  log.putString("/pose/spatial", 1, '{"x":1}');
+  const first = spatialSnapshot(log, "/pose", 1)!;
+  assert.equal(spatialSnapshot(log, "/pose", 2)!.value, first.value);
+  log.putString("/pose/spatial", 1, '{"x":2}');
+  assert.equal(spatialSnapshot(log, "/pose", 2)!.value.x, 2);
+  log.putString("/pose/spatial", 3, '{"x":3}');
+  assert.equal(spatialSnapshot(log, "/pose", 3)!.value.x, 3);
+  assert.equal(spatialSnapshot(log, "/pose", 1)!.value.x, 2);
+});

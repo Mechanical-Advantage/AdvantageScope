@@ -20,13 +20,13 @@ export default class HistoryCursor {
 
   update(log: Log, key: string, time: number, reset: () => void): number {
     const field = log.getField(key);
-    const first = field?.getTimestamps()[0];
+    const first = field?.getTimestamp(0);
     const version = log.getHistoryVersion(key);
     const discardVersion = field?.getDiscardVersion() ?? 0;
     if (
       log !== this.log ||
       field !== this.field ||
-      (first !== this.first && discardVersion === this.discardVersion) ||
+      (this.first !== undefined && first !== this.first && discardVersion === this.discardVersion) ||
       version !== this.version ||
       time < this.time
     ) {
@@ -36,7 +36,7 @@ export default class HistoryCursor {
     this.heldTimestamp = undefined;
     // A held sample moved by retention is not a new event.
     if (first !== undefined && (field?.getFirstSampleTimestamp() ?? Infinity) <= this.stamp) {
-      if (first > this.stamp && field?.getTimestamps()[1] === first) this.heldTimestamp = first;
+      if (first > this.stamp && field?.getTimestamp(1) === first) this.heldTimestamp = first;
       else this.stamp = Math.max(this.stamp, first);
     }
     this.discardVersion = discardVersion;

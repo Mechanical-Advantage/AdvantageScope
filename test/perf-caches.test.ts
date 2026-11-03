@@ -310,3 +310,115 @@ test("append and discard do not invalidate catalogue or channel profiles", () =>
     assert.equal(log.getChannelProfile("v"), profile);
   }
 });
+
+test("mixed live retention never replays marker, trail or gap history at expiry ticks", (t) => {
+  const log = new Log();
+  const layers = new SpatialLayers();
+  const gaps = new TraceGapCache();
+  const put = (i: number) => {
+    const time = i / 20;
+    for (const [key, type] of [
+      ["m", "visualization_msgs/MarkerArray"],
+      ["p", "geometry_msgs/PoseStamped"]
+    ]) {
+      log.putRaw(key, time, new Uint8Array([i % 256]));
+      log.setStructuredType(key, type);
+      log.putLazyString(key + "/spatial", time, () =>
+        JSON.stringify({
+          header: { frame_id: "map" },
+          markers:
+            i === 0
+              ? [
+                  {
+                    id: 1,
+                    header: { frame_id: "map" },
+                    pose: { position: { x: 0, y: 0, z: 0 }, orientation: { w: 1 } }
+                  }
+                ]
+              : [],
+          pose: { position: { x: i }, orientation: { w: 1 } }
+        })
+      );
+    }
+    log.putNumber("v", time, i);
+  };
+  put(0);
+  for (const key of ["m", "m/spatial", "p", "p/spatial"]) log.setLiveRetention(key, 60);
+  const render = (time: number) => {
+    layers.begin(log, time);
+    layers.objects(log, "m", time, "map");
+    layers.objects(log, "p", time, "map");
+    gaps.update(log, "v", time);
+  };
+  render(0);
+  for (let i = 1; i <= 1300; i++) put(i);
+  render(65);
+  const getString = log.getString.bind(log);
+  const getNumber = log.getNumber.bind(log);
+  const copied = { markers: 0, trails: 0, gaps: 0 };
+  log.getString = (...args) => {
+    const data = getString(...args);
+    if (args[0] === "m/spatial") copied.markers += data?.timestamps.length ?? 0;
+    if (args[0] === "p/spatial") copied.trails += data?.timestamps.length ?? 0;
+    return data;
+  };
+  log.getNumber = (...args) => {
+    const data = getNumber(...args);
+    copied.gaps += data?.timestamps.length ?? 0;
+    return data;
+  };
+  // 20 Hz producer, 60 Hz expiry/render loop. Numeric telemetry uses clearBeforeTime.
+  for (let tick = 0; tick < 600; tick++) {
+    if (tick % 3 === 0) put(1301 + tick / 3);
+    const time = 65.05 + tick / 60;
+    log.discardLiveData(time, 60);
+    render(time);
+  }
+  t.diagnostic(JSON.stringify(copied));
+  assert.ok(copied.markers <= 2000, `markers copied ${copied.markers}`);
+  assert.ok(copied.trails <= 2000, `trails copied ${copied.trails}`);
+  assert.ok(copied.gaps <= 2000, `gaps copied ${copied.gaps}`);
+  // With all message history expired, observed markers still obey lifetime and actions.
+  log.discardLiveData(200, 60);
+  layers.begin(log, 200);
+  assert.equal(layers.objects(log, "m", 200, "map").objects.length, 1);
+  // Empty retained history followed by an append is still the same observed marker stream.
+  layers.begin(log, 200.5);
+  layers.objects(log, "m", 200.5, "map");
+  log.putString(
+    "m/spatial",
+    201,
+    JSON.stringify({
+      markers: [{ id: 2, header: { frame_id: "map" }, pose: { position: { x: 0, y: 0, z: 0 }, orientation: { w: 1 } } }]
+    })
+  );
+  layers.begin(log, 201);
+  assert.equal(layers.objects(log, "m", 201, "map").objects.length, 2);
+  log.putString("m/spatial", 201.5, JSON.stringify({ markers: [{ id: 2, action: 2 }] }));
+  layers.begin(log, 201.5);
+  assert.equal(layers.objects(log, "m", 201.5, "map").objects.length, 1);
+  log.putString("m/spatial", 202, JSON.stringify({ markers: [{ action: 3 }] }));
+  layers.begin(log, 202);
+  assert.equal(layers.objects(log, "m", 202, "map").objects.length, 0);
+});
+
+test("mixed physical and logical discards keep retained range indices and held origins", () => {
+  const field = new LogField(LoggableType.Number);
+  for (let i = 0; i < 20; i++) field.putNumber(i, i);
+  field.getNumber(2, 2, "reader");
+  field.discardBeforeTime(3);
+  assert.equal(field.getFirstSampleTimestamp(), 3);
+  assert.deepEqual(field.getNumber(4.5, 4.5, "reader")?.values, [4, 5]);
+  field.clearBeforeTime(2); // No-op must not compact or expose the discarded prefix.
+  assert.equal(field.getTimestamp(0), 3);
+  field.clearBeforeTime(5.5);
+  assert.equal(field.getFirstSampleTimestamp(), 5);
+  assert.deepEqual(field.getNumber(6.5, 6.5, "reader")?.values, [6, 7]);
+  field.discardBeforeTime(15); // Compacts and resets held origin.
+  assert.equal(field.getFirstSampleTimestamp(), 15);
+  assert.deepEqual(field.getNumber(16.5, 16.5, "reader")?.values, [16, 17]);
+  field.discardBeforeTime(30);
+  field.clearBeforeTime(40);
+  assert.deepEqual(field.getNumber(-Infinity, Infinity)?.values, []);
+  assert.equal(field.getFirstSampleTimestamp(), undefined);
+});

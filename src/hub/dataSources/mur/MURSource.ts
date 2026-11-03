@@ -483,7 +483,8 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     // Discard old data (Preferences -> live discard)
     const discardS = window.preferences?.liveDiscard;
     const liveEdge = this.clock.now(Date.now());
-    if (discardS !== undefined && discardS !== -1 && liveEdge !== null) {
+    if (discardS !== undefined && discardS !== -1 && liveEdge !== null && Date.now() - this.lastDiscard >= 1000) {
+      this.lastDiscard = Date.now();
       const minTime = liveEdge - discardS;
       if (minTime > this.log.getTimestampRange()[0]) this.log.clearBeforeTime(minTime, false);
     }
@@ -493,6 +494,8 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
       this.runOutputCallback();
     }
   }
+
+  private lastDiscard = -Infinity;
 
   private runOutputCallback() {
     if (this.status === LiveDataSourceStatus.Stopped || !this.outputCallback || !this.log) return;
