@@ -93,6 +93,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
   private dedup = new SampleDeduplicator();
   private segments = new SegmentTracker("unix");
 
+  private requests = new AbortController();
   private subscribedPaths: string[] = [];
   private historyRequested = new Set<string>();
   private historyAvailable: boolean | null = null;
@@ -136,13 +137,14 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
 
   stop() {
     super.stop();
+    this.requests.abort();
     this.cloudSocket?.close();
     this.cloudSocket = null;
     this.periodicActive = false;
     if (this.reconnectTimeout !== null) window.clearTimeout(this.reconnectTimeout);
     this.reconnectTimeout = null;
     if (this.socket !== null) {
-      this.socket.onclose = null;
+      this.socket.onopen = this.socket.onmessage = this.socket.onerror = this.socket.onclose = null;
       this.socket.close();
       this.socket = null;
     }
@@ -160,6 +162,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     } catch (error) {
       this.backend = "error";
       this.backendDetail = "Invalid address: " + this.baseUrl;
+      this.setStatus(LiveDataSourceStatus.Error);
       this.scheduleReconnect();
       return;
     }
@@ -183,6 +186,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     socket.onerror = () => {
       this.backend = "error";
       this.backendDetail = "Cannot reach " + this.baseUrl;
+      this.setStatus(LiveDataSourceStatus.Error);
     };
     socket.onclose = () => {
       if (this.socket !== socket) return;
@@ -194,6 +198,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
         this.backend = "connecting";
         this.backendDetail = "Connection lost, reconnecting";
       }
+      this.setStatus(LiveDataSourceStatus.Error);
       this.setStatus(LiveDataSourceStatus.Connecting);
       this.scheduleReconnect();
     };
@@ -525,7 +530,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     const url = this.baseUrl + "/api/v1/history?path=" + encodeURIComponent(path) + "&max_points=" + HISTORY_MAX_POINTS;
     let response: Response;
     try {
-      response = await fetch(url);
+      response = await fetch(url, { signal: this.requests.signal });
     } catch {
       this.historyRequested.delete(path); // Retry on the next periodic call after reconnecting
       return;
@@ -539,7 +544,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     const body: HistoryResponse = await response.json();
 
     // Drop responses that belong to an earlier segment or a retired stream
-    if (!this.log || segmentIndex !== this.segments.getSegmentIndex()) return;
+    if (this.requests.signal.aborted || !this.log || segmentIndex !== this.segments.getSegmentIndex()) return;
     const descriptor = this.descriptors.get(path);
     if (descriptor === undefined) return;
     const samples = body.samples.filter((sample) => this.segments.acceptHistory(sample.stream_id));
@@ -554,7 +559,8 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
 
   private async checkSimControls() {
     try {
-      const response = await fetch(this.baseUrl + "/api/v1/sim/status");
+      const response = await fetch(this.baseUrl + "/api/v1/sim/status", { signal: this.requests.signal });
+      if (this.requests.signal.aborted) return;
       this.simControls = response.ok;
       if (response.ok && this.sim === null) {
         const status: SimStatus = await response.json();
@@ -680,7 +686,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
   async simControl(action: SimAction): Promise<void> {
     let response: Response;
     try {
-      response = await fetch(this.baseUrl + "/api/v1/sim/" + action, { method: "POST" });
+      response = await fetch(this.baseUrl + "/api/v1/sim/" + action, { method: "POST", signal: this.requests.signal });
     } catch {
       throw "Cannot reach " + this.baseUrl;
     }
