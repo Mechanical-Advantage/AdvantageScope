@@ -34,6 +34,7 @@ export default class NT4Source extends LiveDataSource {
   private shouldRunOutputCallback = false;
   private connectTime: number | null = null;
   private periodicCallback: NodeJS.Timeout | null = null;
+  private noFieldsWarningShown = false;
   private noFieldsTimeout: NodeJS.Timeout | null = null;
   private loggingSubscription: number | null = null;
   private lowBandwidthTopicSubscription: number | null = null;
@@ -45,12 +46,14 @@ export default class NT4Source extends LiveDataSource {
 
     if (window.requestIdleCallback !== undefined) {
       let periodic = () => {
+        if (this.status === LiveDataSourceStatus.Stopped) return;
         this.periodic();
         window.requestIdleCallback(periodic, { timeout: 100 });
       };
       window.requestIdleCallback(periodic, { timeout: 100 });
     } else {
       let periodic = () => {
+        if (this.status === LiveDataSourceStatus.Stopped) return;
         this.periodic();
         window.requestAnimationFrame(periodic);
       };
@@ -376,6 +379,8 @@ export default class NT4Source extends LiveDataSource {
           }
           if (this.mode === NT4Mode.AdvantageKit) {
             this.noFieldsTimeout = setTimeout(() => {
+              if (this.noFieldsWarningShown) return;
+              this.noFieldsWarningShown = true;
               window.sendMainMessage("error", {
                 title: "Problem with NT4 connection",
                 content:
@@ -401,6 +406,7 @@ export default class NT4Source extends LiveDataSource {
   stop() {
     super.stop();
     this.client?.disconnect();
+    if (this.noFieldsTimeout !== null) clearTimeout(this.noFieldsTimeout);
     if (this.periodicCallback !== null) clearInterval(this.periodicCallback);
   }
 

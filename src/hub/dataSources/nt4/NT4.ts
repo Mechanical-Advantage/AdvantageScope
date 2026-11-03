@@ -115,6 +115,8 @@ export class NT4_Client {
   private rttWs: WebSocket | null = null;
   private timestampInterval: NodeJS.Timeout | null = null;
   private rttWsTimestampInterval: NodeJS.Timeout | null = null;
+  private aliveTimeout: ReturnType<typeof setTimeout> | null = null;
+  private aliveAbort: AbortController | null = null;
   private disconnectTimeout: NodeJS.Timeout | null = null;
   private serverConnectionActive = false;
   private serverConnectionRequested = false;
@@ -175,20 +177,29 @@ export class NT4_Client {
 
   private async connectOnAlive() {
     if (!this.serverConnectionRequested) return;
+    this.aliveAbort = new AbortController();
+    const signal = AbortSignal.any([this.aliveAbort.signal, AbortSignal.timeout(250)]);
     let result: Response | null = null;
     let requestStart = new Date().getTime();
     try {
       result = await Promise.any(
         this.serverPorts.map((port) =>
           fetch("http://" + this.serverAddr + ":" + port.toString(), {
-            signal: AbortSignal.timeout(250)
+            signal
           })
         )
       );
     } catch (err) {}
+    if (!this.serverConnectionRequested) return;
     if (result === null || !result.ok) {
       let requestLength = new Date().getTime() - requestStart;
-      setTimeout(() => this.connectOnAlive(), 350 - requestLength);
+      this.aliveTimeout = setTimeout(
+        () => {
+          this.aliveTimeout = null;
+          this.connectOnAlive();
+        },
+        Math.max(0, 350 - requestLength)
+      );
     } else {
       this.activeServerPort = parseInt(result.url.split(":")[2].split("/")[0]);
       this.ws_connect();
@@ -210,7 +221,10 @@ export class NT4_Client {
   disconnect() {
     if (this.serverConnectionRequested) {
       this.serverConnectionRequested = false;
-      if (this.serverConnectionActive && this.ws) {
+      this.aliveAbort?.abort();
+      if (this.aliveTimeout !== null) clearTimeout(this.aliveTimeout);
+      this.aliveTimeout = null;
+      if (this.ws) {
         this.ws_onClose(new CloseEvent("close"), this.ws);
       }
       if (this.timestampInterval !== null) {
@@ -469,6 +483,10 @@ export class NT4_Client {
   // Websocket connection Maintenance
 
   private ws_onOpen(ws: WebSocket) {
+    if (!this.serverConnectionRequested || (ws !== this.ws && ws !== this.rttWs)) {
+      ws.close();
+      return;
+    }
     // Set the flag allowing general server communication
     this.serverConnectionActive = true;
     console.log('[NT4] Connected with protocol "' + ws.protocol + '"');

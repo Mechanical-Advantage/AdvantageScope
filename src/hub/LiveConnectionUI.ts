@@ -77,14 +77,6 @@ export class ConnectDialog {
     this.addressInput.addEventListener("input", () => this.validate());
     this.addressInput.addEventListener("change", () => this.loadMQTT());
     this.backdrop.querySelector(".mqtt-topic")!.addEventListener("input", () => this.validate());
-    window.setInterval(() => {
-      if (!this.pending) return;
-      const status = window.liveStatus?.getLiveStatus();
-      if (status?.backend === "connected") {
-        this.pending = false;
-        this.hide();
-      } else if (status?.backend === "error") this.connectionFailed(status.backendDetail);
-    }, 100);
     this.sourceSelect.addEventListener("change", () => this.applySourceDefaults());
     (this.backdrop.querySelector(".connect-cancel") as HTMLElement).addEventListener("click", () => this.hide());
     (this.backdrop.querySelector(".connect-confirm") as HTMLElement).addEventListener("click", () => this.confirm());
@@ -175,7 +167,7 @@ export class ConnectDialog {
       this.connectionFailed("Connection failed. Edit the address and try again.");
   }
 
-  private connectionFailed(error: string) {
+  connectionFailed(error: string) {
     this.pending = false;
     this.message.innerText = error;
     this.setBusy(false);
