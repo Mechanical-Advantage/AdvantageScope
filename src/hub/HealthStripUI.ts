@@ -115,7 +115,7 @@ export default class HealthStripUI {
       const def = this.definition(pathInput.value);
       form.querySelector("[data-field-note]")!.textContent = def
         ? "Fault states defined by the DBC."
-        : !window.log.getFieldKeys().includes(pathInput.value)
+        : pathInput.value && !window.log.getFieldKeys().includes(pathInput.value)
         ? "Field not present yet. This tile will bind when data arrives."
         : "";
       for (const name of ["warn", "critical", "fault", "direction"]) {
