@@ -9,7 +9,7 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
-import { clipGaps, findGaps, gapThreshold, PeriodStats } from "../../shared/TraceGaps";
+import { clipGaps, TraceGapCache } from "../../shared/TraceGaps";
 import {
   axisDisplayUnit,
   canonicalChannelPath,
@@ -39,9 +39,15 @@ import TabController from "./TabController";
 type NumericCommandCacheValue = LineGraphRendererCommand_NumericField & { hasUnit: boolean };
 
 export default class LineGraphController implements TabController {
+  dispose() {
+    this.leftSourceList.stop();
+    this.discreteSourceList.stop();
+    this.rightSourceList.stop();
+  }
+
   UUID = createUUID();
 
-  private periodStats = new WeakMap<object, Map<string, PeriodStats>>();
+  private periodStats = new WeakMap<object, Map<string, TraceGapCache>>();
 
   private RANGE_MARGIN = 0.05;
   private MIN_AXIS_RANGE = 1e-5;
@@ -458,6 +464,12 @@ export default class LineGraphController implements TabController {
   }
 
   refresh(): void {
+    const active = new Set(this.getActiveFields());
+    const caches = this.periodStats.get(window.log);
+    if (caches)
+      for (const key of caches.keys()) {
+        if (!active.has(key) || window.log.getType(key) === null) caches.delete(key);
+      }
     this.leftSourceList.refresh();
     this.discreteSourceList.refresh();
     this.rightSourceList.refresh();
@@ -647,21 +659,17 @@ export default class LineGraphController implements TabController {
         if (data === undefined) return;
 
         // Statistics always use the whole field, independent of viewport and lap selection.
-        const whole = window.log.getNumber(fieldItem.logKey, -Infinity, Infinity)!;
         let statsByKey = this.periodStats.get(window.log);
         if (!statsByKey) this.periodStats.set(window.log, (statsByKey = new Map()));
         let stats = statsByKey.get(fieldItem.logKey);
-        if (!stats) statsByKey.set(fieldItem.logKey, (stats = new PeriodStats()));
-        stats.update(whole.timestamps);
-        const threshold = fieldItem.type === "points" ? null : gapThreshold(stats.median());
+        if (!stats) statsByKey.set(fieldItem.logKey, (stats = new TraceGapCache()));
         const freshness = window.liveStatus?.getFieldFreshness(fieldItem.logKey);
         const gaps =
-          threshold === null
+          fieldItem.type === "points"
             ? undefined
-            : findGaps(
-                whole.timestamps,
-                whole.values,
-                threshold,
+            : stats.update(
+                window.log,
+                fieldItem.logKey,
                 Math.max(timeRange[1], window.log.getTimestampRange()[1]),
                 freshness === "stale" || freshness === "offline"
               );

@@ -11,6 +11,8 @@ import { createUUID } from "../../shared/util";
 export default interface TabController {
   UUID: string;
 
+  dispose?(): void;
+
   /** Returns the current state. */
   saveState(): unknown;
 

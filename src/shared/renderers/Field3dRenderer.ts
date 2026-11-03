@@ -31,6 +31,11 @@ export default class Field3dRenderer implements TabRenderer {
     this.updateImplementation();
   }
 
+  dispose() {
+    this.implementation?.stop();
+    this.implementation = null;
+  }
+
   saveState(): unknown {
     return this.implementation === null ? null : this.implementation.saveState();
   }

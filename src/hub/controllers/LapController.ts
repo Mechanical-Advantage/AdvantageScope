@@ -18,6 +18,11 @@ import { lapService, LapSettings } from "../LapService";
 import TabController from "./TabController";
 
 export default class LapController implements TabController {
+  private events = new AbortController();
+  dispose() {
+    this.events.abort();
+  }
+
   UUID = createUUID();
   private field = "";
   private cached?: LapCommand;
@@ -77,21 +82,25 @@ export default class LapController implements TabController {
       }
       if (a.type === "field") this.field = a.field;
     });
-    window.addEventListener("drag-update", (event) => {
-      const d = (event as CustomEvent).detail,
-        rect = root.getBoundingClientRect();
-      if (
-        d.end &&
-        d.x >= rect.left &&
-        d.x <= rect.right &&
-        d.y >= rect.top &&
-        d.y <= rect.bottom &&
-        d.data.fields?.length
-      ) {
-        const key = d.data.fields[0];
-        if (window.log.getNumber(key, -Infinity, Infinity)) this.field = key;
-      }
-    });
+    window.addEventListener(
+      "drag-update",
+      (event) => {
+        const d = (event as CustomEvent).detail,
+          rect = root.getBoundingClientRect();
+        if (
+          d.end &&
+          d.x >= rect.left &&
+          d.x <= rect.right &&
+          d.y >= rect.top &&
+          d.y <= rect.bottom &&
+          d.data.fields?.length
+        ) {
+          const key = d.data.fields[0];
+          if (window.log.getNumber(key, -Infinity, Infinity)) this.field = key;
+        }
+      },
+      { signal: this.events.signal }
+    );
   }
   saveState() {
     return {

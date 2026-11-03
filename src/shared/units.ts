@@ -1007,7 +1007,15 @@ export namespace Units {
     return suffixes;
   })();
 
+  const fieldUnits = new Map<string, string | null>();
   export function getUnitForField(fieldKey: string): string | null {
+    if (fieldUnits.has(fieldKey)) return fieldUnits.get(fieldKey)!;
+    const unit = detectUnitForField(fieldKey);
+    fieldUnits.set(fieldKey, unit);
+    return unit;
+  }
+
+  function detectUnitForField(fieldKey: string): string | null {
     let fieldKeyLowercase = fieldKey.toLowerCase();
     let matchedSuffixes = Object.keys(UNIT_SUFFIXES).filter(
       (suffix) =>

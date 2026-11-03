@@ -16,6 +16,10 @@ import PointsController_Config from "./PointsController_Config";
 import TabController from "./TabController";
 
 export default class PointsController implements TabController {
+  dispose() {
+    this.sourceList.stop();
+  }
+
   UUID = createUUID();
 
   private WIDTH: HTMLInputElement;

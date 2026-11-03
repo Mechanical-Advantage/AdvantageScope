@@ -91,6 +91,11 @@ function formatValue(value: unknown): string {
 type TreeNode = { children: Map<string, TreeNode>; key?: string };
 
 export class RawMessagesController extends BaseRosTab {
+  private events = new AbortController();
+  dispose() {
+    this.events.abort();
+  }
+
   private open = new Set<string>();
   private query = "";
   private search = document.createElement("input");
@@ -144,8 +149,8 @@ export class RawMessagesController extends BaseRosTab {
         window.removeEventListener("mousemove", move);
         window.removeEventListener("mouseup", cleanup);
       };
-      window.addEventListener("mousemove", move);
-      window.addEventListener("mouseup", cleanup);
+      window.addEventListener("mousemove", move, { signal: this.events.signal });
+      window.addEventListener("mouseup", cleanup, { signal: this.events.signal });
     });
   }
 
@@ -399,6 +404,10 @@ export class RosLogController extends BaseRosTab {
 }
 
 export class RosImageController extends BaseRosTab {
+  private observer = new ResizeObserver(() => this.fit());
+  dispose() {
+    this.observer.disconnect();
+  }
   private topic = "";
   private select = document.createElement("select");
   private canvas = document.createElement("canvas");
@@ -425,7 +434,7 @@ export class RosImageController extends BaseRosTab {
     root.style.flexDirection = "column";
     this.frame.style.cssText = "flex:1 1 0;min-height:0;display:flex;align-items:center;justify-content:center";
     this.frame.append(this.canvas);
-    new ResizeObserver(() => this.fit()).observe(this.frame);
+    this.observer.observe(this.frame);
     root.append(bar, this.frame);
   }
 

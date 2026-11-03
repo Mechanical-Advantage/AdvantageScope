@@ -6,6 +6,8 @@
 // at the root directory of this project.
 
 export default interface TabRenderer {
+  dispose?(): void;
+
   /** Returns the current state. */
   saveState(): unknown;
 
