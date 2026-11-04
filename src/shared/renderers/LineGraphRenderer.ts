@@ -209,7 +209,7 @@ export default class LineGraphRenderer implements TabRenderer {
   }
 
   render(command: LineGraphRendererCommand): void {
-    inlineStatus(this.SCROLL_OVERLAY, command.message ?? "");
+    inlineStatus(this.ROOT, command.message ?? "");
     // Commands carry the full lap extent; navigation belongs to this graph, including satellites.
     command = { ...command, timeRange: this.lapViewport.update(command.lapMode ?? "time", command.timeRange) };
     this.scrollSensor.periodic();
@@ -365,6 +365,13 @@ export default class LineGraphRenderer implements TabRenderer {
     // Update scroll layout
     this.SCROLL_OVERLAY.style.left = graphLeft.toString() + "px";
     this.SCROLL_OVERLAY.style.right = graphRight.toString() + "px";
+
+    // Keep any message over the plot, clear of the axes (the scroll overlay itself scrolls)
+    const status = this.ROOT.querySelector<HTMLElement>(":scope > .telemetry-status");
+    if (status) {
+      status.style.left = graphLeft.toString() + "px";
+      status.style.right = graphRight.toString() + "px";
+    }
 
     // Render discrete data
     let discreteBorders: number[] = [];
