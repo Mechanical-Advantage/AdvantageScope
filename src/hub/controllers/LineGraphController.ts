@@ -1126,14 +1126,31 @@ export default class LineGraphController implements TabController {
         else result.rightRange = range;
       }
     }
+    const hasNumericSamples = [...result.leftFields, ...result.rightFields].some(
+      (f) => f.timestamps.length && f.values.some(Number.isFinite)
+    );
+    const selectedKeys = [...this.leftSourceList.getState(), ...this.rightSourceList.getState()]
+      .filter((source) => source.visible)
+      .map((source) => source.logKey);
+    const loadingFields = window.getLoadingFields();
+    const stillLoading = selectedKeys.some((key) => loadingFields.has(key));
+    if (selectedKeys.length && !hasNumericSamples && !stillLoading && !result.discreteFields.length) {
+      result.message = "The selected fields have no numeric samples in this log.";
+    }
     if (this.lapMode !== "time") {
       result.thresholds = [];
       lapService.update();
       const reference = lapService.result.laps.find((l) => l.index === lapService.reference);
       const laps = lapService.result.laps.filter(
-        (l) => lapService.overlays.includes(l.index) || l.index === lapService.reference
+        (l) => l.valid && (lapService.overlays.includes(l.index) || l.index === lapService.reference)
       );
+      if (!laps.length)
+        result.message =
+          "No laps found from the lap counter, beacon or GPS. Add manual splits under Lap setup in the Laps tab, or set the X axis to Session time.";
       const distance = this.lapMode === "distance";
+      if (laps.length && distance && !laps.some((l) => l.grid.length && l.distance > 0))
+        result.message =
+          "Lap distance needs valid GPS or a speed with known units. Check Lap setup in the Laps tab, or set the X axis to Lap time or Session time.";
       // One hue per lap. Values stay as the raw samples; only the x position is mapped onto the lap.
       const convert = (fields: LineGraphRendererCommand_NumericField[]) =>
         fields.flatMap((field) =>
@@ -1173,10 +1190,12 @@ export default class LineGraphController implements TabController {
               size: "normal" as const
             }));
           const vs = stripFields.flatMap((f) => f.values).filter(Number.isFinite);
-          const pad = Math.max(0.05, (Math.max(0, ...vs) - Math.min(0, ...vs)) * 0.08);
+          const low = vs.reduce((a, b) => Math.min(a, b), 0),
+            high = vs.reduce((a, b) => Math.max(a, b), 0);
+          const pad = Math.max(0.05, (high - low) * 0.08);
           result.deltaStrip = {
             fields: stripFields,
-            range: [Math.min(0, ...vs) - pad, Math.max(0, ...vs) + pad],
+            range: [low - pad, high + pad],
             title: `ΔT vs Lap ${reference.index} [s], + = slower`,
             referenceLabel: `Lap ${reference.index} (ref)`
           };

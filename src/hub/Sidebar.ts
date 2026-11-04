@@ -11,6 +11,7 @@ import { SidebarState } from "../shared/HubState";
 import LogFieldTree from "../shared/log/LogFieldTree";
 import LoggableType from "../shared/log/LoggableType";
 import { getOrDefault, searchFields, TYPE_KEY } from "../shared/log/LogUtil";
+import { RenderGuard } from "../shared/RenderGuard";
 import { SelectionMode } from "../shared/Selection";
 import { Units } from "../shared/units";
 import { arraysEqual, htmlEncode, setsEqual } from "../shared/util";
@@ -239,12 +240,15 @@ export default class Sidebar {
     });
 
     // Periodic functions
+    const guard = new RenderGuard();
     let periodic = () => {
-      searchPeriodic();
-      this.updateTitle();
-      this.updateValues();
-      this.updateTuningButton();
       window.requestAnimationFrame(periodic);
+      guard.run(() => {
+        searchPeriodic();
+        this.updateTitle();
+        this.updateValues();
+        this.updateTuningButton();
+      });
     };
     window.requestAnimationFrame(periodic);
     setInterval(() => {

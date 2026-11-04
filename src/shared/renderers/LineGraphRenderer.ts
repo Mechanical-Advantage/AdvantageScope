@@ -8,6 +8,7 @@
 import ScrollSensor from "../../hub/ScrollSensor";
 import { ensureThemeContrast } from "../Colors";
 import LineGraphFilter from "../LineGraphFilter";
+import { inlineStatus } from "../RenderGuard";
 import { SelectionMode } from "../Selection";
 import { Units } from "../units";
 import { calcAxisStepSize, clampValue, cleanFloat, scaleValue, shiftColor, ValueScaler } from "../util";
@@ -208,6 +209,7 @@ export default class LineGraphRenderer implements TabRenderer {
   }
 
   render(command: LineGraphRendererCommand): void {
+    inlineStatus(this.SCROLL_OVERLAY, command.message ?? "");
     // Commands carry the full lap extent; navigation belongs to this graph, including satellites.
     command = { ...command, timeRange: this.lapViewport.update(command.lapMode ?? "time", command.timeRange) };
     this.scrollSensor.periodic();
@@ -215,7 +217,7 @@ export default class LineGraphRenderer implements TabRenderer {
     // Update help overlay
     if (this.HELP_OVERLAY) {
       const hasScrolled = (window.preferences?.hasScrolledLineGraph ?? false) || this.scrollSensor.shouldHideHint();
-      this.HELP_OVERLAY.style.display = hasScrolled ? "none" : "flex";
+      this.HELP_OVERLAY.style.display = hasScrolled || command.message ? "none" : "flex";
       if (hasScrolled) {
         this.isFadingOut = false;
         this.zoomInAccumulator = 0;
@@ -330,7 +332,7 @@ export default class LineGraphRenderer implements TabRenderer {
     ): number => {
       let length = 0;
       let value = Math.floor(range[1] / stepSize) * stepSize;
-      while (value > range[0]) {
+      for (let ticks = 0; value > range[0] && ticks < 100; ticks++) {
         length = Math.max(length, context.measureText(this.getAxisValueText(value, units, filter)).width);
         value -= stepSize;
       }
@@ -1076,6 +1078,7 @@ export default class LineGraphRenderer implements TabRenderer {
 }
 
 export type LineGraphRendererCommand = {
+  message?: string;
   lapMode?: string;
   thresholds?: { axis: "left" | "right"; value: number; label: string; critical: boolean }[];
   leftTitle?: string;

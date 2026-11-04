@@ -8,6 +8,7 @@
 import { AdvantageScopeAssets } from "./shared/AdvantageScopeAssets";
 import NamedMessage from "./shared/NamedMessage";
 import Preferences from "./shared/Preferences";
+import { RenderGuard, inlineStatus } from "./shared/RenderGuard";
 import Selection, { SelectionMode } from "./shared/Selection";
 import TabType, { getTabIcon } from "./shared/TabType";
 import ConsoleRenderer from "./shared/renderers/ConsoleRenderer";
@@ -23,6 +24,15 @@ import TabRenderer from "./shared/renderers/TabRenderer";
 import TableRenderer from "./shared/renderers/TableRenderer";
 import VideoRenderer from "./shared/renderers/VideoRenderer";
 import { htmlEncode } from "./shared/util";
+
+const renderGuard = new RenderGuard();
+function guardedRender(action: () => void) {
+  renderGuard.run(
+    action,
+    () => inlineStatus(document.body, "Unable to display this tab. Check its fields and options in the main window."),
+    () => inlineStatus(document.body, "")
+  );
+}
 
 const MAX_ASPECT_RATIO = 5;
 const SAVE_PERIOD_MS = 250;
@@ -147,7 +157,7 @@ window.addEventListener("message", (event) => {
           // Render frame
           lastCommand = message.data.command;
           if (renderer) {
-            renderer.render(message.data.command);
+            guardedRender(() => renderer!.render(message.data.command));
             let aspectRatio = renderer.getAspectRatio();
             processAspectRatio(aspectRatio);
 
@@ -192,7 +202,7 @@ window.addEventListener("resize", () => {
   if (renderer === null || lastCommand === null) {
     return;
   }
-  renderer.render(lastCommand);
+  guardedRender(() => renderer!.render(lastCommand));
   let aspectRatio = renderer.getAspectRatio();
   if (aspectRatio) processAspectRatio(aspectRatio);
 });

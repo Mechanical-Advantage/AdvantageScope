@@ -170,6 +170,11 @@ export function parseNumberCell(cell: string, decimalComma = false): number {
   return NaN;
 }
 
+/** Returns true if the cell is a common spelling of "no value", which must not make a numeric column text. */
+export function isMissingCell(cell: string): boolean {
+  return /^(null|none|n\/?a|-+|\?)$/i.test(cell.trim());
+}
+
 /** Returns true if the cell is a number (including nan/inf spellings). */
 export function isNumberCell(cell: string, decimalComma = false): boolean {
   const text = cell.trim();

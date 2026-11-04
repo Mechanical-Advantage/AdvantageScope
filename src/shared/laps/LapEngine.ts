@@ -114,11 +114,12 @@ export function classifySkidpad(yaws: number[]): string[] {
 }
 /** Standstills are collapsed before inverting distance. Both endpoints are retained. */
 export function resample(distances: number[], times: number[], length: number, spacing = 1) {
-  if (!(length > 0) || !(spacing > 0) || !distances.length) return [];
+  if (!Number.isFinite(length) || !Number.isFinite(spacing) || !(length > 0) || !(spacing > 0) || !distances.length)
+    return [];
   const ds: number[] = [],
     ts: number[] = [],
     total = distances.at(-1)! - distances[0];
-  if (!(total > 0)) return [];
+  if (!Number.isFinite(total) || !(total > 0)) return [];
   distances.forEach((d, i) => {
     const x = ((d - distances[0]) / total) * length;
     if (!ds.length || x > ds.at(-1)!) {
@@ -127,7 +128,12 @@ export function resample(distances: number[], times: number[], length: number, s
     }
   });
   const grid: { distance: number; time: number }[] = [];
-  for (let d = 0; d < length; d += spacing) grid.push({ distance: d, time: interpolate(ds, ts, d) });
+  // Preserve metre spacing for ordinary laps; corrupt lengths must never size an allocation.
+  const count = Math.min(Math.ceil(length / spacing), Math.max(4096, distances.length * 4));
+  for (let i = 0; i < count; i++) {
+    const d = i * Math.max(spacing, length / count);
+    grid.push({ distance: d, time: interpolate(ds, ts, d) });
+  }
   grid.push({ distance: length, time: times.at(-1)! - times[0] });
   return grid;
 }
@@ -149,7 +155,13 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
     if (prev) {
       const dt = p.t - prev.t;
       distance +=
-        dt <= 0.5 && Number.isFinite(p.speed) && Number.isFinite(prev.speed)
+        dt <= 0.5 &&
+        Number.isFinite(p.speed) &&
+        Number.isFinite(prev.speed) &&
+        p.speed! >= 0 &&
+        p.speed! <= 100 &&
+        prev.speed! >= 0 &&
+        prev.speed! <= 100
           ? Math.max(0, (p.speed! + prev.speed!) / 2) * dt
           : Math.hypot(p.x - prev.x, p.y - prev.y);
     }
@@ -164,14 +176,37 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
   const min = config.minTime ?? (config.mode === "skidpad" ? 4 : config.mode === "accel" ? 0 : 20);
   let boundaries: number[] = [],
     source = "gps";
-  if (samples.some((p) => Number.isFinite(p.counter))) {
+  // Only consecutive integer increments, confirmed by the following sample, are counters.
+  // A boolean beacon must similarly remain high for two samples. Never trust arbitrary positive IDs.
+  const counters: number[] = [],
+    beacons: number[] = [];
+  for (let i = 1; i < samples.length; i++) {
+    const p = samples[i],
+      prev = samples[i - 1],
+      next = samples[i + 1];
+    if (
+      Number.isSafeInteger(prev.counter) &&
+      prev.counter! >= 0 &&
+      p.counter === prev.counter! + 1 &&
+      (!next || next.counter === p.counter)
+    )
+      counters.push(p.t);
+    if (prev.beacon === 0 && p.beacon === 1 && next?.beacon === 1) beacons.push(p.t);
+  }
+  // A beacon is a mostly-low 0/1 pulse. Any other value, or idling high, means it can't mark laps.
+  const beaconValues = samples.map((p) => p.beacon).filter((b) => b !== undefined);
+  const beaconUsable =
+    beaconValues.every((b) => b === 0 || b === 1) &&
+    beaconValues.filter((b) => b === 1).length < beaconValues.length / 2;
+  if (config.manual?.length) {
+    source = "manual";
+    boundaries = config.manual.filter((t) => Number.isFinite(t) && t >= times[0] && t <= times.at(-1)!);
+  } else if (!config.gate && counters.length) {
     source = "counter";
-    for (let i = 1; i < samples.length; i++)
-      if (samples[i].counter! > samples[i - 1].counter!) boundaries.push(samples[i].t);
-  } else if (samples.some((p) => Number.isFinite(p.beacon))) {
+    boundaries = counters;
+  } else if (!config.gate && beaconUsable && beacons.length) {
     source = "beacon";
-    for (let i = 1; i < samples.length; i++)
-      if (samples[i].beacon! > 0 && !samples[i - 1].beacon) boundaries.push(samples[i].t);
+    boundaries = beacons;
   } else if (gate) {
     let armed = true,
       last = -Infinity;
@@ -186,13 +221,14 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
         armed = false;
       }
     }
-  } else if (config.manual?.length) {
-    source = "manual";
-    boundaries = config.manual.filter((t) => t >= times[0] && t <= times.at(-1)!);
-  } else if (config.length && config.length > 0) {
+  } else if (
+    Number.isFinite(config.length) &&
+    config.length! > 0 &&
+    distances.at(-1)! / config.length! <= samples.length
+  ) {
     source = "distance";
     boundaries.push(times[0]);
-    for (let d = config.length; d <= distances.at(-1)!; d += config.length)
+    for (let d = config.length!; d <= distances.at(-1)!; d += config.length!)
       boundaries.push(Math.abs(d - distances.at(-1)!) < 1e-8 ? times.at(-1)! : interpolate(distances, times, d));
   }
   boundaries = [...new Set(boundaries)].sort((a, b) => a - b);
@@ -305,7 +341,7 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
     undefined
   )?.index;
   result.theoretical = (valid[0]?.sectors ?? []).map((_, i) =>
-    Math.min(...valid.map((l) => l.sectors[i]).filter(Number.isFinite))
+    valid.reduce((best, l) => (Number.isFinite(l.sectors[i]) ? Math.min(best, l.sectors[i]) : best), Infinity)
   );
   return result;
 }

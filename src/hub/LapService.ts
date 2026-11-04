@@ -54,6 +54,8 @@ class LapService {
   private signature = "";
   private nextUpdate = 0;
   private derivedEnd = -Infinity;
+  private slipEnd = -Infinity;
+  private slipSignature = "";
   private derivedSignature = "";
   private grids = new WeakMap<object, { d: number[]; t: number[] }>();
   fields(): string[] {
@@ -77,8 +79,8 @@ class LapService {
     }
     s.latitude ||= find(/front.*latitude$/i) || find(/(?:gps\/latitude|latitude)$/i);
     s.longitude ||= find(/front.*longitude$/i) || find(/(?:gps\/longitude|longitude)$/i);
-    s.frontLeft ||= find(/(?:DASH_SpeedFL|wheel_speed_fl)$/i);
-    s.frontRight ||= find(/(?:DASH_SpeedFR|wheel_speed_fr)$/i);
+    s.frontLeft ||= find(/(?:DASH_SpeedFL|wheel_speed_fl|WheelSpeedFL)$/i);
+    s.frontRight ||= find(/(?:DASH_SpeedFR|wheel_speed_fr|WheelSpeedFR)$/i);
     s.speed ||= find(/(?:vehicle_speed|ground_speed|gps.*speed)$/i);
     s.rpm ||= find(/(?:motor_speed|MotorSpeedRPM)$/i);
     s.yaw ||= find(/(?:yaw_rate|YawRate)$/i);
@@ -107,6 +109,8 @@ class LapService {
       this.signature = "";
       this.derivedSignature = "";
       this.derivedEnd = -Infinity;
+      this.slipEnd = -Infinity;
+      this.slipSignature = "";
       this.reference = null;
       this.overlays = [];
       this.selected = null;
@@ -132,11 +136,27 @@ class LapService {
       if (unit === "kilometers/hour" || unit === "km/h" || unit === "kph") v /= 3.6;
       if (unit === "radians/second" || unit === "rad/s") v *= s.radius;
       if (unit === "rotations/minute") v *= (Math.PI / 30) * s.radius;
-      return v;
+      // Unknown units cannot safely contribute to integrated distance or slip.
+      if (
+        ![
+          "meters/second",
+          "m/s",
+          "kilometers/hour",
+          "km/h",
+          "kph",
+          "radians/second",
+          "rad/s",
+          "rotations/minute"
+        ].includes(unit ?? "")
+      )
+        return NaN;
+      return Number.isFinite(v) && v >= 0 && v <= 100 ? v : NaN;
     };
     const lat = data.get(s.latitude),
       lon = data.get(s.longitude);
-    const base = lat ?? data.get(s.counter) ?? data.get(s.speed) ?? data.get(s.frontLeft);
+    const base = [lat, data.get(s.counter), data.get(s.beacon), data.get(s.speed), data.get(s.frontLeft)].find(
+      (d) => d?.timestamps.length
+    );
     const held = (key: string, t: number) => {
       const d = data.get(key);
       if (!d?.timestamps.length) return undefined;
@@ -169,11 +189,33 @@ class LapService {
       // Log compresses unchanged values independently per channel. Use the union so a
       // constant latitude does not hide wheel-speed or longitude changes.
       const timestamps = [...new Set([...data.values()].flatMap((d) => d?.timestamps ?? []))].sort((a, b) => a - b);
+      const validFix = (t: number) => {
+        const latitude = coordinate(s.latitude, t),
+          longitude = coordinate(s.longitude, t);
+        return (
+          Number.isFinite(latitude) &&
+          Number.isFinite(longitude) &&
+          Math.abs(latitude) <= 90 &&
+          Math.abs(longitude) <= 180 &&
+          (Math.abs(latitude) > 0.001 || Math.abs(longitude) > 0.001)
+        );
+      };
+      // Choose a locally consistent initial pair so one bad first fix cannot anchor
+      // the rejection filter on the other side of the planet.
       const firstFix =
-        timestamps.find(
-          (t) => Math.abs(held(s.latitude, t) ?? 0) > 0.001 && Math.abs(held(s.longitude, t) ?? 0) > 0.001
-        ) ?? timestamps[0];
+        timestamps.find((t, i) => {
+          if (!validFix(t)) return false;
+          const next = timestamps[i + 1];
+          if (next === undefined) return true;
+          if (!validFix(next)) return false;
+          const delta = project(coordinate(s.latitude, next), coordinate(s.longitude, next), {
+            lat: coordinate(s.latitude, t),
+            lon: coordinate(s.longitude, t)
+          });
+          return Math.hypot(delta.x, delta.y) <= 100 * (next - t);
+        }) ?? timestamps.at(-1)!;
       const origin = { lat: coordinate(s.latitude, firstFix) || 0, lon: coordinate(s.longitude, firstFix) || 0 };
+      let accepted: (Sample & { latitude: number; longitude: number }) | undefined;
       timestamps.forEach((t) => {
         if (lat && t < firstFix) return;
         const latitude = coordinate(s.latitude, t),
@@ -195,6 +237,10 @@ class LapService {
         }
         if (!Number.isFinite(v)) v = speed(s.speed, t);
         const point = lat ? project(latitude, longitude, origin) : { x: 0, y: 0 };
+        // Reject GPS jumps above 100 m/s (360 km/h). Compare with the last accepted
+        // fix, so an isolated outlier does not poison the next good sample.
+        if (lat && accepted && Math.hypot(point.x - accepted.x, point.y - accepted.y) > 100 * (t - accepted.t)) return;
+        if (lat) accepted = { ...point, t, latitude, longitude };
         samples.push({
           ...point,
           t,
@@ -220,7 +266,14 @@ class LapService {
       return lo ? t - ts[lo - 1] : Infinity;
     };
     if (gpsKey && s.frontLeft && s.frontRight) {
-      samples.forEach((p) =>
+      // Live data only appends, so rewriting the whole session on each update would grow without bound.
+      // A static log recomputes in full, because a lazily loaded field can add earlier samples.
+      const slipSignature = JSON.stringify([s, gpsKey]);
+      const live = window.selection?.getCurrentLiveTime() != null;
+      if (!live || slipSignature !== this.slipSignature) this.slipEnd = -Infinity;
+      this.slipSignature = slipSignature;
+      for (const p of samples) {
+        if (p.t <= this.slipEnd) continue;
         window.log.putNumber(
           "Laps/SlipRatio",
           p.t,
@@ -230,8 +283,9 @@ class LapService {
             Math.max(age(s.frontLeft, p.t), age(s.frontRight, p.t)),
             age(gpsKey, p.t)
           )
-        )
-      );
+        );
+        this.slipEnd = p.t;
+      }
       window.log.setMetadataString(
         "Laps/SlipRatio",
         JSON.stringify({

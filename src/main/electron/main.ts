@@ -176,6 +176,48 @@ function sendActiveSatellites() {
   });
 }
 
+// One recovery prompt per incident. Recovery is explicit and never automatically replays
+// a log or the failed selected tab, avoiding a renderer crash/reload loop.
+function installRendererRecovery(window: BrowserWindow, isHub: boolean) {
+  let prompting = false;
+  const recover = async (reason: string) => {
+    if (prompting || window.isDestroyed()) return;
+    prompting = true;
+    try {
+      const result = await dialog.showMessageBox(window, {
+        type: "error",
+        title: "Telemetry view stopped",
+        message: "The telemetry view stopped responding.",
+        detail: `${reason}. Reload to recover. Your layout will be kept; reopen the log when ready.`,
+        buttons: ["Reload", "Keep window"],
+        defaultId: 0,
+        cancelId: 1
+      });
+      if (result.response === 0 && !window.isDestroyed()) {
+        if (isHub) {
+          const cached = stateTracker.getRendererState(window);
+          if (cached) {
+            const safe = structuredClone(cached);
+            safe.tabs.selected = 0;
+            safe.tabs.tabs.forEach((tab: { type: TabType; controller: unknown }) => {
+              if (tab.type === TabType.LineGraph && tab.controller && typeof tab.controller === "object")
+                Object.assign(tab.controller, { lapMode: "time" });
+            });
+            stateTracker.saveRendererState(window, safe);
+          }
+        }
+        window.webContents.reload();
+      }
+    } finally {
+      prompting = false;
+    }
+  };
+  window.webContents.on("render-process-gone", (_event, details) => {
+    if (details.reason !== "clean-exit") void recover(`Renderer exited (${details.reason})`);
+  });
+  window.on("unresponsive", () => void recover("Renderer is unresponsive"));
+}
+
 /**
  * Process a message from a hub window.
  * @param window The source hub window
@@ -1995,6 +2037,7 @@ function createHubWindow(state?: WindowState, layoutOverride?: any) {
 
   // Create window
   let window = new BrowserWindow(prefs);
+  installRendererRecovery(window, true);
   hubWindows.push(window);
   if (process.platform === "linux") {
     window.setMenuBarVisibility(false);
@@ -2460,6 +2503,7 @@ function createSatellite(
       preload: path.join(__dirname, "preload.js")
     }
   });
+  installRendererRecovery(satellite, false);
   satellite.setMenu(null);
   satellite.setMenuBarVisibility(false);
   satellite.once("ready-to-show", satellite.show);

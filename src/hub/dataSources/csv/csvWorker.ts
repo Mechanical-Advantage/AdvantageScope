@@ -19,6 +19,7 @@ import {
   decodeCSVText,
   detectDelimiter,
   detectLayout,
+  isMissingCell,
   isNumberCell,
   parseNumberCell,
   parseTimeCell,
@@ -159,7 +160,10 @@ async function getCells(row: number, columns: number[]): Promise<string[]> {
 function inferType(cells: string[]): LoggableType {
   const nonEmpty = cells.map((cell) => cell.trim()).filter((cell) => cell.length > 0);
   if (nonEmpty.length === 0) return LoggableType.Number;
-  if (nonEmpty.every((cell) => isNumberCell(cell, layout.decimalComma))) return LoggableType.Number;
+  const present = nonEmpty.filter((cell) => !isMissingCell(cell));
+  if (present.length > 0 && present.every((cell) => isNumberCell(cell, layout.decimalComma))) {
+    return LoggableType.Number;
+  }
   if (nonEmpty.every((cell) => /^(true|false)$/i.test(cell))) return LoggableType.Boolean;
   // Use the legacy parser (AdvantageScope exports) on a scratch log to see what it produces
   const scratch = new Log(false);

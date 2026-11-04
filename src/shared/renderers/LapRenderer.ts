@@ -237,13 +237,20 @@ export default class LapRenderer implements TabRenderer {
     }
     if (c.map) {
       this.content.append(this.canvas);
-      if (!c.result.samples.length) {
+      if (!c.result.samples.length || !c.settings.latitude || !c.settings.longitude) {
         const p = document.createElement("p");
         p.className = "lap-empty";
         p.textContent = "Open a log or connect to telemetry with GPS. Set latitude and longitude in Lap setup.";
         this.content.append(p);
       }
       return;
+    }
+    if (!c.result.laps.some((l) => l.valid)) {
+      const p = document.createElement("p");
+      p.className = "lap-empty";
+      p.textContent =
+        "No laps found from the lap counter, beacon or GPS. Add manual splits under Lap setup.";
+      this.content.append(p);
     }
     const signed = (v: number) => (Number.isFinite(v) ? (v > 0 ? "+" : "") + v.toFixed(3) : "—");
     const table = document.createElement("table");

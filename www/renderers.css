@@ -904,6 +904,9 @@ table.metadata-table td.no-data {
 }
 
 /* Lap analysis shares the workbench's flat, compact controls. */
+.ros-image-view:not([hidden]) {
+  display: flex;
+}
 .lap-view:not([hidden]) {
   position: absolute;
   inset: 0;

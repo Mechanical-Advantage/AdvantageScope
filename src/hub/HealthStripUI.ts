@@ -19,6 +19,7 @@ import {
   updateLatch
 } from "../shared/HealthStrip";
 import LoggableType from "../shared/log/LoggableType";
+import { RenderGuard } from "../shared/RenderGuard";
 import { Units } from "../shared/units";
 import { htmlEncode } from "../shared/util";
 
@@ -62,7 +63,8 @@ export default class HealthStripUI {
         this.render();
       }
     });
-    window.setInterval(() => this.render(), 200);
+    const guard = new RenderGuard();
+    window.setInterval(() => guard.run(() => this.render()), 200);
     this.render();
   }
   restore(state?: HealthStripState) {
