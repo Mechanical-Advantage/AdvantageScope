@@ -64,12 +64,7 @@ self.onmessage = async (event) => {
         let samplingPeriodSecs = options.samplingPeriod / 1000;
         let range = log.getTimestampRange();
         timestamps = [];
-        const count = fixedSampleCount(
-          range[0],
-          range[1],
-          samplingPeriodSecs,
-          Math.min(1_000_000, Math.floor(5_000_000 / Math.max(1, fields.length)))
-        );
+        const count = fixedSampleCount(range[0], range[1], samplingPeriodSecs, 10_000_000);
         for (let i = 0; i <= count; i++) {
           const timestamp = range[0] + i * samplingPeriodSecs;
           if (timestamp <= range[1]) timestamps.push(cleanFloat(timestamp));

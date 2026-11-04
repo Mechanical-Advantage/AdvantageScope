@@ -28,14 +28,7 @@ export function inlineStatus(root: HTMLElement, message: string) {
     status = document.createElement("p");
     status.className = "telemetry-status lap-empty";
     status.setAttribute("role", "status");
-    Object.assign(status.style, {
-      position: "absolute",
-      top: "35px",
-      left: "20px",
-      right: "20px",
-      zIndex: "10",
-      pointerEvents: "none"
-    });
+    Object.assign(status.style, { zIndex: "10", pointerEvents: "none" });
     root.append(status);
   }
   if (status) {

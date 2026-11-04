@@ -209,7 +209,7 @@ export default class LineGraphRenderer implements TabRenderer {
   }
 
   render(command: LineGraphRendererCommand): void {
-    inlineStatus(this.ROOT, command.message ?? "");
+    inlineStatus(this.SCROLL_OVERLAY, command.message ?? "");
     // Commands carry the full lap extent; navigation belongs to this graph, including satellites.
     command = { ...command, timeRange: this.lapViewport.update(command.lapMode ?? "time", command.timeRange) };
     this.scrollSensor.periodic();
@@ -217,7 +217,7 @@ export default class LineGraphRenderer implements TabRenderer {
     // Update help overlay
     if (this.HELP_OVERLAY) {
       const hasScrolled = (window.preferences?.hasScrolledLineGraph ?? false) || this.scrollSensor.shouldHideHint();
-      this.HELP_OVERLAY.style.display = hasScrolled ? "none" : "flex";
+      this.HELP_OVERLAY.style.display = hasScrolled || command.message ? "none" : "flex";
       if (hasScrolled) {
         this.isFadingOut = false;
         this.zoomInAccumulator = 0;

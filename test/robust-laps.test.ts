@@ -117,3 +117,30 @@ test("numeric geometry array lengths cannot allocate more than available fields"
   assert.ok(grabModuleVelocities(log, "Modules", 0).length <= log.getFieldKeys().length);
   assert.ok(grabRotation2dArray(log, "Modules", 0).length <= log.getFieldKeys().length);
 });
+
+test("a counter that never confirms a lap does not block GPS laps", () => {
+  const samples = Array.from({ length: 2001 }, (_, i) => {
+    const angle = (i / 400) * 2 * Math.PI;
+    return { t: i / 10, x: 100 * Math.sin(angle), y: 100 - 100 * Math.cos(angle), counter: i === 500 ? 3 : 0 };
+  });
+  const result = analyze(samples);
+  assert.ok(result.laps.filter((l) => l.complete).length >= 2);
+  assert.ok(result.laps.every((l) => l.source === "gps"));
+});
+
+import { isMissingCell, isNumberCell } from "../src/hub/dataSources/csv/CSVParser";
+test("missing value spellings are not text, and real text is not missing", () => {
+  for (const cell of ["null", "NONE", "n/a", "NA", "-", "--", "?"]) assert.ok(isMissingCell(cell), cell);
+  for (const cell of ["ERR", "0", "-1", "nan", "OK"]) assert.ok(!isMissingCell(cell), cell);
+  assert.ok(!isNumberCell("n/a"));
+});
+
+test("a beacon with corrupt values or idling high does not create laps", () => {
+  const base = Array.from({ length: 300 }, (_, t) => ({ t, x: t, y: 0 }));
+  const idleHigh = base.map((p) => ({ ...p, beacon: p.t % 50 === 0 || p.t % 50 === 1 ? 0 : 1 }));
+  const corrupt = base.map((p) => ({ ...p, beacon: p.t === 7 ? 4227858432 : p.t % 50 < 3 && p.t > 3 ? 1 : 0 }));
+  const pulses = base.map((p) => ({ ...p, beacon: p.t % 50 < 3 && p.t > 3 ? 1 : 0 }));
+  assert.ok(analyze(idleHigh).laps.every((l) => !l.complete));
+  assert.ok(analyze(corrupt).laps.every((l) => !l.complete));
+  assert.ok(analyze(pulses).laps.some((l) => l.complete && l.source === "beacon"));
+});

@@ -249,7 +249,7 @@ export default class LapRenderer implements TabRenderer {
       const p = document.createElement("p");
       p.className = "lap-empty";
       p.textContent =
-        "No valid laps. Select GPS and a reliable lap source in Lap setup, or add manual lap markers. Partial or invalid laps are excluded from overlays.";
+        "No laps found from the lap counter, beacon or GPS. Add manual splits under Lap setup.";
       this.content.append(p);
     }
     const signed = (v: number) => (Number.isFinite(v) ? (v > 0 ? "+" : "") + v.toFixed(3) : "—");

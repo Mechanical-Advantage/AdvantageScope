@@ -193,13 +193,18 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
       counters.push(p.t);
     if (prev.beacon === 0 && p.beacon === 1 && next?.beacon === 1) beacons.push(p.t);
   }
+  // A beacon is a mostly-low 0/1 pulse. Any other value, or idling high, means it can't mark laps.
+  const beaconValues = samples.map((p) => p.beacon).filter((b) => b !== undefined);
+  const beaconUsable =
+    beaconValues.every((b) => b === 0 || b === 1) &&
+    beaconValues.filter((b) => b === 1).length < beaconValues.length / 2;
   if (config.manual?.length) {
     source = "manual";
     boundaries = config.manual.filter((t) => Number.isFinite(t) && t >= times[0] && t <= times.at(-1)!);
-  } else if (!config.gate && samples.some((p) => Number.isFinite(p.counter))) {
+  } else if (!config.gate && counters.length) {
     source = "counter";
     boundaries = counters;
-  } else if (!config.gate && samples.some((p) => Number.isFinite(p.beacon))) {
+  } else if (!config.gate && beaconUsable && beacons.length) {
     source = "beacon";
     boundaries = beacons;
   } else if (gate) {

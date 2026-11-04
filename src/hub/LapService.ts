@@ -54,6 +54,8 @@ class LapService {
   private signature = "";
   private nextUpdate = 0;
   private derivedEnd = -Infinity;
+  private slipEnd = -Infinity;
+  private slipSignature = "";
   private derivedSignature = "";
   private grids = new WeakMap<object, { d: number[]; t: number[] }>();
   fields(): string[] {
@@ -107,6 +109,8 @@ class LapService {
       this.signature = "";
       this.derivedSignature = "";
       this.derivedEnd = -Infinity;
+      this.slipEnd = -Infinity;
+      this.slipSignature = "";
       this.reference = null;
       this.overlays = [];
       this.selected = null;
@@ -262,7 +266,14 @@ class LapService {
       return lo ? t - ts[lo - 1] : Infinity;
     };
     if (gpsKey && s.frontLeft && s.frontRight) {
-      samples.forEach((p) =>
+      // Live data only appends, so rewriting the whole session on each update would grow without bound.
+      // A static log recomputes in full, because a lazily loaded field can add earlier samples.
+      const slipSignature = JSON.stringify([s, gpsKey]);
+      const live = window.selection?.getCurrentLiveTime() != null;
+      if (!live || slipSignature !== this.slipSignature) this.slipEnd = -Infinity;
+      this.slipSignature = slipSignature;
+      for (const p of samples) {
+        if (p.t <= this.slipEnd) continue;
         window.log.putNumber(
           "Laps/SlipRatio",
           p.t,
@@ -272,8 +283,9 @@ class LapService {
             Math.max(age(s.frontLeft, p.t), age(s.frontRight, p.t)),
             age(gpsKey, p.t)
           )
-        )
-      );
+        );
+        this.slipEnd = p.t;
+      }
       window.log.setMetadataString(
         "Laps/SlipRatio",
         JSON.stringify({

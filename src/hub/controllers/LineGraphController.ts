@@ -1126,14 +1126,16 @@ export default class LineGraphController implements TabController {
         else result.rightRange = range;
       }
     }
-    if (
-      ![...result.leftFields, ...result.rightFields].some(
-        (f) => f.timestamps.length && f.values.some(Number.isFinite)
-      ) &&
-      !result.discreteFields.length &&
-      !result.alerts.length
-    ) {
-      result.message = "No samples to display. Open a log and select fields available in this log.";
+    const hasNumericSamples = [...result.leftFields, ...result.rightFields].some(
+      (f) => f.timestamps.length && f.values.some(Number.isFinite)
+    );
+    const selectedKeys = [...this.leftSourceList.getState(), ...this.rightSourceList.getState()]
+      .filter((source) => source.visible)
+      .map((source) => source.logKey);
+    const loadingFields = window.getLoadingFields();
+    const stillLoading = selectedKeys.some((key) => loadingFields.has(key));
+    if (selectedKeys.length && !hasNumericSamples && !stillLoading && !result.discreteFields.length) {
+      result.message = "The selected fields have no numeric samples in this log.";
     }
     if (this.lapMode !== "time") {
       result.thresholds = [];
@@ -1144,17 +1146,11 @@ export default class LineGraphController implements TabController {
       );
       if (!laps.length)
         result.message =
-          "No valid laps. In Lap setup, select GPS or a reliable lap counter/beacon, or add manual lap markers. Switch to Session time to view raw data.";
-      else if (
-        ![...result.leftFields, ...result.rightFields].some(
-          (f) => f.timestamps.length && f.values.some(Number.isFinite)
-        )
-      )
-        result.message = "No samples for the selected fields. Select a numeric field available in this log.";
+          "No laps found from the lap counter, beacon or GPS. Add manual splits under Lap setup in the Laps tab, or set the X axis to Session time.";
       const distance = this.lapMode === "distance";
       if (laps.length && distance && !laps.some((l) => l.grid.length && l.distance > 0))
         result.message =
-          "Lap distance needs valid GPS or speed with known units. Configure the sources in Lap setup, or select Lap time or Session time.";
+          "Lap distance needs valid GPS or a speed with known units. Check Lap setup in the Laps tab, or set the X axis to Lap time or Session time.";
       // One hue per lap. Values stay as the raw samples; only the x position is mapped onto the lap.
       const convert = (fields: LineGraphRendererCommand_NumericField[]) =>
         fields.flatMap((field) =>

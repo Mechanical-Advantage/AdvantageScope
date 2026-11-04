@@ -430,7 +430,7 @@ export class RosImageController extends BaseRosTab {
     this.info.style.cssText = "display:inline-block;margin-left:10px;opacity:0.7";
     this.canvas.style.cssText = "display:block;image-rendering:auto;background:#000";
     root.style.overflow = "hidden";
-    root.style.display = "flex";
+    root.classList.add("ros-image-view");
     root.style.flexDirection = "column";
     this.frame.style.cssText = "flex:1 1 0;min-height:0;display:flex;align-items:center;justify-content:center";
     this.frame.append(this.canvas);
