@@ -4,3 +4,6 @@ bundles
 src/licenses.json
 docs/build
 xr.claude
+
+# Preserve upstream schema bytes; tools/live-api.mjs verifies the pinned hashes.
+src/shared/mur/api/schema

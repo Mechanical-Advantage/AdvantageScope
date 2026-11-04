@@ -22,12 +22,14 @@
     "wasm:compile": "node wasmCompile.mjs",
     "mock-backend": "node tools/mock-backend/src/main.ts",
     "postinstall": "node installElectron.mjs && node getLicenses.mjs && node bundleLiteAssets.mjs",
-    "test": "node tools/run-tests.mjs",
+    "test": "npm run live-api:check && node tools/run-tests.mjs",
     "mqtt-mock": "node tools/mqtt-mock/main.mjs",
     "radio-bridge": "node tools/radio-bridge/run.mjs",
     "lite-build": "node bundleLiteAssets.mjs && ASCOPE_DISTRIBUTION=LITE npm run compile",
     "lite-serve": "node tools/lite-serve/main.mjs",
-    "lite-smoke": "node tools/lite-smoke.mjs"
+    "lite-smoke": "node tools/lite-smoke.mjs",
+    "live-api:generate": "node tools/live-api.mjs generate",
+    "live-api:check": "node tools/live-api.mjs check"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.26.0",
@@ -46,6 +48,7 @@
     "@types/pngjs": "^6.0.5",
     "@types/three": "^0.168.0",
     "@types/ws": "^8.18.2",
+    "ajv": "^8.20.0",
     "ansi_up": "^6.0.6",
     "bignumber.js": "^9.1.2",
     "buffer": "^6.0.3",
@@ -58,6 +61,7 @@
     "fuse.js": "^7.0.0",
     "gunzip-file": "^0.1.1",
     "heatmap.js": "github:jwbonner/heatmap.js#24b4455c95f5e54cb50ab8bb06f9229d30426362",
+    "json-schema-to-typescript": "^15.0.4",
     "license-check-and-add": "^4.0.5",
     "mathjs": "11.3.0",
     "playwright": "^1.64.1",

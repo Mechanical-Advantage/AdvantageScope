@@ -8,7 +8,7 @@
 // Integration tests over real HTTP + WebSocket (Node's built-in WebSocket client).
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import type { ServerOp } from "../src/contract.ts";
+import type { ServerOp } from "../../../src/shared/mur/contract.ts";
 import { startServer } from "../src/server.ts";
 import { P, START_NS } from "./helpers.ts";
 

@@ -5,8 +5,8 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import type { SamplesOp, ServerOp, TelemetrySample } from "../../../src/shared/mur/contract.ts";
 import { MockBackend, type BackendOptions } from "../src/backend.ts";
-import type { SamplesOp, ServerOp, TelemetrySample } from "../src/contract.ts";
 import { Session, type SessionOptions } from "../src/session.ts";
 
 export const START_NS = 1_793_328_600_000_000_000n;

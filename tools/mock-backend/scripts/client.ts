@@ -10,7 +10,7 @@
 //
 //   [CLIP=0] node tools/mock-backend/scripts/client.ts [ws://localhost:8090/api/v1/live] [seconds] [path ...]
 
-import type { ClientOp, ServerOp } from "../src/contract.ts";
+import type { ClientOp, ServerOp } from "../../../src/shared/mur/contract.ts";
 
 const url = process.argv[2] ?? "ws://localhost:8090/api/v1/live";
 const seconds = Number(process.argv[3] ?? 1);

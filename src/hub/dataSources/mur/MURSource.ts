@@ -25,7 +25,7 @@ import type {
   ServerOp,
   SignalDescriptor,
   TelemetrySample
-} from "../../../../tools/mock-backend/src/contract";
+} from "../../../shared/mur/contract";
 import Log from "../../../shared/log/Log";
 import { LiveDataSource, LiveDataSourceStatus } from "../LiveDataSource";
 import { BackendState, Freshness, LiveStatusProvider, LiveStatusSummary } from "../LiveStatus";

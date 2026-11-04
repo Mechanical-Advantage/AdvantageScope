@@ -1,0 +1,897 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mur.org.au/schema/live/v1/live.schema.json",
+  "title": "LiveAPI",
+  "description": "MUR live API v1 shapes. See README for semantic requirements.",
+  "definitions": {
+    "NsString": {
+      "type": "string",
+      "pattern": "^-?[0-9]+$",
+      "description": "Decimal integer nanoseconds; never a JSON number."
+    },
+    "SignalPath": {
+      "type": "string",
+      "pattern": "^[a-z0-9_-]+(/[a-z0-9_-]+)*$"
+    },
+    "SignalType": {
+      "type": "string",
+      "enum": [
+        "float64",
+        "int64",
+        "bool",
+        "string",
+        "enum",
+        "vector3",
+        "quaternion",
+        "pose3",
+        "trajectory",
+        "cone_array"
+      ]
+    },
+    "TimeQuality": {
+      "type": "string",
+      "enum": [
+        "synchronised",
+        "estimated",
+        "unsynchronised"
+      ]
+    },
+    "IngressLink": {
+      "type": "string",
+      "enum": [
+        "rf",
+        "cellular",
+        "lan"
+      ]
+    },
+    "PreferredChart": {
+      "type": "string"
+    },
+    "ConeClass": {
+      "type": "string"
+    },
+    "ErrorCode": {
+      "type": "string"
+    },
+    "AvailabilityState": {
+      "type": "string",
+      "enum": [
+        "online",
+        "stale",
+        "offline"
+      ]
+    },
+    "DisplayHints": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "preferred_chart": {
+          "$ref": "#/definitions/PreferredChart"
+        }
+      },
+      "required": [],
+      "additionalProperties": true
+    },
+    "DBCProvenance": {
+      "type": "object",
+      "properties": {
+        "signal": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "database": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "signal",
+        "message"
+      ],
+      "additionalProperties": true
+    },
+    "SignalDescriptor": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "#/definitions/SignalPath"
+        },
+        "type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "schema_version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "description": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "nominal_rate_hz": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stale_after_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "display": {
+          "$ref": "#/definitions/DisplayHints"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "writable": {
+          "type": "boolean",
+          "const": false
+        },
+        "frame_id": {
+          "type": "string"
+        },
+        "enum_values": {
+          "type": "object",
+          "patternProperties": {
+            "^-?[0-9]+$": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        },
+        "type_id": {
+          "type": "string"
+        },
+        "dbc": {
+          "$ref": "#/definitions/DBCProvenance"
+        }
+      },
+      "required": [
+        "path",
+        "type",
+        "schema_version",
+        "unit",
+        "description",
+        "source",
+        "nominal_rate_hz",
+        "stale_after_ms",
+        "display",
+        "tags",
+        "writable"
+      ],
+      "additionalProperties": true
+    },
+    "Vector3": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "z": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "z"
+      ],
+      "additionalProperties": true
+    },
+    "Quaternion": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "z": {
+          "type": "number"
+        },
+        "w": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "z",
+        "w"
+      ],
+      "additionalProperties": true
+    },
+    "Pose3": {
+      "type": "object",
+      "properties": {
+        "position": {
+          "$ref": "#/definitions/Vector3"
+        },
+        "orientation": {
+          "$ref": "#/definitions/Quaternion"
+        }
+      },
+      "required": [
+        "position",
+        "orientation"
+      ],
+      "additionalProperties": true
+    },
+    "Trajectory": {
+      "type": "object",
+      "properties": {
+        "poses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Pose3"
+          }
+        }
+      },
+      "required": [
+        "poses"
+      ],
+      "additionalProperties": true
+    },
+    "Cone": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "position": {
+          "$ref": "#/definitions/Vector3"
+        },
+        "class": {
+          "$ref": "#/definitions/ConeClass"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "id",
+        "position",
+        "class",
+        "confidence"
+      ],
+      "additionalProperties": true
+    },
+    "ConeArray": {
+      "type": "object",
+      "properties": {
+        "cones": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Cone"
+          }
+        }
+      },
+      "required": [
+        "cones"
+      ],
+      "additionalProperties": true
+    },
+    "Int64Value": {
+      "anyOf": [
+        {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        },
+        {
+          "type": "string",
+          "pattern": "^-?[0-9]+$"
+        }
+      ],
+      "description": "Decimal strings must also fit signed int64; enforce range with integer arithmetic."
+    },
+    "SampleValue": true,
+    "ProducerSample": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "#/definitions/SignalPath"
+        },
+        "stream_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "t_ns": {
+          "$ref": "#/definitions/NsString"
+        },
+        "time_quality": {
+          "$ref": "#/definitions/TimeQuality"
+        },
+        "value": {
+          "$ref": "#/definitions/SampleValue"
+        }
+      },
+      "required": [
+        "path",
+        "stream_id",
+        "seq",
+        "t_ns",
+        "time_quality",
+        "value"
+      ],
+      "additionalProperties": true
+    },
+    "TelemetrySample": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "#/definitions/SignalPath"
+        },
+        "stream_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "t_ns": {
+          "$ref": "#/definitions/NsString"
+        },
+        "time_quality": {
+          "$ref": "#/definitions/TimeQuality"
+        },
+        "value": {
+          "$ref": "#/definitions/SampleValue"
+        },
+        "received_ns": {
+          "$ref": "#/definitions/NsString"
+        },
+        "ingress_link": {
+          "$ref": "#/definitions/IngressLink"
+        }
+      },
+      "required": [
+        "path",
+        "stream_id",
+        "seq",
+        "t_ns",
+        "time_quality",
+        "value",
+        "received_ns"
+      ],
+      "additionalProperties": true
+    },
+    "HistorySample": {
+      "type": "object",
+      "properties": {
+        "stream_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "seq": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "t_ns": {
+          "$ref": "#/definitions/NsString"
+        },
+        "time_quality": {
+          "$ref": "#/definitions/TimeQuality"
+        },
+        "value": {
+          "$ref": "#/definitions/SampleValue"
+        },
+        "received_ns": {
+          "$ref": "#/definitions/NsString"
+        },
+        "ingress_link": {
+          "$ref": "#/definitions/IngressLink"
+        }
+      },
+      "required": [
+        "stream_id",
+        "seq",
+        "t_ns",
+        "time_quality",
+        "value",
+        "received_ns"
+      ],
+      "additionalProperties": true
+    },
+    "CatalogueSnapshotBody": {
+      "type": "object",
+      "properties": {
+        "api_version": {
+          "const": 1,
+          "type": "integer"
+        },
+        "catalogue_epoch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "signals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SignalDescriptor"
+          }
+        }
+      },
+      "required": [
+        "api_version",
+        "catalogue_epoch",
+        "revision",
+        "signals"
+      ],
+      "additionalProperties": true
+    },
+    "HistoryQuery": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "#/definitions/SignalPath"
+        },
+        "from_ns": {
+          "$ref": "#/definitions/NsString"
+        },
+        "to_ns": {
+          "$ref": "#/definitions/NsString"
+        },
+        "max_points": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "stream_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "additionalProperties": true
+    },
+    "HistoryResponse": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "#/definitions/SignalPath"
+        },
+        "samples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/HistorySample"
+          }
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "downsampled": {
+          "type": "boolean"
+        },
+        "stream_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "path",
+        "samples",
+        "truncated",
+        "downsampled"
+      ],
+      "additionalProperties": true
+    },
+    "HttpError": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "error",
+        "message"
+      ],
+      "additionalProperties": true
+    },
+    "HelloOp": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "hello",
+          "type": "string"
+        },
+        "api_version": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "op",
+        "api_version"
+      ],
+      "additionalProperties": true
+    },
+    "SubscribeOp": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "subscribe",
+          "type": "string"
+        },
+        "subscription_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "paths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SignalPath"
+          }
+        },
+        "max_rate_hz": {
+          "anyOf": [
+            {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "include_latest": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "op",
+        "subscription_id",
+        "paths"
+      ],
+      "additionalProperties": true
+    },
+    "UnsubscribeOp": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "unsubscribe",
+          "type": "string"
+        },
+        "subscription_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "op",
+        "subscription_id"
+      ],
+      "additionalProperties": true
+    },
+    "CatalogueSnapshotOp": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "catalogue_snapshot",
+          "type": "string"
+        },
+        "api_version": {
+          "const": 1,
+          "type": "integer"
+        },
+        "catalogue_epoch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "signals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SignalDescriptor"
+          }
+        }
+      },
+      "required": [
+        "op",
+        "api_version",
+        "catalogue_epoch",
+        "revision",
+        "signals"
+      ],
+      "additionalProperties": true
+    },
+    "CatalogueUpsertOp": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "catalogue_upsert",
+          "type": "string"
+        },
+        "catalogue_epoch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "signal": {
+          "$ref": "#/definitions/SignalDescriptor"
+        }
+      },
+      "required": [
+        "op",
+        "catalogue_epoch",
+        "revision",
+        "signal"
+      ],
+      "additionalProperties": true
+    },
+    "CatalogueRemoveOp": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "catalogue_remove",
+          "type": "string"
+        },
+        "catalogue_epoch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "path": {
+          "$ref": "#/definitions/SignalPath"
+        }
+      },
+      "required": [
+        "op",
+        "catalogue_epoch",
+        "revision",
+        "path"
+      ],
+      "additionalProperties": true
+    },
+    "AvailabilityOp": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "availability",
+          "type": "string"
+        },
+        "path": {
+          "$ref": "#/definitions/SignalPath"
+        },
+        "state": {
+          "$ref": "#/definitions/AvailabilityState"
+        },
+        "last_seen_ns": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/NsString"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "op",
+        "path",
+        "state",
+        "last_seen_ns"
+      ],
+      "additionalProperties": true
+    },
+    "SubscriptionAckOp": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "subscription_ack",
+          "type": "string"
+        },
+        "subscription_id": {
+          "type": "string"
+        },
+        "accepted_paths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SignalPath"
+          }
+        }
+      },
+      "required": [
+        "op",
+        "subscription_id",
+        "accepted_paths"
+      ],
+      "additionalProperties": true
+    },
+    "SamplesOp": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "samples",
+          "type": "string"
+        },
+        "subscription_id": {
+          "type": "string"
+        },
+        "initial": {
+          "type": "boolean"
+        },
+        "samples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TelemetrySample"
+          }
+        }
+      },
+      "required": [
+        "op",
+        "subscription_id",
+        "initial",
+        "samples"
+      ],
+      "additionalProperties": true
+    },
+    "ErrorOp": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "const": "error",
+          "type": "string"
+        },
+        "code": {
+          "$ref": "#/definitions/ErrorCode"
+        },
+        "message": {
+          "type": "string"
+        },
+        "subscription_id": {
+          "type": "string"
+        },
+        "paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "op",
+        "code",
+        "message"
+      ],
+      "additionalProperties": true
+    },
+    "ClientOp": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/HelloOp"
+        },
+        {
+          "$ref": "#/definitions/SubscribeOp"
+        },
+        {
+          "$ref": "#/definitions/UnsubscribeOp"
+        }
+      ]
+    },
+    "CoreServerOp": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/CatalogueSnapshotOp"
+        },
+        {
+          "$ref": "#/definitions/CatalogueUpsertOp"
+        },
+        {
+          "$ref": "#/definitions/CatalogueRemoveOp"
+        },
+        {
+          "$ref": "#/definitions/AvailabilityOp"
+        },
+        {
+          "$ref": "#/definitions/SubscriptionAckOp"
+        },
+        {
+          "$ref": "#/definitions/SamplesOp"
+        },
+        {
+          "$ref": "#/definitions/ErrorOp"
+        }
+      ]
+    },
+    "ServerOp": {
+      "$ref": "#/definitions/CoreServerOp"
+    }
+  },
+  "anyOf": [
+    {
+      "$ref": "#/definitions/SignalDescriptor"
+    },
+    {
+      "$ref": "#/definitions/TelemetrySample"
+    },
+    {
+      "$ref": "#/definitions/CatalogueSnapshotBody"
+    },
+    {
+      "$ref": "#/definitions/HistoryResponse"
+    },
+    {
+      "$ref": "#/definitions/ClientOp"
+    },
+    {
+      "$ref": "#/definitions/ServerOp"
+    },
+    {
+      "$ref": "#/definitions/HttpError"
+    }
+  ]
+}

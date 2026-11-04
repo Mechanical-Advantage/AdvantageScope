@@ -20,8 +20,8 @@ import type {
   SignalDescriptor,
   TelemetrySample,
   TimeQuality
-} from "./contract.ts";
-import { API_VERSION } from "./contract.ts";
+} from "../../../src/shared/mur/contract.ts";
+import { API_VERSION } from "../../../src/shared/mur/contract.ts";
 import { HistoryBuffer, encodeInt64 } from "./history.ts";
 import { Rng, hexId } from "./prng.ts";
 import { type SampleCtx, type SignalDef, type Source, SOURCES, buildSignals, churnSignal } from "./signals.ts";

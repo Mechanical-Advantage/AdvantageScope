@@ -13,7 +13,7 @@
 // - the lowest seq seen. Anything older than the window is accepted only if it is older than everything seen
 //   so far, i.e. history backfill. History must therefore be offered newest-first (see `filterHistory`).
 
-import { sampleKey } from "../../../../tools/mock-backend/src/contract";
+import { sampleKey } from "../../../shared/mur/contract";
 
 interface StreamState {
   min: number;

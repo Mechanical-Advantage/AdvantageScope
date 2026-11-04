@@ -8,7 +8,6 @@
 // One live WebSocket client (spec 01 §5.2): hello/snapshot, subscriptions with replace
 // semantics, max_rate_hz throttling (newest wins), batching, and bounded buffering.
 
-import type { BackendListener, MockBackend } from "./backend.ts";
 import type {
   AvailabilityOp,
   CatalogueRemoveOp,
@@ -18,8 +17,9 @@ import type {
   ServerOp,
   SubscriptionAckOp,
   TelemetrySample
-} from "./contract.ts";
-import { API_VERSION } from "./contract.ts";
+} from "../../../src/shared/mur/contract.ts";
+import { API_VERSION } from "../../../src/shared/mur/contract.ts";
+import type { BackendListener, MockBackend } from "./backend.ts";
 
 export interface Transport {
   send(text: string): void;

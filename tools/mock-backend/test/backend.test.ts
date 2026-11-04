@@ -8,8 +8,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { CHURN, STALE_TEST } from "../src/backend.ts";
-import type { AvailabilityOp, CatalogueRemoveOp, CatalogueUpsertOp } from "../src/contract.ts";
-import { sampleKey } from "../src/contract.ts";
+import type { AvailabilityOp, CatalogueRemoveOp, CatalogueUpsertOp } from "../../../src/shared/mur/contract.ts";
+import { sampleKey } from "../../../src/shared/mur/contract.ts";
 import { HistoryBuffer } from "../src/history.ts";
 import { Track } from "../src/track.ts";
 import { Harness, P, samplesOf } from "./helpers.ts";

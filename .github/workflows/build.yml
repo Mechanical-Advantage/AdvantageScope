@@ -28,6 +28,8 @@ jobs:
         run: npm ci
         env:
           YOUTUBE_DL_SKIP_DOWNLOAD: "true"
+      - name: Check pinned live API schema and generated types
+        run: npm run live-api:check
       - name: Check formatting
         run: npm run check-format
 

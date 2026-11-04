@@ -1,5 +1,8 @@
 # mur-voir mock telemetry backend
 
+Wire types come from the pinned mur-msgs schema in `src/shared/mur/api/`. Its README
+describes pin updates and drift checks.
+
 This deterministic backend implements `specs/01-live-telemetry-interface.md` with an HTTP catalogue,
 rolling history and a live WebSocket. A vehicle model laps a roughly 1 km circuit near Melton, VIC.
 Track curvature determines speed, braking and acceleration. Seeded noise varies the sensor values.
@@ -78,8 +81,9 @@ and strided raw geometry. Strings return the newest values. Results are never av
 selects the newest stream unless `stream_id` names another retained stream. Large int64 values use
 decimal strings when they cannot fit safely in a JSON number.
 
-`src/contract.ts` exports the descriptors, samples, history responses, client and server operations,
-plus `sampleKey()` and `parseInt64()`. It has no runtime dependencies.
+`src/shared/mur/contract.ts` at the repository root exports the generated descriptors, samples,
+history responses, client and server operations, plus `sampleKey()` and `parseInt64()`.
+The runtime helpers have no external dependencies.
 
 ## Tests
 
