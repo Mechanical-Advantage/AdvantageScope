@@ -9,7 +9,7 @@ import * as stats from "simple-statistics";
 import { SourceListItemState, SourceListState } from "../../shared/SourceListConfig";
 import { AKIT_TIMESTAMP_KEYS, getRobotStateRanges } from "../../shared/log/RobotState";
 import { StatisticsRendererCommand, StatisticsRendererCommand_Stats } from "../../shared/renderers/StatisticsRenderer";
-import { arraysEqual, cleanFloat, createUUID } from "../../shared/util";
+import { arraysEqual, cleanFloat, createUUID, fixedSampleCount } from "../../shared/util";
 import SourceList from "../SourceList";
 import StatisticsController_Config from "./StatisticsController_Config";
 import TabController from "./TabController";
@@ -200,11 +200,10 @@ export default class StatisticsController implements TabController {
         if (akitTimestamps !== undefined) sampleTimes = akitTimestamps.timestamps.filter(isValid);
       } else {
         // No synced timestamps, use fixed period :(
-        for (
-          let sampleTime = window.log.getTimestampRange()[0];
-          sampleTime < window.log.getTimestampRange()[1];
-          sampleTime += this.DEFAULT_DT
-        ) {
+        const [start, end] = window.log.getTimestampRange();
+        const count = fixedSampleCount(start, end, this.DEFAULT_DT);
+        for (let i = 0; i < count; i++) {
+          const sampleTime = start + i * this.DEFAULT_DT;
           if (isValid(sampleTime)) {
             sampleTimes.push(sampleTime);
           }

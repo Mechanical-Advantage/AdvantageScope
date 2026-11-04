@@ -256,3 +256,11 @@ export function getSpiralIndex(x: number, y: number): number {
     return interiorCount + offset;
   }
 }
+
+/** Finite fixed-period sampling; rejects corrupt spans before allocating or looping. */
+export function fixedSampleCount(start: number, end: number, step: number, limit = 1_000_000): number {
+  const count = Math.ceil((end - start) / step);
+  if (![start, end, step, count].every(Number.isFinite) || step <= 0 || count < 0 || count > limit)
+    throw new Error("Invalid or excessive sampling range. Check timestamps and sampling period.");
+  return count;
+}

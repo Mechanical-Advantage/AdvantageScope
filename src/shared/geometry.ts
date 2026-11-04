@@ -12,7 +12,7 @@ import { getOrDefault } from "./log/LogUtil";
 import LoggableType from "./log/LoggableType";
 import { getRobotStateRanges } from "./log/RobotState";
 import { Units } from "./units";
-import { indexArray, jsonCopy } from "./util";
+import { fixedSampleCount, indexArray, jsonCopy } from "./util";
 
 export type Translation2d = [number, number]; // meters (x, y)
 export type Rotation2d = number; // radians
@@ -282,21 +282,27 @@ export function grabRotation3d(log: Log, key: string, timestamp: number, uuid?: 
 }
 
 export function grabRotation2dArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
-  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
+  return indexArray(
+    Math.min(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid), log.getFieldKeys().length)
+  ).reduce(
     (array, index) => array.concat(grabRotation2d(log, key + "/" + index.toString(), timestamp)),
     [] as AnnotatedPose3d[]
   );
 }
 
 export function grabRotation3dArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
-  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
+  return indexArray(
+    Math.min(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid), log.getFieldKeys().length)
+  ).reduce(
     (array, index) => array.concat(grabRotation3d(log, key + "/" + index.toString(), timestamp)),
     [] as AnnotatedPose3d[]
   );
 }
 
 export function grabTargetCornerArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
-  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
+  return indexArray(
+    Math.min(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid), log.getFieldKeys().length)
+  ).reduce(
     (array, index) => array.concat(grabTargetCorner(log, key + "/" + index.toString(), timestamp)),
     [] as AnnotatedPose3d[]
   );
@@ -349,7 +355,9 @@ export function grabTranslation3d(log: Log, key: string, timestamp: number, uuid
 }
 
 export function grabTranslation2dArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
-  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
+  return indexArray(
+    Math.min(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid), log.getFieldKeys().length)
+  ).reduce(
     (array, index) => array.concat(grabTranslation2d(log, key + "/" + index.toString(), timestamp)),
     [] as AnnotatedPose3d[]
   );
@@ -381,7 +389,9 @@ export function grabTranslation3dArray(log: Log, key: string, timestamp: number,
   }
 
   // Fallback to reading parsed child fields
-  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
+  return indexArray(
+    Math.min(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid), log.getFieldKeys().length)
+  ).reduce(
     (array, index) => array.concat(grabTranslation3d(log, key + "/" + index.toString(), timestamp)),
     [] as AnnotatedPose3d[]
   );
@@ -439,14 +449,18 @@ export function grabPose3d(log: Log, key: string, timestamp: number, uuid?: stri
 }
 
 export function grabPose2dArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
-  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
+  return indexArray(
+    Math.min(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid), log.getFieldKeys().length)
+  ).reduce(
     (array, index) => array.concat(grabPose2d(log, key + "/" + index.toString(), timestamp)),
     [] as AnnotatedPose3d[]
   );
 }
 
 export function grabChoreoSampleArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
-  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
+  return indexArray(
+    Math.min(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid), log.getFieldKeys().length)
+  ).reduce(
     (array, index) => array.concat(grabChoreoSample(log, key + "/" + index.toString(), timestamp)),
     [] as AnnotatedPose3d[]
   );
@@ -483,14 +497,21 @@ export function grabPose3dArray(log: Log, key: string, timestamp: number, uuid?:
   }
 
   // Fallback to reading parsed child fields
-  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
+  return indexArray(
+    Math.min(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid), log.getFieldKeys().length)
+  ).reduce(
     (array, index) => array.concat(grabPose3d(log, key + "/" + index.toString(), timestamp)),
     [] as AnnotatedPose3d[]
   );
 }
 
 export function grabTrajectory(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
-  return indexArray(getOrDefault(log, key + "/states/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
+  return indexArray(
+    Math.min(
+      getOrDefault(log, key + "/states/length", LoggableType.Number, timestamp, 0, uuid),
+      log.getFieldKeys().length
+    )
+  ).reduce(
     (array, index) => array.concat(grabPose3d(log, key + "/states/" + index.toString() + "/pose", timestamp)),
     [] as AnnotatedPose3d[]
   );
@@ -521,7 +542,9 @@ export function grabAprilTag(log: Log, key: string, timestamp: number, uuid?: st
 }
 
 export function grabAprilTagArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
-  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
+  return indexArray(
+    Math.min(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid), log.getFieldKeys().length)
+  ).reduce(
     (array, index) => array.concat(grabAprilTag(log, key + "/" + index.toString(), timestamp)),
     [] as AnnotatedPose3d[]
   );
@@ -555,7 +578,10 @@ export function grabHeatmapData(
         return timestamp >= timelineRange[0] && timestamp <= timelineRange[1];
     }
   };
-  for (let sampleTime = log.getTimestampRange()[0]; sampleTime < log.getTimestampRange()[1]; sampleTime += HEATMAP_DT) {
+  const [start, end] = log.getTimestampRange();
+  const count = fixedSampleCount(start, end, HEATMAP_DT);
+  for (let i = 0; i < count; i++) {
+    const sampleTime = start + i * HEATMAP_DT;
     if (!isValid(sampleTime)) continue;
     poses = poses.concat(grabPosesAuto(log, key, logType, sampleTime, uuid));
   }
@@ -579,7 +605,7 @@ export function grabModuleVelocities(
     velocityKey = "speed";
   }
 
-  for (let i = 0; i < length; i++) {
+  for (const i of indexArray(Math.min(length, log.getFieldKeys().length))) {
     velocities.push({
       velocity: getOrDefault(
         log,

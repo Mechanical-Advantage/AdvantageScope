@@ -7,6 +7,7 @@
 
 import { TabsState } from "../shared/HubState";
 import LineGraphFilter from "../shared/LineGraphFilter";
+import { RenderGuard, inlineStatus } from "../shared/RenderGuard";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import { getAutonomousKey, getEnabledKey, getUtilityKey } from "../shared/log/RobotState";
 import ConsoleRenderer from "../shared/renderers/ConsoleRenderer";
@@ -335,51 +336,68 @@ export default class Tabs {
     this.timeline = new Timeline(this.TIMELINE_CONTAINER);
     this.setTimelineBandSupplier(() => lapService.bands());
 
+    const periodicGuard = new RenderGuard();
+    const guards = new WeakMap<object, RenderGuard>();
     // Periodic function
     let periodic = () => {
-      // Update tab bar
-      this.SHADOW_LEFT.style.opacity = Math.floor(this.TAB_BAR.scrollLeft) <= 0 ? "0" : "1";
-      this.SHADOW_RIGHT.style.opacity =
-        Math.ceil(this.TAB_BAR.scrollLeft) >= this.TAB_BAR.scrollWidth - this.TAB_BAR.clientWidth ? "0" : "1";
-      this.tabsScrollSensor.periodic();
+      window.requestAnimationFrame(periodic);
+      periodicGuard.run(() => {
+        // Update tab bar
+        this.SHADOW_LEFT.style.opacity = Math.floor(this.TAB_BAR.scrollLeft) <= 0 ? "0" : "1";
+        this.SHADOW_RIGHT.style.opacity =
+          Math.ceil(this.TAB_BAR.scrollLeft) >= this.TAB_BAR.scrollWidth - this.TAB_BAR.clientWidth ? "0" : "1";
+        this.tabsScrollSensor.periodic();
 
-      // Update timeline and controls
-      this.timeline.periodic();
-      this.updateControlsHeight();
-      this.updateTimelineVisibility();
-
+        // Update timeline and controls
+        this.timeline.periodic();
+        this.updateControlsHeight();
+        this.updateTimelineVisibility();
+      });
       // Render new frame
       this.tabList.forEach((tab, index) => {
         let activeLocal = index === this.selectedTab;
         let activeSatellite = this.activeSatellites.includes(tab.controller.UUID);
         if (activeLocal || activeSatellite) {
-          if (tab.type === TabType.Table) {
-            // Update range from renderer
-            let renderer = tab.renderer as TableRenderer;
-            let controller = tab.controller as TableController;
-            controller.addRendererRange(renderer.UUID, activeLocal ? renderer.getTimestampRange() : null);
+          let guard = guards.get(tab);
+          if (!guard) {
+            guard = new RenderGuard();
+            guards.set(tab, guard);
           }
-          let command = tab.controller.getCommand();
-          if (activeLocal) {
-            tab.renderer.render(command);
-          }
-          if (activeSatellite) {
-            let title =
-              tab.type === TabType.Documentation
-                ? "Documentation"
-                : tab.title === ""
-                ? getDefaultTabTitle(tab.type)
-                : tab.title;
-            window.sendMainMessage("update-satellite", {
-              uuid: tab.controller.UUID,
-              command: command,
-              title: title
-            });
-          }
+          guard.run(
+            () => {
+              if (tab.type === TabType.Table) {
+                // Update range from renderer
+                let renderer = tab.renderer as TableRenderer;
+                let controller = tab.controller as TableController;
+                controller.addRendererRange(renderer.UUID, activeLocal ? renderer.getTimestampRange() : null);
+              }
+              let command = tab.controller.getCommand();
+              if (activeLocal) {
+                tab.renderer.render(command);
+              }
+              if (activeSatellite) {
+                let title =
+                  tab.type === TabType.Documentation
+                    ? "Documentation"
+                    : tab.title === ""
+                    ? getDefaultTabTitle(tab.type)
+                    : tab.title;
+                window.sendMainMessage("update-satellite", {
+                  uuid: tab.controller.UUID,
+                  command: command,
+                  title: title
+                });
+              }
+            },
+            () =>
+              inlineStatus(
+                tab.rendererElement,
+                "Unable to display this tab. Check its fields and options; it will retry automatically."
+              ),
+            () => inlineStatus(tab.rendererElement, "")
+          );
         }
       });
-
-      window.requestAnimationFrame(periodic);
     };
     window.requestAnimationFrame(periodic);
   }

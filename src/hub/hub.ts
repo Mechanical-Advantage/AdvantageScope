@@ -9,6 +9,7 @@ import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { HubState } from "../shared/HubState";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences, { MAX_LIVE_RECENT } from "../shared/Preferences";
+import { RenderGuard } from "../shared/RenderGuard";
 import Selection from "../shared/Selection";
 import { SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
 import { IS_LITE } from "../shared/buildConstants";
@@ -125,9 +126,14 @@ new LiveStatusPill(
   () => stopLive()
 );
 
+function guardedInterval(action: () => void, period: number) {
+  const guard = new RenderGuard();
+  return window.setInterval(() => guard.run(action), period);
+}
+
 // Sources keep retrying in the "Connecting" state; once the backend has failed, drop "(Searching)" from the title
 let titleFailed = false;
-window.setInterval(() => {
+guardedInterval(() => {
   if (!liveActive || liveStatus === LiveDataSourceStatus.Active) {
     titleFailed = false;
     return;
@@ -240,11 +246,11 @@ function restoreState(state: HubState) {
   window.tabs.restoreState(state.tabs);
 }
 
-setInterval(() => {
+guardedInterval(() => {
   window.sendMainMessage("save-state", saveState());
 }, STATE_SAVE_PERIOD_MS);
 
-setInterval(() => {
+guardedInterval(() => {
   window.sendMainMessage("save-type-memory", window.typeMemory);
 }, TYPE_MEMORY_SAVE_PERIOD_MS);
 
@@ -309,6 +315,7 @@ const fpsDiv = document.getElementsByClassName("fps")[0] as HTMLElement;
 const sampleLength = 10;
 let frameTimes: number[] = [];
 let periodic = () => {
+  window.requestAnimationFrame(periodic);
   frameTimes.push(window.performance.now());
   while (frameTimes.length > sampleLength) {
     frameTimes.shift();
@@ -322,7 +329,6 @@ let periodic = () => {
   if (window.fps) {
     fpsDiv.innerText = "FPS: " + fps.toFixed(1);
   }
-  window.requestAnimationFrame(periodic);
 };
 window.requestAnimationFrame(periodic);
 
@@ -625,7 +631,7 @@ window.addEventListener("message", (event) => {
 });
 
 // Update touch bar slider position
-setInterval(() => {
+guardedInterval(() => {
   if (window.platform === "darwin") {
     let range = window.log.getTimestampRange();
     let liveTime = window.selection.getCurrentLiveTime();
@@ -987,7 +993,7 @@ async function handleMainMessage(message: NamedMessage) {
       // Start mock progress
       let mockProgress = 0;
       let mockProgressStart = new Date().getTime();
-      let mockProgressInterval = setInterval(() => {
+      let mockProgressInterval = guardedInterval(() => {
         mockProgress = calcMockProgress((new Date().getTime() - mockProgressStart) / 1000, 0.25);
         setLoading(mockProgress);
       }, 1000 / 60);

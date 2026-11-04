@@ -14,7 +14,7 @@ import { filterFieldByPrefixes } from "../shared/log/LogKeyUtils";
 import { getLogValueText } from "../shared/log/LogUtil";
 import LoggableType from "../shared/log/LoggableType";
 import { AKIT_TIMESTAMP_KEYS } from "../shared/log/RobotState";
-import { cleanFloat } from "../shared/util";
+import { cleanFloat, fixedSampleCount } from "../shared/util";
 import { WPILOGEncoder, WPILOGEncoderRecord } from "./dataSources/wpilog/WPILOGEncoder";
 
 self.onmessage = async (event) => {
@@ -64,8 +64,15 @@ self.onmessage = async (event) => {
         let samplingPeriodSecs = options.samplingPeriod / 1000;
         let range = log.getTimestampRange();
         timestamps = [];
-        for (let timestamp = range[0]; timestamp <= range[1]; timestamp += samplingPeriodSecs) {
-          timestamps.push(cleanFloat(timestamp));
+        const count = fixedSampleCount(
+          range[0],
+          range[1],
+          samplingPeriodSecs,
+          Math.min(1_000_000, Math.floor(5_000_000 / Math.max(1, fields.length)))
+        );
+        for (let i = 0; i <= count; i++) {
+          const timestamp = range[0] + i * samplingPeriodSecs;
+          if (timestamp <= range[1]) timestamps.push(cleanFloat(timestamp));
         }
         break;
 

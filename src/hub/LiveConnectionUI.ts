@@ -12,6 +12,7 @@
 //   details, sim controls (only when the backend has sim endpoints) and connect/disconnect.
 
 import { LiveRecentServer } from "../shared/Preferences";
+import { RenderGuard } from "../shared/RenderGuard";
 import { IS_LITE } from "../shared/buildConstants";
 import { htmlEncode } from "../shared/util";
 import { validateLiveAddress } from "./dataSources/LiveAddress";
@@ -407,7 +408,8 @@ export class LiveStatusPill {
       }
     });
 
-    window.setInterval(() => this.render(), 200);
+    const guard = new RenderGuard();
+    window.setInterval(() => guard.run(() => this.render()), 200);
     this.render();
   }
 
