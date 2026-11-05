@@ -922,10 +922,14 @@ table.metadata-table td.no-data {
   font-size: 13px;
 }
 .lap-toolbar button {
-  padding: 4px 8px;
-  border: 1px solid currentColor;
-  border-radius: 2px;
-  color: inherit;
+  min-height: 22px;
+  padding: 2px 8px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--mv-control-fg);
+  background: var(--mv-control-bg);
+  border: 1px solid var(--mv-control-border);
+  border-radius: 4px;
   cursor: pointer;
 }
 .lap-toolbar details {
@@ -943,11 +947,14 @@ table.metadata-table td.no-data {
   width: 520px;
   max-height: 70%;
   overflow: auto;
-  background: #eee;
-  border: 1px solid #888;
+  background: #fff;
+  border: 1px solid #ddd;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
+}
+.lap-setup button {
+  align-self: end;
 }
 .lap-setup label {
   display: flex;
@@ -959,11 +966,29 @@ table.metadata-table td.no-data {
   width: 100%;
   box-sizing: border-box;
 }
+.lap-setup input {
+  min-height: 22px;
+  padding: 2px 6px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--mv-control-fg);
+  background: var(--mv-control-bg);
+  border: 1px solid var(--mv-control-border);
+  border-radius: 4px;
+}
 .lap-content {
   flex: 1;
   min-height: 0;
   overflow: auto;
   position: relative;
+}
+.lap-map {
+  position: absolute;
+  inset: 0;
+}
+.lap-map div.field-2d-canvas-container,
+.lap-map div.field-2d-scroll {
+  height: 100%;
 }
 .lap-table {
   border-collapse: collapse;
@@ -1027,8 +1052,12 @@ table.metadata-table td.no-data {
   left: 10%;
   right: 10%;
   text-align: center;
+  pointer-events: none;
 }
 @media (prefers-color-scheme: dark) {
+  .lap-setup {
+    border-color: black;
+  }
   .lap-setup,
   .lap-heading {
     background: #222;

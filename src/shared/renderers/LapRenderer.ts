@@ -12,8 +12,10 @@
 //   details, sim controls (only when the backend has sim endpoints) and connect/disconnect.
 
 import type { LapSettings } from "../../hub/LapService";
+import ScrollSensor, { ScrollSensorMouseControl } from "../../hub/ScrollSensor";
 import { Gate, gateAt, LapResult, Point } from "../laps/LapEngine";
 import { Units } from "../units";
+import { panMargin, scrollZoomPan } from "./FieldZoomPan";
 import TabRenderer from "./TabRenderer";
 function viridis(value: number): string {
   const stops = [
@@ -48,13 +50,24 @@ export default class LapRenderer implements TabRenderer {
   private toolbar: HTMLElement;
   private content: HTMLElement;
   private canvas: HTMLCanvasElement;
+  private traceLayer = document.createElement("canvas");
+  private mapView: HTMLElement;
+  private scroll: HTMLElement;
+  private scrollSensor: ScrollSensor;
+  private message: HTMLElement;
   private command?: LapCommand;
   private last = "";
   private lastDraw = "";
+  private lastTrace = "";
   private toolbarKey = "";
+  private zoom = 1;
+  private pan: [number, number] = [0, 0];
+  private baseScale = 1;
+  private range: [number, number] = [NaN, NaN];
   private transform = (p: Point) => p;
   private inverse = (p: Point) => p;
   private dragging?: { index: number; endpoint: "a" | "b"; gate: Gate };
+  private pressed?: Point;
   constructor(
     private root: HTMLElement,
     private interactive = true
@@ -62,60 +75,119 @@ export default class LapRenderer implements TabRenderer {
     root.classList.add("lap-view");
     this.toolbar = document.createElement("div");
     this.toolbar.className = "lap-toolbar";
+    if (!interactive) this.toolbar.style.display = "none";
     this.content = document.createElement("div");
     this.content.className = "lap-content";
-    this.canvas = document.createElement("canvas");
-    this.canvas.setAttribute("aria-label", "Track map; click to seek, drag gate endpoints to edit");
     root.append(this.toolbar, this.content);
-    this.canvas.addEventListener("pointerdown", (e) => {
+
+    // Same elements and scroll sensor as the 2D Field
+    this.canvas = document.createElement("canvas");
+    this.canvas.className = "field-2d-canvas";
+    this.canvas.setAttribute("aria-label", "Track map; click to seek, drag gate endpoints to edit");
+    const container = document.createElement("div");
+    container.className = "field-2d-canvas-container";
+    container.append(this.canvas);
+    this.scroll = document.createElement("div");
+    this.scroll.className = "field-2d-scroll";
+    this.scroll.tabIndex = -1;
+    const scrollContent = document.createElement("div");
+    scrollContent.className = "field-2d-scroll-content";
+    this.scroll.append(scrollContent);
+    this.mapView = document.createElement("div");
+    this.mapView.className = "lap-map";
+    this.mapView.append(container, this.scroll);
+    this.message = document.createElement("p");
+    this.message.className = "lap-empty";
+    this.scrollSensor = new ScrollSensor(
+      this.scroll,
+      (dx, dy, isPan, cursorX, cursorY) => {
+        this.zoom = scrollZoomPan(
+          this.zoom,
+          this.pan,
+          dx,
+          dy,
+          isPan,
+          cursorX - this.scroll.clientWidth / 2,
+          cursorY - this.scroll.clientHeight / 2,
+          this.baseScale
+        );
+        window.requestAnimationFrame(() => {
+          if (this.command?.map) this.draw();
+        });
+      },
+      ScrollSensorMouseControl.PanXY
+    );
+
+    // Gate endpoints take the drag before the scroll sensor can pan. A click without a drag moves the cursor.
+    const point = (e: PointerEvent) => {
+      const rect = this.scroll.getBoundingClientRect();
+      return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    };
+    this.scroll.addEventListener(
+      "pointerdown",
+      (e) => {
+        if (!this.command || !this.interactive || e.button !== 0) return;
+        const p = point(e);
+        this.dragging = this.endpointAt(p);
+        if (this.dragging) {
+          e.preventDefault();
+          this.scroll.setPointerCapture(e.pointerId);
+          this.draw();
+        } else this.pressed = p;
+      },
+      { capture: true }
+    );
+    this.scroll.addEventListener("pointermove", (e) => {
       if (!this.command || !this.interactive) return;
-      const rect = this.canvas.getBoundingClientRect(),
-        p = { x: e.clientX - rect.left, y: e.clientY - rect.top };
-      const gates = [
-        this.command.result.gate,
-        ...(this.command.settings.config.sectors ?? []),
-        this.command.settings.config.finish
-      ];
-      gates.forEach((g, index) => {
-        if (g)
-          for (const endpoint of ["a", "b"] as const) {
-            const q = this.transform(g[endpoint]);
-            if (Math.hypot(p.x - q.x, p.y - q.y) < 14)
-              this.dragging = {
-                index: index === gates.length - 1 ? -2 : index - 1,
-                endpoint,
-                gate: structuredClone(g)
-              };
-          }
-      });
+      const p = point(e);
       if (this.dragging) {
-        this.canvas.setPointerCapture(e.pointerId);
-        return;
-      }
-      let best = Infinity,
-        time = 0;
-      this.command.result.samples.forEach((s) => {
-        const q = this.transform(s),
-          d = Math.hypot(p.x - q.x, p.y - q.y);
-        if (d < best) {
-          best = d;
-          time = s.t;
-        }
-      });
-      if (best < 40) this.action({ type: "seek", time });
+        this.dragging.gate[this.dragging.endpoint] = this.inverse(p);
+        this.draw();
+      } else this.scroll.style.cursor = this.endpointAt(p) ? "move" : "";
     });
-    this.canvas.addEventListener("pointermove", (e) => {
-      if (!this.dragging) return;
-      const r = this.canvas.getBoundingClientRect();
-      this.dragging.gate[this.dragging.endpoint] = this.inverse({ x: e.clientX - r.left, y: e.clientY - r.top });
-      this.draw();
-    });
-    this.canvas.addEventListener("pointerup", () => {
+    this.scroll.addEventListener("pointerup", (e) => {
       if (this.dragging) {
         this.action({ type: "gate", index: this.dragging.index, gate: this.dragging.gate });
         this.dragging = undefined;
+      } else if (this.command && this.pressed) {
+        const p = point(e);
+        if (Math.hypot(p.x - this.pressed.x, p.y - this.pressed.y) < 4) {
+          let best = Infinity,
+            time = 0;
+          for (const s of this.command.result.samples) {
+            const q = this.transform(s),
+              d = Math.hypot(p.x - q.x, p.y - q.y);
+            if (d < best) {
+              best = d;
+              time = s.t;
+            }
+          }
+          if (best < 40) this.action({ type: "seek", time });
+        }
       }
+      this.pressed = undefined;
     });
+  }
+  /** Gates on the map: the start/finish line, sectors, and the finish line in autocross. */
+  private gates(): (Gate | undefined)[] {
+    const c = this.command!;
+    return [
+      c.result.gate,
+      ...(c.settings.config.sectors ?? []),
+      c.settings.config.mode === "autocross" ? c.settings.config.finish : undefined
+    ];
+  }
+  private endpointAt(p: Point): LapRenderer["dragging"] {
+    const gates = this.gates();
+    for (let index = 0; index < gates.length; index++) {
+      const g = gates[index];
+      if (!g) continue;
+      for (const endpoint of ["a", "b"] as const) {
+        const q = this.transform(g[endpoint]);
+        if (Math.hypot(p.x - q.x, p.y - q.y) < 14)
+          return { index: index === gates.length - 1 ? -2 : index - 1, endpoint, gate: structuredClone(g) };
+      }
+    }
   }
   private action(detail: unknown) {
     if (this.interactive) this.root.dispatchEvent(new CustomEvent("lap-action", { detail, bubbles: true }));
@@ -138,10 +210,13 @@ export default class LapRenderer implements TabRenderer {
       command.map,
       command.settings
     ]);
-    if (this.last !== key && !this.toolbar.contains(document.activeElement)) {
+    // Rebuilding would take the focus from a field being edited, but a clicked button shouldn't hold back the result.
+    const editing = this.toolbar.contains(document.activeElement) && document.activeElement?.matches("input, select");
+    if (this.last !== key && !editing) {
       this.last = key;
       this.build();
     }
+    this.scrollSensor.periodic();
     if (command.map) this.draw();
   }
   private build() {
@@ -150,7 +225,6 @@ export default class LapRenderer implements TabRenderer {
     const c = this.command!;
     const scrollTop = this.content.scrollTop,
       scrollLeft = this.content.scrollLeft;
-    this.content.replaceChildren();
     const toolbarKey = JSON.stringify([c.field, c.unit, c.map, c.settings]);
     if (toolbarKey !== this.toolbarKey) {
       this.toolbarKey = toolbarKey;
@@ -158,11 +232,11 @@ export default class LapRenderer implements TabRenderer {
       const label = document.createElement("span");
       label.textContent =
         (c.map ? "Colour: " : "Metrics: ") +
-        (c.field.split("/").at(-1) || "drag a numeric field") +
+        (c.field.split("/").at(-1) || (c.map ? "laps, or drag a numeric field here" : "drag a numeric field")) +
         (c.unit ? ` [${c.unit}]` : "");
       label.title = c.field;
       this.toolbar.append(label);
-      this.button(this.toolbar, "Clear field", () => this.action({ type: "field", field: "" }));
+      if (c.field) this.button(this.toolbar, "Clear field", () => this.action({ type: "field", field: "" }));
       const details = document.createElement("details"),
         summary = document.createElement("summary");
       details.open = setupOpen;
@@ -209,15 +283,15 @@ export default class LapRenderer implements TabRenderer {
       if (c.settings.config.mode === "autocross") this.button(panel, "Set finish at cursor", () => addGate(-2));
     }
     if (c.map) {
-      this.content.append(this.canvas);
-      if (!c.result.samples.length || !c.settings.latitude || !c.settings.longitude) {
-        const p = document.createElement("p");
-        p.className = "lap-empty";
-        p.textContent = "Open a log or connect to telemetry with GPS. Add latitude and longitude to the Position source list.";
-        this.content.append(p);
-      }
+      // The scroll sensor loses its position if the map leaves the page.
+      if (this.mapView.parentElement !== this.content) this.content.replaceChildren(this.mapView, this.message);
+      this.message.textContent =
+        !c.result.samples.length || !c.settings.latitude || !c.settings.longitude
+          ? "Open a log or connect to telemetry with GPS. Add latitude and longitude to the Position source list."
+          : "";
       return;
     }
+    this.content.replaceChildren();
     if (!c.result.laps.some((l) => l.valid)) {
       const p = document.createElement("p");
       p.className = "lap-empty";
@@ -329,80 +403,89 @@ export default class LapRenderer implements TabRenderer {
   }
   private draw() {
     const c = this.command!,
-      ss = c.result.samples;
-    if (!ss.length) return;
-    const drawKey = JSON.stringify([
+      ss = c.result.samples,
+      ctx = this.canvas.getContext("2d")!;
+    const w = Math.max(1, this.content.clientWidth),
+      h = Math.max(1, this.content.clientHeight),
+      ratio = window.devicePixelRatio,
+      dark = matchMedia("(prefers-color-scheme: dark)").matches;
+    const traceKey = JSON.stringify([
       c.version,
       c.field,
       c.selected,
-      c.time,
-      this.content.clientWidth,
-      this.content.clientHeight,
-      this.dragging
+      c.reference,
+      c.overlays,
+      c.values.length,
+      w,
+      h,
+      ratio,
+      this.zoom,
+      this.pan,
+      dark
     ]);
+    const drawKey = JSON.stringify([traceKey, c.time, this.dragging, this.scrollSensor.shouldHideHint()]);
     if (drawKey === this.lastDraw) return;
     this.lastDraw = drawKey;
-    const rect = this.content.getBoundingClientRect(),
-      w = Math.max(1, rect.width),
-      h = Math.max(1, rect.height),
-      ratio = window.devicePixelRatio;
     this.canvas.style.width = w + "px";
     this.canvas.style.height = h + "px";
     this.canvas.width = w * ratio;
     this.canvas.height = h * ratio;
-    const ctx = this.canvas.getContext("2d")!;
+    if (!ss.length) return;
     ctx.scale(ratio, ratio);
-    const xs = ss.map((p) => p.x),
-      ys = ss.map((p) => p.y),
-      xmin = Math.min(...xs),
-      xmax = Math.max(...xs),
-      ymin = Math.min(...ys),
-      ymax = Math.max(...ys),
-      scale = Math.min((w - 100) / (xmax - xmin || 1), (h - 110) / (ymax - ymin || 1));
-    this.transform = (p) => ({
-      x: w / 2 + (p.x - (xmin + xmax) / 2) * scale,
-      y: h / 2 - (p.y - (ymin + ymax) / 2) * scale
-    });
-    this.inverse = (p) => ({
-      x: (p.x - w / 2) / scale + (xmin + xmax) / 2,
-      y: -(p.y - h / 2) / scale + (ymin + ymax) / 2
-    });
-    const values = c.values.filter(Number.isFinite),
-      min = Math.min(...values),
-      max = Math.max(...values);
-    const stride = Math.max(1, Math.floor(ss.length / 15000));
-    for (let i = stride; i < ss.length; i += stride) {
-      if (ss[i].t - ss[i - stride].t > 1 || Math.hypot(ss[i].x - ss[i - stride].x, ss[i].y - ss[i - stride].y) > 40)
-        continue;
-      const a = this.transform(ss[i - stride]),
-        b = this.transform(ss[i]);
-      const lap = c.result.laps.find((l) => ss[i].t >= l.start && ss[i].t < l.end);
-      ctx.lineWidth = lap?.index === c.selected ? 4 : 2;
-      ctx.globalAlpha = c.selected === null || lap?.index === c.selected ? 1 : 0.3;
-      ctx.strokeStyle = Number.isFinite(c.values[i]) ? viridis((c.values[i] - min) / (max - min || 1)) : colors[0];
-      ctx.beginPath();
-      ctx.moveTo(a.x, a.y);
-      ctx.lineTo(b.x, b.y);
-      ctx.stroke();
+    ctx.lineCap = "round";
+
+    // Fit the track with a margin, then apply zoom and pan the same way as the 2D Field
+    let xmin = Infinity,
+      xmax = -Infinity,
+      ymin = Infinity,
+      ymax = -Infinity;
+    for (const p of ss) {
+      xmin = Math.min(xmin, p.x);
+      xmax = Math.max(xmax, p.x);
+      ymin = Math.min(ymin, p.y);
+      ymax = Math.max(ymax, p.y);
     }
-    ctx.globalAlpha = 1;
+    const margin = Math.max(xmax - xmin, ymax - ymin, 1) * 0.08,
+      trackWidth = xmax - xmin + margin * 2,
+      trackHeight = ymax - ymin + margin * 2;
+    this.baseScale = Math.min(w / trackWidth, h / trackHeight);
+    // A track rarely has the canvas's shape, so the limits come from the canvas. Zooming in lets both axes pan.
+    const scale = this.baseScale * this.zoom,
+      marginX = panMargin(w * this.zoom, w, scale),
+      marginY = panMargin(h * this.zoom, h, scale);
+    this.pan[0] = Math.max(-marginX, Math.min(marginX, this.pan[0]));
+    this.pan[1] = Math.max(-marginY, Math.min(marginY, this.pan[1]));
+    const centerX = (xmin + xmax) / 2 + this.pan[0],
+      centerY = (ymin + ymax) / 2 - this.pan[1];
+    this.transform = (p) => ({ x: w / 2 + (p.x - centerX) * scale, y: h / 2 - (p.y - centerY) * scale });
+    this.inverse = (p) => ({ x: (p.x - w / 2) / scale + centerX, y: -(p.y - h / 2) / scale + centerY });
+
+    // Only the cursor moves on hover, so the trace is kept until it changes
+    if (traceKey !== this.lastTrace) {
+      this.lastTrace = traceKey;
+      this.drawTrace(w, h, ratio, dark);
+    }
+    ctx.drawImage(this.traceLayer, 0, 0, w, h);
+
+    const text = dark ? "#eee" : "#222";
     ctx.font = "12px system-ui";
-    ctx.fillStyle = matchMedia("(prefers-color-scheme: dark)").matches ? "#eee" : "#222";
-    const text = matchMedia("(prefers-color-scheme: dark)").matches ? "#eee" : "#222";
-    const unit = Units.ALL_UNITS[c.unit]?.suffix ?? c.unit;
-    ctx.fillStyle = text;
-    ctx.textAlign = "left";
-    ctx.fillText(unit ? `Colour scale [${unit}]` : "Colour scale", 16, 24);
-    for (let i = 0; i < 160; i++) {
-      ctx.fillStyle = viridis(i / 159);
-      ctx.fillRect(16 + i, 32, 1, 10);
+    if (c.field) {
+      const unit = Units.ALL_UNITS[c.unit]?.suffix ?? c.unit,
+        [min, max] = this.range;
+      ctx.fillStyle = text;
+      ctx.textAlign = "left";
+      ctx.fillText(c.field.split("/").at(-1)! + (unit ? ` [${unit}]` : ""), 16, 24);
+      for (let i = 0; i < 160; i++) {
+        ctx.fillStyle = viridis(i / 159);
+        ctx.fillRect(16 + i, 32, 1, 10);
+      }
+      ctx.fillStyle = text;
+      ctx.fillText(Number.isFinite(min) ? min.toFixed(1) : "—", 16, 56);
+      ctx.textAlign = "right";
+      ctx.fillText(Number.isFinite(max) ? max.toFixed(1) : "—", 176, 56);
     }
-    ctx.fillStyle = text;
-    ctx.fillText(Number.isFinite(min) ? min.toFixed(1) : "—", 16, 56);
-    ctx.textAlign = "right";
-    ctx.fillText(Number.isFinite(max) ? max.toFixed(1) : "—", 176, 56);
     ctx.textAlign = "left";
-    const gates = [c.result.gate, ...(c.settings.config.sectors ?? []), c.settings.config.finish];
+    const gates = this.gates();
     gates.forEach((g, index) => {
       if (!g) return;
       const finish = index === gates.length - 1,
@@ -420,11 +503,27 @@ export default class LapRenderer implements TabRenderer {
         ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
         ctx.stroke();
       }
-      ctx.fillText(finish ? "Finish" : index ? `S${index}` : "Start / finish", a.x + 8, a.y - 8);
+      // The label sits past the end of the line, clear of the trace.
+      const n = Math.hypot(a.x - b.x, a.y - b.y) || 1;
+      ctx.fillStyle = text;
+      ctx.textAlign = a.x >= b.x ? "left" : "right";
+      ctx.textBaseline = "middle";
+      ctx.fillText(
+        finish ? "Finish" : index ? `S${index}` : "Start / finish",
+        a.x + ((a.x - b.x) / n) * 12,
+        a.y + ((a.y - b.y) / n) * 12
+      );
+      ctx.textBaseline = "alphabetic";
     });
     if (c.time !== null) {
-      const p = ss.reduce((a, b) => (Math.abs(b.t - c.time!) < Math.abs(a.t - c.time!) ? b : a)),
-        q = this.transform(p);
+      let lo = 0,
+        hi = ss.length - 1;
+      while (hi - lo > 1) {
+        const mid = (lo + hi) >>> 1;
+        if (ss[mid].t <= c.time) lo = mid;
+        else hi = mid;
+      }
+      const q = this.transform(c.time - ss[lo].t < ss[hi].t - c.time ? ss[lo] : ss[hi]);
       ctx.fillStyle = "#fff";
       ctx.strokeStyle = "#222";
       ctx.lineWidth = 2;
@@ -433,12 +532,77 @@ export default class LapRenderer implements TabRenderer {
       ctx.fill();
       ctx.stroke();
     }
-    ctx.fillText("Click trace to seek · drag gate endpoints · drag numeric field to colour", 16, h - 16);
+    if (this.interactive && !this.scrollSensor.shouldHideHint()) {
+      ctx.fillStyle = text;
+      ctx.textAlign = "center";
+      ctx.fillText("Scroll to zoom · Drag to pan · Click the trace to move the cursor", w / 2, h - 16);
+    }
+  }
+  /** Laps in the Line Graph overlay share its colours. A dropped field colours the whole trace instead. */
+  private drawTrace(w: number, h: number, ratio: number, dark: boolean) {
+    const c = this.command!,
+      ss = c.result.samples,
+      laps = c.result.laps;
+    this.traceLayer.width = w * ratio;
+    this.traceLayer.height = h * ratio;
+    const ctx = this.traceLayer.getContext("2d")!;
+    ctx.scale(ratio, ratio);
+    ctx.lineCap = "round";
+    const overlaid = laps.filter((l) => l.valid && (c.overlays.includes(l.index) || l.index === c.reference));
+    let min = Infinity,
+      max = -Infinity;
+    if (c.field)
+      for (const v of c.values)
+        if (Number.isFinite(v)) {
+          min = Math.min(min, v);
+          max = Math.max(max, v);
+        }
+    this.range = [min, max];
+    const neutral = dark ? "#9a9a9a" : "#777";
+    const paths = new Map<string, { alpha: number; color: string; width: number; path: Path2D }>();
+    const stride = Math.max(1, Math.floor(ss.length / 60000));
+    let lapCursor = 0;
+    for (let i = stride; i < ss.length; i += stride) {
+      const p0 = ss[i - stride],
+        p1 = ss[i];
+      if (p1.t - p0.t > 1 || Math.hypot(p1.x - p0.x, p1.y - p0.y) > 40) continue;
+      while (lapCursor < laps.length - 1 && p1.t >= laps[lapCursor].end) lapCursor++;
+      const lap = laps[lapCursor];
+      let color = neutral,
+        alpha = laps.length && !c.field ? 0.4 : 1;
+      if (c.field && Number.isFinite(c.values[i])) {
+        // Rounded to 64 steps so segments of a colour share a path
+        color = viridis(Math.round(((c.values[i] - min) / (max - min || 1)) * 63) / 63);
+      } else if (lap && overlaid.includes(lap)) {
+        color = colors[overlaid.indexOf(lap) % colors.length];
+        alpha = 1;
+      }
+      if (c.selected !== null && lap?.index !== c.selected) alpha = 0.3;
+      const width = lap?.index === c.selected ? 4 : 2,
+        key = `${alpha}|${width}|${color}`;
+      let entry = paths.get(key);
+      if (!entry) paths.set(key, (entry = { alpha, color, width, path: new Path2D() }));
+      const a = this.transform(p0),
+        b = this.transform(p1);
+      entry.path.moveTo(a.x, a.y);
+      entry.path.lineTo(b.x, b.y);
+    }
+    // Dim laps go underneath
+    for (const e of [...paths.values()].sort((a, b) => a.alpha - b.alpha || a.width - b.width)) {
+      ctx.globalAlpha = e.alpha;
+      ctx.lineWidth = e.width;
+      ctx.strokeStyle = e.color;
+      ctx.stroke(e.path);
+    }
   }
   saveState() {
-    return null;
+    return { zoom: this.zoom, pan: this.pan };
   }
-  restoreState() {}
+  restoreState(state: unknown) {
+    if (typeof state !== "object" || state === null) return;
+    if ("zoom" in state && typeof state.zoom === "number") this.zoom = state.zoom;
+    if ("pan" in state && Array.isArray(state.pan) && state.pan.length === 2) this.pan = state.pan as [number, number];
+  }
   getAspectRatio() {
     return null;
   }
