@@ -35,7 +35,6 @@ export class HistoricalDataSource {
     ".wpilogxz": "wpilogWorker.js", // Decompressed by main process
     ".log": "roadRunnerWorker.js", // Or candumpWorker.js, see selectWorker()
     ".csv": "csvWorker.js",
-    ".mcap": "mcapWorker.js",
     ".mf4": "mf4Worker.js",
     ".mdf": "mf4Worker.js",
     ".jsonl": "jsonlWorker.js"
@@ -81,7 +80,7 @@ export class HistoricalDataSource {
     this.refreshCallback = refreshCallback;
 
     this.setStatus(HistoricalDataSourceStatus.Reading);
-    if (["wpilog", "rlog", "csv", "log", "mcap", "jsonl", "mf4", "mdf"].includes(extension)) {
+    if (["wpilog", "rlog", "csv", "log", "jsonl", "mf4", "mdf"].includes(extension)) {
       setTimeout(() => {
         this.handleMainMessage({
           uuid: this.UUID,

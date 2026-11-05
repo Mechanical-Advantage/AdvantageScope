@@ -200,9 +200,9 @@ function chooseFile(accept: string, multiple: boolean, callback: (files: File[])
 }
 
 function openLocalLog() {
-  chooseFile(".wpilog,.wpilogxz,.rlog,.log,.csv,.mcap,.jsonl,.dbc,.json", true, (files) => {
+  chooseFile(".wpilog,.wpilogxz,.rlog,.log,.csv,.jsonl,.dbc,.json", true, (files) => {
     uploadedFiles = new Map(files.map((file) => [file.name, file]));
-    const logs = files.filter((file) => /\.(wpilog|wpilogxz|rlog|log|csv|mcap|jsonl)$/i.test(file.name));
+    const logs = files.filter((file) => /\.(wpilog|wpilogxz|rlog|log|csv|jsonl)$/i.test(file.name));
     sendMessage(hubPort, "open-files", {
       files: logs.filter((file) => !file.name.endsWith(".markers.csv")).map((file) => file.name),
       merge: false

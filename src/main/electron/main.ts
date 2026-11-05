@@ -1434,7 +1434,7 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv", "mcap", "jsonl", "mf4", "mdf"]
+                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv", "jsonl", "mf4", "mdf"]
                   }
                 ]
               })
@@ -1458,7 +1458,7 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv", "mcap", "jsonl", "mf4", "mdf"]
+                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv", "jsonl", "mf4", "mdf"]
                   }
                 ]
               })
@@ -2709,7 +2709,6 @@ app.whenReady().then(async () => {
       x.endsWith(".rlog") ||
       x.endsWith(".log") ||
       x.endsWith(".csv") ||
-      x.endsWith(".mcap") ||
       x.endsWith(".mf4") ||
       x.endsWith(".mdf") ||
       x.endsWith(".jsonl")

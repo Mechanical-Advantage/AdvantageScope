@@ -117,7 +117,6 @@ export default () => {
         ...(!isLite ? ["hub/exportWorker.ts"] : []),
         "hub/dataSources/csv/csvWorker.ts",
         "hub/dataSources/can/candumpWorker.ts",
-        "hub/dataSources/mcap/mcapWorker.ts",
         "hub/dataSources/mf4/mf4Worker.ts",
         "hub/dataSources/jsonl/jsonlWorker.ts",
         "hub/dataSources/rlog/rlogWorker.ts",
