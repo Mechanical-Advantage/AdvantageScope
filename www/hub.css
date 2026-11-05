@@ -1881,8 +1881,6 @@ div.connect-dialog input.mqtt-timestamp {
   vertical-align: middle;
 }
 
-/* Spatial controls retain the compact workbench appearance. */
-
 /* Health is pinned independently of the active tab. */
 .health-strip {
   position: absolute;
@@ -2060,11 +2058,6 @@ body.trackside-layout div.line-graph-help {
   font: inherit;
   font-size: 12px;
   line-height: 18px;
-}
-.cone-class-key {
-  margin: 6px 10px;
-  font-size: 12px;
-  color: var(--health-muted);
 }
 body.fancy-title-bar-lite div.title-bar-menu {
   max-width: none;
