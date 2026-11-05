@@ -8,7 +8,7 @@
 import { TabsState } from "../shared/HubState";
 import LineGraphFilter from "../shared/LineGraphFilter";
 import { RenderGuard, inlineStatus } from "../shared/RenderGuard";
-import TabType, { getAllTabTypes, getDefaultTabTitle, getTabIcon } from "../shared/TabType";
+import TabType, { filterRestorableTabs, getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import { getAutonomousKey, getEnabledKey, getUtilityKey } from "../shared/log/RobotState";
 import ConsoleRenderer from "../shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
@@ -312,7 +312,7 @@ export default class Tabs {
     // Add default tabs
     this.addTab(TabType.Documentation);
     this.addTab(TabType.LineGraph);
-    this.addTab(TabType.Field2d);
+    this.addTab(TabType.TrackMap);
     this.setSelected(1);
 
     // Scroll management
@@ -443,22 +443,21 @@ export default class Tabs {
     });
     this.tabList = [];
     this.selectedTab = 0;
-    const supportedTypes = getAllTabTypes();
-    state.tabs
-      .filter((tabState) => supportedTypes.includes(tabState.type)) // Skip tabs that have been removed
-      .forEach((tabState, index) => {
-        this.addTab(tabState.type);
-        if (tabState.title) this.renameTab(index, tabState.title);
-        this.tabList[index].controller.UUID = tabState.controllerUUID;
-        this.tabList[index].controller.restoreState(tabState.controller);
-        this.tabList[index].renderer.restoreState(tabState.renderer);
+    const restored = filterRestorableTabs(state.tabs, state.selected);
+    restored.tabs.forEach((tabState, index) => {
+      this.addTab(tabState.type);
+      if (tabState.title) this.renameTab(index, tabState.title);
+      this.tabList[index].controller.UUID = tabState.controllerUUID;
+      this.tabList[index].controller.restoreState(tabState.controller);
+      this.tabList[index].renderer.restoreState(tabState.renderer);
 
-        let tabConfig = this.FIXED_CONTROL_HEIGHTS.get(tabState.type);
-        if (tabState.controlsHeight === 0 || tabConfig === undefined) {
-          this.tabList[index].controlsHeight = tabState.controlsHeight;
-        }
-      });
-    this.selectedTab = state.selected >= this.tabList.length ? this.tabList.length - 1 : state.selected;
+      let tabConfig = this.FIXED_CONTROL_HEIGHTS.get(tabState.type);
+      if (tabState.controlsHeight === 0 || tabConfig === undefined) {
+        this.tabList[index].controlsHeight = tabState.controlsHeight;
+      }
+    });
+    if (this.tabList.length === 0) this.addTab(TabType.Documentation);
+    this.selectedTab = restored.selected;
     this.updateElements();
     this.updateControlsHeight();
   }

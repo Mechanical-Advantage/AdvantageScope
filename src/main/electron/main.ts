@@ -40,7 +40,13 @@ import { LiveSourceInfo } from "../../shared/LiveSourceInfo";
 import NamedMessage from "../../shared/NamedMessage";
 import Preferences, { DEFAULT_PREFS, mergePreferences } from "../../shared/Preferences";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
-import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../../shared/TabType";
+import TabType, {
+  getAllTabTypes,
+  getDefaultTabTitle,
+  getTabAccelerator,
+  getTabIcon,
+  NEW_TAB_TYPES
+} from "../../shared/TabType";
 import { BUILD_DATE, COPYRIGHT } from "../../shared/buildConstants";
 import { Units } from "../../shared/units";
 import { createUUID, formatDate } from "../../shared/util";
@@ -1255,19 +1261,17 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 function newTabPopup(window: BrowserWindow, rect: ButtonRect) {
   if (!hubWindows.includes(window)) return;
   const newTabMenu = new Menu();
-  getAllTabTypes()
-    .slice(1)
-    .forEach((tabType) => {
-      newTabMenu.append(
-        new MenuItem({
-          label: getTabIcon(tabType) + " " + getDefaultTabTitle(tabType),
-          accelerator: getTabAccelerator(tabType),
-          click() {
-            sendMessage(window, "new-tab", tabType);
-          }
-        })
-      );
-    });
+  NEW_TAB_TYPES.forEach((tabType) => {
+    newTabMenu.append(
+      new MenuItem({
+        label: getTabIcon(tabType) + " " + getDefaultTabTitle(tabType),
+        accelerator: getTabAccelerator(tabType),
+        click() {
+          sendMessage(window, "new-tab", tabType);
+        }
+      })
+    );
+  });
   newTabMenu.popup({
     window: window,
     x: Math.round(rect.x + rect.width),
@@ -1717,19 +1721,17 @@ function setupMenu() {
       submenu: [
         {
           label: "New Tab",
-          submenu: getAllTabTypes()
-            .slice(1)
-            .map((tabType) => {
-              return {
-                label: getTabIcon(tabType) + " " + getDefaultTabTitle(tabType),
-                accelerator: getTabAccelerator(tabType),
-                click(_, baseWindow) {
-                  const window = baseWindow as BrowserWindow | undefined;
-                  if (window === undefined || !hubWindows.includes(window)) return;
-                  sendMessage(window, "new-tab", tabType);
-                }
-              };
-            })
+          submenu: NEW_TAB_TYPES.map((tabType) => {
+            return {
+              label: getTabIcon(tabType) + " " + getDefaultTabTitle(tabType),
+              accelerator: getTabAccelerator(tabType),
+              click(_, baseWindow) {
+                const window = baseWindow as BrowserWindow | undefined;
+                if (window === undefined || !hubWindows.includes(window)) return;
+                sendMessage(window, "new-tab", tabType);
+              }
+            };
+          })
         },
         {
           label: "New Tab (Shortcut)", // Hidden item to add keyboard shortcut
@@ -1991,17 +1993,15 @@ function createHubWindow(state?: WindowState, layoutOverride?: any) {
                 new TouchBar.TouchBarScrubber({
                   selectedStyle: "background",
                   continuous: false,
-                  items: getAllTabTypes()
-                    .slice(1)
-                    .map((type) => {
-                      return {
-                        label: getTabIcon(type) + " " + getDefaultTabTitle(type)
-                      };
-                    }),
+                  items: NEW_TAB_TYPES.map((type) => {
+                    return {
+                      label: getTabIcon(type) + " " + getDefaultTabTitle(type)
+                    };
+                  }),
                   select(index) {
                     if (newCreated) return;
                     newCreated = true;
-                    sendMessage(window, "new-tab", index + 1);
+                    sendMessage(window, "new-tab", NEW_TAB_TYPES[index]);
                     setTimeout(resetTouchBar, 350);
                   }
                 })
@@ -2358,6 +2358,7 @@ function createSatellite(
       })
     : undefined;
   const state = "state" in config ? config.state : undefined;
+  if (!getAllTabTypes().includes(configData?.type ?? state!.state.type)) return;
   const uuid = configData !== undefined ? configData.uuid : state!.uuid;
 
   const width = state === undefined ? SATELLITE_DEFAULT_WIDTH : state.width;

@@ -10,7 +10,7 @@ import NamedMessage from "./shared/NamedMessage";
 import Preferences from "./shared/Preferences";
 import { RenderGuard, inlineStatus } from "./shared/RenderGuard";
 import Selection, { SelectionMode } from "./shared/Selection";
-import TabType, { getTabIcon } from "./shared/TabType";
+import TabType, { getAllTabTypes, getTabIcon } from "./shared/TabType";
 import ConsoleRenderer from "./shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "./shared/renderers/DocumentationRenderer";
 import Field2dRenderer from "./shared/renderers/Field2dRenderer";
@@ -57,7 +57,8 @@ let lastCommand: any = null;
 
 /** Updates the current visualizer based on the type. */
 function updateVisualizer() {
-  if (type === null) return;
+  renderer = null;
+  if (type === null || !getAllTabTypes().includes(type)) return;
 
   // Update visible elements
   for (let i = 0; i < document.body.childElementCount; i++) {

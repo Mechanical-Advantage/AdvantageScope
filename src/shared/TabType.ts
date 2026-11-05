@@ -28,6 +28,18 @@ export function getAllTabTypes(): TabType[] {
   return Object.values(TabType).filter((tabType) => typeof tabType === "number") as TabType[];
 }
 
+export const NEW_TAB_TYPES = [
+  TabType.LineGraph,
+  TabType.TrackMap,
+  TabType.Laps,
+  TabType.Table,
+  TabType.Statistics,
+  TabType.Console,
+  TabType.Video,
+  TabType.Points,
+  TabType.Metadata
+];
+
 export const LITE_COMPATIBLE_TABS = [
   TabType.Documentation,
   TabType.LineGraph,
@@ -100,15 +112,13 @@ export function getTabIcon(type: TabType): string {
 }
 
 export function getTabAccelerator(type: TabType): string {
-  if (type === TabType.Documentation) return "";
+  if (type === TabType.Documentation || type === TabType.Field2d) return "";
   return (
     "Alt+" +
     (() => {
       switch (type) {
         case TabType.LineGraph:
           return "G";
-        case TabType.Field2d:
-          return "2";
         case TabType.Table:
           return "T";
         case TabType.Console:
@@ -126,4 +136,15 @@ export function getTabAccelerator(type: TabType): string {
       }
     })()
   );
+}
+
+/** Filters removed tabs and keeps the selected tab or its nearest surviving predecessor. */
+export function filterRestorableTabs<T extends { type: TabType }>(tabs: T[], selected: number) {
+  const supported = getAllTabTypes();
+  const surviving = tabs.map((tab, index) => ({ tab, index })).filter(({ tab }) => supported.includes(tab.type));
+  let selectedIndex = 0;
+  surviving.forEach(({ index }, position) => {
+    if (index <= selected) selectedIndex = position;
+  });
+  return { tabs: surviving.map(({ tab }) => tab), selected: selectedIndex };
 }

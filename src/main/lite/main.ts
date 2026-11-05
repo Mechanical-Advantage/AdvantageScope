@@ -19,11 +19,11 @@ import NamedMessage from "../../shared/NamedMessage";
 import { DEFAULT_PREFS, mergePreferences } from "../../shared/Preferences";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
 import {
-  getAllTabTypes,
   getDefaultTabTitle,
   getTabAccelerator,
   getTabIcon,
-  LITE_COMPATIBLE_TABS
+  LITE_COMPATIBLE_TABS,
+  NEW_TAB_TYPES
 } from "../../shared/TabType";
 import { Units } from "../../shared/units";
 import { GITHUB_REPOSITORY } from "../github";
@@ -635,19 +635,16 @@ async function handleHubMessage(message: NamedMessage) {
             menuItems = [
               {
                 content: "New Tab",
-                items: getAllTabTypes()
-                  .slice(1)
-                  .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
-                  .map((tabType) => {
-                    return {
-                      content: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)} (${getTabAccelerator(
-                        tabType
-                      ).replace("Alt+", "\u2325 ")})`,
-                      callback() {
-                        sendMessage(hubPort, "new-tab", tabType);
-                      }
-                    };
-                  })
+                items: NEW_TAB_TYPES.filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType)).map((tabType) => {
+                  return {
+                    content: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)} (${getTabAccelerator(
+                      tabType
+                    ).replace("Alt+", "\u2325 ")})`,
+                    callback() {
+                      sendMessage(hubPort, "new-tab", tabType);
+                    }
+                  };
+                })
               },
               "-",
               {
@@ -741,20 +738,17 @@ async function handleHubMessage(message: NamedMessage) {
     case "ask-new-tab":
       openMenu(
         message.data,
-        getAllTabTypes()
-          .slice(1)
-          .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
-          .map((tabType) => {
-            return {
-              content: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)} (${getTabAccelerator(tabType).replace(
-                "Alt+",
-                "\u2325 "
-              )})`,
-              callback() {
-                sendMessage(hubPort, "new-tab", tabType);
-              }
-            };
-          })
+        NEW_TAB_TYPES.filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType)).map((tabType) => {
+          return {
+            content: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)} (${getTabAccelerator(tabType).replace(
+              "Alt+",
+              "\u2325 "
+            )})`,
+            callback() {
+              sendMessage(hubPort, "new-tab", tabType);
+            }
+          };
+        })
       );
       break;
 
@@ -1247,15 +1241,13 @@ function processKeydown(event: KeyboardEvent): boolean {
     openPreferences();
   } else if (!event.shiftKey && !modifier && event.altKey && !event.code.startsWith("Alt")) {
     triggered = false;
-    getAllTabTypes()
-      .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
-      .forEach((tabType) => {
-        let accelerator = getTabAccelerator(tabType).replace("Alt+", "").toLowerCase();
-        if (accelerator.length > 0 && event.code.slice(-1).toLowerCase() === accelerator) {
-          sendMessage(hubPort, "new-tab", tabType);
-          triggered = true;
-        }
-      });
+    NEW_TAB_TYPES.filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType)).forEach((tabType) => {
+      let accelerator = getTabAccelerator(tabType).replace("Alt+", "").toLowerCase();
+      if (accelerator.length > 0 && event.code.slice(-1).toLowerCase() === accelerator) {
+        sendMessage(hubPort, "new-tab", tabType);
+        triggered = true;
+      }
+    });
   } else if (event.code === "Escape") {
     closePopupWindow();
   } else {
