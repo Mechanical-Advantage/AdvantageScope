@@ -439,26 +439,20 @@ export default class LineGraphController implements TabController {
     ) {
       return null;
     }
-    // The mock's stale-test deliberately stops GPS while wheel speed keeps updating.
-    // Do not present a held last-good GPS value as a current speed measurement.
-    if (window.selection.getMode() === SelectionMode.Locked) {
-      const freshness = window.liveStatus?.getFieldFreshness(key);
-      if (freshness === "stale" || freshness === "offline") return `— (${freshness})`;
-    }
     let command = commandCache[key];
     let index = command.timestamps.findLastIndex((sample) => sample <= time);
     if (index === -1) {
       return null;
     }
-    const profile =
-      unitCache !== null && command.hasUnit
-        ? window.log.getChannelProfile(key, Units.getSuffixForFilter(unitCache.suffix, filter))
-        : window.log.getChannelProfile(key);
-    const value =
-      command.type === "smooth" && index + 1 < command.timestamps.length
-        ? interpolate(command.timestamps, command.values, time)
-        : command.values[index];
-    let output = formatChannelValue(value, profile);
+    const profile = window.log.getChannelProfile(key);
+    if (profile.enumLabels) return formatChannelValue(command.values[index], profile);
+    let output = this.PREVIEW_FORMAT.format(command.values[index]);
+    if (unitCache !== null && command.hasUnit) {
+      let suffix = Units.getSuffixForFilter(unitCache.suffix, filter);
+      output += suffix.length > 1 ? " " : "";
+      output += suffix;
+      if (filter === LineGraphFilter.None && unitCache.pluralizeSuffix && command.values[index] !== 1) output += "s";
+    }
     return output;
   }
 
@@ -564,7 +558,7 @@ export default class LineGraphController implements TabController {
       }
 
       // Process fields
-      source.forEach((fieldItem, index) => {
+      source.forEach((fieldItem) => {
         let data = window.log.getNumber(
           fieldItem.logKey,
           filter === LineGraphFilter.Integrate ? -Infinity : timeRange[0],

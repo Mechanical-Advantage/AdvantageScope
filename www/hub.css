@@ -2382,11 +2382,6 @@ body.health-visible:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-
   font-size: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
-.graph-unit-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
 .graph-unit-prompt button:focus-visible {
   outline: 2px solid #dba957;
   outline-offset: 1px;
