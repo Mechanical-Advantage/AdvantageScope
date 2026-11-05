@@ -232,7 +232,6 @@ function setExporting(exporting: boolean) {
 function saveState(): HubState {
   return {
     healthStrip: window.healthStrip.state,
-    channelProfiles: window.log.displayOverrides,
     sidebar: window.sidebar.saveState(),
     tabs: window.tabs.saveState()
   };
@@ -240,7 +239,6 @@ function saveState(): HubState {
 
 /** Restores to the provided state. */
 function restoreState(state: HubState) {
-  window.log.displayOverrides = state.channelProfiles ?? {};
   window.healthStrip.restore(state.healthStrip);
   window.sidebar.restoreState(state.sidebar);
   window.tabs.restoreState(state.tabs);

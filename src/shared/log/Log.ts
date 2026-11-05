@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import { Decoder } from "@msgpack/msgpack";
-import { ChannelOverride, ChannelProfile, channelProfile } from "../display/ChannelProfile";
+import { ChannelProfile, channelProfile } from "../display/ChannelProfile";
 import { Pose2d, Translation2d } from "../geometry";
 import { Units } from "../units";
 import { arraysEqual, checkArrayType } from "../util";
@@ -326,14 +326,6 @@ export default class Log {
       this.fields[key].wpilibType = type;
       this.changedFields.add(key);
     }
-  }
-
-  private static channelOverrides: Record<string, ChannelOverride> = {};
-  get displayOverrides(): Record<string, ChannelOverride> {
-    return Log.channelOverrides;
-  }
-  set displayOverrides(value: Record<string, ChannelOverride>) {
-    Log.channelOverrides = value;
   }
 
   getChannelProfile(key: string, sourceUnit?: string): ChannelProfile {

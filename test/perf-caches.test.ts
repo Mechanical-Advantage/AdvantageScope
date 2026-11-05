@@ -72,10 +72,6 @@ test("profiles and field catalogue invalidate on metadata and field changes", ()
   assert.equal(log.getChannelProfile("v"), first);
   log.setMetadataString("v", JSON.stringify({ unit: "m", precision: 2 }));
   assert.notEqual(log.getChannelProfile("v"), first);
-  const metadataProfile = log.getChannelProfile("v");
-  log.displayOverrides = { v: { precision: 4 } };
-  assert.equal(log.getChannelProfile("v"), metadataProfile);
-  log.displayOverrides = {};
   log.putNumber("other", 0, 2);
   assert.ok(log.getFieldKeysVersion() > version);
   assert.deepEqual(log.getFieldKeys(), ["v", "other"]);
