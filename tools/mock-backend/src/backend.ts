@@ -47,7 +47,6 @@ export interface BackendOptions {
   unsyncSource: Source;
   simClock: boolean;
   lapCounter: boolean;
-  pointCloud: boolean;
   history: boolean;
   historySeconds: number;
   /** Fixes the Unix start time (ns) and boot nonce, making output bit-reproducible. */
@@ -67,7 +66,6 @@ export const DEFAULT_OPTIONS: BackendOptions = {
   unsyncSource: "ennoid-bms",
   simClock: false,
   lapCounter: false,
-  pointCloud: false,
   history: true,
   historySeconds: 360,
   startTimeNs: null
@@ -139,29 +137,6 @@ export class MockBackend {
     this.dropRng = new Rng(this.opts.seed ^ 0xd209);
     this.linkRng = new Rng(this.opts.seed ^ 0x1196);
     this.initRun();
-    if (this.opts.pointCloud)
-      this.register(
-        {
-          rateHz: null,
-          read: () => undefined,
-          desc: {
-            path: "vehicles/mur27/perception/points",
-            type: "pointcloud2",
-            schema_version: 1,
-            unit: null,
-            description: "Optional binary lidar (mur-points-v1)",
-            source: "autonomy",
-            nominal_rate_hz: 10,
-            stale_after_ms: 500,
-            frame_id: "map",
-            encoding: "mur-points-v1",
-            display: { preferred_chart: "3d" },
-            tags: ["perception"],
-            writable: false
-          }
-        },
-        false
-      );
     for (const d of buildSignals({ lapCounter: this.opts.lapCounter })) this.register(d, false);
   }
 

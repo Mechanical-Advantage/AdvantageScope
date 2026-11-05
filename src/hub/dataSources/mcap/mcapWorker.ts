@@ -12,7 +12,6 @@ import descriptor from "protobufjs/ext/descriptor";
 import Log from "../../../shared/log/Log";
 import LoggableType from "../../../shared/log/LoggableType";
 import ProtoDecoder from "../../../shared/log/ProtoDecoder";
-import { writeSpatialMessage } from "../../../shared/spatial/SpatialLog";
 import { runLazyWorker, sendProgress, setMetadata } from "../ImporterUtil";
 import { createDecompressHandlers } from "./Compression";
 import {
@@ -185,7 +184,6 @@ async function decode(keys: string[]): Promise<string[]> {
     const timestamp = getHeaderStamp(decoded) ?? logTime;
     log.putRaw(info.key, timestamp, message.data.slice());
     if (decoded === null) continue;
-    writeSpatialMessage(log, info.key, timestamp, info.rosType, decoded);
     if (info.rosSchema) {
       writeRosMessage(log, info.key, timestamp, decoded, info.rosSchema);
     } else {

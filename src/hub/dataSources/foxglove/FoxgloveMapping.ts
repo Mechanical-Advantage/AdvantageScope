@@ -10,7 +10,6 @@ import { MessageReader } from "@foxglove/rosmsg2-serialization";
 import type { Channel } from "@foxglove/ws-protocol";
 import Log from "../../../shared/log/Log";
 import LoggableType from "../../../shared/log/LoggableType";
-import { SPATIAL_TYPES } from "../../../shared/spatial/SpatialLog";
 import {
   RAW_ONLY_TYPES,
   buildSchema,
@@ -35,14 +34,6 @@ export function registerChannel(log: Log, channel: Channel) {
   log.createBlankField(channel.topic, LoggableType.Raw);
   log.setStructuredType(channel.topic, type);
   if (RAW_ONLY_TYPES.has(type)) log.setLiveRetention(channel.topic, BINARY_RETENTION_SECONDS);
-  else if (SPATIAL_TYPES.includes(type) && !channel.topic.endsWith("tf_static")) {
-    // Spatial readers derive JSON from these bytes within the same bounded seek window.
-    log.setLiveRetention(channel.topic, SPATIAL_RETENTION_SECONDS);
-    log.setLiveRetention(channel.topic + "/spatial", SPATIAL_RETENTION_SECONDS);
-  }
-  if (type === "nav_msgs/Path" || type === "visualization_msgs/MarkerArray") {
-    log.setLiveChildRetention(channel.topic, SPATIAL_RETENTION_SECONDS);
-  }
   log.setMetadataString(
     channel.topic,
     JSON.stringify({
@@ -82,18 +73,6 @@ export function mapMessage(log: Log, mapped: MappedChannel, time: number, bytes:
   if (frame) log.setMetadataString(key, JSON.stringify({ ...metadata, frame_id: frame }));
   if (mapped.schema) writeRosMessage(log, key, time, value, mapped.schema);
   else writeUnknown(log, key, time, value);
-  if (SPATIAL_TYPES.includes(mapped.type)) {
-    mapped.decoded.set(bytes, value);
-    if (mapped.decoded.size > 2) mapped.decoded.delete(mapped.decoded.keys().next().value!);
-    const decode = mapped.decode;
-    const decoded = mapped.decoded;
-    log.putLazyString(key + "/spatial", time, () =>
-      JSON.stringify(decoded.get(bytes) ?? decode(bytes), (_, value) =>
-        typeof value === "bigint" ? Number(value) : value
-      )
-    );
-    log.setStructuredType(key + "/spatial", "SpatialSnapshot");
-  }
   if (key === "/robot_description" && typeof value.data === "string") log.putString(key + "/xml", time, value.data);
   const pose = extractPose(mapped.type, value);
   if (pose?.position && pose?.orientation) putPose3d(log, key + "/pose3d", time, pose);

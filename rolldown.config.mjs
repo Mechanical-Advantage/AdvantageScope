@@ -121,8 +121,7 @@ export default () => {
         "hub/dataSources/mf4/mf4Worker.ts",
         "hub/dataSources/jsonl/jsonlWorker.ts",
         "hub/dataSources/rlog/rlogWorker.ts",
-        "hub/dataSources/roadrunnerlog/roadRunnerWorker.ts",
-        "shared/spatial/pointCloudWorker.ts"
+        "hub/dataSources/roadrunnerlog/roadRunnerWorker.ts"
       ],
       false
     )

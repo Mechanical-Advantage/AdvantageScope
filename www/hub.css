@@ -2210,13 +2210,7 @@ div.connect-dialog input.mqtt-timestamp {
 }
 
 /* Spatial controls retain the compact workbench appearance. */
-div.source-list .spatial-error .value {
-  color: #d75b53;
-}
 @media (prefers-color-scheme: dark) {
-  div.source-list .spatial-error .value {
-    color: #ff8c84;
-  }
 }
 
 /* Health is pinned independently of the active tab. */
@@ -2540,38 +2534,7 @@ body:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-bar-lite) div.t
   right: calc(154px + var(--show-lock-buttons) * 28px + var(--live-pill-width) + 110px);
 }
 
-div.source-list div.item button.expander {
-  position: absolute;
-  top: 0;
-  right: 56px;
-  width: 20px;
-  height: 30px;
-  padding: 0;
-  font-size: 12px;
-}
-div.source-list div.item div.inline-settings {
-  position: absolute;
-  left: 30px;
-  right: 4px;
-  bottom: 2px;
-  height: 28px;
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  font-size: 12px;
-  overflow: hidden;
-}
-div.source-list div.item div.inline-settings select {
-  font-size: 12px;
-  max-width: 76px;
-}
-div.source-list .spatial-warn .value {
-  color: #c98a00;
-}
 @media (prefers-color-scheme: dark) {
-  div.source-list .spatial-warn .value {
-    color: #ffb938;
-  }
 }
 
 div.connect-bridge-hint {
@@ -2579,30 +2542,9 @@ div.connect-bridge-hint {
   font-size: 12px;
 }
 
-/* ROS diagnostics follow the surrounding pro-tool controls in either appearance. */
-.tf-tree-button,
-div.source-list div.item button.expander {
-  color: inherit;
-  background: transparent;
-  border: 1px solid #888;
-  border-radius: 3px;
-  cursor: pointer;
-}
-div.inline-settings select {
-  color-scheme: light dark;
-  font-size: 12px;
-  font-family: inherit;
-}
 @media (prefers-color-scheme: dark) {
 }
-div.tf-popover[hidden] {
-  display: none !important;
-}
 @media (prefers-color-scheme: light) {
-  div.tf-popover {
-    background: #fff !important;
-    color: #222;
-  }
 }
 
 div.connect-bridge-hint > button {

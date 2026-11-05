@@ -43,8 +43,6 @@ export type SourceListTypeConfig = {
     | null; // Don't use preview
   initialSelectionOption?: string;
   showDocs: boolean;
-  /** Rows show the source (ROS) type name and an expander with inline option selects */
-  inlineSettings?: boolean;
   options: SourceListOptionConfig[];
 };
 
@@ -52,8 +50,6 @@ export type SourceListOptionConfig = {
   key: string;
   display: string;
   showInTypeName: boolean;
-  /** Only offer this option inline for these source types */
-  forTypes?: string[];
   values: SourceListOptionValueConfig[];
 };
 

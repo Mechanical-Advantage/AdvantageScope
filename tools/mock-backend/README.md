@@ -193,18 +193,4 @@ Where spec 01 is silent or ambiguous, the mock does the following:
 15. **Units:** motor speed is `rad/s` (convert to rpm in the UI), temperatures are `K`, pressures `Pa`,
     fractions `"1"`, and lat/lon `deg`. The torque unit string is `N*m`.
 
-## Optional binary lidar extension
-
-Run `npm run mock-backend -- --sim-clock --point-cloud` to advertise
-`vehicles/mur27/perception/points` as a binary PointCloud2 topic. The dashboard opens
-`WS /api/v1/points` only while that layer is active. This is an optional mock extension,
-not part of the spec-01 JSON sample contract. Without the flag, the endpoint is absent.
-
-Each binary packet contains a four-byte little-endian JSON-header length, that many
-UTF-8 header bytes, then interleaved little-endian float32 x/y/z/intensity values.
-The header carries PointCloud2 layout/fields, `header.frame_id` (`map`), `t_ns` and
-`run` (the simulation reset count). Scans contain 1,200 deterministic points at 10 Hz;
-pausing stops them and reset updates the run identifier. The payload remains binary
-through Log and the decode worker. Binary scan history is not offered over HTTP.
-
 `--fault-demo` injects 100 °C motor (WARN), 65 °C cell (CRIT) and an Earth Fault IMD enum from 10–20 seconds. Values recover after 20 seconds so latch acknowledgement can be exercised. Combine with `--stale-test --stale-source ennoid-bms` for stale health tiles after 30 seconds.

@@ -29,7 +29,6 @@ Usage: node tools/mock-backend/src/main.ts [options]
   --unsync                mark one source's samples unsynchronised (with clock offset + drift)
   --unsync-source <src>   source for --unsync (default ennoid-bms)
   --sim-clock             sim time domain (t_ns from 0) + /api/v1/sim/{pause,resume,reset,status}
-  --point-cloud          enable optional binary lidar at /api/v1/points
   --lap-counter           add vehicles/mur27/timing/{lap_count,last_lap_time} (beacon lap source)
   --no-history            GET /api/v1/history returns 501 not_implemented
   --history-seconds <n>   rolling history length (default 360)
@@ -53,7 +52,6 @@ const { values } = parseArgs({
     unsync: { type: "boolean", default: false },
     "unsync-source": { type: "string", default: "ennoid-bms" },
     "sim-clock": { type: "boolean", default: false },
-    "point-cloud": { type: "boolean", default: false },
     "lap-counter": { type: "boolean", default: false },
     "no-history": { type: "boolean", default: false },
     "history-seconds": { type: "string", default: "360" },
@@ -98,7 +96,6 @@ const opts = {
   unsyncSource: source("unsync-source", values["unsync-source"]!),
   simClock: values["sim-clock"]!,
   lapCounter: values["lap-counter"]!,
-  pointCloud: values["point-cloud"]!,
   history: !values["no-history"],
   historySeconds: num("history-seconds", values["history-seconds"]!, 10, 3600),
   startTimeNs: values["start-time-ns"] ? BigInt(values["start-time-ns"]) : null
