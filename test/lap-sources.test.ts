@@ -18,9 +18,14 @@ function node(list?: any): any {
     children: [],
     classList: { add() {} },
     firstElementChild: {},
-    addEventListener() {},
+    addEventListener(type: string, callback: () => void) {
+      (this.listeners ??= {})[type] = callback;
+    },
+    getBoundingClientRect: () => ({ x: 0, y: 0, width: 10, height: 10 }),
     getElementsByTagName: () => [],
-    getElementsByClassName: () => [node()],
+    getElementsByClassName(name: string) {
+      return [((this.controls ??= {})[name] ??= node())];
+    },
     cloneNode: () => node(list),
     appendChild(item: any) {
       this.children.push(item);
@@ -35,9 +40,10 @@ test("stock source lists auto-advance, replace occupied roles and reject non-num
   const log = new Log();
   for (const key of ["a", "b", "c", "d"]) log.putNumber(key, 0, 1);
   log.putBoolean("flag", 0, true);
-  (globalThis as any).window = { log };
+  (globalThis as any).window = { log, sendMainMessage() {} };
   const list: any = Object.create(SourceList.prototype);
   Object.assign(list, {
+    UUID: "lap-sources-test",
     config: LapSourceConfigs[0],
     state: [],
     supplementalStateSuppliers: [],
@@ -58,6 +64,15 @@ test("stock source lists auto-advance, replace occupied roles and reject non-num
       ["longitude", "b"],
       ["yaw", "c"],
       ["latitude", "d"]
+    ]
+  );
+  list.LIST.children.at(-1).getElementsByClassName("type")[0].listeners.click();
+  SourceList.typePromptCallbacks[list.UUID]({ ...list.getState().at(-1), type: "longitude" });
+  assert.deepEqual(
+    list.getState().map((item: any) => [item.type, item.logKey]),
+    [
+      ["yaw", "c"],
+      ["longitude", "d"]
     ]
   );
 });
