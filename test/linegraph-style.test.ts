@@ -7,17 +7,8 @@
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { channelProfile } from "../src/shared/display/ChannelProfile";
-import { compatibleProfiles, middleEllipsis, splitLegendName } from "../src/shared/display/LineGraphStyle";
-import { Units } from "../src/shared/units";
+import { middleEllipsis, splitLegendName } from "../src/shared/display/LineGraphStyle";
 
-test("drop compatibility accepts conversions and rejects different dimensions", () => {
-  const profile = (unit: string) => channelProfile({ name: "signal", unit });
-  assert.equal(compatibleProfiles(profile("m/s"), profile("kilometers/hour")), true);
-  assert.equal(Units.convert(36, profile("kilometers/hour").from!, profile("m/s").from!), 10);
-  assert.equal(compatibleProfiles(profile("A"), profile("V")), false);
-  assert.equal(compatibleProfiles(profile("custom"), profile("other")), false);
-});
 test("legend preserves the full leaf and abbreviates only the parent", () => {
   assert.deepEqual(splitLegendName("bus1/INVERTER/INV_MotorSpeedRPM"), {
     leaf: "INV_MotorSpeedRPM",

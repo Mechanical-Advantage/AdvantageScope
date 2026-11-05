@@ -11,7 +11,7 @@ import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
 import { clipGaps, TraceGapCache } from "../../shared/TraceGaps";
 import { axisDisplayUnit, formatChannelValue } from "../../shared/display/ChannelProfile";
-import { compatibleProfiles, splitLegendName } from "../../shared/display/LineGraphStyle";
+import { splitLegendName } from "../../shared/display/LineGraphStyle";
 import { formatSignedSeconds, heldValueAt, sectorDeltaText } from "../../shared/laps/LapAnalysis";
 import { interpolate, lapSamples } from "../../shared/laps/LapEngine";
 import { getLogValueText } from "../../shared/log/LogUtil";
@@ -190,9 +190,9 @@ export default class LineGraphController implements TabController {
         });
       }
     );
-    for (const [source, other, name] of [
-      [this.leftSourceList, this.rightSourceList, "Right"],
-      [this.rightSourceList, this.leftSourceList, "Left"]
+    for (const [source, other] of [
+      [this.leftSourceList, this.rightSourceList],
+      [this.rightSourceList, this.leftSourceList]
     ] as const) {
       source.graphLegend = true;
       source.beforeAdd = (key) => {
@@ -215,49 +215,7 @@ export default class LineGraphController implements TabController {
           root.append(lock);
           return false;
         }
-        const first = source.getState()[0];
-        if (!first || compatibleProfiles(window.log.getChannelProfile(key), window.log.getChannelProfile(first.logKey)))
-          return true;
-        const prompt = document.createElement("div");
-        prompt.className = "graph-unit-prompt";
-        const unitOf = (k: string) => window.log.getChannelProfile(k).unit || "no unit";
-        const message = document.createElement("div");
-        message.className = "graph-unit-message";
-        message.textContent = `${splitLegendName(key).leaf} (${unitOf(key)}) has a different unit from ${
-          splitLegendName(first.logKey).leaf
-        } (${unitOf(first.logKey)}) on this axis.`;
-        const buttons = document.createElement("div");
-        buttons.className = "graph-unit-buttons";
-        prompt.append(message, buttons);
-        for (const [label, target] of [
-          [`Move to ${name} Axis`, other],
-          ["Add anyway", source]
-        ] as const) {
-          const button = document.createElement("button");
-          button.textContent = label;
-          button.onclick = () => {
-            const guard = target.beforeAdd;
-            if (target === source) target.beforeAdd = undefined;
-            target.addField(key);
-            target.beforeAdd = guard;
-            prompt.remove();
-          };
-          buttons.append(button);
-        }
-        const cancel = document.createElement("button");
-        cancel.textContent = "Cancel";
-        cancel.onclick = () => prompt.remove();
-        buttons.append(cancel);
-        prompt.addEventListener("keydown", (event) => {
-          if (event.key === "Escape") prompt.remove();
-        });
-        root.querySelector(".graph-unit-prompt")?.remove();
-        // Anchor to the zone the signal was dropped on
-        (root.querySelector(source === this.leftSourceList ? ".line-graph-left" : ".line-graph-right") ?? root).append(
-          prompt
-        );
-        (buttons.firstElementChild as HTMLElement).focus();
-        return false;
+        return true;
       };
     }
   }
