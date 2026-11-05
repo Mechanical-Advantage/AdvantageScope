@@ -1,22 +1,26 @@
 # mur-voir
 
-mur-voir is the telemetry dashboard for **Melbourne University Motorsports (MUR)**, our Formula SAE team. It is one workbench for the whole car:
+mur-voir is the telemetry dashboard for Melbourne University Motorsports (MUR), our Formula SAE team. It displays live telemetry and recorded logs.
 
-- live telemetry from the car
-- recorded logs
-- autonomy and simulation data
+## Connect to live telemetry
 
-All of it shares one timeline.
+Open File > Connect (Cmd/Ctrl+K). Choose MUR Telemetry and enter the backend address, or choose MQTT direct (debug) and enter a WebSocket broker address.
 
-Available now (alpha):
+The window title shows the connection state as `address (Searching)`, `address`, `address (No car data)` or `address (Error)`. "No car data" means the backend is connected but no fresh car data is available.
 
-- Live MUR telemetry, ROS 2 over Foxglove WebSocket, and MQTT direct for debugging; a local bridge follows Wireless-telem JSONL.
-- Recorded CSV, MCAP, candump + DBC, MF4, JSONL, WPILOG and RLOG.
-- Line graphs, health tiles, track maps, laps and overlays; frame-aware 3D with URDF, TF, paths, cones and point clouds, plus ROS messages, logs and images.
-- Electron desktop and Lite browser builds, with shared timelines and saved layouts.
+MQTT and the [radio JSONL bridge](tools/radio-bridge/README.md) remain available until `telemetry-api` carries real car data.
 
-Start with the [alpha how-to](docs/release-notes/0.1.0-alpha.1.md).
-See [DEVELOPING.md](DEVELOPING.md) to build and run it.
+## Open recorded logs
+
+Use File > Open Log(s) to open MF4, candump with DBC, CSV, JSONL or WPILOG files.
+
+## View data
+
+The available tabs are Line Graph, Track Map, Laps, Table, Statistics, Console, Video, Points, Metadata and Documentation. Points is a plain 2D plot.
+
+The desktop app uses Electron. The Lite build runs in a browser. See [DEVELOPING.md](DEVELOPING.md) for setup, builds and the mock backend.
+
+The removed ROS, Foxglove, point cloud and 3D work lives on `experimental/ros-foxglove`. That branch is not being developed.
 
 Report bugs and feature requests on the [issues page](https://github.com/Melbourne-University-Motorsports/mur-voir/issues).
 
