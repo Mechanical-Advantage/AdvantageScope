@@ -100,6 +100,7 @@ test("cleared auto-detected roles stay empty until a new log, missing paths surv
 test("old layout strings and empty roles restore into both tabs' source lists", () => {
   const log = new Log();
   log.putNumber("latitude", 0, -37);
+  log.putNumber("old/gps", 0, -37);
   (globalThis as any).window = { log };
   const make = () => {
     const controller: any = Object.create(LapController.prototype);
@@ -148,8 +149,7 @@ function positionList(fields: string[], state: any[]) {
   for (const item of state) list.addListItem(item);
   return list;
 }
-const roles = (list: any) =>
-  Object.fromEntries(list.getState().map((item: any) => [item.type, item.logKey]));
+const roles = (list: any) => Object.fromEntries(list.getState().map((item: any) => [item.type, item.logKey]));
 const row = (type: string, logKey: string) => ({ type, logKey, logType: "Number", visible: true, options: {} });
 
 test("a dropped field goes to the role it is named after, even on an auto-filled list", () => {
@@ -202,4 +202,31 @@ test("a layout's empty or malformed roles leave auto-detection on", () => {
   lapService.fields();
   assert.equal(lapService.settings.latitude, "gps/latitude");
   assert.equal(lapService.settings.longitude, "");
+});
+
+test("a layout's paths that aren't in the open log give way to auto-detection", () => {
+  const log = new Log();
+  log.putNumber("gps/latitude", 0, -37);
+  (globalThis as any).window = { log };
+  const controller: any = Object.create(LapController.prototype);
+  controller.sources = LapSourceConfigs.map(() => ({ getState: () => [], setState() {} }));
+  controller.sourceStates = [];
+  lapService.fields();
+  controller.restoreState({ settings: { latitude: "other/car/latitude" } });
+  lapService.fields();
+  assert.equal(lapService.settings.latitude, "gps/latitude");
+});
+
+test("auto-detection skips fields that aren't numbers", () => {
+  const log = new Log();
+  log.putString("car/lap_counter", 0, "three");
+  log.putBoolean("car/lap_beacon", 0, true);
+  (globalThis as any).window = { log };
+  const service = new LapService();
+  service.fields();
+  assert.equal(service.settings.counter, "");
+  assert.equal(service.settings.beacon, "");
+  log.putNumber("timing/lap_counter", 0, 3);
+  service.fields();
+  assert.equal(service.settings.counter, "timing/lap_counter");
 });

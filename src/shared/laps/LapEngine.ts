@@ -121,7 +121,8 @@ export function gateAt(samples: Sample[], time: number): Gate | undefined {
     c = { x: p.x + (sign * dx) / 2, y: p.y + (sign * dy) / 2 };
   return {
     a: { x: c.x - dy * 12, y: c.y + dx * 12 },
-    b: { x: c.x + dy * 12, y: c.y - dx * 12 }
+    b: { x: c.x + dy * 12, y: c.y - dx * 12 },
+    direction: -1
   };
 }
 export function classifySkidpad(yaws: number[]): string[] {
@@ -221,17 +222,21 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
   const beaconUsable =
     beaconValues.every((b) => b === 0 || b === 1) &&
     beaconValues.filter((b) => b === 1).length < beaconValues.length / 2;
-  /** Debounced crossings of a line. A drawn line has no direction of its own, so laps run the way the car crosses it most. */
+  /** Debounced crossings of a line. A dragged line has no direction, so laps run the way the car crosses it most. */
   const crossings = (line: Gate) => {
     const times: number[] = [],
       center = { x: (line.a.x + line.b.x) / 2, y: (line.a.y + line.b.y) / 2 };
     let direction = line.direction;
     if (!direction) {
-      let sum = 0;
+      let sum = 0,
+        first = 0;
       for (let i = 1; i < samples.length; i++)
-        if (crossing(samples[i - 1], samples[i], line) !== undefined)
-          sum += Math.sign(cross(sub(samples[i], samples[i - 1]), sub(line.b, line.a)));
-      direction = Math.sign(sum);
+        if (crossing(samples[i - 1], samples[i], line) !== undefined) {
+          const sign = Math.sign(cross(sub(samples[i], samples[i - 1]), sub(line.b, line.a)));
+          first ||= sign;
+          sum += sign;
+        }
+      direction = Math.sign(sum) || first;
     }
     const directed = { ...line, direction };
     // A drawn line's course can be compact, so it re-arms at half the line's length rather than the automatic 30 m.

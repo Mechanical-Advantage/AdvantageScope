@@ -50,13 +50,20 @@ test("a line at the end of the log or where the car is stopped still lies across
   const length = (g: Gate) => Math.hypot(g.a.x - g.b.x, g.a.y - g.b.y);
   assert.ok(length(gateAt(samples, samples.at(-1)!.t)!) > 23.9);
   // Stopped for 60 samples at sample 100.
-  const stopped = samples.map((p, i) =>
-    i >= 100 && i < 160 ? { ...p, x: samples[100].x, y: samples[100].y } : p
-  );
+  const stopped = samples.map((p, i) => (i >= 100 && i < 160 ? { ...p, x: samples[100].x, y: samples[100].y } : p));
   const gate = gateAt(stopped, stopped[120].t)!;
   assert.ok(length(gate) > 23.9);
   assert.ok(analyze(stopped, { gate }).laps.filter((l) => l.valid).length >= 3);
-  assert.equal(gateAt([{ t: 0, x: 0, y: 0 }, { t: 1, x: 0, y: 0 }], 0), undefined);
+  assert.equal(
+    gateAt(
+      [
+        { t: 0, x: 0, y: 0 },
+        { t: 1, x: 0, y: 0 }
+      ],
+      0
+    ),
+    undefined
+  );
 });
 
 test("the way round a line's ends lie doesn't change the laps", () => {
@@ -78,9 +85,9 @@ test("a line with no direction counts only the way the car usually crosses it", 
   drive(FORWARD, 95);
   drive(-FORWARD, 35);
   drive(FORWARD, 60);
-  const gate = gateAt(path, 110)!;
+  const { a, b } = gateAt(path, 110)!;
   const times = (g: Gate) => analyze(path, { gate: g }).laps.map((l) => [+l.start.toFixed(2), +l.end.toFixed(2)]);
-  assert.deepEqual(times(gate), times({ ...gate, direction: -1 }));
+  assert.deepEqual(times({ a, b }), times({ a, b, direction: -1 }));
 });
 
 test("a lap between crossings of a drawn line survives a GPS gap, but an automatic gate's does not", () => {
@@ -89,6 +96,25 @@ test("a lap between crossings of a drawn line survives a GPS gap, but an automat
   assert.equal(validTimes(samples, gate).length, 4);
   const auto = analyze(samples).laps;
   assert.equal(auto.filter((l) => l.complete).length - auto.filter((l) => l.valid).length, 1);
+});
+
+test("a line that reaches a parallel straight counts only the direction of travel at the cursor", () => {
+  // An oval with straights 8 m apart, driven in opposite directions. A 24 m line crosses both.
+  const samples: Sample[] = [];
+  let t = 0;
+  for (let lap = 0; lap < 4; lap++) {
+    for (let x = -100; x < 100; x += 2) samples.push({ t: (t += 0.1), x, y: 0 });
+    for (let i = 0; i < 40; i++) samples.push({ t: (t += 0.1), x: 100, y: (8 * i) / 40 });
+    for (let x = 100; x > -100; x -= 2) samples.push({ t: (t += 0.1), x, y: 8 });
+    for (let i = 0; i < 40; i++) samples.push({ t: (t += 0.1), x: -100, y: 8 - (8 * i) / 40 });
+  }
+  const gate = gateAt(samples, samples[50].t)!;
+  const complete = analyze(samples, { gate, rearm: 5, minTime: 5 }).laps.filter((l) => l.complete);
+  assert.equal(complete.length, 3);
+  assert.ok(complete.every((l) => l.end - l.start > 27));
+  // The same line dragged, with no direction: an even split takes the first crossing's direction.
+  const dragged = analyze(samples, { gate: { a: gate.a, b: gate.b }, rearm: 5, minTime: 5 }).laps;
+  assert.ok(dragged.filter((l) => l.complete).every((l) => l.end - l.start > 27));
 });
 
 test("a drawn line works on a course too small for the automatic gate's 30 m re-arm", () => {
@@ -187,7 +213,10 @@ test("in live the overlay keeps taking the latest laps, and a log the first", ()
     log.putNumber("gps/longitude", p.t, 145 + p.x / 88800);
   }
   const gate = { a: { x: -150, y: 86 }, b: { x: -150, y: 87 } };
-  for (const [live, expected] of [[null, [1, 2, 3, 4]], [5, [4, 5, 6, 7]]] as const) {
+  for (const [live, expected] of [
+    [null, [1, 2, 3, 4]],
+    [5, [4, 5, 6, 7]]
+  ] as const) {
     (globalThis as any).window = { log, selection: { getCurrentLiveTime: () => live } };
     const service = new LapService();
     service.update();

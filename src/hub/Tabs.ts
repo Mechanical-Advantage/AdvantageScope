@@ -464,7 +464,9 @@ export default class Tabs {
         let tabConfig = this.FIXED_CONTROL_HEIGHTS.get(tabState.type);
         // Layouts from before the lap tabs had source lists saved a height of 0.
         let oldLapTab =
-          tabState.controlsHeight === 0 && (tabState.type === TabType.TrackMap || tabState.type === TabType.Laps);
+          tabState.controlsHeight === 0 &&
+          (tabState.type === TabType.TrackMap || tabState.type === TabType.Laps) &&
+          !(tabState.controller as { sourceLists?: boolean } | null)?.sourceLists;
         if (!oldLapTab && (tabState.controlsHeight === 0 || tabConfig === undefined)) {
           this.tabList[index].controlsHeight = tabState.controlsHeight;
         }

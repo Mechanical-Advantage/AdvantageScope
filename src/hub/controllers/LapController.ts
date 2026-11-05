@@ -135,6 +135,7 @@ export default class LapController implements TabController {
   saveState() {
     this.syncSources();
     return {
+      sourceLists: true,
       field: this.field,
       settings: lapService.settings,
       reference: lapService.reference,
@@ -153,6 +154,7 @@ export default class LapController implements TabController {
       lapService.settings = { ...lapService.settings, ...settings };
       for (const { roles } of LapSourceGroups)
         for (const [role] of roles) if (settings[role]) lapService.setSource(role, settings[role]);
+      lapService.recheckSources();
     }
     this.syncSources(false);
     if (s.reference !== undefined) lapService.reference = s.reference;

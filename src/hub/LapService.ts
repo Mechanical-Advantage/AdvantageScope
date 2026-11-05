@@ -14,6 +14,7 @@
 import { analyze, Gate, interpolate, LapConfig, LapResult, project, Sample } from "../shared/laps/LapEngine";
 import { slipRatio } from "../shared/laps/SlipRatio";
 import Log from "../shared/log/Log";
+import LoggableType from "../shared/log/LoggableType";
 
 export type LapSettings = {
   latitude: string;
@@ -83,7 +84,8 @@ export class LapService {
   }
   fields(): string[] {
     const keys = window.log.getFieldKeys().filter((k) => !k.startsWith("Laps/"));
-    const find = (pattern: RegExp) => keys.find((k) => pattern.test(k)) ?? "";
+    const find = (pattern: RegExp) =>
+      keys.find((k) => pattern.test(k) && window.log.getType(k) === LoggableType.Number) ?? "";
     const s = this.settings;
     if (this.sourceLog !== window.log) {
       this.sourceLog = window.log;
@@ -122,7 +124,7 @@ export class LapService {
   setStartLine(gate?: Gate) {
     const config = this.settings.config;
     if (gate) {
-      config.gate = { a: gate.a, b: gate.b };
+      config.gate = gate;
       delete config.manual;
     } else delete config.gate;
     this.reference = null;
@@ -134,6 +136,10 @@ export class LapService {
   setOverlays(indices: number[]) {
     this.overlays = indices;
     this.autoOverlays = false;
+  }
+  /** A restored layout's paths get the same check as a new log's. */
+  recheckSources() {
+    this.sourcesChecked = false;
   }
   invalidate() {
     this.signature = "";

@@ -154,8 +154,11 @@ export default class LapRenderer implements TabRenderer {
     this.scroll.addEventListener("pointerup", (e) => {
       const p = point(e),
         dragged = this.dragging && this.dragMoved;
-      if (dragged) this.action({ type: "gate", index: this.dragging!.index, gate: this.dragging!.gate });
-      else if (this.command && this.pressed && Math.hypot(p.x - this.pressed.x, p.y - this.pressed.y) < 4) {
+      if (dragged) {
+        // A moved line may now cross the track the other way, so its direction is worked out again.
+        const { a, b } = this.dragging!.gate;
+        this.action({ type: "gate", index: this.dragging!.index, gate: { a, b } });
+      } else if (this.command && this.pressed && Math.hypot(p.x - this.pressed.x, p.y - this.pressed.y) < 4) {
         let best = Infinity,
           time = 0;
         for (const s of this.command.result.samples) {
@@ -303,8 +306,7 @@ export default class LapRenderer implements TabRenderer {
     if (!c.result.laps.some((l) => l.valid)) {
       const p = document.createElement("p");
       p.className = "lap-empty";
-      p.textContent =
-        "No laps found from the lap counter, beacon or GPS. Add manual splits under Lap setup.";
+      p.textContent = "No laps found from the lap counter, beacon or GPS. Add manual splits under Lap setup.";
       this.content.append(p);
     }
     const signed = (v: number) => (Number.isFinite(v) ? (v > 0 ? "+" : "") + v.toFixed(3) : "—");
