@@ -11,7 +11,6 @@ import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
 import { clipGaps, TraceGapCache } from "../../shared/TraceGaps";
 import { axisDisplayUnit, formatChannelValue } from "../../shared/display/ChannelProfile";
-import { splitLegendName } from "../../shared/display/LineGraphStyle";
 import { formatSignedSeconds, heldValueAt, sectorDeltaText } from "../../shared/laps/LapAnalysis";
 import { interpolate, lapSamples } from "../../shared/laps/LapEngine";
 import { getLogValueText } from "../../shared/log/LogUtil";
@@ -194,7 +193,6 @@ export default class LineGraphController implements TabController {
       [this.leftSourceList, this.rightSourceList],
       [this.rightSourceList, this.leftSourceList]
     ] as const) {
-      source.graphLegend = true;
       source.beforeAdd = (key) => {
         if (this.lapMode !== "time" && source === this.rightSourceList) {
           // The right axis is locked to ΔT in lap-distance mode
@@ -222,7 +220,7 @@ export default class LineGraphController implements TabController {
 
   private axisTitle(source: SourceList, unit: Units.UnitConfig | null, filter: LineGraphFilter): string {
     const fields = source.getState().filter((f) => f.visible);
-    const name = fields.length === 1 ? splitLegendName(fields[0].logKey).leaf : "Signals";
+    const name = fields.length === 1 ? fields[0].logKey.split(/[/.]/).pop() : "Signals";
     const suffix = unit ? Units.getSuffixForFilter(unit.suffix, filter) : "";
     return fields.length ? name + (suffix ? ` [${suffix}]` : "") : "";
   }
@@ -784,9 +782,6 @@ export default class LineGraphController implements TabController {
           color: ensureThemeContrast(fieldItem.options.color),
           type: fieldItem.type as "smooth" | "stepped" | "points",
           size: (fieldItem.options.size ?? "normal") as "normal" | "bold" | "verybold",
-          dim:
-            (this.leftSourceList.hoveredKey ?? this.rightSourceList.hoveredKey) !== null &&
-            (this.leftSourceList.hoveredKey ?? this.rightSourceList.hoveredKey) !== fieldItem.logKey,
           hasUnit: hasUnit
         };
         if (fieldItem.visible) command.push(itemCommand);

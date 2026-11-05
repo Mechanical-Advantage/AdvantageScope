@@ -2376,32 +2376,6 @@ body.health-visible:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-
   }
 }
 
-.line-graph-axis.source-list .key-container {
-  direction: ltr;
-  text-align: left;
-  height: 30px;
-  line-height: 16px;
-}
-.line-graph-axis.source-list .key-container span {
-  display: block;
-  white-space: nowrap;
-}
-.line-graph-axis.source-list .key-container small {
-  display: block;
-  font-size: 12px;
-  line-height: 14px;
-  color: var(--health-muted);
-}
-.line-graph-axis.source-list .value {
-  font-size: 12px;
-  font-variant-numeric: tabular-nums;
-  color: #555;
-}
-@media (prefers-color-scheme: dark) {
-  .line-graph-axis.source-list .value {
-    color: #bbb;
-  }
-}
 .graph-unit-prompt {
   position: absolute;
   top: 56px;

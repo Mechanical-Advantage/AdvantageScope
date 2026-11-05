@@ -263,14 +263,7 @@ export default class LineGraphRenderer implements TabRenderer {
       command.sectorMarks,
       command.deltaStrip?.range,
       command.deltaStrip?.fields.map((f) => [f.values.length, f.color, f.size]),
-      command.leftFields.map((field) => [
-        field.values.length,
-        field.color,
-        field.type,
-        field.size,
-        field.dim,
-        field.gaps
-      ]),
+      command.leftFields.map((field) => [field.values.length, field.color, field.type, field.size, field.gaps]),
       command.discreteFields.map((field) => [
         field.values.length,
         field.color,
@@ -278,14 +271,7 @@ export default class LineGraphRenderer implements TabRenderer {
         field.toggleReference,
         field.colorMap ? field.values : null // Specific values affect color-mapped fields so serialize full state
       ]),
-      command.rightFields.map((field) => [
-        field.values.length,
-        field.color,
-        field.type,
-        field.size,
-        field.dim,
-        field.gaps
-      ]),
+      command.rightFields.map((field) => [field.values.length, field.color, field.type, field.size, field.gaps]),
       command.alerts.map((row) => row.map((alert) => [alert.type, alert.text, alert.range]))
     ];
     let renderStateString = JSON.stringify(renderState);
@@ -537,7 +523,6 @@ export default class LineGraphRenderer implements TabRenderer {
               break;
           }
 
-          context.globalAlpha = field.dim ? 0.25 : 1;
           switch (field.type) {
             case "stepped":
               context.beginPath();
@@ -609,7 +594,7 @@ export default class LineGraphRenderer implements TabRenderer {
           context.save();
           context.strokeStyle = original.color;
           context.lineWidth = 1;
-          context.globalAlpha = (original.dim ? 0.25 : 1) * 0.45;
+          context.globalAlpha = 0.45;
           context.setLineDash([2, 3]);
           context.beginPath();
           original.gaps.forEach((gap) => {
@@ -1112,7 +1097,6 @@ export type LineGraphRendererCommand = {
 
 export type LineGraphRendererCommand_NumericField = {
   gaps?: TraceGap[];
-  dim?: boolean;
   timestamps: number[];
   values: number[];
   color: string;
