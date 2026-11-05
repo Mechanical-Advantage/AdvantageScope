@@ -73,7 +73,7 @@ value tables.
 - **pdu**: `pump_duty`, `fan_duty`, `lv_battery_voltage`
 - **system**: `cpu_load` (5 Hz, with occasional spikes), `can_frame_count` (int64 counter), `link_rssi`,
   `status/message` (string, event-driven: state changes, laps, test-mode events, plus a summary every 5 s)
-- **autonomy** (`frame_id: "map"`; map is ENU with x = east, y = north, origin at the circuit):
+- **autonomy** with ENU coordinates, x = east, y = north, origin at the circuit:
   - `pose` (pose3, 20 Hz)
   - `planned_trajectory` (trajectory, 25 poses over 50 m ahead, 10 Hz)
   - `cones` (cone_array, 10 Hz): cones within 22 m in the forward field of view, with position noise that
@@ -188,7 +188,7 @@ Where spec 01 is silent or ambiguous, the mock does the following:
     - The run after a reset is identical to the first run, apart from the stream ids.
 13. **Time quality in Unix mode:** CAN sources are `estimated` (stamped by the gateway), `sbg-ins` and
     `autonomy` are `synchronised`, and every sample carries `ingress_link`.
-14. **Extensions** (clients should ignore unknown fields and ops): `clock_domain`, `ros_msg_type`,
+14. **Extensions** (clients should ignore unknown fields and ops): `clock_domain`,
     `HistoryResponse.stream_id`, `ErrorOp.paths`, and the `sim_status` op.
 15. **Units:** motor speed is `rad/s` (convert to rpm in the UI), temperatures are `K`, pressures `Pa`,
     fractions `"1"`, and lat/lon `deg`. The torque unit string is `N*m`.

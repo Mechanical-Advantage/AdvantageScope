@@ -55,7 +55,6 @@ export interface SignalDescriptor {
   tags: string[];
   writable: false;
   // optional
-  frame_id?: string;
   /** Integer-as-string -> label. */
   enum_values?: Record<string, string>;
   min?: number;
@@ -64,8 +63,6 @@ export interface SignalDescriptor {
   type_id?: string;
   // extensions (spec 02)
   clock_domain?: ClockDomain;
-  /** ROS 2 message type the value was mapped from, e.g. `geometry_msgs/msg/PoseStamped`. */
-  ros_msg_type?: string;
 }
 
 // ---------------------------------------------------------------------------------------------

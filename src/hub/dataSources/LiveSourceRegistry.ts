@@ -7,7 +7,6 @@
 
 import { IS_LITE } from "../../shared/buildConstants";
 import { LiveSourceInfo } from "../../shared/LiveSourceInfo";
-import FoxgloveSource from "./foxglove/FoxgloveSource";
 import { LiveDataSource } from "./LiveDataSource";
 import MQTTSource from "./mqtt/MQTTSource";
 import MURSource from "./mur/MURSource";
@@ -25,13 +24,6 @@ export interface LiveSourceDefinition extends LiveSourceInfo {
  * (see getLiveSourceInfo). To add a source, register it here.
  */
 export const LIVE_SOURCES: LiveSourceDefinition[] = [
-  {
-    id: "foxglove",
-    name: "ROS 2 (Foxglove WebSocket)",
-    defaultAddress: "ws://localhost:8765",
-    liteCompatible: true,
-    create: () => new FoxgloveSource()
-  },
   {
     id: "nt4",
     name: "NetworkTables 4",

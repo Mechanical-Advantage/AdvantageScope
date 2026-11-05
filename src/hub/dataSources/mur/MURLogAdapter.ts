@@ -113,7 +113,6 @@ export function getMetadataString(descriptor: SignalDescriptor): string {
   if (descriptor.display?.label) metadata.label = descriptor.display.label;
   if (descriptor.nominal_rate_hz !== null) metadata.nominal_rate_hz = descriptor.nominal_rate_hz;
   metadata.stale_after_ms = descriptor.stale_after_ms;
-  if (descriptor.frame_id !== undefined) metadata.frame_id = descriptor.frame_id;
   if (descriptor.enum_values !== undefined) {
     metadata.enumLabels = descriptor.enum_values;
     metadata.enum_values = Object.entries(descriptor.enum_values)
