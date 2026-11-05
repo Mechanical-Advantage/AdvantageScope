@@ -70,10 +70,8 @@ export default class LineGraphController implements TabController {
   private showRobotMode = false;
   private lapMode = "time";
   private lapSelect: HTMLSelectElement;
-  private rootElement: HTMLElement;
 
   constructor(root: HTMLElement) {
-    this.rootElement = root;
     const mode = document.createElement("select");
     this.lapSelect = mode;
     mode.className = "lap-axis-mode mv-select";
@@ -530,27 +528,7 @@ export default class LineGraphController implements TabController {
     }
   }
 
-  /** Marks empty drop zones ("Drag a signal here") and hides the zoom/pan hint until something is plotted. */
-  private updateEmptyState() {
-    const zones: [string, SourceList][] = [
-      [".line-graph-left", this.leftSourceList],
-      [".line-graph-right", this.rightSourceList],
-      [".line-graph-discrete", this.discreteSourceList]
-    ];
-    let empty = true;
-    for (const [selector, list] of zones) {
-      const locked = list === this.rightSourceList && this.lapMode !== "time";
-      const zoneEmpty = list.getState().length === 0 && !locked;
-      if (!zoneEmpty) empty = false;
-      const zone = this.rootElement.querySelector(selector);
-      zone?.classList.toggle("zone-empty", zoneEmpty);
-      zone?.classList.toggle("zone-locked", locked);
-    }
-    document.body.classList.toggle("line-graph-empty", empty);
-  }
-
   getCommand(): LineGraphRendererCommand {
-    this.updateEmptyState();
     let leftDataRange: [number, number] = [Infinity, -Infinity];
     let rightDataRange: [number, number] = [Infinity, -Infinity];
     let leftFieldsCommand: LineGraphRendererCommand_NumericField[] = [];
