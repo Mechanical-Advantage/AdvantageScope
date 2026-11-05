@@ -41,11 +41,16 @@ export default class LapController implements TabController {
     this.syncSources();
     root.addEventListener("lap-action", (event) => {
       const a = (event as CustomEvent).detail;
-      if (a.type === "seek") window.selection.setSelectedTime(a.time);
+      // Selection ignores a new time while locked to live, so a deliberate seek unlocks it first.
+      const seek = (time: number) => {
+        window.selection.unlock();
+        window.selection.setSelectedTime(time);
+      };
+      if (a.type === "seek") seek(a.time);
       if (a.type === "lap") {
         lapService.selected = a.index;
         const lap = lapService.result.laps.find((l) => l.index === a.index);
-        if (lap) window.selection.setSelectedTime(lap.start);
+        if (lap) seek(lap.start);
       }
       if (a.type === "reference") {
         lapService.reference = a.index;

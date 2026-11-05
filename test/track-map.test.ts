@@ -107,6 +107,33 @@ test("moving the line renumbers the laps, so the reference and overlays are chos
   assert.equal(service.settings.config.gate, undefined);
 });
 
+test("live overlays take in new laps until the user chooses some", () => {
+  const log = new Log();
+  const samples = circuit(LAP_TIMES);
+  const feed = (from: number, to: number) => {
+    for (const p of samples.slice(from, to)) {
+      log.putNumber("gps/latitude", p.t, -37 + p.y / 111195);
+      log.putNumber("gps/longitude", p.t, 145 + p.x / 88800);
+    }
+  };
+  (globalThis as any).window = { log };
+  const service = new LapService();
+  const gate = gateAt(samples, samples[100].t)!;
+  service.settings.config.gate = { a: gate.a, b: gate.b };
+  feed(0, 700);
+  service.update();
+  assert.deepEqual(service.overlays, [1, 2]);
+  feed(700, 1000);
+  service.invalidate();
+  service.update();
+  assert.deepEqual(service.overlays, [1, 2, 3]);
+  service.overlays = [2];
+  feed(1000, samples.length);
+  service.invalidate();
+  service.update();
+  assert.deepEqual(service.overlays, [2]);
+});
+
 test("the map cursor follows timeline hover through the render time", () => {
   const log = new Log();
   log.putNumber("gps/latitude", 0, -37);

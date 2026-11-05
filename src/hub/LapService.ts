@@ -49,6 +49,7 @@ export class LapService {
   result: LapResult = { laps: [], samples: [], theoretical: [] };
   reference: number | null = null;
   overlays: number[] = [];
+  private autoOverlays: number[] = [];
   selected: number | null = null;
   version = 0;
   private log?: Log;
@@ -312,8 +313,9 @@ export class LapService {
       this.result = analyze(samples, { ...s.config, length: ref.distance });
     if (this.reference === null || !this.result.laps.some((l) => l.index === this.reference))
       this.reference = this.result.best ?? null;
-    if (!this.overlays.length)
-      this.overlays = this.result.laps
+    // New live laps join the overlay until the user chooses their own.
+    if (!this.overlays.length || String(this.overlays) === String(this.autoOverlays))
+      this.overlays = this.autoOverlays = this.result.laps
         .filter((l) => l.valid)
         .slice(0, 4)
         .map((l) => l.index);
