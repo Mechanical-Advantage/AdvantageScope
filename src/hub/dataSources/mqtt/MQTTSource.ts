@@ -146,45 +146,12 @@ export default class MQTTSource extends LiveDataSource implements LiveStatusProv
     return !!receipt?.approximate && Date.now() - receipt.time < 5000;
   }
   getLiveStatus(): LiveStatusSummary {
-    const counts = { online: 0, stale: 0, offline: 0, neverSeen: 0 };
-    let unsynchronisedCount = 0;
-    let oldestAgeS: number | null = null;
-    this.receipts.forEach((_, key) => {
-      counts[this.getFieldFreshness(key) as "online" | "stale" | "offline"]++;
-      if (this.isFieldUnsynchronised(key)) unsynchronisedCount++;
-      oldestAgeS = Math.max(oldestAgeS ?? 0, this.getFieldAge(key)!);
-    });
     return {
       backend: this.backend,
       backendDetail: this.detail,
-      car:
-        this.receipts.size === 0
-          ? null
-          : counts.online
-          ? counts.stale + counts.offline
-            ? "stale"
-            : "online"
-          : counts.stale
-          ? "stale"
-          : "offline",
-      signalCounts: counts,
-      oldestAgeS,
-      lastReceiptAgeS: this.lastReceipt === null ? null : (Date.now() - this.lastReceipt) / 1000,
-      retryAttempt: this.retryAttempt,
-      retryInS: Math.max(0, (this.retryAt - Date.now()) / 1000),
-      receivingAgain: Date.now() < this.receivingAgainUntil,
       viewedRun: 0,
       runCount: 1,
-      sim: null,
-      simControls: false,
-      historyAvailable: false,
-      unsynchronisedCount,
-      segmentIndex: 0,
-      catalogue: null
+      hasFreshData: Array.from(this.receipts.keys()).some((key) => this.getFieldFreshness(key) === "online")
     };
-  }
-  selectRun(_index: number) {}
-  async simControl(): Promise<void> {
-    throw new Error("MQTT debug source has no simulation controls");
   }
 }

@@ -80,7 +80,6 @@ window.addEventListener("message", (event) => {
             liveMode: oldPrefs.liveMode,
             liveSubscribeMode: liveSubscribeMode,
             liveDiscard: Number(LIVE_DISCARD.value),
-            liveRecent: oldPrefs.liveRecent ?? [],
             mqttConnections: oldPrefs.mqttConnections ?? {},
             userAssetsFolder: oldPrefs.userAssetsFolder,
             dbcFolder: DBC_FOLDER.value.trim(),

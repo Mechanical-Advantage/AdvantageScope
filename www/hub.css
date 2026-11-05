@@ -1581,8 +1581,6 @@ div.field-2d-settings {
 
 /* 3D Field */
 
-@media (prefers-color-scheme: dark) {
-}
 /* Statistics */
 
 div.stats-sources {
@@ -1777,222 +1775,6 @@ div.points-settings {
   }
 }
 
-/* Live status pill (mur-voir) */
-
-:root {
-  --live-pill-width: 0px;
-}
-
-button.live-pill {
-  position: absolute;
-  z-index: 6;
-  top: 11px;
-  right: calc(154px + var(--show-lock-buttons) * 28px + 4px);
-  height: 22px;
-  padding: 0px 3px;
-  display: flex;
-  align-items: center;
-  border: 1px solid #ccc;
-  border-radius: 11px;
-  font-size: 12px;
-  font-family: inherit;
-  color: inherit;
-  white-space: nowrap;
-  overflow: hidden;
-  /* Never extend over the menu in the sidebar column */
-  max-width: calc(100vw - var(--side-bar-width) - 154px - var(--show-lock-buttons) * 28px - 12px);
-  -webkit-app-region: no-drag;
-}
-
-body.fancy-title-bar-lite button.live-pill {
-  right: calc(154px + var(--show-lock-buttons) * 28px - 33px + 4px);
-}
-
-body.fancy-title-bar-win button.live-pill {
-  top: 52px;
-}
-
-body.fancy-title-bar-mac div.title-bar-text {
-  right: calc(154px + var(--show-lock-buttons) * 28px + var(--live-pill-width));
-}
-
-body.fancy-title-bar-lite div.title-bar-text {
-  right: calc(154px - 33px + var(--show-lock-buttons) * 28px + var(--live-pill-width));
-}
-
-span.live-pill-segment {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 0px 6px;
-  height: 14px;
-}
-
-span.live-pill-segment + span.live-pill-segment {
-  border-left: 1px solid #ccc;
-}
-
-span.live-pill-segment.inline {
-  padding: 0px 5px 0px 0px;
-}
-
-span.live-pill-dot {
-  display: inline-block;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  box-sizing: border-box;
-  border: 1.5px solid #999;
-}
-
-span.live-pill-glyph {
-  font-size: 9px;
-  opacity: 0.8;
-}
-
-span.live-pill-segment.good span.live-pill-dot {
-  border: none;
-  background-color: #2a9d3a;
-}
-
-span.live-pill-segment.warn span.live-pill-dot {
-  border: none;
-  background-color: #e0a100;
-}
-
-span.live-pill-segment.bad span.live-pill-dot {
-  border: none;
-  background-color: #d22;
-}
-
-span.live-pill-segment.warn span.live-pill-glyph,
-span.live-warn {
-  color: #835600;
-}
-
-span.live-pill-segment.bad span.live-pill-glyph {
-  color: #d22;
-}
-
-div.live-popover {
-  position: absolute;
-  z-index: 20;
-  top: 40px;
-  right: calc(154px + var(--show-lock-buttons) * 28px + 4px);
-  width: 320px;
-  padding: 8px 10px;
-  box-sizing: border-box;
-  border: 1px solid #ababab;
-  border-radius: 8px;
-  background-color: #fff;
-  box-shadow: 0 1px 12px rgba(0, 0, 0, 0.25);
-  font-size: 12px;
-  -webkit-app-region: no-drag;
-}
-
-body.fancy-title-bar-lite div.live-popover {
-  right: calc(154px + var(--show-lock-buttons) * 28px - 33px + 4px);
-}
-
-div.live-popover table {
-  width: 100%;
-  border-spacing: 0px;
-}
-
-div.live-popover td {
-  padding: 2px 0px;
-  vertical-align: top;
-}
-
-div.live-popover td.label {
-  width: 0px;
-  padding-right: 8px;
-  white-space: nowrap;
-  text-align: right;
-  opacity: 0.6;
-}
-
-div.live-popover-buttons {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 6px;
-  padding-top: 6px;
-  border-top: 1px solid #ddd;
-}
-
-div.live-popover-buttons button {
-  width: 26px;
-  height: 26px;
-}
-
-span.live-popover-hint {
-  opacity: 0.6;
-  margin-left: 4px;
-}
-
-div.live-popover-error {
-  margin-top: 4px;
-  color: #d22;
-}
-
-div.live-popover-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 6px;
-  margin-top: 6px;
-  padding-top: 6px;
-  border-top: 1px solid #ddd;
-}
-
-button.text-button {
-  font-size: 12px;
-  font-family: inherit;
-  color: inherit;
-  padding: 3px 8px;
-  border: 1px solid #999;
-  border-radius: 4px;
-  white-space: nowrap;
-}
-
-@media (prefers-color-scheme: dark) {
-  button.live-pill,
-  button.text-button {
-    border-color: #555;
-  }
-
-  span.live-pill-segment + span.live-pill-segment {
-    border-left-color: #555;
-  }
-
-  span.live-pill-segment.good span.live-pill-dot {
-    background-color: lightgreen;
-  }
-
-  span.live-pill-segment.warn span.live-pill-dot {
-    background-color: #f5c242;
-  }
-
-  span.live-pill-segment.bad span.live-pill-dot {
-    background-color: #ff5f57;
-  }
-
-  span.live-pill-segment.warn span.live-pill-glyph,
-  span.live-warn {
-    color: #f5c242;
-  }
-
-  div.live-popover {
-    border-color: #4a4a4a;
-    background-color: #222;
-  }
-
-  div.live-popover-buttons,
-  div.live-popover-actions {
-    border-top-color: #444;
-  }
-}
-
 /* Connect dialog (same layout as the Preferences prompt) */
 
 div.connect-dialog-backdrop {
@@ -2012,7 +1794,8 @@ div.connect-dialog {
   top: 50%;
   transform: translate(-50%, -50%);
   width: 400px;
-  height: 290px;
+  height: auto;
+  padding-bottom: 48px;
   box-sizing: border-box;
   padding: 10px;
   border: 1px solid #ababab;
@@ -2056,43 +1839,6 @@ div.connect-dialog select {
   width: calc(100% - 5px);
 }
 
-div.connect-recent-title {
-  margin-top: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  opacity: 0.6;
-}
-
-div.connect-recent {
-  margin-top: 3px;
-  height: 120px;
-  overflow-y: auto;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 12px;
-}
-
-div.connect-recent-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 3px 6px;
-  cursor: default;
-}
-
-div.connect-recent-item:hover {
-  background-color: #eee;
-}
-
-span.connect-recent-source,
-div.connect-recent-empty {
-  opacity: 0.5;
-}
-
-div.connect-recent-empty {
-  padding: 3px 6px;
-  font-style: italic;
-}
-
 div.connect-dialog button {
   position: absolute;
   bottom: 8px;
@@ -2113,74 +1859,12 @@ button.connect-confirm {
     border-color: #4a4a4a;
     background-color: #222;
   }
-
-  div.connect-recent {
-    border-color: #444;
-  }
-
-  div.connect-recent-item:hover {
-    background-color: #333;
-  }
 }
 
-/* Compact live connection controls. */
-div.connect-dialog {
-  height: auto;
-  min-height: 230px;
-  padding-bottom: 48px;
-}
-div.connect-dialog button {
-  width: 86px;
-}
-button.connect-cancel {
-  right: 99px;
-}
-div.connect-recent.empty {
-  height: auto;
-  border: none;
-}
 div.connect-message {
   font-size: 12px;
   margin-top: 8px;
   min-height: 18px;
-}
-.live-freshness-legend {
-  font-size: 12px;
-  opacity: 1;
-  color: #555;
-  margin: 8px 0;
-}
-.live-run-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 8px 0;
-}
-.live-run-label {
-  position: absolute;
-  right: 8px;
-  top: 2px;
-  font-size: 12px;
-  box-sizing: border-box;
-  height: 22px;
-  line-height: 18px;
-  background: var(--health-background);
-  color: var(--health-muted);
-  pointer-events: none;
-  z-index: 6;
-}
-div.live-popover details {
-  margin: 6px 0;
-}
-div.live-popover-buttons img {
-  width: 16px;
-  height: 16px;
-}
-
-div.connect-dialog button {
-  color: inherit;
-  border: 1px solid #888;
-  font-family: inherit;
 }
 
 button.sidebar-freshness-filter:not([hidden]) {
@@ -2199,8 +1883,6 @@ div.connect-dialog input.mqtt-timestamp {
 }
 
 /* Spatial controls retain the compact workbench appearance. */
-@media (prefers-color-scheme: dark) {
-}
 
 /* Health is pinned independently of the active tab. */
 .health-strip {
@@ -2368,11 +2050,6 @@ body.health-visible:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-
 body.trackside-layout div.line-graph-help {
   display: none !important;
 }
-@media (prefers-color-scheme: dark) {
-  .live-freshness-legend {
-    color: #bbb;
-  }
-}
 
 /* Shared compact status chips use the panel palette in both appearances. */
 .mv-chip {
@@ -2385,23 +2062,6 @@ body.trackside-layout div.line-graph-help {
   font-size: 12px;
   line-height: 18px;
 }
-div.live-popover {
-  width: 450px;
-  max-width: calc(100vw - 16px);
-}
-.live-signal-counts {
-  white-space: nowrap;
-}
-.live-signal-counts button.text-button {
-  padding: 0;
-  border: 0;
-  text-decoration: underline;
-}
-div.live-popover td.label,
-span.live-popover-hint {
-  opacity: 1;
-  color: var(--health-muted);
-}
 .cone-class-key {
   margin: 6px 10px;
   font-size: 12px;
@@ -2413,29 +2073,6 @@ body.fancy-title-bar-lite div.title-bar-menu {
 img.side-bar-search-icon {
   top: 19.5px;
   pointer-events: none;
-}
-
-body:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-bar-lite) div.title-bar-text {
-  right: calc(154px + var(--show-lock-buttons) * 28px + var(--live-pill-width) + 110px);
-}
-
-@media (prefers-color-scheme: dark) {
-}
-
-div.connect-bridge-hint {
-  margin: 6px 0;
-  font-size: 12px;
-}
-
-@media (prefers-color-scheme: dark) {
-}
-@media (prefers-color-scheme: light) {
-}
-
-div.connect-bridge-hint > button {
-  position: static;
-  margin-left: 6px;
-  padding: 2px 6px;
 }
 
 /* Preserve the last value while spelling out stale/offline availability. */
@@ -2482,37 +2119,6 @@ body.has-severity-banner.health-visible div.viewer {
 body.has-severity-banner.health-visible:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-bar-lite)
   div.viewer {
   top: calc(38px + var(--severity-h, 30px) + var(--health-h, 0px));
-}
-
-/* Inline failure message at the top of the content area */
-.live-failure-bar {
-  position: absolute;
-  left: var(--side-bar-width);
-  right: 0;
-  height: 26px;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 0 10px;
-  box-sizing: border-box;
-  background: var(--health-background);
-  border-bottom: 1px solid var(--health-crit);
-  color: var(--health-crit);
-  font-size: 13px;
-  font-weight: 600;
-}
-.live-failure-bar[hidden] {
-  display: none;
-}
-.live-failure-bar button {
-  position: static;
-  color: inherit;
-  text-decoration: underline;
-  font-weight: 400;
-}
-body.live-failure div.viewer {
-  margin-top: 26px;
 }
 
 .health-reading {

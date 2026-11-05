@@ -31,7 +31,7 @@ import type {
 } from "../../../../tools/mock-backend/src/contract";
 import Log from "../../../shared/log/Log";
 import { LiveDataSource, LiveDataSourceStatus } from "../LiveDataSource";
-import { BackendState, Freshness, LiveStatusProvider, LiveStatusSummary, SimAction } from "../LiveStatus";
+import { BackendState, Freshness, LiveStatusProvider, LiveStatusSummary } from "../LiveStatus";
 import { SampleDeduplicator } from "./MURDedup";
 import {
   createField,
@@ -98,7 +98,6 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
   private historyAvailable: boolean | null = null;
 
   private sim: SimStatus | null = null;
-  private simControls = false;
   private simResetUntil = 0;
 
   connect(
@@ -289,7 +288,6 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
 
     this.backend = "connected";
     this.backendDetail = "";
-    this.checkSimControls();
     this.setStatus(LiveDataSourceStatus.Active);
     this.shouldRunOutputCallback = true;
   }
@@ -498,22 +496,6 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     if (wrote) this.shouldRunOutputCallback = true;
   }
 
-  private async checkSimControls() {
-    try {
-      const response = await fetch(this.baseUrl + "/api/v1/sim/status", { signal: this.requests.signal });
-      if (this.requests.signal.aborted) return;
-      this.simControls = response.ok;
-      if (response.ok && this.sim === null) {
-        const status: SimStatus = await response.json();
-        this.sim = status;
-        this.clock.setRunning(status.state === "running", status.speed, Date.now());
-        this.timeBase.setSimRate(status.speed);
-      }
-    } catch {
-      this.simControls = false;
-    }
-  }
-
   // ------------------------------------------------------------------------------------------
   // LiveStatusProvider
 
@@ -522,66 +504,12 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
   }
 
   getLiveStatus(): LiveStatusSummary {
-    const counts = { online: 0, stale: 0, offline: 0, neverSeen: 0 };
-    this.descriptors.forEach((_, path) => {
-      const state = this.getFieldFreshness(path);
-      if (state === null || state === "unknown") counts.neverSeen++;
-      else counts[state]++;
-    });
-    let car: Freshness | null = null;
-    if (this.descriptors.size > 0) {
-      if (counts.online + counts.stale + counts.offline === 0) {
-        car = "unknown";
-      } else if (counts.online === 0) {
-        car = counts.stale > 0 ? "stale" : "offline";
-      } else {
-        car = counts.stale + counts.offline > 0 ? "stale" : "online";
-      }
-    }
-
-    const now = Date.now();
-    let unsynchronisedCount = 0;
-    this.unsynchronised.forEach((time) => {
-      if (now - time < UNSYNC_HOLD_MS) unsynchronisedCount++;
-    });
-
-    let sim: LiveStatusSummary["sim"] = null;
-    if (this.sim !== null && this.timeBase.getDomain() === "sim") {
-      sim = {
-        state: now < this.simResetUntil ? "reset" : this.sim.state,
-        timeS: this.clock.now(now) ?? 0,
-        speed: this.sim.speed,
-        resetCount: this.sim.reset_count
-      };
-    }
-
     return {
-      oldestAgeS:
-        this.descriptors.size === 0
-          ? null
-          : Array.from(this.descriptors.keys()).reduce<number | null>((oldest, path) => {
-              const age = this.getFieldAge(path);
-              return age === null ? oldest : Math.max(oldest ?? 0, age);
-            }, null),
-      lastReceiptAgeS: this.lastReceipt === null ? null : (now - this.lastReceipt) / 1000,
-      retryAttempt: this.retryAttempt,
-      retryInS: Math.max(0, (this.retryAt - now) / 1000),
-      receivingAgain: now < this.receivingAgainUntil,
-      viewedRun: this.runs.selected,
-      runCount: this.runs.entries.length,
       backend: this.backend,
       backendDetail: this.backendDetail,
-      car: car,
-      signalCounts: counts,
-      sim: sim,
-      simControls: this.simControls,
-      historyAvailable: this.historyAvailable,
-      unsynchronisedCount: unsynchronisedCount,
-      segmentIndex: this.segments.getSegmentIndex(),
-      catalogue:
-        this.catalogue === null
-          ? null
-          : { epoch: this.catalogue.epoch, revision: this.catalogue.revision, signals: this.descriptors.size }
+      viewedRun: this.runs.selected,
+      runCount: this.runs.entries.length,
+      hasFreshData: Array.from(this.descriptors.keys()).some((key) => this.getFieldFreshness(key) === "online")
     };
   }
 
@@ -606,38 +534,9 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     return now === null ? null : Math.max(0, now - seconds);
   }
 
-  selectRun(index: number) {
-    if (!this.outputCallback || !this.runs.select(index)) return;
-    const log = this.runs.entries[index];
-    this.outputCallback(log, () =>
-      index === this.runs.entries.length - 1
-        ? this.clock.now(Date.now()) ?? log.getTimestampRange()[1]
-        : log.getTimestampRange()[1]
-    );
-    this.newSegmentCallback?.();
-    if (index !== this.runs.entries.length - 1) window.selection.setLiveDisconnected();
-  }
-
   isFieldUnsynchronised(key: string): boolean {
     const path = key.startsWith("/") ? key.slice(1) : key;
     const time = this.unsynchronised.get(path);
     return time !== undefined && Date.now() - time < UNSYNC_HOLD_MS;
-  }
-
-  async simControl(action: SimAction): Promise<void> {
-    let response: Response;
-    try {
-      response = await fetch(this.baseUrl + "/api/v1/sim/" + action, { method: "POST", signal: this.requests.signal });
-    } catch {
-      throw "Cannot reach " + this.baseUrl;
-    }
-    if (!response.ok) {
-      let message = "HTTP " + response.status.toString();
-      try {
-        const body = await response.json();
-        if (typeof body.message === "string") message = body.message;
-      } catch {}
-      throw message;
-    }
   }
 }

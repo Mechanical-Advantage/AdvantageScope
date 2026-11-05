@@ -44,47 +44,6 @@
         margin: 0 0 24px 0;
         color: #666;
       }
-      h2 {
-        margin: 24px 0 6px 0;
-        font-size: 15px;
-        font-weight: 600;
-      }
-      ul {
-        margin: 0;
-        padding-left: 20px;
-      }
-      kbd {
-        padding: 0 4px;
-        border: 1px solid #bbb;
-        border-radius: 3px;
-        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-        font-size: 12px;
-      }
-      button {
-        position: static;
-        width: auto;
-        height: 28px;
-        padding: 0 12px;
-        margin-right: 6px;
-        border: 1px solid #888;
-        border-radius: 4px;
-        color: inherit;
-        font: inherit;
-      }
-      ol.steps {
-        margin: 0 0 16px 0;
-        padding-left: 22px;
-      }
-      ol.steps li {
-        margin-bottom: 14px;
-        font-size: 15px;
-      }
-      ol.steps li p {
-        margin: 8px 0 0 0;
-      }
-      .hint {
-        color: #666;
-      }
       .credit {
         margin-top: 32px;
         font-size: 12px;
@@ -96,12 +55,8 @@
           background-color: #222;
         }
         .subtitle,
-        .hint,
         .credit {
           color: #999;
-        }
-        kbd {
-          border-color: #555;
         }
       }
     </style>
@@ -110,26 +65,7 @@
     <h1>mur-voir</h1>
     <p class="subtitle">Telemetry dashboard for Melbourne University Motorsport.</p>
 
-    <ol class="steps">
-      <li>
-        <strong>Connect.</strong> Press Connect… (or <kbd>Ctrl/Cmd</kbd>+<kbd>K</kbd>) and enter the base-station
-        address. The pill at the top right shows the link, the car and signal freshness.
-        <p><button id="welcome-connect">Connect…</button> <button id="welcome-open-log">Open log…</button></p>
-      </li>
-      <li>
-        <strong>Drag a field.</strong> Signals appear in the sidebar. Drag one onto the Line Graph's left or right axis
-        (signals with different units go on different axes). Scroll to zoom and drag to pan once it is plotting.
-      </li>
-      <li>
-        <strong>Add a tab.</strong> Press <kbd>+</kbd> for another Line Graph, Laps, Track Map, 3D view, Table or
-        Statistics tab. All tabs share one timeline.
-      </li>
-    </ol>
-
-    <p class="hint">
-      Tip: use <kbd>View</kbd> &rsaquo; Toggle Health Strip for pinned fault tiles, and Trackside Layout for pit-wall
-      use. Offline logs open with <kbd>File</kbd> &rsaquo; Open Log(s)….
-    </p>
+    <p>Use File &gt; Connect (Cmd/Ctrl+K) or File &gt; Open Log(s).</p>
 
     <p class="credit">
       Based on AdvantageScope (BSD-3-Clause), &copy; Littleton Robotics. mur-voir is an independent fork and is not
