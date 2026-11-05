@@ -12,7 +12,7 @@
 //   unit goes into field metadata so Log.getUnit and unit conversion work (MURLogAdapter).
 // - Subscriptions: one subscription ("mur-voir-active") holding exactly the active fields of the tabs and
 //   sidebar, replaced atomically whenever that set changes (same diff as NT4Source.periodic()).
-// - History: fetched when a field becomes active in a tab; 501 is remembered and shown in the status pill.
+// - History: fetched when a field becomes active in a tab; a 501 response disables later history requests.
 // - Dedup on (path, stream_id, seq) (MURDedup). Time: BigInt session-relative seconds (MURTime).
 // - Segments: a sim reset or clock rewind starts a new segment (MURSegments): the Log is replaced and the hub
 //   resets the selection, so the new run never mixes with the old one.
@@ -74,10 +74,6 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
 
   private runs = new RetainedRuns<Log>();
   private receiptTimes = new Map<string, number>();
-  private lastReceipt: number | null = null;
-  private retryAttempt = 0;
-  private retryAt = 0;
-  private receivingAgainUntil = 0;
   private backend: BackendState = "connecting";
   private backendDetail = "";
 
@@ -199,8 +195,6 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
 
   private scheduleReconnect() {
     if (this.status === LiveDataSourceStatus.Stopped || this.reconnectTimeout !== null) return;
-    this.retryAttempt++;
-    this.retryAt = Date.now() + this.reconnectDelayMs;
     this.reconnectTimeout = window.setTimeout(() => {
       this.reconnectTimeout = null;
       this.openSocket();
@@ -351,9 +345,6 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     }
 
     const now = Date.now();
-    if (this.retryAttempt > 0) this.receivingAgainUntil = now + 3000;
-    this.retryAttempt = 0;
-    this.lastReceipt = now;
     this.receiptTimes.set(sample.path, now);
     if (!this.availability.has(sample.path)) {
       this.availability.set(sample.path, { state: "online", lastSeenNs: sample.t_ns });

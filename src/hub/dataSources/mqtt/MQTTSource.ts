@@ -22,9 +22,6 @@ export default class MQTTSource extends LiveDataSource implements LiveStatusProv
   private backend: BackendState = "connecting";
   private detail = "Connecting to broker";
   private retryAttempt = 0;
-  private retryAt = 0;
-  private lastReceipt: number | null = null;
-  private receivingAgainUntil = 0;
   private receipts = new Map<string, { time: number; approximate: boolean }>();
   private types = new Map<string, string>();
   private timeBase = new SessionTimeBase();
@@ -61,7 +58,6 @@ export default class MQTTSource extends LiveDataSource implements LiveStatusProv
         }
         this.backend = "connected";
         this.detail = "Broker connected · " + settings.topic;
-        if (this.retryAttempt) this.receivingAgainUntil = Date.now() + 3000;
         this.retryAttempt = 0;
         this.setStatus(LiveDataSourceStatus.Active);
       });
@@ -78,7 +74,6 @@ export default class MQTTSource extends LiveDataSource implements LiveStatusProv
       this.setStatus(LiveDataSourceStatus.Error);
       if (this.retryTimer !== null) return;
       const delay = Math.min(30000, 500 * 2 ** Math.min(this.retryAttempt++, 6));
-      this.retryAt = Date.now() + delay;
       this.retryTimer = setTimeout(() => {
         this.retryTimer = null;
         this.backend = "connecting";
@@ -111,7 +106,6 @@ export default class MQTTSource extends LiveDataSource implements LiveStatusProv
         const metadata = sample.metadata ?? mqttMetadata(path);
         if (metadata && !this.log.getMetadataString(path)) this.log.setMetadataString(path, JSON.stringify(metadata));
         this.receipts.set(path, { time: now, approximate: time.approximate });
-        this.lastReceipt = now;
         this.clock.observe(time.seconds, now);
         this.dirty = true;
       }

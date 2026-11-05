@@ -1322,7 +1322,10 @@ function select2DCameraPopup(window: BrowserWindow, position: [number, number], 
 
 /** Returns the ID of the selected live source, falling back to the first registered source. */
 function getSelectedLiveSourceId(prefs: Preferences): string | undefined {
-  return liveSources.find((source) => source.id === prefs.liveMode)?.id ?? liveSources[0]?.id;
+  return (
+    liveSources.find((source) => source.id === prefs.liveMode)?.id ??
+    liveSources.find((source) => source.id === "mur")?.id
+  );
 }
 
 /** Finds a menu template item by ID (searching submenus recursively). */

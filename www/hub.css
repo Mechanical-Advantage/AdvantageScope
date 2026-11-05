@@ -1795,9 +1795,8 @@ div.connect-dialog {
   transform: translate(-50%, -50%);
   width: 400px;
   height: auto;
-  padding-bottom: 48px;
   box-sizing: border-box;
-  padding: 10px;
+  padding: 10px 10px 48px;
   border: 1px solid #ababab;
   border-radius: 10px;
   background-color: #fff;

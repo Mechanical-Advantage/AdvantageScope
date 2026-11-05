@@ -48,11 +48,11 @@ export const LIVE_SOURCES: LiveSourceDefinition[] = [
 ];
 
 /** The source used when the preference is unset or refers to an unknown source. */
-export const DEFAULT_LIVE_SOURCE_ID = "nt4";
+export const DEFAULT_LIVE_SOURCE_ID = "mur";
 
 /** Returns the registered sources available on the current platform. */
 export function getAvailableLiveSources(isLite: boolean): LiveSourceDefinition[] {
-  return LIVE_SOURCES.filter((source) => !isLite || source.liteCompatible);
+  return LIVE_SOURCES.filter((source) => source.id !== "nt4" && (!isLite || source.liteCompatible));
 }
 
 /** Returns the source with the given ID, falling back to the default source. */

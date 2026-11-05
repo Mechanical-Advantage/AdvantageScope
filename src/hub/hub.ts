@@ -120,7 +120,7 @@ function guardedInterval(action: () => void, period: number) {
 }
 
 guardedInterval(() => {
-  if (liveStatus !== LiveDataSourceStatus.Active) return;
+  if (!liveActive || liveStatus !== LiveDataSourceStatus.Active) return;
   const status = window.liveStatus?.getLiveStatus();
   setWindowTitle(liveAddress, status?.backend === "connected" && !status.hasFreshData ? "No car data" : undefined);
 }, 500);
@@ -464,7 +464,7 @@ function stopLive() {
   liveConnected = false;
   liveStatus = LiveDataSourceStatus.Stopped;
   window.selection.setLiveDisconnected();
-  setWindowTitle("");
+  setWindowTitle(liveAddress);
 }
 
 /** Connects to a live data source. */
@@ -486,10 +486,8 @@ function startLive(sourceType: "robot" | "sim", target?: { sourceId: string; add
   let address = "";
   if (target !== undefined) {
     address = target.address;
-  } else if (IS_LITE && sourceDefinition.id === "nt4") {
-    address = window.location.hostname;
   } else if (sourceType === "sim") {
-    address = sourceDefinition.id === "nt4" ? "127.0.0.1" : sourceDefinition.defaultAddress;
+    address = sourceDefinition.defaultAddress;
   } else {
     address =
       window.preferences.robotAddress !== "" && sourceDefinition.id === window.preferences.liveMode
