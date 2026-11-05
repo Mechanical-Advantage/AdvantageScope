@@ -87,7 +87,7 @@ export default class LapController implements TabController {
           lapService.invalidate();
         }
       }
-      if (a.type === "auto") lapService.setStartLine();
+      if (a.type === "auto" && lapService.settings.config.gate) lapService.setStartLine();
       if (a.type === "field") this.field = a.field;
     });
     window.addEventListener(
@@ -160,9 +160,9 @@ export default class LapController implements TabController {
     lapService.invalidate();
   }
   refresh() {
+    // Live refreshes every frame. LapService picks up new data on its own 500 ms cycle.
     this.syncSources();
     this.sources.forEach((source) => source.refresh());
-    lapService.invalidate();
   }
   newAssets() {}
   getActiveFields() {

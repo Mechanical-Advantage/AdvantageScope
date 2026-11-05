@@ -221,39 +221,51 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
   const beaconUsable =
     beaconValues.every((b) => b === 0 || b === 1) &&
     beaconValues.filter((b) => b === 1).length < beaconValues.length / 2;
-  if (config.manual?.length) {
-    source = "manual";
-    boundaries = config.manual.filter((t) => Number.isFinite(t) && t >= times[0] && t <= times.at(-1)!);
-  } else if (!config.gate && counters.length) {
-    source = "counter";
-    boundaries = counters;
-  } else if (!config.gate && beaconUsable && beacons.length) {
-    source = "beacon";
-    boundaries = beacons;
-  } else if (gate) {
-    let armed = true,
-      last = -Infinity;
-    const center = { x: (gate.a.x + gate.b.x) / 2, y: (gate.a.y + gate.b.y) / 2 };
-    // A drawn line has no direction of its own. Laps run the way the car crosses it most.
-    let direction = gate.direction;
+  /** Debounced crossings of a line. A drawn line has no direction of its own, so laps run the way the car crosses it most. */
+  const crossings = (line: Gate) => {
+    const times: number[] = [],
+      center = { x: (line.a.x + line.b.x) / 2, y: (line.a.y + line.b.y) / 2 };
+    let direction = line.direction;
     if (!direction) {
       let sum = 0;
       for (let i = 1; i < samples.length; i++)
-        if (crossing(samples[i - 1], samples[i], gate) !== undefined)
-          sum += Math.sign(cross(sub(samples[i], samples[i - 1]), sub(gate.b, gate.a)));
+        if (crossing(samples[i - 1], samples[i], line) !== undefined)
+          sum += Math.sign(cross(sub(samples[i], samples[i - 1]), sub(line.b, line.a)));
       direction = Math.sign(sum);
     }
-    const line = { ...gate, direction };
+    const directed = { ...line, direction };
+    // A drawn line's course can be compact, so it re-arms at half the line's length rather than the automatic 30 m.
+    const rearm = config.rearm ?? (config.gate ? 12 : 30);
+    let armed = true,
+      last = -Infinity;
     for (let i = 1; i < samples.length; i++) {
       const p = samples[i];
-      if (Math.hypot(p.x - center.x, p.y - center.y) >= (config.rearm ?? 30)) armed = true;
-      const t = crossing(samples[i - 1], p, line);
+      if (Math.hypot(p.x - center.x, p.y - center.y) >= rearm) armed = true;
+      const t = crossing(samples[i - 1], p, directed);
       if (armed && t !== undefined && t - last >= min) {
-        boundaries.push(t);
+        times.push(t);
         last = t;
         armed = false;
       }
     }
+    return times;
+  };
+  // A drawn line wins unless the car doesn't cross it, as on another log. Autocross needs only the start of a run.
+  const drawn = config.gate ? crossings(config.gate) : [];
+  const usesDrawnLine = !config.manual?.length && drawn.length >= (config.mode === "autocross" ? 1 : 2);
+  if (config.manual?.length) {
+    source = "manual";
+    boundaries = config.manual.filter((t) => Number.isFinite(t) && t >= times[0] && t <= times.at(-1)!);
+  } else if (usesDrawnLine) {
+    boundaries = drawn;
+  } else if (counters.length) {
+    source = "counter";
+    boundaries = counters;
+  } else if (beaconUsable && beacons.length) {
+    source = "beacon";
+    boundaries = beacons;
+  } else if (gate) {
+    boundaries = crossings(gate);
   } else if (
     Number.isFinite(config.length) &&
     config.length! > 0 &&
@@ -340,7 +352,7 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
       complete &&
       end - start >= min &&
       // Crossings of a drawn line time the lap, so a GPS gap between them can't change the time.
-      (config.gate !== undefined || !ts.some((t, j) => j > 0 && t - ts[j - 1] > 1)) &&
+      (usesDrawnLine || !ts.some((t, j) => j > 0 && t - ts[j - 1] > 1)) &&
       !stops.some((t) => t > start && t < end);
     result.laps.push({
       index: i,

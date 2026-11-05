@@ -91,6 +91,26 @@ test("a lap between crossings of a drawn line survives a GPS gap, but an automat
   assert.equal(auto.filter((l) => l.complete).length - auto.filter((l) => l.valid).length, 1);
 });
 
+test("a drawn line works on a course too small for the automatic gate's 30 m re-arm", () => {
+  const samples: Sample[] = [];
+  for (let t = 0; t < 130; t += 0.1) {
+    const a = (2 * Math.PI * t) / 25;
+    samples.push({ t, x: 14 * Math.cos(a), y: 14 * Math.sin(a) });
+  }
+  const gate = gateAt(samples, 10)!;
+  assert.equal(analyze(samples, { gate }).laps.filter((l) => l.complete).length, 4);
+});
+
+test("a line the car never crosses gives way to the lap counter, and keeps the GPS gap rule", () => {
+  const samples = circuit(LAP_TIMES).map((p) => ({ ...p, counter: Math.floor((p.t - 100) / 28) }));
+  const away = { a: { x: 5000, y: -12 }, b: { x: 5000, y: 12 } };
+  const laps = analyze(samples, { gate: away }).laps;
+  assert.deepEqual([...new Set(laps.map((l) => l.source))], ["counter"]);
+  const gapped = samples.filter((p) => !(p.t > 140 && p.t < 141.7));
+  const auto = analyze(gapped).laps.filter((l) => l.valid).length;
+  assert.equal(analyze(gapped, { gate: away }).laps.filter((l) => l.valid).length, auto);
+});
+
 test("moving the line renumbers the laps, so the reference and overlays are chosen again", () => {
   const log = new Log();
   // 1 degree of latitude is about 111 km, so this is the same circle as above in degrees.
@@ -120,6 +140,17 @@ test("moving the line renumbers the laps, so the reference and overlays are chos
   assert.equal(service.settings.config.gate, undefined);
 });
 
+test("going back to the automatic gate leaves manual splits alone", () => {
+  (globalThis as any).window = { log: new Log() };
+  const service = new LapService();
+  service.settings.config.manual = [120];
+  service.setStartLine({ a: { x: 0, y: 0 }, b: { x: 1, y: 1 } });
+  assert.equal(service.settings.config.manual, undefined);
+  service.settings.config.manual = [120];
+  service.setStartLine();
+  assert.deepEqual(service.settings.config.manual, [120]);
+});
+
 test("live overlays take in new laps until the user chooses some", () => {
   const log = new Log();
   const samples = circuit(LAP_TIMES);
@@ -147,6 +178,24 @@ test("live overlays take in new laps until the user chooses some", () => {
   service.invalidate();
   service.update();
   assert.deepEqual(service.overlays, [1, 2, 3]);
+});
+
+test("in live the overlay keeps taking the latest laps, and a log the first", () => {
+  const log = new Log();
+  for (const p of circuit([30, 30, 30, 30, 30, 30, 30, 30])) {
+    log.putNumber("gps/latitude", p.t, -37 + p.y / 111195);
+    log.putNumber("gps/longitude", p.t, 145 + p.x / 88800);
+  }
+  const gate = { a: { x: -150, y: 86 }, b: { x: -150, y: 87 } };
+  for (const [live, expected] of [[null, [1, 2, 3, 4]], [5, [4, 5, 6, 7]]] as const) {
+    (globalThis as any).window = { log, selection: { getCurrentLiveTime: () => live } };
+    const service = new LapService();
+    service.update();
+    const samples = service.result.samples;
+    service.setStartLine(gateAt(samples, samples[100].t) ?? gate);
+    service.update();
+    assert.deepEqual(service.overlays, [...expected]);
+  }
 });
 
 test("the map cursor follows timeline hover through the render time", () => {

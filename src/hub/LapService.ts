@@ -118,12 +118,13 @@ export class LapService {
       find(/(?:gps\/ground_speed|ground_speed)$/i)
     ].filter(Boolean);
   }
-  /** The start/finish line replaces manual splits and renumbers the laps, so overlays are chosen again. */
+  /** A new start/finish line replaces manual splits. Either way the laps renumber, so overlays are chosen again. */
   setStartLine(gate?: Gate) {
     const config = this.settings.config;
-    if (gate) config.gate = { a: gate.a, b: gate.b };
-    else delete config.gate;
-    delete config.manual;
+    if (gate) {
+      config.gate = { a: gate.a, b: gate.b };
+      delete config.manual;
+    } else delete config.gate;
     this.reference = null;
     this.overlays = [];
     this.autoOverlays = true;
@@ -337,12 +338,11 @@ export class LapService {
       this.result = analyze(samples, { ...s.config, length: ref.distance });
     if (this.reference === null || !this.result.laps.some((l) => l.index === this.reference))
       this.reference = this.result.best ?? null;
-    // New live laps join the overlay until the user chooses their own.
-    if (this.autoOverlays || !this.overlays.length)
-      this.overlays = this.result.laps
-        .filter((l) => l.valid)
-        .slice(0, 4)
-        .map((l) => l.index);
+    // Until the user chooses, live overlays the latest laps and a log the first.
+    if (this.autoOverlays || !this.overlays.length) {
+      const valid = this.result.laps.filter((l) => l.valid).map((l) => l.index);
+      this.overlays = window.selection?.getCurrentLiveTime() != null ? valid.slice(-4) : valid.slice(0, 4);
+    }
     // Rebuild derived channels after edits or when the reference changes. Otherwise only append the active lap.
     const ds = JSON.stringify([
       s,

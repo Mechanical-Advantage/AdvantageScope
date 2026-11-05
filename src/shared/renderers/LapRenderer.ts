@@ -67,7 +67,9 @@ export default class LapRenderer implements TabRenderer {
   private transform = (p: Point) => p;
   private inverse = (p: Point) => p;
   private dragging?: { index: number; endpoint: "a" | "b"; gate: Gate };
+  private dragMoved = false;
   private pressed?: Point;
+  private pressing = false;
   constructor(
     private root: HTMLElement,
     private interactive = true
@@ -128,12 +130,13 @@ export default class LapRenderer implements TabRenderer {
       (e) => {
         if (!this.command || !this.interactive || e.button !== 0) return;
         const p = point(e);
+        this.pressed = p;
+        this.dragMoved = false;
         this.dragging = this.endpointAt(p);
         if (this.dragging) {
           e.preventDefault();
           this.scroll.setPointerCapture(e.pointerId);
-          this.draw();
-        } else this.pressed = p;
+        }
       },
       { capture: true }
     );
@@ -141,32 +144,37 @@ export default class LapRenderer implements TabRenderer {
       if (!this.command || !this.interactive) return;
       const p = point(e);
       if (this.dragging) {
-        this.dragging.gate[this.dragging.endpoint] = this.inverse(p);
-        this.draw();
+        this.dragMoved ||= Math.hypot(p.x - this.pressed!.x, p.y - this.pressed!.y) >= 4;
+        if (this.dragMoved) {
+          this.dragging.gate[this.dragging.endpoint] = this.inverse(p);
+          this.draw();
+        }
       } else this.scroll.style.cursor = this.endpointAt(p) ? "move" : "";
     });
     this.scroll.addEventListener("pointerup", (e) => {
-      if (this.dragging) {
-        this.action({ type: "gate", index: this.dragging.index, gate: this.dragging.gate });
-        this.dragging = undefined;
-      } else if (this.command && this.pressed) {
-        const p = point(e);
-        if (Math.hypot(p.x - this.pressed.x, p.y - this.pressed.y) < 4) {
-          let best = Infinity,
-            time = 0;
-          for (const s of this.command.result.samples) {
-            const q = this.transform(s),
-              d = Math.hypot(p.x - q.x, p.y - q.y);
-            if (d < best) {
-              best = d;
-              time = s.t;
-            }
+      const p = point(e),
+        dragged = this.dragging && this.dragMoved;
+      if (dragged) this.action({ type: "gate", index: this.dragging!.index, gate: this.dragging!.gate });
+      else if (this.command && this.pressed && Math.hypot(p.x - this.pressed.x, p.y - this.pressed.y) < 4) {
+        let best = Infinity,
+          time = 0;
+        for (const s of this.command.result.samples) {
+          const q = this.transform(s),
+            d = Math.hypot(p.x - q.x, p.y - q.y);
+          if (d < best) {
+            best = d;
+            time = s.t;
           }
-          if (best < 40) this.action({ type: "seek", time });
         }
+        if (best < 40) this.action({ type: "seek", time });
       }
+      this.dragging = undefined;
       this.pressed = undefined;
     });
+    // A rebuild mid-click would take away the row or checkbox being clicked.
+    this.content.addEventListener("pointerdown", () => (this.pressing = true));
+    for (const end of ["pointerup", "pointercancel", "pointerleave"])
+      this.content.addEventListener(end, () => (this.pressing = false));
   }
   /** Gates on the map: the start/finish line, sectors, and the finish line in autocross. */
   private gates(): (Gate | undefined)[] {
@@ -212,7 +220,7 @@ export default class LapRenderer implements TabRenderer {
     ]);
     // Rebuilding would take the focus from a field being edited, but a clicked button shouldn't hold back the result.
     const editing = this.toolbar.contains(document.activeElement) && document.activeElement?.matches("input, select");
-    if (this.last !== key && !editing) {
+    if (this.last !== key && !editing && !this.pressing) {
       this.last = key;
       this.build();
     }
@@ -274,7 +282,7 @@ export default class LapRenderer implements TabRenderer {
       this.button(panel, "Auto start gate", () => this.action({ type: "auto" }));
       const addGate = (index: number) => {
         const c = this.command!,
-          gate = gateAt(c.result.samples, c.time ?? 0);
+          gate = c.time === null ? undefined : gateAt(c.result.samples, c.time);
         if (gate) this.action({ type: "gate", index, gate });
       };
       this.button(panel, "Add sector at cursor", () => addGate(c.settings.config.sectors?.length ?? 0));
@@ -423,7 +431,9 @@ export default class LapRenderer implements TabRenderer {
       this.pan,
       dark
     ]);
-    const drawKey = JSON.stringify([traceKey, c.time, this.dragging, this.scrollSensor.shouldHideHint()]);
+    // Satellites have no hint, and their selection can't answer the sensor's question about live time.
+    const hint = this.interactive && !this.scrollSensor.shouldHideHint();
+    const drawKey = JSON.stringify([traceKey, c.time, this.dragging, hint]);
     if (drawKey === this.lastDraw) return;
     this.lastDraw = drawKey;
     this.canvas.style.width = w + "px";
@@ -532,7 +542,7 @@ export default class LapRenderer implements TabRenderer {
       ctx.fill();
       ctx.stroke();
     }
-    if (this.interactive && !this.scrollSensor.shouldHideHint()) {
+    if (hint) {
       ctx.fillStyle = text;
       ctx.textAlign = "center";
       ctx.fillText("Scroll to zoom · Drag to pan · Click the trace to move the cursor", w / 2, h - 16);
