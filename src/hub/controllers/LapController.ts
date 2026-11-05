@@ -56,9 +56,7 @@ export default class LapController implements TabController {
         lapService.reference = a.index;
         lapService.invalidate();
       }
-      if (a.type === "overlay") {
-        lapService.overlays = a.indices;
-      }
+      if (a.type === "overlay") lapService.setOverlays(a.indices);
       if (a.type === "gate") {
         if (a.index === -2) lapService.settings.config.finish = a.gate;
         else if (a.index < 0) lapService.setStartLine(a.gate);
@@ -148,16 +146,17 @@ export default class LapController implements TabController {
     const s = state as { field?: string; settings?: LapSettings; reference?: number; overlays?: number[] };
     if (s.field) this.field = s.field;
     if (s.settings) {
-      lapService.settings = { ...lapService.settings, ...s.settings };
-      for (const { roles } of LapSourceGroups) {
-        for (const [role] of roles) {
-          if (typeof s.settings[role] === "string") lapService.setSource(role, s.settings[role]);
-        }
-      }
+      // Roles saved empty, as an old layout with no log has them, are left to auto-detection.
+      const settings = { ...s.settings };
+      for (const { roles } of LapSourceGroups)
+        for (const [role] of roles) if (typeof settings[role] !== "string") delete settings[role];
+      lapService.settings = { ...lapService.settings, ...settings };
+      for (const { roles } of LapSourceGroups)
+        for (const [role] of roles) if (settings[role]) lapService.setSource(role, settings[role]);
     }
     this.syncSources(false);
     if (s.reference !== undefined) lapService.reference = s.reference;
-    if (s.overlays) lapService.overlays = s.overlays;
+    if (s.overlays) lapService.setOverlays(s.overlays);
     lapService.invalidate();
   }
   refresh() {

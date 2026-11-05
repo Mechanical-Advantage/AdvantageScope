@@ -39,11 +39,24 @@ test("a line placed at the cursor lies across the direction of travel and gives 
   assert.equal(gateAt([], 0), undefined);
 });
 
-test("a sample lying exactly on the line still counts as a crossing", () => {
-  // 270 samples in the last lap puts one exactly on a line a third of the way round.
-  const samples = circuit([30, 27, 27]);
+test("a line at the cursor doesn't land on a sample when laps repeat exactly", () => {
+  const samples = circuit([30, 30, 30]);
   const gate = gateAt(samples, samples[100].t)!;
   assert.equal(analyze(samples, { gate }).laps.filter((l) => l.complete).length, 2);
+});
+
+test("a line at the end of the log or where the car is stopped still lies across its travel", () => {
+  const samples = circuit(LAP_TIMES);
+  const length = (g: Gate) => Math.hypot(g.a.x - g.b.x, g.a.y - g.b.y);
+  assert.ok(length(gateAt(samples, samples.at(-1)!.t)!) > 23.9);
+  // Stopped for 60 samples at sample 100.
+  const stopped = samples.map((p, i) =>
+    i >= 100 && i < 160 ? { ...p, x: samples[100].x, y: samples[100].y } : p
+  );
+  const gate = gateAt(stopped, stopped[120].t)!;
+  assert.ok(length(gate) > 23.9);
+  assert.ok(analyze(stopped, { gate }).laps.filter((l) => l.valid).length >= 3);
+  assert.equal(gateAt([{ t: 0, x: 0, y: 0 }, { t: 1, x: 0, y: 0 }], 0), undefined);
 });
 
 test("the way round a line's ends lie doesn't change the laps", () => {
@@ -127,11 +140,13 @@ test("live overlays take in new laps until the user chooses some", () => {
   service.invalidate();
   service.update();
   assert.deepEqual(service.overlays, [1, 2, 3]);
-  service.overlays = [2];
+  // Unchecking a lap and checking it again is still the user's choice.
+  service.setOverlays([1, 2]);
+  service.setOverlays([1, 2, 3]);
   feed(1000, samples.length);
   service.invalidate();
   service.update();
-  assert.deepEqual(service.overlays, [2]);
+  assert.deepEqual(service.overlays, [1, 2, 3]);
 });
 
 test("the map cursor follows timeline hover through the render time", () => {

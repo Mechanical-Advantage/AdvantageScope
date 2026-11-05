@@ -128,3 +128,78 @@ test("old layout strings and empty roles restore into both tabs' source lists", 
   lapService.fields();
   assert.equal(lapService.settings.latitude, "");
 });
+
+function positionList(fields: string[], state: any[]) {
+  const log = new Log();
+  for (const key of fields) log.putNumber(key, 0, 1);
+  (globalThis as any).window = { log, sendMainMessage() {} };
+  const list: any = Object.create(SourceList.prototype);
+  Object.assign(list, {
+    UUID: "lap-sources-test",
+    config: LapSourceConfigs[0],
+    state: [],
+    supplementalStateSuppliers: [],
+    LIST: node(),
+    events: new AbortController(),
+    updateItem() {},
+    updateHandIcon() {}
+  });
+  list.ITEM_TEMPLATE = node(list.LIST);
+  for (const item of state) list.addListItem(item);
+  return list;
+}
+const roles = (list: any) =>
+  Object.fromEntries(list.getState().map((item: any) => [item.type, item.logKey]));
+const row = (type: string, logKey: string) => ({ type, logKey, logType: "Number", visible: true, options: {} });
+
+test("a dropped field goes to the role it is named after, even on an auto-filled list", () => {
+  const list = positionList(["rear_lat", "rear_lon"], [row("latitude", "front_lat"), row("longitude", "front_lon")]);
+  list.addField("rear_lat");
+  list.addField("rear_lon");
+  assert.deepEqual(roles(list), { latitude: "rear_lat", longitude: "rear_lon" });
+});
+
+test("fields with other names fill empty roles, then take a full list's roles in turn", () => {
+  const list = positionList(["a", "b", "c"], [row("latitude", "x"), row("longitude", "y")]);
+  list.addField("a");
+  assert.deepEqual(roles(list), { latitude: "x", longitude: "y", yaw: "a" });
+  list.addField("b");
+  list.addField("c");
+  assert.deepEqual(roles(list), { latitude: "b", longitude: "c", yaw: "a" });
+});
+
+test("a second log replaces the first log's paths, which stay missing only within one log", () => {
+  const log = new Log();
+  log.putNumber("first/lap_counter", 0, 1);
+  (globalThis as any).window = { log };
+  const service = new LapService();
+  service.fields();
+  assert.equal(service.settings.counter, "first/lap_counter");
+  service.setSource("beacon", "first/not_loaded_yet");
+  service.fields();
+  assert.equal(service.settings.beacon, "first/not_loaded_yet");
+  // An empty log is what the hub holds while the next file opens.
+  (globalThis as any).window.log = new Log();
+  service.fields();
+  assert.equal(service.settings.counter, "first/lap_counter");
+  (globalThis as any).window.log.putNumber("second/lap_counter", 0, 1);
+  service.fields();
+  assert.equal(service.settings.counter, "second/lap_counter");
+  assert.equal(service.settings.beacon, "");
+});
+
+test("a layout's empty or malformed roles leave auto-detection on", () => {
+  const log = new Log();
+  log.putNumber("gps/latitude", 0, -37);
+  (globalThis as any).window = { log };
+  const controller: any = Object.create(LapController.prototype);
+  controller.sources = LapSourceConfigs.map(() => ({ getState: () => [], setState() {} }));
+  controller.sourceStates = [];
+  lapService.setSource("latitude", "");
+  (globalThis as any).window.log = new Log();
+  (globalThis as any).window.log.putNumber("gps/latitude", 0, -37);
+  controller.restoreState({ settings: { latitude: "", longitude: 5 } });
+  lapService.fields();
+  assert.equal(lapService.settings.latitude, "gps/latitude");
+  assert.equal(lapService.settings.longitude, "");
+});

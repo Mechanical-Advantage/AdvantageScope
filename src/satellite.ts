@@ -61,12 +61,9 @@ function updateVisualizer() {
   if (type === null) return;
 
   // Update visible elements
-  for (let i = 0; i < document.body.childElementCount; i++) {
-    let element = document.getElementById("renderer" + i.toString());
-    if (element !== null) {
-      element.hidden = type !== i;
-    }
-  }
+  document.querySelectorAll<HTMLElement>('[id^="renderer"]').forEach((element) => {
+    element.hidden = element.id !== "renderer" + type!.toString();
+  });
 
   // Create renderer
   let root = document.getElementById("renderer" + type.toString()) as HTMLElement;

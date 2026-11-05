@@ -60,8 +60,7 @@ export function crossing(p: Sample, q: Sample, gate: Gate): number | undefined {
   const offset = sub(gate.a, p),
     u = cross(offset, r) / den,
     v = cross(offset, s) / den;
-  // The tolerance keeps a sample lying exactly on the line from falling between two segments.
-  if (v >= -1e-9 && v <= 1 + 1e-9 && u >= 0 && u <= 1) return p.t + v * (q.t - p.t);
+  if (v > 0 && v <= 1 && u >= 0 && u <= 1) return p.t + v * (q.t - p.t);
 }
 export function interpolate(xs: number[], ys: number[], x: number): number {
   if (!xs.length) return NaN;
@@ -102,18 +101,27 @@ export function autoGate(samples: Sample[], minTime = 20): Gate | undefined {
     direction: -1
   };
 }
-/** A 24 m line across the direction of travel, at the sample nearest a time. */
+/**
+ * A 24 m line across the direction of travel, near the sample nearest a time. The car may be stopped
+ * there or the log may end there, so travel comes from the next sample 1 m away, or else the last one.
+ * The line sits 0.5 m from the sample, because a sample exactly on it can round to neither side.
+ */
 export function gateAt(samples: Sample[], time: number): Gate | undefined {
   if (!samples.length) return;
   const i = samples.reduce((best, p, j) => (Math.abs(p.t - time) < Math.abs(samples[best].t - time) ? j : best), 0),
     p = samples[i],
-    q = samples[Math.min(i + 1, samples.length - 1)],
-    dx = q.x - p.x,
-    dy = q.y - p.y,
-    n = Math.hypot(dx, dy) || 1;
+    moved = (q: Sample) => Math.hypot(q.x - p.x, q.y - p.y) >= 1,
+    next = samples.slice(i + 1).find(moved),
+    q = next ?? samples.slice(0, i).reverse().find(moved);
+  if (!q) return;
+  const sign = next ? 1 : -1,
+    n = Math.hypot(q.x - p.x, q.y - p.y),
+    dx = (sign * (q.x - p.x)) / n,
+    dy = (sign * (q.y - p.y)) / n,
+    c = { x: p.x + (sign * dx) / 2, y: p.y + (sign * dy) / 2 };
   return {
-    a: { x: p.x - (dy / n) * 12, y: p.y + (dx / n) * 12 },
-    b: { x: p.x + (dy / n) * 12, y: p.y - (dx / n) * 12 }
+    a: { x: c.x - dy * 12, y: c.y + dx * 12 },
+    b: { x: c.x + dy * 12, y: c.y - dx * 12 }
   };
 }
 export function classifySkidpad(yaws: number[]): string[] {

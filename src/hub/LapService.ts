@@ -31,6 +31,17 @@ export type LapSettings = {
 };
 export type LapSourceRole = Exclude<keyof LapSettings, "radius" | "ratio" | "config">;
 export const LAP_COLORS = ["#58a7ff", "#f4b860", "#72d6a0", "#d49bff", "#ff8c9c", "#70d6de"];
+const SOURCE_ROLES: LapSourceRole[] = [
+  "latitude",
+  "longitude",
+  "frontLeft",
+  "frontRight",
+  "speed",
+  "rpm",
+  "yaw",
+  "counter",
+  "beacon"
+];
 export class LapService {
   settings: LapSettings = {
     latitude: "",
@@ -49,7 +60,7 @@ export class LapService {
   result: LapResult = { laps: [], samples: [], theoretical: [] };
   reference: number | null = null;
   overlays: number[] = [];
-  private autoOverlays: number[] = [];
+  private autoOverlays = true;
   selected: number | null = null;
   version = 0;
   private log?: Log;
@@ -62,6 +73,7 @@ export class LapService {
   private grids = new WeakMap<object, { d: number[]; t: number[] }>();
   private sourceLog?: Log;
   private cleared = new Set<LapSourceRole>();
+  private sourcesChecked = false;
   setSource(role: LapSourceRole, key: string) {
     this.fields();
     this.settings[role] = key;
@@ -76,6 +88,12 @@ export class LapService {
     if (this.sourceLog !== window.log) {
       this.sourceLog = window.log;
       this.cleared.clear();
+      this.sourcesChecked = false;
+    }
+    // Another log's paths give way once this log's fields arrive. After that a missing path stays, shown as missing.
+    if (keys.length && !this.sourcesChecked) {
+      this.sourcesChecked = true;
+      for (const role of SOURCE_ROLES) if (s[role] && !keys.includes(s[role])) s[role] = "";
     }
     if (!this.cleared.has("latitude")) s.latitude ||= find(/front.*latitude$/i) || find(/(?:gps\/latitude|latitude)$/i);
     if (!this.cleared.has("longitude"))
@@ -108,8 +126,13 @@ export class LapService {
     delete config.manual;
     this.reference = null;
     this.overlays = [];
+    this.autoOverlays = true;
     this.selected = null;
     this.invalidate();
+  }
+  setOverlays(indices: number[]) {
+    this.overlays = indices;
+    this.autoOverlays = false;
   }
   invalidate() {
     this.signature = "";
@@ -125,6 +148,7 @@ export class LapService {
       this.slipSignature = "";
       this.reference = null;
       this.overlays = [];
+      this.autoOverlays = true;
       this.selected = null;
     }
     if (performance.now() < this.nextUpdate) return;
@@ -314,8 +338,8 @@ export class LapService {
     if (this.reference === null || !this.result.laps.some((l) => l.index === this.reference))
       this.reference = this.result.best ?? null;
     // New live laps join the overlay until the user chooses their own.
-    if (!this.overlays.length || String(this.overlays) === String(this.autoOverlays))
-      this.overlays = this.autoOverlays = this.result.laps
+    if (this.autoOverlays || !this.overlays.length)
+      this.overlays = this.result.laps
         .filter((l) => l.valid)
         .slice(0, 4)
         .map((l) => l.index);

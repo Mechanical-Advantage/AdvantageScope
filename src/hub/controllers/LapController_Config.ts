@@ -8,29 +8,29 @@
 import { SourceListConfig } from "../../shared/SourceListConfig";
 import { LapSourceRole } from "../LapService";
 
-export const LapSourceGroups: { title: string; roles: [LapSourceRole, string][] }[] = [
+export const LapSourceGroups: { title: string; roles: [LapSourceRole, string, string][] }[] = [
   {
     title: "Position",
     roles: [
-      ["latitude", "Latitude"],
-      ["longitude", "Longitude"],
-      ["yaw", "Yaw Rate"]
+      ["latitude", "Latitude", "lat(itude)?$"],
+      ["longitude", "Longitude", "(lon|lng|longitude)$"],
+      ["yaw", "Yaw Rate", "yaw"]
     ]
   },
   {
     title: "Speed",
     roles: [
-      ["speed", "Speed"],
-      ["frontLeft", "Front Left Wheel"],
-      ["frontRight", "Front Right Wheel"],
-      ["rpm", "Motor RPM"]
+      ["speed", "Speed", "^(vehicle|ground|gps)?.?speed"],
+      ["frontLeft", "Front Left Wheel", "(fl|front.?left)$"],
+      ["frontRight", "Front Right Wheel", "(fr|front.?right)$"],
+      ["rpm", "Motor RPM", "rpm|motor.?speed"]
     ]
   },
   {
     title: "Lap Detection",
     roles: [
-      ["counter", "Lap Counter"],
-      ["beacon", "Lap Beacon"]
+      ["counter", "Lap Counter", "lap.?count"],
+      ["beacon", "Lap Beacon", "beacon"]
     ]
   }
 ];
@@ -39,9 +39,10 @@ export const LapSourceConfigs: SourceListConfig[] = LapSourceGroups.map(({ title
   title,
   autoAdvance: true,
   allowChildrenFromDrag: false,
-  types: roles.map(([key, display]) => ({
+  types: roles.map(([key, display, fieldPattern]) => ({
     key,
     display,
+    fieldPattern,
     symbol: "numbers",
     showInTypeName: true,
     color: "#58a7ff",

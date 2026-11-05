@@ -27,6 +27,8 @@ export type SourceListTypeConfig = {
   sourceTypes: string[];
   /** Replace the existing field when assigning this role. */
   singleField?: boolean;
+  /** Regular expression for the last part of a field's key. A dropped field that matches takes this role first. */
+  fieldPattern?: string;
   /** Identifies parents with shared children types */
   parentKey?: string;
   /** Parent key this child is attached to */
