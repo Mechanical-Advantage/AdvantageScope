@@ -90,8 +90,6 @@ let firstOpenPath: string | null = null; // Cache path to open immediately
 
 let advantageScopeAssets: AdvantageScopeAssets = {
   field2ds: [],
-  field3ds: [],
-  robots: [],
   loadFailures: []
 };
 
@@ -1174,16 +1172,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       }
       break;
 
-    case "ask-3d-camera":
-      select3DCameraPopup(
-        window,
-        message.data.position,
-        message.data.options,
-        message.data.selectedIndex,
-        message.data.fov
-      );
-      break;
-
     case "ask-2d-camera":
       select2DCameraPopup(window, message.data.position, message.data.selectedIndex);
       break;
@@ -1284,70 +1272,6 @@ function newTabPopup(window: BrowserWindow, rect: ButtonRect) {
     window: window,
     x: Math.round(rect.x + rect.width),
     y: Math.round(rect.y)
-  });
-}
-
-function select3DCameraPopup(
-  window: BrowserWindow,
-  position: [number, number],
-  options: string[],
-  selectedIndex: number,
-  fov: number
-) {
-  const cameraMenu = new Menu();
-  cameraMenu.append(
-    new MenuItem({
-      label: "Orbit Field",
-      type: "checkbox",
-      checked: selectedIndex === -1,
-      click() {
-        sendMessage(window, "set-3d-camera", -1);
-      }
-    })
-  );
-  cameraMenu.append(
-    new MenuItem({
-      label: "Orbit Robot",
-      type: "checkbox",
-      checked: selectedIndex === -2,
-      click() {
-        sendMessage(window, "set-3d-camera", -2);
-      }
-    })
-  );
-  cameraMenu.append(
-    new MenuItem({
-      label: "Set FOV...",
-      click() {
-        createEditFovWindow(window, fov, (newFov) => {
-          sendMessage(window, "edit-fov", newFov);
-        });
-      }
-    })
-  );
-  if (options.length > 0) {
-    cameraMenu.append(
-      new MenuItem({
-        type: "separator"
-      })
-    );
-  }
-  options.forEach((option, index) => {
-    cameraMenu.append(
-      new MenuItem({
-        label: option,
-        type: "checkbox",
-        checked: index === selectedIndex,
-        click() {
-          sendMessage(window, "set-3d-camera", index);
-        }
-      })
-    );
-  });
-  cameraMenu.popup({
-    window: window,
-    x: Math.round(position[0]),
-    y: Math.round(position[1])
   });
 }
 
@@ -2316,48 +2240,6 @@ function createRenameTabWindow(
 }
 
 /**
- * Creates a new window to edit the 3D field FOV.
- * @param parentWindow The parent window to use for alignment
- * @param fov Current FOV.
- * @param callback Window callback.
- */
-function createEditFovWindow(parentWindow: Electron.BrowserWindow, fov: number, callback: (newFov: number) => void) {
-  const editFovWindow = new BrowserWindow({
-    width: 300,
-    height: 81,
-    useContentSize: true,
-    resizable: false,
-    icon: WINDOW_ICON,
-    show: false,
-
-    parent: parentWindow,
-    modal: true,
-    webPreferences: {
-      preload: path.join(__dirname, "preload.js")
-    }
-  });
-
-  // Finish setup
-  editFovWindow.setMenu(null);
-  editFovWindow.setMenuBarVisibility(false);
-  editFovWindow.once("ready-to-show", editFovWindow.show);
-  editFovWindow.webContents.on("dom-ready", () => {
-    // Create ports on reload
-    const { port1, port2 } = new MessageChannelMain();
-    editFovWindow.webContents.postMessage("port", null, [port1]);
-    port2.postMessage(fov);
-    port2.on("message", (event) => {
-      editFovWindow.destroy();
-      callback(event.data);
-    });
-    editFovWindow.on("blur", () => port2.postMessage({ isFocused: false }));
-    editFovWindow.on("focus", () => port2.postMessage({ isFocused: true }));
-    port2.start();
-  });
-  editFovWindow.loadFile(path.join(__dirname, "../www/editFov.html"));
-}
-
-/**
  * Creates a new window for export options.
  * @param parentWindow The parent window to use for alignment
  * @param supportsAkit Whether AdvantageKit timestamps are supported
@@ -2534,16 +2416,6 @@ function createSatellite(
             }
             satellite.setContentSize(Math.round(newX), Math.round(newY));
           }
-          break;
-
-        case "ask-3d-camera":
-          select3DCameraPopup(
-            satellite,
-            message.data.position,
-            message.data.options,
-            message.data.selectedIndex,
-            message.data.fov
-          );
           break;
 
         case "ask-2d-camera":

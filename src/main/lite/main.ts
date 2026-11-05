@@ -1179,52 +1179,6 @@ async function handleHubMessage(message: NamedMessage) {
       }
       break;
 
-    case "ask-3d-camera":
-      {
-        let position: [number, number] = message.data.position;
-        let options: string[] = message.data.options;
-        let selectedIndex: number = message.data.selectedIndex;
-        let fov: number = message.data.fov;
-
-        let menuItems: (MenuItem | Submenu | "-")[] = [
-          {
-            content: (selectedIndex === -1 ? "\u2714 " : "") + "Orbit Field",
-            callback() {
-              sendMessage(hubPort, "set-3d-camera", -1);
-            }
-          },
-          {
-            content: (selectedIndex === -2 ? "\u2714 " : "") + "Orbit Robot",
-            callback() {
-              sendMessage(hubPort, "set-3d-camera", -2);
-            }
-          },
-          {
-            content: "Set FOV",
-            async callback() {
-              let port = await openPopupWindow("www/editFov.html", [300, 81], "pixels", (message) => {
-                closePopupWindow();
-                sendMessage(hubPort, "edit-fov", message);
-              });
-              port.postMessage(fov);
-            }
-          }
-        ];
-        if (options.length > 0) {
-          menuItems.push("-");
-        }
-        options.forEach((option, index) => {
-          menuItems.push({
-            content: (index === selectedIndex ? "\u2714 " : "") + option,
-            callback() {
-              sendMessage(hubPort, "set-3d-camera", index);
-            }
-          });
-        });
-        openMenu({ x: position[0], y: position[1], width: 0, height: 0 }, menuItems);
-      }
-      break;
-
     case "ask-2d-camera":
       {
         let position: [number, number] = message.data.position;

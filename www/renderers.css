@@ -169,66 +169,7 @@ div.field-2d-scroll-content {
 
 /* 3D Field */
 
-div.field-3d-canvas-container {
-  position: absolute;
-  bottom: 0%;
-  left: 0%;
-  width: 100%;
-  height: calc(100% + 26px);
-  overflow: hidden;
-}
-
-body.satellite div.field-3d-canvas-container {
-  height: 100%;
-}
-
-div.field-3d-canvas-container.fixed {
-  height: calc(100% + 10px);
-}
-
-body.satellite div.field-3d-canvas-container.fixed {
-  height: 100%;
-}
-
-canvas.field-3d-canvas:not(.fixed) {
-  position: absolute;
-  left: 0%;
-  top: 0%;
-  width: 100%;
-  height: 100%;
-}
-
-canvas.field-3d-canvas.fixed {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-canvas.field-3d-canvas.fixed {
-  border: 1px solid #555;
-}
-
-div.field-3d-alert {
-  position: absolute;
-  left: 50%;
-  top: 20px;
-  transform: translateX(-50%);
-  text-align: center;
-  padding: 10px;
-  background-color: #fff;
-  border: 1px solid #555;
-}
-
 @media (prefers-color-scheme: dark) {
-  canvas.field-3d-canvas.fixed {
-    border: 1px solid #999;
-  }
-
-  div.field-3d-alert {
-    background-color: #222;
-    border: 1px solid #999;
-  }
 }
 
 /* Source: https://freecodez.com/post/7pt17rk */

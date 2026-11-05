@@ -14,7 +14,6 @@ import TabType, { getTabIcon } from "./shared/TabType";
 import ConsoleRenderer from "./shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "./shared/renderers/DocumentationRenderer";
 import Field2dRenderer from "./shared/renderers/Field2dRenderer";
-import Field3dRenderer from "./shared/renderers/Field3dRenderer";
 import LapRenderer from "./shared/renderers/LapRenderer";
 import LineGraphRenderer from "./shared/renderers/LineGraphRenderer";
 import MetadataRenderer from "./shared/renderers/MetadataRenderer";
@@ -79,9 +78,6 @@ function updateVisualizer() {
       break;
     case TabType.Field2d:
       renderer = new Field2dRenderer(root);
-      break;
-    case TabType.Field3d:
-      renderer = new Field3dRenderer(root);
       break;
     case TabType.Table:
       renderer = new TableRenderer(root, false);
@@ -172,21 +168,9 @@ window.addEventListener("message", (event) => {
           }
           break;
 
-        case "set-3d-camera":
-          if (type === TabType.Field3d) {
-            (renderer as Field3dRenderer).set3DCamera(message.data);
-          }
-          break;
-
         case "set-2d-camera":
           if (type === TabType.Field2d) {
             (renderer as Field2dRenderer).set2DCamera(message.data);
-          }
-          break;
-
-        case "edit-fov":
-          if (type === TabType.Field3d) {
-            (renderer as Field3dRenderer).setFov(message.data);
           }
           break;
 

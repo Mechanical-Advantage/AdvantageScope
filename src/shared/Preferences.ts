@@ -17,9 +17,6 @@ export default interface Preferences {
   liveDiscard: number;
   mqttConnections: Record<string, MQTTSettings>;
   liveRecent: LiveRecentServer[]; // Most recent first (see ConnectDialog)
-  field3dModeAc: "cinematic" | "standard" | "low-power";
-  field3dModeBattery: "" | "cinematic" | "standard" | "low-power";
-  field3dAntialiasing: boolean;
   userAssetsFolder: string | null;
   dbcFolder: string; // Folder of .dbc files for CAN logs, empty for the bundled mur-msgs DBCs
   hasScrolledLineGraph: boolean;
@@ -45,9 +42,6 @@ export const DEFAULT_PREFS: Preferences = {
   liveDiscard: 1200,
   liveRecent: [],
   mqttConnections: {},
-  field3dModeAc: "standard",
-  field3dModeBattery: "",
-  field3dAntialiasing: true,
   userAssetsFolder: null,
   dbcFolder: "",
   hasScrolledLineGraph: false,
@@ -109,45 +103,6 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
       )
       .slice(0, MAX_LIVE_RECENT)
       .map((entry) => ({ source: entry.source, address: entry.address }));
-  }
-  if (
-    "threeDimensionModeAc" in newPrefs &&
-    (newPrefs.threeDimensionModeAc === "cinematic" ||
-      newPrefs.threeDimensionModeAc === "standard" ||
-      newPrefs.threeDimensionModeAc === "low-power")
-  ) {
-    // Migrate from v4
-    basePrefs.field3dModeAc = newPrefs.threeDimensionModeAc;
-  }
-  if (
-    "threeDimensionModeBattery" in newPrefs &&
-    (newPrefs.threeDimensionModeBattery === "" ||
-      newPrefs.threeDimensionModeBattery === "cinematic" ||
-      newPrefs.threeDimensionModeBattery === "standard" ||
-      newPrefs.threeDimensionModeBattery === "low-power")
-  ) {
-    // Migrate from v4
-    basePrefs.field3dModeBattery = newPrefs.threeDimensionModeBattery;
-  }
-  if (
-    "field3dModeAc" in newPrefs &&
-    (newPrefs.field3dModeAc === "cinematic" ||
-      newPrefs.field3dModeAc === "standard" ||
-      newPrefs.field3dModeAc === "low-power")
-  ) {
-    basePrefs.field3dModeAc = newPrefs.field3dModeAc;
-  }
-  if (
-    "field3dModeBattery" in newPrefs &&
-    (newPrefs.field3dModeBattery === "" ||
-      newPrefs.field3dModeBattery === "cinematic" ||
-      newPrefs.field3dModeBattery === "standard" ||
-      newPrefs.field3dModeBattery === "low-power")
-  ) {
-    basePrefs.field3dModeBattery = newPrefs.field3dModeBattery;
-  }
-  if ("field3dAntialiasing" in newPrefs && typeof newPrefs.field3dAntialiasing === "boolean") {
-    basePrefs.field3dAntialiasing = newPrefs.field3dAntialiasing;
   }
   if ("userAssetsFolder" in newPrefs && typeof newPrefs.userAssetsFolder === "string") {
     basePrefs.userAssetsFolder = newPrefs.userAssetsFolder;

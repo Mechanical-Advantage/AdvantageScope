@@ -1581,32 +1581,7 @@ div.field-2d-settings {
 
 /* 3D Field */
 
-div.field-3d-sources {
-  position: absolute;
-  top: 0%;
-  height: 100%;
-  left: 0%;
-  width: 60%;
-  min-width: calc(100% - 200px);
-}
-
-div.field-3d-settings {
-  position: absolute;
-  top: 0%;
-  height: 100%;
-  right: 0%;
-  width: 40%;
-  max-width: 200px;
-  border-left: 1px solid #ddd;
-
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
 @media (prefers-color-scheme: dark) {
-  div.field-3d-settings {
-    border-left: 1px solid black;
-  }
 }
 /* Statistics */
 
@@ -2235,31 +2210,6 @@ div.connect-dialog input.mqtt-timestamp {
 }
 
 /* Spatial controls retain the compact workbench appearance. */
-div.field-3d-settings > label {
-  display: block;
-  margin: 6px 10px;
-  font-size: 12px;
-}
-div.field-3d-settings input:not([type="checkbox"]) {
-  width: 105px;
-  background: transparent;
-  color: inherit;
-  border: 1px solid #888;
-  border-radius: 2px;
-  padding: 2px 4px;
-}
-div.field-3d-settings > button {
-  color: inherit;
-  border: 1px solid #888;
-  border-radius: 3px;
-  padding: 3px 6px;
-  margin: 4px 10px;
-  font-size: 12px;
-}
-div.field-3d-settings > div:last-child {
-  margin: 2px 10px;
-  font-size: 12px;
-}
 div.source-list .spatial-error .value {
   color: #d75b53;
 }
@@ -2638,7 +2588,6 @@ div.source-list div.item button.expander {
   border-radius: 3px;
   cursor: pointer;
 }
-div.field-3d-settings select,
 div.inline-settings select {
   color-scheme: light dark;
   font-size: 12px;
@@ -2654,11 +2603,6 @@ div.tf-popover[hidden] {
     background: #fff !important;
     color: #222;
   }
-}
-
-div.field-3d-settings select.field-select {
-  min-width: 110px;
-  color: inherit;
 }
 
 div.connect-bridge-hint > button {

@@ -5,10 +5,10 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { AnnotatedPose3d } from "../../shared/geometry";
+import { AnnotatedPose3d, ModuleVelocity } from "../../shared/geometry";
 import HistoryCursor from "../../shared/log/HistoryCursor";
 import Log from "../../shared/log/Log";
-import { Field3dRendererCommand_AnyObj } from "../../shared/renderers/Field3dRenderer";
+import { MechanismState } from "../../shared/log/LogMechanismState";
 import { coneStyle } from "../../shared/spatial/ConeStyle";
 import { metadata, rosPose, spatialSnapshot } from "../../shared/spatial/SpatialLog";
 import { TFTree, normalizeFrameId } from "../../shared/spatial/TFTree";
@@ -296,3 +296,114 @@ export class SpatialLayers {
     return { objects: objects.slice(-decay), frame, stamp };
   }
 }
+
+export type Field3dRendererCommand = {
+  field: string;
+  objects: Field3dRendererCommand_AnyObj[];
+  cameraOverride: AnnotatedPose3d | null;
+  allRobotModels: string[];
+};
+
+export type Field3dRendererCommand_AnyObj =
+  | Field3dRendererCommand_CloudObj
+  | Field3dRendererCommand_MarkerObj
+  | Field3dRendererCommand_URDFObj
+  | Field3dRendererCommand_RobotObj
+  | Field3dRendererCommand_GhostObj
+  | Field3dRendererCommand_GamePieceObj
+  | Field3dRendererCommand_TrajectoryObj
+  | Field3dRendererCommand_HeatmapObj
+  | Field3dRendererCommand_AprilTagObj
+  | Field3dRendererCommand_AprilTagBuiltInObj
+  | Field3dRendererCommand_AxesObj
+  | Field3dRendererCommand_ConeObj;
+
+export type Field3dRendererCommand_GenericRobotObj = {
+  model: string;
+  poses: AnnotatedPose3d[];
+  components: AnnotatedPose3d[];
+  mechanisms: {
+    xz: MechanismState | null;
+    yz: MechanismState | null;
+  };
+  visionTargets: AnnotatedPose3d[];
+  swerveModuleVelocities: {
+    values: ModuleVelocity[];
+    color: string;
+  }[];
+};
+
+export type Field3dRendererCommand_RobotObj = Field3dRendererCommand_GenericRobotObj & {
+  type: "robot";
+};
+
+export type Field3dRendererCommand_GhostObj = Field3dRendererCommand_GenericRobotObj & {
+  type: "ghost";
+  color: string;
+};
+
+export type Field3dRendererCommand_GamePieceObj = {
+  type: "gamePiece";
+  variant: string;
+  poses: AnnotatedPose3d[];
+};
+
+export type Field3dRendererCommand_TrajectoryObj = {
+  type: "trajectory";
+  color: string;
+  size: string;
+  poses: AnnotatedPose3d[];
+};
+
+export type Field3dRendererCommand_HeatmapObj = {
+  type: "heatmap";
+  poses: AnnotatedPose3d[];
+};
+
+export type Field3dRendererCommand_AprilTagVariant = {
+  family: "36h11" | "16h5";
+  inches: number;
+};
+
+export type Field3dRendererCommand_AprilTagObj = {
+  type: "aprilTag";
+  poses: AnnotatedPose3d[];
+  variant: Field3dRendererCommand_AprilTagVariant;
+};
+
+export type Field3dRendererCommand_AprilTagBuiltInObj = Omit<Field3dRendererCommand_AprilTagObj, "type"> & {
+  type: "aprilTagBuiltIn";
+};
+
+export type Field3dRendererCommand_AxesObj = {
+  type: "axes";
+  poses: AnnotatedPose3d[];
+};
+
+export type Field3dRendererCommand_ConeObj = {
+  type: "cone";
+  color: string;
+  position: "center" | "back" | "front";
+  poses: AnnotatedPose3d[];
+};
+
+export type Field3dRendererCommand_URDFObj = {
+  type: "urdf";
+  robot: URDFRobot;
+  assets: Record<string, string>;
+  links: Record<string, Transform>;
+};
+
+export type Field3dRendererCommand_MarkerObj = { type: "marker"; marker: any; frameTransform: Transform };
+
+export type Field3dRendererCommand_CloudObj = {
+  type: "cloud";
+  positions: Float32Array;
+  values: Float32Array;
+  colors: Float32Array | null;
+  min: number;
+  max: number;
+  transform: Transform;
+  size: number;
+  map: string;
+};

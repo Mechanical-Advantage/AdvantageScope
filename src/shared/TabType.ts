@@ -9,8 +9,8 @@ enum TabType {
   Documentation,
   LineGraph,
   Field2d,
-  Field3d,
-  Table,
+  // 3 was 3D Field. This value stays reserved for saved layouts.
+  Table = 4,
   Console,
   Statistics,
   Video,
@@ -32,7 +32,6 @@ export const LITE_COMPATIBLE_TABS = [
   TabType.Documentation,
   TabType.LineGraph,
   TabType.Field2d,
-  TabType.Field3d,
   TabType.Table,
   TabType.Console,
   TabType.Statistics,
@@ -50,8 +49,6 @@ export function getDefaultTabTitle(type: TabType): string {
       return "Line Graph";
     case TabType.Field2d:
       return "2D Field";
-    case TabType.Field3d:
-      return "3D Field";
     case TabType.Table:
       return "Table";
     case TabType.Console:
@@ -81,8 +78,6 @@ export function getTabIcon(type: TabType): string {
       return "📉";
     case TabType.Field2d:
       return "🗺";
-    case TabType.Field3d:
-      return "👀";
     case TabType.Table:
       return "🔢";
     case TabType.Console:
@@ -114,8 +109,6 @@ export function getTabAccelerator(type: TabType): string {
           return "G";
         case TabType.Field2d:
           return "2";
-        case TabType.Field3d:
-          return "3";
         case TabType.Table:
           return "T";
         case TabType.Console:
