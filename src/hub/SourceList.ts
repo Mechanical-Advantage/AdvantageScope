@@ -812,6 +812,14 @@ export default class SourceList {
 
   /** Make a list item element and inserts it into the list. */
   private addListItem(state: SourceListItemState, insertIndex?: number) {
+    if (this.config.types.find((type) => type.key === state.type)?.singleField) {
+      for (let i = this.state.length - 1; i >= 0; i--) {
+        if (this.state[i].type !== state.type) continue;
+        this.state.splice(i, 1);
+        this.LIST.children[i].remove();
+        if (insertIndex !== undefined && i < insertIndex) insertIndex--;
+      }
+    }
     let item = this.ITEM_TEMPLATE.cloneNode(true) as HTMLElement;
     Array.from(item.getElementsByTagName("object")).forEach((objElement) => {
       // Add a persistent load listener to re-apply the correct color.
@@ -863,6 +871,11 @@ export default class SourceList {
         delete SourceList.typePromptCallbacks[this.UUID];
         let index = Array.from(this.LIST.children).indexOf(item);
         this.state[index] = newState;
+        if (this.config.types.find((type) => type.key === newState.type)?.singleField) {
+          const state = this.state.filter((entry, i) => i === index || entry.type !== newState.type);
+          this.setState(state);
+          return;
+        }
         this.updateItem(item, newState);
 
         if (!isChild) {

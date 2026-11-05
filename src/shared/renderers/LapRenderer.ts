@@ -190,18 +190,6 @@ export default class LapRenderer implements TabRenderer {
         "autocross",
         "endurance"
       ]);
-      for (const key of [
-        "latitude",
-        "longitude",
-        "frontLeft",
-        "frontRight",
-        "speed",
-        "rpm",
-        "yaw",
-        "counter",
-        "beacon"
-      ] as const)
-        setting(key, key, c.settings[key]);
       setting("radius", "Wheel radius [m]", c.settings.radius);
       setting("ratio", "Motor / wheel ratio", c.settings.ratio);
       setting("minTime", "Minimum lap [s]", c.settings.config.minTime ?? 20);
@@ -240,7 +228,7 @@ export default class LapRenderer implements TabRenderer {
       if (!c.result.samples.length || !c.settings.latitude || !c.settings.longitude) {
         const p = document.createElement("p");
         p.className = "lap-empty";
-        p.textContent = "Open a log or connect to telemetry with GPS. Set latitude and longitude in Lap setup.";
+        p.textContent = "Open a log or connect to telemetry with GPS. Add latitude and longitude to the Position source list.";
         this.content.append(p);
       }
       return;

@@ -15,22 +15,30 @@ import { interpolate } from "../../shared/laps/LapEngine";
 import { LapCommand } from "../../shared/renderers/LapRenderer";
 import { createUUID } from "../../shared/util";
 import { lapService, LapSettings } from "../LapService";
+import SourceList from "../SourceList";
+import { LapSourceConfigs, LapSourceGroups } from "./LapController_Config";
 import TabController from "./TabController";
 
 export default class LapController implements TabController {
   private events = new AbortController();
   dispose() {
     this.events.abort();
+    this.sources.forEach((source) => source.stop());
   }
 
   UUID = createUUID();
   private field = "";
+  private sources: SourceList[] = [];
+  private sourceStates: string[] = [];
   private cached?: LapCommand;
   private cacheKey = "";
   constructor(
     root: HTMLElement,
-    private map: boolean
+    private map: boolean,
+    controls: HTMLElement
   ) {
+    this.sources = LapSourceConfigs.map((config, i) => new SourceList(controls.children[i] as HTMLElement, config, []));
+    this.syncSources();
     root.addEventListener("lap-action", (event) => {
       const a = (event as CustomEvent).detail;
       if (a.type === "seek") window.selection.setSelectedTime(a.time);
@@ -102,7 +110,30 @@ export default class LapController implements TabController {
       { signal: this.events.signal }
     );
   }
+  private syncSources(readEdits = true) {
+    lapService.fields();
+    this.sources.forEach((source, i) => {
+      const state = source.getState();
+      if (readEdits && this.sourceStates[i] !== undefined && JSON.stringify(state) !== this.sourceStates[i]) {
+        const previous = JSON.parse(this.sourceStates[i]) as ReturnType<SourceList["getState"]>;
+        for (const [role] of LapSourceGroups[i].roles) {
+          const key = state.find((item) => item.type === role)?.logKey ?? "";
+          if (key !== (previous.find((item) => item.type === role)?.logKey ?? "")) lapService.setSource(role, key);
+        }
+      }
+    });
+    this.sources.forEach((source, i) => {
+      const state = LapSourceGroups[i].roles.flatMap(([role]) => {
+        const key = lapService.settings[role];
+        return key ? [{ type: role, logKey: key, logType: "Number", visible: true, options: {} }] : [];
+      });
+      const serialized = JSON.stringify(state);
+      if (JSON.stringify(source.getState()) !== serialized) source.setState(state);
+      this.sourceStates[i] = serialized;
+    });
+  }
   saveState() {
+    this.syncSources();
     return {
       field: this.field,
       settings: lapService.settings,
@@ -114,12 +145,22 @@ export default class LapController implements TabController {
     if (!state || typeof state !== "object") return;
     const s = state as { field?: string; settings?: LapSettings; reference?: number; overlays?: number[] };
     if (s.field) this.field = s.field;
-    if (s.settings) lapService.settings = { ...lapService.settings, ...s.settings };
+    if (s.settings) {
+      lapService.settings = { ...lapService.settings, ...s.settings };
+      for (const { roles } of LapSourceGroups) {
+        for (const [role] of roles) {
+          if (typeof s.settings[role] === "string") lapService.setSource(role, s.settings[role]);
+        }
+      }
+    }
+    this.syncSources(false);
     if (s.reference !== undefined) lapService.reference = s.reference;
     if (s.overlays) lapService.overlays = s.overlays;
     lapService.invalidate();
   }
   refresh() {
+    this.syncSources();
+    this.sources.forEach((source) => source.refresh());
     lapService.invalidate();
   }
   newAssets() {}
@@ -130,6 +171,7 @@ export default class LapController implements TabController {
     return true;
   }
   getCommand(): LapCommand {
+    this.syncSources();
     lapService.update();
     if (this.field && !window.log.getFieldKeys().includes(this.field)) this.field = "";
     this.field ||= lapService.settings.speed || lapService.settings.frontLeft;

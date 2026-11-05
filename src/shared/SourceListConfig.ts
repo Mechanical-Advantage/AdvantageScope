@@ -25,6 +25,8 @@ export type SourceListTypeConfig = {
   color: string;
   darkColor?: string;
   sourceTypes: string[];
+  /** Replace the existing field when assigning this role. */
+  singleField?: boolean;
   /** Identifies parents with shared children types */
   parentKey?: string;
   /** Parent key this child is attached to */

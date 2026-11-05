@@ -94,8 +94,8 @@ export default class Tabs {
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Video, 85);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Points, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Metadata, 0);
-    this.FIXED_CONTROL_HEIGHTS.set(TabType.TrackMap, 0);
-    this.FIXED_CONTROL_HEIGHTS.set(TabType.Laps, 0);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.TrackMap, undefined);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.Laps, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.RawMessages, 0);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.RosLog, 0);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.RosImage, 0);
@@ -578,7 +578,7 @@ export default class Tabs {
         break;
       case TabType.TrackMap:
       case TabType.Laps:
-        controller = new LapController(rendererElement, type === TabType.TrackMap);
+        controller = new LapController(rendererElement, type === TabType.TrackMap, controlsElement);
         renderer = new LapRenderer(rendererElement);
         break;
       case TabType.RawMessages:

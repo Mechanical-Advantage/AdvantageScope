@@ -29,8 +29,9 @@ export type LapSettings = {
   ratio: number;
   config: LapConfig;
 };
+export type LapSourceRole = Exclude<keyof LapSettings, "radius" | "ratio" | "config">;
 export const LAP_COLORS = ["#58a7ff", "#f4b860", "#72d6a0", "#d49bff", "#ff8c9c", "#70d6de"];
-class LapService {
+export class LapService {
   settings: LapSettings = {
     latitude: "",
     longitude: "",
@@ -58,34 +59,33 @@ class LapService {
   private slipSignature = "";
   private derivedSignature = "";
   private grids = new WeakMap<object, { d: number[]; t: number[] }>();
+  private sourceLog?: Log;
+  private cleared = new Set<LapSourceRole>();
+  setSource(role: LapSourceRole, key: string) {
+    this.fields();
+    this.settings[role] = key;
+    if (key) this.cleared.delete(role);
+    else this.cleared.add(role);
+    this.invalidate();
+  }
   fields(): string[] {
     const keys = window.log.getFieldKeys().filter((k) => !k.startsWith("Laps/"));
     const find = (pattern: RegExp) => keys.find((k) => pattern.test(k)) ?? "";
     const s = this.settings;
-    if (keys.length) {
-      for (const key of [
-        "latitude",
-        "longitude",
-        "frontLeft",
-        "frontRight",
-        "speed",
-        "rpm",
-        "yaw",
-        "counter",
-        "beacon"
-      ] as const) {
-        if (s[key] && !keys.includes(s[key])) s[key] = "";
-      }
+    if (this.sourceLog !== window.log) {
+      this.sourceLog = window.log;
+      this.cleared.clear();
     }
-    s.latitude ||= find(/front.*latitude$/i) || find(/(?:gps\/latitude|latitude)$/i);
-    s.longitude ||= find(/front.*longitude$/i) || find(/(?:gps\/longitude|longitude)$/i);
-    s.frontLeft ||= find(/(?:DASH_SpeedFL|wheel_speed_fl|WheelSpeedFL)$/i);
-    s.frontRight ||= find(/(?:DASH_SpeedFR|wheel_speed_fr|WheelSpeedFR)$/i);
-    s.speed ||= find(/(?:vehicle_speed|ground_speed|gps.*speed)$/i);
-    s.rpm ||= find(/(?:motor_speed|MotorSpeedRPM)$/i);
-    s.yaw ||= find(/(?:yaw_rate|YawRate)$/i);
-    s.counter ||= find(/(?:lap_counter|lapcounter|lap_count)$/i);
-    s.beacon ||= find(/(?:lap_beacon|beacon)$/i);
+    if (!this.cleared.has("latitude")) s.latitude ||= find(/front.*latitude$/i) || find(/(?:gps\/latitude|latitude)$/i);
+    if (!this.cleared.has("longitude"))
+      s.longitude ||= find(/front.*longitude$/i) || find(/(?:gps\/longitude|longitude)$/i);
+    if (!this.cleared.has("frontLeft")) s.frontLeft ||= find(/(?:DASH_SpeedFL|wheel_speed_fl|WheelSpeedFL)$/i);
+    if (!this.cleared.has("frontRight")) s.frontRight ||= find(/(?:DASH_SpeedFR|wheel_speed_fr|WheelSpeedFR)$/i);
+    if (!this.cleared.has("speed")) s.speed ||= find(/(?:vehicle_speed|ground_speed|gps.*speed)$/i);
+    if (!this.cleared.has("rpm")) s.rpm ||= find(/(?:motor_speed|MotorSpeedRPM)$/i);
+    if (!this.cleared.has("yaw")) s.yaw ||= find(/(?:yaw_rate|YawRate)$/i);
+    if (!this.cleared.has("counter")) s.counter ||= find(/(?:lap_counter|lapcounter|lap_count)$/i);
+    if (!this.cleared.has("beacon")) s.beacon ||= find(/(?:lap_beacon|beacon)$/i);
     return [
       s.latitude,
       s.longitude,
