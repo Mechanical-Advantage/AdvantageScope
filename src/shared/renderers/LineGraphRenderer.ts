@@ -263,7 +263,6 @@ export default class LineGraphRenderer implements TabRenderer {
       command.sectorMarks,
       command.deltaStrip?.range,
       command.deltaStrip?.fields.map((f) => [f.values.length, f.color, f.size]),
-      command.thresholds,
       command.leftFields.map((field) => [
         field.values.length,
         field.color,
@@ -709,22 +708,6 @@ export default class LineGraphRenderer implements TabRenderer {
       }
     }
 
-    for (const threshold of command.thresholds ?? []) {
-      const range = threshold.axis === "left" ? command.leftRange : command.rightRange;
-      const y = scaleValue(threshold.value, range, [graphTop + graphHeightOpen, graphTop]);
-      if (y < graphTop || y > graphTop + graphHeight) continue;
-      context.strokeStyle = threshold.critical ? "#e66" : "#dba957";
-      context.fillStyle = context.strokeStyle;
-      context.lineWidth = 1;
-      context.setLineDash([6, 4]);
-      context.beginPath();
-      context.moveTo(graphLeft, y);
-      context.lineTo(graphLeft + graphWidth, y);
-      context.stroke();
-      context.textAlign = "left";
-      context.fillText(threshold.label, graphLeft + 6, y - 5);
-    }
-    context.setLineDash([]);
     // Update hovered time based on graph layout
     if (this.lastCursorX === null || this.lastCursorX < graphLeft || this.lastCursorX > graphLeft + graphWidth) {
       if (!this.didClearHoveredTime) {
@@ -1087,7 +1070,6 @@ export default class LineGraphRenderer implements TabRenderer {
 export type LineGraphRendererCommand = {
   message?: string;
   lapMode?: string;
-  thresholds?: { axis: "left" | "right"; value: number; label: string; critical: boolean }[];
   leftTitle?: string;
   rightTitle?: string;
   xUnit?: "s" | "m";
