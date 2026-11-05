@@ -60,7 +60,8 @@ export function crossing(p: Sample, q: Sample, gate: Gate): number | undefined {
   const offset = sub(gate.a, p),
     u = cross(offset, r) / den,
     v = cross(offset, s) / den;
-  if (v > 0 && v <= 1 && u >= 0 && u <= 1) return p.t + v * (q.t - p.t);
+  // The tolerance keeps a sample lying exactly on the line from falling between two segments.
+  if (v >= -1e-9 && v <= 1 + 1e-9 && u >= 0 && u <= 1) return p.t + v * (q.t - p.t);
 }
 export function interpolate(xs: number[], ys: number[], x: number): number {
   if (!xs.length) return NaN;
@@ -99,6 +100,20 @@ export function autoGate(samples: Sample[], minTime = 20): Gate | undefined {
     a: { x: c.x - (v.y / n) * 12, y: c.y + (v.x / n) * 12 },
     b: { x: c.x + (v.y / n) * 12, y: c.y - (v.x / n) * 12 },
     direction: -1
+  };
+}
+/** A 24 m line across the direction of travel, at the sample nearest a time. */
+export function gateAt(samples: Sample[], time: number): Gate | undefined {
+  if (!samples.length) return;
+  const i = samples.reduce((best, p, j) => (Math.abs(p.t - time) < Math.abs(samples[best].t - time) ? j : best), 0),
+    p = samples[i],
+    q = samples[Math.min(i + 1, samples.length - 1)],
+    dx = q.x - p.x,
+    dy = q.y - p.y,
+    n = Math.hypot(dx, dy) || 1;
+  return {
+    a: { x: p.x - (dy / n) * 12, y: p.y + (dx / n) * 12 },
+    b: { x: p.x + (dy / n) * 12, y: p.y - (dx / n) * 12 }
   };
 }
 export function classifySkidpad(yaws: number[]): string[] {
@@ -211,10 +226,20 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
     let armed = true,
       last = -Infinity;
     const center = { x: (gate.a.x + gate.b.x) / 2, y: (gate.a.y + gate.b.y) / 2 };
+    // A drawn line has no direction of its own. Laps run the way the car crosses it most.
+    let direction = gate.direction;
+    if (!direction) {
+      let sum = 0;
+      for (let i = 1; i < samples.length; i++)
+        if (crossing(samples[i - 1], samples[i], gate) !== undefined)
+          sum += Math.sign(cross(sub(samples[i], samples[i - 1]), sub(gate.b, gate.a)));
+      direction = Math.sign(sum);
+    }
+    const line = { ...gate, direction };
     for (let i = 1; i < samples.length; i++) {
       const p = samples[i];
       if (Math.hypot(p.x - center.x, p.y - center.y) >= (config.rearm ?? 30)) armed = true;
-      const t = crossing(samples[i - 1], p, gate);
+      const t = crossing(samples[i - 1], p, line);
       if (armed && t !== undefined && t - last >= min) {
         boundaries.push(t);
         last = t;
@@ -306,7 +331,8 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
     const valid =
       complete &&
       end - start >= min &&
-      !ts.some((t, j) => j > 0 && t - ts[j - 1] > 1) &&
+      // Crossings of a drawn line time the lap, so a GPS gap between them can't change the time.
+      (config.gate !== undefined || !ts.some((t, j) => j > 0 && t - ts[j - 1] > 1)) &&
       !stops.some((t) => t > start && t < end);
     result.laps.push({
       index: i,

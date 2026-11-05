@@ -12,7 +12,7 @@
 //   details, sim controls (only when the backend has sim endpoints) and connect/disconnect.
 
 import type { LapSettings } from "../../hub/LapService";
-import { Gate, LapResult, Point } from "../laps/LapEngine";
+import { Gate, gateAt, LapResult, Point } from "../laps/LapEngine";
 import { Units } from "../units";
 import TabRenderer from "./TabRenderer";
 function viridis(value: number): string {
@@ -198,30 +198,15 @@ export default class LapRenderer implements TabRenderer {
       setting("manual", "Manual splits [log seconds]", c.settings.config.manual?.join(","));
       this.button(panel, "Split at cursor", () => this.action({ type: "marker" }));
       this.button(panel, "Auto start gate", () => this.action({ type: "auto" }));
-      const addGate = (finish: boolean) => {
-        const c = this.command!;
-        const ss = c.result.samples;
-        if (!ss.length) return;
-        const i = ss.reduce(
-            (best, p, j) => (Math.abs(p.t - (c.time ?? 0)) < Math.abs(ss[best].t - (c.time ?? 0)) ? j : best),
-            0
-          ),
-          p = ss[i],
-          q = ss[Math.min(i + 1, ss.length - 1)],
-          dx = q.x - p.x,
-          dy = q.y - p.y,
-          n = Math.hypot(dx, dy) || 1;
-        this.action({
-          type: "gate",
-          index: finish ? -2 : c.settings.config.sectors?.length ?? 0,
-          gate: {
-            a: { x: p.x - (dy / n) * 12, y: p.y + (dx / n) * 12 },
-            b: { x: p.x + (dy / n) * 12, y: p.y - (dx / n) * 12 }
-          }
-        });
+      const addGate = (index: number) => {
+        const c = this.command!,
+          gate = gateAt(c.result.samples, c.time ?? 0);
+        if (gate) this.action({ type: "gate", index, gate });
       };
-      this.button(panel, "Add sector at cursor", () => addGate(false));
-      this.button(panel, "Set finish at cursor", () => addGate(true));
+      this.button(panel, "Add sector at cursor", () => addGate(c.settings.config.sectors?.length ?? 0));
+      this.button(panel, "Set start/finish at cursor", () => addGate(-1));
+      // Only autocross ends a run on a separate line.
+      if (c.settings.config.mode === "autocross") this.button(panel, "Set finish at cursor", () => addGate(-2));
     }
     if (c.map) {
       this.content.append(this.canvas);

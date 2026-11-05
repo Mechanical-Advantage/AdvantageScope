@@ -56,7 +56,7 @@ export default class LapController implements TabController {
       }
       if (a.type === "gate") {
         if (a.index === -2) lapService.settings.config.finish = a.gate;
-        else if (a.index < 0) lapService.settings.config.gate = a.gate;
+        else if (a.index < 0) lapService.setStartLine(a.gate);
         else {
           const gates = lapService.settings.config.sectors ?? [];
           gates[a.index] = a.gate;
@@ -84,10 +84,7 @@ export default class LapController implements TabController {
           lapService.invalidate();
         }
       }
-      if (a.type === "auto") {
-        delete lapService.settings.config.gate;
-        lapService.invalidate();
-      }
+      if (a.type === "auto") lapService.setStartLine();
       if (a.type === "field") this.field = a.field;
     });
     window.addEventListener(
@@ -186,7 +183,7 @@ export default class LapController implements TabController {
       lapService.overlays,
       lapService.selected
     ]);
-    if (this.cached && cacheKey === this.cacheKey) return { ...this.cached, time: window.selection.getSelectedTime() };
+    if (this.cached && cacheKey === this.cacheKey) return { ...this.cached, time: window.selection.getRenderTime() };
     this.cacheKey = cacheKey;
     const samples = lapService.result.samples;
     const values = samples.map((p) => (data ? interpolate(data.timestamps, data.values, p.t) : NaN));
@@ -200,7 +197,7 @@ export default class LapController implements TabController {
       selected: lapService.selected,
       reference: lapService.reference,
       overlays: lapService.overlays,
-      time: window.selection.getSelectedTime(),
+      time: window.selection.getRenderTime(),
       version: lapService.version,
       metrics: lapService.result.laps.map((l) => {
         const vs = values.filter((v, i) => samples[i].t >= l.start && samples[i].t < l.end && Number.isFinite(v));

@@ -11,7 +11,7 @@
 // - LiveStatusPill: title-bar pill with three separate indicators (backend, car, sim), plus a popover with
 //   details, sim controls (only when the backend has sim endpoints) and connect/disconnect.
 
-import { analyze, interpolate, LapConfig, LapResult, project, Sample } from "../shared/laps/LapEngine";
+import { analyze, Gate, interpolate, LapConfig, LapResult, project, Sample } from "../shared/laps/LapEngine";
 import { slipRatio } from "../shared/laps/SlipRatio";
 import Log from "../shared/log/Log";
 
@@ -98,6 +98,17 @@ export class LapService {
       s.beacon,
       find(/(?:gps\/ground_speed|ground_speed)$/i)
     ].filter(Boolean);
+  }
+  /** The start/finish line replaces manual splits and renumbers the laps, so overlays are chosen again. */
+  setStartLine(gate?: Gate) {
+    const config = this.settings.config;
+    if (gate) config.gate = { a: gate.a, b: gate.b };
+    else delete config.gate;
+    delete config.manual;
+    this.reference = null;
+    this.overlays = [];
+    this.selected = null;
+    this.invalidate();
   }
   invalidate() {
     this.signature = "";
