@@ -2365,53 +2365,9 @@ body.health-visible:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-
   }
 }
 
-.graph-unit-prompt {
-  position: absolute;
-  top: 56px;
-  left: 8px;
-  right: 8px;
-  z-index: 20;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  background: #fff;
-  color: #222;
-  border: 1px solid #dba957;
-  border-radius: 4px;
-  padding: 6px 8px;
-  font-size: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
-}
-.graph-unit-prompt button:focus-visible {
-  outline: 2px solid #dba957;
-  outline-offset: 1px;
-}
 body.trackside-layout div.line-graph-help {
   display: none !important;
 }
-div.source-list .graph-unit-prompt button {
-  position: static;
-  width: auto;
-  height: auto;
-  min-height: 24px;
-  font-size: 12px;
-  padding: 1px 8px;
-  border: 1px solid rgba(128, 128, 128, 0.6);
-  border-radius: 4px;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
-}
-.graph-unit-prompt button:first-of-type {
-  border-color: #dba957;
-}
-@media (prefers-color-scheme: dark) {
-  .graph-unit-prompt {
-    background: #333;
-    color: #eee;
-  }
-}
-
 @media (prefers-color-scheme: dark) {
   .live-freshness-legend {
     color: #bbb;

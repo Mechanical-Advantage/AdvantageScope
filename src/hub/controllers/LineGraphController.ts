@@ -187,33 +187,8 @@ export default class LineGraphController implements TabController {
         });
       }
     );
-    for (const [source, other] of [
-      [this.leftSourceList, this.rightSourceList],
-      [this.rightSourceList, this.leftSourceList]
-    ] as const) {
-      source.beforeAdd = (key) => {
-        if (this.lapMode !== "time" && source === this.rightSourceList) {
-          // The right axis is locked to ΔT in lap-distance mode
-          const lock = document.createElement("div");
-          lock.className = "graph-unit-prompt";
-          lock.append("Right axis is locked to ΔT in lap modes, so this signal can't go there. ");
-          const move = document.createElement("button");
-          move.textContent = "Add to Left Axis instead";
-          move.onclick = () => {
-            other.addField(key);
-            lock.remove();
-          };
-          const cancel = document.createElement("button");
-          cancel.textContent = "Cancel";
-          cancel.onclick = () => lock.remove();
-          lock.append(move, cancel);
-          root.querySelector(".graph-unit-prompt")?.remove();
-          root.append(lock);
-          return false;
-        }
-        return true;
-      };
-    }
+    // The right axis is locked to ΔT in lap modes, which its title and list already say.
+    this.rightSourceList.beforeAdd = () => this.lapMode === "time";
   }
 
   private axisTitle(source: SourceList, unit: Units.UnitConfig | null, filter: LineGraphFilter): string {
