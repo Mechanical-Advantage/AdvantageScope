@@ -102,7 +102,6 @@ export function getMetadataString(descriptor: SignalDescriptor): string {
     description: descriptor.description,
     source: descriptor.source
   };
-  if (descriptor.encoding) metadata.encoding = descriptor.encoding;
   if (descriptor.unit !== null && descriptor.unit !== "") {
     metadata.unit = UNIT_ALIASES[descriptor.unit] ?? descriptor.unit;
   }

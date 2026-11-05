@@ -18,8 +18,6 @@ import type {
   HistoryResponse,
   IngressLink,
   SignalDescriptor,
-  SimStatus,
-  SimStatusOp,
   TelemetrySample,
   TimeQuality
 } from "./contract.ts";
@@ -45,7 +43,6 @@ export interface BackendOptions {
   catalogueChurn: boolean;
   unsync: boolean;
   unsyncSource: Source;
-  simClock: boolean;
   lapCounter: boolean;
   history: boolean;
   historySeconds: number;
@@ -64,7 +61,6 @@ export const DEFAULT_OPTIONS: BackendOptions = {
   catalogueChurn: false,
   unsync: false,
   unsyncSource: "ennoid-bms",
-  simClock: false,
   lapCounter: false,
   history: true,
   historySeconds: 360,
@@ -81,7 +77,6 @@ export interface BackendListener {
   onSample(s: TelemetrySample): void;
   onCatalogue(op: CatalogueUpsertOp | CatalogueRemoveOp): void;
   onAvailability(op: AvailabilityOp): void;
-  onSimStatus(op: SimStatusOp): void;
   flush(force?: boolean): void;
 }
 
@@ -115,8 +110,6 @@ export class MockBackend {
   private bootNonce: string;
   readonly startNs: bigint;
   tick = 0;
-  resetCount = 0;
-  paused = false;
   streamIds: Record<string, string> = {};
   private canFrames = 0;
   private messages: string[] = [];
@@ -140,7 +133,7 @@ export class MockBackend {
     for (const d of buildSignals({ lapCounter: this.opts.lapCounter })) this.register(d, false);
   }
 
-  /** (Re)initialises the simulated run: vehicle, noise RNG, stream ids, seq counters. */
+  /** Initialises the vehicle, noise RNG, stream ids and sequence counters. */
   private initRun(): void {
     this.tick = 0;
     this.vehicle = new Vehicle(this.track, this.opts.seed);
@@ -150,13 +143,9 @@ export class MockBackend {
     this.sourceDown = false;
     this.streamIds = {};
     for (const src of SOURCES) {
-      this.streamIds[src] = `${src}-${hexId(`${this.opts.seed}:${this.bootNonce}:${this.resetCount}:${src}`, 6)}`;
+      this.streamIds[src] = `${src}-${hexId(`${this.opts.seed}:${this.bootNonce}:0:${src}`, 6)}`;
     }
     this.seqs.clear();
-    // rebuild per-sensor state but keep descriptors (identical -> no catalogue events)
-    for (const d of buildSignals({ lapCounter: this.opts.lapCounter })) {
-      if (this.defs.has(d.desc.path)) this.defs.set(d.desc.path, d);
-    }
   }
 
   // ------------------------------------------------------------------------------- catalogue
@@ -164,7 +153,7 @@ export class MockBackend {
   private register(def: SignalDef, broadcast = true): void {
     const path = def.desc.path;
     this.defs.set(path, def);
-    const desc: SignalDescriptor = this.opts.simClock ? { ...def.desc, clock_domain: "sim" } : { ...def.desc };
+    const desc: SignalDescriptor = { ...def.desc };
     this.catalogue.set(path, desc);
     this.revision++;
     if (!this.history.has(path) || this.history.get(path)!.type !== desc.type) {
@@ -203,7 +192,6 @@ export class MockBackend {
       api_version: API_VERSION,
       catalogue_epoch: this.epoch,
       revision: this.revision,
-      clock_domain: this.opts.simClock ? "sim" : "unix",
       signals: [...this.catalogue.values()]
     };
   }
@@ -250,57 +238,14 @@ export class MockBackend {
     return BigInt(this.tick) * TICK_NS;
   }
 
-  /** t_ns of the current tick in the server's clock domain (before any unsync skew). */
+  /** Unix t_ns of the current tick (before any unsync skew). */
   nowNs(): bigint {
-    return this.opts.simClock ? this.simTimeNs() : this.startNs + this.simTimeNs();
-  }
-
-  simStatus(): SimStatus {
-    return {
-      clock_domain: this.opts.simClock ? "sim" : "unix",
-      state: this.paused ? "paused" : "running",
-      sim_time_ns: this.simTimeNs().toString(),
-      reset_count: this.resetCount,
-      stream_ids: { ...this.streamIds },
-      speed: this.opts.speed
-    };
-  }
-
-  private broadcastSim(reason: SimStatusOp["reason"]): void {
-    const op: SimStatusOp = { op: "sim_status", reason, ...this.simStatus() };
-    for (const l of this.listeners) l.onSimStatus(op);
-  }
-
-  pause(): void {
-    if (this.paused) return;
-    this.flushAll(true);
-    this.paused = true;
-    this.broadcastSim("pause");
-  }
-  resume(): void {
-    if (!this.paused) return;
-    this.paused = false;
-    this.lastRealMs = performance.now();
-    this.carryTicks = 0;
-    this.broadcastSim("resume");
-  }
-  /** Sim time jumps back to 0; every source gets a new stream_id and seq restarts. */
-  reset(): void {
-    this.flushAll(true);
-    this.resetCount++;
-    this.initRun();
-    this.latest.clear();
-    for (const a of this.avail.values()) a.lastSeenTick = 0;
-    if (this.churnActive) this.unregister(this.churnActive);
-    this.churnActive = null;
-    this.lastRealMs = performance.now();
-    this.carryTicks = 0;
-    this.broadcastSim("reset");
+    return this.startNs + this.simTimeNs();
   }
 
   // ------------------------------------------------------------------------------- simulation
 
-  /** Advances the simulation by n ticks (ignores pause; the real-time loop respects it). */
+  /** Advances the vehicle model by n ticks. */
   advance(n = 1): void {
     for (let i = 0; i < n; i++) this.step();
   }
@@ -394,14 +339,14 @@ export class MockBackend {
       // free-running source clock: 1.734 s offset plus 80 ppm drift
       tNs = tTrue + 1_734_000_000n + (this.simTimeNs() * 80n) / 1_000_000n;
       tq = "unsynchronised";
-    } else if (this.opts.simClock || src === "sbg-ins" || src === "autonomy") {
-      tq = "synchronised"; // sim clock / GNSS-disciplined
+    } else if (src === "sbg-ins" || src === "autonomy") {
+      tq = "synchronised"; // GNSS-disciplined
     } else {
       tq = "estimated"; // stamped on reception at the car gateway
     }
     let value: unknown = raw;
     if (desc.type === "int64") value = encodeInt64(BigInt(raw as number | string));
-    const primaryLink: IngressLink = this.opts.simClock ? "lan" : this.opts.duplicate ? "rf" : "cellular";
+    const primaryLink: IngressLink = this.opts.duplicate ? "rf" : "cellular";
     const sample: TelemetrySample = {
       path,
       stream_id: streamId,
@@ -426,7 +371,6 @@ export class MockBackend {
 
   private receivedNs(tTrue: bigint, loMs: number, hiMs: number): string {
     const lat = BigInt(Math.round(this.linkRng.range(loMs, hiMs) * 1e6));
-    if (this.opts.simClock) return (wallNowNs() + lat).toString();
     return (tTrue + lat).toString();
   }
 
@@ -482,7 +426,6 @@ export class MockBackend {
     const now = performance.now();
     const elapsed = now - this.lastRealMs;
     this.lastRealMs = now;
-    if (this.paused) return;
     this.carryTicks += (elapsed / 1000) * TICK_HZ * this.opts.speed;
     let n = Math.floor(this.carryTicks);
     this.carryTicks -= n;

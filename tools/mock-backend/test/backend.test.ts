@@ -8,7 +8,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { CHURN, STALE_TEST } from "../src/backend.ts";
-import type { AvailabilityOp, CatalogueRemoveOp, CatalogueUpsertOp, SimStatusOp } from "../src/contract.ts";
+import type { AvailabilityOp, CatalogueRemoveOp, CatalogueUpsertOp } from "../src/contract.ts";
 import { sampleKey } from "../src/contract.ts";
 import { HistoryBuffer } from "../src/history.ts";
 import { Track } from "../src/track.ts";
@@ -322,46 +322,8 @@ test("physics is coherent: ay = v^2 kappa, yaw = v kappa, no throttle while brak
   }
 });
 
-test("sim clock: t_ns from 0; reset jumps back and changes stream_id; pause freezes", () => {
-  const h = new Harness({ simClock: true });
-  h.send({ op: "hello", api_version: 1 });
-  const hello = h.take();
-  const simHello = hello.find((o) => o.op === "sim_status") as SimStatusOp;
-  assert.equal(simHello.clock_domain, "sim");
-  assert.equal((hello[0] as any).clock_domain, "sim");
-  h.send({ op: "subscribe", subscription_id: "a", paths: [THROTTLE] });
-  h.run(500);
-  const before = samplesOf(h.take());
-  assert.equal(before[0].t_ns, "0");
-  const oldStream = before[0].stream_id;
-  const lastT = BigInt(before[before.length - 1].t_ns);
-  assert.ok(lastT > 4_000_000_000n);
-
-  h.backend.reset();
-  h.run(10);
-  const ops = h.take();
-  const resetIdx = ops.findIndex((o) => o.op === "sim_status");
-  assert.equal((ops[resetIdx] as SimStatusOp).reason, "reset");
-  assert.equal((ops[resetIdx] as SimStatusOp).reset_count, 1);
-  const afterReset = samplesOf(ops.slice(resetIdx));
-  assert.ok(samplesOf(ops.slice(0, resetIdx)).every((s) => s.stream_id === oldStream));
-  assert.ok(afterReset.length > 0);
-  assert.ok(afterReset.every((s) => s.stream_id !== oldStream));
-  assert.equal(afterReset[0].seq, 0);
-  assert.ok(BigInt(afterReset[0].t_ns) < lastT, "time jumped backwards");
-  // history defaults to the newest stream; the old one is still selectable
-  assert.equal(h.backend.queryHistory(THROTTLE, null, null, 10000)!.stream_id, afterReset[0].stream_id);
-  assert.ok(h.backend.queryHistory(THROTTLE, null, null, 10000, oldStream)!.samples.length >= 499);
-
-  h.backend.pause();
-  assert.equal((h.take().at(-1) as SimStatusOp).state, "paused");
-  assert.equal(h.backend.simStatus().state, "paused");
-  h.backend.resume();
-  assert.equal(h.backend.simStatus().state, "running");
-});
-
 test("wheel-derived vehicle speed and GPS speed agree at the same source timestamp", () => {
-  const h = new Harness({ simClock: true, seed: 1 });
+  const h = new Harness({ startTimeNs: 1_793_328_600_000_000_000n, seed: 1 });
   const gps = `${P}/gps/ground_speed`;
   h.send({ op: "hello", api_version: 1 });
   h.send({ op: "subscribe", subscription_id: "speeds", paths: [SPEED, gps] });

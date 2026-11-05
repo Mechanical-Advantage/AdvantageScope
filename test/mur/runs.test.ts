@@ -8,26 +8,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { validateLiveAddress } from "../../src/hub/dataSources/LiveAddress";
-import { RetainedRuns } from "../../src/hub/dataSources/mur/MURSegments";
-
-test("reset retains runs and keeps a past selection while live buffers", () => {
-  const runs = new RetainedRuns<number[]>();
-  const first = [1, 2];
-  const second = [3];
-  runs.append(first);
-  assert.equal(runs.append(second), true);
-  assert.equal(runs.selected, 1);
-  assert.equal(runs.select(0), true);
-  second.push(4);
-  assert.equal(runs.append([5]), false);
-  assert.equal(runs.selected, 0);
-  assert.deepEqual(runs.entries, [[1, 2], [3, 4], [5]]);
-  assert.equal(runs.select(2), true);
-  assert.equal(runs.append([6]), true);
-  assert.equal(runs.selected, 3);
-  assert.equal(runs.select(-1), false);
-  assert.equal(runs.select(8), false);
-});
 
 test("connection address validation follows the source protocol", () => {
   for (const address of ["localhost:8090", "https://example.org", "ws://127.0.0.1:8090/api/v1/live"])

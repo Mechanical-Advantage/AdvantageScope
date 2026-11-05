@@ -34,7 +34,7 @@ export interface SampleCtx {
   track: Track;
   rng: Rng;
   tSec: number;
-  /** GNSS UTC time in ns (Unix epoch), independent of the sim clock domain. */
+  /** GNSS UTC time in ns since the Unix epoch. */
   utcNs: bigint;
   canFrames: number;
   /** Status messages raised since the last tick. */

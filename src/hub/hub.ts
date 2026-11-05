@@ -498,7 +498,7 @@ function startLive(sourceType: "robot" | "sim", target?: { sourceId: string; add
   liveStatus = LiveDataSourceStatus.Connecting;
   window.liveStatus = null;
   source.newSegmentCallback = () => {
-    // Time jumped backwards (e.g. sim reset): restart the timeline at the new live edge
+    // Time jumped backwards: restart the timeline at the new live edge
     window.selection.resetLiveSegment();
     window.sidebar.refresh();
     window.tabs.refresh();

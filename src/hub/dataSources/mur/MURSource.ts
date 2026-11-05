@@ -5,8 +5,8 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-// Live source for the MUR telemetry backend (spec 01 §5: HTTP catalogue/history + WebSocket live), with the
-// sim clock extensions from spec 02 §4/§6. Contract types come from tools/mock-backend/src/contract.ts.
+// Live source for the MUR telemetry backend (spec 01 §5: HTTP catalogue/history + WebSocket live).
+// Contract types come from tools/mock-backend/src/contract.ts.
 //
 // - Catalogue: hello -> catalogue_snapshot builds the tree; upserts/removes update it live. The descriptor
 //   unit goes into field metadata so Log.getUnit and unit conversion work (MURLogAdapter).
@@ -14,19 +14,16 @@
 //   sidebar, replaced atomically whenever that set changes (same diff as NT4Source.periodic()).
 // - History: fetched when a field becomes active in a tab; a 501 response disables later history requests.
 // - Dedup on (path, stream_id, seq) (MURDedup). Time: BigInt session-relative seconds (MURTime).
-// - Segments: a sim reset or clock rewind starts a new segment (MURSegments): the Log is replaced and the hub
+// - Segments: a clock rewind starts a new segment (MURSegments): the Log is replaced and the hub
 //   resets the selection, so the new run never mixes with the old one.
 // - Reconnect: automatic with backoff; fresh snapshot, then the subscription is replayed by periodic().
 
 import type {
   AvailabilityState,
   CatalogueSnapshotOp,
-  ClockDomain,
   HistoryResponse,
   ServerOp,
   SignalDescriptor,
-  SimStatus,
-  SimStatusOp,
   TelemetrySample
 } from "../../../../tools/mock-backend/src/contract";
 import Log from "../../../shared/log/Log";
@@ -41,7 +38,7 @@ import {
   keyToPath,
   writeValue
 } from "./MURLogAdapter";
-import { RetainedRuns, SegmentTracker } from "./MURSegments";
+import { SegmentTracker } from "./MURSegments";
 import { LiveClock, SessionTimeBase } from "./MURTime";
 
 const API_VERSION = 1;
@@ -51,7 +48,6 @@ const HISTORY_MAX_POINTS = 2000;
 const RECONNECT_MIN_MS = 500;
 const RECONNECT_MAX_MS = 5000;
 const UNSYNC_HOLD_MS = 3000; // How long a signal stays flagged after its last unsynchronised sample
-const SIM_RESET_DISPLAY_MS = 3000; // How long the pill shows "reset"
 
 /** Turns a user-entered address into an HTTP base URL ("localhost:8090" -> "http://localhost:8090"). */
 export function normaliseBaseUrl(address: string): string {
@@ -72,7 +68,6 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
   private periodicActive = false;
   private shouldRunOutputCallback = false;
 
-  private runs = new RetainedRuns<Log>();
   private receiptTimes = new Map<string, number>();
   private backend: BackendState = "connecting";
   private backendDetail = "";
@@ -83,18 +78,15 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
   private availability = new Map<string, { state: AvailabilityState; lastSeenNs: string | null }>();
   private unsynchronised = new Map<string, number>(); // path -> wall time of the last unsynchronised sample
 
-  private timeBase = new SessionTimeBase("unix");
-  private clock = new LiveClock("unix");
+  private timeBase = new SessionTimeBase();
+  private clock = new LiveClock();
   private dedup = new SampleDeduplicator();
-  private segments = new SegmentTracker("unix");
+  private segments = new SegmentTracker();
 
   private requests = new AbortController();
   private subscribedPaths: string[] = [];
   private historyRequested = new Set<string>();
   private historyAvailable: boolean | null = null;
-
-  private sim: SimStatus | null = null;
-  private simResetUntil = 0;
 
   connect(
     address: string,
@@ -106,8 +98,6 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     super.connect(address, statusCallback, outputCallback, false);
     this.baseUrl = normaliseBaseUrl(address);
     this.log = new Log();
-    this.runs = new RetainedRuns<Log>();
-    this.runs.append(this.log);
     this.openSocket();
 
     // Periodic subscription updates and output (same scheduling as NT4Source)
@@ -233,9 +223,6 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
         this.availability.set(message.path, { state: message.state, lastSeenNs: message.last_seen_ns });
         this.shouldRunOutputCallback = true;
         break;
-      case "sim_status":
-        this.handleSimStatus(message);
-        break;
       case "samples":
         message.samples.forEach((sample) => this.handleSample(sample));
         break;
@@ -257,12 +244,6 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
 
   private handleSnapshot(snapshot: CatalogueSnapshotOp) {
     // Discard the old epoch/revision and reconcile the tree with the fresh snapshot (spec 01 §5.2 reconnect)
-    const domain: ClockDomain = snapshot.clock_domain ?? "unix";
-    if (domain !== this.timeBase.getDomain()) {
-      this.timeBase.setDomain(domain);
-      this.clock.setDomain(domain);
-      this.segments.setDomain(domain);
-    }
     this.catalogue = { epoch: snapshot.catalogue_epoch, revision: snapshot.revision };
     const newPaths = new Set(snapshot.signals.map((signal) => signal.path));
     Array.from(this.descriptors.keys()).forEach((path) => {
@@ -274,7 +255,6 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     });
     snapshot.signals.forEach((signal) => this.upsertDescriptor(signal));
     this.availability.clear();
-    if (domain !== "sim") this.sim = null;
 
     // Subscriptions are not durable across sockets: periodic() replays them. Refetch history to fill the gap.
     this.subscribedPaths = [];
@@ -303,25 +283,6 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     }
   }
 
-  private handleSimStatus(status: SimStatusOp) {
-    const now = Date.now();
-    if (status.reason === "reset") {
-      this.startNewSegment();
-      this.simResetUntil = now + SIM_RESET_DISPLAY_MS;
-    } else if (
-      this.sim !== null &&
-      Object.entries(status.stream_ids).some(([source, stream]) => this.sim!.stream_ids[source] !== stream)
-    ) {
-      // Reconcile a restarted backend before registering its streams; otherwise the first sample
-      // starts a segment that retires the new streams along with the old ones.
-      this.startNewSegment(false);
-    }
-    this.segments.registerStreams(Object.values(status.stream_ids));
-    this.sim = status;
-    this.clock.setRunning(status.state === "running", status.speed, now);
-    this.timeBase.setSimRate(status.speed);
-  }
-
   private handleSample(sample: TelemetrySample) {
     if (!this.log) return;
     const descriptor = this.descriptors.get(sample.path);
@@ -332,7 +293,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     let decision = this.segments.observe(sample.path, sample.stream_id, sample.seq, time.seconds, !time.approximate);
     if (decision === "drop") return;
     if (decision === "new-segment") {
-      this.startNewSegment(false);
+      this.startNewSegment();
       time = this.timeBase.sampleTime(sample)!;
       this.segments.observe(sample.path, sample.stream_id, sample.seq, time.seconds, !time.approximate);
     }
@@ -354,16 +315,14 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     } else {
       this.unsynchronised.delete(sample.path);
     }
-    if (!time.approximate || this.timeBase.getDomain() === "unix" || this.clock.now(now) === null) {
-      this.clock.observe(time.seconds, now);
-    }
+    this.clock.observe(time.seconds, now);
     this.shouldRunOutputCallback = true;
   }
 
-  /** Starts a new run, retaining the previous Log and preserving a past-run selection. */
-  private startNewSegment(clearAvailability = true) {
+  /** Replaces the Log after a clock rewind and drops the previous run. */
+  private startNewSegment() {
     this.segments.startNewSegment();
-    // Outage coordinates and history progress belong to this run's time base.
+    // Deduplication and history progress belong to this run's time base.
     this.dedup.clear();
     this.timeBase.resetSegment();
     this.clock.reset();
@@ -371,15 +330,12 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     this.historyRequested.clear();
 
     this.log = new Log();
-    const following = this.runs.append(this.log);
     this.receiptTimes.clear();
-    // A reconnect snapshot precedes samples from the new stream. Keep its health;
-    // an explicit sim reset instead waits for receipts from the new run.
-    if (clearAvailability) this.availability.clear();
+    // Keep availability from the snapshot that preceded this stream.
     this.descriptors.forEach((descriptor) => createField(this.log!, descriptor));
     console.log("[MUR] Starting segment " + this.segments.getSegmentIndex().toString());
     this.runOutputCallback();
-    if (following) this.newSegmentCallback?.();
+    this.newSegmentCallback?.();
   }
 
   // ------------------------------------------------------------------------------------------
@@ -447,7 +403,6 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
 
   private runOutputCallback() {
     if (this.status === LiveDataSourceStatus.Stopped || !this.outputCallback || !this.log) return;
-    if (this.runs.selected !== this.runs.entries.length - 1) return;
     this.outputCallback(this.log, () => {
       const now = this.clock.now(Date.now());
       return now !== null ? now : this.log!.getTimestampRange()[1];
@@ -498,8 +453,8 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     return {
       backend: this.backend,
       backendDetail: this.backendDetail,
-      viewedRun: this.runs.selected,
-      runCount: this.runs.entries.length,
+      viewedRun: 0,
+      runCount: 1,
       hasFreshData: Array.from(this.descriptors.keys()).some((key) => this.getFieldFreshness(key) === "online")
     };
   }
@@ -518,11 +473,10 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     const received = this.receiptTimes.get(path);
     if (received !== undefined) return Math.max(0, (Date.now() - received) / 1000);
     const lastSeen = this.availability.get(path)?.lastSeenNs;
-    // Availability timestamps use the backend's clock domain. In sim mode use the live clock.
     if (!lastSeen) return null;
     const seconds = Number(BigInt(lastSeen)) / 1e9;
-    const now = this.timeBase.getDomain() === "sim" ? this.clock.now(Date.now()) : Date.now() / 1000;
-    return now === null ? null : Math.max(0, now - seconds);
+    const now = Date.now() / 1000;
+    return Math.max(0, now - seconds);
   }
 
   isFieldUnsynchronised(key: string): boolean {

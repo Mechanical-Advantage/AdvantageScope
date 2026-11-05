@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-// HTTP + WebSocket front end for the mock backend (spec 01 §5, spec 02 §4/§6 sim controls).
+// HTTP + WebSocket front end for the mock backend (spec 01 §5).
 
 import http from "node:http";
 import { WebSocketServer, type WebSocket } from "ws";
@@ -84,32 +84,11 @@ export function handleHttp(backend: MockBackend, req: http.IncomingMessage, res:
     return json(res, 200, result);
   }
 
-  if (path.startsWith("/api/v1/sim/")) {
-    if (!backend.opts.simClock) return err(res, 404, "not_found", "Simulation endpoints require --sim-clock");
-    const action = path.slice("/api/v1/sim/".length);
-    if (action === "status") {
-      if (req.method !== "GET") return err(res, 405, "method_not_allowed", "Use GET");
-      return json(res, 200, backend.simStatus());
-    }
-    if (action === "pause" || action === "resume" || action === "reset") {
-      if (req.method !== "POST") return err(res, 405, "method_not_allowed", "Use POST");
-      backend[action]();
-      return json(res, 200, backend.simStatus());
-    }
-    return err(res, 404, "not_found", `Unknown sim action: ${action}`);
-  }
-
   if (path === "" || path === "/api" || path === "/api/v1") {
     return json(res, 200, {
       name: "mur-voir mock telemetry backend",
       api_version: 1,
-      endpoints: [
-        "GET /api/v1/catalogue",
-        "GET /api/v1/history",
-        "WS /api/v1/live",
-        "GET /api/v1/sim/status",
-        "POST /api/v1/sim/{pause,resume,reset}"
-      ]
+      endpoints: ["GET /api/v1/catalogue", "GET /api/v1/history", "WS /api/v1/live"]
     });
   }
   return err(res, 404, "not_found", `No route for ${req.method} ${url.pathname}`);
