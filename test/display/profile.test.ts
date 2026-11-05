@@ -51,7 +51,7 @@ test("booleans, enums and raw tooltips", () => {
   assert.equal(fmt(false, ""), "false");
   assert.equal(rawChannelValue(309.65, channelProfile({ name: "temp", unit: "K" })), "Raw: 309.65 K");
 });
-test("overrides survive layout serialization and replacement logs by canonical path", () => {
+test("legacy display overrides load without changing channel profiles", () => {
   const log = new Log();
   log.displayOverrides = { [canonicalChannelPath("bus.temp")]: { unit: "K", precision: 2 } };
   const saved = JSON.stringify({ channelProfiles: log.displayOverrides });
@@ -60,7 +60,7 @@ test("overrides survive layout serialization and replacement logs by canonical p
   next.displayOverrides = JSON.parse(saved).channelProfiles;
   next.putNumber("bus/temp", 0, 300);
   next.setMetadataString("bus/temp", JSON.stringify({ unit: "K" }));
-  assert.equal(formatChannelValue(300, next.getChannelProfile("bus/temp")), "300.00 K");
+  assert.equal(formatChannelValue(300, next.getChannelProfile("bus/temp")), "26.9 °C");
   next.displayOverrides = {};
 });
 test("CSV matches qualified or unique signal names; sidecar wins", () => {

@@ -6,14 +6,13 @@
 // at the root directory of this project.
 
 import { IS_LITE } from "../shared/buildConstants";
-import { canonicalChannelPath, formatChannelValue, rawChannelValue } from "../shared/display/ChannelProfile";
+import { formatChannelValue, rawChannelValue } from "../shared/display/ChannelProfile";
 import { SidebarState } from "../shared/HubState";
 import LogFieldTree from "../shared/log/LogFieldTree";
 import LoggableType from "../shared/log/LoggableType";
 import { getOrDefault, searchFields, TYPE_KEY } from "../shared/log/LogUtil";
 import { RenderGuard } from "../shared/RenderGuard";
 import { SelectionMode } from "../shared/Selection";
-import { Units } from "../shared/units";
 import { arraysEqual, htmlEncode, setsEqual } from "../shared/util";
 import CustomSchemas from "./dataSources/schema/CustomSchemas";
 
@@ -918,42 +917,6 @@ export default class Sidebar {
         numValueSpan = document.createElement("span");
         valueElement.appendChild(numValueSpan);
 
-        valueElement.addEventListener("dblclick", () => {
-          const key = canonicalChannelPath(field.fullKey!);
-          const current = window.log.displayOverrides[key] ?? {};
-          const profile = window.log.getChannelProfile(field.fullKey!);
-          const dialog = document.createElement("dialog");
-          dialog.className = "channel-display-dialog";
-          dialog.innerHTML = `<form method="dialog"><strong>Channel display</strong><p class="channel-name"></p>
-            <p><label>Unit <select class="mv-select" name="unit"><option value="">Automatic</option></select></label></p>
-            <p><label>Decimal places <input name="precision" type="number" min="0" max="12" step="1" placeholder="Automatic" /></label></p>
-            <button value="cancel">Cancel</button> <button value="apply">Apply</button></form>`;
-          dialog.querySelector(".channel-name")!.textContent = field.fullKey!;
-          const select = dialog.querySelector("select")!;
-          Object.entries(Units.ALL_UNITS)
-            .filter(([id]) => profile.from && Units.GROUP_BY_UNIT[id] === Units.GROUP_BY_UNIT[profile.from])
-            .forEach(([id, unit]) => {
-              const option = document.createElement("option");
-              option.value = id;
-              option.textContent = unit.suffix || id;
-              select.appendChild(option);
-            });
-          select.value = current.unit ?? "";
-          const precision = dialog.querySelector("input")!;
-          precision.value = current.precision?.toString() ?? "";
-          dialog.addEventListener("close", () => {
-            if (dialog.returnValue === "apply") {
-              window.log.displayOverrides[key] = {
-                unit: select.value || undefined,
-                precision: precision.value === "" ? undefined : Number(precision.value)
-              };
-              firstUpdate = true;
-            }
-            dialog.remove();
-          });
-          document.body.appendChild(dialog);
-          dialog.showModal();
-        });
         // Add callback
         let firstUpdate = true;
         let lastValue: number | null = null;
@@ -972,7 +935,7 @@ export default class Sidebar {
 
           const profile = window.log.getChannelProfile(field.fullKey!);
           let valueStr = formatChannelValue(value, profile);
-          valueElement.title = rawChannelValue(value, profile) + " · Double-click to change display unit/precision";
+          valueElement.title = rawChannelValue(value, profile);
           numValueInput!.placeholder = valueStr;
           numValueSpan!.innerText = valueStr;
           let charCount = valueStr.length;

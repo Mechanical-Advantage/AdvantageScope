@@ -64,7 +64,7 @@ test("warm gap cache requests only the tail and invalidates same-time edits", ()
   );
 });
 
-test("profiles and field catalogue invalidate on metadata, overrides and field changes", () => {
+test("profiles and field catalogue invalidate on metadata and field changes", () => {
   const log = new Log();
   log.putNumber("v", 0, 1);
   const version = log.getFieldKeysVersion();
@@ -74,7 +74,7 @@ test("profiles and field catalogue invalidate on metadata, overrides and field c
   assert.notEqual(log.getChannelProfile("v"), first);
   const metadataProfile = log.getChannelProfile("v");
   log.displayOverrides = { v: { precision: 4 } };
-  assert.notEqual(log.getChannelProfile("v"), metadataProfile);
+  assert.equal(log.getChannelProfile("v"), metadataProfile);
   log.displayOverrides = {};
   log.putNumber("other", 0, 2);
   assert.ok(log.getFieldKeysVersion() > version);

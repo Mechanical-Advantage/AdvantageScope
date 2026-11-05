@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import { Decoder } from "@msgpack/msgpack";
-import { ChannelOverride, ChannelProfile, canonicalChannelPath, channelProfile } from "../display/ChannelProfile";
+import { ChannelOverride, ChannelProfile, channelProfile } from "../display/ChannelProfile";
 import { Pose2d, Translation2d } from "../geometry";
 import { Units } from "../units";
 import { arraysEqual, checkArrayType } from "../util";
@@ -45,10 +45,7 @@ export default class Log {
   private fieldKeysCache: string[] | null = null;
   private historyVersions = new Map<string, number>();
   private historyEnds = new Map<string, number>();
-  private profileCache = new Map<
-    string,
-    { metadata: string; sourceUnit?: string; override: string; profile: ChannelProfile }
-  >();
+  private profileCache = new Map<string, { metadata: string; sourceUnit?: string; profile: ChannelProfile }>();
 
   getHistoryVersion(key: string): number {
     if (!this.historyEnds.has(key)) {
@@ -341,30 +338,20 @@ export default class Log {
 
   getChannelProfile(key: string, sourceUnit?: string): ChannelProfile {
     const metadataString = this.getMetadataString(key);
-    const override = JSON.stringify(this.displayOverrides[canonicalChannelPath(key)]);
     const cached = this.profileCache.get(key);
-    if (
-      cached &&
-      cached.metadata === metadataString &&
-      cached.sourceUnit === sourceUnit &&
-      cached.override === override
-    )
-      return cached.profile;
+    if (cached && cached.metadata === metadataString && cached.sourceUnit === sourceUnit) return cached.profile;
     let metadata: any = {};
     try {
       const parsed = JSON.parse(metadataString);
       if (parsed !== null && typeof parsed === "object" && !Array.isArray(parsed)) metadata = parsed;
     } catch {}
-    const profile = channelProfile(
-      {
-        ...metadata,
-        name: key,
-        unit: sourceUnit || metadata.unit || (key in this.fields ? this.getUnit(key) : null),
-        enumLabels: metadata.enumLabels ?? metadata.values
-      },
-      this.displayOverrides[canonicalChannelPath(key)]
-    );
-    this.profileCache.set(key, { metadata: metadataString, sourceUnit, override, profile });
+    const profile = channelProfile({
+      ...metadata,
+      name: key,
+      unit: sourceUnit || metadata.unit || (key in this.fields ? this.getUnit(key) : null),
+      enumLabels: metadata.enumLabels ?? metadata.values
+    });
+    this.profileCache.set(key, { metadata: metadataString, sourceUnit, profile });
     return profile;
   }
 

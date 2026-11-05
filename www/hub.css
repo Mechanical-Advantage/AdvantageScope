@@ -2123,17 +2123,6 @@ button.connect-confirm {
   }
 }
 
-.channel-display-dialog {
-  color-scheme: light dark;
-  color: CanvasText;
-  background: Canvas;
-  border: 1px solid currentColor;
-  font-size: 13px;
-}
-.channel-display-dialog::backdrop {
-  background: #0008;
-}
-
 /* Compact live connection controls. */
 div.connect-dialog {
   height: auto;
