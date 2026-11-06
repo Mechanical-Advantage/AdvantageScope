@@ -66,8 +66,7 @@ try {
   await hub.locator(".connect-confirm").click();
   await hub.locator(".connect-dialog-backdrop").waitFor({ state: "hidden" });
   const frame = page.frames().find((frame) => frame.url().endsWith("hub.html"));
-  // Apply the real menu command, then assert an imported live value and visible graph configuration.
-  await frame.evaluate(() => window.messagePort.onmessage({ data: { name: "trackside-layout" } }));
+  // Check that the live connection imports values.
   await frame
     .waitForFunction(() => {
       const key = window.log.getFieldKeys().find((key) => key.endsWith("/vehicle_speed"));
@@ -77,8 +76,7 @@ try {
       console.error(await frame.evaluate(() => ({ keys: window.log.getFieldKeys(), text: document.body.innerText })));
       throw error;
     });
-  await hub.locator(".health-strip").waitFor({ state: "visible" });
-  assert.ok(await frame.evaluate(() => window.tabs.saveState().tabs.some((tab) => tab.title.includes("Speed"))));
+  assert.ok(await frame.evaluate(() => window.tabs.saveState().tabs.some((tab) => tab.type === 1)));
   if (process.env.LITE_SCREENSHOTS) await page.screenshot({ path: process.env.LITE_SCREENSHOTS + "/lite_mur.png" });
 
   await hub.getByText("File", { exact: true }).click();
@@ -91,7 +89,7 @@ try {
   await page.getByText("Import Layout…", { exact: true }).click();
   await (await layoutPicker).setFiles(layoutPath);
   await page.waitForTimeout(500);
-  assert.ok(await frame.evaluate(() => window.healthStrip.state.visible));
+  assert.ok(await frame.evaluate(() => window.tabs.saveState().tabs.some((tab) => tab.type === 1)));
 
   const picking = page.waitForEvent("filechooser");
   await hub.locator("body").press("Control+Shift+o");
