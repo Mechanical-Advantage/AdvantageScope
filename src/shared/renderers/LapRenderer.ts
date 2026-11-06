@@ -48,6 +48,7 @@ const duration = (t: number) =>
   Number.isFinite(t) ? `${Math.floor(t / 60)}:${(t % 60).toFixed(3).padStart(6, "0")}` : "—";
 export default class LapRenderer implements TabRenderer {
   private toolbar: HTMLElement;
+  private bestButton?: HTMLButtonElement;
   private content: HTMLElement;
   private canvas: HTMLCanvasElement;
   private traceLayer = document.createElement("canvas");
@@ -63,6 +64,7 @@ export default class LapRenderer implements TabRenderer {
   private zoom = 1;
   private overlaysOnly = false;
   private colorMode = "laps";
+  private restoredColor = false;
   private pan: [number, number] = [0, 0];
   private baseScale = 1;
   private bounds = [0, 0, 0, 0];
@@ -95,6 +97,8 @@ export default class LapRenderer implements TabRenderer {
     this.scroll = document.createElement("div");
     this.scroll.className = "field-2d-scroll";
     this.scroll.tabIndex = -1;
+    this.scroll.title =
+      "Replay gaps are relative to the reference lap. Positive seconds mean behind; positive metres mean ahead.";
     const scrollContent = document.createElement("div");
     scrollContent.className = "field-2d-scroll-content";
     this.scroll.append(scrollContent);
@@ -216,7 +220,7 @@ export default class LapRenderer implements TabRenderer {
   render(command: LapCommand) {
     if (
       (this.command && command.field !== this.command.field) ||
-      (!this.command && command.field && this.colorMode === "laps")
+      (!this.command && !this.restoredColor && command.field && this.colorMode === "laps")
     )
       this.colorMode = command.field ? "field" : "laps";
     this.command = command;
@@ -249,6 +253,7 @@ export default class LapRenderer implements TabRenderer {
     if (toolbarKey !== this.toolbarKey) {
       this.toolbarKey = toolbarKey;
       this.toolbar.replaceChildren();
+      this.bestButton = undefined;
       const label = document.createElement("span");
       label.textContent =
         (c.map ? "Colour: " : "Metrics: ") +
@@ -289,6 +294,14 @@ export default class LapRenderer implements TabRenderer {
         };
         label.append(toggle, "Overlaid laps only");
         this.toolbar.append(label);
+      }
+      if (!c.map) {
+        this.bestButton = this.button(this.toolbar, "Select best 3 laps", () => {
+          const laps = this.command!.result.laps.filter((lap) => lap.valid).sort(
+            (a, b) => a.end - a.start - (b.end - b.start) || a.index - b.index
+          );
+          this.action({ type: "overlay", indices: laps.slice(0, 3).map((lap) => lap.index) });
+        });
       }
       const details = document.createElement("details"),
         summary = document.createElement("summary");
@@ -335,6 +348,7 @@ export default class LapRenderer implements TabRenderer {
       // Only autocross ends a run on a separate line.
       if (c.settings.config.mode === "autocross") this.button(panel, "Set finish at cursor", () => addGate(-2));
     }
+    if (this.bestButton) this.bestButton.disabled = !c.result.laps.some((lap) => lap.valid);
     if (c.map) {
       // The scroll sensor loses its position if the map leaves the page.
       if (this.mapView.parentElement !== this.content) this.content.replaceChildren(this.mapView, this.message);
@@ -345,13 +359,6 @@ export default class LapRenderer implements TabRenderer {
       return;
     }
     this.content.replaceChildren();
-    const bestButton = this.button(this.content, "Select best 3 laps", () => {
-      const laps = this.command!.result.laps.filter((lap) => lap.valid).sort(
-        (a, b) => a.end - a.start - (b.end - b.start) || a.index - b.index
-      );
-      this.action({ type: "overlay", indices: laps.slice(0, 3).map((lap) => lap.index) });
-    });
-    bestButton.disabled = !c.result.laps.some((lap) => lap.valid);
     if (!c.result.laps.some((l) => l.valid)) {
       const p = document.createElement("p");
       p.className = "lap-empty";
@@ -635,7 +642,8 @@ export default class LapRenderer implements TabRenderer {
         ),
         reference = overlaid.find((lap) => lap.index === c.reference),
         elapsed = cursorLap ? c.time - cursorLap.start : 0;
-      const dot = (time: number, color: string, label?: string, row = 0) => {
+      const labels: { x: number; y: number; width: number }[] = [];
+      const dot = (time: number, color: string, label?: string) => {
         const p = this.sampleAt(time),
           q = this.transform(p);
         ctx.fillStyle = color;
@@ -647,8 +655,17 @@ export default class LapRenderer implements TabRenderer {
         ctx.stroke();
         if (label) {
           ctx.textAlign = "left";
-          const x = Math.max(8, Math.min(w - ctx.measureText(label).width - 8, q.x + 12)),
-            y = Math.max(16 + row * 16, Math.min(h - 36 - (overlaid.length - row) * 16, q.y - 12 + row * 16));
+          const width = ctx.measureText(label).width,
+            x = Math.max(8, Math.min(w - width - 8, q.x + 12));
+          let y = Math.max(42, Math.min(h - 36, q.y - 12));
+          const overlaps = () =>
+            labels.some((p) => x < p.x + p.width + 4 && x + width + 4 > p.x && Math.abs(y - p.y) < 18);
+          while (overlaps() && y < h - 54) y += 18;
+          if (overlaps()) {
+            y = Math.max(42, Math.min(h - 36, q.y - 30));
+            while (overlaps() && y > 60) y -= 18;
+          }
+          labels.push({ x, y, width });
           ctx.lineWidth = 4;
           ctx.strokeText(label, x, y);
           ctx.fillText(label, x, y);
@@ -675,11 +692,9 @@ export default class LapRenderer implements TabRenderer {
             colors[i % colors.length],
             lap === reference
               ? undefined
-              : `L${lap.index} vs L${reference?.index ?? "?"} ${signed(gap, 2)} s · ${signed(
-                  distance - refDistance,
-                  1
-                )} m`,
-            i
+              : reference
+              ? `L${lap.index} vs L${reference.index} ${signed(gap, 2)} s · ${signed(distance - refDistance, 1)} m`
+              : `L${lap.index}`
           );
         });
       } else dot(c.time, "#fff");
@@ -820,8 +835,10 @@ export default class LapRenderer implements TabRenderer {
       "colorMode" in state &&
       typeof state.colorMode === "string" &&
       ["laps", "sector", "compare", "field"].includes(state.colorMode)
-    )
+    ) {
       this.colorMode = state.colorMode;
+      this.restoredColor = true;
+    }
     if ("overlaysOnly" in state && typeof state.overlaysOnly === "boolean") this.overlaysOnly = state.overlaysOnly;
     if ("zoom" in state && typeof state.zoom === "number") this.zoom = state.zoom;
     if ("pan" in state && Array.isArray(state.pan) && state.pan.length === 2) this.pan = state.pan as [number, number];
