@@ -503,6 +503,30 @@ export default class LapRenderer implements TabRenderer {
       ctx.textAlign = "right";
       ctx.fillText(Number.isFinite(max) ? max.toFixed(1) : "—", 176, 56);
     }
+    // North is up in the local GPS projection. Keep both guides clear of the bottom hint.
+    ctx.fillStyle = text;
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 1.5;
+    ctx.textAlign = "center";
+    ctx.fillText("N", w - 28, 23);
+    ctx.beginPath();
+    ctx.moveTo(w - 28, 31);
+    ctx.lineTo(w - 28, 55);
+    ctx.moveTo(w - 34, 39);
+    ctx.lineTo(w - 28, 31);
+    ctx.lineTo(w - 22, 39);
+    ctx.stroke();
+    const targetMetres = Math.min(100, w / 4) / scale,
+      power = Math.pow(10, Math.floor(Math.log10(targetMetres))),
+      metres = [5, 2, 1].map((n) => n * power).find((n) => n <= targetMetres) ?? power,
+      barWidth = metres * scale;
+    ctx.beginPath();
+    ctx.moveTo(w - 16 - barWidth, 83);
+    ctx.lineTo(w - 16 - barWidth, 88);
+    ctx.lineTo(w - 16, 88);
+    ctx.lineTo(w - 16, 83);
+    ctx.stroke();
+    ctx.fillText(`${Number(metres.toPrecision(3))} m`, w - 16 - barWidth / 2, 77);
     ctx.textAlign = "left";
     const gates = this.gates();
     gates.forEach((g, index) => {
