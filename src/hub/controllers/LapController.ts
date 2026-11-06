@@ -192,6 +192,7 @@ export default class LapController implements TabController {
     const values = samples.map((p) => (data ? interpolate(data.timestamps, data.values, p.t) : NaN));
     this.cached = {
       map: this.map,
+      origin: lapService.origin,
       result: lapService.result,
       settings: { ...lapService.settings, config: lapService.localConfig() },
       field: this.field,

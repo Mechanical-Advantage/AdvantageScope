@@ -13,7 +13,7 @@
 
 import type { LapSettings } from "../../hub/LapService";
 import ScrollSensor, { ScrollSensorMouseControl } from "../../hub/ScrollSensor";
-import { Gate, gateAt, LapResult, Point } from "../laps/LapEngine";
+import { Coordinate, Gate, gateAt, geographicGate, LapResult, Point, project } from "../laps/LapEngine";
 import { Units } from "../units";
 import { panMargin, scrollZoomPan } from "./FieldZoomPan";
 import TabRenderer from "./TabRenderer";
@@ -31,6 +31,7 @@ function viridis(value: number): string {
 }
 export type LapCommand = {
   map: boolean;
+  origin?: Coordinate;
   result: LapResult;
   settings: LapSettings;
   field: string;
@@ -281,6 +282,7 @@ export default class LapRenderer implements TabRenderer {
         input.onchange = () => this.action({ type: "setting", key, value: input.value });
         l.append(input);
         panel.append(l);
+        return input;
       };
       setting("mode", "Event", c.settings.config.mode ?? "circuit", [
         "circuit",
@@ -303,7 +305,42 @@ export default class LapRenderer implements TabRenderer {
         if (gate) this.action({ type: "gate", index, gate });
       };
       this.button(panel, "Add sector at cursor", () => addGate(c.settings.config.sectors?.length ?? 0));
-      this.button(panel, "Set start/finish at cursor", () => addGate(-1));
+      this.button(panel, "Set start/finish at cursor", () => addGate(-1)).style.gridColumn = "1 / -1";
+      if (c.origin && c.result.gate) {
+        const coordinates = geographicGate(c.result.gate, c.origin);
+        for (const endpoint of ["a", "b"] as const) {
+          for (const axis of ["lat", "lon"] as const) {
+            const title = `Start/finish ${endpoint.toUpperCase()} ${axis === "lat" ? "latitude" : "longitude"} [°]`;
+            const input = setting("", title, Number(coordinates[endpoint][axis].toFixed(8))) as HTMLInputElement;
+            input.type = "number";
+            input.step = "any";
+            input.min = String(axis === "lat" ? -90 : -180);
+            input.max = String(axis === "lat" ? 90 : 180);
+            input.required = true;
+            input.oninput = () => input.setCustomValidity("");
+            input.onchange = () => {
+              const value = Number(input.value);
+              if (!input.value.trim() || !input.checkValidity() || !Number.isFinite(value)) {
+                input.reportValidity();
+                return;
+              }
+              const next = structuredClone(coordinates);
+              next[endpoint][axis] = value;
+              const gate = {
+                a: project(next.a.lat, next.a.lon, c.origin!),
+                b: project(next.b.lat, next.b.lon, c.origin!)
+              };
+              if (Math.hypot(gate.b.x - gate.a.x, gate.b.y - gate.a.y) < 0.01) {
+                input.setCustomValidity("The line endpoints must be apart.");
+                input.reportValidity();
+                return;
+              }
+              coordinates[endpoint][axis] = value;
+              this.action({ type: "gate", index: -1, gate });
+            };
+          }
+        }
+      }
       // Only autocross ends a run on a separate line.
       if (c.settings.config.mode === "autocross") this.button(panel, "Set finish at cursor", () => addGate(-2));
     }
