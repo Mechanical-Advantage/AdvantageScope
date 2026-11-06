@@ -13,7 +13,7 @@
 
 import type { LapSettings } from "../../hub/LapService";
 import ScrollSensor, { ScrollSensorMouseControl } from "../../hub/ScrollSensor";
-import { Gate, gateAt, LapResult, Point } from "../laps/LapEngine";
+import { deltaTime, Gate, gateAt, LapResult, Point } from "../laps/LapEngine";
 import { Units } from "../units";
 import { panMargin, scrollZoomPan } from "./FieldZoomPan";
 import TabRenderer from "./TabRenderer";
@@ -62,6 +62,7 @@ export default class LapRenderer implements TabRenderer {
   private toolbarKey = "";
   private zoom = 1;
   private overlaysOnly = false;
+  private colorMode = "laps";
   private pan: [number, number] = [0, 0];
   private baseScale = 1;
   private bounds = [0, 0, 0, 0];
@@ -213,8 +214,14 @@ export default class LapRenderer implements TabRenderer {
     return b;
   }
   render(command: LapCommand) {
+    if (
+      (this.command && command.field !== this.command.field) ||
+      (!this.command && command.field && this.colorMode === "laps")
+    )
+      this.colorMode = command.field ? "field" : "laps";
     this.command = command;
     const key = JSON.stringify([
+      this.colorMode,
       command.version,
       command.field,
       command.reference,
@@ -238,7 +245,7 @@ export default class LapRenderer implements TabRenderer {
     const c = this.command!;
     const scrollTop = this.content.scrollTop,
       scrollLeft = this.content.scrollLeft;
-    const toolbarKey = JSON.stringify([c.field, c.unit, c.map, c.settings]);
+    const toolbarKey = JSON.stringify([c.field, c.unit, c.map, c.settings, this.colorMode]);
     if (toolbarKey !== this.toolbarKey) {
       this.toolbarKey = toolbarKey;
       this.toolbar.replaceChildren();
@@ -248,6 +255,24 @@ export default class LapRenderer implements TabRenderer {
         (c.field.split("/").at(-1) || (c.map ? "laps, or drag a numeric field here" : "drag a numeric field")) +
         (c.unit ? ` [${c.unit}]` : "");
       label.title = c.field;
+      if (c.map) {
+        label.textContent = "Colour: ";
+        const select = document.createElement("select");
+        select.className = "mv-select";
+        select.setAttribute("aria-label", "Map colour");
+        for (const [value, text] of [
+          ["laps", "Laps"],
+          ["sector", "Sectors"],
+          ["compare", "Time compare"],
+          ...(c.field ? [["field", c.field.split("/").at(-1)!]] : [])
+        ])
+          select.add(new Option(text, value));
+        select.value = this.colorMode;
+        select.onchange = () => {
+          this.colorMode = select.value;
+        };
+        label.append(select);
+      }
       this.toolbar.append(label);
       if (c.field) this.button(this.toolbar, "Clear field", () => this.action({ type: "field", field: "" }));
       if (c.map) {
@@ -445,6 +470,7 @@ export default class LapRenderer implements TabRenderer {
       dark = matchMedia("(prefers-color-scheme: dark)").matches;
     const traceKey = JSON.stringify([
       c.version,
+      this.colorMode,
       c.field,
       c.selected,
       c.reference,
@@ -512,7 +538,7 @@ export default class LapRenderer implements TabRenderer {
 
     const text = dark ? "#eee" : "#222";
     ctx.font = "12px system-ui";
-    if (c.field) {
+    if (this.colorMode === "field" && c.field) {
       const unit = Units.ALL_UNITS[c.unit]?.suffix ?? c.unit,
         [min, max] = this.range;
       ctx.fillStyle = text;
@@ -552,6 +578,26 @@ export default class LapRenderer implements TabRenderer {
     ctx.stroke();
     ctx.fillText(`${Number(metres.toPrecision(3))} m`, w - 16 - barWidth / 2, 77);
     ctx.textAlign = "left";
+    if (this.colorMode === "sector") {
+      for (let i = 0; i < Math.max(1, ...c.result.laps.map((lap) => lap.sectors.length)); i++) {
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.fillRect(16 + i * 48, 15, 10, 10);
+        ctx.fillStyle = text;
+        ctx.fillText(`S${i + 1}`, 30 + i * 48, 24);
+      }
+    } else if (this.colorMode === "compare") {
+      const compared =
+        c.result.laps.find((lap) => lap.valid && lap.index === c.selected) ??
+        c.result.laps.find((lap) => lap.valid && c.overlays.includes(lap.index) && lap.index !== c.reference);
+      ctx.fillStyle = text;
+      ctx.fillText(
+        compared && c.reference !== null
+          ? `L${compared.index} vs L${c.reference} · green gains · red loses`
+          : "Choose a lap and reference in Laps to compare",
+        16,
+        24
+      );
+    }
     const gates = this.gates();
     gates.forEach((g, index) => {
       if (!g) return;
@@ -699,6 +745,18 @@ export default class LapRenderer implements TabRenderer {
           max = Math.max(max, v);
         }
     this.range = [min, max];
+    const reference = laps.find((lap) => lap.index === c.reference && lap.valid),
+      compared = laps.find((lap) => lap.index === c.selected && lap.valid) ?? overlaid.find((lap) => lap !== reference),
+      compareStep = compared ? Math.max(1, compared.distance / 512) : 1,
+      changes: number[] = [];
+    if (this.colorMode === "compare" && reference && compared) {
+      for (let distance = 0; distance < compared.distance; distance += compareStep) {
+        changes.push(
+          deltaTime(compared, reference, Math.min(compared.distance, distance + compareStep)) -
+            deltaTime(compared, reference, distance)
+        );
+      }
+    }
     const neutral = dark ? "#9a9a9a" : "#777";
     const paths = new Map<string, { alpha: number; color: string; width: number; path: Path2D }>();
     const stride = Math.max(1, Math.floor(ss.length / 60000));
@@ -713,9 +771,24 @@ export default class LapRenderer implements TabRenderer {
       if (visible.length && (!lap || !visible.includes(lap) || p0.t < lap.start)) continue;
       let color = neutral,
         alpha = laps.length && !c.field ? 0.4 : 1;
-      if (c.field && Number.isFinite(c.values[i])) {
+      if (this.colorMode === "field" && c.field && Number.isFinite(c.values[i])) {
         // Rounded to 64 steps so segments of a colour share a path
         color = viridis(Math.round(((c.values[i] - min) / (max - min || 1)) * 63) / 63);
+      } else if (lap && this.colorMode === "sector") {
+        let end = lap.start,
+          sector = 0;
+        while (sector < lap.sectors.length - 1 && p1.t >= (end += lap.sectors[sector])) sector++;
+        color = colors[sector % colors.length];
+        alpha = 1;
+      } else if (lap && this.colorMode === "compare") {
+        if (lap === compared && changes.length) {
+          const start = this.sampleAt(lap.start).distance,
+            end = this.sampleAt(lap.end).distance,
+            distance = ((p1.distance - start) / (end - start || 1)) * lap.distance,
+            change = changes[Math.max(0, Math.min(changes.length - 1, Math.floor(distance / compareStep)))];
+          color = change < -0.0001 ? "#218c51" : change > 0.0001 ? "#d94141" : neutral;
+          alpha = 1;
+        }
       } else if (lap && overlaid.includes(lap)) {
         color = colors[overlaid.indexOf(lap) % colors.length];
         alpha = 1;
@@ -739,10 +812,16 @@ export default class LapRenderer implements TabRenderer {
     }
   }
   saveState() {
-    return { zoom: this.zoom, pan: this.pan, overlaysOnly: this.overlaysOnly };
+    return { zoom: this.zoom, pan: this.pan, overlaysOnly: this.overlaysOnly, colorMode: this.colorMode };
   }
   restoreState(state: unknown) {
     if (typeof state !== "object" || state === null) return;
+    if (
+      "colorMode" in state &&
+      typeof state.colorMode === "string" &&
+      ["laps", "sector", "compare", "field"].includes(state.colorMode)
+    )
+      this.colorMode = state.colorMode;
     if ("overlaysOnly" in state && typeof state.overlaysOnly === "boolean") this.overlaysOnly = state.overlaysOnly;
     if ("zoom" in state && typeof state.zoom === "number") this.zoom = state.zoom;
     if ("pan" in state && Array.isArray(state.pan) && state.pan.length === 2) this.pan = state.pan as [number, number];
