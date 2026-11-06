@@ -13,7 +13,7 @@
 
 import type { LapSettings } from "../../hub/LapService";
 import ScrollSensor, { ScrollSensorMouseControl } from "../../hub/ScrollSensor";
-import { Coordinate, Gate, gateAt, geographicGate, LapResult, Point, project } from "../laps/LapEngine";
+import { Coordinate, deltaTime, Gate, gateAt, geographicGate, LapResult, Point, project } from "../laps/LapEngine";
 import { Units } from "../units";
 import { panMargin, scrollZoomPan } from "./FieldZoomPan";
 import TabRenderer from "./TabRenderer";
@@ -49,6 +49,7 @@ const duration = (t: number) =>
   Number.isFinite(t) ? `${Math.floor(t / 60)}:${(t % 60).toFixed(3).padStart(6, "0")}` : "—";
 export default class LapRenderer implements TabRenderer {
   private toolbar: HTMLElement;
+  private bestButton?: HTMLButtonElement;
   private content: HTMLElement;
   private canvas: HTMLCanvasElement;
   private traceLayer = document.createElement("canvas");
@@ -62,8 +63,12 @@ export default class LapRenderer implements TabRenderer {
   private lastTrace = "";
   private toolbarKey = "";
   private zoom = 1;
+  private overlaysOnly = false;
+  private colorMode = "laps";
+  private restoredColor = false;
   private pan: [number, number] = [0, 0];
   private baseScale = 1;
+  private bounds = [0, 0, 0, 0];
   private range: [number, number] = [NaN, NaN];
   private transform = (p: Point) => p;
   private inverse = (p: Point) => p;
@@ -96,6 +101,8 @@ export default class LapRenderer implements TabRenderer {
     this.scroll = document.createElement("div");
     this.scroll.className = "field-2d-scroll";
     this.scroll.tabIndex = -1;
+    this.scroll.title =
+      "Replay gaps are relative to the reference lap. Positive seconds mean behind; positive metres mean ahead.";
     const scrollContent = document.createElement("div");
     scrollContent.className = "field-2d-scroll-content";
     this.scroll.append(scrollContent);
@@ -226,8 +233,14 @@ export default class LapRenderer implements TabRenderer {
     return b;
   }
   render(command: LapCommand) {
+    if (
+      (this.command && command.field !== this.command.field) ||
+      (!this.command && !this.restoredColor && command.field && this.colorMode === "laps")
+    )
+      this.colorMode = command.field ? "field" : "laps";
     this.command = command;
     const key = JSON.stringify([
+      this.colorMode,
       command.version,
       command.field,
       command.reference,
@@ -251,18 +264,60 @@ export default class LapRenderer implements TabRenderer {
     const c = this.command!;
     const scrollTop = this.content.scrollTop,
       scrollLeft = this.content.scrollLeft;
-    const toolbarKey = JSON.stringify([c.field, c.unit, c.map, c.settings]);
+    const toolbarKey = JSON.stringify([c.field, c.unit, c.map, c.settings, this.colorMode]);
     if (toolbarKey !== this.toolbarKey) {
       this.toolbarKey = toolbarKey;
       this.toolbar.replaceChildren();
+      this.bestButton = undefined;
       const label = document.createElement("span");
       label.textContent =
         (c.map ? "Colour: " : "Metrics: ") +
         (c.field.split("/").at(-1) || (c.map ? "laps, or drag a numeric field here" : "drag a numeric field")) +
         (c.unit ? ` [${c.unit}]` : "");
       label.title = c.field;
+      if (c.map) {
+        label.textContent = "Colour: ";
+        const select = document.createElement("select");
+        select.className = "mv-select";
+        select.setAttribute("aria-label", "Map colour");
+        for (const [value, text] of [
+          ["laps", "Laps"],
+          ["sector", "Sectors"],
+          ["compare", "Time compare"],
+          ...(c.field ? [["field", c.field.split("/").at(-1)!]] : [])
+        ])
+          select.add(new Option(text, value));
+        select.value = this.colorMode;
+        select.onchange = () => {
+          this.colorMode = select.value;
+        };
+        label.append(select);
+      }
       this.toolbar.append(label);
       if (c.field) this.button(this.toolbar, "Clear field", () => this.action({ type: "field", field: "" }));
+      if (c.map) {
+        const label = document.createElement("label"),
+          toggle = document.createElement("input");
+        toggle.type = "checkbox";
+        toggle.className = "mv-checkbox";
+        toggle.checked = this.overlaysOnly;
+        toggle.onchange = () => {
+          this.overlaysOnly = toggle.checked;
+          this.zoom = 1;
+          this.pan = [0, 0];
+          this.lastDraw = "";
+        };
+        label.append(toggle, "Overlaid laps only");
+        this.toolbar.append(label);
+      }
+      if (!c.map) {
+        this.bestButton = this.button(this.toolbar, "Select best 3 laps", () => {
+          const laps = this.command!.result.laps.filter((lap) => lap.valid).sort(
+            (a, b) => a.end - a.start - (b.end - b.start) || a.index - b.index
+          );
+          this.action({ type: "overlay", indices: laps.slice(0, 3).map((lap) => lap.index) });
+        });
+      }
       const details = document.createElement("details"),
         summary = document.createElement("summary");
       details.open = setupOpen;
@@ -344,6 +399,7 @@ export default class LapRenderer implements TabRenderer {
       // Only autocross ends a run on a separate line.
       if (c.settings.config.mode === "autocross") this.button(panel, "Set finish at cursor", () => addGate(-2));
     }
+    if (this.bestButton) this.bestButton.disabled = !c.result.laps.some((lap) => lap.valid);
     if (c.map) {
       // The scroll sensor loses its position if the map leaves the page.
       if (this.mapView.parentElement !== this.content) this.content.replaceChildren(this.mapView, this.message);
@@ -472,6 +528,7 @@ export default class LapRenderer implements TabRenderer {
       dark = matchMedia("(prefers-color-scheme: dark)").matches;
     const traceKey = JSON.stringify([
       c.version,
+      this.colorMode,
       c.field,
       c.selected,
       c.reference,
@@ -481,6 +538,7 @@ export default class LapRenderer implements TabRenderer {
       h,
       ratio,
       this.zoom,
+      this.overlaysOnly,
       this.pan,
       dark
     ]);
@@ -498,16 +556,22 @@ export default class LapRenderer implements TabRenderer {
     ctx.lineCap = "round";
 
     // Fit the track with a margin, then apply zoom and pan the same way as the 2D Field
-    let xmin = Infinity,
-      xmax = -Infinity,
-      ymin = Infinity,
-      ymax = -Infinity;
-    for (const p of ss) {
-      xmin = Math.min(xmin, p.x);
-      xmax = Math.max(xmax, p.x);
-      ymin = Math.min(ymin, p.y);
-      ymax = Math.max(ymax, p.y);
+    if (traceKey !== this.lastTrace) {
+      let xmin = Infinity,
+        xmax = -Infinity,
+        ymin = Infinity,
+        ymax = -Infinity;
+      const visible = this.visibleLaps();
+      for (const p of ss) {
+        if (visible.length && !visible.some((lap) => p.t >= lap.start && p.t <= lap.end)) continue;
+        xmin = Math.min(xmin, p.x);
+        xmax = Math.max(xmax, p.x);
+        ymin = Math.min(ymin, p.y);
+        ymax = Math.max(ymax, p.y);
+      }
+      this.bounds = [xmin, xmax, ymin, ymax];
     }
+    const [xmin, xmax, ymin, ymax] = this.bounds;
     const margin = Math.max(xmax - xmin, ymax - ymin, 1) * 0.08,
       trackWidth = xmax - xmin + margin * 2,
       trackHeight = ymax - ymin + margin * 2;
@@ -532,7 +596,7 @@ export default class LapRenderer implements TabRenderer {
 
     const text = dark ? "#eee" : "#222";
     ctx.font = "12px system-ui";
-    if (c.field) {
+    if (this.colorMode === "field" && c.field) {
       const unit = Units.ALL_UNITS[c.unit]?.suffix ?? c.unit,
         [min, max] = this.range;
       ctx.fillStyle = text;
@@ -547,7 +611,51 @@ export default class LapRenderer implements TabRenderer {
       ctx.textAlign = "right";
       ctx.fillText(Number.isFinite(max) ? max.toFixed(1) : "—", 176, 56);
     }
+    // North is up in the local GPS projection. Keep both guides clear of the bottom hint.
+    ctx.fillStyle = text;
+    ctx.strokeStyle = text;
+    ctx.lineWidth = 1.5;
+    ctx.textAlign = "center";
+    ctx.fillText("N", w - 28, 23);
+    ctx.beginPath();
+    ctx.moveTo(w - 28, 31);
+    ctx.lineTo(w - 28, 55);
+    ctx.moveTo(w - 34, 39);
+    ctx.lineTo(w - 28, 31);
+    ctx.lineTo(w - 22, 39);
+    ctx.stroke();
+    const targetMetres = Math.min(100, w / 4) / scale,
+      power = Math.pow(10, Math.floor(Math.log10(targetMetres))),
+      metres = [5, 2, 1].map((n) => n * power).find((n) => n <= targetMetres) ?? power,
+      barWidth = metres * scale;
+    ctx.beginPath();
+    ctx.moveTo(w - 16 - barWidth, 83);
+    ctx.lineTo(w - 16 - barWidth, 88);
+    ctx.lineTo(w - 16, 88);
+    ctx.lineTo(w - 16, 83);
+    ctx.stroke();
+    ctx.fillText(`${Number(metres.toPrecision(3))} m`, w - 16 - barWidth / 2, 77);
     ctx.textAlign = "left";
+    if (this.colorMode === "sector") {
+      for (let i = 0; i < Math.max(1, ...c.result.laps.map((lap) => lap.sectors.length)); i++) {
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.fillRect(16 + i * 48, 15, 10, 10);
+        ctx.fillStyle = text;
+        ctx.fillText(`S${i + 1}`, 30 + i * 48, 24);
+      }
+    } else if (this.colorMode === "compare") {
+      const compared =
+        c.result.laps.find((lap) => lap.valid && lap.index === c.selected) ??
+        c.result.laps.find((lap) => lap.valid && c.overlays.includes(lap.index) && lap.index !== c.reference);
+      ctx.fillStyle = text;
+      ctx.fillText(
+        compared && c.reference !== null
+          ? `L${compared.index} vs L${c.reference} · green gains · red loses`
+          : "Choose a lap and reference in Laps to compare",
+        16,
+        24
+      );
+    }
     const gates = this.gates();
     gates.forEach((g, index) => {
       if (!g) return;
@@ -579,21 +687,68 @@ export default class LapRenderer implements TabRenderer {
       ctx.textBaseline = "alphabetic";
     });
     if (c.time !== null) {
-      let lo = 0,
-        hi = ss.length - 1;
-      while (hi - lo > 1) {
-        const mid = (lo + hi) >>> 1;
-        if (ss[mid].t <= c.time) lo = mid;
-        else hi = mid;
-      }
-      const q = this.transform(c.time - ss[lo].t < ss[hi].t - c.time ? ss[lo] : ss[hi]);
-      ctx.fillStyle = "#fff";
-      ctx.strokeStyle = "#222";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(q.x, q.y, 6, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
+      const cursorLap = c.result.laps.find((lap) => lap.complete && c.time! >= lap.start && c.time! < lap.end),
+        overlaid = c.result.laps.filter(
+          (lap) => lap.valid && (c.overlays.includes(lap.index) || lap.index === c.reference)
+        ),
+        reference = overlaid.find((lap) => lap.index === c.reference),
+        elapsed = cursorLap ? c.time - cursorLap.start : 0;
+      const labels: { x: number; y: number; width: number }[] = [];
+      const dot = (time: number, color: string, label?: string) => {
+        const p = this.sampleAt(time),
+          q = this.transform(p);
+        ctx.fillStyle = color;
+        ctx.strokeStyle = dark ? "#222" : "#fff";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(q.x, q.y, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        if (label) {
+          ctx.textAlign = "left";
+          const width = ctx.measureText(label).width,
+            x = Math.max(8, Math.min(w - width - 8, q.x + 12));
+          let y = Math.max(42, Math.min(h - 36, q.y - 12));
+          const overlaps = () =>
+            labels.some((p) => x < p.x + p.width + 4 && x + width + 4 > p.x && Math.abs(y - p.y) < 18);
+          while (overlaps() && y < h - 54) y += 18;
+          if (overlaps()) {
+            y = Math.max(42, Math.min(h - 36, q.y - 30));
+            while (overlaps() && y > 60) y -= 18;
+          }
+          labels.push({ x, y, width });
+          ctx.lineWidth = 4;
+          ctx.strokeText(label, x, y);
+          ctx.fillText(label, x, y);
+        }
+      };
+      if (cursorLap && c.overlays.length && overlaid.length) {
+        const distanceAt = (lap: typeof cursorLap) => {
+          const start = this.sampleAt(lap.start).distance,
+            end = this.sampleAt(lap.end).distance,
+            now = this.sampleAt(Math.min(lap.end, lap.start + elapsed)).distance;
+          return ((now - start) / (end - start || 1)) * lap.distance;
+        };
+        const refDistance = reference ? distanceAt(reference) : 0;
+        overlaid.forEach((lap, i) => {
+          const time = Math.min(elapsed, lap.end - lap.start),
+            distance = distanceAt(lap),
+            signed = (n: number, digits: number) => (n > 0 ? "+" : "") + n.toFixed(digits);
+          // Compare arrival times at the reference's current distance. Positive time means behind.
+          const gap = reference
+            ? this.gridTimeAt(lap, refDistance) - Math.min(elapsed, reference.end - reference.start)
+            : NaN;
+          dot(
+            lap.start + time,
+            colors[i % colors.length],
+            lap === reference
+              ? undefined
+              : reference
+              ? `L${lap.index} vs L${reference.index} ${signed(gap, 2)} s · ${signed(distance - refDistance, 1)} m`
+              : `L${lap.index}`
+          );
+        });
+      } else dot(c.time, "#fff");
     }
     if (hint) {
       ctx.fillStyle = text;
@@ -604,6 +759,41 @@ export default class LapRenderer implements TabRenderer {
         h - 16
       );
     }
+  }
+  private visibleLaps() {
+    const c = this.command!;
+    return this.overlaysOnly
+      ? c.result.laps.filter((lap) => lap.valid && (c.overlays.includes(lap.index) || lap.index === c.reference))
+      : [];
+  }
+  private sampleAt(time: number) {
+    const samples = this.command!.result.samples;
+    let lo = 0,
+      hi = samples.length - 1;
+    while (hi - lo > 1) {
+      const mid = (lo + hi) >>> 1;
+      if (samples[mid].t <= time) lo = mid;
+      else hi = mid;
+    }
+    const a = samples[lo],
+      b = samples[hi],
+      f = Math.max(0, Math.min(1, (time - a.t) / (b.t - a.t || 1)));
+    return { x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f, distance: a.distance + (b.distance - a.distance) * f };
+  }
+  private gridTimeAt(lap: LapResult["laps"][number], distance: number) {
+    const grid = lap.grid;
+    if (!grid.length) return NaN;
+    let lo = 0,
+      hi = grid.length - 1;
+    while (hi - lo > 1) {
+      const mid = (lo + hi) >>> 1;
+      if (grid[mid].distance <= distance) lo = mid;
+      else hi = mid;
+    }
+    const a = grid[lo],
+      b = grid[hi],
+      f = Math.max(0, Math.min(1, (distance - a.distance) / (b.distance - a.distance || 1)));
+    return a.time + (b.time - a.time) * f;
   }
   /** Laps in the Line Graph overlay share its colours. A dropped field colours the whole trace instead. */
   private drawTrace(w: number, h: number, ratio: number, dark: boolean) {
@@ -625,9 +815,22 @@ export default class LapRenderer implements TabRenderer {
           max = Math.max(max, v);
         }
     this.range = [min, max];
+    const reference = laps.find((lap) => lap.index === c.reference && lap.valid),
+      compared = laps.find((lap) => lap.index === c.selected && lap.valid) ?? overlaid.find((lap) => lap !== reference),
+      compareStep = compared ? Math.max(1, compared.distance / 512) : 1,
+      changes: number[] = [];
+    if (this.colorMode === "compare" && reference && compared) {
+      for (let distance = 0; distance < compared.distance; distance += compareStep) {
+        changes.push(
+          deltaTime(compared, reference, Math.min(compared.distance, distance + compareStep)) -
+            deltaTime(compared, reference, distance)
+        );
+      }
+    }
     const neutral = dark ? "#9a9a9a" : "#777";
     const paths = new Map<string, { alpha: number; color: string; width: number; path: Path2D }>();
     const stride = Math.max(1, Math.floor(ss.length / 60000));
+    const visible = this.visibleLaps();
     let lapCursor = 0;
     for (let i = stride; i < ss.length; i += stride) {
       const p0 = ss[i - stride],
@@ -635,11 +838,27 @@ export default class LapRenderer implements TabRenderer {
       if (p1.t - p0.t > 1 || Math.hypot(p1.x - p0.x, p1.y - p0.y) > 40) continue;
       while (lapCursor < laps.length - 1 && p1.t >= laps[lapCursor].end) lapCursor++;
       const lap = laps[lapCursor];
+      if (visible.length && (!lap || !visible.includes(lap) || p0.t < lap.start)) continue;
       let color = neutral,
         alpha = laps.length && !c.field ? 0.4 : 1;
-      if (c.field && Number.isFinite(c.values[i])) {
+      if (this.colorMode === "field" && c.field && Number.isFinite(c.values[i])) {
         // Rounded to 64 steps so segments of a colour share a path
         color = viridis(Math.round(((c.values[i] - min) / (max - min || 1)) * 63) / 63);
+      } else if (lap && this.colorMode === "sector") {
+        let end = lap.start,
+          sector = 0;
+        while (sector < lap.sectors.length - 1 && p1.t >= (end += lap.sectors[sector])) sector++;
+        color = colors[sector % colors.length];
+        alpha = 1;
+      } else if (lap && this.colorMode === "compare") {
+        if (lap === compared && changes.length) {
+          const start = this.sampleAt(lap.start).distance,
+            end = this.sampleAt(lap.end).distance,
+            distance = ((p1.distance - start) / (end - start || 1)) * lap.distance,
+            change = changes[Math.max(0, Math.min(changes.length - 1, Math.floor(distance / compareStep)))];
+          color = change < -0.0001 ? "#218c51" : change > 0.0001 ? "#d94141" : neutral;
+          alpha = 1;
+        }
       } else if (lap && overlaid.includes(lap)) {
         color = colors[overlaid.indexOf(lap) % colors.length];
         alpha = 1;
@@ -663,10 +882,19 @@ export default class LapRenderer implements TabRenderer {
     }
   }
   saveState() {
-    return { zoom: this.zoom, pan: this.pan };
+    return { zoom: this.zoom, pan: this.pan, overlaysOnly: this.overlaysOnly, colorMode: this.colorMode };
   }
   restoreState(state: unknown) {
     if (typeof state !== "object" || state === null) return;
+    if (
+      "colorMode" in state &&
+      typeof state.colorMode === "string" &&
+      ["laps", "sector", "compare", "field"].includes(state.colorMode)
+    ) {
+      this.colorMode = state.colorMode;
+      this.restoredColor = true;
+    }
+    if ("overlaysOnly" in state && typeof state.overlaysOnly === "boolean") this.overlaysOnly = state.overlaysOnly;
     if ("zoom" in state && typeof state.zoom === "number") this.zoom = state.zoom;
     if ("pan" in state && Array.isArray(state.pan) && state.pan.length === 2) this.pan = state.pan as [number, number];
   }
