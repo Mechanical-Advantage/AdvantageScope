@@ -617,6 +617,28 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       read: (c) => round(wheel(c, -1), 3)
     }),
     def({
+      path: "dynamics/speed_fl",
+      type: "float64",
+      unit: "m/s",
+      label: "Speed FL",
+      description: "Front-left wheel speed (DASH_SpeedFL)",
+      source: "telemetry-can",
+      rate: 50,
+      tags: ["vehicle-dynamics", "wheels"],
+      read: (c) => round(wheel(c, 1) * CAR.wheelRadius, 3)
+    }),
+    def({
+      path: "dynamics/speed_fr",
+      type: "float64",
+      unit: "m/s",
+      label: "Speed FR",
+      description: "Front-right wheel speed (DASH_SpeedFR)",
+      source: "telemetry-can",
+      rate: 50,
+      tags: ["vehicle-dynamics", "wheels"],
+      read: (c) => round(wheel(c, -1) * CAR.wheelRadius, 3)
+    }),
+    def({
       path: "dynamics/rear_axle_speed",
       type: "float64",
       unit: "rad/s",
