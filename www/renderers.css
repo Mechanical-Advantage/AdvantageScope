@@ -666,6 +666,47 @@ div.video-container img {
   object-fit: contain;
 }
 
+/* Driver Inputs */
+
+canvas.driver-inputs-canvas {
+  position: absolute;
+  left: 0%;
+  top: 0%;
+  width: 100%;
+  height: 100%;
+}
+
+/* Car Dynamics */
+
+div.car-dynamics-canvas-container {
+  position: absolute;
+  bottom: 0%;
+  height: calc(100% + 10px);
+  left: 0px;
+  width: 100%;
+}
+
+body.satellite div.car-dynamics-canvas-container {
+  height: 100%;
+}
+
+canvas.car-dynamics-canvas {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  background-color: #f4f4f4;
+  border: 1px solid #555;
+}
+
+@media (prefers-color-scheme: dark) {
+  canvas.car-dynamics-canvas {
+    background-color: #292929;
+    border: 1px solid #999;
+  }
+}
+
 /* Points */
 
 div.points-background-container {
