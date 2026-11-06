@@ -29,18 +29,20 @@ window.addEventListener("message", (event) => {
       }
 
       // Normal message
-      let range: [number, number] = event.data;
+      const limits = event.data.limits === true;
+      let range: [number | null, number | null] = limits ? event.data.range : event.data;
+      if (limits) document.title = "Edit Limits";
 
       // Update values
-      MIN_INPUT.value = cleanFloat(range[0]).toString();
-      MAX_INPUT.value = cleanFloat(range[1]).toString();
+      MIN_INPUT.value = range[0] === null ? "" : cleanFloat(range[0]).toString();
+      MAX_INPUT.value = range[1] === null ? "" : cleanFloat(range[1]).toString();
       MAX_INPUT.select();
 
       // Close function
       function confirm() {
-        let min = Number(MIN_INPUT.value);
-        let max = Number(MAX_INPUT.value);
-        if (min >= max) {
+        let min = limits && MIN_INPUT.value === "" ? null : Number(MIN_INPUT.value);
+        let max = limits && MAX_INPUT.value === "" ? null : Number(MAX_INPUT.value);
+        if (min !== null && max !== null && min >= max) {
           alert("Maximum must be greater than minimum.");
         } else {
           messagePort.postMessage([min, max]);

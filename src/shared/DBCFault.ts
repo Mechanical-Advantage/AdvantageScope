@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { Severity } from "./HealthStrip";
+export type Severity = "ok" | "warn" | "critical";
 
 export interface DBCFaultDefinition {
   name: string;

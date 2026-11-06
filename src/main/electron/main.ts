@@ -854,6 +854,35 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       openSourceListHelp(window, message.data);
       break;
 
+    case "ask-edit-trackside-limits": {
+      const menu = new Menu();
+      for (const field of message.data.fields) {
+        menu.append(
+          new MenuItem({
+            label: field.key,
+            click() {
+              createEditRangeWindow(
+                window,
+                [field.limits.low ?? null, field.limits.high ?? null],
+                (range) => {
+                  sendMessage(window, "edit-trackside-limits", {
+                    uuid: message.data.uuid,
+                    key: field.key,
+                    limits: { low: range[0] ?? undefined, high: range[1] ?? undefined }
+                  });
+                },
+                true
+              );
+            }
+          })
+        );
+      }
+      if (!message.data.fields.length)
+        menu.append(new MenuItem({ label: "Add tile fields to edit limits", enabled: false }));
+      menu.popup({ window, x: Math.round(message.data.rect.x), y: Math.round(message.data.rect.y) });
+      break;
+    }
+
     case "ask-edit-axis":
       {
         let legend: string = message.data.legend;
@@ -1702,20 +1731,6 @@ function setupMenu() {
             sendMessage(window, "toggle-controls");
           }
         },
-        {
-          label: "Trackside Layout",
-          click(_, baseWindow) {
-            const window = baseWindow as BrowserWindow | undefined;
-            if (window && hubWindows.includes(window)) sendMessage(window, "trackside-layout");
-          }
-        },
-        {
-          label: "Toggle Tiles",
-          click(_, baseWindow) {
-            const window = baseWindow as BrowserWindow | undefined;
-            if (window && hubWindows.includes(window)) sendMessage(window, "toggle-health-strip");
-          }
-        },
         { role: "togglefullscreen" }
       ]
     },
@@ -2112,10 +2127,11 @@ function createHubWindow(state?: WindowState, layoutOverride?: any) {
  * @param range The window range
  * @param callback Window callback
  */
-function createEditRangeWindow(
+function createEditRangeWindow<T extends number | null = number>(
   parentWindow: Electron.BrowserWindow,
-  range: [number, number],
-  callback: (range: [number, number]) => void
+  range: [T, T],
+  callback: (range: [T, T]) => void,
+  limits = false
 ) {
   const editWindow = new BrowserWindow({
     width: 300,
@@ -2140,7 +2156,7 @@ function createEditRangeWindow(
     // Create ports on reload
     const { port1, port2 } = new MessageChannelMain();
     editWindow.webContents.postMessage("port", null, [port1]);
-    port2.postMessage(range);
+    port2.postMessage(limits ? { limits: true, range } : range);
     port2.on("message", (event) => {
       editWindow.destroy();
       callback(event.data);

@@ -18,7 +18,8 @@ enum TabType {
   Points = 11,
   Metadata = 12,
   TrackMap = 13,
-  Laps = 14
+  Laps = 14,
+  Trackside = 15
   // 20-22 were Raw Messages, Log and Image. These values stay reserved for saved layouts.
 }
 
@@ -36,6 +37,7 @@ export const NEW_TAB_TYPES = [
   TabType.Statistics,
   TabType.Console,
   TabType.Video,
+  TabType.Trackside,
   TabType.Points,
   TabType.Metadata
 ];
@@ -75,6 +77,8 @@ export function getDefaultTabTitle(type: TabType): string {
       return "Track Map";
     case TabType.Laps:
       return "Laps";
+    case TabType.Trackside:
+      return "Trackside";
     case TabType.Metadata:
       return "Metadata";
     default:

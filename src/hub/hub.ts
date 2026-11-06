@@ -17,13 +17,13 @@ import Log from "../shared/log/Log";
 import { MERGE_PREFIX } from "../shared/log/LogKeyUtils";
 import { AKIT_TIMESTAMP_KEYS, getEnabledData } from "../shared/log/RobotState";
 import { calcMockProgress, clampValue, htmlEncode, scaleValue } from "../shared/util";
-import HealthStripUI from "./HealthStripUI";
+
 import { ConnectDialog } from "./LiveConnectionUI";
 import SelectionImpl from "./SelectionImpl";
 import Sidebar from "./Sidebar";
 import SourceList from "./SourceList";
 import Tabs from "./Tabs";
-import { applyTracksideLayout } from "./TracksideLayout";
+
 import WorkerManager from "./WorkerManager";
 import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
 import { sessionAddresses } from "./dataSources/LiveAddress";
@@ -56,7 +56,6 @@ declare global {
 
     selection: Selection;
     sidebar: Sidebar;
-    healthStrip: HealthStripUI;
     tabs: Tabs;
     tuner: LiveDataTuner | null;
     liveStatus: LiveStatusProvider | null;
@@ -94,7 +93,6 @@ window.sidebar = new Sidebar(() =>
 window.tabs = new Tabs();
 window.tuner = null;
 window.liveStatus = null;
-window.healthStrip = new HealthStripUI();
 window.messagePort = null;
 
 let historicalSources: {
@@ -212,7 +210,6 @@ function setExporting(exporting: boolean) {
 /** Returns the current state. */
 function saveState(): HubState {
   return {
-    healthStrip: window.healthStrip.state,
     sidebar: window.sidebar.saveState(),
     tabs: window.tabs.saveState()
   };
@@ -220,7 +217,6 @@ function saveState(): HubState {
 
 /** Restores to the provided state. */
 function restoreState(state: HubState) {
-  window.healthStrip.restore(state.healthStrip);
   window.sidebar.restoreState(state.sidebar);
   window.tabs.restoreState(state.tabs);
 }
@@ -833,14 +829,6 @@ async function handleMainMessage(message: NamedMessage) {
       window.sidebar.toggleVisible();
       break;
 
-    case "trackside-layout":
-      applyTracksideLayout();
-      break;
-
-    case "toggle-health-strip":
-      window.healthStrip.toggle();
-      break;
-
     case "toggle-controls":
       window.tabs.toggleControlsVisible();
       break;
@@ -890,6 +878,10 @@ async function handleMainMessage(message: NamedMessage) {
 
     case "set-robot-mode-visible":
       window.tabs.setRobotModeVisible(message.data.showRobotMode);
+      break;
+
+    case "edit-trackside-limits":
+      window.tabs.editTracksideLimits(message.data.uuid, message.data.key, message.data.limits);
       break;
 
     case "edit-axis":

@@ -1,0 +1,52 @@
+import assert from "node:assert/strict";
+import { test } from "node:test";
+import { alertLine, dbcDefinition, tileState } from "../src/shared/Trackside";
+import { channelProfile } from "../src/shared/display/ChannelProfile";
+
+const profile = channelProfile({ name: "Motor temp", unit: "degC" });
+const definition = { name: "IMD_State", values: { 0: "Normal", 4: "Earth Fault", 5: "Ground Fault Warning" } };
+
+test("tiles use display units for limits and do not ship numeric alarms", () => {
+  const kelvin = channelProfile({ name: "temperature", unit: "kelvin" });
+  assert.equal(tileState("/Motor temp", 385.15, kelvin).severity, "ok");
+  assert.equal(tileState("/Motor temp", 385.15, kelvin, { high: 110 }).severity, "critical");
+  assert.equal(tileState("/Motor temp", 110, profile, { high: 110 }).severity, "ok");
+  assert.equal(tileState("/Motor temp", -1, profile, { low: 0 }).severity, "critical");
+  assert.equal(tileState("/missing", undefined, profile).text, "—");
+  assert.equal(tileState("/bool", false, profile).text, "false");
+});
+
+test("DBC classification controls tile severity and rejects non-DBC metadata", () => {
+  assert.equal(tileState("/IMD_State", 4, profile, {}, definition).severity, "critical");
+  assert.equal(tileState("/IMD_State", 5, profile, {}, definition).severity, "warn");
+  assert.equal(tileState("/IMD_State", 0, profile, {}, definition).severity, "ok");
+  assert.equal(dbcDefinition(JSON.stringify({ name: "Fault" }), "/Fault"), null);
+  assert.equal(dbcDefinition(JSON.stringify({ dbcSignal: "FaultFlags" }), "/raw"), null);
+});
+
+test("live freshness suppresses alarms and distinguishes stale, offline and lost link", () => {
+  const summary = { backend: "connected" as const, hasFreshData: true, backendDetail: "", viewedRun: 0, runCount: 1 };
+  const stale = tileState("/Motor temp", 112, profile, { high: 110 }, null, { summary, freshness: "stale", age: 2.1 });
+  assert.equal(stale.state, "◇ 2.1 s");
+  assert.equal(stale.severity, "ok");
+  assert.match(stale.text, /112/);
+  assert.equal(
+    tileState("/x", 1, profile, {}, null, { summary, freshness: "offline", age: 7 }).state,
+    "⊘ offline 7.0 s"
+  );
+  assert.equal(
+    tileState("/x", 1, profile, {}, null, { summary: { ...summary, backend: "error" }, freshness: "online", age: 1 })
+      .state,
+    "⊘ link lost"
+  );
+});
+
+test("alert line names current faults and limit violations and clears on recovery", () => {
+  const fault = { tile: tileState("/IMD_State", 4, profile, {}, definition), value: 4, profile, fault: true };
+  const limits = { high: 110 };
+  const high = { tile: tileState("/Motor temp", 112, profile, limits), value: 112, profile, limits };
+  assert.match(alertLine([fault, high]).text, /^Earth Fault · IMD_State   ·   Motor temp 112/);
+  assert.match(alertLine([high]).text, /above 110$/);
+  assert.equal(alertLine([fault, high]).severity, "critical");
+  assert.equal(alertLine([{ ...high, tile: tileState("/Motor temp", 90, profile, limits) }]).text, "");
+});
