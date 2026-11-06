@@ -37,6 +37,9 @@ export default class TracksideRenderer implements TabRenderer {
             element.className = "trackside-" + name;
             cell.append(element);
           }
+          const unit = document.createElement("span");
+          unit.className = "trackside-unit";
+          cell.children[1].append(document.createElement("span"), unit);
           return cell;
         })
       );
@@ -46,7 +49,8 @@ export default class TracksideRenderer implements TabRenderer {
       cell.dataset.severity = tile.severity;
       cell.dataset.freshness = tile.state.includes("link lost") ? "offline" : tile.freshness ?? "";
       cell.children[0].textContent = tile.label;
-      cell.children[1].textContent = tile.text + (tile.unit ? " " + tile.unit : "");
+      cell.children[1].children[0].textContent = tile.text;
+      cell.children[1].children[1].textContent = tile.unit ? " " + tile.unit : "";
       cell.children[2].textContent = tile.state;
       cell.title = `${tile.label}: ${tile.text} ${tile.unit} ${tile.state}`;
     });

@@ -39,7 +39,7 @@ export default class TracksideController implements TabController {
   }
   newAssets() {}
   getActiveFields() {
-    return this.sourceList.getState().map((source) => source.logKey);
+    return [...new Set([...this.sourceList.getActiveFields(), ...Object.keys(this.limits)])];
   }
   showTimeline() {
     return true;

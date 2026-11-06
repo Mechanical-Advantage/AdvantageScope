@@ -1895,9 +1895,10 @@ div.connect-dialog input.mqtt-timestamp {
 .lap-sources.source-list button.hide {
   display: none;
 }
-.trackside-sources {
-  position: absolute;
-  inset: 0;
+div.trackside-sources {
+  inset: 10px;
+  width: calc(100% - 20px);
+  height: calc(100% - 20px);
 }
 .trackside-alerts {
   position: absolute;

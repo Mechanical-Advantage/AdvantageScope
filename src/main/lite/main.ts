@@ -918,6 +918,9 @@ async function handleHubMessage(message: NamedMessage) {
       openSourceListHelp(message.data);
       break;
 
+    case "ask-edit-trackside-limits":
+      break;
+
     case "ask-edit-axis":
       {
         let legend: string = message.data.legend;

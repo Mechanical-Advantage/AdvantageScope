@@ -50,3 +50,14 @@ test("alert line names current faults and limit violations and clears on recover
   assert.equal(alertLine([fault, high]).severity, "critical");
   assert.equal(alertLine([{ ...high, tile: tileState("/Motor temp", 90, profile, limits) }]).text, "");
 });
+
+test("warning-only alerts remain amber and unknown live fields do not alert", () => {
+  const warning = tileState("/IMD_State", 5, profile, {}, definition);
+  assert.equal(alertLine([{ tile: warning, value: 5, profile, fault: true }]).severity, "warn");
+  assert.equal(alertLine([{ tile: warning, value: 5, profile, fault: true }]).text, "Ground Fault Warning · IMD_State");
+  const summary = { backend: "connected" as const, hasFreshData: false, backendDetail: "", viewedRun: 0, runCount: 1 };
+  assert.equal(
+    tileState("/IMD_State", 4, profile, {}, definition, { summary, freshness: "unknown", age: null }).severity,
+    "ok"
+  );
+});
