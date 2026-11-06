@@ -303,6 +303,13 @@ export default class LapRenderer implements TabRenderer {
       return;
     }
     this.content.replaceChildren();
+    const bestButton = this.button(this.content, "Select best 3 laps", () => {
+      const laps = this.command!.result.laps
+        .filter((lap) => lap.valid)
+        .sort((a, b) => a.end - a.start - (b.end - b.start) || a.index - b.index);
+      this.action({ type: "overlay", indices: laps.slice(0, 3).map((lap) => lap.index) });
+    });
+    bestButton.disabled = !c.result.laps.some((lap) => lap.valid);
     if (!c.result.laps.some((l) => l.valid)) {
       const p = document.createElement("p");
       p.className = "lap-empty";
