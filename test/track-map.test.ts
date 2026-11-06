@@ -247,3 +247,29 @@ test("the map cursor follows timeline hover through the render time", () => {
   renderTime = null;
   assert.equal(controller.getCommand().time, null);
 });
+
+test("map replay interpolates position by time and clamps at the finish", async () => {
+  const { default: LapRenderer } = await import("../src/shared/renderers/LapRenderer");
+  const renderer = Object.create(LapRenderer.prototype) as any;
+  renderer.command = {
+    result: {
+      samples: [
+        { t: 10, x: 0, y: 0, distance: 100 },
+        { t: 12, x: 20, y: 10, distance: 130 },
+        { t: 15, x: 25, y: 20, distance: 150 }
+      ]
+    }
+  };
+  assert.deepEqual(renderer.sampleAt(11), { x: 10, y: 5, distance: 115 });
+  assert.deepEqual(renderer.sampleAt(30), { x: 25, y: 20, distance: 150 });
+  assert.deepEqual(renderer.sampleAt(0), { x: 0, y: 0, distance: 100 });
+  const lap = {
+    grid: [
+      { distance: 0, time: 0 },
+      { distance: 20, time: 4 },
+      { distance: 50, time: 5 }
+    ]
+  };
+  assert.equal(renderer.gridTimeAt(lap, 10), 2);
+  assert.equal(renderer.gridTimeAt(lap, 100), 5);
+});

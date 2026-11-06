@@ -63,6 +63,7 @@ export default class LapRenderer implements TabRenderer {
   private zoom = 1;
   private pan: [number, number] = [0, 0];
   private baseScale = 1;
+  private bounds = [0, 0, 0, 0];
   private range: [number, number] = [NaN, NaN];
   private transform = (p: Point) => p;
   private inverse = (p: Point) => p;
@@ -304,9 +305,9 @@ export default class LapRenderer implements TabRenderer {
     }
     this.content.replaceChildren();
     const bestButton = this.button(this.content, "Select best 3 laps", () => {
-      const laps = this.command!.result.laps
-        .filter((lap) => lap.valid)
-        .sort((a, b) => a.end - a.start - (b.end - b.start) || a.index - b.index);
+      const laps = this.command!.result.laps.filter((lap) => lap.valid).sort(
+        (a, b) => a.end - a.start - (b.end - b.start) || a.index - b.index
+      );
       this.action({ type: "overlay", indices: laps.slice(0, 3).map((lap) => lap.index) });
     });
     bestButton.disabled = !c.result.laps.some((lap) => lap.valid);
@@ -454,16 +455,20 @@ export default class LapRenderer implements TabRenderer {
     ctx.lineCap = "round";
 
     // Fit the track with a margin, then apply zoom and pan the same way as the 2D Field
-    let xmin = Infinity,
-      xmax = -Infinity,
-      ymin = Infinity,
-      ymax = -Infinity;
-    for (const p of ss) {
-      xmin = Math.min(xmin, p.x);
-      xmax = Math.max(xmax, p.x);
-      ymin = Math.min(ymin, p.y);
-      ymax = Math.max(ymax, p.y);
+    if (traceKey !== this.lastTrace) {
+      let xmin = Infinity,
+        xmax = -Infinity,
+        ymin = Infinity,
+        ymax = -Infinity;
+      for (const p of ss) {
+        xmin = Math.min(xmin, p.x);
+        xmax = Math.max(xmax, p.x);
+        ymin = Math.min(ymin, p.y);
+        ymax = Math.max(ymax, p.y);
+      }
+      this.bounds = [xmin, xmax, ymin, ymax];
     }
+    const [xmin, xmax, ymin, ymax] = this.bounds;
     const margin = Math.max(xmax - xmin, ymax - ymin, 1) * 0.08,
       trackWidth = xmax - xmin + margin * 2,
       trackHeight = ymax - ymin + margin * 2;
@@ -559,27 +564,95 @@ export default class LapRenderer implements TabRenderer {
       ctx.textBaseline = "alphabetic";
     });
     if (c.time !== null) {
-      let lo = 0,
-        hi = ss.length - 1;
-      while (hi - lo > 1) {
-        const mid = (lo + hi) >>> 1;
-        if (ss[mid].t <= c.time) lo = mid;
-        else hi = mid;
-      }
-      const q = this.transform(c.time - ss[lo].t < ss[hi].t - c.time ? ss[lo] : ss[hi]);
-      ctx.fillStyle = "#fff";
-      ctx.strokeStyle = "#222";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(q.x, q.y, 6, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
+      const cursorLap = c.result.laps.find((lap) => lap.complete && c.time! >= lap.start && c.time! < lap.end),
+        overlaid = c.result.laps.filter(
+          (lap) => lap.valid && (c.overlays.includes(lap.index) || lap.index === c.reference)
+        ),
+        reference = overlaid.find((lap) => lap.index === c.reference),
+        elapsed = cursorLap ? c.time - cursorLap.start : 0;
+      const dot = (time: number, color: string, label?: string, row = 0) => {
+        const p = this.sampleAt(time),
+          q = this.transform(p);
+        ctx.fillStyle = color;
+        ctx.strokeStyle = dark ? "#222" : "#fff";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(q.x, q.y, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        if (label) {
+          ctx.textAlign = "left";
+          const x = Math.max(8, Math.min(w - ctx.measureText(label).width - 8, q.x + 12)),
+            y = Math.max(16 + row * 16, Math.min(h - 36 - (overlaid.length - row) * 16, q.y - 12 + row * 16));
+          ctx.lineWidth = 4;
+          ctx.strokeText(label, x, y);
+          ctx.fillText(label, x, y);
+        }
+      };
+      if (cursorLap && c.overlays.length && overlaid.length) {
+        const distanceAt = (lap: typeof cursorLap) => {
+          const start = this.sampleAt(lap.start).distance,
+            end = this.sampleAt(lap.end).distance,
+            now = this.sampleAt(Math.min(lap.end, lap.start + elapsed)).distance;
+          return ((now - start) / (end - start || 1)) * lap.distance;
+        };
+        const refDistance = reference ? distanceAt(reference) : 0;
+        overlaid.forEach((lap, i) => {
+          const time = Math.min(elapsed, lap.end - lap.start),
+            distance = distanceAt(lap),
+            signed = (n: number, digits: number) => (n > 0 ? "+" : "") + n.toFixed(digits);
+          // Compare arrival times at the reference's current distance. Positive time means behind.
+          const gap = reference
+            ? this.gridTimeAt(lap, refDistance) - Math.min(elapsed, reference.end - reference.start)
+            : NaN;
+          dot(
+            lap.start + time,
+            colors[i % colors.length],
+            lap === reference
+              ? undefined
+              : `L${lap.index} vs L${reference?.index ?? "?"} ${signed(gap, 2)} s · ${signed(
+                  distance - refDistance,
+                  1
+                )} m`,
+            i
+          );
+        });
+      } else dot(c.time, "#fff");
     }
     if (hint) {
       ctx.fillStyle = text;
       ctx.textAlign = "center";
       ctx.fillText("Scroll to zoom · Drag to pan · Click the trace to move the cursor", w / 2, h - 16);
     }
+  }
+  private sampleAt(time: number) {
+    const samples = this.command!.result.samples;
+    let lo = 0,
+      hi = samples.length - 1;
+    while (hi - lo > 1) {
+      const mid = (lo + hi) >>> 1;
+      if (samples[mid].t <= time) lo = mid;
+      else hi = mid;
+    }
+    const a = samples[lo],
+      b = samples[hi],
+      f = Math.max(0, Math.min(1, (time - a.t) / (b.t - a.t || 1)));
+    return { x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f, distance: a.distance + (b.distance - a.distance) * f };
+  }
+  private gridTimeAt(lap: LapResult["laps"][number], distance: number) {
+    const grid = lap.grid;
+    if (!grid.length) return NaN;
+    let lo = 0,
+      hi = grid.length - 1;
+    while (hi - lo > 1) {
+      const mid = (lo + hi) >>> 1;
+      if (grid[mid].distance <= distance) lo = mid;
+      else hi = mid;
+    }
+    const a = grid[lo],
+      b = grid[hi],
+      f = Math.max(0, Math.min(1, (distance - a.distance) / (b.distance - a.distance || 1)));
+    return a.time + (b.time - a.time) * f;
   }
   /** Laps in the Line Graph overlay share its colours. A dropped field colours the whole trace instead. */
   private drawTrace(w: number, h: number, ratio: number, dark: boolean) {
