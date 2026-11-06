@@ -85,7 +85,10 @@ export default class LapRenderer implements TabRenderer {
     // Same elements and scroll sensor as the 2D Field
     this.canvas = document.createElement("canvas");
     this.canvas.className = "field-2d-canvas";
-    this.canvas.setAttribute("aria-label", "Track map; click to seek, drag gate endpoints to edit");
+    this.canvas.setAttribute(
+      "aria-label",
+      "Track map; click to seek, Shift+drag to draw a line, drag gate endpoints to edit"
+    );
     const container = document.createElement("div");
     container.className = "field-2d-canvas-container";
     container.append(this.canvas);
@@ -132,7 +135,10 @@ export default class LapRenderer implements TabRenderer {
         const p = point(e);
         this.pressed = p;
         this.dragMoved = false;
-        this.dragging = this.endpointAt(p);
+        this.dragging =
+          e.shiftKey && this.command.result.samples.length
+            ? { index: -1, endpoint: "b", gate: { a: this.inverse(p), b: this.inverse(p) } }
+            : this.endpointAt(p);
         if (this.dragging) {
           e.preventDefault();
           this.scroll.setPointerCapture(e.pointerId);
@@ -173,6 +179,14 @@ export default class LapRenderer implements TabRenderer {
       }
       this.dragging = undefined;
       this.pressed = undefined;
+      if (this.scroll.hasPointerCapture(e.pointerId)) this.scroll.releasePointerCapture(e.pointerId);
+      if (this.command?.map) this.draw();
+    });
+    this.scroll.addEventListener("pointercancel", () => {
+      this.dragging = undefined;
+      this.pressed = undefined;
+      this.dragMoved = false;
+      if (this.command?.map) this.draw();
     });
     // A rebuild mid-click would take away the row or checkbox being clicked.
     this.content.addEventListener("pointerdown", () => (this.pressing = true));
@@ -183,7 +197,7 @@ export default class LapRenderer implements TabRenderer {
   private gates(): (Gate | undefined)[] {
     const c = this.command!;
     return [
-      c.result.gate,
+      this.dragging?.index === -1 ? this.dragging.gate : c.result.gate,
       ...(c.settings.config.sectors ?? []),
       c.settings.config.mode === "autocross" ? c.settings.config.finish : undefined
     ];
@@ -547,7 +561,11 @@ export default class LapRenderer implements TabRenderer {
     if (hint) {
       ctx.fillStyle = text;
       ctx.textAlign = "center";
-      ctx.fillText("Scroll to zoom · Drag to pan · Click the trace to move the cursor", w / 2, h - 16);
+      ctx.fillText(
+        "Scroll to zoom · Drag to pan · Shift+drag to draw start/finish · Click the trace to move the cursor",
+        w / 2,
+        h - 16
+      );
     }
   }
   /** Laps in the Line Graph overlay share its colours. A dropped field colours the whole trace instead. */
