@@ -749,7 +749,8 @@ export namespace Units {
     },
     pressure: {
       pascals: { value: 1, suffix: "Pa", pluralizeSuffix: false, names: ["pa", "pascal", "pascals"] },
-      kilopascals: { value: 0.001, suffix: "kPa", pluralizeSuffix: false, names: ["kpa", "kilopascal", "kilopascals"] }
+      kilopascals: { value: 0.001, suffix: "kPa", pluralizeSuffix: false, names: ["kpa", "kilopascal", "kilopascals"] },
+      psi: { value: 1 / 6894.757293168, suffix: "psi", pluralizeSuffix: false, names: ["psi"] }
     },
     torque: {
       newtonmeters: { value: 1, suffix: "Nm", pluralizeSuffix: false, names: ["nm", "n*m", "n·m"] }
