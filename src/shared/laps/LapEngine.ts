@@ -12,9 +12,12 @@
 //   details, sim controls (only when the backend has sim endpoints) and connect/disconnect.
 
 export type Point = { x: number; y: number };
+export type Coordinate = { lat: number; lon: number };
+export type GeographicGate = { a: Coordinate; b: Coordinate; direction?: number };
 export type Gate = { a: Point; b: Point; direction?: number };
 export type Sample = Point & { t: number; speed?: number; counter?: number; beacon?: number; yaw?: number };
 export type LapConfig = {
+  geographic?: { gate?: GeographicGate; sectors?: GeographicGate[]; finish?: GeographicGate };
   gate?: Gate;
   sectors?: Gate[];
   fractions?: number[];
@@ -49,6 +52,27 @@ export type LapResult = {
 export function project(lat: number, lon: number, origin: { lat: number; lon: number }): Point {
   const k = (Math.PI / 180) * 6371008.8;
   return { x: (lon - origin.lon) * k * Math.cos((origin.lat * Math.PI) / 180), y: (lat - origin.lat) * k };
+}
+export function unproject(point: Point, origin: Coordinate): Coordinate {
+  const k = (Math.PI / 180) * 6371008.8;
+  return { lat: origin.lat + point.y / k, lon: origin.lon + point.x / (k * Math.cos((origin.lat * Math.PI) / 180)) };
+}
+export function geographicGate(gate: Gate, origin: Coordinate): GeographicGate {
+  return { a: unproject(gate.a, origin), b: unproject(gate.b, origin), direction: gate.direction };
+}
+export function projectConfig(config: LapConfig, origin?: Coordinate): LapConfig {
+  const local = (gate: GeographicGate): Gate => ({
+    a: project(gate.a.lat, gate.a.lon, origin!),
+    b: project(gate.b.lat, gate.b.lon, origin!),
+    direction: gate.direction
+  });
+  const geo = config.geographic;
+  return {
+    ...config,
+    gate: origin && geo?.gate ? local(geo.gate) : config.gate,
+    sectors: origin && geo?.sectors ? geo.sectors.map(local) : config.sectors,
+    finish: origin && geo?.finish ? local(geo.finish) : config.finish
+  };
 }
 const cross = (a: Point, b: Point) => a.x * b.y - a.y * b.x;
 const sub = (a: Point, b: Point) => ({ x: a.x - b.x, y: a.y - b.y });

@@ -58,13 +58,8 @@ export default class LapController implements TabController {
       }
       if (a.type === "overlay") lapService.setOverlays(a.indices);
       if (a.type === "gate") {
-        if (a.index === -2) lapService.settings.config.finish = a.gate;
-        else if (a.index < 0) lapService.setStartLine(a.gate);
-        else {
-          const gates = lapService.settings.config.sectors ?? [];
-          gates[a.index] = a.gate;
-          lapService.settings.config.sectors = gates;
-        }
+        if (a.index === -1) lapService.setStartLine(a.gate);
+        else lapService.setGate(a.index, a.gate);
         lapService.invalidate();
       }
       if (a.type === "setting") {
@@ -87,7 +82,8 @@ export default class LapController implements TabController {
           lapService.invalidate();
         }
       }
-      if (a.type === "auto" && lapService.settings.config.gate) lapService.setStartLine();
+      if (a.type === "auto" && (lapService.settings.config.gate || lapService.settings.config.geographic?.gate))
+        lapService.setStartLine();
       if (a.type === "field") this.field = a.field;
     });
     window.addEventListener(
@@ -197,7 +193,7 @@ export default class LapController implements TabController {
     this.cached = {
       map: this.map,
       result: lapService.result,
-      settings: lapService.settings,
+      settings: { ...lapService.settings, config: lapService.localConfig() },
       field: this.field,
       unit: window.log.getUnit(this.field) ?? "",
       values,

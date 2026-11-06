@@ -247,3 +247,54 @@ test("the map cursor follows timeline hover through the render time", () => {
   renderTime = null;
   assert.equal(controller.getCommand().time, null);
 });
+
+test("a saved geographic line follows the track when the log starts at a different fix", () => {
+  const points = circuit([30, 30, 30, 30]);
+  const logFor = (offset: number) => {
+    const log = new Log();
+    for (const p of points.slice(offset)) {
+      log.putNumber("gps/latitude", p.t, -37 + p.y / 111195);
+      log.putNumber("gps/longitude", p.t, 145 + p.x / 88800);
+    }
+    return log;
+  };
+  (globalThis as any).window = { log: logFor(0) };
+  const service = new LapService();
+  service.update();
+  service.setStartLine(gateAt(service.result.samples, 110)!);
+  service.update();
+  const saved = JSON.parse(JSON.stringify(service.settings));
+  assert.ok(saved.config.geographic.gate);
+  assert.equal(saved.config.gate, undefined);
+  assert.equal(service.result.laps.filter((l) => l.valid).length, 3);
+  (globalThis as any).window.log = logFor(150);
+  service.settings = saved;
+  service.update();
+  assert.equal(service.result.laps.filter((l) => l.valid).length, 2);
+});
+
+test("old metre gates keep their results and save as geographic gates", () => {
+  const log = new Log();
+  for (const p of circuit(LAP_TIMES)) {
+    log.putNumber("gps/latitude", p.t, -37 + p.y / 111195);
+    log.putNumber("gps/longitude", p.t, 145 + p.x / 88800);
+  }
+  (globalThis as any).window = { log };
+  const service = new LapService();
+  service.update();
+  const gate = gateAt(service.result.samples, 110)!;
+  const config = { gate, sectors: [gate], finish: gate };
+  const expected = analyze(service.result.samples, config);
+  service.settings.config = config;
+  service.invalidate();
+  service.update();
+  assert.deepEqual(
+    service.result.laps.map((l) => [+l.start.toFixed(7), +l.end.toFixed(7)]),
+    expected.laps.map((l) => [+l.start.toFixed(7), +l.end.toFixed(7)])
+  );
+  assert.equal(service.settings.config.gate, undefined);
+  assert.equal(service.settings.config.sectors, undefined);
+  assert.equal(service.settings.config.finish, undefined);
+  assert.ok(service.settings.config.geographic?.sectors?.length);
+  assert.ok(service.settings.config.geographic?.finish);
+});

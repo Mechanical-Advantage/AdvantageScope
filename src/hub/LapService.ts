@@ -11,7 +11,18 @@
 // - LiveStatusPill: title-bar pill with three separate indicators (backend, car, sim), plus a popover with
 //   details, sim controls (only when the backend has sim endpoints) and connect/disconnect.
 
-import { analyze, Gate, interpolate, LapConfig, LapResult, project, Sample } from "../shared/laps/LapEngine";
+import {
+  analyze,
+  Coordinate,
+  Gate,
+  geographicGate,
+  interpolate,
+  LapConfig,
+  LapResult,
+  project,
+  projectConfig,
+  Sample
+} from "../shared/laps/LapEngine";
 import { slipRatio } from "../shared/laps/SlipRatio";
 import Log from "../shared/log/Log";
 import LoggableType from "../shared/log/LoggableType";
@@ -59,6 +70,30 @@ export class LapService {
     config: {}
   };
   result: LapResult = { laps: [], samples: [], theoretical: [] };
+  origin?: Coordinate;
+  localConfig() {
+    return projectConfig(this.settings.config, this.origin);
+  }
+  setGate(index: number, gate: Gate) {
+    const config = this.settings.config;
+    if (this.origin) {
+      const geo = (config.geographic ??= {});
+      const saved = geographicGate(gate, this.origin);
+      if (index === -2) {
+        geo.finish = saved;
+        delete config.finish;
+      } else if (index < 0) {
+        geo.gate = saved;
+        delete config.gate;
+      } else {
+        (geo.sectors ??= [])[index] = saved;
+        delete config.sectors;
+      }
+    } else if (index === -2) config.finish = gate;
+    else if (index < 0) config.gate = gate;
+    else (config.sectors ??= [])[index] = gate;
+    this.invalidate();
+  }
   reference: number | null = null;
   overlays: number[] = [];
   private autoOverlays = true;
@@ -124,9 +159,12 @@ export class LapService {
   setStartLine(gate?: Gate) {
     const config = this.settings.config;
     if (gate) {
-      config.gate = gate;
+      this.setGate(-1, gate);
       delete config.manual;
-    } else delete config.gate;
+    } else {
+      delete config.gate;
+      if (config.geographic) delete config.geographic.gate;
+    }
     this.reference = null;
     this.overlays = [];
     this.autoOverlays = true;
@@ -148,6 +186,7 @@ export class LapService {
   update() {
     if (this.log !== window.log) {
       this.log = window.log;
+      this.nextUpdate = 0;
       this.signature = "";
       this.derivedSignature = "";
       this.derivedEnd = -Infinity;
@@ -228,6 +267,7 @@ export class LapService {
         : at(key, t);
     };
     const samples: Sample[] = [];
+    this.origin = undefined;
     if (base) {
       // Log compresses unchanged values independently per channel. Use the union so a
       // constant latitude does not hide wheel-speed or longitude changes.
@@ -258,6 +298,7 @@ export class LapService {
           return Math.hypot(delta.x, delta.y) <= 100 * (next - t);
         }) ?? timestamps.at(-1)!;
       const origin = { lat: coordinate(s.latitude, firstFix) || 0, lon: coordinate(s.longitude, firstFix) || 0 };
+      if (lat && lon && Number.isFinite(origin.lat) && Number.isFinite(origin.lon)) this.origin = origin;
       let accepted: (Sample & { latitude: number; longitude: number }) | undefined;
       timestamps.forEach((t) => {
         if (lat && t < firstFix) return;
@@ -338,10 +379,20 @@ export class LapService {
         })
       );
     }
-    this.result = analyze(samples, s.config);
+    // Convert old metre gates only after this log has supplied its GPS origin.
+    if (this.origin) {
+      if (s.config.gate) this.setGate(-1, s.config.gate);
+      if (s.config.finish) this.setGate(-2, s.config.finish);
+      if (s.config.sectors) {
+        const sectors = s.config.sectors;
+        sectors.forEach((gate, index) => this.setGate(index, gate));
+      }
+    }
+    const config = this.localConfig();
+    this.result = analyze(samples, config);
     const ref = this.result.laps.find((l) => l.index === (this.reference ?? this.result.best));
     if (ref && !s.config.length && s.config.mode !== "accel")
-      this.result = analyze(samples, { ...s.config, length: ref.distance });
+      this.result = analyze(samples, { ...config, length: ref.distance });
     if (this.reference === null || !this.result.laps.some((l) => l.index === this.reference))
       this.reference = this.result.best ?? null;
     // Until the user chooses, live overlays the latest laps and a log the first.
