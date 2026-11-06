@@ -61,6 +61,7 @@ export default class LapRenderer implements TabRenderer {
   private lastTrace = "";
   private toolbarKey = "";
   private zoom = 1;
+  private overlaysOnly = false;
   private pan: [number, number] = [0, 0];
   private baseScale = 1;
   private bounds = [0, 0, 0, 0];
@@ -249,6 +250,21 @@ export default class LapRenderer implements TabRenderer {
       label.title = c.field;
       this.toolbar.append(label);
       if (c.field) this.button(this.toolbar, "Clear field", () => this.action({ type: "field", field: "" }));
+      if (c.map) {
+        const label = document.createElement("label"),
+          toggle = document.createElement("input");
+        toggle.type = "checkbox";
+        toggle.className = "mv-checkbox";
+        toggle.checked = this.overlaysOnly;
+        toggle.onchange = () => {
+          this.overlaysOnly = toggle.checked;
+          this.zoom = 1;
+          this.pan = [0, 0];
+          this.lastDraw = "";
+        };
+        label.append(toggle, "Overlaid laps only");
+        this.toolbar.append(label);
+      }
       const details = document.createElement("details"),
         summary = document.createElement("summary");
       details.open = setupOpen;
@@ -438,6 +454,7 @@ export default class LapRenderer implements TabRenderer {
       h,
       ratio,
       this.zoom,
+      this.overlaysOnly,
       this.pan,
       dark
     ]);
@@ -460,7 +477,9 @@ export default class LapRenderer implements TabRenderer {
         xmax = -Infinity,
         ymin = Infinity,
         ymax = -Infinity;
+      const visible = this.visibleLaps();
       for (const p of ss) {
+        if (visible.length && !visible.some((lap) => p.t >= lap.start && p.t <= lap.end)) continue;
         xmin = Math.min(xmin, p.x);
         xmax = Math.max(xmax, p.x);
         ymin = Math.min(ymin, p.y);
@@ -625,6 +644,12 @@ export default class LapRenderer implements TabRenderer {
       ctx.fillText("Scroll to zoom · Drag to pan · Click the trace to move the cursor", w / 2, h - 16);
     }
   }
+  private visibleLaps() {
+    const c = this.command!;
+    return this.overlaysOnly
+      ? c.result.laps.filter((lap) => lap.valid && (c.overlays.includes(lap.index) || lap.index === c.reference))
+      : [];
+  }
   private sampleAt(time: number) {
     const samples = this.command!.result.samples;
     let lo = 0,
@@ -677,6 +702,7 @@ export default class LapRenderer implements TabRenderer {
     const neutral = dark ? "#9a9a9a" : "#777";
     const paths = new Map<string, { alpha: number; color: string; width: number; path: Path2D }>();
     const stride = Math.max(1, Math.floor(ss.length / 60000));
+    const visible = this.visibleLaps();
     let lapCursor = 0;
     for (let i = stride; i < ss.length; i += stride) {
       const p0 = ss[i - stride],
@@ -684,6 +710,7 @@ export default class LapRenderer implements TabRenderer {
       if (p1.t - p0.t > 1 || Math.hypot(p1.x - p0.x, p1.y - p0.y) > 40) continue;
       while (lapCursor < laps.length - 1 && p1.t >= laps[lapCursor].end) lapCursor++;
       const lap = laps[lapCursor];
+      if (visible.length && (!lap || !visible.includes(lap) || p0.t < lap.start)) continue;
       let color = neutral,
         alpha = laps.length && !c.field ? 0.4 : 1;
       if (c.field && Number.isFinite(c.values[i])) {
@@ -712,10 +739,11 @@ export default class LapRenderer implements TabRenderer {
     }
   }
   saveState() {
-    return { zoom: this.zoom, pan: this.pan };
+    return { zoom: this.zoom, pan: this.pan, overlaysOnly: this.overlaysOnly };
   }
   restoreState(state: unknown) {
     if (typeof state !== "object" || state === null) return;
+    if ("overlaysOnly" in state && typeof state.overlaysOnly === "boolean") this.overlaysOnly = state.overlaysOnly;
     if ("zoom" in state && typeof state.zoom === "number") this.zoom = state.zoom;
     if ("pan" in state && Array.isArray(state.pan) && state.pan.length === 2) this.pan = state.pan as [number, number];
   }
