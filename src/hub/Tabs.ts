@@ -11,6 +11,7 @@ import TabType, { getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import { Distribution, DISTRIBUTION } from "../shared/buildConstants";
 import { getAutonomousKey, getEnabledKey, getUtilityKey } from "../shared/log/RobotState";
 import ConsoleRenderer from "../shared/renderers/ConsoleRenderer";
+import DashboardRenderer from "../shared/renderers/DashboardRenderer";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
 import Field2dRenderer from "../shared/renderers/Field2dRenderer";
 import Field3dRenderer from "../shared/renderers/Field3dRenderer";
@@ -29,6 +30,7 @@ import { clampValue } from "../shared/util";
 import ScrollSensor, { ScrollSensorMouseControl } from "./ScrollSensor";
 import Timeline from "./Timeline";
 import ConsoleController from "./controllers/ConsoleController";
+import DashboardController from "./controllers/DashboardController";
 import Field2dController from "./controllers/Field2dController";
 import Field3dController from "./controllers/Field3dController";
 import JoysticksController from "./controllers/JoysticksController";
@@ -97,6 +99,7 @@ export default class Tabs {
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Mechanism, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Points, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Metadata, 0);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.Dashboard, undefined);
 
     // Hover and click handling
     let mouseDownInfo: [number, number] | null = null;
@@ -513,66 +516,8 @@ export default class Tabs {
     let rendererElement = document.getElementById("renderer" + type.toString())?.cloneNode(true) as HTMLElement;
     controlsElement.removeAttribute("id");
     rendererElement.removeAttribute("id");
-    let controller: TabController;
-    let renderer: TabRenderer;
-    switch (type) {
-      case TabType.Documentation:
-        controller = new NoopController();
-        renderer = new DocumentationRenderer(rendererElement);
-        break;
-      case TabType.LineGraph:
-        controller = new LineGraphController(controlsElement);
-        renderer = new LineGraphRenderer(rendererElement, true);
-        break;
-      case TabType.Field2d:
-        controller = new Field2dController(controlsElement);
-        renderer = new Field2dRenderer(rendererElement);
-        break;
-      case TabType.Field3d:
-        controller = new Field3dController(controlsElement);
-        renderer = new Field3dRenderer(rendererElement);
-        break;
-      case TabType.Table:
-        controller = new TableController(rendererElement);
-        renderer = new TableRenderer(rendererElement, true);
-        break;
-      case TabType.Console:
-        controller = new ConsoleController(rendererElement);
-        renderer = new ConsoleRenderer(rendererElement, true);
-        break;
-      case TabType.Statistics:
-        controller = new StatisticsController(controlsElement);
-        renderer = new StatisticsRenderer(rendererElement);
-        break;
-      case TabType.Video:
-        controller = new VideoController(controlsElement);
-        renderer = new VideoRenderer(rendererElement);
-        break;
-      case TabType.Joysticks:
-        controller = new JoysticksController(controlsElement);
-        renderer = new JoysticksRenderer(rendererElement);
-        break;
-      case TabType.Swerve:
-        controller = new SwerveController(controlsElement);
-        renderer = new SwerveRenderer(rendererElement);
-        break;
-      case TabType.Mechanism:
-        controller = new MechanismController(controlsElement);
-        renderer = new MechanismRenderer(rendererElement);
-        break;
-      case TabType.Points:
-        controller = new PointsController(controlsElement);
-        renderer = new PointsRenderer(rendererElement);
-        break;
-      case TabType.Metadata:
-        controller = new MetadataController();
-        renderer = new MetadataRenderer(rendererElement);
-        break;
-      default:
-        controller = new NoopController();
-        renderer = new NoopRenderer();
-        break;
-    }
+    let controller = createController(type, controlsElement, rendererElement);
+    let renderer = createRenderer(type, rendererElement);
 
     // Create title element
     let titleElement = document.createElement("div");
@@ -612,7 +557,7 @@ export default class Tabs {
 
   /** Create new sallite for current tab. */
   newSatellite() {
-    if (this.selectedTab >= 0) {
+    if (this.selectedTab >= 0 && this.tabList[this.selectedTab].type !== TabType.Dashboard) {
       window.sendMainMessage("create-satellite", {
         uuid: this.tabList[this.selectedTab].controller.UUID,
         type: this.tabList[this.selectedTab].type
@@ -643,9 +588,27 @@ export default class Tabs {
     return this.selectedTab;
   }
 
-  /** Returns the type of the selected tab. */
+  /** Returns the type of the selected tab (or the focused pane of a dashboard). */
   getSelectedTabType(): TabType {
-    return this.tabList[this.selectedTab].type;
+    return this.getActiveView().type;
+  }
+
+  /**
+   * Returns the view which receives commands for the selected tab. For
+   * dashboards, this is the focused pane.
+   */
+  private getActiveView(): { type: TabType; controller: TabController; renderer: TabRenderer } {
+    let tab = this.tabList[this.selectedTab];
+    if (tab.type === TabType.Dashboard) {
+      let controller = tab.controller as DashboardController;
+      let index = controller.getFocusedIndex();
+      let pane = controller.getPanes()[index];
+      let renderer = (tab.renderer as DashboardRenderer).getPaneRenderer(index);
+      if (pane !== undefined && renderer !== null) {
+        return { type: pane.type, controller: pane.controller, renderer: renderer };
+      }
+    }
+    return tab;
   }
 
   /** Changes which tab is currently selected. */
@@ -716,48 +679,49 @@ export default class Tabs {
     unitConversion: Units.UIUnitOptions,
     filter: LineGraphFilter
   ) {
-    if (this.tabList[this.selectedTab].type === TabType.LineGraph) {
-      (this.tabList[this.selectedTab].controller as LineGraphController).editAxis(
-        legend,
-        lockedRange,
-        unitConversion,
-        filter
-      );
+    let view = this.getActiveView();
+    if (view.type === TabType.LineGraph) {
+      (view.controller as LineGraphController).editAxis(legend, lockedRange, unitConversion, filter);
     }
   }
 
   /** Clear the fields for an axis on the selected line graph. */
   clearAxis(legend: string) {
-    if (this.tabList[this.selectedTab].type === TabType.LineGraph) {
-      (this.tabList[this.selectedTab].controller as LineGraphController).clearAxis(legend);
+    let view = this.getActiveView();
+    if (view.type === TabType.LineGraph) {
+      (view.controller as LineGraphController).clearAxis(legend);
     }
   }
 
   /** Sets the state of the robot mode visualization  on the selected line graph. */
   setRobotModeVisible(showRobotMode: boolean) {
-    if (this.tabList[this.selectedTab].type === TabType.LineGraph) {
-      (this.tabList[this.selectedTab].controller as LineGraphController).setRobotModeVisible(showRobotMode);
+    let view = this.getActiveView();
+    if (view.type === TabType.LineGraph) {
+      (view.controller as LineGraphController).setRobotModeVisible(showRobotMode);
     }
   }
 
   /** Switches the selected camera for the selected 3D field. */
   set3DCamera(index: number) {
-    if (this.tabList[this.selectedTab].type === TabType.Field3d) {
-      (this.tabList[this.selectedTab].renderer as Field3dRenderer).set3DCamera(index);
+    let view = this.getActiveView();
+    if (view.type === TabType.Field3d) {
+      (view.renderer as Field3dRenderer).set3DCamera(index);
     }
   }
 
   /** Switches the selected camera mode for the selected 2D field. */
   set2DCamera(index: number) {
-    if (this.tabList[this.selectedTab].type === TabType.Field2d) {
-      (this.tabList[this.selectedTab].renderer as Field2dRenderer).set2DCamera(index);
+    let view = this.getActiveView();
+    if (view.type === TabType.Field2d) {
+      (view.renderer as Field2dRenderer).set2DCamera(index);
     }
   }
 
   /** Switches the orbit FOV for the selected 3D field. */
   setFov(fov: number) {
-    if (this.tabList[this.selectedTab].type === TabType.Field3d) {
-      (this.tabList[this.selectedTab].renderer as Field3dRenderer).setFov(fov);
+    let view = this.getActiveView();
+    if (view.type === TabType.Field3d) {
+      (view.renderer as Field3dRenderer).setFov(fov);
     }
   }
 
@@ -774,8 +738,9 @@ export default class Tabs {
    * is unlocked (and thus requires access to the left
    * and right arrow keys) */
   isUnlockedVideoSelected(): boolean {
-    if (this.tabList[this.selectedTab].type === TabType.Video) {
-      return !(this.tabList[this.selectedTab].controller as VideoController).isLocked();
+    let view = this.getActiveView();
+    if (view.type === TabType.Video) {
+      return !(view.controller as VideoController).isLocked();
     } else {
       return false;
     }
@@ -784,9 +749,12 @@ export default class Tabs {
   /** Sends video data to all video controllers. */
   processVideoData(data: any) {
     this.tabList.forEach((tab) => {
-      if (tab.type === TabType.Video) {
-        (tab.controller as VideoController).processVideoData(data);
-      }
+      let views = tab.type === TabType.Dashboard ? (tab.controller as DashboardController).getPanes() : [tab];
+      views.forEach((view) => {
+        if (view.type === TabType.Video) {
+          (view.controller as VideoController).processVideoData(data);
+        }
+      });
     });
   }
 
@@ -820,5 +788,75 @@ export default class Tabs {
     let show = this.tabList[this.selectedTab].controller.showTimeline();
     document.documentElement.style.setProperty("--show-timeline", show ? "1" : "0");
     this.TIMELINE_CONTAINER.hidden = !show;
+  }
+}
+
+/** Creates the controller for a tab type. */
+function createController(type: TabType, controlsElement: HTMLElement, rendererElement: HTMLElement): TabController {
+  switch (type) {
+    case TabType.LineGraph:
+      return new LineGraphController(controlsElement);
+    case TabType.Field2d:
+      return new Field2dController(controlsElement);
+    case TabType.Field3d:
+      return new Field3dController(controlsElement);
+    case TabType.Table:
+      return new TableController(rendererElement);
+    case TabType.Console:
+      return new ConsoleController(rendererElement);
+    case TabType.Statistics:
+      return new StatisticsController(controlsElement);
+    case TabType.Video:
+      return new VideoController(controlsElement);
+    case TabType.Joysticks:
+      return new JoysticksController(controlsElement);
+    case TabType.Swerve:
+      return new SwerveController(controlsElement);
+    case TabType.Mechanism:
+      return new MechanismController(controlsElement);
+    case TabType.Points:
+      return new PointsController(controlsElement);
+    case TabType.Metadata:
+      return new MetadataController();
+    case TabType.Dashboard:
+      return new DashboardController(controlsElement, rendererElement, createController);
+    default:
+      return new NoopController();
+  }
+}
+
+/** Creates the renderer for a tab type. */
+function createRenderer(type: TabType, rendererElement: HTMLElement): TabRenderer {
+  switch (type) {
+    case TabType.Documentation:
+      return new DocumentationRenderer(rendererElement);
+    case TabType.LineGraph:
+      return new LineGraphRenderer(rendererElement, true);
+    case TabType.Field2d:
+      return new Field2dRenderer(rendererElement);
+    case TabType.Field3d:
+      return new Field3dRenderer(rendererElement);
+    case TabType.Table:
+      return new TableRenderer(rendererElement, true);
+    case TabType.Console:
+      return new ConsoleRenderer(rendererElement, true);
+    case TabType.Statistics:
+      return new StatisticsRenderer(rendererElement);
+    case TabType.Video:
+      return new VideoRenderer(rendererElement);
+    case TabType.Joysticks:
+      return new JoysticksRenderer(rendererElement);
+    case TabType.Swerve:
+      return new SwerveRenderer(rendererElement);
+    case TabType.Mechanism:
+      return new MechanismRenderer(rendererElement);
+    case TabType.Points:
+      return new PointsRenderer(rendererElement);
+    case TabType.Metadata:
+      return new MetadataRenderer(rendererElement);
+    case TabType.Dashboard:
+      return new DashboardRenderer(rendererElement, createRenderer);
+    default:
+      return new NoopRenderer();
   }
 }

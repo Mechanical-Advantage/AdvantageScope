@@ -20,7 +20,8 @@ enum TabType {
   Swerve,
   Mechanism,
   Points,
-  Metadata
+  Metadata,
+  Dashboard
 }
 
 export default TabType;
@@ -76,6 +77,8 @@ export function getDefaultTabTitle(type: TabType): string {
       return "Points";
     case TabType.Metadata:
       return "Metadata";
+    case TabType.Dashboard:
+      return "Dashboard";
     default:
       return "";
   }
@@ -109,6 +112,8 @@ export function getTabIcon(type: TabType): string {
       return "📍";
     case TabType.Metadata:
       return "🔍";
+    case TabType.Dashboard:
+      return "🪟";
     default:
       return "";
   }
@@ -144,6 +149,8 @@ export function getTabAccelerator(type: TabType): string {
           return "P";
         case TabType.Metadata:
           return "I";
+        case TabType.Dashboard:
+          return "B";
         default:
           return "";
       }

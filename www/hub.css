@@ -821,6 +821,160 @@ div.tab.tab-selected {
   }
 }
 
+/* Dashboard panes */
+
+div.dashboard-renderer {
+  position: absolute;
+  inset: 0px;
+  display: grid;
+}
+
+div.dashboard-renderer.dashboard-layout-rows {
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 1fr;
+}
+
+div.dashboard-renderer.dashboard-layout-columns {
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr 1fr;
+}
+
+div.dashboard-renderer.dashboard-layout-grid {
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
+}
+
+div.dashboard-pane {
+  position: relative;
+  min-width: 0px;
+  min-height: 0px;
+  overflow: hidden;
+  box-sizing: border-box;
+  border-color: #aaa;
+  border-style: solid;
+  border-width: 0px;
+}
+
+div.dashboard-layout-rows > div.dashboard-pane:nth-child(1),
+div.dashboard-layout-grid > div.dashboard-pane:nth-child(1),
+div.dashboard-layout-grid > div.dashboard-pane:nth-child(2) {
+  border-bottom-width: 1px;
+}
+
+div.dashboard-layout-columns > div.dashboard-pane:nth-child(1),
+div.dashboard-layout-grid > div.dashboard-pane:nth-child(1),
+div.dashboard-layout-grid > div.dashboard-pane:nth-child(3) {
+  border-right-width: 1px;
+}
+
+div.dashboard-pane-header {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: 24px;
+  padding: 0px 6px;
+  display: flex;
+  align-items: center;
+  background-color: #eee;
+  border-bottom: 1px solid #ccc;
+}
+
+div.dashboard-pane-focused div.dashboard-pane-header {
+  background-color: #aaa;
+}
+
+div.dashboard-pane-header select {
+  font-size: 12px;
+}
+
+div.dashboard-pane-focused::after {
+  content: "";
+  position: absolute;
+  inset: 0px;
+  border: 2px solid #446ce3;
+  pointer-events: none;
+  z-index: 10;
+}
+
+div.dashboard-controls {
+  position: absolute;
+  inset: 0px;
+}
+
+div.dashboard-controls-switcher {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: 26px;
+  padding: 0px 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 1px solid #ccc;
+  font-size: 12px;
+}
+
+div.dashboard-controls-switcher button {
+  font-size: 12px;
+  padding: 1px 8px;
+  border-radius: 6px;
+  border: 1px solid #aaa;
+  background-color: transparent;
+  color: inherit;
+}
+
+div.dashboard-controls-switcher button.selected {
+  border-color: #446ce3;
+  background-color: #446ce322;
+}
+
+div.dashboard-controls-switcher select {
+  font-size: 12px;
+  margin-right: 10px;
+}
+
+div.dashboard-controls-body {
+  position: absolute;
+  top: 27px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+
+div.dashboard-pane-body {
+  position: absolute;
+  top: 25px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  overflow: hidden;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.dashboard-pane {
+    border-color: #666;
+  }
+
+  div.dashboard-pane-header {
+    background-color: #333;
+    border-bottom-color: #555;
+  }
+
+  div.dashboard-pane-focused div.dashboard-pane-header {
+    background-color: #666;
+  }
+
+  div.dashboard-controls-switcher {
+    border-bottom-color: #555;
+  }
+
+  div.dashboard-controls-switcher button {
+    border-color: #666;
+  }
+}
+
 /* Tab control buttons */
 
 button.tab-control {
