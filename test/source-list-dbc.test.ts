@@ -110,3 +110,13 @@ test("addField saves only a present DBC signal name and tolerates invalid metada
   assert.equal(list.getState()[0].dbcSignal, signal);
   for (const saved of list.getState().slice(1)) assert.equal(Object.hasOwn(saved, "dbcSignal"), false);
 });
+
+test("setState resolves a layout loaded onto a log that is already open", () => {
+  const log = new Log();
+  field(log, "INVERTER/INV_MotorTemp");
+  const { list } = sourceList(log, []);
+  list.clear = () => (list.state = []);
+  list.addListItem = (state: SourceListItemState) => list.state.push(state);
+  list.setState([item()]);
+  assert.deepEqual(list.getActiveFields(), ["INVERTER/INV_MotorTemp"]);
+});

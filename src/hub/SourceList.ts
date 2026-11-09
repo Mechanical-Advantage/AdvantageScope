@@ -352,6 +352,7 @@ export default class SourceList {
     state.forEach((itemState) => {
       this.addListItem(itemState);
     });
+    this.refresh();
   }
 
   getActiveFields(): string[] {
