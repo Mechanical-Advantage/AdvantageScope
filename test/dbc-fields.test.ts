@@ -104,3 +104,34 @@ test("known incompatible units are no data, while unknown units keep the raw val
   assert.equal(numberAt("/voltage", 2, "psi", "t"), null);
   assert.equal(numberAt("/raw", 2, "psi", "t"), 12);
 });
+
+test("refresh reuses the lookup until the log or its field-key version changes", () => {
+  const log = makeLog();
+  const fields = new DbcSlotFields({ steering: ["DASH_SteeringAngle"] });
+  let scans = 0;
+  const getKeys = log.getFieldKeys.bind(log);
+  log.getFieldKeys = () => {
+    scans++;
+    return getKeys();
+  };
+  fields.resolve([]);
+  fields.refresh();
+  fields.resolve([]);
+  assert.equal(scans, 1);
+  log.putNumber("/live/driver/throttle", 2, 30);
+  fields.refresh();
+  fields.resolve([]);
+  assert.equal(scans, 1);
+  log.putNumber("/new", 1, 10);
+  fields.refresh();
+  fields.resolve([]);
+  assert.equal(scans, 2);
+  log.deleteField("/new");
+  fields.refresh();
+  fields.resolve([]);
+  assert.equal(scans, 3);
+  const replacement = makeLog();
+  replacement.setMetadataString("/CAN/Dashboard_Dynamics/DASH_SteeringAngle", "{}");
+  fields.refresh();
+  assert.equal(fields.resolve([]).steering, undefined);
+});

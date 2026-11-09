@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import Log from "../../shared/log/Log";
 import LoggableType from "../../shared/log/LoggableType";
 import { getOrDefault } from "../../shared/log/LogUtil";
 import { SourceListState, SourceListTypeConfig } from "../../shared/SourceListConfig";
@@ -30,19 +31,28 @@ export function numberSlot(key: string, display: string, symbol: string): Source
 /**
  * Picks a field for each slot of a tab. A field dragged into the source list wins, and hiding it leaves
  * the slot empty. Otherwise the slot takes the first numeric field whose `metadata.dbcSignal` matches one
- * of its DBC signal names, tried in order. The signal lookup is rebuilt after `refresh`, which the hub
- * calls when new fields arrive.
+ * of its DBC signal names, tried in order. The signal lookup is rebuilt when the log or its field-key
+ * version changes.
  */
 export class DbcSlotFields {
   private defaults: { [slot: string]: string[] };
   private bySignal: Map<string, string> | null = null;
+
+  private log: Log | null = null;
+  private fieldKeysVersion = -1;
 
   constructor(defaults: { [slot: string]: string[] }) {
     this.defaults = defaults;
   }
 
   refresh() {
-    this.bySignal = null;
+    const log = window.log;
+    const version = log.getFieldKeysVersion();
+    if (log !== this.log || version !== this.fieldKeysVersion) {
+      this.bySignal = null;
+      this.log = log;
+      this.fieldKeysVersion = version;
+    }
   }
 
   /**
@@ -69,6 +79,7 @@ export class DbcSlotFields {
   }
 
   resolve(sources: SourceListState): { [slot: string]: string | undefined } {
+    this.refresh();
     if (this.bySignal === null) {
       const bySignal = new Map<string, string>();
       window.log.getFieldKeys().forEach((key) => {
