@@ -143,3 +143,36 @@ for (const Renderer of [CarDynamicsRenderer, DriverInputsRenderer]) {
     assert.equal(attempts, 2);
   });
 }
+
+for (const Renderer of [CarDynamicsRenderer, DriverInputsRenderer]) {
+  test(`${Renderer.name} redraws A after B clears the canvas and fails`, () => {
+    const { root, context } = canvas();
+    let attempts = 0;
+    let fail = false;
+    const canvasElement = root.firstElementChild.firstElementChild;
+    canvasElement.getContext = () =>
+      new Proxy(context, {
+        get: (target, name) =>
+          name === "clearRect"
+            ? () => {
+                attempts++;
+                if (fail) throw new Error("draw failed");
+              }
+            : target[name]
+      });
+    const renderer = new Renderer(root);
+    const a: any =
+      Renderer === CarDynamicsRenderer
+        ? { rotation: 0, frameAspectRatio: 1, moduleVelocities: [], robotVelocities: [], accel: null, dampers: [] }
+        : { steering: 0, throttle: 20, brakeFront: null, brakeRear: null, brakeScale: 2000 };
+    renderer.render(a);
+    fail = true;
+    const b = Renderer === CarDynamicsRenderer ? { ...a, rotation: 1 } : { ...a, throttle: 30 };
+    assert.throws(() => renderer.render(b), /draw failed/);
+    fail = false;
+    renderer.render(a);
+    assert.equal(attempts, 3);
+    renderer.render(a);
+    assert.equal(attempts, 3);
+  });
+}

@@ -51,6 +51,8 @@ export default class CarDynamicsRenderer implements TabRenderer {
       return;
     }
 
+    this.lastRenderState = "";
+
     // Update canvas size
     let context = this.CANVAS.getContext("2d") as CanvasRenderingContext2D;
     let size = Math.min(this.CONTAINER.clientWidth, this.CONTAINER.clientHeight);

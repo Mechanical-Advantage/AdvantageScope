@@ -47,6 +47,8 @@ export default class DriverInputsRenderer implements TabRenderer {
       return;
     }
 
+    this.lastRenderState = "";
+
     // Apply setup and scaling
     this.CANVAS.width = canvasWidth * window.devicePixelRatio;
     this.CANVAS.height = canvasHeight * window.devicePixelRatio;
