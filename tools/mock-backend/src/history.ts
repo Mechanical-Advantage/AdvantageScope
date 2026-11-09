@@ -14,7 +14,7 @@ import type {
   SignalType,
   TelemetrySample,
   TimeQuality
-} from "./contract.ts";
+} from "../../../src/shared/mur/contract.ts";
 
 const TQ: TimeQuality[] = ["synchronised", "estimated", "unsynchronised"];
 const LINKS: (IngressLink | undefined)[] = [undefined, "rf", "cellular", "lan"];

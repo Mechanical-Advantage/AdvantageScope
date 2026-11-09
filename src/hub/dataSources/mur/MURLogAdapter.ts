@@ -26,16 +26,9 @@
 //
 // Cones use Translation3d[] so the 2D Field can show them as points. Class values use sibling child fields.
 
-import type {
-  ConeArray,
-  Pose3,
-  Quaternion,
-  SignalDescriptor,
-  Trajectory,
-  Vector3
-} from "../../../../tools/mock-backend/src/contract";
 import Log from "../../../shared/log/Log";
 import LoggableType from "../../../shared/log/LoggableType";
+import type { ConeArray, Pose3, Quaternion, SignalDescriptor, Trajectory, Vector3 } from "../../../shared/mur/contract";
 
 /** Converts a catalogue path to a Log key. */
 export function pathToKey(path: string): string {

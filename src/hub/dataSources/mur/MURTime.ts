@@ -12,7 +12,7 @@
 // precision, so every `t_ns` is converted with BigInt relative to a session epoch first, and only the small
 // difference becomes a float.
 
-import type { TelemetrySample } from "../../../../tools/mock-backend/src/contract";
+import type { TelemetrySample } from "../../../shared/mur/contract";
 
 const NS_PER_S = 1000000000n;
 

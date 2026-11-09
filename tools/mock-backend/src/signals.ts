@@ -9,7 +9,7 @@
 // Names/groups/rates follow the mur-msgs DBCs (see research/mur-existing/REPORT.md);
 // values are SI at the API boundary.
 
-import type { ConeArray, Pose3, SampleValue, SignalDescriptor } from "./contract.ts";
+import type { ConeArray, Pose3, SampleValue, SignalDescriptor } from "../../../src/shared/mur/contract.ts";
 import type { Rng } from "./prng.ts";
 import { GPS_ORIGIN, type Track, mapToLatLon } from "./track.ts";
 import { CAR, type VehicleState } from "./vehicle.ts";

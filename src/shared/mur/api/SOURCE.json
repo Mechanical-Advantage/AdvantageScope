@@ -1,0 +1,8 @@
+{
+  "repository": "Melbourne-University-Motorsports/mur-msgs",
+  "commit": "aa98d26ba6df4e35af2e029b2509f07bb80bfabf",
+  "directory": "api/live/v1",
+  "files": {
+    "schema/live.schema.json": "47adbe660850aa02cd097daab449610be74ae03235185619d9690786af5c9c28"
+  }
+}

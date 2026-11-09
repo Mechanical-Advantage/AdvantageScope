@@ -10,7 +10,7 @@
 //
 //   [CLIP=0] node tools/mock-backend/scripts/client.ts [ws://localhost:8090/api/v1/live] [seconds] [path ...]
 
-import type { ClientOp, ServerOp } from "../src/contract.ts";
+import type { ClientOp, CoreServerOp } from "../../../src/shared/mur/contract.ts";
 
 const url = process.argv[2] ?? "ws://localhost:8090/api/v1/live";
 const seconds = Number(process.argv[3] ?? 1);
@@ -32,7 +32,7 @@ const send = (op: ClientOp) => {
 
 ws.onopen = () => send({ op: "hello", api_version: 1 });
 ws.onmessage = (ev) => {
-  const msg = JSON.parse(String(ev.data)) as ServerOp;
+  const msg = JSON.parse(String(ev.data)) as CoreServerOp;
   switch (msg.op) {
     case "catalogue_snapshot": {
       const { signals, ...rest } = msg;

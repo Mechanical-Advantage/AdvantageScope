@@ -8,13 +8,13 @@
 // Integration tests over real HTTP + WebSocket (Node's built-in WebSocket client).
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import type { ServerOp } from "../src/contract.ts";
+import type { CoreServerOp } from "../../../src/shared/mur/contract.ts";
 import { startServer } from "../src/server.ts";
 import { P, START_NS } from "./helpers.ts";
 
 class Client {
   ws: WebSocket;
-  msgs: ServerOp[] = [];
+  msgs: CoreServerOp[] = [];
   private waiters: (() => void)[] = [];
   constructor(url: string) {
     this.ws = new WebSocket(url);
@@ -32,7 +32,7 @@ class Client {
   send(op: object) {
     this.ws.send(JSON.stringify(op));
   }
-  async until(pred: (m: ServerOp[]) => boolean, timeoutMs = 3000): Promise<void> {
+  async until(pred: (m: CoreServerOp[]) => boolean, timeoutMs = 3000): Promise<void> {
     const end = Date.now() + timeoutMs;
     while (!pred(this.msgs)) {
       if (Date.now() > end) throw new Error("timeout");

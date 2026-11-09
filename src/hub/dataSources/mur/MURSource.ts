@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 // Live source for the MUR telemetry backend (spec 01 §5: HTTP catalogue/history + WebSocket live).
-// Contract types come from tools/mock-backend/src/contract.ts.
+// Contract types come from src/shared/mur/contract.ts, generated from the pinned live API schema.
 //
 // - Catalogue: hello -> catalogue_snapshot builds the tree; upserts/removes update it live. The descriptor
 //   unit goes into field metadata so Log.getUnit and unit conversion work (MURLogAdapter).
@@ -18,15 +18,15 @@
 //   resets the selection, so the new run never mixes with the old one.
 // - Reconnect: automatic with backoff; fresh snapshot, then the subscription is replayed by periodic().
 
+import Log from "../../../shared/log/Log";
 import type {
   AvailabilityState,
   CatalogueSnapshotOp,
+  CoreServerOp,
   HistoryResponse,
-  ServerOp,
   SignalDescriptor,
   TelemetrySample
-} from "../../../../tools/mock-backend/src/contract";
-import Log from "../../../shared/log/Log";
+} from "../../../shared/mur/contract";
 import { LiveDataSource, LiveDataSourceStatus } from "../LiveDataSource";
 import { BackendState, Freshness, LiveStatusProvider, LiveStatusSummary } from "../LiveStatus";
 import { SampleDeduplicator } from "./MURDedup";
@@ -154,7 +154,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     };
     socket.onmessage = (event) => {
       if (typeof event.data !== "string") return;
-      let message: ServerOp;
+      let message: CoreServerOp;
       try {
         message = JSON.parse(event.data);
       } catch {
@@ -201,7 +201,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
   // ------------------------------------------------------------------------------------------
   // Server messages
 
-  private handleMessage(message: ServerOp) {
+  private handleMessage(message: CoreServerOp) {
     switch (message.op) {
       case "catalogue_snapshot":
         this.handleSnapshot(message);

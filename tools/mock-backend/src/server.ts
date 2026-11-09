@@ -9,8 +9,8 @@
 
 import http from "node:http";
 import { WebSocketServer, type WebSocket } from "ws";
+import type { HttpError } from "../../../src/shared/mur/contract.ts";
 import { MockBackend, type BackendOptions } from "./backend.ts";
-import type { HttpError } from "./contract.ts";
 import { Session, type SessionOptions } from "./session.ts";
 
 export const MAX_HISTORY_POINTS = 20_000;
