@@ -33,30 +33,6 @@ jobs:
       - name: Check formatting
         run: npm run check-format
 
-  build-docs:
-    name: Build Docs
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: "20.x"
-          cache: "npm"
-      - name: Install Node.js dependencies
-        run: npm ci
-        env:
-          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
-      - name: Build docs
-        run: npm run docs:build
-      - name: Upload artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: docs
-          path: docs/build/
-
   compile-frc6328:
     name: Compile for FRC 6328
     runs-on: ubuntu-latest
@@ -149,10 +125,6 @@ jobs:
         run: npm run compile
         env:
           ASCOPE_DISTRIBUTION: LITE
-      - name: Build documentation
-        run: npm run docs:build-embed
-        env:
-          ASCOPE_DISTRIBUTION: LITE
       - name: Prepare artifact (desktop)
         run: |
           mkdir advantagescopelite-desktop
@@ -220,7 +192,6 @@ jobs:
           ASCOPE_DISTRIBUTION: LITEDS
       - name: Prepare artifact
         run: |
-          mkdir docs/build
           cp -rL lite/static advantagescopelite-ds
       - name: Upload development artifact
         uses: actions/upload-artifact@v7
@@ -250,6 +221,8 @@ jobs:
           asset_content_type: "application/octet-stream"
 
   build-ios:
+    # The fork removed the upstream XR iOS project in 50e84e59.
+    if: false
     name: Build for iOS
     runs-on: macos-26
 
@@ -306,8 +279,6 @@ jobs:
         with:
           name: bundles
           path: bundles
-      - name: Build documentation
-        run: npm run docs:build-embed
       - name: Load Windows signing credentials
         if: |
           github.repository == 'Mechanical-Advantage/AdvantageScope' &&
@@ -326,7 +297,7 @@ jobs:
           ELECTRON_BUILDER_7Z_FILTER: BCJ # https://github.com/electron-userland/electron-builder/issues/9983
       - name: Prepare artifact
         run: |
-          Move-Item -Path "dist\AdvantageScope*.exe" -Destination "advantagescope-win-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.exe"
+          Move-Item -Path "dist\mur-voir*.exe" -Destination "advantagescope-win-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.exe"
       - name: Upload development artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v7
@@ -366,8 +337,6 @@ jobs:
         with:
           name: bundles
           path: bundles
-      - name: Build documentation
-        run: npm run docs:build-embed
       - name: Load macOS certificate
         if: |
           github.repository == 'Mechanical-Advantage/AdvantageScope' &&
@@ -392,7 +361,7 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
-          mv dist/AdvantageScope-*.dmg advantagescope-mac-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.dmg
+          mv dist/mur-voir-*.dmg advantagescope-mac-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.dmg
       - name: Upload development artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v7
@@ -452,8 +421,6 @@ jobs:
         with:
           name: bundles
           path: bundles
-      - name: Build documentation
-        run: npm run docs:build-embed
       - name: Build app
         run: npx electron-builder build -c.electronVersion=37.10.3 --${{ matrix.arch.electronArch }} -l ${{ matrix.format }} --publish never
         env:
@@ -500,8 +467,6 @@ jobs:
         with:
           name: bundles-wpilib
           path: bundles
-      - name: Build documentation
-        run: npm run docs:build-embed
       - name: Load Windows signing credentials
         if: |
           github.repository == 'Mechanical-Advantage/AdvantageScope' &&
@@ -521,7 +486,7 @@ jobs:
       - name: Prepare artifact
         run: |
           Set-Location -Path "dist\win*"
-          Move-Item -Path "AdvantageScope.exe" -Destination "AdvantageScope (WPILib).exe"
+          Move-Item -Path "mur-voir.exe" -Destination "mur-voir (WPILib).exe"
           Set-Location -Path "..\.."
           Compress-Archive -Path "dist\win*\*" -DestinationPath "advantagescope-wpilib-win-${{ matrix.arch }}.zip"
       - name: Upload development artifact
@@ -563,8 +528,6 @@ jobs:
         with:
           name: bundles-wpilib
           path: bundles
-      - name: Build documentation
-        run: npm run docs:build-embed
       - name: Load macOS certificate
         if: |
           github.repository == 'Mechanical-Advantage/AdvantageScope' &&
@@ -591,11 +554,11 @@ jobs:
       - name: Prepare artifact
         run: |
           if [ "${{ matrix.arch }}" == "arm64" ]; then
-            mv dist/mac-arm64/AdvantageScope.app "AdvantageScope (WPILib).app"
+            mv dist/mac-arm64/mur-voir.app "mur-voir (WPILib).app"
           else
-            mv dist/mac/AdvantageScope.app "AdvantageScope (WPILib).app"
+            mv dist/mac/mur-voir.app "mur-voir (WPILib).app"
           fi
-          tar -zcvf advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz "AdvantageScope (WPILib).app"
+          tar -zcvf advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz "mur-voir (WPILib).app"
       - name: Upload development artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v7
@@ -635,8 +598,6 @@ jobs:
         with:
           name: bundles-wpilib
           path: bundles
-      - name: Build documentation
-        run: npm run docs:build-embed
       - name: Build app
         run: npx electron-builder build -c.electronVersion=37.10.3 --publish never --${{ matrix.arch }} -l dir
         env:
@@ -645,7 +606,7 @@ jobs:
       - name: Prepare artifact
         run: |
           cd dist/linux*
-          mv advantagescope advantagescope-wpilib
+          mv mur-voir mur-voir-wpilib
           zip -r ../../advantagescope-wpilib-linux-${{ matrix.arch }}.zip ./*
           cd ../..
       - name: Upload development artifact
