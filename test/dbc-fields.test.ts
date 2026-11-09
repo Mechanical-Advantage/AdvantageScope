@@ -135,3 +135,22 @@ test("refresh reuses the lookup until the log or its field-key version changes",
   fields.refresh();
   assert.equal(fields.resolve([]).steering, undefined);
 });
+
+test("metadata changes add and remove DBC defaults without changing field keys", () => {
+  const log = makeLog();
+  const fields = new DbcSlotFields({ steering: ["LIVE_Steering"] });
+  assert.equal(fields.resolve([]).steering, undefined);
+  const key = "/live/driver/steering_angle";
+  const metadata = JSON.stringify({ dbcSignal: "LIVE_Steering", unit: "rad" });
+  const version = log.getFieldKeysVersion();
+  log.setMetadataString(key, metadata);
+  assert.equal(log.getFieldKeysVersion(), version + 1);
+  fields.refresh();
+  assert.equal(fields.resolve([]).steering, key);
+  log.setMetadataString(key, metadata);
+  log.setMetadataString("/missing", metadata);
+  assert.equal(log.getFieldKeysVersion(), version + 1);
+  log.setMetadataString(key, "{}");
+  fields.refresh();
+  assert.equal(fields.resolve([]).steering, undefined);
+});

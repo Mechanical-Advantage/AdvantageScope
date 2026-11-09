@@ -365,6 +365,7 @@ export default class Log {
     if (key in this.fields) {
       if (this.fields[key].metadataString !== type) {
         this.metadataVersion++;
+        this.fieldKeysVersion++;
         this.profileCache.clear();
         this.fieldUnitCache = {};
       }
