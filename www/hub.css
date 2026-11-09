@@ -1938,3 +1938,11 @@ body.has-trackside-alerts div.side-bar {
 body.has-trackside-alerts:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-bar-lite) div.side-bar {
   top: 66px;
 }
+
+body.has-trackside-alerts:not(.fancy-title-bar-mac):not(.fancy-title-bar-lite):not(.fancy-title-bar-win)
+  button.tab-control {
+  top: 39px;
+}
+body.has-trackside-alerts.fancy-title-bar-win button.tab-control {
+  top: 77px;
+}
