@@ -95,3 +95,12 @@ test("a dropped field takes the slot of its DBC signal unless the tab remembers 
     "/CAN/Pedal_Status/PEDAL_Position1": { type: "steering", options: {} }
   });
 });
+
+test("known incompatible units are no data, while unknown units keep the raw value", () => {
+  const log = makeLog();
+  log.putNumber("/voltage", 1, 12);
+  log.setMetadataString("/voltage", JSON.stringify({ unit: "V" }));
+  log.putNumber("/raw", 1, 12);
+  assert.equal(numberAt("/voltage", 2, "psi", "t"), null);
+  assert.equal(numberAt("/raw", 2, "psi", "t"), 12);
+});

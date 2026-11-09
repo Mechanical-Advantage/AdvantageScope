@@ -99,6 +99,7 @@ export function numberAt(key: string | undefined, time: number, unit: string, uu
   const value = getOrDefault(window.log, key, LoggableType.Number, time, null, uuid);
   if (typeof value !== "number" || !Number.isFinite(value)) return null;
   const from = window.log.getUnit(key);
-  if (from === null || from === unit || Units.GROUP_BY_UNIT[from] !== Units.GROUP_BY_UNIT[unit]) return value;
+  if (from === null || Units.GROUP_BY_UNIT[from] === undefined || from === unit) return value;
+  if (Units.GROUP_BY_UNIT[from] !== Units.GROUP_BY_UNIT[unit]) return null;
   return Units.convert(value, from, unit);
 }

@@ -9,7 +9,7 @@
 // unchanged; the g circle and damper readouts are added at the end.
 
 import { NeonColors_RedStart } from "../Colors";
-import { ModuleVelocity, RobotVelocities, Rotation2d } from "../geometry";
+import { RobotVelocities, Rotation2d } from "../geometry";
 import { transformPx, wrapRadians } from "../util";
 import TabRenderer from "./TabRenderer";
 
@@ -142,7 +142,7 @@ export default class CarDynamicsRenderer implements TabRenderer {
       ]);
 
       // Draw module data
-      let drawModuleData = (state: ModuleVelocity, color: string) => {
+      let drawModuleData = (state: { angle: number; velocity: number | null }, color: string) => {
         let fullRotation = command.rotation + state.angle;
         context.fillStyle = color;
         context.strokeStyle = color;
@@ -165,7 +165,7 @@ export default class CarDynamicsRenderer implements TabRenderer {
         context.fill();
 
         // Draw speed
-        if (Math.abs(state.velocity) <= 0.001) return;
+        if (state.velocity === null || Math.abs(state.velocity) <= 0.001) return;
         let vectorSpeed = state.velocity;
         let vectorRotation = fullRotation;
         if (state.velocity < 0) {
@@ -326,7 +326,7 @@ export type CarDynamicsRendererCommand = {
   rotation: Rotation2d;
   frameAspectRatio: number;
   moduleVelocities: {
-    values: ModuleVelocity[];
+    values: { angle: number; velocity: number | null }[];
     color: string;
   }[];
   robotVelocities: {

@@ -144,9 +144,10 @@ export default class CarDynamicsController implements TabController {
     let speedFL = read("speedFL", "kilometers/hour");
     let speedFR = read("speedFR", "kilometers/hour");
     let moduleVelocities: CarDynamicsRendererCommand["moduleVelocities"] = [];
-    if (steering !== null || speedFL !== null || speedFR !== null) {
-      let roadWheelAngle = (((steering ?? 0) / Number(this.STEERING_RATIO.value)) * Math.PI) / 180;
-      let normalize = (speed: number | null) => clampValue((speed ?? 0) / Number(this.MAX_SPEED.value), -1, 1);
+    if (steering !== null) {
+      let roadWheelAngle = ((steering / Number(this.STEERING_RATIO.value)) * Math.PI) / 180;
+      let normalize = (speed: number | null) =>
+        speed === null ? null : clampValue(speed / Number(this.MAX_SPEED.value), -1, 1);
       moduleVelocities.push({
         values: [
           { velocity: normalize(speedFL), angle: roadWheelAngle },
@@ -167,9 +168,9 @@ export default class CarDynamicsController implements TabController {
     let accelX = read("accelX", "meters/second²");
     let accelY = read("accelY", "meters/second²");
     let accel: CarDynamicsRendererCommand["accel"] = null;
-    if (accelX !== null || accelY !== null) {
-      let x = Units.convert(accelX ?? 0, "meters/second²", "standard gravity") / G_CIRCLE_FULL_SCALE;
-      let y = Units.convert(accelY ?? 0, "meters/second²", "standard gravity") / G_CIRCLE_FULL_SCALE;
+    if (accelX !== null && accelY !== null) {
+      let x = Units.convert(accelX, "meters/second²", "standard gravity") / G_CIRCLE_FULL_SCALE;
+      let y = Units.convert(accelY, "meters/second²", "standard gravity") / G_CIRCLE_FULL_SCALE;
       let length = Math.hypot(x, y);
       if (length > 1) {
         x /= length;
