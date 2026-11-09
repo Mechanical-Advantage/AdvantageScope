@@ -18,15 +18,15 @@
 //   resets the selection, so the new run never mixes with the old one.
 // - Reconnect: automatic with backoff; fresh snapshot, then the subscription is replayed by periodic().
 
+import Log from "../../../shared/log/Log";
 import type {
   AvailabilityState,
   CatalogueSnapshotOp,
+  CoreServerOp,
   HistoryResponse,
-  ServerOp,
   SignalDescriptor,
   TelemetrySample
 } from "../../../shared/mur/contract";
-import Log from "../../../shared/log/Log";
 import { LiveDataSource, LiveDataSourceStatus } from "../LiveDataSource";
 import { BackendState, Freshness, LiveStatusProvider, LiveStatusSummary } from "../LiveStatus";
 import { SampleDeduplicator } from "./MURDedup";
@@ -154,7 +154,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
     };
     socket.onmessage = (event) => {
       if (typeof event.data !== "string") return;
-      let message: ServerOp;
+      let message: CoreServerOp;
       try {
         message = JSON.parse(event.data);
       } catch {
@@ -201,7 +201,7 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
   // ------------------------------------------------------------------------------------------
   // Server messages
 
-  private handleMessage(message: ServerOp) {
+  private handleMessage(message: CoreServerOp) {
     switch (message.op) {
       case "catalogue_snapshot":
         this.handleSnapshot(message);

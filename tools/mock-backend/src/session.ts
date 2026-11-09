@@ -12,9 +12,9 @@ import type {
   AvailabilityOp,
   CatalogueRemoveOp,
   CatalogueUpsertOp,
+  CoreServerOp,
   ErrorOp,
   SamplesOp,
-  ServerOp,
   SubscriptionAckOp,
   TelemetrySample
 } from "../../../src/shared/mur/contract.ts";
@@ -76,7 +76,7 @@ export class Session implements BackendListener {
     this.subs.clear();
   }
 
-  private send(op: ServerOp): void {
+  private send(op: CoreServerOp): void {
     this.stats.sentMessages++;
     this.transport.send(JSON.stringify(op));
   }

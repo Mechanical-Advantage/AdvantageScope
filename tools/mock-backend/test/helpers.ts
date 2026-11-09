@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import type { SamplesOp, ServerOp, TelemetrySample } from "../../../src/shared/mur/contract.ts";
+import type { CoreServerOp, SamplesOp, TelemetrySample } from "../../../src/shared/mur/contract.ts";
 import { MockBackend, type BackendOptions } from "../src/backend.ts";
 import { Session, type SessionOptions } from "../src/session.ts";
 
@@ -15,7 +15,7 @@ export const START_NS = 1_793_328_600_000_000_000n;
 export class Harness {
   backend: MockBackend;
   session: Session;
-  out: ServerOp[] = [];
+  out: CoreServerOp[] = [];
   clockMs = 0;
   buffered = 0;
 
@@ -41,14 +41,14 @@ export class Harness {
     }
   }
 
-  take(): ServerOp[] {
+  take(): CoreServerOp[] {
     const o = this.out;
     this.out = [];
     return o;
   }
 }
 
-export function samplesOf(ops: ServerOp[], subId?: string): TelemetrySample[] {
+export function samplesOf(ops: CoreServerOp[], subId?: string): TelemetrySample[] {
   return ops
     .filter((o): o is SamplesOp => o.op === "samples" && (subId === undefined || o.subscription_id === subId))
     .flatMap((o) => o.samples);
