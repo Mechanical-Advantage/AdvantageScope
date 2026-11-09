@@ -109,7 +109,6 @@ export default () => {
         "licenses.ts",
         ...(!isLite ? ["export.ts"] : []),
         "preferences.ts",
-        "editFov.ts",
         ...(isLite ? ["download.ts"] : []),
         ...(isLite ? ["uploadAsset.ts"] : []),
 
@@ -118,14 +117,10 @@ export default () => {
         ...(!isLite ? ["hub/exportWorker.ts"] : []),
         "hub/dataSources/csv/csvWorker.ts",
         "hub/dataSources/can/candumpWorker.ts",
-        "hub/dataSources/mcap/mcapWorker.ts",
         "hub/dataSources/mf4/mf4Worker.ts",
         "hub/dataSources/jsonl/jsonlWorker.ts",
         "hub/dataSources/rlog/rlogWorker.ts",
-        "hub/dataSources/roadrunnerlog/roadRunnerWorker.ts",
-        "shared/spatial/pointCloudWorker.ts",
-        "shared/renderers/field3d/workers/loadField.ts",
-        "shared/renderers/field3d/workers/loadRobot.ts"
+        "hub/dataSources/roadrunnerlog/roadRunnerWorker.ts"
       ],
       false
     )

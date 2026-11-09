@@ -6,7 +6,6 @@
 // at the root directory of this project.
 
 import Selection, { SelectionMode } from "../shared/Selection";
-import TabType from "../shared/TabType";
 import { AKIT_TIMESTAMP_KEYS } from "../shared/log/RobotState";
 
 export default class SelectionImpl implements Selection {
@@ -72,13 +71,6 @@ export default class SelectionImpl implements Selection {
           break;
 
         case "KeyL":
-          if (
-            window.tabs.getSelectedTabType() === TabType.Field3d &&
-            !(window.platform === "darwin" ? event.metaKey : event.ctrlKey)
-          ) {
-            return;
-          }
-
           event.preventDefault();
           this.toggleLock();
           break;

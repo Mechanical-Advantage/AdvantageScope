@@ -34,7 +34,7 @@ export interface SampleCtx {
   track: Track;
   rng: Rng;
   tSec: number;
-  /** GNSS UTC time in ns (Unix epoch), independent of the sim clock domain. */
+  /** GNSS UTC time in ns since the Unix epoch. */
   utcNs: bigint;
   canFrames: number;
   /** Status messages raised since the last tick. */
@@ -888,7 +888,6 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "autonomy",
       rate: 20,
       tags: ["autonomy", "localisation", "3d"],
-      extra: { frame_id: "map", ros_msg_type: "geometry_msgs/msg/PoseStamped" },
       read: (c) => pose(c.st)
     }),
     def({
@@ -900,7 +899,6 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "autonomy",
       rate: 10,
       tags: ["autonomy", "planning", "3d"],
-      extra: { frame_id: "map", ros_msg_type: "nav_msgs/msg/Path" },
       read: (c) => {
         const poses: Pose3[] = [];
         for (let i = 0; i < 25; i++) {
@@ -924,7 +922,7 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "autonomy",
       rate: 10,
       tags: ["autonomy", "perception", "3d"],
-      extra: { frame_id: "map", type_id: "mur.cones.v1", ros_msg_type: "visualization_msgs/msg/MarkerArray" },
+      extra: { type_id: "mur.cones.v1" },
       read: (c): ConeArray => {
         const out: ConeArray = { cones: [] };
         const cy = Math.cos(c.st.yaw),

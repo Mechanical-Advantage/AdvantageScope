@@ -169,153 +169,10 @@ div.field-2d-scroll-content {
 
 /* 3D Field */
 
-div.field-3d-canvas-container {
-  position: absolute;
-  bottom: 0%;
-  left: 0%;
-  width: 100%;
-  height: calc(100% + 26px);
-  overflow: hidden;
-}
-
-body.satellite div.field-3d-canvas-container {
-  height: 100%;
-}
-
-div.field-3d-canvas-container.fixed {
-  height: calc(100% + 10px);
-}
-
-body.satellite div.field-3d-canvas-container.fixed {
-  height: 100%;
-}
-
-canvas.field-3d-canvas:not(.fixed) {
-  position: absolute;
-  left: 0%;
-  top: 0%;
-  width: 100%;
-  height: 100%;
-}
-
-canvas.field-3d-canvas.fixed {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-canvas.field-3d-canvas.fixed {
-  border: 1px solid #555;
-}
-
-div.field-3d-alert {
-  position: absolute;
-  left: 50%;
-  top: 20px;
-  transform: translateX(-50%);
-  text-align: center;
-  padding: 10px;
-  background-color: #fff;
-  border: 1px solid #555;
-}
-
 @media (prefers-color-scheme: dark) {
-  canvas.field-3d-canvas.fixed {
-    border: 1px solid #999;
-  }
-
-  div.field-3d-alert {
-    background-color: #222;
-    border: 1px solid #999;
-  }
 }
 
 /* Source: https://freecodez.com/post/7pt17rk */
-
-div.spinner-cubes-container {
-  position: absolute;
-  left: 50%;
-  bottom: 10px;
-  transform: translateX(-50%) scale(30%);
-  user-select: none;
-  transition: all 0.1s ease-in-out;
-  opacity: 0;
-}
-
-div.spinner-cubes-container.visible {
-  transform: translateX(-50%) scale(50%);
-  opacity: 1;
-}
-
-div.spinner-cubes {
-  width: 44px;
-  height: 44px;
-  transform-style: preserve-3d;
-}
-
-div.spinner-cubes-container.animating div.spinner-cubes {
-  animation: spinner-cubes 6s infinite ease-in-out;
-}
-
-div.spinner-cubes > div {
-  height: 100%;
-  position: absolute;
-  width: 100%;
-  background-color: #00aaff33;
-  border: 2px solid #00aaff;
-  box-sizing: border-box;
-}
-
-div.spinner-cubes div:nth-of-type(1) {
-  transform: translateZ(-22px) rotateY(180deg);
-}
-
-div.spinner-cubes div:nth-of-type(2) {
-  transform: rotateY(-270deg) translateX(50%);
-  transform-origin: top right;
-}
-
-div.spinner-cubes div:nth-of-type(3) {
-  transform: rotateY(270deg) translateX(-50%);
-  transform-origin: center left;
-}
-
-div.spinner-cubes div:nth-of-type(4) {
-  transform: rotateX(90deg) translateY(-50%);
-  transform-origin: top center;
-}
-
-div.spinner-cubes div:nth-of-type(5) {
-  transform: rotateX(-90deg) translateY(50%);
-  transform-origin: bottom center;
-}
-
-div.spinner-cubes div:nth-of-type(6) {
-  transform: translateZ(22px);
-}
-
-@keyframes spinner-cubes {
-  0% {
-    transform: rotate(0deg) rotateX(-35deg) rotateY(45deg);
-  }
-
-  25% {
-    transform: rotate(180deg) rotateX(-215deg) rotateY(-135deg);
-  }
-
-  50% {
-    transform: rotate(0deg) rotateX(-35deg) rotateY(45deg);
-  }
-
-  75% {
-    transform: rotate(180deg) rotateX(145deg) rotateY(225deg);
-  }
-
-  100% {
-    transform: rotate(0deg) rotateX(-35deg) rotateY(45deg);
-  }
-}
 
 /* Table & Console */
 
@@ -904,9 +761,6 @@ table.metadata-table td.no-data {
 }
 
 /* Lap analysis shares the workbench's flat, compact controls. */
-.ros-image-view:not([hidden]) {
-  display: flex;
-}
 .lap-view:not([hidden]) {
   position: absolute;
   inset: 0;

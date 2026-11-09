@@ -44,7 +44,7 @@ test("parseNs accepts decimal strings only", () => {
 });
 
 test("unix domain: the epoch is fixed from the first sample minus the history margin", () => {
-  const base = new SessionTimeBase("unix");
+  const base = new SessionTimeBase();
   const first = base.sampleTime({
     t_ns: "1793328600000000000",
     received_ns: "1793328600020000000",
@@ -64,15 +64,8 @@ test("unix domain: the epoch is fixed from the first sample minus the history ma
   assert.equal(first.seconds - older.seconds, 300);
 });
 
-test("sim domain: t_ns is used directly (epoch 0)", () => {
-  const base = new SessionTimeBase("sim");
-  const t = base.sampleTime({ t_ns: "2500000000", received_ns: "1793328600000000000", time_quality: "synchronised" })!;
-  assert.equal(t.seconds, 2.5);
-  assert.equal(base.getEpochNs(), 0n);
-});
-
 test("unsynchronised samples fall back to receive time, flagged approximate", () => {
-  const base = new SessionTimeBase("unix");
+  const base = new SessionTimeBase();
   base.sampleTime({ t_ns: "1793328600000000000", received_ns: "1793328600010000000", time_quality: "estimated" });
   // Source clock is 1.734 s ahead; receive time is the trusted approximation
   const t = base.sampleTime({
@@ -84,43 +77,23 @@ test("unsynchronised samples fall back to receive time, flagged approximate", ()
   assert.equal(t.seconds, nsToSessionSeconds(1793328600030000000n, base.getEpochNs()!));
 });
 
-test("sim domain unsynchronised samples map receive time onto the sim clock", () => {
-  const base = new SessionTimeBase("sim");
-  // Trusted sample: sim t = 10 s received at unix R
-  base.sampleTime({ t_ns: "10000000000", received_ns: "1793328600000000000", time_quality: "synchronised" });
-  // Unsynchronised sample received 0.5 s later (wall) -> ~10.5 s sim
-  const t = base.sampleTime({
-    t_ns: "99000000000",
-    received_ns: "1793328600500000000",
-    time_quality: "unsynchronised"
-  })!;
-  assert.equal(t.approximate, true);
-  assert.equal(t.seconds, 10.5);
-});
-
-test("sim domain receive-time mapping scales by the sim speed", () => {
-  const base = new SessionTimeBase("sim");
-  base.setSimRate(3);
-  base.sampleTime({ t_ns: "10000000000", received_ns: "1793328600000000000", time_quality: "synchronised" });
-  const t = base.sampleTime({ t_ns: "0", received_ns: "1793328598000000000", time_quality: "unsynchronised" })!;
-  assert.equal(t.seconds, 4);
-});
-
-test("resetSegment re-derives the unix epoch and forgets the receive offset", () => {
-  const base = new SessionTimeBase("sim");
-  base.sampleTime({ t_ns: "10000000000", received_ns: "1793328600000000000", time_quality: "synchronised" });
+test("resetSegment re-derives the Unix epoch", () => {
+  const base = new SessionTimeBase();
+  base.observeReference(1793328600000000000n);
   base.resetSegment();
+  assert.equal(base.getEpochNs(), null);
   const t = base.sampleTime({
-    t_ns: "3000000000",
+    t_ns: "1793328701734000000",
     received_ns: "1793328700000000000",
     time_quality: "unsynchronised"
   })!;
-  // No offset known yet: the source clock is used
-  assert.equal(t.seconds, 3);
+  assert.equal(t.approximate, true);
+  assert.equal(t.seconds, 3600);
+  assert.equal(base.getEpochNs(), 1793328700000000000n - UNIX_EPOCH_MARGIN_NS);
 });
 
 test("LiveClock extrapolates at 1x in the unix domain and never goes backwards", () => {
-  const clock = new LiveClock("unix");
+  const clock = new LiveClock();
   assert.equal(clock.now(0), null);
   clock.observe(100, 1000);
   assert.equal(clock.now(1500), 100.5);
@@ -132,23 +105,8 @@ test("LiveClock extrapolates at 1x in the unix domain and never goes backwards",
   assert.equal(clock.now(1700), 105);
 });
 
-test("LiveClock freezes while the sim is paused and resumes continuously", () => {
-  const clock = new LiveClock("sim");
-  clock.setRunning(true, 3, 0);
-  clock.observe(10, 0);
-  assert.equal(clock.now(100), 10.3);
-  clock.setRunning(false, 3, 100);
-  assert.equal(clock.now(100), 10.3);
-  assert.equal(clock.now(60000), 10.3, "paused: frozen however long it lasts");
-  clock.setRunning(true, 3, 60000);
-  assert.equal(clock.now(60100), 10.5, "extrapolation is capped just past the newest data");
-  clock.observe(10.4, 60100);
-  clock.observe(11, 60200);
-  assert.equal(clock.now(60200), 11);
-});
-
 test("LiveClock.reset allows the edge to restart at an earlier time (new segment)", () => {
-  const clock = new LiveClock("sim");
+  const clock = new LiveClock();
   clock.observe(500, 0);
   clock.reset();
   clock.observe(0.1, 10);

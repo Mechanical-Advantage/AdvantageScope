@@ -104,28 +104,3 @@ test("--no-history -> 501 not_implemented", async () => {
     await h.close();
   }
 });
-
-test("sim endpoints: pause freezes sim time, reset jumps back with new stream ids", async () => {
-  const h = await startServer({ port: 0, host: "127.0.0.1", simClock: true });
-  try {
-    const base = `http://127.0.0.1:${h.port}/api/v1/sim`;
-    await sleep(300);
-    const s0 = await (await fetch(`${base}/pause`, { method: "POST" })).json();
-    assert.equal(s0.state, "paused");
-    await sleep(200);
-    const s1 = await (await fetch(`${base}/status`)).json();
-    assert.equal(s1.sim_time_ns, s0.sim_time_ns);
-    assert.ok(BigInt(s1.sim_time_ns) > 0n);
-    await fetch(`${base}/resume`, { method: "POST" });
-    await sleep(200);
-    const s2 = await (await fetch(`${base}/status`)).json();
-    assert.ok(BigInt(s2.sim_time_ns) > BigInt(s1.sim_time_ns));
-    const s3 = await (await fetch(`${base}/reset`, { method: "POST" })).json();
-    assert.ok(BigInt(s3.sim_time_ns) < BigInt(s2.sim_time_ns));
-    assert.equal(s3.reset_count, 1);
-    assert.notEqual(s3.stream_ids["control-can"], s2.stream_ids["control-can"]);
-    assert.equal((await fetch(`${base}/pause`)).status, 405);
-  } finally {
-    await h.close();
-  }
-});

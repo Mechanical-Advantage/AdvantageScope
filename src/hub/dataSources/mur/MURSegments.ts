@@ -5,27 +5,8 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-// Segment detection for the MUR live source (spec 02 §4: sim resets and backward time jumps). Pure.
-//
-// A *segment* is one continuous run of the session timeline. AdvantageScope's Log assumes time only moves
-// forward, so a sim reset to t = 0 would otherwise insert the new run into the old run's history. When a new
-// segment starts, MURSource replaces the Log and the hub resets the selection (see MURSource.startNewSegment).
-//
-// A new segment starts when:
-// - the backend reports a sim reset (`sim_status` with `reason: "reset"`; handled by the caller), or
-// - a path's samples jump backwards in time by more than `toleranceS` while their seq moves forwards (the clock
-//   was rewound), or
-// - a path switches to a new `stream_id` in the sim clock domain (the sim was restarted), or in the unix domain
-//   with a backward time jump.
-//
-// A new `stream_id` in the unix domain with time still moving forwards is a producer restart on the same
-// timeline: the data is appended to the current segment (dedup keys include the stream, so nothing collides).
-// Out-of-order samples (lower seq, same stream) are normal and are accepted.
-//
-// Streams that belonged to an earlier segment are *retired*: late samples or history from them are dropped,
-// so the old run never leaks into the new one.
-
-import type { ClockDomain } from "../../../../tools/mock-backend/src/contract";
+// A clock rewind starts a new segment. A producer restart with forward Unix time stays in the current Log.
+// Retired streams cannot add late samples or history to a later segment.
 
 export type SegmentDecision = "accept" | "drop" | "new-segment";
 
@@ -36,20 +17,14 @@ interface PathState {
 }
 
 export class SegmentTracker {
-  private domain: ClockDomain;
   private toleranceS: number;
   private paths = new Map<string, PathState>();
   private currentStreams = new Set<string>();
   private retiredStreams = new Set<string>();
   private segmentIndex = 0;
 
-  constructor(domain: ClockDomain = "unix", toleranceS = 1) {
-    this.domain = domain;
+  constructor(toleranceS = 1) {
     this.toleranceS = toleranceS;
-  }
-
-  setDomain(domain: ClockDomain) {
-    this.domain = domain;
   }
 
   /** Index of the current segment, starting at 0. */
@@ -75,7 +50,7 @@ export class SegmentTracker {
       const backwards = trustedTime && time < last.time - this.toleranceS;
       if (last.streamId === streamId) {
         if (backwards && seq > last.seq) return "new-segment";
-      } else if (backwards || this.domain === "sim") {
+      } else if (backwards) {
         return "new-segment";
       }
     }
@@ -98,34 +73,5 @@ export class SegmentTracker {
     this.currentStreams.clear();
     this.paths.clear();
     this.segmentIndex++;
-  }
-
-  /**
-   * Marks streams as belonging to the current segment, e.g. the `stream_ids` from a `sim_status` reset, so a
-   * later reset retires them even if no sample from them was seen.
-   */
-  registerStreams(streamIds: string[]) {
-    streamIds.forEach((streamId) => {
-      if (!this.retiredStreams.has(streamId)) this.currentStreams.add(streamId);
-    });
-  }
-}
-
-/** Retains completed runs independently of which run the viewer has selected. */
-export class RetainedRuns<T> {
-  readonly entries: T[] = [];
-  selected = 0;
-
-  append(run: T): boolean {
-    const following = this.entries.length === 0 || this.selected === this.entries.length - 1;
-    this.entries.push(run);
-    if (following) this.selected = this.entries.length - 1;
-    return following;
-  }
-
-  select(index: number): boolean {
-    if (!Number.isInteger(index) || index < 0 || index >= this.entries.length) return false;
-    this.selected = index;
-    return true;
   }
 }

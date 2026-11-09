@@ -8,6 +8,7 @@
 import { BrowserWindow, screen } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
+import { getAllTabTypes } from "../../shared/TabType";
 import {
   HUB_DEFAULT_HEIGHT,
   HUB_DEFAULT_WIDTH,
@@ -37,6 +38,7 @@ export default class StateTracker {
     if (fs.existsSync(STATE_FILENAME)) {
       try {
         let state: ApplicationState = jsonfile.readFileSync(STATE_FILENAME);
+        state.satellites = state.satellites.filter((satellite) => getAllTabTypes().includes(satellite.state.type));
         [...state.hubs, ...state.satellites].forEach((window, index) => {
           if (allowReset) {
             let reset = !screen

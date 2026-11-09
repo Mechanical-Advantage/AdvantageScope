@@ -13,15 +13,15 @@ const SPEED = "vehicles/mur27/dynamics/vehicle_speed";
 const SOC = "vehicles/mur27/accumulator/state_of_charge";
 
 test("monotonic data stays in one segment, out-of-order samples are accepted", () => {
-  const tracker = new SegmentTracker("sim");
+  const tracker = new SegmentTracker();
   assert.equal(tracker.observe(SPEED, "a", 0, 0.0), "accept");
   assert.equal(tracker.observe(SPEED, "a", 2, 0.04), "accept");
   assert.equal(tracker.observe(SPEED, "a", 1, 0.02), "accept");
   assert.equal(tracker.getSegmentIndex(), 0);
 });
 
-test("sim reset: a new stream_id starts a new segment and the old stream is retired", () => {
-  const tracker = new SegmentTracker("sim");
+test("a backward jump with a new stream_id starts a new segment and the old stream is retired", () => {
+  const tracker = new SegmentTracker();
   tracker.observe(SPEED, "telemetry-can-1", 5000, 100);
   tracker.observe(SOC, "ennoid-bms-1", 100, 100);
 
@@ -40,29 +40,20 @@ test("sim reset: a new stream_id starts a new segment and the old stream is reti
   assert.equal(tracker.getSegmentIndex(), 1);
 });
 
-test("explicit reset (sim_status) retires registered streams even if never sampled", () => {
-  const tracker = new SegmentTracker("sim");
-  tracker.registerStreams(["autonomy-1", "lap-beacon-1"]);
-  tracker.startNewSegment();
-  tracker.registerStreams(["autonomy-2"]);
-  assert.equal(tracker.observe("p", "lap-beacon-1", 3, 1), "drop");
-  assert.equal(tracker.observe("p", "autonomy-2", 0, 0), "accept");
-});
-
 test("same stream, time rewound with seq moving forwards: new segment", () => {
-  const tracker = new SegmentTracker("sim");
+  const tracker = new SegmentTracker();
   tracker.observe(SPEED, "a", 10, 50);
   assert.equal(tracker.observe(SPEED, "a", 11, 0.1), "new-segment");
 });
 
 test("small backward jitter within tolerance is not a reset", () => {
-  const tracker = new SegmentTracker("unix", 1);
+  const tracker = new SegmentTracker(1);
   tracker.observe(SPEED, "a", 10, 50);
   assert.equal(tracker.observe(SPEED, "a", 11, 49.5), "accept");
 });
 
 test("unix domain: a producer restart with time moving forwards stays in the segment", () => {
-  const tracker = new SegmentTracker("unix");
+  const tracker = new SegmentTracker();
   tracker.observe(SOC, "bms-boot-1", 100, 3600);
   assert.equal(tracker.observe(SOC, "bms-boot-2", 0, 3610), "accept");
   assert.equal(tracker.getSegmentIndex(), 0);
@@ -71,7 +62,7 @@ test("unix domain: a producer restart with time moving forwards stays in the seg
 });
 
 test("untrusted (receive-time fallback) samples never trigger a backward-jump segment", () => {
-  const tracker = new SegmentTracker("sim");
+  const tracker = new SegmentTracker();
   tracker.observe(SOC, "bms", 10, 50, false);
   assert.equal(tracker.observe(SOC, "bms", 11, 45, false), "accept");
 });
