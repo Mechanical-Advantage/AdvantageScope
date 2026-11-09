@@ -84,7 +84,7 @@ export class ConnectDialog {
     return !this.backdrop.hidden;
   }
 
-  show(address?: string) {
+  show(address?: string, sourceId?: string) {
     this.message.innerText = "";
     const prefs = window.preferences;
     const sources = getAvailableLiveSources(IS_LITE);
@@ -95,7 +95,7 @@ export class ConnectDialog {
       option.innerText = source.name;
       this.sourceSelect.appendChild(option);
     });
-    const selected = sources.find((source) => source.id === prefs?.liveMode) ?? sources[0];
+    const selected = sources.find((source) => source.id === (sourceId ?? prefs?.liveMode)) ?? sources[0];
     this.sourceSelect.value = selected.id;
     this.applySourceDefaults();
     if (address) {
