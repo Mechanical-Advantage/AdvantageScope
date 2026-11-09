@@ -616,6 +616,10 @@ async function handleMainMessage(message: NamedMessage) {
       });
       break;
 
+    case "export-layout":
+      window.sendMainMessage("export-layout", saveState());
+      break;
+
     case "restore-state":
       restoreState(message.data);
       break;
