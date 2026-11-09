@@ -95,6 +95,8 @@ export class LapService {
     this.invalidate();
   }
   reference: number | null = null;
+  /** The stretch of a lap, in lap distance, last double-clicked on a Line Graph's split bar. The Track Map zooms to it. */
+  focus?: { lap: number; range: [number, number]; id: number };
   overlays: number[] = [];
   private autoOverlays = true;
   selected: number | null = null;

@@ -159,6 +159,55 @@ test("without a sector bar the graph makes the same drawing calls as mur-voir/ma
     assert.ok(calls.length > 100, mode);
     assert.equal(digest(calls), STOCK[mode], mode);
   }
+  // A reference lap with one sector gives an empty bar, which draws nothing.
+  const { renderer, calls } = fakeLineGraph();
+  renderer.render({ ...sampleCommand("distance"), sectorBar: { lap: 1, blocks: [] } });
+  assert.equal(digest(calls), STOCK.distance);
+});
+
+const bar = {
+  lap: 1,
+  blocks: [
+    { start: 0, end: 33, label: "S1" },
+    { start: 33, end: 66, label: "S2" },
+    { start: 66, end: 100, label: "S3" }
+  ]
+};
+
+test("the split bar labels each sector and shades every other one", () => {
+  const { renderer, calls } = fakeLineGraph();
+  renderer.render({ ...sampleCommand("distance"), sectorBar: bar });
+  for (const label of ["S1", "S2", "S3"])
+    assert.ok(
+      calls.some((c) => c.startsWith(`fillText(["${label}"`)),
+      label
+    );
+  const hits = (renderer as any).sectorBarHits;
+  assert.deepEqual(
+    hits.blocks.map((b: any) => b.label),
+    ["S1", "S2", "S3"]
+  );
+  // Only S2 is shaded. Its band starts where its block starts and runs the plot's full height.
+  const s2 = hits.blocks[1];
+  const shading = calls.filter((c) => c.startsWith("fillRect(") && c.includes(`[${s2.x0},${hits.bottom + 2},`));
+  assert.equal(shading.length, 1);
+  assert.equal(calls.filter((c) => c.startsWith("fillRect(") && c.includes(`,${hits.bottom + 2},`)).length, 1);
+});
+
+test("double-clicking a block zooms the graph to that sector and tells the Track Map", () => {
+  const { renderer, canvas, root } = fakeLineGraph();
+  renderer.render({ ...sampleCommand("distance"), sectorBar: bar });
+  const hits = (renderer as any).sectorBarHits;
+  let detail: unknown;
+  root.addEventListener("sector-zoom", (event) => (detail = (event as CustomEvent).detail));
+  const click = (x: number, y: number) =>
+    canvas.dispatchEvent(Object.assign(new Event("dblclick"), { clientX: x, clientY: y }));
+  // Below the bar, in the plot, a double-click does nothing.
+  click((hits.blocks[1].x0 + hits.blocks[1].x1) / 2, hits.bottom + 20);
+  assert.equal(detail, undefined);
+  click((hits.blocks[1].x0 + hits.blocks[1].x1) / 2, (hits.top + hits.bottom) / 2);
+  assert.deepEqual(detail, { lap: 1, range: [33, 66] });
+  assert.deepEqual((renderer as any).lapViewport.update("distance", [0, 100]), [33, 66]);
 });
 
 /** Five laps of a 40 m circle at about 12.6 m/s, each a little slower than the last. */

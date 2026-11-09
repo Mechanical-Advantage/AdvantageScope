@@ -12,7 +12,7 @@ import { SourceListState } from "../../shared/SourceListConfig";
 import { clipGaps, TraceGapCache } from "../../shared/TraceGaps";
 import { axisDisplayUnit, formatChannelValue } from "../../shared/display/ChannelProfile";
 import { formatSignedSeconds, heldValueAt, sectorDeltaText } from "../../shared/laps/LapAnalysis";
-import { interpolate, lapSamples } from "../../shared/laps/LapEngine";
+import { interpolate, lapSamples, sectorBlocks } from "../../shared/laps/LapEngine";
 import { getLogValueText } from "../../shared/log/LogUtil";
 import { LogValueSetNumber } from "../../shared/log/LogValueSets";
 import { AKIT_TIMESTAMP_KEYS, getRobotStateRanges } from "../../shared/log/RobotState";
@@ -33,7 +33,9 @@ import TabController from "./TabController";
 type NumericCommandCacheValue = LineGraphRendererCommand_NumericField & { hasUnit: boolean };
 
 export default class LineGraphController implements TabController {
+  private events = new AbortController();
   dispose() {
+    this.events.abort();
     this.leftSourceList.stop();
     this.discreteSourceList.stop();
     this.rightSourceList.stop();
@@ -92,6 +94,15 @@ export default class LineGraphController implements TabController {
     modeLabel.append("X axis", mode);
     controls.append(modeLabel);
     root.append(controls);
+    // A sector double-clicked on the split bar is shared through the lap service, so the Track Map can zoom to it
+    window.addEventListener(
+      "sector-zoom",
+      (event) => {
+        const { lap, range } = (event as CustomEvent).detail;
+        lapService.focus = { lap, range, id: event.timeStamp };
+      },
+      { signal: this.events.signal }
+    );
     // Make source lists
     this.leftSourceList = new SourceList(
       root.getElementsByClassName("line-graph-left")[0] as HTMLElement,
@@ -1073,6 +1084,8 @@ export default class LineGraphController implements TabController {
           };
         });
       }
+      const blocks = distance && reference ? sectorBlocks(reference) : [];
+      if (reference && blocks.length) result.sectorBar = { lap: reference.index, blocks };
       const cursorLap =
         lapService.result.laps.find(
           (l) => result.selectedTime !== null && result.selectedTime >= l.start && result.selectedTime <= l.end

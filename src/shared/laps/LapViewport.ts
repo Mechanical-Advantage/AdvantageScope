@@ -34,6 +34,13 @@ export class LapViewport {
     this.range = next[1] - next[0] >= this.bounds[1] - this.bounds[0] ? null : next;
   }
 
+  /** Shows one stretch of the lap, such as a sector double-clicked on the split bar. */
+  zoomTo(range: [number, number]) {
+    if (!this.active || !(range[1] > range[0])) return;
+    const next = this.clamp(range);
+    this.range = next[1] - next[0] >= this.bounds[1] - this.bounds[0] ? null : next;
+  }
+
   private clamp(range: [number, number]): [number, number] {
     const span = Math.min(range[1] - range[0], this.bounds[1] - this.bounds[0]);
     const start = Math.max(this.bounds[0], Math.min(range[0], this.bounds[1] - span));
