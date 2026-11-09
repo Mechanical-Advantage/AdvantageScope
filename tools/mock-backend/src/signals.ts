@@ -625,6 +625,7 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "telemetry-can",
       rate: 50,
       tags: ["vehicle-dynamics", "wheels"],
+      extra: { dbc: { signal: "DASH_SpeedFL", message: "Dashboard_Speed", database: "mur_telemetry_can.dbc" } },
       read: (c) => round(wheel(c, 1) * CAR.wheelRadius, 3)
     }),
     def({
@@ -636,6 +637,7 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "telemetry-can",
       rate: 50,
       tags: ["vehicle-dynamics", "wheels"],
+      extra: { dbc: { signal: "DASH_SpeedFR", message: "Dashboard_Speed", database: "mur_telemetry_can.dbc" } },
       read: (c) => round(wheel(c, -1) * CAR.wheelRadius, 3)
     }),
     def({
