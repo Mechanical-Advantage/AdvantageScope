@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import { IS_LITE } from "../shared/buildConstants";
-import { validateLiveAddress } from "./dataSources/LiveAddress";
+import { sessionAddresses, validateLiveAddress } from "./dataSources/LiveAddress";
 import { LiveDataSourceStatus } from "./dataSources/LiveDataSource";
 import { getAvailableLiveSources } from "./dataSources/LiveSourceRegistry";
 import {
@@ -147,10 +147,7 @@ export class ConnectDialog {
     const source = getAvailableLiveSources(IS_LITE).find((source) => source.id === this.sourceSelect.value);
     if (source === undefined) return;
     this.addressInput.placeholder = source.defaultAddress;
-    this.addressInput.value =
-      window.preferences?.liveMode === source.id && window.preferences.robotAddress
-        ? window.preferences.robotAddress
-        : source.defaultAddress;
+    this.addressInput.value = sessionAddresses.get(source.id) ?? source.defaultAddress;
     this.loadMQTT();
     this.validate();
   }

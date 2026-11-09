@@ -26,6 +26,7 @@ import Tabs from "./Tabs";
 import { applyTracksideLayout } from "./TracksideLayout";
 import WorkerManager from "./WorkerManager";
 import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
+import { sessionAddresses } from "./dataSources/LiveAddress";
 import { LiveConnection } from "./dataSources/LiveConnection";
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
 import LiveDataTuner from "./dataSources/LiveDataTuner";
@@ -448,8 +449,8 @@ function startHistorical(path: string, clear = true, merge = false) {
 function connectLive(sourceId: string, address: string) {
   if (!window.preferences) return;
   window.preferences.liveMode = sourceId;
-  window.preferences.robotAddress = address;
-  window.sendMainMessage("update-preferences", { liveMode: sourceId, robotAddress: address });
+  sessionAddresses.set(sourceId, address);
+  window.sendMainMessage("update-preferences", { liveMode: sourceId });
   startLive("robot", { sourceId: sourceId, address: address });
 }
 
@@ -489,10 +490,7 @@ function startLive(sourceType: "robot" | "sim", target?: { sourceId: string; add
   } else if (sourceType === "sim") {
     address = sourceDefinition.defaultAddress;
   } else {
-    address =
-      window.preferences.robotAddress !== "" && sourceDefinition.id === window.preferences.liveMode
-        ? window.preferences.robotAddress
-        : sourceDefinition.defaultAddress;
+    address = sessionAddresses.get(sourceDefinition.id) ?? sourceDefinition.defaultAddress;
   }
   liveAddress = address;
   liveStatus = LiveDataSourceStatus.Connecting;
