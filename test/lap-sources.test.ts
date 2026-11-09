@@ -44,6 +44,8 @@ test("stock source lists auto-advance, replace occupied roles and reject non-num
   const list: any = Object.create(SourceList.prototype);
   Object.assign(list, {
     UUID: "lap-sources-test",
+    refreshLastFields: new Set(),
+    refreshLastStructTypes: {},
     config: LapSourceConfigs[0],
     state: [],
     supplementalStateSuppliers: [],
@@ -137,6 +139,8 @@ function positionList(fields: string[], state: any[]) {
   const list: any = Object.create(SourceList.prototype);
   Object.assign(list, {
     UUID: "lap-sources-test",
+    refreshLastFields: new Set(),
+    refreshLastStructTypes: {},
     config: LapSourceConfigs[0],
     state: [],
     supplementalStateSuppliers: [],

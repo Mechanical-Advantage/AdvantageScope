@@ -156,3 +156,41 @@ test("schema detects envelope corruption while allowing forward-compatible field
   assert.ok(!descriptor({ signal: "Example" }));
   assert.ok(descriptor({ signal: "Example", message: "Status" }));
 });
+
+test("mock DBC provenance names a signal in its declared database and message", async () => {
+  const { buildSignals } = await import("../../tools/mock-backend/src/signals");
+  const signals = buildSignals({ lapCounter: true });
+  let mapped = 0;
+  for (const { desc } of signals) {
+    if (!desc.dbc) continue;
+    mapped++;
+    assert.ok(!desc.tags.includes("derived"), desc.path);
+    const database = fs
+      .readdirSync("src/hub/dataSources/can/dbc", { recursive: true })
+      .find((file) => file.toString().split("/").pop() === desc.dbc!.database);
+    assert.ok(database, desc.path);
+    const text = fs.readFileSync("src/hub/dataSources/can/dbc/" + database, "utf8");
+    const message = text
+      .split("\n")
+      .findIndex((line) => line.startsWith("BO_ ") && line.includes(" " + desc.dbc!.message + ":"));
+    assert.ok(message >= 0, desc.path);
+    const fields = text
+      .split("\n")
+      .slice(message + 1)
+      .join("\n")
+      .split("\nBO_ ")[0];
+    assert.ok(fields.includes(" SG_ " + desc.dbc.signal + " :"), desc.path);
+  }
+  assert.equal(mapped, 44);
+  for (const path of [
+    "powertrain/inverter/dc_power",
+    "powertrain/inverter/module_temperature",
+    "accumulator/airs_closed",
+    "dynamics/vehicle_speed",
+    "dynamics/rear_axle_speed",
+    "gps/heading",
+    "gps/ground_speed"
+  ]) {
+    assert.equal(signals.find(({ desc }) => desc.path.endsWith("/" + path))!.desc.dbc, undefined, path);
+  }
+});
