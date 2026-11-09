@@ -409,6 +409,10 @@ export default class LineGraphController implements TabController {
 
   newAssets(): void {}
 
+  getLapMode(): string {
+    return this.lapMode;
+  }
+
   getActiveFields(): string[] {
     return [
       ...this.leftSourceList.getActiveFields(),
