@@ -7,8 +7,10 @@
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { alertLine, dbcDefinition, tileState } from "../src/shared/Trackside";
+import TracksideController from "../src/hub/controllers/TracksideController";
+import SourceList from "../src/hub/SourceList";
 import { channelProfile } from "../src/shared/display/ChannelProfile";
+import { alertLine, dbcDefinition, tileState } from "../src/shared/Trackside";
 
 const profile = channelProfile({ name: "Motor temp", unit: "degC" });
 const definition = { name: "IMD_State", values: { 0: "Normal", 4: "Earth Fault", 5: "Ground Fault Warning" } };
@@ -67,4 +69,25 @@ test("warning-only alerts remain amber and unknown live fields do not alert", ()
     tileState("/IMD_State", 4, profile, {}, definition, { summary, freshness: "unknown", age: null }).severity,
     "ok"
   );
+});
+
+test("removed tiles stop contributing limits and active subscriptions", () => {
+  const source = { type: "tile", logKey: "/Motor temp", logType: "Number", visible: true, options: {} };
+  const sourceList = Object.assign(Object.create(SourceList.prototype), { state: [source] });
+  const controller: TracksideController = Object.assign(Object.create(TracksideController.prototype), {
+    sourceList,
+    limits: { "/Motor temp": { high: 110 }, "/removed": { high: 0 } }
+  });
+  assert.deepEqual(controller.getLimits(), { "/Motor temp": { high: 110 } });
+  assert.deepEqual(controller.getActiveFields(), ["/Motor temp"]);
+  sourceList.state = [];
+  assert.deepEqual(controller.getLimits(), {});
+  assert.deepEqual(controller.getActiveFields(), []);
+});
+
+test("healthy live tiles have no status dot and keep alarm text", () => {
+  const summary = { backend: "connected" as const, hasFreshData: true, backendDetail: "", viewedRun: 0, runCount: 1 };
+  const live = { summary, freshness: "online" as const, age: 0.1 };
+  assert.equal(tileState("/Motor temp", 90, profile, { high: 110 }, null, live).state, "");
+  assert.equal(tileState("/Motor temp", 112, profile, { high: 110 }, null, live).state, "Alarm");
 });
