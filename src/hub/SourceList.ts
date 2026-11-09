@@ -387,6 +387,7 @@ export default class SourceList {
 
   /** Call when a new set of log fields may be available. */
   refresh() {
+    if (this.dbcLookup?.log !== window.log) this.dbcLookup = undefined;
     this.state.forEach((item, index) => {
       if (this.isFieldAvailable(item) || !item.dbcSignal) return;
       if (
