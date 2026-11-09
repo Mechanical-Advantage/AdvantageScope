@@ -230,3 +230,30 @@ test("auto-detection skips fields that aren't numbers", () => {
   service.fields();
   assert.equal(service.settings.counter, "timing/lap_counter");
 });
+
+for (const kind of ["wheel", "rpm"] as const) {
+  test(`compressed constant ${kind} speed integrates through the log end`, () => {
+    const log = new Log();
+    for (let i = 0; i <= 600; i++) {
+      const t = i / 2;
+      log.putNumber("lap_counter", t, Math.floor(t / 60));
+      if (kind === "wheel") {
+        for (const key of ["WheelSpeedFL", "WheelSpeedFR"]) {
+          log.putNumber(key, t, 10);
+          log.setMetadataString(key, JSON.stringify({ unit: "rad/s" }));
+        }
+      } else log.putNumber("MotorSpeedRPM", t, 6000);
+    }
+    (globalThis as any).window = { log };
+    const service = new LapService();
+    service.settings.radius = 0.2;
+    service.update();
+    const distance = service.result.samples.at(-1)!.distance;
+    const expected = kind === "wheel" ? 600 : ((((6000 * Math.PI) / 30) * 0.2) / service.settings.ratio) * 300;
+    assert.ok(Math.abs(distance - expected) < 1e-6, `${distance} should equal ${expected}`);
+    service.settings.radius = 0.4;
+    service.invalidate();
+    service.update();
+    assert.ok(Math.abs(service.result.samples.at(-1)!.distance - 2 * distance) < 1e-6);
+  });
+}

@@ -26,6 +26,7 @@ import {
 import { slipRatio } from "../shared/laps/SlipRatio";
 import Log from "../shared/log/Log";
 import LoggableType from "../shared/log/LoggableType";
+import { fixedSampleCount } from "../shared/util";
 
 export type LapSettings = {
   latitude: string;
@@ -206,6 +207,7 @@ export class LapService {
     const data = new Map(fields.map((k) => [k, window.log.getNumber(k, -Infinity, Infinity)]));
     const signature = JSON.stringify([
       this.settings,
+      !data.get(this.settings.latitude) ? window.log.getTimestampRange()[1] : undefined,
       fields.map((k) => [k, data.get(k)?.timestamps.length, data.get(k)?.timestamps.at(-1), data.get(k)?.values.at(-1)])
     ]);
     if (signature === this.signature) return;
@@ -274,7 +276,17 @@ export class LapService {
     if (base) {
       // Log compresses unchanged values independently per channel. Use the union so a
       // constant latitude does not hide wheel-speed or longitude changes.
-      const timestamps = [...new Set([...data.values()].flatMap((d) => d?.timestamps ?? []))].sort((a, b) => a - b);
+      let timestamps = [...new Set([...data.values()].flatMap((d) => d?.timestamps ?? []))].sort((a, b) => a - b);
+      if (!lat && timestamps.length) {
+        // Unchanged wheel values still cover time. Keep intervals within the engine's
+        // speed integration limit, including the held tail through the log end.
+        const start = timestamps[0],
+          end = window.log.getTimestampRange()[1];
+        const count = fixedSampleCount(start, end, 0.5);
+        timestamps = [
+          ...new Set([...timestamps, end, ...Array.from({ length: count }, (_, i) => start + i * 0.5)])
+        ].sort((a, b) => a - b);
+      }
       const validFix = (t: number) => {
         const latitude = coordinate(s.latitude, t),
           longitude = coordinate(s.longitude, t);

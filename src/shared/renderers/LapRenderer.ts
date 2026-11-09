@@ -210,10 +210,24 @@ export default class LapRenderer implements TabRenderer {
       this.dragMoved = false;
       if (this.command?.map) this.draw();
     });
-    // A rebuild mid-click would take away the row or checkbox being clicked.
-    this.content.addEventListener("pointerdown", () => (this.pressing = true));
-    for (const end of ["pointerup", "pointercancel", "pointerleave"])
-      this.content.addEventListener(end, () => (this.pressing = false));
+    this.holdRebuildDuringPress(this.root);
+  }
+  private holdRebuildDuringPress(element: HTMLElement) {
+    element.addEventListener(
+      "pointerdown",
+      () => {
+        this.pressing = true;
+        const events = new AbortController();
+        const release = () => {
+          events.abort();
+          // Let the click fire before a render can replace its button.
+          setTimeout(() => (this.pressing = false), 0);
+        };
+        for (const type of ["pointerup", "pointercancel"])
+          document.addEventListener(type, release, { once: true, signal: events.signal });
+      },
+      { capture: true }
+    );
   }
   /** Gates on the map: the start/finish line, sectors, and the finish line in autocross. */
   private gates(): (Gate | undefined)[] {
@@ -345,6 +359,7 @@ export default class LapRenderer implements TabRenderer {
       }
       const panel = document.createElement("div");
       this.setup = panel;
+      this.holdRebuildDuringPress(panel);
       if (c.map) {
         panel.className = "lap-map-setup";
       } else {
