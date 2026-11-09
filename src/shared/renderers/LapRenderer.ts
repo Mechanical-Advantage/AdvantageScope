@@ -347,7 +347,6 @@ export default class LapRenderer implements TabRenderer {
       this.setup = panel;
       if (c.map) {
         panel.className = "lap-map-setup";
-        this.action({ type: "setup", panel });
       } else {
         const details = document.createElement("details"),
           summary = document.createElement("summary");
@@ -360,6 +359,7 @@ export default class LapRenderer implements TabRenderer {
       const setting = (key: string, title: string, value: unknown, options?: string[]) => {
         const l = document.createElement("label");
         l.textContent = title;
+        l.title = title;
         const input = options ? document.createElement("select") : document.createElement("input");
         if (input instanceof HTMLSelectElement) input.classList.add("mv-select");
         if (input instanceof HTMLSelectElement) options!.forEach((v) => input.add(new Option(v, v)));
@@ -443,6 +443,7 @@ export default class LapRenderer implements TabRenderer {
       }
       // Only autocross ends a run on a separate line.
       if (c.settings.config.mode === "autocross") this.button(panel, "Set finish at cursor", () => addGate(-2));
+      if (c.map) this.action({ type: "setup", panel });
     }
     if (this.bestButton) this.bestButton.disabled = !c.result.laps.some((lap) => lap.valid);
     if (c.map) {
