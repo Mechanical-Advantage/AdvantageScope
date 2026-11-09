@@ -539,7 +539,7 @@ function startLive(sourceType: "robot" | "sim", target?: { sourceId: string; add
       if (liveConnection !== connection) return;
       stopLive();
       setWindowTitle(address, "Error");
-      if (!connectDialog.isVisible()) connectDialog.show(address);
+      if (!connectDialog.isVisible()) connectDialog.show(address, sourceDefinition.id);
       connectDialog.connectionFailed(detail);
     }
   );
