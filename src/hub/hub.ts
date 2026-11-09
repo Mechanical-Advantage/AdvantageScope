@@ -465,7 +465,7 @@ function stopLive() {
   liveConnected = false;
   liveStatus = LiveDataSourceStatus.Stopped;
   window.selection.setLiveDisconnected();
-  setWindowTitle(liveAddress);
+  setWindowTitle(liveAddress, "Disconnected");
 }
 
 /** Connects to a live data source. */
