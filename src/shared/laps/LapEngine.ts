@@ -465,11 +465,71 @@ export function lapSamples(
   return result;
 }
 
-/** Return only a sector whose start and end crossings are known. */
-export function sectorAt(lap: Lap, time: number): number | undefined {
+/** The times a lap enters each sector, then its end. A gate the car missed gives NaN. */
+function sectorEdgeTimes(lap: Lap): number[] {
   const edges = lap.sectorTimes ?? [lap.start];
   if (!lap.sectorTimes) for (const duration of lap.sectors) edges.push(edges.at(-1)! + duration);
+  return edges;
+}
+
+/** Return only a sector whose start and end crossings are known. */
+export function sectorAt(lap: Lap, time: number): number | undefined {
+  const edges = sectorEdgeTimes(lap);
   for (let i = 0; i < edges.length - 1; i++) {
     if (Number.isFinite(edges[i]) && Number.isFinite(edges[i + 1]) && time >= edges[i] && time < edges[i + 1]) return i;
   }
+}
+
+/**
+ * One block per sector of a lap, in lap distance, for the split bar over the Line Graph. A lap with one
+ * sector has no split bar, and a sector whose gate the car missed has no block.
+ */
+export function sectorBlocks(lap: Lap): { start: number; end: number; label: string }[] {
+  if (lap.sectors.length < 2) return [];
+  const times = lap.grid.map((p) => p.time),
+    distances = lap.grid.map((p) => p.distance);
+  const edges = sectorEdgeTimes(lap).map((t, i, all) =>
+    i === 0 ? 0 : i === all.length - 1 ? lap.distance : interpolate(times, distances, t - lap.start)
+  );
+  return edges
+    .slice(1)
+    .map((end, i) => ({ start: edges[i], end, label: `S${i + 1}` }))
+    .filter((block) => Number.isFinite(block.start) && Number.isFinite(block.end) && block.end > block.start);
+}
+
+/** The box around a lap's trace between two lap distances, or undefined if no sample falls in it. */
+export function sectorBounds(
+  lap: Lap,
+  samples: Sample[],
+  range: [number, number]
+): [number, number, number, number] | undefined {
+  const times = lap.grid.map((p) => p.time),
+    distances = lap.grid.map((p) => p.distance);
+  // The trace runs straight between samples, so the box includes the points where it crosses each edge.
+  const points: Point[] = [];
+  const at = (distance: number) => {
+    const t = lap.start + interpolate(distances, times, distance),
+      i = samples.findIndex((p) => p.t >= t);
+    if (i < 1) return;
+    const p = samples[i - 1],
+      q = samples[i],
+      f = (t - p.t) / (q.t - p.t);
+    points.push({ x: p.x + (q.x - p.x) * f, y: p.y + (q.y - p.y) * f });
+  };
+  at(range[0]);
+  for (const p of samples) {
+    if (p.t < lap.start || p.t > lap.end) continue;
+    const distance = interpolate(times, distances, p.t - lap.start);
+    if (distance >= range[0] && distance <= range[1]) points.push(p);
+  }
+  at(range[1]);
+  if (!points.length) return;
+  const box: [number, number, number, number] = [Infinity, -Infinity, Infinity, -Infinity];
+  for (const p of points) {
+    box[0] = Math.min(box[0], p.x);
+    box[1] = Math.max(box[1], p.x);
+    box[2] = Math.min(box[2], p.y);
+    box[3] = Math.max(box[3], p.y);
+  }
+  return box;
 }

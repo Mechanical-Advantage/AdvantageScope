@@ -10,7 +10,7 @@ import { createHash } from "node:crypto";
 import { test } from "node:test";
 import LineGraphFilter from "../src/shared/LineGraphFilter";
 import { SelectionMode } from "../src/shared/Selection";
-import { analyze, Sample } from "../src/shared/laps/LapEngine";
+import { analyze, interpolate, Sample, sectorBlocks, sectorBounds } from "../src/shared/laps/LapEngine";
 import LineGraphRenderer, { LineGraphRendererCommand } from "../src/shared/renderers/LineGraphRenderer";
 
 /** Records every canvas call and property write, with numbers rounded so the log is stable. */
@@ -196,4 +196,54 @@ test("lap results match mur-voir/main", () => {
       name
     );
   }
+});
+
+test("split bar edges sit where the Laps table's sector times end", () => {
+  for (const config of [{ fractions: [0.25, 0.6] }, { sectors: [quarterGate, halfGate] }]) {
+    const result = analyze(circleSamples(), config);
+    for (const lap of result.laps.filter((l) => l.valid)) {
+      const blocks = sectorBlocks(lap);
+      assert.deepEqual(
+        blocks.map((b) => b.label),
+        ["S1", "S2", "S3"]
+      );
+      assert.equal(blocks[0].start, 0);
+      assert.equal(blocks[2].end, lap.distance);
+      const timeAt = (d: number) =>
+        interpolate(
+          lap.grid.map((p) => p.distance),
+          lap.grid.map((p) => p.time),
+          d
+        );
+      // Driving each block takes the time the Laps table shows for that sector.
+      blocks.forEach((b, i) => assert.ok(Math.abs(timeAt(b.end) - timeAt(b.start) - lap.sectors[i]) < 0.01));
+    }
+  }
+  // A quarter of the way round the circle is the quarter gate, and half way is the half gate.
+  const lap = analyze(circleSamples(), { sectors: [quarterGate, halfGate] }).laps.find((l) => l.valid)!;
+  const [s1, s2] = sectorBlocks(lap);
+  assert.ok(Math.abs(s1.end / lap.distance - 0.25) < 0.01);
+  assert.ok(Math.abs(s2.end / lap.distance - 0.5) < 0.01);
+});
+
+test("no split bar without sectors, and no block for a missed gate", () => {
+  const one = analyze(circleSamples(), { fractions: [] }).laps.find((l) => l.valid)!;
+  assert.equal(one.sectors.length, 1);
+  assert.deepEqual(sectorBlocks(one), []);
+  const missed = { a: { x: 500, y: 500 }, b: { x: 510, y: 500 } };
+  const lap = analyze(circleSamples(), { sectors: [quarterGate, missed] }).laps.find((l) => l.valid)!;
+  assert.deepEqual(
+    sectorBlocks(lap).map((b) => b.label),
+    ["S1"]
+  );
+});
+
+test("a sector's box on the map holds only that stretch of the lap", () => {
+  const result = analyze(circleSamples(), { sectors: [quarterGate, halfGate] });
+  const lap = result.laps.find((l) => l.valid)!;
+  const [, s2] = sectorBlocks(lap);
+  // S2 runs from the circle's east point (40, -40) to its south point (0, -80).
+  const [xmin, xmax, ymin, ymax] = sectorBounds(lap, result.samples, [s2.start, s2.end])!;
+  assert.ok(Math.abs(xmin) < 1 && Math.abs(xmax - 40) < 1, `${xmin} ${xmax}`);
+  assert.ok(Math.abs(ymin + 80) < 1 && Math.abs(ymax + 40) < 1, `${ymin} ${ymax}`);
 });
