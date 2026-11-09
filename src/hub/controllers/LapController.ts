@@ -28,6 +28,7 @@ export default class LapController implements TabController {
 
   UUID = createUUID();
   private field = "";
+  private display?: LapCommand["display"];
   private sources: SourceList[] = [];
   private sourceStates: string[] = [];
   private cached?: LapCommand;
@@ -84,6 +85,7 @@ export default class LapController implements TabController {
       }
       if (a.type === "auto" && (lapService.settings.config.gate || lapService.settings.config.geographic?.gate))
         lapService.setStartLine();
+      if (a.type === "display") this.display = { colorMode: a.colorMode, overlaysOnly: a.overlaysOnly };
       if (a.type === "field") this.field = a.field;
     });
     window.addEventListener(
@@ -177,6 +179,7 @@ export default class LapController implements TabController {
     if (!this.map) this.field ||= lapService.settings.speed || lapService.settings.frontLeft;
     const data = window.log.getNumber(this.field, -Infinity, Infinity);
     const cacheKey = JSON.stringify([
+      this.display,
       data?.timestamps.length,
       data?.timestamps.at(-1),
       data?.values.at(-1),
@@ -192,6 +195,7 @@ export default class LapController implements TabController {
     const values = samples.map((p) => (data ? interpolate(data.timestamps, data.values, p.t) : NaN));
     this.cached = {
       map: this.map,
+      display: this.display,
       origin: lapService.origin,
       result: lapService.result,
       settings: { ...lapService.settings, config: lapService.localConfig() },

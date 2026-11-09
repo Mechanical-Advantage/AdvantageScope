@@ -21,7 +21,8 @@ import {
   lapSamples,
   project,
   resample,
-  Sample
+  Sample,
+  sectorAt
 } from "../src/shared/laps/LapEngine";
 const gate = { a: { x: 0, y: -10 }, b: { x: 0, y: 10 }, direction: 1 };
 test("segment crossing interpolates and rejects reverse direction and outside gate", () => {
@@ -146,4 +147,53 @@ test("lap overlay keeps raw sample values and holds the value at the lap start",
     timestamps: [0, 25, 50, 75],
     values: [1, 7, 3, 9]
   });
+});
+
+test("comparison searches grids without copying them and clamps endpoints", () => {
+  const lap = analyze(
+    [
+      { t: 0, x: 0, y: 0 },
+      { t: 1, x: 1, y: 0 }
+    ],
+    { manual: [0, 1], minTime: 0 }
+  ).laps[0];
+  lap.grid = [
+    { distance: 0, time: 0 },
+    { distance: 10, time: 2 },
+    { distance: 20, time: 8 }
+  ];
+  const ref = {
+    ...lap,
+    grid: [
+      { distance: 0, time: 0 },
+      { distance: 20, time: 4 }
+    ]
+  };
+  lap.grid.map = () => {
+    throw new Error("grid copied");
+  };
+  assert.equal(deltaTime(lap, ref, -1), 0);
+  assert.equal(deltaTime(lap, ref, 5), 0);
+  assert.equal(deltaTime(lap, ref, 15), 2);
+  assert.equal(deltaTime(lap, ref, 30), 4);
+  assert.ok(Number.isNaN(deltaTime({ ...lap, grid: [] }, ref, 1)));
+});
+test("sector colours resume at a known gate after a missed gate", () => {
+  const lap = analyze(
+    [
+      { t: 0, x: 0, y: 0 },
+      { t: 1, x: 1, y: 0 }
+    ],
+    { manual: [0, 1], minTime: 0 }
+  ).laps[0];
+  lap.sectorTimes = [0, NaN, 0.8, 1];
+  lap.sectors = [NaN, NaN, 0.2];
+  assert.equal(sectorAt(lap, 0.3), undefined);
+  assert.equal(sectorAt(lap, 0.7), undefined);
+  assert.equal(sectorAt(lap, 0.9), 2);
+  delete lap.sectorTimes;
+  lap.sectors = [0.3, 0.4, 0.3];
+  assert.equal(sectorAt(lap, 0.1), 0);
+  assert.equal(sectorAt(lap, 0.5), 1);
+  assert.equal(sectorAt(lap, 0.9), 2);
 });

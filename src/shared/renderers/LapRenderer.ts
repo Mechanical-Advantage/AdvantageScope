@@ -13,7 +13,17 @@
 
 import type { LapSettings } from "../../hub/LapService";
 import ScrollSensor, { ScrollSensorMouseControl } from "../../hub/ScrollSensor";
-import { Coordinate, deltaTime, Gate, gateAt, geographicGate, LapResult, Point, project } from "../laps/LapEngine";
+import {
+  Coordinate,
+  deltaTime,
+  Gate,
+  gateAt,
+  geographicGate,
+  LapResult,
+  Point,
+  project,
+  sectorAt
+} from "../laps/LapEngine";
 import { Units } from "../units";
 import { panMargin, scrollZoomPan } from "./FieldZoomPan";
 import TabRenderer from "./TabRenderer";
@@ -31,6 +41,7 @@ function viridis(value: number): string {
 }
 export type LapCommand = {
   map: boolean;
+  display?: { colorMode: string; overlaysOnly: boolean };
   origin?: Coordinate;
   result: LapResult;
   settings: LapSettings;
@@ -175,7 +186,9 @@ export default class LapRenderer implements TabRenderer {
       } else if (this.command && this.pressed && Math.hypot(p.x - this.pressed.x, p.y - this.pressed.y) < 4) {
         let best = Infinity,
           time = 0;
+        const visible = this.visibleLaps();
         for (const s of this.command.result.samples) {
+          if (visible.length && !visible.some((lap) => s.t >= lap.start && s.t <= lap.end)) continue;
           const q = this.transform(s),
             d = Math.hypot(p.x - q.x, p.y - q.y);
           if (d < best) {
@@ -238,7 +251,13 @@ export default class LapRenderer implements TabRenderer {
       (!this.command && !this.restoredColor && command.field && this.colorMode === "laps")
     )
       this.colorMode = command.field ? "field" : "laps";
+    if (!this.interactive && command.display) {
+      this.colorMode = command.display.colorMode;
+      this.overlaysOnly = command.display.overlaysOnly;
+    }
+    if (this.colorMode === "field" && !command.field) this.colorMode = "laps";
     this.command = command;
+    if (this.interactive) this.action({ type: "display", colorMode: this.colorMode, overlaysOnly: this.overlaysOnly });
     const key = JSON.stringify([
       this.colorMode,
       command.version,
@@ -653,7 +672,7 @@ export default class LapRenderer implements TabRenderer {
         c.result.laps.find((lap) => lap.valid && c.overlays.includes(lap.index) && lap.index !== c.reference);
       ctx.fillStyle = text;
       ctx.fillText(
-        compared && c.reference !== null
+        compared && c.result.laps.some((lap) => lap.valid && lap.index === c.reference)
           ? `L${compared.index} vs L${c.reference} · green gains · red loses`
           : "Choose a lap and reference in Laps to compare",
         16,
@@ -752,7 +771,11 @@ export default class LapRenderer implements TabRenderer {
               : `L${lap.index}`
           );
         });
-      } else dot(c.time, "#fff");
+      } else if (
+        !this.visibleLaps().length ||
+        this.visibleLaps().some((lap) => c.time! >= lap.start && c.time! <= lap.end)
+      )
+        dot(c.time, "#fff");
     }
     if (hint) {
       ctx.fillStyle = text;
@@ -849,10 +872,8 @@ export default class LapRenderer implements TabRenderer {
         // Rounded to 64 steps so segments of a colour share a path
         color = viridis(Math.round(((c.values[i] - min) / (max - min || 1)) * 63) / 63);
       } else if (lap && this.colorMode === "sector") {
-        let end = lap.start,
-          sector = 0;
-        while (sector < lap.sectors.length - 1 && p1.t >= (end += lap.sectors[sector])) sector++;
-        color = colors[sector % colors.length];
+        const sector = sectorAt(lap, p1.t);
+        color = sector === undefined ? neutral : colors[sector % colors.length];
         alpha = 1;
       } else if (lap && this.colorMode === "compare") {
         if (lap === compared && changes.length) {

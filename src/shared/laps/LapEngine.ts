@@ -36,6 +36,7 @@ export type Lap = {
   source: string;
   distance: number;
   sectors: number[];
+  sectorTimes?: number[];
   grid: { distance: number; time: number }[];
   label: string;
   stint: number;
@@ -186,12 +187,23 @@ export function resample(distances: number[], times: number[], length: number, s
   return grid;
 }
 export function deltaTime(lap: Lap, reference: Lap, distance: number): number {
-  const at = (l: Lap) =>
-    interpolate(
-      l.grid.map((p) => p.distance),
-      l.grid.map((p) => p.time),
-      distance
+  const at = (l: Lap) => {
+    const grid = l.grid;
+    if (!grid.length) return NaN;
+    let lo = 0,
+      hi = grid.length - 1;
+    if (distance <= grid[lo].distance) return grid[lo].time;
+    if (distance >= grid[hi].distance) return grid[hi].time;
+    while (hi - lo > 1) {
+      const mid = (lo + hi) >>> 1;
+      if (grid[mid].distance <= distance) lo = mid;
+      else hi = mid;
+    }
+    return (
+      grid[lo].time +
+      ((grid[hi].time - grid[lo].time) * (distance - grid[lo].distance)) / (grid[hi].distance - grid[lo].distance)
     );
+  };
   return at(lap) - at(reference);
 }
 export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
@@ -391,6 +403,7 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
       source,
       distance: length,
       grid,
+      ...(config.sectors?.length ? { sectorTimes: sectorEdges } : {}),
       sectors: sectorEdges.slice(1).map((t, j) => t - sectorEdges[j]),
       label: complete ? "Flying" : "Partial",
       stint,
@@ -454,4 +467,13 @@ export function lapSamples(
     }
   }
   return result;
+}
+
+/** Return only a sector whose start and end crossings are known. */
+export function sectorAt(lap: Lap, time: number): number | undefined {
+  const edges = lap.sectorTimes ?? [lap.start];
+  if (!lap.sectorTimes) for (const duration of lap.sectors) edges.push(edges.at(-1)! + duration);
+  for (let i = 0; i < edges.length - 1; i++) {
+    if (Number.isFinite(edges[i]) && Number.isFinite(edges[i + 1]) && time >= edges[i] && time < edges[i + 1]) return i;
+  }
 }
