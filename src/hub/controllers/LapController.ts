@@ -29,6 +29,8 @@ export default class LapController implements TabController {
   private sourceStates: string[] = [];
   private cached?: LapCommand;
   private cacheKey = "";
+  /** A map made after a sector was double-clicked keeps its own view until the next double-click. */
+  private focusAtStart = lapService.focus?.id;
   constructor(
     root: HTMLElement,
     private map: boolean,
@@ -194,7 +196,8 @@ export default class LapController implements TabController {
       this.field,
       lapService.reference,
       lapService.overlays,
-      lapService.selected
+      lapService.selected,
+      lapService.focus?.id
     ]);
     if (this.cached && cacheKey === this.cacheKey) return { ...this.cached, time: window.selection.getRenderTime() };
     this.cacheKey = cacheKey;
@@ -214,6 +217,7 @@ export default class LapController implements TabController {
       overlays: lapService.overlays,
       time: window.selection.getRenderTime(),
       version: lapService.version,
+      focus: this.map && lapService.focus?.id !== this.focusAtStart ? lapService.focus : undefined,
       metrics: lapService.result.laps.map((l) => {
         const vs = values.filter((v, i) => samples[i].t >= l.start && samples[i].t < l.end && Number.isFinite(v));
         return vs.length

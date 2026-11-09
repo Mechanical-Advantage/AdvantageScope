@@ -18,7 +18,8 @@ import {
   LapResult,
   Point,
   project,
-  sectorAt
+  sectorAt,
+  sectorBounds
 } from "../laps/LapEngine";
 import { Units } from "../units";
 import { panMargin, scrollZoomPan } from "./FieldZoomPan";
@@ -50,7 +51,48 @@ export type LapCommand = {
   time: number | null;
   version: number;
   metrics: number[][];
+  /** A sector double-clicked on a Line Graph's split bar, to fit on the map. */
+  focus?: { lap: number; range: [number, number]; id: number };
 };
+/**
+ * Maps track metres to canvas pixels. At a zoom of 1 the whole track fits with an 8% margin, and pan is in
+ * metres from the track's centre. Clamps `pan` in place so the track can't leave the canvas.
+ */
+export function trackView(bounds: number[], w: number, h: number, zoom: number, pan: [number, number]) {
+  const [xmin, xmax, ymin, ymax] = bounds;
+  const margin = Math.max(xmax - xmin, ymax - ymin, 1) * 0.08,
+    baseScale = Math.min(w / (xmax - xmin + margin * 2), h / (ymax - ymin + margin * 2));
+  // A track rarely has the canvas's shape, so the limits come from the canvas. Zooming in lets both axes pan.
+  const scale = baseScale * zoom,
+    marginX = panMargin(w * zoom, w, scale),
+    marginY = panMargin(h * zoom, h, scale);
+  pan[0] = Math.max(-marginX, Math.min(marginX, pan[0]));
+  pan[1] = Math.max(-marginY, Math.min(marginY, pan[1]));
+  const centerX = (xmin + xmax) / 2 + pan[0],
+    centerY = (ymin + ymax) / 2 - pan[1];
+  return {
+    baseScale,
+    scale,
+    transform: (p: Point) => ({ x: w / 2 + (p.x - centerX) * scale, y: h / 2 - (p.y - centerY) * scale }),
+    inverse: (p: Point) => ({ x: (p.x - w / 2) / scale + centerX, y: -(p.y - h / 2) / scale + centerY })
+  };
+}
+/** The zoom and pan that frame a box on the map, such as one sector's stretch of trace, with the same margin. */
+export function fitTrackView(
+  bounds: number[],
+  box: number[],
+  w: number,
+  h: number
+): { zoom: number; pan: [number, number] } {
+  const { baseScale } = trackView(bounds, w, h, 1, [0, 0]);
+  const margin = Math.max(box[1] - box[0], box[3] - box[2], 1) * 0.08,
+    scale = Math.min(w / (box[1] - box[0] + margin * 2), h / (box[3] - box[2] + margin * 2));
+  return {
+    // Scrolling stops at a zoom of 10, so a short sector of a long track may not fill the map.
+    zoom: Math.min(10, Math.max(1, scale / baseScale)),
+    pan: [(box[0] + box[1]) / 2 - (bounds[0] + bounds[1]) / 2, (bounds[2] + bounds[3]) / 2 - (box[2] + box[3]) / 2]
+  };
+}
 const colors = ["#58a7ff", "#f4b860", "#72d6a0", "#d49bff", "#ff8c9c", "#70d6de"];
 const duration = (t: number) =>
   Number.isFinite(t) ? `${Math.floor(t / 60)}:${(t % 60).toFixed(3).padStart(6, "0")}` : "—";
@@ -75,6 +117,9 @@ export default class LapRenderer implements TabRenderer {
   private colorMode = "laps";
   private restoredColor = false;
   private pan: [number, number] = [0, 0];
+  private viewBeforeSector?: { zoom: number; pan: [number, number] };
+  private focusId?: number;
+  private focus?: LapCommand["focus"];
   private baseScale = 1;
   private bounds = [0, 0, 0, 0];
   private range: [number, number] = [NaN, NaN];
@@ -122,6 +167,7 @@ export default class LapRenderer implements TabRenderer {
     this.scrollSensor = new ScrollSensor(
       this.scroll,
       (dx, dy, isPan, cursorX, cursorY) => {
+        this.viewBeforeSector = undefined;
         this.zoom = scrollZoomPan(
           this.zoom,
           this.pan,
@@ -267,6 +313,11 @@ export default class LapRenderer implements TabRenderer {
       this.overlaysOnly = command.display.overlaysOnly;
     }
     if (this.colorMode === "field" && !command.field) this.colorMode = "laps";
+    if (command.focus && command.focus.id !== this.focusId) {
+      this.focusId = command.focus.id;
+      this.focus = command.focus;
+      this.lastDraw = "";
+    }
     this.command = command;
     if (this.interactive) this.action({ type: "display", colorMode: this.colorMode, overlaysOnly: this.overlaysOnly });
     const key = JSON.stringify([
@@ -338,6 +389,7 @@ export default class LapRenderer implements TabRenderer {
         toggle.checked = this.overlaysOnly;
         toggle.onchange = () => {
           this.overlaysOnly = toggle.checked;
+          this.viewBeforeSector = undefined;
           this.zoom = 1;
           this.pan = [0, 0];
           this.lastDraw = "";
@@ -628,21 +680,20 @@ export default class LapRenderer implements TabRenderer {
       }
       this.bounds = [xmin, xmax, ymin, ymax];
     }
-    const [xmin, xmax, ymin, ymax] = this.bounds;
-    const margin = Math.max(xmax - xmin, ymax - ymin, 1) * 0.08,
-      trackWidth = xmax - xmin + margin * 2,
-      trackHeight = ymax - ymin + margin * 2;
-    this.baseScale = Math.min(w / trackWidth, h / trackHeight);
-    // A track rarely has the canvas's shape, so the limits come from the canvas. Zooming in lets both axes pan.
-    const scale = this.baseScale * this.zoom,
-      marginX = panMargin(w * this.zoom, w, scale),
-      marginY = panMargin(h * this.zoom, h, scale);
-    this.pan[0] = Math.max(-marginX, Math.min(marginX, this.pan[0]));
-    this.pan[1] = Math.max(-marginY, Math.min(marginY, this.pan[1]));
-    const centerX = (xmin + xmax) / 2 + this.pan[0],
-      centerY = (ymin + ymax) / 2 - this.pan[1];
-    this.transform = (p) => ({ x: w / 2 + (p.x - centerX) * scale, y: h / 2 - (p.y - centerY) * scale });
-    this.inverse = (p) => ({ x: (p.x - w / 2) / scale + centerX, y: -(p.y - h / 2) / scale + centerY });
+    // Fit a sector double-clicked on a Line Graph's split bar. The view is saved like a scrolled one.
+    const focusLap = this.focus && c.result.laps.find((lap) => lap.index === this.focus!.lap),
+      focusBox = focusLap && sectorBounds(focusLap, ss, this.focus!.range);
+    this.focus = undefined;
+    if (focusBox) {
+      this.viewBeforeSector ??= { zoom: this.zoom, pan: [...this.pan] };
+      ({ zoom: this.zoom, pan: this.pan } = fitTrackView(this.bounds, focusBox, w, h));
+      this.lastTrace = "";
+    }
+    const view = trackView(this.bounds, w, h, this.zoom, this.pan),
+      scale = view.scale;
+    this.baseScale = view.baseScale;
+    this.transform = view.transform;
+    this.inverse = view.inverse;
 
     // Only the cursor moves on hover, so the trace is kept until it changes
     if (traceKey !== this.lastTrace) {
@@ -941,9 +992,15 @@ export default class LapRenderer implements TabRenderer {
     }
   }
   saveState() {
-    return { zoom: this.zoom, pan: this.pan, overlaysOnly: this.overlaysOnly, colorMode: this.colorMode };
+    // The graph does not save its x zoom, so keep the sector fit temporary here too.
+    return {
+      ...(this.viewBeforeSector ?? { zoom: this.zoom, pan: this.pan }),
+      overlaysOnly: this.overlaysOnly,
+      colorMode: this.colorMode
+    };
   }
   restoreState(state: unknown) {
+    this.viewBeforeSector = undefined;
     if (typeof state !== "object" || state === null) return;
     if (
       "colorMode" in state &&

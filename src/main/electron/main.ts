@@ -2449,6 +2449,12 @@ function createSatellite(
           }
           break;
 
+        case "sector-zoom":
+          hubWindows.forEach((window) => {
+            sendMessage(window, "sector-zoom", { uuid, focus: message.data });
+          });
+          break;
+
         case "call-selection-setter":
           message.data.uuid = configData !== undefined ? configData.uuid : state!.uuid;
           hubWindows.forEach((window) => {

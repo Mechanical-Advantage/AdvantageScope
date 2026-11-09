@@ -47,6 +47,12 @@ export default class LineGraphRenderer implements TabRenderer {
   private lastHoveredTime: number | null = null;
   private lastCursorInRect = false;
   private didClearHoveredTime = false;
+  private sectorBarHits?: {
+    top: number;
+    bottom: number;
+    lap: number;
+    blocks: { x0: number; x1: number; start: number; end: number; label: string }[];
+  };
 
   constructor(root: HTMLElement, hasController: boolean) {
     this.hasController = hasController;
@@ -118,6 +124,24 @@ export default class LineGraphRenderer implements TabRenderer {
       window.selection.goIdle();
     });
 
+    // Double-clicking a block of the split bar zooms this graph to the sector and sends its range to the Track Map
+    this.CANVAS.addEventListener("mousemove", (event) => {
+      const block = this.sectorBarBlockAt(event);
+      this.CANVAS.style.cursor = block ? "pointer" : "";
+      this.CANVAS.title = block ? `Double-click to zoom to ${block.label}` : "";
+    });
+    this.CANVAS.addEventListener("dblclick", (event) => {
+      const block = this.sectorBarBlockAt(event);
+      if (!block || !this.sectorBarHits) return;
+      this.lapViewport.zoomTo([block.start, block.end]);
+      this.ROOT.dispatchEvent(
+        new CustomEvent("sector-zoom", {
+          bubbles: true,
+          detail: { lap: this.sectorBarHits.lap, range: [block.start, block.end] }
+        })
+      );
+    });
+
     this.HELP_OVERLAY = root.getElementsByClassName("line-graph-help")[0] as HTMLElement;
 
     // Scroll handling
@@ -150,6 +174,15 @@ export default class LineGraphRenderer implements TabRenderer {
 
   getAspectRatio(): number | null {
     return null;
+  }
+
+  private sectorBarBlockAt(event: MouseEvent) {
+    const hits = this.sectorBarHits,
+      rect = this.CANVAS.getBoundingClientRect(),
+      x = event.clientX - rect.x,
+      y = event.clientY - rect.y;
+    if (!hits || y < hits.top || y > hits.bottom) return;
+    return hits.blocks.find((block) => x >= block.x0 && x <= block.x1);
   }
 
   private getAxisValueText(value: number, units: Units.UnitConfig | null, filter: LineGraphFilter): string {
@@ -211,6 +244,7 @@ export default class LineGraphRenderer implements TabRenderer {
       command.lapValues,
       command.deltaStrip?.readout,
       command.sectorMarks,
+      command.sectorBar,
       command.deltaStrip?.range,
       command.deltaStrip?.fields.map((f) => [f.values.length, f.color, f.size]),
       command.leftFields.map((field) => [field.values.length, field.color, field.type, field.size, field.gaps]),
@@ -242,7 +276,11 @@ export default class LineGraphRenderer implements TabRenderer {
     // Lap legend: one opaque row per lap above the plot, so it can never sit on traces
     const LEGEND_ROW = 15;
     const legendRows = command.lapLabels?.length ?? 0;
-    let graphTop = 32 + (legendRows ? legendRows * LEGEND_ROW + 4 : 0);
+    // Split bar: one block per sector between the legend and the plot
+    const SECTOR_BAR = 16;
+    const sectorBlocks = command.sectorBar?.blocks ?? [];
+    const barTop = 32 + (legendRows ? legendRows * LEGEND_ROW + 4 : 0);
+    let graphTop = barTop + (sectorBlocks.length ? SECTOR_BAR + 2 : 0);
     this.SCROLL_OVERLAY.style.top = graphTop.toString() + "px";
     let graphHeight = height - graphTop - 35;
     if (graphHeight < 1) graphHeight = 1;
@@ -306,6 +344,19 @@ export default class LineGraphRenderer implements TabRenderer {
     if (status) {
       status.style.left = graphLeft.toString() + "px";
       status.style.right = graphRight.toString() + "px";
+    }
+
+    // Every other sector is shaded down the plot and the ΔT strip, under the traces
+    const sectorX = (x: number) =>
+      clampValue(scaleValue(x, timeRange, [graphLeft, graphLeft + graphWidth]), graphLeft, graphLeft + graphWidth);
+    if (sectorBlocks.length) {
+      context.fillStyle = light ? "#000000" : "#ffffff";
+      context.globalAlpha = 0.05;
+      sectorBlocks.forEach((block, i) => {
+        if (i % 2)
+          context.fillRect(sectorX(block.start), graphTop, sectorX(block.end) - sectorX(block.start), graphHeight);
+      });
+      context.globalAlpha = 1;
     }
 
     // Render discrete data
@@ -573,7 +624,7 @@ export default class LineGraphRenderer implements TabRenderer {
     context.globalAlpha = 1;
 
     // Sector gates on the distance axis (dotted verticals through plot and strip)
-    if (command.sectorMarks?.length) {
+    if (!sectorBlocks.length && command.sectorMarks?.length) {
       context.lineWidth = 1;
       context.textAlign = "center";
       context.setLineDash([2, 3]);
@@ -826,6 +877,24 @@ export default class LineGraphRenderer implements TabRenderer {
     context.strokeRect(graphLeft, graphTop, graphWidth, graphHeight);
 
     // Labels outside the plot must be painted after clearing overflow.
+    this.sectorBarHits = undefined;
+    if (command.sectorBar && sectorBlocks.length) {
+      this.sectorBarHits = { top: barTop, bottom: barTop + SECTOR_BAR, lap: command.sectorBar.lap, blocks: [] };
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+      sectorBlocks.forEach((block, i) => {
+        const x0 = sectorX(block.start),
+          x1 = sectorX(block.end);
+        if (x1 - x0 < 1) return;
+        this.sectorBarHits!.blocks.push({ ...block, x0, x1 });
+        context.fillStyle = light ? (i % 2 ? "#cfcfcf" : "#e6e6e6") : i % 2 ? "#5a5a5a" : "#404040";
+        context.fillRect(x0, barTop, x1 - x0, SECTOR_BAR);
+        if (x1 - x0 > 16) {
+          context.fillStyle = light ? "#222" : "#eee";
+          context.fillText(block.label, (x0 + x1) / 2, barTop + SECTOR_BAR / 2, x1 - x0 - 4);
+        }
+      });
+    }
     if (command.deltaStrip) {
       const top = graphTop + graphHeightOpen + stripGap;
       const strip = command.deltaStrip;
@@ -937,7 +1006,7 @@ export default class LineGraphRenderer implements TabRenderer {
     context.globalAlpha = 1;
     context.fillStyle = light ? "#222" : "#eee";
     context.textAlign = "center";
-    for (const mark of command.sectorMarks ?? []) {
+    for (const mark of sectorBlocks.length ? [] : command.sectorMarks ?? []) {
       const x = xScaler.calculate(mark.x);
       if (x >= graphLeft && x <= graphLeft + graphWidth) context.fillText(mark.label, x, graphTop + graphHeight + 29);
     }
@@ -1011,6 +1080,8 @@ export type LineGraphRendererCommand = {
   lapLabels?: { text: string; color: string }[];
   /** Sector gate markers on the x axis (x in axis units). */
   sectorMarks?: { x: number; label: string }[];
+  /** Lap distance mode: one block per sector of the reference lap, in axis units. */
+  sectorBar?: { lap: number; blocks: { start: number; end: number; label: string }[] };
   /** Lap mode: ΔT drawn in its own strip under the overlay. */
   deltaStrip?: {
     fields: LineGraphRendererCommand_NumericField[];
