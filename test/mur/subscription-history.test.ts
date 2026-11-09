@@ -16,6 +16,7 @@ test("resubscribing requests history again and merges overlapping samples once",
   const descriptor = { path, type: "float64" } as any;
   const source = new MURSource() as any;
   source.log = new Log();
+  const writes = t.mock.method(source.log, "putNumber");
   source.catalogue = { epoch: "test", revision: 1 };
   source.descriptors.set(path, descriptor);
   let active = new Set(["/" + path]);
@@ -62,4 +63,5 @@ test("resubscribing requests history again and merges overlapping samples once",
   const data = source.log.getNumber("/" + path, -Infinity, Infinity);
   assert.deepEqual(data.values, [1, 2, 3, 4]);
   assert.equal(new Set(data.timestamps).size, 4);
+  assert.equal(writes.mock.callCount(), 4);
 });
