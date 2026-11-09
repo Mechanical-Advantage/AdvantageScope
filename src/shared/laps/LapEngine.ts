@@ -5,16 +5,15 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-// In-page live connection UI (works the same in Electron and Lite):
-// - ConnectDialog: File -> Connect... (Cmd/Ctrl+K). Pick a registered source, enter an address, or pick a
-//   recent server. Styled like the Preferences prompt.
-// - LiveStatusPill: title-bar pill with three separate indicators (backend, car, sim), plus a popover with
-//   details, sim controls (only when the backend has sim endpoints) and connect/disconnect.
+// Finds laps and sectors from telemetry samples and calculates distance and time comparisons.
 
 export type Point = { x: number; y: number };
+export type Coordinate = { lat: number; lon: number };
+export type GeographicGate = { a: Coordinate; b: Coordinate; direction?: number };
 export type Gate = { a: Point; b: Point; direction?: number };
 export type Sample = Point & { t: number; speed?: number; counter?: number; beacon?: number; yaw?: number };
 export type LapConfig = {
+  geographic?: { gate?: GeographicGate; sectors?: GeographicGate[]; finish?: GeographicGate };
   gate?: Gate;
   sectors?: Gate[];
   fractions?: number[];
@@ -33,6 +32,7 @@ export type Lap = {
   source: string;
   distance: number;
   sectors: number[];
+  sectorTimes?: number[];
   grid: { distance: number; time: number }[];
   label: string;
   stint: number;
@@ -49,6 +49,27 @@ export type LapResult = {
 export function project(lat: number, lon: number, origin: { lat: number; lon: number }): Point {
   const k = (Math.PI / 180) * 6371008.8;
   return { x: (lon - origin.lon) * k * Math.cos((origin.lat * Math.PI) / 180), y: (lat - origin.lat) * k };
+}
+export function unproject(point: Point, origin: Coordinate): Coordinate {
+  const k = (Math.PI / 180) * 6371008.8;
+  return { lat: origin.lat + point.y / k, lon: origin.lon + point.x / (k * Math.cos((origin.lat * Math.PI) / 180)) };
+}
+export function geographicGate(gate: Gate, origin: Coordinate): GeographicGate {
+  return { a: unproject(gate.a, origin), b: unproject(gate.b, origin), direction: gate.direction };
+}
+export function projectConfig(config: LapConfig, origin?: Coordinate): LapConfig {
+  const local = (gate: GeographicGate): Gate => ({
+    a: project(gate.a.lat, gate.a.lon, origin!),
+    b: project(gate.b.lat, gate.b.lon, origin!),
+    direction: gate.direction
+  });
+  const geo = config.geographic;
+  return {
+    ...config,
+    gate: origin && geo?.gate ? local(geo.gate) : config.gate,
+    sectors: origin && geo?.sectors ? [...geo.sectors.map(local), ...(config.sectors ?? [])] : config.sectors,
+    finish: origin && geo?.finish ? local(geo.finish) : config.finish
+  };
 }
 const cross = (a: Point, b: Point) => a.x * b.y - a.y * b.x;
 const sub = (a: Point, b: Point) => ({ x: a.x - b.x, y: a.y - b.y });
@@ -101,6 +122,30 @@ export function autoGate(samples: Sample[], minTime = 20): Gate | undefined {
     direction: -1
   };
 }
+/**
+ * A 24 m line across the direction of travel, near the sample nearest a time. The car may be stopped
+ * there or the log may end there, so travel comes from the next sample 1 m away, or else the last one.
+ * The line sits 0.5 m from the sample, because a sample exactly on it can round to neither side.
+ */
+export function gateAt(samples: Sample[], time: number): Gate | undefined {
+  if (!samples.length) return;
+  const i = samples.reduce((best, p, j) => (Math.abs(p.t - time) < Math.abs(samples[best].t - time) ? j : best), 0),
+    p = samples[i],
+    moved = (q: Sample) => Math.hypot(q.x - p.x, q.y - p.y) >= 1,
+    next = samples.slice(i + 1).find(moved),
+    q = next ?? samples.slice(0, i).reverse().find(moved);
+  if (!q) return;
+  const sign = next ? 1 : -1,
+    n = Math.hypot(q.x - p.x, q.y - p.y),
+    dx = (sign * (q.x - p.x)) / n,
+    dy = (sign * (q.y - p.y)) / n,
+    c = { x: p.x + (sign * dx) / 2, y: p.y + (sign * dy) / 2 };
+  return {
+    a: { x: c.x - dy * 12, y: c.y + dx * 12 },
+    b: { x: c.x + dy * 12, y: c.y - dx * 12 },
+    direction: -1
+  };
+}
 export function classifySkidpad(yaws: number[]): string[] {
   let previous = 0,
     count = 0;
@@ -138,12 +183,23 @@ export function resample(distances: number[], times: number[], length: number, s
   return grid;
 }
 export function deltaTime(lap: Lap, reference: Lap, distance: number): number {
-  const at = (l: Lap) =>
-    interpolate(
-      l.grid.map((p) => p.distance),
-      l.grid.map((p) => p.time),
-      distance
+  const at = (l: Lap) => {
+    const grid = l.grid;
+    if (!grid.length) return NaN;
+    let lo = 0,
+      hi = grid.length - 1;
+    if (distance <= grid[lo].distance) return grid[lo].time;
+    if (distance >= grid[hi].distance) return grid[hi].time;
+    while (hi - lo > 1) {
+      const mid = (lo + hi) >>> 1;
+      if (grid[mid].distance <= distance) lo = mid;
+      else hi = mid;
+    }
+    return (
+      grid[lo].time +
+      ((grid[hi].time - grid[lo].time) * (distance - grid[lo].distance)) / (grid[hi].distance - grid[lo].distance)
     );
+  };
   return at(lap) - at(reference);
 }
 export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
@@ -198,29 +254,55 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
   const beaconUsable =
     beaconValues.every((b) => b === 0 || b === 1) &&
     beaconValues.filter((b) => b === 1).length < beaconValues.length / 2;
-  if (config.manual?.length) {
-    source = "manual";
-    boundaries = config.manual.filter((t) => Number.isFinite(t) && t >= times[0] && t <= times.at(-1)!);
-  } else if (!config.gate && counters.length) {
-    source = "counter";
-    boundaries = counters;
-  } else if (!config.gate && beaconUsable && beacons.length) {
-    source = "beacon";
-    boundaries = beacons;
-  } else if (gate) {
+  /** Debounced crossings of a line. A dragged line has no direction, so laps run the way the car crosses it most. */
+  const crossings = (line: Gate) => {
+    const times: number[] = [],
+      center = { x: (line.a.x + line.b.x) / 2, y: (line.a.y + line.b.y) / 2 };
+    let direction = line.direction;
+    if (!direction) {
+      let sum = 0,
+        first = 0;
+      for (let i = 1; i < samples.length; i++)
+        if (crossing(samples[i - 1], samples[i], line) !== undefined) {
+          const sign = Math.sign(cross(sub(samples[i], samples[i - 1]), sub(line.b, line.a)));
+          first ||= sign;
+          sum += sign;
+        }
+      direction = Math.sign(sum) || first;
+    }
+    const directed = { ...line, direction };
+    // A drawn line's course can be compact, so it re-arms at half the line's length rather than the automatic 30 m.
+    const rearm = config.rearm ?? (config.gate ? 12 : 30);
     let armed = true,
       last = -Infinity;
-    const center = { x: (gate.a.x + gate.b.x) / 2, y: (gate.a.y + gate.b.y) / 2 };
     for (let i = 1; i < samples.length; i++) {
       const p = samples[i];
-      if (Math.hypot(p.x - center.x, p.y - center.y) >= (config.rearm ?? 30)) armed = true;
-      const t = crossing(samples[i - 1], p, gate);
+      if (Math.hypot(p.x - center.x, p.y - center.y) >= rearm) armed = true;
+      const t = crossing(samples[i - 1], p, directed);
       if (armed && t !== undefined && t - last >= min) {
-        boundaries.push(t);
+        times.push(t);
         last = t;
         armed = false;
       }
     }
+    return times;
+  };
+  // A drawn line wins unless the car doesn't cross it, as on another log. Autocross needs only the start of a run.
+  const drawn = config.gate ? crossings(config.gate) : [];
+  const usesDrawnLine = !config.manual?.length && drawn.length >= (config.mode === "autocross" ? 1 : 2);
+  if (config.manual?.length) {
+    source = "manual";
+    boundaries = config.manual.filter((t) => Number.isFinite(t) && t >= times[0] && t <= times.at(-1)!);
+  } else if (usesDrawnLine) {
+    boundaries = drawn;
+  } else if (counters.length) {
+    source = "counter";
+    boundaries = counters;
+  } else if (beaconUsable && beacons.length) {
+    source = "beacon";
+    boundaries = beacons;
+  } else if (gate) {
+    boundaries = crossings(gate);
   } else if (
     Number.isFinite(config.length) &&
     config.length! > 0 &&
@@ -306,7 +388,8 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
     const valid =
       complete &&
       end - start >= min &&
-      !ts.some((t, j) => j > 0 && t - ts[j - 1] > 1) &&
+      // Crossings of a drawn line time the lap, so a GPS gap between them can't change the time.
+      (usesDrawnLine || !ts.some((t, j) => j > 0 && t - ts[j - 1] > 1)) &&
       !stops.some((t) => t > start && t < end);
     result.laps.push({
       index: i,
@@ -316,6 +399,7 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
       source,
       distance: length,
       grid,
+      ...(config.sectors?.length ? { sectorTimes: sectorEdges } : {}),
       sectors: sectorEdges.slice(1).map((t, j) => t - sectorEdges[j]),
       label: complete ? "Flying" : "Partial",
       stint,
@@ -379,4 +463,13 @@ export function lapSamples(
     }
   }
   return result;
+}
+
+/** Return only a sector whose start and end crossings are known. */
+export function sectorAt(lap: Lap, time: number): number | undefined {
+  const edges = lap.sectorTimes ?? [lap.start];
+  if (!lap.sectorTimes) for (const duration of lap.sectors) edges.push(edges.at(-1)! + duration);
+  for (let i = 0; i < edges.length - 1; i++) {
+    if (Number.isFinite(edges[i]) && Number.isFinite(edges[i + 1]) && time >= edges[i] && time < edges[i + 1]) return i;
+  }
 }

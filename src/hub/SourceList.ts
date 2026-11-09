@@ -455,6 +455,7 @@ export default class SourceList {
   beforeAdd?: (key: string) => boolean;
   graphLegend = false;
   hoveredKey: string | null = null;
+  private lastSingleField = "";
 
   addField(logKey: string, parentIndex?: number) {
     if (this.beforeAdd && !this.beforeAdd(logKey)) return;
@@ -501,7 +502,18 @@ export default class SourceList {
     // Find best type
     if (possibleTypes.length === 0) return;
     if (this.config.autoAdvance === true) {
-      possibleTypes.sort((a, b) => a.uses - b.uses);
+      // Roles holding one field take turns once they are all full.
+      let types = this.config.types;
+      let next = types.findIndex((type) => type.key === this.lastSingleField) + 1;
+      let turn = (type: SourceListTypeConfig) => (types.indexOf(type) - next + types.length) % types.length;
+      possibleTypes.sort(
+        (a, b) => a.uses - b.uses || (a.typeConfig.singleField ? turn(a.typeConfig) - turn(b.typeConfig) : 0)
+      );
+      let leaf = logKey.split("/").at(-1)!;
+      let named = possibleTypes.findIndex(
+        (type) => type.typeConfig.fieldPattern && new RegExp(type.typeConfig.fieldPattern, "i").test(leaf)
+      );
+      if (named > 0) possibleTypes.unshift(...possibleTypes.splice(named, 1));
     }
     let memoryTypeIndex = possibleTypes.findIndex((type) => memory !== null && type.typeConfig.key === memory.type);
     if (memoryTypeIndex !== -1) {
@@ -509,6 +521,7 @@ export default class SourceList {
       possibleTypes.splice(0, 0, memoryType);
     }
     let bestType = possibleTypes[0];
+    if (bestType.typeConfig.singleField) this.lastSingleField = bestType.typeConfig.key;
 
     // Add to list
     let options: { [key: string]: string } = {};
@@ -800,6 +813,14 @@ export default class SourceList {
 
   /** Make a list item element and inserts it into the list. */
   private addListItem(state: SourceListItemState, insertIndex?: number) {
+    if (this.config.types.find((type) => type.key === state.type)?.singleField) {
+      for (let i = this.state.length - 1; i >= 0; i--) {
+        if (this.state[i].type !== state.type) continue;
+        this.state.splice(i, 1);
+        this.LIST.children[i].remove();
+        if (insertIndex !== undefined && i < insertIndex) insertIndex--;
+      }
+    }
     let item = this.ITEM_TEMPLATE.cloneNode(true) as HTMLElement;
     Array.from(item.getElementsByTagName("object")).forEach((objElement) => {
       // Add a persistent load listener to re-apply the correct color.
@@ -851,6 +872,11 @@ export default class SourceList {
         delete SourceList.typePromptCallbacks[this.UUID];
         let index = Array.from(this.LIST.children).indexOf(item);
         this.state[index] = newState;
+        if (this.config.types.find((type) => type.key === newState.type)?.singleField) {
+          const state = this.state.filter((entry, i) => i === index || entry.type !== newState.type);
+          this.setState(state);
+          return;
+        }
         this.updateItem(item, newState);
 
         if (!isChild) {

@@ -10,6 +10,7 @@ import { Field2dCameraMode } from "../Field2dCameraMode";
 import { AnnotatedPose2d, ModuleVelocity, Pose2d, Translation2d } from "../geometry";
 import { Units } from "../units";
 import { scaleValue, transformPx } from "../util";
+import { panMargin, scrollZoomPan } from "./FieldZoomPan";
 import Heatmap from "./Heatmap";
 import TabRenderer from "./TabRenderer";
 
@@ -80,20 +81,7 @@ export default class Field2dRenderer implements TabRenderer {
         let canvasCenterX = cursorX - containerWidth / 2;
         let canvasCenterY = cursorY - containerHeight / 2;
 
-        if (isPan) {
-          this.pan[0] += dx / (baseImageScalar * this.zoom);
-          this.pan[1] += dy / (baseImageScalar * this.zoom);
-        } else {
-          // Zoom
-          let zoomChange = dy * -0.005;
-          let oldZoom = this.zoom;
-          this.zoom = Math.min(10, Math.max(1, this.zoom + zoomChange));
-
-          if (this.zoom !== oldZoom) {
-            this.pan[0] += (canvasCenterX / baseImageScalar) * (1 / oldZoom - 1 / this.zoom);
-            this.pan[1] += (canvasCenterY / baseImageScalar) * (1 / oldZoom - 1 / this.zoom);
-          }
-        }
+        this.zoom = scrollZoomPan(this.zoom, this.pan, dx, dy, isPan, canvasCenterX, canvasCenterY, baseImageScalar);
 
         window.requestAnimationFrame(() => {
           if (this.lastCommand) this.render(this.lastCommand);
@@ -333,11 +321,11 @@ export default class Field2dRenderer implements TabRenderer {
       let panOffsetX = (Math.sin(canvasRotation) * visibleYOffset) / imageScalar;
       let panOffsetY = (Math.cos(canvasRotation) * visibleYOffset) / imageScalar;
 
-      let marginX = Math.max(0, (fieldDisplayWidth - boundingWidth) * 0.5) / imageScalar;
+      let marginX = panMargin(fieldDisplayWidth, boundingWidth, imageScalar);
       let minPanX = -marginX + panOffsetX;
       let maxPanX = marginX + panOffsetX;
 
-      let marginY = Math.max(0, (fieldDisplayHeight - boundingHeight) * 0.5) / imageScalar;
+      let marginY = panMargin(fieldDisplayHeight, boundingHeight, imageScalar);
       let minPanY = -marginY + panOffsetY;
       let maxPanY = marginY + panOffsetY;
 

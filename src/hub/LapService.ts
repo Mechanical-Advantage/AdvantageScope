@@ -5,15 +5,23 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-// In-page live connection UI (works the same in Electron and Lite):
-// - ConnectDialog: File -> Connect... (Cmd/Ctrl+K). Pick a registered source, enter an address, or pick a
-//   recent server. Styled like the Preferences prompt.
-// - LiveStatusPill: title-bar pill with three separate indicators (backend, car, sim), plus a popover with
-//   details, sim controls (only when the backend has sim endpoints) and connect/disconnect.
+// Reads lap sources from the log and shares lap results, selections, and overlays across tabs.
 
-import { analyze, interpolate, LapConfig, LapResult, project, Sample } from "../shared/laps/LapEngine";
+import {
+  analyze,
+  Coordinate,
+  Gate,
+  geographicGate,
+  interpolate,
+  LapConfig,
+  LapResult,
+  project,
+  projectConfig,
+  Sample
+} from "../shared/laps/LapEngine";
 import { slipRatio } from "../shared/laps/SlipRatio";
 import Log from "../shared/log/Log";
+import LoggableType from "../shared/log/LoggableType";
 
 export type LapSettings = {
   latitude: string;
@@ -29,8 +37,20 @@ export type LapSettings = {
   ratio: number;
   config: LapConfig;
 };
+export type LapSourceRole = Exclude<keyof LapSettings, "radius" | "ratio" | "config">;
 export const LAP_COLORS = ["#58a7ff", "#f4b860", "#72d6a0", "#d49bff", "#ff8c9c", "#70d6de"];
-class LapService {
+const SOURCE_ROLES: LapSourceRole[] = [
+  "latitude",
+  "longitude",
+  "frontLeft",
+  "frontRight",
+  "speed",
+  "rpm",
+  "yaw",
+  "counter",
+  "beacon"
+];
+export class LapService {
   settings: LapSettings = {
     latitude: "",
     longitude: "",
@@ -46,8 +66,36 @@ class LapService {
     config: {}
   };
   result: LapResult = { laps: [], samples: [], theoretical: [] };
+  origin?: Coordinate;
+  localConfig() {
+    return projectConfig(this.settings.config, this.origin);
+  }
+  setGate(index: number, gate: Gate) {
+    const config = this.settings.config;
+    if (this.origin) {
+      const local = this.localConfig();
+      const geo = (config.geographic ??= {});
+      const saved = geographicGate(gate, this.origin);
+      if (index === -2) {
+        geo.finish = saved;
+        delete config.finish;
+      } else if (index < 0) {
+        geo.gate = saved;
+        delete config.gate;
+      } else {
+        const sectors = local.sectors ?? [];
+        sectors[index] = gate;
+        geo.sectors = sectors.map((sector) => geographicGate(sector, this.origin!));
+        delete config.sectors;
+      }
+    } else if (index === -2) config.finish = gate;
+    else if (index < 0) config.gate = gate;
+    else (config.sectors ??= [])[index] = gate;
+    this.invalidate();
+  }
   reference: number | null = null;
   overlays: number[] = [];
+  private autoOverlays = true;
   selected: number | null = null;
   version = 0;
   private log?: Log;
@@ -58,34 +106,41 @@ class LapService {
   private slipSignature = "";
   private derivedSignature = "";
   private grids = new WeakMap<object, { d: number[]; t: number[] }>();
+  private sourceLog?: Log;
+  private cleared = new Set<LapSourceRole>();
+  private sourcesChecked = false;
+  setSource(role: LapSourceRole, key: string) {
+    this.fields();
+    this.settings[role] = key;
+    if (key) this.cleared.delete(role);
+    else this.cleared.add(role);
+    this.invalidate();
+  }
   fields(): string[] {
     const keys = window.log.getFieldKeys().filter((k) => !k.startsWith("Laps/"));
-    const find = (pattern: RegExp) => keys.find((k) => pattern.test(k)) ?? "";
+    const find = (pattern: RegExp) =>
+      keys.find((k) => pattern.test(k) && window.log.getType(k) === LoggableType.Number) ?? "";
     const s = this.settings;
-    if (keys.length) {
-      for (const key of [
-        "latitude",
-        "longitude",
-        "frontLeft",
-        "frontRight",
-        "speed",
-        "rpm",
-        "yaw",
-        "counter",
-        "beacon"
-      ] as const) {
-        if (s[key] && !keys.includes(s[key])) s[key] = "";
-      }
+    if (this.sourceLog !== window.log) {
+      this.sourceLog = window.log;
+      this.cleared.clear();
+      this.sourcesChecked = false;
     }
-    s.latitude ||= find(/front.*latitude$/i) || find(/(?:gps\/latitude|latitude)$/i);
-    s.longitude ||= find(/front.*longitude$/i) || find(/(?:gps\/longitude|longitude)$/i);
-    s.frontLeft ||= find(/(?:DASH_SpeedFL|wheel_speed_fl|WheelSpeedFL)$/i);
-    s.frontRight ||= find(/(?:DASH_SpeedFR|wheel_speed_fr|WheelSpeedFR)$/i);
-    s.speed ||= find(/(?:vehicle_speed|ground_speed|gps.*speed)$/i);
-    s.rpm ||= find(/(?:motor_speed|MotorSpeedRPM)$/i);
-    s.yaw ||= find(/(?:yaw_rate|YawRate)$/i);
-    s.counter ||= find(/(?:lap_counter|lapcounter|lap_count)$/i);
-    s.beacon ||= find(/(?:lap_beacon|beacon)$/i);
+    // Another log's paths give way once this log's fields arrive. After that a missing path stays, shown as missing.
+    if (keys.length && !this.sourcesChecked) {
+      this.sourcesChecked = true;
+      for (const role of SOURCE_ROLES) if (s[role] && !keys.includes(s[role])) s[role] = "";
+    }
+    if (!this.cleared.has("latitude")) s.latitude ||= find(/front.*latitude$/i) || find(/(?:gps\/latitude|latitude)$/i);
+    if (!this.cleared.has("longitude"))
+      s.longitude ||= find(/front.*longitude$/i) || find(/(?:gps\/longitude|longitude)$/i);
+    if (!this.cleared.has("frontLeft")) s.frontLeft ||= find(/(?:DASH_SpeedFL|wheel_speed_fl|WheelSpeedFL)$/i);
+    if (!this.cleared.has("frontRight")) s.frontRight ||= find(/(?:DASH_SpeedFR|wheel_speed_fr|WheelSpeedFR)$/i);
+    if (!this.cleared.has("speed")) s.speed ||= find(/(?:vehicle_speed|ground_speed|gps.*speed)$/i);
+    if (!this.cleared.has("rpm")) s.rpm ||= find(/(?:motor_speed|MotorSpeedRPM)$/i);
+    if (!this.cleared.has("yaw")) s.yaw ||= find(/(?:yaw_rate|YawRate)$/i);
+    if (!this.cleared.has("counter")) s.counter ||= find(/(?:lap_counter|lapcounter|lap_count)$/i);
+    if (!this.cleared.has("beacon")) s.beacon ||= find(/(?:lap_beacon|beacon)$/i);
     return [
       s.latitude,
       s.longitude,
@@ -99,6 +154,30 @@ class LapService {
       find(/(?:gps\/ground_speed|ground_speed)$/i)
     ].filter(Boolean);
   }
+  /** A new start/finish line replaces manual splits. Either way the laps renumber, so overlays are chosen again. */
+  setStartLine(gate?: Gate) {
+    const config = this.settings.config;
+    if (gate) {
+      this.setGate(-1, gate);
+      delete config.manual;
+    } else {
+      delete config.gate;
+      if (config.geographic) delete config.geographic.gate;
+    }
+    this.reference = null;
+    this.overlays = [];
+    this.autoOverlays = true;
+    this.selected = null;
+    this.invalidate();
+  }
+  setOverlays(indices: number[]) {
+    this.overlays = indices;
+    this.autoOverlays = false;
+  }
+  /** A restored layout's paths get the same check as a new log's. */
+  recheckSources() {
+    this.sourcesChecked = false;
+  }
   invalidate() {
     this.signature = "";
     this.nextUpdate = 0;
@@ -106,6 +185,7 @@ class LapService {
   update() {
     if (this.log !== window.log) {
       this.log = window.log;
+      this.nextUpdate = 0;
       this.signature = "";
       this.derivedSignature = "";
       this.derivedEnd = -Infinity;
@@ -113,6 +193,7 @@ class LapService {
       this.slipSignature = "";
       this.reference = null;
       this.overlays = [];
+      this.autoOverlays = true;
       this.selected = null;
     }
     if (performance.now() < this.nextUpdate) return;
@@ -185,6 +266,7 @@ class LapService {
         : at(key, t);
     };
     const samples: Sample[] = [];
+    this.origin = undefined;
     if (base) {
       // Log compresses unchanged values independently per channel. Use the union so a
       // constant latitude does not hide wheel-speed or longitude changes.
@@ -202,22 +284,28 @@ class LapService {
       };
       // Choose a locally consistent initial pair so one bad first fix cannot anchor
       // the rejection filter on the other side of the planet.
-      const firstFix =
-        timestamps.find((t, i) => {
-          if (!validFix(t)) return false;
-          const next = timestamps[i + 1];
-          if (next === undefined) return true;
-          if (!validFix(next)) return false;
-          const delta = project(coordinate(s.latitude, next), coordinate(s.longitude, next), {
-            lat: coordinate(s.latitude, t),
-            lon: coordinate(s.longitude, t)
-          });
-          return Math.hypot(delta.x, delta.y) <= 100 * (next - t);
-        }) ?? timestamps.at(-1)!;
-      const origin = { lat: coordinate(s.latitude, firstFix) || 0, lon: coordinate(s.longitude, firstFix) || 0 };
+      const firstFix = timestamps.find((t, i) => {
+        if (!validFix(t)) return false;
+        const next = timestamps[i + 1];
+        if (next === undefined) return true;
+        if (!validFix(next)) return false;
+        const delta = project(coordinate(s.latitude, next), coordinate(s.longitude, next), {
+          lat: coordinate(s.latitude, t),
+          lon: coordinate(s.longitude, t)
+        });
+        return Math.hypot(delta.x, delta.y) <= 100 * (next - t);
+      });
+      const origin =
+        firstFix === undefined
+          ? undefined
+          : {
+              lat: coordinate(s.latitude, firstFix),
+              lon: coordinate(s.longitude, firstFix)
+            };
+      if (lat && lon && origin) this.origin = origin;
       let accepted: (Sample & { latitude: number; longitude: number }) | undefined;
       timestamps.forEach((t) => {
-        if (lat && t < firstFix) return;
+        if (lat && (firstFix === undefined || t < firstFix)) return;
         const latitude = coordinate(s.latitude, t),
           longitude = coordinate(s.longitude, t);
         if (
@@ -236,7 +324,7 @@ class LapService {
           v = (rpm * (unit === "radians/second" || unit === "rad/s" ? 1 : Math.PI / 30) * s.radius) / s.ratio;
         }
         if (!Number.isFinite(v)) v = speed(s.speed, t);
-        const point = lat ? project(latitude, longitude, origin) : { x: 0, y: 0 };
+        const point = lat ? project(latitude, longitude, origin!) : { x: 0, y: 0 };
         // Reject GPS jumps above 100 m/s (360 km/h). Compare with the last accepted
         // fix, so an isolated outlier does not poison the next good sample.
         if (lat && accepted && Math.hypot(point.x - accepted.x, point.y - accepted.y) > 100 * (t - accepted.t)) return;
@@ -295,17 +383,18 @@ class LapService {
         })
       );
     }
-    this.result = analyze(samples, s.config);
+    const config = this.localConfig();
+    this.result = analyze(samples, config);
     const ref = this.result.laps.find((l) => l.index === (this.reference ?? this.result.best));
     if (ref && !s.config.length && s.config.mode !== "accel")
-      this.result = analyze(samples, { ...s.config, length: ref.distance });
+      this.result = analyze(samples, { ...config, length: ref.distance });
     if (this.reference === null || !this.result.laps.some((l) => l.index === this.reference))
       this.reference = this.result.best ?? null;
-    if (!this.overlays.length)
-      this.overlays = this.result.laps
-        .filter((l) => l.valid)
-        .slice(0, 4)
-        .map((l) => l.index);
+    // Until the user chooses, live overlays the latest laps and a log the first.
+    if (this.autoOverlays || !this.overlays.length) {
+      const valid = this.result.laps.filter((l) => l.valid).map((l) => l.index);
+      this.overlays = window.selection?.getCurrentLiveTime() != null ? valid.slice(-4) : valid.slice(0, 4);
+    }
     // Rebuild derived channels after edits or when the reference changes. Otherwise only append the active lap.
     const ds = JSON.stringify([
       s,
