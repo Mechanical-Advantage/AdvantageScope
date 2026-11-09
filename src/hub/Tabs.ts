@@ -8,12 +8,11 @@
 import { TabsState } from "../shared/HubState";
 import LineGraphFilter from "../shared/LineGraphFilter";
 import { RenderGuard, inlineStatus } from "../shared/RenderGuard";
-import TabType, { getAllTabTypes, getDefaultTabTitle, getTabIcon } from "../shared/TabType";
+import TabType, { filterRestorableTabs, getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import { getAutonomousKey, getEnabledKey, getUtilityKey } from "../shared/log/RobotState";
 import ConsoleRenderer from "../shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
 import Field2dRenderer from "../shared/renderers/Field2dRenderer";
-import Field3dRenderer from "../shared/renderers/Field3dRenderer";
 import LineGraphRenderer from "../shared/renderers/LineGraphRenderer";
 import MetadataRenderer from "../shared/renderers/MetadataRenderer";
 import PointsRenderer from "../shared/renderers/PointsRenderer";
@@ -28,11 +27,9 @@ import Timeline, { TimelineBand } from "./Timeline";
 import { updateTracksideLayout } from "./TracksideLayout";
 import ConsoleController from "./controllers/ConsoleController";
 import Field2dController from "./controllers/Field2dController";
-import Field3dController from "./controllers/Field3dController";
 import LineGraphController from "./controllers/LineGraphController";
 import MetadataController from "./controllers/MetadataController";
 import PointsController from "./controllers/PointsController";
-import { RawMessagesController, RosImageController, RosLogController } from "./controllers/RosTabs";
 import StatisticsController from "./controllers/StatisticsController";
 import TabController, { NoopController } from "./controllers/TabController";
 import TableController from "./controllers/TableController";
@@ -90,15 +87,11 @@ export default class Tabs {
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Console, 0);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Statistics, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Field2d, undefined);
-    this.FIXED_CONTROL_HEIGHTS.set(TabType.Field3d, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Video, 85);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Points, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Metadata, 0);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.TrackMap, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Laps, undefined);
-    this.FIXED_CONTROL_HEIGHTS.set(TabType.RawMessages, 0);
-    this.FIXED_CONTROL_HEIGHTS.set(TabType.RosLog, 0);
-    this.FIXED_CONTROL_HEIGHTS.set(TabType.RosImage, 0);
 
     // Hover and click handling
     let mouseDownInfo: [number, number] | null = null;
@@ -319,8 +312,7 @@ export default class Tabs {
     // Add default tabs
     this.addTab(TabType.Documentation);
     this.addTab(TabType.LineGraph);
-    this.addTab(TabType.Field2d);
-    this.addTab(TabType.Field3d);
+    this.addTab(TabType.TrackMap);
     this.setSelected(1);
 
     // Scroll management
@@ -451,27 +443,26 @@ export default class Tabs {
     });
     this.tabList = [];
     this.selectedTab = 0;
-    const supportedTypes = getAllTabTypes();
-    state.tabs
-      .filter((tabState) => supportedTypes.includes(tabState.type)) // Skip tabs that have been removed
-      .forEach((tabState, index) => {
-        this.addTab(tabState.type);
-        if (tabState.title) this.renameTab(index, tabState.title);
-        this.tabList[index].controller.UUID = tabState.controllerUUID;
-        this.tabList[index].controller.restoreState(tabState.controller);
-        this.tabList[index].renderer.restoreState(tabState.renderer);
+    const restored = filterRestorableTabs(state.tabs, state.selected);
+    restored.tabs.forEach((tabState, index) => {
+      this.addTab(tabState.type);
+      if (tabState.title) this.renameTab(index, tabState.title);
+      this.tabList[index].controller.UUID = tabState.controllerUUID;
+      this.tabList[index].controller.restoreState(tabState.controller);
+      this.tabList[index].renderer.restoreState(tabState.renderer);
 
-        let tabConfig = this.FIXED_CONTROL_HEIGHTS.get(tabState.type);
-        // Layouts from before the lap tabs had source lists saved a height of 0.
-        let oldLapTab =
-          tabState.controlsHeight === 0 &&
-          (tabState.type === TabType.TrackMap || tabState.type === TabType.Laps) &&
-          !(tabState.controller as { sourceLists?: boolean } | null)?.sourceLists;
-        if (!oldLapTab && (tabState.controlsHeight === 0 || tabConfig === undefined)) {
-          this.tabList[index].controlsHeight = tabState.controlsHeight;
-        }
-      });
-    this.selectedTab = state.selected >= this.tabList.length ? this.tabList.length - 1 : state.selected;
+      let tabConfig = this.FIXED_CONTROL_HEIGHTS.get(tabState.type);
+      // Layouts from before the lap tabs had source lists saved a height of 0.
+      let oldLapTab =
+        tabState.controlsHeight === 0 &&
+        (tabState.type === TabType.TrackMap || tabState.type === TabType.Laps) &&
+        !(tabState.controller as { sourceLists?: boolean } | null)?.sourceLists;
+      if (!oldLapTab && (tabState.controlsHeight === 0 || tabConfig === undefined)) {
+        this.tabList[index].controlsHeight = tabState.controlsHeight;
+      }
+    });
+    if (this.tabList.length === 0) this.addTab(TabType.Documentation);
+    this.selectedTab = restored.selected;
     this.updateElements();
     this.updateControlsHeight();
   }
@@ -557,10 +548,6 @@ export default class Tabs {
         controller = new Field2dController(controlsElement);
         renderer = new Field2dRenderer(rendererElement);
         break;
-      case TabType.Field3d:
-        controller = new Field3dController(controlsElement);
-        renderer = new Field3dRenderer(rendererElement);
-        break;
       case TabType.Table:
         controller = new TableController(rendererElement);
         renderer = new TableRenderer(rendererElement, true);
@@ -585,18 +572,6 @@ export default class Tabs {
       case TabType.Laps:
         controller = new LapController(rendererElement, type === TabType.TrackMap, controlsElement);
         renderer = new LapRenderer(rendererElement);
-        break;
-      case TabType.RawMessages:
-        controller = new RawMessagesController(rendererElement);
-        renderer = new NoopRenderer();
-        break;
-      case TabType.RosLog:
-        controller = new RosLogController(rendererElement);
-        renderer = new NoopRenderer();
-        break;
-      case TabType.RosImage:
-        controller = new RosImageController(rendererElement);
-        renderer = new NoopRenderer();
         break;
       case TabType.Metadata:
         controller = new MetadataController();
@@ -765,13 +740,6 @@ export default class Tabs {
     }
   }
 
-  /** Switches the selected camera for the selected 3D field. */
-  set3DCamera(index: number) {
-    if (this.tabList[this.selectedTab].type === TabType.Field3d) {
-      (this.tabList[this.selectedTab].renderer as Field3dRenderer).set3DCamera(index);
-    }
-  }
-
   /** Switches the selected camera mode for the selected 2D field. */
   set2DCamera(index: number) {
     if (this.tabList[this.selectedTab].type === TabType.Field2d) {
@@ -779,14 +747,7 @@ export default class Tabs {
     }
   }
 
-  /** Switches the orbit FOV for the selected 3D field. */
-  setFov(fov: number) {
-    if (this.tabList[this.selectedTab].type === TabType.Field3d) {
-      (this.tabList[this.selectedTab].renderer as Field3dRenderer).setFov(fov);
-    }
-  }
-
-  /** Switches the selected camera for the selected 3D field. */
+  /** Adds a timestamp range for a table renderer. */
   addTableRange(controllerUUID: string, rendererUUID: string, range: [number, number] | null) {
     this.tabList.forEach((tab) => {
       if (tab.type === TabType.Table && tab.controller.UUID === controllerUUID) {

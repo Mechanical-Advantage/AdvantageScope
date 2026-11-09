@@ -10,7 +10,7 @@ import jsonfile from "jsonfile";
 import path from "path";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import Preferences from "../../shared/Preferences";
-import { filterAndSortAssets, parseField2d, parseField3d, parseRobot } from "../assetUtil";
+import { filterAndSortAssets, parseField2d } from "../assetUtil";
 import { BUNDLED_ASSETS, DEFAULT_USER_ASSETS, PREFS_FILENAME } from "./ElectronConstants";
 
 const USER_ASSETS_README =
@@ -38,8 +38,6 @@ export function createAssetFolders() {
 export function loadAssets(): AdvantageScopeAssets {
   let assets: AdvantageScopeAssets = {
     field2ds: [],
-    field3ds: [],
-    robots: [],
     loadFailures: []
   };
 
@@ -52,8 +50,6 @@ export function loadAssets(): AdvantageScopeAssets {
         if (!object.isDirectory() || object.name.startsWith(".")) return;
         assets.loadFailures.push(object.name); // Assume failure, remove if successful
         let isField2d = object.name.startsWith("Field2d_");
-        let isField3d = object.name.startsWith("Field3d_");
-        let isRobot = object.name.startsWith("Robot_");
 
         let configPath = path.join(parentFolder, object.name, "config.json");
         if (!fs.existsSync(configPath)) return;
@@ -76,39 +72,6 @@ export function loadAssets(): AdvantageScopeAssets {
           config.path = encodePath(path.join(parentFolder, object.name, "image.png"));
           if (fs.existsSync(decodeURIComponent(config.path))) {
             assets.field2ds.push(config);
-            assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
-          }
-        } else if (isField3d) {
-          // ***** 3D FIELD *****
-          let config = parseField3d(configRaw);
-          if (config === "skip") {
-            assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
-            return;
-          } else if (config === "invalid") {
-            return;
-          }
-          config.path = encodePath(path.join(parentFolder, object.name, "model.glb"));
-          if (
-            fs.existsSync(decodeURIComponent(config.path)) &&
-            config.gamePieces.every((_, index) =>
-              fs.existsSync(decodeURIComponent(config.path).slice(0, -4) + "_" + index.toString() + ".glb")
-            )
-          ) {
-            assets.field3ds.push(config);
-            assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
-          }
-        } else if (isRobot) {
-          // ***** 3D ROBOT *****
-          let config = parseRobot(configRaw);
-          if (config === "invalid") return;
-          config.path = encodePath(path.join(parentFolder, object.name, "model.glb"));
-          if (
-            fs.existsSync(decodeURIComponent(config.path)) &&
-            config.components.every((_, index) =>
-              fs.existsSync(decodeURIComponent(config.path).slice(0, -4) + "_" + index.toString() + ".glb")
-            )
-          ) {
-            assets.robots.push(config);
             assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
           }
         }

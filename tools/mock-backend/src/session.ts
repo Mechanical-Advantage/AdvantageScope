@@ -16,7 +16,6 @@ import type {
   ErrorOp,
   SamplesOp,
   ServerOp,
-  SimStatusOp,
   SubscriptionAckOp,
   TelemetrySample
 } from "./contract.ts";
@@ -125,7 +124,6 @@ export class Session implements BackendListener {
     this.helloed = true;
     this.send({ op: "catalogue_snapshot", ...this.backend.snapshot() });
     for (const a of this.backend.availabilityAll()) this.send(a);
-    if (this.backend.opts.simClock) this.send({ op: "sim_status", reason: "hello", ...this.backend.simStatus() });
   }
 
   private onSubscribe(msg: any): void {
@@ -214,10 +212,6 @@ export class Session implements BackendListener {
     if (this.helloed) this.send(op);
   }
 
-  onSimStatus(op: SimStatusOp): void {
-    if (this.helloed) this.send(op);
-  }
-
   // ------------------------------------------------------------------------------- delivery
 
   /** Keep only the newest sample per path. */
@@ -229,7 +223,7 @@ export class Session implements BackendListener {
     sub.queue = [...newest.values()];
   }
 
-  /** Sends due samples. `force` drains batches immediately and drops throttled leftovers (used before sim reset/pause). */
+  /** Sends due samples. `force` drains batches immediately and drops throttled leftovers. */
   flush(force = false): void {
     if (!this.helloed || this.subs.size === 0) return;
     if (this.transport.bufferedAmount() > this.opts.highWaterBytes) {

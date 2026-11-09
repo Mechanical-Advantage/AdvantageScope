@@ -8,7 +8,7 @@
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { HubState } from "../shared/HubState";
 import NamedMessage from "../shared/NamedMessage";
-import Preferences, { MAX_LIVE_RECENT } from "../shared/Preferences";
+import Preferences from "../shared/Preferences";
 import { RenderGuard } from "../shared/RenderGuard";
 import Selection from "../shared/Selection";
 import { SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
@@ -18,7 +18,7 @@ import { MERGE_PREFIX } from "../shared/log/LogKeyUtils";
 import { AKIT_TIMESTAMP_KEYS, getEnabledData } from "../shared/log/RobotState";
 import { calcMockProgress, clampValue, htmlEncode, scaleValue } from "../shared/util";
 import HealthStripUI from "./HealthStripUI";
-import { ConnectDialog, LiveStatusPill } from "./LiveConnectionUI";
+import { ConnectDialog } from "./LiveConnectionUI";
 import SelectionImpl from "./SelectionImpl";
 import Sidebar from "./Sidebar";
 import SourceList from "./SourceList";
@@ -26,6 +26,7 @@ import Tabs from "./Tabs";
 import { applyTracksideLayout } from "./TracksideLayout";
 import WorkerManager from "./WorkerManager";
 import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
+import { sessionAddresses } from "./dataSources/LiveAddress";
 import { LiveConnection } from "./dataSources/LiveConnection";
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
 import LiveDataTuner from "./dataSources/LiveDataTuner";
@@ -109,43 +110,23 @@ let logFriendlyName: string | null = null;
 let liveActive = false;
 let liveConnected = false;
 let liveAutoStartComplete = false;
-let liveSourceName = "";
 let liveAddress = "";
 let liveStatus: LiveDataSourceStatus = LiveDataSourceStatus.Stopped;
 
 const connectDialog = new ConnectDialog((sourceId, address) => connectLive(sourceId, address));
-new LiveStatusPill(
-  () => ({
-    active: liveActive,
-    sourceName: liveSourceName,
-    address: liveAddress,
-    status: liveStatus,
-    provider: window.liveStatus
-  }),
-  (address) => connectDialog.show(address),
-  () => stopLive()
-);
 
 function guardedInterval(action: () => void, period: number) {
   const guard = new RenderGuard();
   return window.setInterval(() => guard.run(action), period);
 }
 
-// Sources keep retrying in the "Connecting" state; once the backend has failed, drop "(Searching)" from the title
-let titleFailed = false;
 guardedInterval(() => {
-  if (!liveActive || liveStatus === LiveDataSourceStatus.Active) {
-    titleFailed = false;
-    return;
-  }
-  const failed = window.liveStatus?.getLiveStatus().backend === "error";
-  if (failed && !titleFailed) setWindowTitle(liveAddress, "Connection failed");
-  titleFailed = failed;
+  if (!liveActive || liveStatus !== LiveDataSourceStatus.Active) return;
+  const status = window.liveStatus?.getLiveStatus();
+  setWindowTitle(liveAddress, status?.backend === "connected" && !status.hasFreshData ? "No car data" : undefined);
 }, 500);
 
 window.addEventListener("cancel-live-connect", () => stopLive());
-window.addEventListener("welcome-connect", () => connectDialog.show());
-window.addEventListener("welcome-open-log", () => window.sendMainMessage("show-open-log"));
 
 let dragActive = false;
 let dragOffsetX = 0;
@@ -232,7 +213,6 @@ function setExporting(exporting: boolean) {
 function saveState(): HubState {
   return {
     healthStrip: window.healthStrip.state,
-    channelProfiles: window.log.displayOverrides,
     sidebar: window.sidebar.saveState(),
     tabs: window.tabs.saveState()
   };
@@ -240,7 +220,6 @@ function saveState(): HubState {
 
 /** Restores to the provided state. */
 function restoreState(state: HubState) {
-  window.log.displayOverrides = state.channelProfiles ?? {};
   window.healthStrip.restore(state.healthStrip);
   window.sidebar.restoreState(state.sidebar);
   window.tabs.restoreState(state.tabs);
@@ -466,16 +445,12 @@ function startHistorical(path: string, clear = true, merge = false) {
   );
 }
 
-/** Connects from the connection dialog, remembering the choice as the most recent server. */
+/** Connects from the prompt and saves the source and address. */
 function connectLive(sourceId: string, address: string) {
   if (!window.preferences) return;
-  const recent = [
-    { source: sourceId, address: address },
-    ...(window.preferences.liveRecent ?? []).filter((entry) => entry.source !== sourceId || entry.address !== address)
-  ].slice(0, MAX_LIVE_RECENT);
   window.preferences.liveMode = sourceId;
-  window.preferences.liveRecent = recent;
-  window.sendMainMessage("update-preferences", { liveMode: sourceId, liveRecent: recent });
+  sessionAddresses.set(sourceId, address);
+  window.sendMainMessage("update-preferences", { liveMode: sourceId });
   startLive("robot", { sourceId: sourceId, address: address });
 }
 
@@ -509,29 +484,19 @@ function startLive(sourceType: "robot" | "sim", target?: { sourceId: string; add
   const connection = new LiveConnection(source);
   liveConnection = connection;
 
-  const recentAddress = (window.preferences.liveRecent ?? []).find((entry) => entry.source === sourceDefinition.id)
-    ?.address;
   let address = "";
   if (target !== undefined) {
     address = target.address;
-  } else if (IS_LITE && sourceDefinition.id === "nt4") {
-    address = window.location.hostname;
   } else if (sourceType === "sim") {
-    address = sourceDefinition.id === "nt4" ? "127.0.0.1" : sourceDefinition.defaultAddress;
-  } else if (recentAddress !== undefined) {
-    address = recentAddress;
+    address = sourceDefinition.defaultAddress;
   } else {
-    address =
-      window.preferences.robotAddress !== "" && sourceDefinition.id === "nt4"
-        ? window.preferences.robotAddress
-        : sourceDefinition.defaultAddress;
+    address = sessionAddresses.get(sourceDefinition.id) ?? sourceDefinition.defaultAddress;
   }
-  liveSourceName = sourceDefinition.name;
   liveAddress = address;
   liveStatus = LiveDataSourceStatus.Connecting;
   window.liveStatus = null;
   source.newSegmentCallback = () => {
-    // Time jumped backwards (e.g. sim reset): restart the timeline at the new live edge
+    // Time jumped backwards: restart the timeline at the new live edge
     window.selection.resetLiveSegment();
     window.sidebar.refresh();
     window.tabs.refresh();
@@ -540,17 +505,11 @@ function startLive(sourceType: "robot" | "sim", target?: { sourceId: string; add
   connection.connect(
     address,
     (status: LiveDataSourceStatus) => {
-      const previousStatus = liveStatus;
       if (liveConnection !== connection) return;
       liveStatus = status;
       connectDialog.updateStatus(status);
       switch (status) {
         case LiveDataSourceStatus.Connecting:
-          // Once a connection has failed, "Searching" would be misleading while retrying
-          if (previousStatus === LiveDataSourceStatus.Error || window.liveStatus?.getLiveStatus().backend === "error") {
-            setWindowTitle(address, "Connection failed");
-            break;
-          }
           setWindowTitle(address, "Searching");
           break;
         case LiveDataSourceStatus.Active:
@@ -561,7 +520,7 @@ function startLive(sourceType: "robot" | "sim", target?: { sourceId: string; add
           setWindowTitle(address);
           break;
         case LiveDataSourceStatus.Error:
-          setWindowTitle(address, "Connection failed");
+          setWindowTitle(address, "Error");
           break;
       }
 
@@ -579,6 +538,7 @@ function startLive(sourceType: "robot" | "sim", target?: { sourceId: string; add
     (detail) => {
       if (liveConnection !== connection) return;
       stopLive();
+      setWindowTitle(address, "Error");
       if (!connectDialog.isVisible()) connectDialog.show(address);
       connectDialog.connectionFailed(detail);
     }
@@ -941,16 +901,8 @@ async function handleMainMessage(message: NamedMessage) {
       window.tabs.clearAxis(message.data);
       break;
 
-    case "set-3d-camera":
-      window.tabs.set3DCamera(message.data);
-      break;
-
     case "set-2d-camera":
       window.tabs.set2DCamera(message.data);
-      break;
-
-    case "edit-fov":
-      window.tabs.setFov(message.data);
       break;
 
     case "add-table-range":

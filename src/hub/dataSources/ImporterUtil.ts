@@ -13,7 +13,7 @@ import {
   HistoricalDataSource_WorkerResponse
 } from "./HistoricalDataSource";
 
-/** Shared plumbing for the mur-voir historical importers (CSV, candump, MCAP, JSONL). */
+/** Shared plumbing for the mur-voir historical importers (CSV, candump, JSONL). */
 
 export function sendResponse(response: HistoricalDataSource_WorkerResponse) {
   self.postMessage(response);

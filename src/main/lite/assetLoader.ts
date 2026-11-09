@@ -6,14 +6,12 @@
 // at the root directory of this project.
 
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
-import { filterAndSortAssets, parseField2d, parseField3d, parseRobot } from "../assetUtil";
+import { filterAndSortAssets, parseField2d } from "../assetUtil";
 
 /** Loads all current assets. */
 export async function loadAssets(): Promise<AdvantageScopeAssets> {
   let assets: AdvantageScopeAssets = {
     field2ds: [],
-    field3ds: [],
-    robots: [],
     loadFailures: []
   };
 
@@ -43,8 +41,6 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
     }
 
     let isField2d = name.startsWith("Field2d_");
-    let isField3d = name.startsWith("Field3d_");
-    let isRobot = name.startsWith("Robot_");
 
     if (isField2d) {
       // ***** 2D FIELD *****
@@ -58,35 +54,6 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
       config.path = currentPath + `assets/${encodeURIComponent(name)}/image.png`;
       if (`${name}/image.png` in assetIndex) {
         assets.field2ds.push(config);
-        assets.loadFailures.splice(assets.loadFailures.indexOf(name), 1);
-      }
-    } else if (isField3d) {
-      // ***** 3D FIELD *****
-      let config = parseField3d(configRaw);
-      if (config === "skip") {
-        assets.loadFailures.splice(assets.loadFailures.indexOf(name), 1);
-        continue;
-      } else if (config === "invalid") {
-        continue;
-      }
-      config.path = currentPath + `assets/${encodeURIComponent(name)}/model.glb`;
-      if (
-        `${name}/model.glb` in assetIndex &&
-        config.gamePieces.every((_, index) => `${name}/model_${index}.glb` in assetIndex)
-      ) {
-        assets.field3ds.push(config);
-        assets.loadFailures.splice(assets.loadFailures.indexOf(name), 1);
-      }
-    } else if (isRobot) {
-      // ***** 3D ROBOT *****
-      let config = parseRobot(configRaw);
-      if (config === "invalid") continue;
-      config.path = currentPath + `assets/${encodeURIComponent(name)}/model.glb`;
-      if (
-        `${name}/model.glb` in assetIndex &&
-        config.components.every((_, index) => `${name}/model_${index}.glb` in assetIndex)
-      ) {
-        assets.robots.push(config);
         assets.loadFailures.splice(assets.loadFailures.indexOf(name), 1);
       }
     }

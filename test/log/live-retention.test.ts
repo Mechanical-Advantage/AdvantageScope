@@ -7,50 +7,63 @@
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { mapMessage, registerChannel } from "../../src/hub/dataSources/foxglove/FoxgloveMapping";
 import Log from "../../src/shared/log/Log";
 import LoggableType from "../../src/shared/log/LoggableType";
 import { getOrDefault } from "../../src/shared/log/LogUtil";
 
-function channel(log: Log, topic: string, schemaName: string) {
-  return registerChannel(log, { id: 1, topic, schemaName, schema: "{}", encoding: "json" });
+function channel(log: Log, topic: string, type: string) {
+  log.createBlankField(topic, LoggableType.Raw);
+  if (type !== "static") log.setLiveRetention(topic, 60);
+  if (type === "message") log.setLiveRetention(topic + "/history", 60);
+  if (type.startsWith("bounded-children")) log.setLiveChildRetention(topic, 60);
+  return { topic, type };
+}
+function mapMessage(log: Log, mapped: ReturnType<typeof channel>, time: number, data: Uint8Array) {
+  log.putRaw(mapped.topic, time, data);
+  if (mapped.type === "message")
+    log.putLazyString(mapped.topic + "/history", time, () => new TextDecoder().decode(data));
+  if (mapped.type.startsWith("bounded-children") || mapped.type === "message") {
+    const value = JSON.parse(new TextDecoder().decode(data));
+    for (const key of ["child", "late"])
+      if (value[key]) log.putNumber(mapped.topic + "/" + key + "/x", time, value[key].x);
+  }
 }
 const bytes = (value: unknown) => new TextEncoder().encode(JSON.stringify(value));
 
-test("live binary and spatial histories expire, scalar telemetry and static TF keep liveDiscard", () => {
+test("bounded histories expire, scalar telemetry and unbounded fields keep liveDiscard", () => {
   const log = new Log();
-  const cloud = channel(log, "/cloud", "sensor_msgs/msg/PointCloud2");
-  const image = channel(log, "/image", "sensor_msgs/msg/Image");
-  const pose = channel(log, "/pose", "geometry_msgs/msg/PoseStamped");
-  const tf = channel(log, "/tf_static", "tf2_msgs/msg/TFMessage");
+  const cloud = channel(log, "/binary", "binary");
+  const image = channel(log, "/image", "binary");
+  const pose = channel(log, "/message", "message");
+  const tf = channel(log, "/static", "static");
   for (const time of [1, 41, 61, 100]) {
     for (const mapped of [cloud, image, pose, tf]) mapMessage(log, mapped, time, bytes({ value: time }));
     log.putNumber("/scalar", time, time);
   }
-  const identity = log.getField("/cloud");
-  const version = log.getHistoryVersion("/cloud");
-  log.getTimestamps(["/cloud", "/pose/spatial"], "union");
-  log.getRaw("/cloud", 100, 100, "reader");
+  const identity = log.getField("/binary");
+  const version = log.getHistoryVersion("/binary");
+  log.getTimestamps(["/binary", "/message/history"], "union");
+  log.getRaw("/binary", 100, 100, "reader");
   log.discardLiveData(101, 1200);
-  assert.deepEqual(log.getRaw("/cloud", -Infinity, Infinity)?.timestamps, [41, 61, 100]);
+  assert.deepEqual(log.getRaw("/binary", -Infinity, Infinity)?.timestamps, [41, 61, 100]);
   assert.deepEqual(log.getRaw("/image", -Infinity, Infinity)?.timestamps, [41, 61, 100]);
-  assert.deepEqual(log.getString("/pose/spatial", -Infinity, Infinity)?.timestamps, [41, 61, 100]);
+  assert.deepEqual(log.getString("/message/history", -Infinity, Infinity)?.timestamps, [41, 61, 100]);
   assert.deepEqual(log.getNumber("/scalar", -Infinity, Infinity)?.timestamps, [1, 41, 61, 100]);
-  assert.equal(log.getRaw("/tf_static", -Infinity, Infinity)?.timestamps[0], 1);
-  assert.equal(log.getField("/cloud"), identity);
-  assert.equal(log.getHistoryVersion("/cloud"), version);
-  assert.deepEqual(log.getTimestamps(["/cloud", "/pose/spatial"], "union"), [41, 61, 100]);
-  assert.equal(getOrDefault(log, "/cloud", LoggableType.Raw, 20, null), null);
-  assert.deepEqual(log.getRaw("/cloud", 80, 80, "reader")?.values[0], bytes({ value: 61 }));
+  assert.equal(log.getRaw("/static", -Infinity, Infinity)?.timestamps[0], 1);
+  assert.equal(log.getField("/binary"), identity);
+  assert.equal(log.getHistoryVersion("/binary"), version);
+  assert.deepEqual(log.getTimestamps(["/binary", "/message/history"], "union"), [41, 61, 100]);
+  assert.equal(getOrDefault(log, "/binary", LoggableType.Raw, 20, null), null);
+  assert.deepEqual(log.getRaw("/binary", 80, 80, "reader")?.values[0], bytes({ value: 61 }));
   log.discardLiveData(200, 1200);
-  assert.equal(getOrDefault(log, "/cloud", LoggableType.Raw, 200, null), null);
-  assert.ok(log.getFieldKeys().includes("/cloud"));
-  assert.equal(log.getString("/pose/spatial", 200, 200)?.values.length, 0);
+  assert.equal(getOrDefault(log, "/binary", LoggableType.Raw, 200, null), null);
+  assert.ok(log.getFieldKeys().includes("/binary"));
+  assert.equal(log.getString("/message/history", 200, 200)?.values.length, 0);
 });
 
 test("bounded histories still expire with unlimited liveDiscard", () => {
   const log = new Log();
-  mapMessage(log, channel(log, "/image", "sensor_msgs/Image"), 1, bytes({ data: [1] }));
+  mapMessage(log, channel(log, "/image", "binary"), 1, bytes({ data: [1] }));
   log.putNumber("/scalar", 1, 3);
   log.discardLiveData(100, -1);
   assert.deepEqual(log.getRaw("/image", 100, 100)?.values, []);
@@ -59,45 +72,48 @@ test("bounded histories still expire with unlimited liveDiscard", () => {
 
 test("file logs retain all samples and lazy strings serialize as ordinary strings", () => {
   const log = new Log();
-  const pose = channel(log, "/pose", "geometry_msgs/PoseStamped");
+  const pose = channel(log, "/message", "message");
   for (const time of [1, 2000]) mapMessage(log, pose, time, bytes({ value: time }));
-  assert.deepEqual(log.getRaw("/pose", -Infinity, Infinity)?.timestamps, [1, 2000]);
+  assert.deepEqual(log.getRaw("/message", -Infinity, Infinity)?.timestamps, [1, 2000]);
   const restored = Log.fromSerialized(log.toSerialized());
-  assert.deepEqual(restored.getString("/pose/spatial", -Infinity, Infinity)?.values, ['{"value":1}', '{"value":2000}']);
+  assert.deepEqual(restored.getString("/message/history", -Infinity, Infinity)?.values, [
+    '{"value":1}',
+    '{"value":2000}'
+  ]);
 });
 
-test("spatial JSON is lazy, bounded caching preserves reader values", () => {
+test("JSON is lazy, bounded caching preserves reader values", () => {
   const log = new Log();
   let reads = 0;
   for (let i = 0; i < 4; i++)
-    log.putLazyString("/spatial", i, () => {
+    log.putLazyString("/history", i, () => {
       reads++;
       return String(i);
     });
   assert.equal(reads, 0);
-  assert.equal(log.getString("/spatial", 3, 3)?.values[0], "3");
-  assert.equal(log.getString("/spatial", 3, 3)?.values[0], "3");
+  assert.equal(log.getString("/history", 3, 3)?.values[0], "3");
+  assert.equal(log.getString("/history", 3, 3)?.values[0], "3");
   assert.equal(reads, 1);
-  assert.deepEqual(log.getString("/spatial", -Infinity, Infinity)?.values, ["0", "1", "2", "3"]);
+  assert.deepEqual(log.getString("/history", -Infinity, Infinity)?.values, ["0", "1", "2", "3"]);
 });
 
 test("logical front discard hides expired samples before compaction and rejects late samples", () => {
   const log = new Log();
-  const cloud = channel(log, "/cloud", "sensor_msgs/PointCloud2");
+  const cloud = channel(log, "/binary", "binary");
   for (let i = 0; i < 10; i++) mapMessage(log, cloud, i, bytes({ i }));
-  log.getRaw("/cloud", 0, 0, "reader");
+  log.getRaw("/binary", 0, 0, "reader");
   log.discardLiveData(62, 1200);
-  assert.deepEqual(log.getField("/cloud")?.getTimestamps(), [2, 3, 4, 5, 6, 7, 8, 9]);
-  assert.equal(getOrDefault(log, "/cloud", LoggableType.Raw, 1, null, "reader"), null);
-  assert.deepEqual(log.getRaw("/cloud", 3.5, 3.5, "reader")?.values, [bytes({ i: 3 }), bytes({ i: 4 })]);
+  assert.deepEqual(log.getField("/binary")?.getTimestamps(), [2, 3, 4, 5, 6, 7, 8, 9]);
+  assert.equal(getOrDefault(log, "/binary", LoggableType.Raw, 1, null, "reader"), null);
+  assert.deepEqual(log.getRaw("/binary", 3.5, 3.5, "reader")?.values, [bytes({ i: 3 }), bytes({ i: 4 })]);
   mapMessage(log, cloud, 0, bytes({ i: 99 }));
-  assert.equal(log.getRaw("/cloud", -Infinity, Infinity)?.values.length, 8);
-  assert.equal(Log.fromSerialized(log.toSerialized()).getRaw("/cloud", -Infinity, Infinity)?.values.length, 8);
+  assert.equal(log.getRaw("/binary", -Infinity, Infinity)?.values.length, 8);
+  assert.equal(Log.fromSerialized(log.toSerialized()).getRaw("/binary", -Infinity, Infinity)?.values.length, 8);
 });
 
 test("identical bounded messages keep receipt times and remain current until their last receipt expires", () => {
   const log = new Log();
-  const image = channel(log, "/image", "sensor_msgs/Image");
+  const image = channel(log, "/image", "binary");
   for (const time of [1, 30, 70]) mapMessage(log, image, time, bytes({ data: [1] }));
   log.discardLiveData(100, 1200);
   assert.deepEqual(log.getRaw("/image", -Infinity, Infinity)?.timestamps, [70]);
@@ -106,22 +122,22 @@ test("identical bounded messages keep receipt times and remain current until the
   assert.equal(getOrDefault(log, "/image", LoggableType.Raw, 131, null), null);
 });
 
-test("Path and MarkerArray children expire, including children created after registration", () => {
+test("bounded children expire, including children created after registration", () => {
   const log = new Log();
-  for (const type of ["nav_msgs/Path", "visualization_msgs/MarkerArray", "geometry_msgs/PoseStamped"]) {
+  for (const type of ["bounded-children", "bounded-children-2", "message"]) {
     const mapped = channel(log, "/" + type, type);
     for (const time of [1, 50, 100]) mapMessage(log, mapped, time, bytes({ child: { x: time } }));
     mapMessage(log, mapped, 100, bytes({ late: { x: 7 } }));
   }
   log.discardLiveData(101, 1200);
-  for (const type of ["nav_msgs/Path", "visualization_msgs/MarkerArray"]) {
+  for (const type of ["bounded-children", "bounded-children-2"]) {
     assert.deepEqual(log.getNumber("/" + type + "/child/x", -Infinity, Infinity)?.timestamps, [50, 100]);
     assert.equal(log.getNumber("/" + type + "/late/x", 101, 101)?.values[0], 7);
   }
-  assert.deepEqual(log.getNumber("/geometry_msgs/PoseStamped/child/x", -Infinity, Infinity)?.timestamps, [1, 50, 100]);
+  assert.deepEqual(log.getNumber("/message/child/x", -Infinity, Infinity)?.timestamps, [1, 50, 100]);
   log.discardLiveData(200, -1);
-  assert.equal(log.getNumber("/nav_msgs/Path/late/x", 200, 200)?.values.length, 0);
-  assert.ok(log.getFieldKeys().includes("/nav_msgs/Path/late/x"));
+  assert.equal(log.getNumber("/bounded-children/late/x", 200, 200)?.values.length, 0);
+  assert.ok(log.getFieldKeys().includes("/bounded-children/late/x"));
 });
 
 test("lazy ranges resolve only consumed entries and memoize each entry for that use", () => {
@@ -138,20 +154,4 @@ test("lazy ranges resolve only consumed entries and memoize each entry for that 
   for (let i = 1; i < 10; i++) assert.equal(data.values[i], String(i));
   assert.equal(data.values[0], "0");
   assert.equal(reads, 10);
-});
-
-test("current spatial snapshots reuse eager decode without keeping every decoded message", () => {
-  const log = new Log();
-  const mapped = channel(log, "/pose", "geometry_msgs/PoseStamped");
-  const decode = mapped.decode;
-  let reads = 0;
-  mapped.decode = (data) => {
-    reads++;
-    return decode(data);
-  };
-  for (let i = 0; i < 10; i++) mapMessage(log, mapped, i, bytes({ i }));
-  assert.equal(reads, 10);
-  assert.equal(log.getString("/pose/spatial", 9, 9)?.values[0], '{"i":9}');
-  assert.equal(reads, 10);
-  assert.equal(mapped.decoded.size, 2);
 });

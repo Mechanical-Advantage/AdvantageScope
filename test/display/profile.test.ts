@@ -11,7 +11,6 @@ import { parseDBC } from "../../src/hub/dataSources/can/DBC";
 import { csvChannelMetadata, matchDBCChannel } from "../../src/hub/dataSources/csv/CSVChannelMetadata";
 import {
   axisDisplayUnit,
-  canonicalChannelPath,
   channelProfile,
   formatChannelValue,
   rawChannelValue
@@ -50,18 +49,6 @@ test("booleans, enums and raw tooltips", () => {
   assert.equal(fmt(true, ""), "true");
   assert.equal(fmt(false, ""), "false");
   assert.equal(rawChannelValue(309.65, channelProfile({ name: "temp", unit: "K" })), "Raw: 309.65 K");
-});
-test("overrides survive layout serialization and replacement logs by canonical path", () => {
-  const log = new Log();
-  log.displayOverrides = { [canonicalChannelPath("bus.temp")]: { unit: "K", precision: 2 } };
-  const saved = JSON.stringify({ channelProfiles: log.displayOverrides });
-  const next = new Log();
-  assert.deepEqual(next.displayOverrides, log.displayOverrides);
-  next.displayOverrides = JSON.parse(saved).channelProfiles;
-  next.putNumber("bus/temp", 0, 300);
-  next.setMetadataString("bus/temp", JSON.stringify({ unit: "K" }));
-  assert.equal(formatChannelValue(300, next.getChannelProfile("bus/temp")), "300.00 K");
-  next.displayOverrides = {};
 });
 test("CSV matches qualified or unique signal names; sidecar wins", () => {
   const db = parseDBC(

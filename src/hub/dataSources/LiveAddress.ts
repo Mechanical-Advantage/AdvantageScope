@@ -5,6 +5,9 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+/** The last address connected to for each source in this session. Not saved between launches. */
+export const sessionAddresses = new Map<string, string>();
+
 export function validateLiveAddress(source: string, address: string): string | null {
   if (/\s/.test(address)) return "Address cannot contain spaces.";
   if (source === "mqtt") {
@@ -15,16 +18,6 @@ export function validateLiveAddress(source: string, address: string): string | n
         : "Enter a ws:// or wss:// broker URL; use the separate credentials fields.";
     } catch {
       return "Enter a valid WebSocket broker URL, for example ws://localhost:1884.";
-    }
-  }
-  if (source === "foxglove") {
-    try {
-      const url = new URL(/^[a-z]+:\/\//i.test(address) ? address : "ws://" + address);
-      return ["ws:", "wss:"].includes(url.protocol) && url.hostname && !url.username && !url.password && !url.hash
-        ? null
-        : "Enter a ws:// or wss:// Foxglove server URL.";
-    } catch {
-      return "Enter a valid Foxglove server address, for example ws://localhost:8765.";
     }
   }
   if (source === "mur") {

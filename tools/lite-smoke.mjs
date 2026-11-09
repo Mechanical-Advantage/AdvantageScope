@@ -41,7 +41,6 @@ try {
     String(mockPort),
     "--seed",
     "1",
-    "--sim-clock",
     "--lap-counter"
   ]);
   await ready(`http://127.0.0.1:${mockPort}/api/v1/catalogue`);

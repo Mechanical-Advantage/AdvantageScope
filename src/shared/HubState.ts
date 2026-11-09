@@ -5,7 +5,6 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { ChannelOverride } from "./display/ChannelProfile";
 import { HealthStripState } from "./HealthStrip";
 import TabType from "./TabType";
 
@@ -13,7 +12,6 @@ export interface HubState {
   healthStrip?: HealthStripState;
   sidebar: SidebarState;
   tabs: TabsState;
-  channelProfiles?: Record<string, ChannelOverride>;
 }
 
 export interface SidebarState {

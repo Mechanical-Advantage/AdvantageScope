@@ -137,7 +137,7 @@ export default class StatisticsController implements TabController {
     });
 
     // Check if command should be updated
-    let sourcesStr = JSON.stringify({ sources: this.sourceList.getState(), profiles: window.log.displayOverrides });
+    let sourcesStr = JSON.stringify(this.sourceList.getState());
     let currentTime = new Date().getTime();
     let isLiveMode = window.selection.getCurrentLiveTime() !== null && this.TIME_RANGE.value.startsWith("live");
     let visibleChanged =

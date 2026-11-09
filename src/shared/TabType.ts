@@ -9,8 +9,8 @@ enum TabType {
   Documentation,
   LineGraph,
   Field2d,
-  Field3d,
-  Table,
+  // 3 was 3D Field. This value stays reserved for saved layouts.
+  Table = 4,
   Console,
   Statistics,
   Video,
@@ -18,10 +18,8 @@ enum TabType {
   Points = 11,
   Metadata = 12,
   TrackMap = 13,
-  Laps = 14,
-  RawMessages = 20,
-  RosLog = 21,
-  RosImage = 22
+  Laps = 14
+  // 20-22 were Raw Messages, Log and Image. These values stay reserved for saved layouts.
 }
 
 export default TabType;
@@ -30,21 +28,29 @@ export function getAllTabTypes(): TabType[] {
   return Object.values(TabType).filter((tabType) => typeof tabType === "number") as TabType[];
 }
 
+export const NEW_TAB_TYPES = [
+  TabType.LineGraph,
+  TabType.TrackMap,
+  TabType.Laps,
+  TabType.Table,
+  TabType.Statistics,
+  TabType.Console,
+  TabType.Video,
+  TabType.Points,
+  TabType.Metadata
+];
+
 export const LITE_COMPATIBLE_TABS = [
   TabType.Documentation,
   TabType.LineGraph,
   TabType.Field2d,
-  TabType.Field3d,
   TabType.Table,
   TabType.Console,
   TabType.Statistics,
   TabType.Points,
   TabType.Metadata,
   TabType.TrackMap,
-  TabType.Laps,
-  TabType.RawMessages,
-  TabType.RosLog,
-  TabType.RosImage
+  TabType.Laps
 ];
 
 export function getDefaultTabTitle(type: TabType): string {
@@ -55,8 +61,6 @@ export function getDefaultTabTitle(type: TabType): string {
       return "Line Graph";
     case TabType.Field2d:
       return "2D Field";
-    case TabType.Field3d:
-      return "3D Field";
     case TabType.Table:
       return "Table";
     case TabType.Console:
@@ -73,12 +77,6 @@ export function getDefaultTabTitle(type: TabType): string {
       return "Laps";
     case TabType.Metadata:
       return "Metadata";
-    case TabType.RawMessages:
-      return "Raw Messages";
-    case TabType.RosLog:
-      return "Log";
-    case TabType.RosImage:
-      return "Image";
     default:
       return "";
   }
@@ -92,8 +90,6 @@ export function getTabIcon(type: TabType): string {
       return "📉";
     case TabType.Field2d:
       return "🗺";
-    case TabType.Field3d:
-      return "👀";
     case TabType.Table:
       return "🔢";
     case TabType.Console:
@@ -116,17 +112,13 @@ export function getTabIcon(type: TabType): string {
 }
 
 export function getTabAccelerator(type: TabType): string {
-  if (type === TabType.Documentation) return "";
+  if (type === TabType.Documentation || type === TabType.Field2d) return "";
   return (
     "Alt+" +
     (() => {
       switch (type) {
         case TabType.LineGraph:
           return "G";
-        case TabType.Field2d:
-          return "2";
-        case TabType.Field3d:
-          return "3";
         case TabType.Table:
           return "T";
         case TabType.Console:
@@ -144,4 +136,15 @@ export function getTabAccelerator(type: TabType): string {
       }
     })()
   );
+}
+
+/** Filters removed tabs and keeps the selected tab or its nearest surviving predecessor. */
+export function filterRestorableTabs<T extends { type: TabType }>(tabs: T[], selected: number) {
+  const supported = getAllTabTypes();
+  const surviving = tabs.map((tab, index) => ({ tab, index })).filter(({ tab }) => supported.includes(tab.type));
+  let selectedIndex = 0;
+  surviving.forEach(({ index }, position) => {
+    if (index <= selected) selectedIndex = position;
+  });
+  return { tabs: surviving.map(({ tab }) => tab), selected: selectedIndex };
 }

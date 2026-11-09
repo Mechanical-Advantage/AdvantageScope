@@ -10,13 +10,7 @@ import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
 import { clipGaps, TraceGapCache } from "../../shared/TraceGaps";
-import {
-  axisDisplayUnit,
-  canonicalChannelPath,
-  channelProfile,
-  formatChannelValue
-} from "../../shared/display/ChannelProfile";
-import { compatibleProfiles, splitLegendName } from "../../shared/display/LineGraphStyle";
+import { axisDisplayUnit, formatChannelValue } from "../../shared/display/ChannelProfile";
 import { formatSignedSeconds, heldValueAt, sectorDeltaText } from "../../shared/laps/LapAnalysis";
 import { interpolate, lapSamples } from "../../shared/laps/LapEngine";
 import { getLogValueText } from "../../shared/log/LogUtil";
@@ -73,14 +67,11 @@ export default class LineGraphController implements TabController {
   private rightNumericCommandCache: { [key: string]: NumericCommandCacheValue } = {};
   private leftUnitCache: Units.UnitConfig | null = null;
   private rightUnitCache: Units.UnitConfig | null = null;
-  private showThresholds = true;
   private showRobotMode = false;
   private lapMode = "time";
   private lapSelect: HTMLSelectElement;
-  private rootElement: HTMLElement;
 
   constructor(root: HTMLElement) {
-    this.rootElement = root;
     const mode = document.createElement("select");
     this.lapSelect = mode;
     mode.className = "lap-axis-mode mv-select";
@@ -100,16 +91,6 @@ export default class LineGraphController implements TabController {
     modeLabel.className = "lap-axis-label";
     modeLabel.append("X axis", mode);
     controls.append(modeLabel);
-    const toggle = document.createElement("label");
-    const check = document.createElement("input");
-    check.type = "checkbox";
-    check.className = "mv-checkbox";
-    check.checked = this.showThresholds;
-    check.onchange = () => (this.showThresholds = check.checked);
-    toggle.append(check, "Health limits");
-    toggle.title = "Draw health-strip warn/crit thresholds on matching axes";
-    mode.title = "X axis: session time, lap time, or lap distance with ΔT";
-    controls.append(toggle);
     root.append(controls);
     // Make source lists
     this.leftSourceList = new SourceList(
@@ -206,81 +187,13 @@ export default class LineGraphController implements TabController {
         });
       }
     );
-    for (const [source, other, name] of [
-      [this.leftSourceList, this.rightSourceList, "Right"],
-      [this.rightSourceList, this.leftSourceList, "Left"]
-    ] as const) {
-      source.graphLegend = true;
-      source.beforeAdd = (key) => {
-        if (this.lapMode !== "time" && source === this.rightSourceList) {
-          // The right axis is locked to ΔT in lap-distance mode
-          const lock = document.createElement("div");
-          lock.className = "graph-unit-prompt";
-          lock.append("Right axis is locked to ΔT in lap modes, so this signal can't go there. ");
-          const move = document.createElement("button");
-          move.textContent = "Add to Left Axis instead";
-          move.onclick = () => {
-            other.addField(key);
-            lock.remove();
-          };
-          const cancel = document.createElement("button");
-          cancel.textContent = "Cancel";
-          cancel.onclick = () => lock.remove();
-          lock.append(move, cancel);
-          root.querySelector(".graph-unit-prompt")?.remove();
-          root.append(lock);
-          return false;
-        }
-        const first = source.getState()[0];
-        if (!first || compatibleProfiles(window.log.getChannelProfile(key), window.log.getChannelProfile(first.logKey)))
-          return true;
-        const prompt = document.createElement("div");
-        prompt.className = "graph-unit-prompt";
-        const unitOf = (k: string) => window.log.getChannelProfile(k).unit || "no unit";
-        const message = document.createElement("div");
-        message.className = "graph-unit-message";
-        message.textContent = `${splitLegendName(key).leaf} (${unitOf(key)}) has a different unit from ${
-          splitLegendName(first.logKey).leaf
-        } (${unitOf(first.logKey)}) on this axis.`;
-        const buttons = document.createElement("div");
-        buttons.className = "graph-unit-buttons";
-        prompt.append(message, buttons);
-        for (const [label, target] of [
-          [`Move to ${name} Axis`, other],
-          ["Add anyway", source]
-        ] as const) {
-          const button = document.createElement("button");
-          button.textContent = label;
-          button.onclick = () => {
-            const guard = target.beforeAdd;
-            if (target === source) target.beforeAdd = undefined;
-            target.addField(key);
-            target.beforeAdd = guard;
-            prompt.remove();
-          };
-          buttons.append(button);
-        }
-        const cancel = document.createElement("button");
-        cancel.textContent = "Cancel";
-        cancel.onclick = () => prompt.remove();
-        buttons.append(cancel);
-        prompt.addEventListener("keydown", (event) => {
-          if (event.key === "Escape") prompt.remove();
-        });
-        root.querySelector(".graph-unit-prompt")?.remove();
-        // Anchor to the zone the signal was dropped on
-        (root.querySelector(source === this.leftSourceList ? ".line-graph-left" : ".line-graph-right") ?? root).append(
-          prompt
-        );
-        (buttons.firstElementChild as HTMLElement).focus();
-        return false;
-      };
-    }
+    // The right axis is locked to ΔT in lap modes, which its title and list already say.
+    this.rightSourceList.beforeAdd = () => this.lapMode === "time";
   }
 
   private axisTitle(source: SourceList, unit: Units.UnitConfig | null, filter: LineGraphFilter): string {
     const fields = source.getState().filter((f) => f.visible);
-    const name = fields.length === 1 ? splitLegendName(fields[0].logKey).leaf : "Signals";
+    const name = fields.length === 1 ? fields[0].logKey.split(/[/.]/).pop() : "Signals";
     const suffix = unit ? Units.getSuffixForFilter(unit.suffix, filter) : "";
     return fields.length ? name + (suffix ? ` [${suffix}]` : "") : "";
   }
@@ -300,7 +213,6 @@ export default class LineGraphController implements TabController {
       leftFilter: this.leftFilter,
       rightFilter: this.rightFilter,
       showRobotMode: this.showRobotMode,
-      showThresholds: this.showThresholds,
       lapMode: this.lapMode
     };
   }
@@ -329,7 +241,6 @@ export default class LineGraphController implements TabController {
     if ("showRobotMode" in state) {
       this.showRobotMode = state.showRobotMode as boolean;
     }
-    if ("showThresholds" in state) this.showThresholds = Boolean(state.showThresholds);
     if ("lapMode" in state && ["time", "lapTime", "distance"].includes(String(state.lapMode))) {
       this.lapMode = String(state.lapMode);
       this.lapSelect.value = this.lapMode;
@@ -503,26 +414,20 @@ export default class LineGraphController implements TabController {
     ) {
       return null;
     }
-    // The mock's stale-test deliberately stops GPS while wheel speed keeps updating.
-    // Do not present a held last-good GPS value as a current speed measurement.
-    if (window.selection.getMode() === SelectionMode.Locked) {
-      const freshness = window.liveStatus?.getFieldFreshness(key);
-      if (freshness === "stale" || freshness === "offline") return `— (${freshness})`;
-    }
     let command = commandCache[key];
     let index = command.timestamps.findLastIndex((sample) => sample <= time);
     if (index === -1) {
       return null;
     }
-    const profile =
-      unitCache !== null && command.hasUnit
-        ? window.log.getChannelProfile(key, Units.getSuffixForFilter(unitCache.suffix, filter))
-        : window.log.getChannelProfile(key);
-    const value =
-      command.type === "smooth" && index + 1 < command.timestamps.length
-        ? interpolate(command.timestamps, command.values, time)
-        : command.values[index];
-    let output = formatChannelValue(value, profile);
+    const profile = window.log.getChannelProfile(key);
+    if (profile.enumLabels) return formatChannelValue(command.values[index], profile);
+    let output = this.PREVIEW_FORMAT.format(command.values[index]);
+    if (unitCache !== null && command.hasUnit) {
+      let suffix = Units.getSuffixForFilter(unitCache.suffix, filter);
+      output += suffix.length > 1 ? " " : "";
+      output += suffix;
+      if (filter === LineGraphFilter.None && unitCache.pluralizeSuffix && command.values[index] !== 1) output += "s";
+    }
     return output;
   }
 
@@ -592,27 +497,7 @@ export default class LineGraphController implements TabController {
     }
   }
 
-  /** Marks empty drop zones ("Drag a signal here") and hides the zoom/pan hint until something is plotted. */
-  private updateEmptyState() {
-    const zones: [string, SourceList][] = [
-      [".line-graph-left", this.leftSourceList],
-      [".line-graph-right", this.rightSourceList],
-      [".line-graph-discrete", this.discreteSourceList]
-    ];
-    let empty = true;
-    for (const [selector, list] of zones) {
-      const locked = list === this.rightSourceList && this.lapMode !== "time";
-      const zoneEmpty = list.getState().length === 0 && !locked;
-      if (!zoneEmpty) empty = false;
-      const zone = this.rootElement.querySelector(selector);
-      zone?.classList.toggle("zone-empty", zoneEmpty);
-      zone?.classList.toggle("zone-locked", locked);
-    }
-    document.body.classList.toggle("line-graph-empty", empty);
-  }
-
   getCommand(): LineGraphRendererCommand {
-    this.updateEmptyState();
     let leftDataRange: [number, number] = [Infinity, -Infinity];
     let rightDataRange: [number, number] = [Infinity, -Infinity];
     let leftFieldsCommand: LineGraphRendererCommand_NumericField[] = [];
@@ -648,7 +533,7 @@ export default class LineGraphController implements TabController {
       }
 
       // Process fields
-      source.forEach((fieldItem, index) => {
+      source.forEach((fieldItem) => {
         let data = window.log.getNumber(
           fieldItem.logKey,
           filter === LineGraphFilter.Integrate ? -Infinity : timeRange[0],
@@ -844,9 +729,6 @@ export default class LineGraphController implements TabController {
           color: ensureThemeContrast(fieldItem.options.color),
           type: fieldItem.type as "smooth" | "stepped" | "points",
           size: (fieldItem.options.size ?? "normal") as "normal" | "bold" | "verybold",
-          dim:
-            (this.leftSourceList.hoveredKey ?? this.rightSourceList.hoveredKey) !== null &&
-            (this.leftSourceList.hoveredKey ?? this.rightSourceList.hoveredKey) !== fieldItem.logKey,
           hasUnit: hasUnit
         };
         if (fieldItem.visible) command.push(itemCommand);
@@ -1085,47 +967,6 @@ export default class LineGraphController implements TabController {
       discreteFields: discreteFieldsCommand,
       alerts: alerts
     };
-    result.thresholds = [];
-    if (this.showThresholds) {
-      for (const [axis, source, units, filter] of [
-        ["left", this.leftSourceList, this.leftUnitCache, this.leftFilter],
-        ["right", this.rightSourceList, this.rightUnitCache, this.rightFilter]
-      ] as const) {
-        if (filter !== LineGraphFilter.None) continue;
-        for (const tile of window.healthStrip?.state.tiles ?? []) {
-          if (
-            tile.fault ||
-            !source
-              .getState()
-              .some((f) => f.visible && canonicalChannelPath(f.logKey) === canonicalChannelPath(tile.path))
-          )
-            continue;
-          const base = window.log.getChannelProfile(tile.path);
-          const profile = tile.profile ? channelProfile({ name: tile.path, unit: base.rawUnit }, tile.profile) : base;
-          const target = units ? Object.keys(Units.ALL_UNITS).find((u) => Units.ALL_UNITS[u] === units) : null;
-          for (const [limit, critical] of [
-            [tile.warn, false],
-            [tile.critical, true]
-          ] as const) {
-            if (limit === undefined || !Number.isFinite(limit)) continue;
-            if (profile.to && target && Units.GROUP_BY_UNIT[profile.to] !== Units.GROUP_BY_UNIT[target]) continue;
-            const value = profile.to && target ? Units.convert(limit, profile.to, target) : limit;
-            result.thresholds.push({ axis, value, label: `${tile.label} ${critical ? "CRIT" : "WARN"}`, critical });
-          }
-        }
-      }
-      // Auto-scaled axes stretch to keep the warning line in view (untick "Health limits" for a tight fit)
-      for (const [axis, dataRange, locked] of [
-        ["left", leftDataRange, this.leftLockedRange],
-        ["right", rightDataRange, this.rightLockedRange]
-      ] as const) {
-        const warn = result.thresholds.filter((t) => t.axis === axis && !t.critical).map((t) => t.value);
-        if (locked !== null || warn.length === 0 || !isFinite(dataRange[0])) continue;
-        const range = calcRange([Math.min(dataRange[0], ...warn), Math.max(dataRange[1], ...warn)], null);
-        if (axis === "left") result.leftRange = range;
-        else result.rightRange = range;
-      }
-    }
     const hasNumericSamples = [...result.leftFields, ...result.rightFields].some(
       (f) => f.timestamps.length && f.values.some(Number.isFinite)
     );
@@ -1138,7 +979,6 @@ export default class LineGraphController implements TabController {
       result.message = "The selected fields have no numeric samples in this log.";
     }
     if (this.lapMode !== "time") {
-      result.thresholds = [];
       lapService.update();
       const reference = lapService.result.laps.find((l) => l.index === lapService.reference);
       const laps = lapService.result.laps.filter(
