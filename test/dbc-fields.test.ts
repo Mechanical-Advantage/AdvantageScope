@@ -154,3 +154,20 @@ test("metadata changes add and remove DBC defaults without changing field keys",
   fields.refresh();
   assert.equal(fields.resolve([]).steering, undefined);
 });
+
+for (const operation of ["setField", "mergeWith", "metadata"]) {
+  test(`a unit change through ${operation} discards the cached unit`, () => {
+    const log = makeLog();
+    const key = "/live/driver/steering_angle";
+    assert.equal(numberAt(key, 2, "degrees", "t"), 90);
+    const metadata = JSON.stringify({ unit: "V" });
+    const replacement = new Log();
+    replacement.putNumber(key, 1, 12);
+    replacement.setMetadataString(key, metadata);
+    if (operation === "setField") log.setField(key, replacement.getField(key)!);
+    else if (operation === "mergeWith") log.mergeWith(replacement);
+    else log.setMetadataString(key, metadata);
+    assert.equal(log.getUnit(key), "volts");
+    assert.equal(numberAt(key, 2, "degrees", "t"), null);
+  });
+}

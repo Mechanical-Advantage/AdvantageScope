@@ -271,6 +271,7 @@ export default class Log {
     this.fieldKeysVersion++;
     this.fieldKeysCache = null;
     this.profileCache.clear();
+    delete this.fieldUnitCache[key];
     this.fields[key] = field;
     this.changedFields.add(key);
     this.checkDSConsoleField(key);
@@ -1123,6 +1124,7 @@ export default class Log {
       this.fieldKeysVersion++;
       this.fieldKeysCache = null;
       this.profileCache.clear();
+      delete this.fieldUnitCache[targetKey];
       this.fields[targetKey] = LogField.fromSerialized(value);
     });
 
