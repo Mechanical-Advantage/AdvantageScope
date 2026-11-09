@@ -221,6 +221,8 @@ jobs:
           asset_content_type: "application/octet-stream"
 
   build-ios:
+    # The fork removed the upstream XR iOS project in 50e84e59.
+    if: false
     name: Build for iOS
     runs-on: macos-26
 
