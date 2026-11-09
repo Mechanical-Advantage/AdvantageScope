@@ -240,7 +240,11 @@ test("the map cursor follows timeline hover through the render time", () => {
   controller.sourceStates = [];
   controller.field = "";
   controller.map = true;
+  controller.display = { colorMode: "sector", overlaysOnly: true };
   lapService.invalidate();
+  assert.deepEqual(controller.getCommand().display, controller.display);
+  controller.display = { colorMode: "compare", overlaysOnly: false };
+  assert.deepEqual(controller.getCommand().display, controller.display);
   assert.equal(controller.getCommand().time, 5);
   renderTime = 7;
   assert.equal(controller.getCommand().time, 7);
@@ -432,4 +436,24 @@ test("a live metre gate survives rejection of the initial GPS fix", () => {
   service.invalidate();
   service.update();
   assert.deepEqual(lapTimes(service), expected);
+});
+
+test("map rendering restores supported colours and receives satellite display choices", async () => {
+  const { default: LapRenderer } = await import("../src/shared/renderers/LapRenderer");
+  const r = Object.create(LapRenderer.prototype) as any;
+  (globalThis as any).document = { activeElement: null };
+  r.toolbar = { contains: () => false };
+  r.scrollSensor = { periodic() {} };
+  r.build = () => {};
+  r.draw = () => {};
+  r.action = () => {};
+  r.interactive = true;
+  r.colorMode = "field";
+  r.restoredColor = true;
+  r.render({ field: "", map: true });
+  assert.equal(r.colorMode, "laps");
+  r.interactive = false;
+  r.render({ field: "", map: true, display: { colorMode: "sector", overlaysOnly: true } });
+  assert.equal(r.colorMode, "sector");
+  assert.equal(r.overlaysOnly, true);
 });
