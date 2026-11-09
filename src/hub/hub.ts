@@ -17,13 +17,11 @@ import Log from "../shared/log/Log";
 import { MERGE_PREFIX } from "../shared/log/LogKeyUtils";
 import { AKIT_TIMESTAMP_KEYS, getEnabledData } from "../shared/log/RobotState";
 import { calcMockProgress, clampValue, htmlEncode, scaleValue } from "../shared/util";
-
 import { ConnectDialog } from "./LiveConnectionUI";
 import SelectionImpl from "./SelectionImpl";
 import Sidebar from "./Sidebar";
 import SourceList from "./SourceList";
 import Tabs from "./Tabs";
-
 import WorkerManager from "./WorkerManager";
 import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
 import { sessionAddresses } from "./dataSources/LiveAddress";

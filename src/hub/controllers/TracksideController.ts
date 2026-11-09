@@ -45,8 +45,13 @@ export default class TracksideController implements TabController {
     this.sourceList.refresh();
   }
   newAssets() {}
+  /** Limits for fields still in the tile list. A removed tile's limits stop alerting. */
+  getLimits() {
+    const keys = new Set(this.sourceList.getState().map((source) => source.logKey));
+    return Object.fromEntries(Object.entries(this.limits).filter(([key]) => keys.has(key)));
+  }
   getActiveFields() {
-    return [...new Set([...this.sourceList.getActiveFields(), ...Object.keys(this.limits)])];
+    return this.sourceList.getActiveFields();
   }
   showTimeline() {
     return true;

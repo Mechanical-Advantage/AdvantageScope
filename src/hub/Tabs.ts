@@ -336,13 +336,17 @@ export default class Tabs {
     alertElement.className = "trackside-alerts";
     alertElement.hidden = true;
     document.body.append(alertElement);
+    let lastAlerts = 0;
     const periodicGuard = new RenderGuard();
     const guards = new WeakMap<object, RenderGuard>();
     // Periodic function
     let periodic = () => {
       window.requestAnimationFrame(periodic);
       periodicGuard.run(() => {
-        updateTracksideAlerts(alertElement, this.getTracksideLimits());
+        if (performance.now() - lastAlerts >= 200) {
+          lastAlerts = performance.now();
+          updateTracksideAlerts(alertElement, this.getTracksideLimits());
+        }
         // Update tab bar
         this.SHADOW_LEFT.style.opacity = Math.floor(this.TAB_BAR.scrollLeft) <= 0 ? "0" : "1";
         this.SHADOW_RIGHT.style.opacity =
@@ -524,7 +528,7 @@ export default class Tabs {
 
   getTracksideLimits() {
     return this.tabList.flatMap((tab) =>
-      tab.controller instanceof TracksideController ? [tab.controller.limits] : []
+      tab.controller instanceof TracksideController ? [tab.controller.getLimits()] : []
     );
   }
 

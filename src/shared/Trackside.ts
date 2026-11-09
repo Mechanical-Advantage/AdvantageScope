@@ -60,7 +60,6 @@ export function tileState(
     else if (live.freshness === "stale") state = `◇${ageText}`;
     else if (live.freshness === "offline") state = `⊘ offline${ageText}`;
     else if (live.freshness === "unknown" || live.freshness === null) state = "?";
-    else if (!state) state = "●";
   }
   return {
     label: path.split("/").pop() || path,
