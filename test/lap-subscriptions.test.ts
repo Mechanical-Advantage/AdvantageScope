@@ -19,7 +19,10 @@ test("lap inputs follow open lap views, including unselected satellite tabs", ()
   let calls = 0;
   const log = new Log();
   log.putNumber("imd", 0, 0);
-  log.setMetadataString("imd", JSON.stringify({ dbcSignal: "TTCS_IMDState", enumLabels: { "0": "Normal", "4": "Earth Fault" } }));
+  log.setMetadataString(
+    "imd",
+    JSON.stringify({ dbcSignal: "TTCS_IMDState", enumLabels: { "0": "Normal", "4": "Earth Fault" } })
+  );
   (globalThis as any).window = { log };
   lapService.fields = () => {
     calls++;
