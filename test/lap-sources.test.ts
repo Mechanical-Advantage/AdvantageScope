@@ -257,3 +257,24 @@ for (const kind of ["wheel", "rpm"] as const) {
     assert.ok(Math.abs(service.result.samples.at(-1)!.distance - 2 * distance) < 1e-6);
   });
 }
+
+test("a constant wheel speed advances distance when only the log end advances", () => {
+  const log = new Log();
+  const write = (time: number) => {
+    for (const key of ["WheelSpeedFL", "WheelSpeedFR"]) {
+      log.putNumber(key, time, 10);
+      log.setMetadataString(key, JSON.stringify({ unit: "rad/s" }));
+    }
+  };
+  write(0);
+  write(10);
+  (globalThis as any).window = { log };
+  const service = new LapService();
+  service.settings.radius = 0.2;
+  service.update();
+  assert.equal(service.result.samples.at(-1)!.distance, 20);
+  write(20);
+  (service as any).nextUpdate = 0;
+  service.update();
+  assert.equal(service.result.samples.at(-1)!.distance, 40);
+});
