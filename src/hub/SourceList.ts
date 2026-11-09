@@ -380,6 +380,31 @@ export default class SourceList {
 
   /** Call when a new set of log fields may be available. */
   refresh() {
+    let dbcKeys: Map<string, string[]> | undefined;
+    this.state.forEach((item, index) => {
+      if (this.isFieldAvailable(item) || !item.dbcSignal) return;
+      if (dbcKeys === undefined) {
+        dbcKeys = new Map();
+        window.log.getFieldKeys().forEach((key) => {
+          try {
+            let dbcSignal = JSON.parse(window.log.getMetadataString(key)).dbcSignal;
+            if (typeof dbcSignal !== "string" || dbcSignal.length === 0) return;
+            let keys = dbcKeys!.get(dbcSignal) ?? [];
+            keys.push(key);
+            dbcKeys!.set(dbcSignal, keys);
+          } catch {
+            // Not every field has JSON metadata.
+          }
+        });
+      }
+      let matches = (dbcKeys.get(item.dbcSignal) ?? []).filter((logKey) => this.isFieldAvailable({ ...item, logKey }));
+      if (matches.length === 1) {
+        item.logKey = matches[0];
+        let element = this.LIST.children[index] as HTMLElement;
+        this.updateItem(element, item);
+        this.updatePreview(element, item);
+      }
+    });
     let displayedFields = this.state.map((item) => item.logKey);
     let currentFields = new Set(displayedFields.filter((field) => window.log.getType(field) !== null));
     let structTypes: { [key: string]: string | null } = {};
@@ -560,6 +585,12 @@ export default class SourceList {
       visible: true,
       options: options
     };
+    try {
+      let dbcSignal = JSON.parse(window.log.getMetadataString(logKey)).dbcSignal;
+      if (typeof dbcSignal === "string" && dbcSignal.length > 0) state.dbcSignal = dbcSignal;
+    } catch {
+      // Not every field has JSON metadata.
+    }
     if (parentIndex !== undefined) {
       let insertIndex = parentIndex! + 1;
       while (insertIndex < this.state.length && this.isChild(insertIndex)) {
