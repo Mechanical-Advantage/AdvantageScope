@@ -209,6 +209,20 @@ function openLocalLog() {
   });
 }
 
+let layoutExportId = 0;
+let pendingLayoutExport: { id: number; timeout: number } | null = null;
+
+function requestLayoutExport() {
+  if (pendingLayoutExport !== null) return;
+  const id = ++layoutExportId;
+  const timeout = window.setTimeout(() => {
+    pendingLayoutExport = null;
+    window.alert("Failed to export layout: the hub response timed out. Please try again.");
+  }, 3000);
+  pendingLayoutExport = { id, timeout };
+  sendMessage(hubPort, "export-layout", id);
+}
+
 function exportLayout(state: HubState) {
   const url = URL.createObjectURL(
     new Blob([JSON.stringify({ version: LITE_VERSION, hubs: [state], satellites: [] }, null, 2)], {
@@ -386,7 +400,10 @@ async function handleHubMessage(message: NamedMessage) {
       break;
 
     case "export-layout":
-      exportLayout(message.data);
+      if (pendingLayoutExport === null || message.data.id !== pendingLayoutExport.id) break;
+      window.clearTimeout(pendingLayoutExport.timeout);
+      pendingLayoutExport = null;
+      exportLayout(message.data.state);
       break;
 
     case "save-state":
@@ -561,7 +578,7 @@ async function handleHubMessage(message: NamedMessage) {
                 }
               },
               { content: "Browse Base Station Logs…", callback: openDownload },
-              { content: "Export Layout…", callback: () => sendMessage(hubPort, "export-layout") },
+              { content: "Export Layout…", callback: requestLayoutExport },
               { content: "Import Layout…", callback: importLayout },
               {
                 content: `Connect\u2026 (${modifier} K)`,

@@ -617,7 +617,7 @@ async function handleMainMessage(message: NamedMessage) {
       break;
 
     case "export-layout":
-      window.sendMainMessage("export-layout", saveState());
+      window.sendMainMessage("export-layout", IS_LITE ? { id: message.data, state: saveState() } : saveState());
       break;
 
     case "restore-state":
