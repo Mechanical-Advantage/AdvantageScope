@@ -201,7 +201,11 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "control-can",
       rate: 100,
       tags: ["powertrain", "inverter"],
-      extra: { min: -3430, max: 3430 },
+      extra: {
+        dbc: { signal: "INV_MotorSpeedRPM", message: "INV_MotorPosition", database: "Cascadia_PM100DZ.dbc" },
+        min: -3430,
+        max: 3430
+      },
       read: (c) => round((c.st.motorRpm * 2 * Math.PI) / 60 + c.rng.gauss(0.6) * (c.st.v > 0.1 ? 1 : 0), 3)
     }),
     def({
@@ -213,7 +217,11 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "control-can",
       rate: 100,
       tags: ["powertrain", "inverter"],
-      extra: { min: -CAR.maxRegenTorque, max: CAR.maxMotorTorque },
+      extra: {
+        dbc: { signal: "INV_CommandedTorque", message: "INV_TorqueTimer", database: "Cascadia_PM100DZ.dbc" },
+        min: -CAR.maxRegenTorque,
+        max: CAR.maxMotorTorque
+      },
       read: (c) => round(c.st.torqueCmd, 1)
     }),
     def({
@@ -221,10 +229,11 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       type: "float64",
       unit: "N*m",
       label: "Torque Feedback",
-      description: "Estimated motor torque (INV_TorqueFeedback)",
+      description: "Estimated motor torque (INV_FeedbackTorque)",
       source: "control-can",
       rate: 100,
       tags: ["powertrain", "inverter"],
+      extra: { dbc: { signal: "INV_FeedbackTorque", message: "INV_TorqueTimer", database: "Cascadia_PM100DZ.dbc" } },
       read: (c) => round(c.st.torqueFb + c.rng.gauss(0.8), 2)
     }),
     def({
@@ -236,7 +245,11 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "control-can",
       rate: 100,
       tags: ["powertrain", "inverter", "hv"],
-      extra: { min: 0, max: 600 },
+      extra: {
+        dbc: { signal: "INV_DCBusVoltage", message: "INV_Voltages", database: "Cascadia_PM100DZ.dbc" },
+        min: 0,
+        max: 600
+      },
       read: (c) => round(Math.max(0, c.st.busV + c.rng.gauss(0.3)), 1)
     }),
     def({
@@ -248,6 +261,7 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "control-can",
       rate: 100,
       tags: ["powertrain", "inverter", "hv"],
+      extra: { dbc: { signal: "INV_DCBusCurrent", message: "INV_Currents", database: "Cascadia_PM100DZ.dbc" } },
       read: (c) => round(c.st.busI + c.rng.gauss(0.6), 1)
     }),
     def({
@@ -259,6 +273,7 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "control-can",
       rate: 100,
       tags: ["powertrain", "inverter"],
+      extra: { dbc: { signal: "INV_PhaseACurrent", message: "INV_Currents", database: "Cascadia_PM100DZ.dbc" } },
       read: (c) => round(Math.abs(c.st.torqueFb) * 1.25 + Math.abs(c.rng.gauss(0.8)), 1)
     }),
     def({
@@ -278,11 +293,14 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       type: "float64",
       unit: "K",
       label: "Motor Temperature",
-      description: "Motor winding temperature (INV_MotorTemp)",
+      description: "Motor winding temperature (INV_MotorRawTemp, converted from degC x10 to K)",
       source: "control-can",
       rate: 10,
       tags: ["powertrain", "inverter", "thermal"],
-      extra: { max: K(120) },
+      extra: {
+        dbc: { signal: "INV_MotorRawTemp", message: "INV_Temperatures3_Torque", database: "Cascadia_PM100DZ.dbc" },
+        max: K(120)
+      },
       read: (c) => round(c.st.motorTempK + c.rng.gauss(0.1), 1)
     }),
     def({
@@ -305,6 +323,9 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "control-can",
       rate: 10,
       tags: ["powertrain", "thermal"],
+      extra: {
+        dbc: { signal: "INV_CoolantTemp", message: "INV_Temperatures3_Torque", database: "Cascadia_PM100DZ.dbc" }
+      },
       read: (c) => round(c.st.coolantTempK + c.rng.gauss(0.1), 1)
     }),
     def({
@@ -316,7 +337,10 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "control-can",
       rate: 10,
       tags: ["powertrain", "inverter", "state"],
-      extra: { enum_values: VSM_ENUM },
+      extra: {
+        dbc: { signal: "INV_VSMState", message: "INV_InternalStates", database: "Cascadia_PM100DZ.dbc" },
+        enum_values: VSM_ENUM
+      },
       read: (c) => c.st.vsmState
     }),
     def({
@@ -328,7 +352,10 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "control-can",
       rate: 10,
       tags: ["powertrain", "inverter", "state"],
-      extra: { enum_values: INV_STATE_ENUM },
+      extra: {
+        dbc: { signal: "INV_InverterState", message: "INV_InternalStates", database: "Cascadia_PM100DZ.dbc" },
+        enum_values: INV_STATE_ENUM
+      },
       read: (c) => (c.st.vsmState === 6 ? (Math.abs(c.st.torqueCmd) > 0.5 ? 3 : 8) : c.st.tsActive ? 1 : 0)
     }),
     def({
@@ -340,6 +367,9 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "control-can",
       rate: 10,
       tags: ["powertrain", "inverter", "state"],
+      extra: {
+        dbc: { signal: "INV_InverterEnableState", message: "INV_InternalStates", database: "Cascadia_PM100DZ.dbc" }
+      },
       read: (c) => c.st.vsmState >= 5
     }),
     // ------------------------------------------------------------------ accumulator
@@ -352,7 +382,11 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "ennoid-bms",
       rate: 10,
       tags: ["accumulator", "hv"],
-      extra: { min: 0, max: 600 },
+      extra: {
+        dbc: { signal: "ENNOID_PackVoltage", message: "ENNOID_VTot", database: "ENNOID_BMS.dbc" },
+        min: 0,
+        max: 600
+      },
       read: (c) => round(c.st.packV + c.rng.gauss(0.2), 2)
     }),
     def({
@@ -364,6 +398,7 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "ennoid-bms",
       rate: 10,
       tags: ["accumulator", "hv"],
+      extra: { dbc: { signal: "ENNOID_PackCurrent", message: "ENNOID_I", database: "ENNOID_BMS.dbc" } },
       read: (c) => round(c.st.busI + c.rng.gauss(0.5), 1)
     }),
     def({
@@ -375,7 +410,7 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "ennoid-bms",
       rate: 1,
       tags: ["accumulator"],
-      extra: { min: 0, max: 1 },
+      extra: { dbc: { signal: "ENNOID_SoC", message: "ENNOID_Summary", database: "ENNOID_BMS.dbc" }, min: 0, max: 1 },
       read: (c) => round(c.st.soc, 4)
     }),
     def({
@@ -387,7 +422,11 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "ennoid-bms",
       rate: 1,
       tags: ["accumulator", "cells"],
-      extra: { min: 2.8, max: 4.2 },
+      extra: {
+        dbc: { signal: "ENNOID_CellVoltageMin", message: "ENNOID_Summary", database: "ENNOID_BMS.dbc" },
+        min: 2.8,
+        max: 4.2
+      },
       read: (c) => round(c.st.cellMin + c.rng.gauss(0.001), 3)
     }),
     def({
@@ -399,7 +438,11 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "ennoid-bms",
       rate: 1,
       tags: ["accumulator", "cells"],
-      extra: { min: 2.8, max: 4.2 },
+      extra: {
+        dbc: { signal: "ENNOID_CellVoltageMax", message: "ENNOID_Summary", database: "ENNOID_BMS.dbc" },
+        min: 2.8,
+        max: 4.2
+      },
       read: (c) => round(c.st.cellMax + c.rng.gauss(0.001), 3)
     }),
     def({
@@ -411,7 +454,10 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "ennoid-bms",
       rate: 1,
       tags: ["accumulator", "thermal"],
-      extra: { max: K(60) },
+      extra: {
+        dbc: { signal: "ENNOID_TempCellMax", message: "ENNOID_Summary", database: "ENNOID_BMS.dbc" },
+        max: K(60)
+      },
       read: (c) => round(c.st.accTempMaxK + c.rng.gauss(0.15), 1)
     }),
     def({
@@ -423,6 +469,7 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "ennoid-bms",
       rate: 1,
       tags: ["accumulator", "thermal"],
+      extra: { dbc: { signal: "ECU_AccuTempMin", message: "ECU_DashData", database: "mur_telemetry_can.dbc" } },
       read: (c) => round(c.st.accTempMinK + c.rng.gauss(0.15), 1)
     }),
     def({
@@ -434,6 +481,7 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "ennoid-bms",
       rate: 1,
       tags: ["accumulator", "limits"],
+      extra: { dbc: { signal: "TTCS_DCL", message: "TTCS_Limits", database: "mur_control_can.dbc" } },
       read: (c) => round(Math.min(200, 200 - Math.max(0, c.st.accTempMaxK - K(45)) * 15), 0)
     }),
     def({
@@ -445,7 +493,10 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "ennoid-bms",
       rate: 1,
       tags: ["accumulator", "safety", "state"],
-      extra: { enum_values: IMD_ENUM },
+      extra: {
+        dbc: { signal: "TTCS_IMDState", message: "TTCS_Status", database: "mur_control_can.dbc" },
+        enum_values: IMD_ENUM
+      },
       read: () => 0
     }),
     def({
@@ -469,7 +520,11 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "control-can",
       rate: 100,
       tags: ["driver", "pedals"],
-      extra: { min: 0, max: 1 },
+      extra: {
+        dbc: { signal: "PEDAL_Position1", message: "Pedal_Status", database: "mur_control_can.dbc" },
+        min: 0,
+        max: 1
+      },
       read: (c) => round(Math.min(1, Math.max(0, c.st.throttle + c.rng.gauss(0.003))), 4)
     }),
     def({
@@ -481,7 +536,11 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "control-can",
       rate: 100,
       tags: ["driver", "pedals", "brakes"],
-      extra: { min: 0, max: 1e7 },
+      extra: {
+        dbc: { signal: "PEDAL_BrakePressure1", message: "Pedal_Status", database: "mur_control_can.dbc" },
+        min: 0,
+        max: 1e7
+      },
       read: (c) => round(Math.max(0, c.st.brakeFront + c.rng.gauss(4000)), 0)
     }),
     def({
@@ -493,7 +552,11 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "control-can",
       rate: 100,
       tags: ["driver", "pedals", "brakes"],
-      extra: { min: 0, max: 1e7 },
+      extra: {
+        dbc: { signal: "PEDAL_BrakePressure2", message: "Pedal_Status", database: "mur_control_can.dbc" },
+        min: 0,
+        max: 1e7
+      },
       read: (c) => round(Math.max(0, c.st.brakeRear + c.rng.gauss(4000)), 0)
     }),
     def({
@@ -505,7 +568,11 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "telemetry-can",
       rate: 100,
       tags: ["driver", "vehicle-dynamics"],
-      extra: { min: -2.1, max: 2.1 },
+      extra: {
+        dbc: { signal: "DASH_SteeringAngle", message: "Dashboard_Dynamics", database: "mur_telemetry_can.dbc" },
+        min: -2.1,
+        max: 2.1
+      },
       read: (c) => round(c.st.steeringWheel + c.rng.gauss(0.004), 4)
     }),
     // ------------------------------------------------------------------ dynamics
@@ -530,6 +597,9 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "telemetry-can",
       rate: 100,
       tags: ["vehicle-dynamics", "wheels"],
+      extra: {
+        dbc: { signal: "DASH_WheelSpeedFL", message: "Dashboard_WheelSpeed", database: "mur_telemetry_can.dbc" }
+      },
       read: (c) => round(wheel(c, 1), 3)
     }),
     def({
@@ -541,6 +611,9 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "telemetry-can",
       rate: 100,
       tags: ["vehicle-dynamics", "wheels"],
+      extra: {
+        dbc: { signal: "DASH_WheelSpeedFR", message: "Dashboard_WheelSpeed", database: "mur_telemetry_can.dbc" }
+      },
       read: (c) => round(wheel(c, -1), 3)
     }),
     def({
@@ -564,6 +637,7 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "sbg-ins",
       rate: 100,
       tags: ["vehicle-dynamics", "imu"],
+      extra: { dbc: { signal: "SBG_FRONT_GyroZ", message: "SBG_Front_Gyro", database: "mur_dashboard_can.dbc" } },
       read: (c) => round(c.st.yawRate + c.rng.gauss(0.006), 4)
     }),
     def({
@@ -575,6 +649,7 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "sbg-ins",
       rate: 100,
       tags: ["vehicle-dynamics", "imu"],
+      extra: { dbc: { signal: "SBG_FRONT_AccelX", message: "SBG_Front_Accel", database: "mur_dashboard_can.dbc" } },
       read: (c) => round(c.st.ax + c.rng.gauss(0.12), 3)
     }),
     def({
@@ -586,6 +661,7 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "sbg-ins",
       rate: 100,
       tags: ["vehicle-dynamics", "imu"],
+      extra: { dbc: { signal: "SBG_FRONT_AccelY", message: "SBG_Front_Accel", database: "mur_dashboard_can.dbc" } },
       read: (c) => round(c.st.ay + c.rng.gauss(0.12), 3)
     }),
     def({
@@ -597,7 +673,11 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "telemetry-can",
       rate: 100,
       tags: ["vehicle-dynamics", "suspension"],
-      extra: { min: 0, max: 0.05 },
+      extra: {
+        dbc: { signal: "DASH_ShockPotFrontLeft", message: "Dashboard_Dynamics", database: "mur_telemetry_can.dbc" },
+        min: 0,
+        max: 0.05
+      },
       read: (c) => shock(c, true, true, 0)
     }),
     def({
@@ -609,7 +689,11 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "telemetry-can",
       rate: 100,
       tags: ["vehicle-dynamics", "suspension"],
-      extra: { min: 0, max: 0.05 },
+      extra: {
+        dbc: { signal: "DASH_ShockPotFrontRight", message: "Dashboard_Dynamics", database: "mur_telemetry_can.dbc" },
+        min: 0,
+        max: 0.05
+      },
       read: (c) => shock(c, true, false, 1)
     }),
     def({
@@ -621,7 +705,11 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "telemetry-can",
       rate: 100,
       tags: ["vehicle-dynamics", "suspension"],
-      extra: { min: 0, max: 0.05 },
+      extra: {
+        dbc: { signal: "REAR_ShockPotRearLeft", message: "Rear_Dynamics", database: "mur_telemetry_can.dbc" },
+        min: 0,
+        max: 0.05
+      },
       read: (c) => shock(c, false, true, 2)
     }),
     def({
@@ -633,7 +721,11 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "telemetry-can",
       rate: 100,
       tags: ["vehicle-dynamics", "suspension"],
-      extra: { min: 0, max: 0.05 },
+      extra: {
+        dbc: { signal: "REAR_ShockPotRearRight", message: "Rear_Dynamics", database: "mur_telemetry_can.dbc" },
+        min: 0,
+        max: 0.05
+      },
       read: (c) => shock(c, false, false, 3)
     }),
     // ------------------------------------------------------------------ gps / ins
@@ -646,6 +738,7 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "sbg-ins",
       rate: 10,
       tags: ["gps", "position"],
+      extra: { dbc: { signal: "SBG_REAR_Latitude", message: "SBG_Rear_EkfPos", database: "SBG_Ellipse.dbc" } },
       read: (c) => {
         s.gpsBiasY = 0.995 * s.gpsBiasY + c.rng.gauss(0.03);
         return round(mapToLatLon(c.st.x, c.st.y + s.gpsBiasY + c.rng.gauss(0.05)).lat, 9);
@@ -660,6 +753,7 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "sbg-ins",
       rate: 10,
       tags: ["gps", "position"],
+      extra: { dbc: { signal: "SBG_REAR_Longitude", message: "SBG_Rear_EkfPos", database: "SBG_Ellipse.dbc" } },
       read: (c) => {
         s.gpsBiasX = 0.995 * s.gpsBiasX + c.rng.gauss(0.03);
         return round(mapToLatLon(c.st.x + s.gpsBiasX + c.rng.gauss(0.05), c.st.y).lon, 9);
@@ -713,7 +807,10 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "sbg-ins",
       rate: 1,
       tags: ["gps", "state"],
-      extra: { enum_values: SOL_MODE_ENUM },
+      extra: {
+        dbc: { signal: "SBG_REAR_SolMode", message: "SBG_Rear_Status", database: "SBG_Ellipse.dbc" },
+        enum_values: SOL_MODE_ENUM
+      },
       read: (c) => (c.tSec < 1.5 ? 2 : 4)
     }),
     def({
@@ -737,7 +834,10 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "control-can",
       rate: 10,
       tags: ["ecu", "state"],
-      extra: { enum_values: ECU_STATE_ENUM },
+      extra: {
+        dbc: { signal: "ECU_ECUState", message: "ECU_Status", database: "mur_control_can.dbc" },
+        enum_values: ECU_STATE_ENUM
+      },
       read: (c) => c.st.ecuState
     }),
     def({
@@ -749,6 +849,7 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "control-can",
       rate: 10,
       tags: ["ecu", "state", "hv"],
+      extra: { dbc: { signal: "ECU_TSActive", message: "ECU_Status", database: "mur_control_can.dbc" } },
       read: (c) => c.st.tsActive
     }),
     def({
@@ -760,6 +861,7 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "control-can",
       rate: 10,
       tags: ["ecu", "state"],
+      extra: { dbc: { signal: "ECU_RTDButton", message: "ECU_Status", database: "mur_control_can.dbc" } },
       read: (c) => c.st.readyToDrive
     }),
     def({
@@ -771,7 +873,10 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "control-can",
       rate: 10,
       tags: ["ecu", "state"],
-      extra: { enum_values: DRIVE_MODE_ENUM },
+      extra: {
+        dbc: { signal: "ECU_DriveMode", message: "ECU_Control", database: "mur_control_can.dbc" },
+        enum_values: DRIVE_MODE_ENUM
+      },
       read: (c) => (c.st.driving ? 2 : 0)
     }),
     def({
@@ -783,6 +888,7 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "control-can",
       rate: 100,
       tags: ["ecu", "limits", "powertrain"],
+      extra: { dbc: { signal: "ECU_TorqueLimit", message: "ECU_Control", database: "mur_control_can.dbc" } },
       read: (c) => (c.st.driving ? CAR.maxMotorTorque : 0)
     }),
     // ------------------------------------------------------------------ pdu
@@ -795,6 +901,7 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "telemetry-can",
       rate: 10,
       tags: ["pdu", "thermal"],
+      extra: { dbc: { signal: "PDU_CMD_PumpState", message: "PDU_Control", database: "mur_telemetry_can.dbc" } },
       read: (c) => (c.st.tsActive ? 1 : 0)
     }),
     def({
@@ -806,6 +913,7 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "telemetry-can",
       rate: 10,
       tags: ["pdu", "thermal"],
+      extra: { dbc: { signal: "PDU_Fan1Duty", message: "PDU_Status", database: "mur_telemetry_can.dbc" } },
       read: (c) => round(Math.min(1, Math.max(0, (c.st.coolantTempK - K(25)) / 15)), 2)
     }),
     def({
@@ -817,6 +925,9 @@ export function buildSignals(opts: SignalOptions): SignalDef[] {
       source: "telemetry-can",
       rate: 10,
       tags: ["pdu", "lv"],
+      extra: {
+        dbc: { signal: "PDU_BatteryRefVoltage", message: "PDU_Diagnostics", database: "mur_telemetry_can.dbc" }
+      },
       read: (c) => round(13.1 - c.tSec * 0.00005 - (c.st.tsActive ? 0.15 : 0) + c.rng.gauss(0.01), 3)
     }),
     // ------------------------------------------------------------------ system

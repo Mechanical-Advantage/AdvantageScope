@@ -98,6 +98,7 @@ export function getMetadataString(descriptor: SignalDescriptor): string {
   if (descriptor.unit !== null && descriptor.unit !== "") {
     metadata.unit = UNIT_ALIASES[descriptor.unit] ?? descriptor.unit;
   }
+  if (descriptor.dbc?.signal) metadata.dbcSignal = descriptor.dbc.signal;
   metadata.precision = descriptor.display?.precision;
   metadata.scale = descriptor.display?.scale;
   metadata.min = descriptor.min;

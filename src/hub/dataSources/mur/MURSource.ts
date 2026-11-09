@@ -372,6 +372,9 @@ export default class MURSource extends LiveDataSource implements LiveStatusProvi
         } else if (this.subscribedPaths.length > 0) {
           this.send({ op: "unsubscribe", subscription_id: SUBSCRIPTION_ID });
         }
+        this.subscribedPaths.forEach((path) => {
+          if (!activePaths.has(path)) this.historyRequested.delete(path);
+        });
         this.subscribedPaths = paths;
       }
 

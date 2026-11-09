@@ -68,6 +68,7 @@ export type SourceListItemState = {
   type: string;
   logKey: string;
   logType: string;
+  dbcSignal?: string;
   visible: boolean;
   options: { [key: string]: string };
 };

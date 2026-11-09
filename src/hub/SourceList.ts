@@ -61,6 +61,12 @@ export default class SourceList {
   private getNumberPreview: ((key: string, time: number) => string | null) | undefined;
   private mouseDownInfo: [number, number] | null = null;
 
+  private dbcLookup?: {
+    log: typeof window.log;
+    fieldsVersion: number;
+    metadataVersion: number;
+    keys: Map<string, string[]>;
+  };
   private refreshLastFields: Set<string> = new Set();
   private refreshLastStructTypes: { [key: string]: string | null } = {};
 
@@ -352,6 +358,7 @@ export default class SourceList {
     state.forEach((itemState) => {
       this.addListItem(itemState);
     });
+    this.refresh();
   }
 
   getActiveFields(): string[] {
@@ -380,6 +387,56 @@ export default class SourceList {
 
   /** Call when a new set of log fields may be available. */
   refresh() {
+    if (this.dbcLookup?.log !== window.log) this.dbcLookup = undefined;
+    this.state.forEach((item, index) => {
+      if (this.isFieldAvailable(item) || !item.dbcSignal) return;
+      if (
+        this.dbcLookup?.log !== window.log ||
+        this.dbcLookup.fieldsVersion !== window.log.getFieldKeysVersion() ||
+        this.dbcLookup.metadataVersion !== window.log.getMetadataVersion()
+      ) {
+        let dbcKeys = new Map<string, string[]>();
+        window.log.getFieldKeys().forEach((key) => {
+          let metadata = window.log.getMetadataString(key);
+          if (metadata.length === 0) return;
+          try {
+            let dbcSignal = JSON.parse(metadata).dbcSignal;
+            if (typeof dbcSignal !== "string" || dbcSignal.length === 0) return;
+            let keys = dbcKeys.get(dbcSignal) ?? [];
+            keys.push(key);
+            dbcKeys.set(dbcSignal, keys);
+          } catch {
+            // Not every field has JSON metadata.
+          }
+        });
+        this.dbcLookup = {
+          log: window.log,
+          fieldsVersion: window.log.getFieldKeysVersion(),
+          metadataVersion: window.log.getMetadataVersion(),
+          keys: dbcKeys
+        };
+      }
+      let candidates = this.dbcLookup.keys.get(item.dbcSignal) ?? [];
+      let matches = candidates.filter((logKey) => this.isFieldAvailable({ ...item, logKey }));
+      if (matches.length === 0 && candidates.length === 1) {
+        let candidateType = window.log.getType(candidates[0]);
+        let sourceTypes = this.config.types.find((type) => type.key === item.type)?.sourceTypes ?? [];
+        if (
+          ((item.logType === "Boolean" && candidateType === LoggableType.Number) ||
+            (item.logType === "Number" && candidateType === LoggableType.Boolean)) &&
+          sourceTypes.includes(LoggableType[candidateType])
+        ) {
+          matches = candidates;
+          item.logType = LoggableType[candidateType];
+        }
+      }
+      if (matches.length === 1) {
+        item.logKey = matches[0];
+        let element = this.LIST.children[index] as HTMLElement;
+        this.updateItem(element, item);
+        this.updatePreview(element, item);
+      }
+    });
     let displayedFields = this.state.map((item) => item.logKey);
     let currentFields = new Set(displayedFields.filter((field) => window.log.getType(field) !== null));
     let structTypes: { [key: string]: string | null } = {};
@@ -560,6 +617,12 @@ export default class SourceList {
       visible: true,
       options: options
     };
+    try {
+      let dbcSignal = JSON.parse(window.log.getMetadataString(logKey)).dbcSignal;
+      if (typeof dbcSignal === "string" && dbcSignal.length > 0) state.dbcSignal = dbcSignal;
+    } catch {
+      // Not every field has JSON metadata.
+    }
     if (parentIndex !== undefined) {
       let insertIndex = parentIndex! + 1;
       while (insertIndex < this.state.length && this.isChild(insertIndex)) {
