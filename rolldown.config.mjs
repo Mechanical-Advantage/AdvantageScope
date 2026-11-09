@@ -14,6 +14,7 @@ import cleanup from "rollup-plugin-cleanup";
 const isWpilib = process.env.ASCOPE_DISTRIBUTION === "WPILIB";
 const isDS = process.env.ASCOPE_DISTRIBUTION === "LITEDS";
 const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE" || isDS;
+const enableSourcemap = process.env.ENABLE_SOURCEMAP === "true";
 const licenseHeader =
   "// Copyright (c) 2021-2026 Littleton Robotics\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the resources directory of this application.\n";
 
@@ -38,8 +39,9 @@ function bundle(input, isMain, isXRClient, external = []) {
       chunkFileNames: "chunk/[name].js",
       format: isMain ? "cjs" : "es",
       banner: licenseHeader,
-      minify: isXRClient || isLite || "dce-only",
-      minifyInternalExports: isXRClient || isLite
+      minify: (isXRClient || isLite || "dce-only") && !enableSourcemap,
+      minifyInternalExports: (isXRClient || isLite) && !enableSourcemap,
+      sourcemap: enableSourcemap
     },
     context: "this",
     external: external,
@@ -51,13 +53,13 @@ function bundle(input, isMain, isXRClient, external = []) {
       isXRClient
         ? getBabelOutputPlugin({
             presets: [["@babel/preset-env", { modules: false }]],
-            compact: true,
+            compact: !enableSourcemap,
             targets: "iOS 16" // AdvantageScope XR is built for iOS 16
           })
         : isLite
         ? getBabelOutputPlugin({
             presets: [["@babel/preset-env", { modules: false }]],
-            compact: true,
+            compact: !enableSourcemap,
             targets: "> 0.1%, not dead"
           })
         : cleanup(),
