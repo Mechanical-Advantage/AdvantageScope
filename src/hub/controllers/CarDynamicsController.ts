@@ -46,16 +46,16 @@ export default class CarDynamicsController implements TabController {
 
     // Enforce ranges
     this.MAX_SPEED.addEventListener("change", () => {
-      if (!(Number(this.MAX_SPEED.value) > 0)) this.MAX_SPEED.value = "1";
+      if (Number(this.MAX_SPEED.value) <= 0) this.MAX_SPEED.value = "0.1";
     });
     this.STEERING_RATIO.addEventListener("change", () => {
-      if (!(Number(this.STEERING_RATIO.value) > 0)) this.STEERING_RATIO.value = "0.1";
+      if (Number(this.STEERING_RATIO.value) <= 0) this.STEERING_RATIO.value = "0.1";
     });
     this.SIZE_X.addEventListener("change", () => {
-      if (!(Number(this.SIZE_X.value) > 0)) this.SIZE_X.value = "0.1";
+      if (Number(this.SIZE_X.value) <= 0) this.SIZE_X.value = "0.1";
     });
     this.SIZE_Y.addEventListener("change", () => {
-      if (!(Number(this.SIZE_Y.value) > 0)) this.SIZE_Y.value = "0.1";
+      if (Number(this.SIZE_Y.value) <= 0) this.SIZE_Y.value = "0.1";
     });
 
     // Orientation controls
@@ -92,16 +92,16 @@ export default class CarDynamicsController implements TabController {
     if ("sources" in state) {
       this.sourceList.setState(state.sources as SourceListState);
     }
-    if ("maxSpeed" in state && typeof state.maxSpeed === "number" && state.maxSpeed > 0) {
+    if ("maxSpeed" in state && typeof state.maxSpeed === "number") {
       this.MAX_SPEED.value = state.maxSpeed.toString();
     }
-    if ("steeringRatio" in state && typeof state.steeringRatio === "number" && state.steeringRatio > 0) {
+    if ("steeringRatio" in state && typeof state.steeringRatio === "number") {
       this.STEERING_RATIO.value = state.steeringRatio.toString();
     }
-    if ("sizeX" in state && typeof state.sizeX === "number" && state.sizeX > 0) {
+    if ("sizeX" in state && typeof state.sizeX === "number") {
       this.SIZE_X.value = state.sizeX.toString();
     }
-    if ("sizeY" in state && typeof state.sizeY === "number" && state.sizeY > 0) {
+    if ("sizeY" in state && typeof state.sizeY === "number") {
       this.SIZE_Y.value = state.sizeY.toString();
     }
     if (
@@ -123,8 +123,7 @@ export default class CarDynamicsController implements TabController {
   newAssets(): void {}
 
   getActiveFields(): string[] {
-    let fields = Object.values(this.fields.resolve(this.sourceList.getState()));
-    return [...this.sourceList.getActiveFields(), ...(fields.filter((key) => key !== undefined) as string[])];
+    return [...this.sourceList.getActiveFields(), ...this.fields.keys(this.sourceList.getState())];
   }
 
   showTimeline(): boolean {

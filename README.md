@@ -18,10 +18,18 @@ Use File > Open Log(s) to open MF4, candump with DBC, CSV, JSONL or WPILOG files
 
 The available tabs are Line Graph, Track Map, Laps, Table, Statistics, Console, Video, Points, Driver Inputs, Car Dynamics, Metadata and Documentation. Points is a plain 2D plot.
 
-Driver Inputs and Car Dynamics draw the car at the timeline cursor, which follows hover. Each tab fills itself from fields whose DBC signal names it knows. A field dragged into Sources replaces the default for the type it is given, and right-clicking a source changes its type. Values are converted from the field's unit, so live data in SI units and logs in DBC units draw the same.
+Driver Inputs and Car Dynamics draw the car at the timeline cursor, which follows hover. Each tab fills itself from fields whose DBC signal names it knows. A field dragged into Sources replaces the default for the type it is given, and right-clicking a source changes its type. Each tab converts values from the field's unit, so live data in SI units and logs in DBC units draw the same.
 
-- **Driver Inputs** replaces Joysticks. It draws a steering wheel from `DASH_SteeringAngle` (positive left), a throttle bar from `ECU_ThrottlePos`, else `PEDAL_Position1` or `PEDAL_Position2`, and brake bars from `ECU_BrakePressFront` and `ECU_BrakePressRear`. Brake Full Scale sets the pressure of a full bar, 2000 psi by default, the top of the DBC range.
-- **Car Dynamics** replaces Swerve. It draws a top-down car with the front wheels turned by `DASH_SteeringAngle` divided by the steering ratio, front wheel speed arrows from `DASH_SpeedFL` and `DASH_SpeedFR`, the yaw rate from `SBG_FRONT_GyroZ` as an arc, an acceleration dot in a 2 g circle from `SBG_FRONT_AccelX` (forward) and `SBG_FRONT_AccelY` (left), and the damper position in mm beside each wheel from the four `ShockPot` signals. Steering Ratio defaults to 4.5:1, Max Speed sets the length of a full arrow, and Wheelbase and Track set the car's proportions. The DBCs have no rear wheel speeds or heading, so the rear wheels show no arrows and there is no body slip angle.
+- **Driver Inputs** replaces Joysticks. It draws a steering wheel from `DASH_SteeringAngle` (positive left), a throttle bar from `ECU_ThrottlePos`, else `PEDAL_Position1` or `PEDAL_Position2`, and brake bars from `ECU_BrakePressFront` and `ECU_BrakePressRear`. Brake Full Scale sets the pressure of a full bar. It defaults to 2000 psi, the top of the DBC range.
+- **Car Dynamics** replaces Swerve. It draws a top-down car with these parts:
+
+  - front wheels turned by `DASH_SteeringAngle` divided by the steering ratio, 4.5:1 by default
+  - front wheel speed arrows from `DASH_SpeedFL` and `DASH_SpeedFR`, full length at Max Speed
+  - the yaw rate from `SBG_FRONT_GyroZ` as an arc
+  - an acceleration dot in a 2 g circle from `SBG_FRONT_AccelX` (forward) and `SBG_FRONT_AccelY` (left)
+  - the damper position in mm beside each wheel from the four `ShockPot` signals
+
+  Wheelbase and Track set the car's proportions. The DBCs have no rear wheel speeds or heading, so the rear wheels have no arrows and the tab shows no body slip angle.
 
 The desktop app uses Electron. The Lite build runs in a browser. See [DEVELOPING.md](DEVELOPING.md) for setup, builds and the mock backend.
 

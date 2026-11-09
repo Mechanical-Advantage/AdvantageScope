@@ -5,8 +5,8 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-// Ported from the upstream JoysticksRenderer: the same canvas, colours, line widths, axis bars and
-// aspect-fit layout, drawing one steering wheel and three pedal bars instead of joystick layouts.
+// Ported from the upstream JoysticksRenderer. It keeps the canvas, colours, line widths, axis bars and
+// aspect-fit layout, and draws one steering wheel and three pedal bars instead of joystick layouts.
 
 import { scaleValue } from "../util";
 import TabRenderer from "./TabRenderer";

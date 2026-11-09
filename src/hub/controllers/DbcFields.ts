@@ -44,6 +44,11 @@ export class DbcSlotFields {
     this.bySignal = null;
   }
 
+  /** The fields the slots read, so live sources subscribe to defaults as well as dragged fields. */
+  keys(sources: SourceListState): string[] {
+    return Object.values(this.resolve(sources)).filter((key): key is string => key !== undefined);
+  }
+
   resolve(sources: SourceListState): { [slot: string]: string | undefined } {
     if (this.bySignal === null) {
       const bySignal = new Map<string, string>();

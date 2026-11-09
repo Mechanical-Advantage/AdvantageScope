@@ -26,9 +26,9 @@ export default class DriverInputsController implements TabController {
     let settings = root.getElementsByClassName("driver-inputs-settings")[0] as HTMLElement;
     this.BRAKE_SCALE = settings.getElementsByClassName("brake-scale")[0] as HTMLInputElement;
 
-    // Enforce range
+    // Enforce ranges
     this.BRAKE_SCALE.addEventListener("change", () => {
-      if (!(Number(this.BRAKE_SCALE.value) > 0)) this.BRAKE_SCALE.value = "2000";
+      if (Number(this.BRAKE_SCALE.value) <= 0) this.BRAKE_SCALE.value = "2000";
     });
   }
 
@@ -49,7 +49,7 @@ export default class DriverInputsController implements TabController {
     if ("sources" in state) {
       this.sourceList.setState(state.sources as SourceListState);
     }
-    if ("brakeScale" in state && typeof state.brakeScale === "number" && state.brakeScale > 0) {
+    if ("brakeScale" in state && typeof state.brakeScale === "number") {
       this.BRAKE_SCALE.value = state.brakeScale.toString();
     }
   }
@@ -62,8 +62,7 @@ export default class DriverInputsController implements TabController {
   newAssets(): void {}
 
   getActiveFields(): string[] {
-    let fields = Object.values(this.fields.resolve(this.sourceList.getState()));
-    return [...this.sourceList.getActiveFields(), ...(fields.filter((key) => key !== undefined) as string[])];
+    return [...this.sourceList.getActiveFields(), ...this.fields.keys(this.sourceList.getState())];
   }
 
   showTimeline(): boolean {

@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import { SourceListConfig } from "../../shared/SourceListConfig";
-import { numberSlot as slot } from "./DbcFields";
+import { numberSlot } from "./DbcFields";
 
 /** Each slot's default DBC signal, used when no field is dragged into that slot. */
 export const CarDynamicsDefaults: { [slot: string]: string[] } = {
@@ -28,16 +28,16 @@ const CarDynamicsController_Config: SourceListConfig = {
   allowChildrenFromDrag: true,
   typeMemoryId: "carDynamics",
   types: [
-    slot("steering", "Steering Angle", "360"),
-    slot("speedFL", "Wheel Speed FL", "speed"),
-    slot("speedFR", "Wheel Speed FR", "speed"),
-    slot("yawRate", "Yaw Rate", "explore"),
-    slot("accelX", "Longitudinal Accel", "target"),
-    slot("accelY", "Lateral Accel", "target"),
-    slot("shockFL", "Damper FL", "earthquake"),
-    slot("shockFR", "Damper FR", "earthquake"),
-    slot("shockRL", "Damper RL", "earthquake"),
-    slot("shockRR", "Damper RR", "earthquake")
+    numberSlot("steering", "Steering Angle", "360"),
+    numberSlot("speedFL", "Wheel Speed FL", "speed"),
+    numberSlot("speedFR", "Wheel Speed FR", "speed"),
+    numberSlot("yawRate", "Yaw Rate", "explore"),
+    numberSlot("accelX", "Longitudinal Accel", "target"),
+    numberSlot("accelY", "Lateral Accel", "target"),
+    numberSlot("shockFL", "Damper FL", "earthquake"),
+    numberSlot("shockFR", "Damper FR", "earthquake"),
+    numberSlot("shockRL", "Damper RL", "earthquake"),
+    numberSlot("shockRR", "Damper RR", "earthquake")
   ]
 };
 

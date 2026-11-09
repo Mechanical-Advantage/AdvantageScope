@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import { SourceListConfig } from "../../shared/SourceListConfig";
-import { numberSlot as slot } from "./DbcFields";
+import { numberSlot } from "./DbcFields";
 
 /** Each slot's default DBC signals, tried in order when no field is dragged into that slot. */
 export const DriverInputsDefaults: { [slot: string]: string[] } = {
@@ -22,10 +22,10 @@ const DriverInputsController_Config: SourceListConfig = {
   allowChildrenFromDrag: true,
   typeMemoryId: "driverInputs",
   types: [
-    slot("steering", "Steering Angle", "360"),
-    slot("throttle", "Throttle", "speed"),
-    slot("brakeFront", "Brake Front", "verticalalignbottom"),
-    slot("brakeRear", "Brake Rear", "verticalalignbottom")
+    numberSlot("steering", "Steering Angle", "360"),
+    numberSlot("throttle", "Throttle", "speed"),
+    numberSlot("brakeFront", "Brake Front", "verticalalignbottom"),
+    numberSlot("brakeRear", "Brake Rear", "verticalalignbottom")
   ]
 };
 
