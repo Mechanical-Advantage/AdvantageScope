@@ -92,6 +92,22 @@ test("refresh caches unresolved DBC lookups until fields or the log change", () 
   assert.deepEqual(list.getActiveFields(), ["NEW/Temperature"]);
 });
 
+test("refresh releases the previous log when all replacement fields are available directly", () => {
+  const log = new Log();
+  field(log, "INVERTER/INV_MotorTemp");
+  const { list } = sourceList(log, [item()]);
+  list.refresh();
+  assert.equal(list.dbcLookup.log, log);
+  assert.deepEqual(list.getActiveFields(), ["INVERTER/INV_MotorTemp"]);
+
+  const replacement = new Log();
+  field(replacement, "INVERTER/INV_MotorTemp");
+  (globalThis as any).window.log = replacement;
+  list.refresh();
+  assert.equal(list.dbcLookup, undefined);
+  assert.deepEqual(list.getActiveFields(), ["INVERTER/INV_MotorTemp"]);
+});
+
 test("refresh leaves absent, ambiguous, and wrong-type matches missing and retries on later refresh", () => {
   const log = new Log();
   field(log, "OTHER/Temperature", LoggableType.Number, "OtherSignal");
