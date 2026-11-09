@@ -50,7 +50,6 @@ export default class CarDynamicsRenderer implements TabRenderer {
     if (renderStateString === this.lastRenderState) {
       return;
     }
-    this.lastRenderState = renderStateString;
 
     // Update canvas size
     let context = this.CANVAS.getContext("2d") as CanvasRenderingContext2D;
@@ -319,6 +318,7 @@ export default class CarDynamicsRenderer implements TabRenderer {
       );
       context.fill();
     }
+    this.lastRenderState = renderStateString;
   }
 }
 

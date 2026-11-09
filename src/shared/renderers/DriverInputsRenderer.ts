@@ -44,9 +44,9 @@ export default class DriverInputsRenderer implements TabRenderer {
     let renderState: any[] = [canvasWidth, canvasHeight, isLight, window.devicePixelRatio, command];
     let renderStateString = JSON.stringify(renderState);
     if (renderStateString === this.lastRenderState) {
+      this.lastRenderState = renderStateString;
       return;
     }
-    this.lastRenderState = renderStateString;
 
     // Apply setup and scaling
     this.CANVAS.width = canvasWidth * window.devicePixelRatio;
@@ -67,6 +67,7 @@ export default class DriverInputsRenderer implements TabRenderer {
       context.textBaseline = "middle";
       context.fillStyle = color;
       context.fillText("Drag steering, throttle and brake fields to Sources.", canvasWidth / 2, canvasHeight / 2);
+      this.lastRenderState = renderStateString;
       return;
     }
 
@@ -149,6 +150,7 @@ export default class DriverInputsRenderer implements TabRenderer {
       drawAxis([centerX, 130], [40, 200], value === null ? 0 : value / fullScale);
       drawLabel(centerX, name, value === null ? "—" : value.toFixed(0) + suffix);
     });
+    this.lastRenderState = renderStateString;
   }
 }
 

@@ -47,16 +47,18 @@ export default class CarDynamicsController implements TabController {
 
     // Enforce ranges
     this.MAX_SPEED.addEventListener("change", () => {
-      if (Number(this.MAX_SPEED.value) <= 0) this.MAX_SPEED.value = "0.1";
+      if (!Number.isFinite(Number(this.MAX_SPEED.value)) || Number(this.MAX_SPEED.value) <= 0)
+        this.MAX_SPEED.value = "0.1";
     });
     this.STEERING_RATIO.addEventListener("change", () => {
-      if (Number(this.STEERING_RATIO.value) <= 0) this.STEERING_RATIO.value = "0.1";
+      if (!Number.isFinite(Number(this.STEERING_RATIO.value)) || Number(this.STEERING_RATIO.value) <= 0)
+        this.STEERING_RATIO.value = "0.1";
     });
     this.SIZE_X.addEventListener("change", () => {
-      if (Number(this.SIZE_X.value) <= 0) this.SIZE_X.value = "0.1";
+      if (!Number.isFinite(Number(this.SIZE_X.value)) || Number(this.SIZE_X.value) <= 0) this.SIZE_X.value = "0.1";
     });
     this.SIZE_Y.addEventListener("change", () => {
-      if (Number(this.SIZE_Y.value) <= 0) this.SIZE_Y.value = "0.1";
+      if (!Number.isFinite(Number(this.SIZE_Y.value)) || Number(this.SIZE_Y.value) <= 0) this.SIZE_Y.value = "0.1";
     });
 
     // Orientation controls
@@ -93,16 +95,26 @@ export default class CarDynamicsController implements TabController {
     if ("sources" in state) {
       this.sourceList.setState(state.sources as SourceListState);
     }
-    if ("maxSpeed" in state && typeof state.maxSpeed === "number") {
+    if (
+      "maxSpeed" in state &&
+      typeof state.maxSpeed === "number" &&
+      Number.isFinite(state.maxSpeed) &&
+      state.maxSpeed > 0
+    ) {
       this.MAX_SPEED.value = state.maxSpeed.toString();
     }
-    if ("steeringRatio" in state && typeof state.steeringRatio === "number") {
+    if (
+      "steeringRatio" in state &&
+      typeof state.steeringRatio === "number" &&
+      Number.isFinite(state.steeringRatio) &&
+      state.steeringRatio > 0
+    ) {
       this.STEERING_RATIO.value = state.steeringRatio.toString();
     }
-    if ("sizeX" in state && typeof state.sizeX === "number") {
+    if ("sizeX" in state && typeof state.sizeX === "number" && Number.isFinite(state.sizeX) && state.sizeX > 0) {
       this.SIZE_X.value = state.sizeX.toString();
     }
-    if ("sizeY" in state && typeof state.sizeY === "number") {
+    if ("sizeY" in state && typeof state.sizeY === "number" && Number.isFinite(state.sizeY) && state.sizeY > 0) {
       this.SIZE_Y.value = state.sizeY.toString();
     }
     if (

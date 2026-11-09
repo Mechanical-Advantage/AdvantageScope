@@ -29,7 +29,8 @@ export default class DriverInputsController implements TabController {
 
     // Enforce ranges
     this.BRAKE_SCALE.addEventListener("change", () => {
-      if (Number(this.BRAKE_SCALE.value) <= 0) this.BRAKE_SCALE.value = "2000";
+      if (!Number.isFinite(Number(this.BRAKE_SCALE.value)) || Number(this.BRAKE_SCALE.value) <= 0)
+        this.BRAKE_SCALE.value = "2000";
     });
   }
 
@@ -50,7 +51,12 @@ export default class DriverInputsController implements TabController {
     if ("sources" in state) {
       this.sourceList.setState(state.sources as SourceListState);
     }
-    if ("brakeScale" in state && typeof state.brakeScale === "number") {
+    if (
+      "brakeScale" in state &&
+      typeof state.brakeScale === "number" &&
+      Number.isFinite(state.brakeScale) &&
+      state.brakeScale > 0
+    ) {
       this.BRAKE_SCALE.value = state.brakeScale.toString();
     }
   }

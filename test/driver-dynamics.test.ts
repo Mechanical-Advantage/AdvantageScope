@@ -3,8 +3,10 @@ import { test } from "node:test";
 import CarDynamicsController from "../src/hub/controllers/CarDynamicsController";
 import { CarDynamicsDefaults } from "../src/hub/controllers/CarDynamicsController_Config";
 import { DbcSlotFields } from "../src/hub/controllers/DbcFields";
+import DriverInputsController from "../src/hub/controllers/DriverInputsController";
 import Log from "../src/shared/log/Log";
 import CarDynamicsRenderer from "../src/shared/renderers/CarDynamicsRenderer";
+import DriverInputsRenderer from "../src/shared/renderers/DriverInputsRenderer";
 
 function controller() {
   const log = new Log();
@@ -78,3 +80,59 @@ test("a missing wheel speed draws its direction but no speed arrow", () => {
   assert.equal(calls.filter((c) => c.name === "stroke").length, 9);
   assert.equal(calls.filter((c) => c.name === "fill").length, 1);
 });
+
+test("restoring invalid scales and dimensions preserves the current defaults", () => {
+  const { controller: c } = controller();
+  const driver = Object.create(DriverInputsController.prototype) as any;
+  driver.BRAKE_SCALE = { value: "2000" };
+  for (const invalid of [0, -1, NaN, Infinity, -Infinity, "12", null]) {
+    c.restoreState({ maxSpeed: invalid, steeringRatio: invalid, sizeX: invalid, sizeY: invalid });
+    driver.restoreState({ brakeScale: invalid });
+    assert.equal(c.MAX_SPEED.value, "100");
+    assert.equal(c.STEERING_RATIO.value, "10");
+    assert.equal(c.SIZE_X.value, "2");
+    assert.equal(c.SIZE_Y.value, "3");
+    assert.equal(driver.BRAKE_SCALE.value, "2000");
+  }
+  c.restoreState({ maxSpeed: 50, steeringRatio: 5, sizeX: 1, sizeY: 2 });
+  driver.restoreState({ brakeScale: 1000 });
+  assert.equal(c.getCommand().frameAspectRatio, 2);
+  assert.equal(driver.BRAKE_SCALE.value, "1000");
+});
+
+for (const Renderer of [CarDynamicsRenderer, DriverInputsRenderer]) {
+  test(`${Renderer.name} retries a frame after a canvas error`, () => {
+    const { root } = canvas();
+    const canvasElement = root.firstElementChild.firstElementChild;
+    let attempts = 0;
+    const original = canvasElement.getContext;
+    const context = original();
+    canvasElement.getContext = () =>
+      new Proxy(context, {
+        get: (target, name) =>
+          name === "clearRect"
+            ? () => {
+                attempts++;
+                if (attempts === 1) throw new Error("canvas failed once");
+              }
+            : target[name]
+      });
+    const renderer = new Renderer(root);
+    const command: any =
+      Renderer === CarDynamicsRenderer
+        ? {
+            rotation: 0,
+            frameAspectRatio: 1,
+            moduleVelocities: [],
+            robotVelocities: [],
+            accel: null,
+            dampers: []
+          }
+        : { steering: null, throttle: null, brakeFront: null, brakeRear: null, brakeScale: 2000 };
+    assert.throws(() => renderer.render(command), /canvas failed once/);
+    renderer.render(command);
+    assert.equal(attempts, 2);
+    renderer.render(command);
+    assert.equal(attempts, 2);
+  });
+}
