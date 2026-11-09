@@ -5,13 +5,12 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-// HTTP + WebSocket front end for the mock backend (spec 01 §5, spec 02 §4/§6 sim controls).
+// HTTP + WebSocket front end for the mock backend (spec 01 §5).
 
 import http from "node:http";
 import { WebSocketServer, type WebSocket } from "ws";
 import { MockBackend, type BackendOptions } from "./backend.ts";
 import type { HttpError } from "./contract.ts";
-import { cloudPacket } from "./pointcloud.ts";
 import { Session, type SessionOptions } from "./session.ts";
 
 export const MAX_HISTORY_POINTS = 20_000;
@@ -85,32 +84,11 @@ export function handleHttp(backend: MockBackend, req: http.IncomingMessage, res:
     return json(res, 200, result);
   }
 
-  if (path.startsWith("/api/v1/sim/")) {
-    if (!backend.opts.simClock) return err(res, 404, "not_found", "Simulation endpoints require --sim-clock");
-    const action = path.slice("/api/v1/sim/".length);
-    if (action === "status") {
-      if (req.method !== "GET") return err(res, 405, "method_not_allowed", "Use GET");
-      return json(res, 200, backend.simStatus());
-    }
-    if (action === "pause" || action === "resume" || action === "reset") {
-      if (req.method !== "POST") return err(res, 405, "method_not_allowed", "Use POST");
-      backend[action]();
-      return json(res, 200, backend.simStatus());
-    }
-    return err(res, 404, "not_found", `Unknown sim action: ${action}`);
-  }
-
   if (path === "" || path === "/api" || path === "/api/v1") {
     return json(res, 200, {
       name: "mur-voir mock telemetry backend",
       api_version: 1,
-      endpoints: [
-        "GET /api/v1/catalogue",
-        "GET /api/v1/history",
-        "WS /api/v1/live",
-        "GET /api/v1/sim/status",
-        "POST /api/v1/sim/{pause,resume,reset}"
-      ]
+      endpoints: ["GET /api/v1/catalogue", "GET /api/v1/history", "WS /api/v1/live"]
     });
   }
   return err(res, 404, "not_found", `No route for ${req.method} ${url.pathname}`);
@@ -124,25 +102,8 @@ export async function startServer(
   const server = http.createServer((req, res) => handleHttp(backend, req, res));
   const wss = new WebSocketServer({ noServer: true, maxPayload: 1 << 20 });
 
-  const clouds = new WebSocketServer({ noServer: true });
-  const cloudTimer = opts.pointCloud
-    ? setInterval(() => {
-        if (backend.simStatus().state === "paused") return;
-        const pose = backend.latest.get("vehicles/mur27/autonomy/pose")?.value;
-        const center = pose && typeof pose === "object" && "position" in pose ? pose.position : undefined;
-        const packet = cloudPacket(backend.nowNs(), backend.simStatus().reset_count, center);
-        for (const client of clouds.clients)
-          if (client.readyState === client.OPEN && client.bufferedAmount < 1_000_000) client.send(packet);
-      }, 100)
-    : null;
   server.on("upgrade", (req, socket, head) => {
     const url = new URL(req.url ?? "/", "http://localhost");
-    if (url.pathname === "/api/v1/points" && opts.pointCloud) {
-      clouds.handleUpgrade(req, socket, head, (client) => {
-        client.on("error", () => client.close());
-      });
-      return;
-    }
     if (url.pathname.replace(/\/+$/, "") !== "/api/v1/live") {
       socket.write("HTTP/1.1 404 Not Found\r\nConnection: close\r\n\r\n");
       return socket.destroy();
@@ -177,9 +138,6 @@ export async function startServer(
     port,
     close: async () => {
       backend.stop();
-      if (cloudTimer) clearInterval(cloudTimer);
-      for (const client of clouds.clients) client.terminate();
-      clouds.close();
       for (const c of wss.clients) c.terminate();
       wss.close();
       await new Promise<void>((resolve) => server.close(() => resolve()));

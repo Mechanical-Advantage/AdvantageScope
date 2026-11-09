@@ -19,11 +19,11 @@ import NamedMessage from "../../shared/NamedMessage";
 import { DEFAULT_PREFS, mergePreferences } from "../../shared/Preferences";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
 import {
-  getAllTabTypes,
   getDefaultTabTitle,
   getTabAccelerator,
   getTabIcon,
-  LITE_COMPATIBLE_TABS
+  LITE_COMPATIBLE_TABS,
+  NEW_TAB_TYPES
 } from "../../shared/TabType";
 import { Units } from "../../shared/units";
 import { GITHUB_REPOSITORY } from "../github";
@@ -200,9 +200,9 @@ function chooseFile(accept: string, multiple: boolean, callback: (files: File[])
 }
 
 function openLocalLog() {
-  chooseFile(".wpilog,.wpilogxz,.rlog,.log,.csv,.mcap,.jsonl,.dbc,.json", true, (files) => {
+  chooseFile(".wpilog,.wpilogxz,.rlog,.log,.csv,.jsonl,.dbc,.json", true, (files) => {
     uploadedFiles = new Map(files.map((file) => [file.name, file]));
-    const logs = files.filter((file) => /\.(wpilog|wpilogxz|rlog|log|csv|mcap|jsonl)$/i.test(file.name));
+    const logs = files.filter((file) => /\.(wpilog|wpilogxz|rlog|log|csv|jsonl)$/i.test(file.name));
     sendMessage(hubPort, "open-files", {
       files: logs.filter((file) => !file.name.endsWith(".markers.csv")).map((file) => file.name),
       merge: false
@@ -635,19 +635,16 @@ async function handleHubMessage(message: NamedMessage) {
             menuItems = [
               {
                 content: "New Tab",
-                items: getAllTabTypes()
-                  .slice(1)
-                  .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
-                  .map((tabType) => {
-                    return {
-                      content: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)} (${getTabAccelerator(
-                        tabType
-                      ).replace("Alt+", "\u2325 ")})`,
-                      callback() {
-                        sendMessage(hubPort, "new-tab", tabType);
-                      }
-                    };
-                  })
+                items: NEW_TAB_TYPES.filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType)).map((tabType) => {
+                  return {
+                    content: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)} (${getTabAccelerator(
+                      tabType
+                    ).replace("Alt+", "\u2325 ")})`,
+                    callback() {
+                      sendMessage(hubPort, "new-tab", tabType);
+                    }
+                  };
+                })
               },
               "-",
               {
@@ -741,20 +738,17 @@ async function handleHubMessage(message: NamedMessage) {
     case "ask-new-tab":
       openMenu(
         message.data,
-        getAllTabTypes()
-          .slice(1)
-          .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
-          .map((tabType) => {
-            return {
-              content: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)} (${getTabAccelerator(tabType).replace(
-                "Alt+",
-                "\u2325 "
-              )})`,
-              callback() {
-                sendMessage(hubPort, "new-tab", tabType);
-              }
-            };
-          })
+        NEW_TAB_TYPES.filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType)).map((tabType) => {
+          return {
+            content: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)} (${getTabAccelerator(tabType).replace(
+              "Alt+",
+              "\u2325 "
+            )})`,
+            callback() {
+              sendMessage(hubPort, "new-tab", tabType);
+            }
+          };
+        })
       );
       break;
 
@@ -1179,52 +1173,6 @@ async function handleHubMessage(message: NamedMessage) {
       }
       break;
 
-    case "ask-3d-camera":
-      {
-        let position: [number, number] = message.data.position;
-        let options: string[] = message.data.options;
-        let selectedIndex: number = message.data.selectedIndex;
-        let fov: number = message.data.fov;
-
-        let menuItems: (MenuItem | Submenu | "-")[] = [
-          {
-            content: (selectedIndex === -1 ? "\u2714 " : "") + "Orbit Field",
-            callback() {
-              sendMessage(hubPort, "set-3d-camera", -1);
-            }
-          },
-          {
-            content: (selectedIndex === -2 ? "\u2714 " : "") + "Orbit Robot",
-            callback() {
-              sendMessage(hubPort, "set-3d-camera", -2);
-            }
-          },
-          {
-            content: "Set FOV",
-            async callback() {
-              let port = await openPopupWindow("www/editFov.html", [300, 81], "pixels", (message) => {
-                closePopupWindow();
-                sendMessage(hubPort, "edit-fov", message);
-              });
-              port.postMessage(fov);
-            }
-          }
-        ];
-        if (options.length > 0) {
-          menuItems.push("-");
-        }
-        options.forEach((option, index) => {
-          menuItems.push({
-            content: (index === selectedIndex ? "\u2714 " : "") + option,
-            callback() {
-              sendMessage(hubPort, "set-3d-camera", index);
-            }
-          });
-        });
-        openMenu({ x: position[0], y: position[1], width: 0, height: 0 }, menuItems);
-      }
-      break;
-
     case "ask-2d-camera":
       {
         let position: [number, number] = message.data.position;
@@ -1293,15 +1241,13 @@ function processKeydown(event: KeyboardEvent): boolean {
     openPreferences();
   } else if (!event.shiftKey && !modifier && event.altKey && !event.code.startsWith("Alt")) {
     triggered = false;
-    getAllTabTypes()
-      .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
-      .forEach((tabType) => {
-        let accelerator = getTabAccelerator(tabType).replace("Alt+", "").toLowerCase();
-        if (accelerator.length > 0 && event.code.slice(-1).toLowerCase() === accelerator) {
-          sendMessage(hubPort, "new-tab", tabType);
-          triggered = true;
-        }
-      });
+    NEW_TAB_TYPES.filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType)).forEach((tabType) => {
+      let accelerator = getTabAccelerator(tabType).replace("Alt+", "").toLowerCase();
+      if (accelerator.length > 0 && event.code.slice(-1).toLowerCase() === accelerator) {
+        sendMessage(hubPort, "new-tab", tabType);
+        triggered = true;
+      }
+    });
   } else if (event.code === "Escape") {
     closePopupWindow();
   } else {

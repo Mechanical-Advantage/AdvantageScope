@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-// MUR live telemetry contract (spec 01 §3–§5, with the spec 02 sim extensions).
+// MUR live telemetry contract (spec 01 §3–§5).
 //
 // Pure types plus a few tiny helpers with no runtime dependencies, so the dashboard can import
 // this file directly. Everything here is erasable TypeScript (no enums/namespaces).
@@ -38,9 +38,6 @@ export interface DisplayHints {
   [key: string]: unknown;
 }
 
-/** Time domain of `t_ns` (extension, spec 02 §2/§4). Absent means `unix`. */
-export type ClockDomain = "unix" | "sim";
-
 export interface SignalDescriptor {
   path: string;
   /** Logical type; unknown strings must be tolerated by clients. */
@@ -55,17 +52,11 @@ export interface SignalDescriptor {
   tags: string[];
   writable: false;
   // optional
-  frame_id?: string;
   /** Integer-as-string -> label. */
   enum_values?: Record<string, string>;
   min?: number;
   max?: number;
-  encoding?: string;
   type_id?: string;
-  // extensions (spec 02)
-  clock_domain?: ClockDomain;
-  /** ROS 2 message type the value was mapped from, e.g. `geometry_msgs/msg/PoseStamped`. */
-  ros_msg_type?: string;
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -146,7 +137,6 @@ export interface CatalogueSnapshotBody {
   revision: number;
   signals: SignalDescriptor[];
   /** Extension: clock domain for every `t_ns` from this server. */
-  clock_domain?: ClockDomain;
 }
 
 // §5.3 HTTP history
@@ -250,23 +240,6 @@ export interface ErrorOp {
   paths?: string[];
 }
 
-// Extension (spec 02 §4/§6): simulation clock state.
-export type SimState = "running" | "paused";
-export interface SimStatus {
-  clock_domain: ClockDomain;
-  state: SimState;
-  sim_time_ns: NsString;
-  reset_count: number;
-  /** Current stream ids by source. Changes on reset. */
-  stream_ids: Record<string, string>;
-  speed: number;
-}
-export interface SimStatusOp extends SimStatus {
-  op: "sim_status";
-  /** What caused this event. */
-  reason: "hello" | "pause" | "resume" | "reset";
-}
-
 export type ServerOp =
   | CatalogueSnapshotOp
   | CatalogueUpsertOp
@@ -274,5 +247,4 @@ export type ServerOp =
   | AvailabilityOp
   | SubscriptionAckOp
   | SamplesOp
-  | ErrorOp
-  | SimStatusOp;
+  | ErrorOp;

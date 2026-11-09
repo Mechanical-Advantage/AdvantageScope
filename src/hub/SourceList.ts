@@ -5,8 +5,6 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { middleEllipsis, splitLegendName } from "../shared/display/LineGraphStyle";
-
 import ButtonRect from "../shared/ButtonRect";
 import { ensureThemeContrast } from "../shared/Colors";
 import {
@@ -31,15 +29,6 @@ import LoggableType from "../shared/log/LoggableType";
 import { Units } from "../shared/units";
 import { createUUID, jsonCopy } from "../shared/util";
 
-const SPATIAL_SYMBOLS: { [key: string]: string } = {
-  "sensor_msgs/PointCloud2": "scatterplot",
-  "nav_msgs/Path": "conversionpath",
-  "visualization_msgs/MarkerArray": "extension",
-  "tf2_msgs/TFMessage": "anchor",
-  "nav_msgs/Odometry": "navigation",
-  "geometry_msgs/PoseStamped": "nearme"
-};
-
 export default class SourceList {
   private events = new AbortController();
   private DRAG_THRESHOLD_PX = 5;
@@ -59,9 +48,8 @@ export default class SourceList {
   private DRAG_HIGHLIGHT: HTMLElement;
   private DRAG_ITEM = document.getElementById("dragItem") as HTMLElement;
 
-  /** Optional spatial-layer diagnostics; other lists keep their normal value preview. */
+  /** Status text for fields hidden by the current graph mode. */
   itemStatus = new Map<string, { text: string; error: boolean; warn?: boolean; title?: string }>();
-  private expanded = new Set<string>();
   private stopped = false;
   private animationFrame = 0;
   private config: SourceListConfig;
@@ -1040,7 +1028,6 @@ export default class SourceList {
     typeIconHidden.setAttribute("type-color", color);
 
     let symbol = typeConfig.symbol;
-    if (typeConfig.inlineSettings) symbol = SPATIAL_SYMBOLS[state.logType] ?? symbol;
     let dataPath = "symbols/sourceList/" + symbol + ".svg";
     if (dataPath !== typeIconVisible.getAttribute("data")) {
       // Load new image on hidden icon
@@ -1078,31 +1065,11 @@ export default class SourceList {
     });
     let typeNameElement = item.getElementsByClassName("type-name")[0] as HTMLElement;
     typeNameElement.innerText = typeNameComponents.join("/") + (typeNameComponents.length > 0 ? ":" : "");
-    if (typeConfig.inlineSettings) {
-      const short = state.logType.includes("/") ? state.logType.split("/").pop()! : state.logType;
-      typeNameElement.innerText = short + ":";
-      typeNameElement.title = state.logType;
-    }
 
     // Update log key
     let keyContainer = item.getElementsByClassName("key-container")[0] as HTMLElement;
     let keySpan = keyContainer.firstElementChild as HTMLElement;
     keySpan.innerText = state.logKey;
-    if (this.graphLegend) {
-      const name = splitLegendName(state.logKey);
-      keySpan.innerText = name.leaf;
-      let parent = keyContainer.querySelector("small");
-      if (!parent) {
-        parent = document.createElement("small");
-        keyContainer.append(parent);
-      }
-      parent.innerText = middleEllipsis(
-        name.parent,
-        this.ROOT.clientWidth > 0 ? Math.max(16, Math.floor((this.ROOT.clientWidth - 100) / 6)) : 48
-      );
-      item.onmouseenter = () => (this.hoveredKey = state.logKey);
-      item.onmouseleave = () => (this.hoveredKey = null);
-    }
     keySpan.style.textDecoration = this.isFieldAvailable(state) ? "" : "line-through";
     keyContainer.title = state.logKey;
 
@@ -1136,62 +1103,6 @@ export default class SourceList {
       }
       window.typeMemory[this.config.typeMemoryId][state.logKey] = { type: state.type, options: state.options };
     }
-  }
-
-  /** Expander and inline option selects for typed rows (inlineSettings types). */
-  private updateInlineSettings(item: HTMLElement, state: SourceListItemState, baseHeight: number) {
-    const typeConfig = this.config.types.find((t) => t.key === state.type);
-    let panel = item.querySelector(".inline-settings") as HTMLElement | null;
-    let toggle = item.querySelector("button.expander") as HTMLButtonElement | null;
-    if (!typeConfig?.inlineSettings) {
-      panel?.remove();
-      toggle?.remove();
-      return;
-    }
-    const options = typeConfig.options.filter((o) => !o.forTypes || o.forTypes.includes(state.logType));
-    const open = this.expanded.has(state.logKey) && options.length > 0;
-    if (!toggle) {
-      toggle = document.createElement("button");
-      toggle.className = "expander";
-      toggle.onclick = () => {
-        if (this.expanded.has(state.logKey)) this.expanded.delete(state.logKey);
-        else this.expanded.add(state.logKey);
-        this.updateItem(item, this.state[Array.from(this.LIST.children).indexOf(item)] ?? state);
-      };
-      item.appendChild(toggle);
-    }
-    toggle.hidden = options.length === 0;
-    toggle.textContent = open ? "\u25be" : "\u25b8";
-    toggle.title = "Layer settings";
-    if (!open) {
-      panel?.remove();
-      return;
-    }
-    const sig = options.map((o) => o.key + "=" + state.options[o.key]).join("|");
-    if (!panel) {
-      panel = document.createElement("div");
-      panel.className = "inline-settings";
-      item.appendChild(panel);
-    }
-    if (panel.dataset.sig !== sig || panel.childElementCount === 0) {
-      panel.dataset.sig = sig;
-      panel.replaceChildren(
-        ...options.map((o) => {
-          const label = document.createElement("label");
-          label.textContent = o.display + " ";
-          const select = document.createElement("select");
-          o.values.forEach((v) => select.append(new Option(v.display, v.key)));
-          select.value = state.options[o.key];
-          select.onchange = () => {
-            state.options[o.key] = select.value;
-            this.updateItem(item, state);
-          };
-          label.append(select);
-          return label;
-        })
-      );
-    }
-    item.style.height = baseHeight + 30 + "px";
   }
 
   private isChild(index: number) {
@@ -1445,16 +1356,12 @@ export default class SourceList {
     const status = this.itemStatus.get(state.logKey);
     if (status) {
       text = status.text;
-      valueText.title = status.text;
+      valueText.title = status.title ?? status.text;
     }
-    item.classList.toggle("spatial-error", status?.error === true);
-    item.classList.toggle("spatial-warn", status?.warn === true);
-    if (status?.title) valueText.title = status.title;
     // Update state
     valueSymbol.hidden = text === null;
     valueText.hidden = text === null;
     item.style.height = valueSymbol.hidden ? "30px" : "50px";
-    this.updateInlineSettings(item, state, valueSymbol.hidden ? 30 : 50);
     if (text !== null && text !== valueText.innerText) {
       valueText.innerText = text;
     }

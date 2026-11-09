@@ -40,7 +40,13 @@ import { LiveSourceInfo } from "../../shared/LiveSourceInfo";
 import NamedMessage from "../../shared/NamedMessage";
 import Preferences, { DEFAULT_PREFS, mergePreferences } from "../../shared/Preferences";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
-import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../../shared/TabType";
+import TabType, {
+  getAllTabTypes,
+  getDefaultTabTitle,
+  getTabAccelerator,
+  getTabIcon,
+  NEW_TAB_TYPES
+} from "../../shared/TabType";
 import { BUILD_DATE, COPYRIGHT } from "../../shared/buildConstants";
 import { Units } from "../../shared/units";
 import { createUUID, formatDate } from "../../shared/util";
@@ -90,8 +96,6 @@ let firstOpenPath: string | null = null; // Cache path to open immediately
 
 let advantageScopeAssets: AdvantageScopeAssets = {
   field2ds: [],
-  field3ds: [],
-  robots: [],
   loadFailures: []
 };
 
@@ -1174,16 +1178,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       }
       break;
 
-    case "ask-3d-camera":
-      select3DCameraPopup(
-        window,
-        message.data.position,
-        message.data.options,
-        message.data.selectedIndex,
-        message.data.fov
-      );
-      break;
-
     case "ask-2d-camera":
       select2DCameraPopup(window, message.data.position, message.data.selectedIndex);
       break;
@@ -1267,87 +1261,21 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 function newTabPopup(window: BrowserWindow, rect: ButtonRect) {
   if (!hubWindows.includes(window)) return;
   const newTabMenu = new Menu();
-  getAllTabTypes()
-    .slice(1)
-    .forEach((tabType) => {
-      newTabMenu.append(
-        new MenuItem({
-          label: getTabIcon(tabType) + " " + getDefaultTabTitle(tabType),
-          accelerator: getTabAccelerator(tabType),
-          click() {
-            sendMessage(window, "new-tab", tabType);
-          }
-        })
-      );
-    });
-  newTabMenu.popup({
-    window: window,
-    x: Math.round(rect.x + rect.width),
-    y: Math.round(rect.y)
-  });
-}
-
-function select3DCameraPopup(
-  window: BrowserWindow,
-  position: [number, number],
-  options: string[],
-  selectedIndex: number,
-  fov: number
-) {
-  const cameraMenu = new Menu();
-  cameraMenu.append(
-    new MenuItem({
-      label: "Orbit Field",
-      type: "checkbox",
-      checked: selectedIndex === -1,
-      click() {
-        sendMessage(window, "set-3d-camera", -1);
-      }
-    })
-  );
-  cameraMenu.append(
-    new MenuItem({
-      label: "Orbit Robot",
-      type: "checkbox",
-      checked: selectedIndex === -2,
-      click() {
-        sendMessage(window, "set-3d-camera", -2);
-      }
-    })
-  );
-  cameraMenu.append(
-    new MenuItem({
-      label: "Set FOV...",
-      click() {
-        createEditFovWindow(window, fov, (newFov) => {
-          sendMessage(window, "edit-fov", newFov);
-        });
-      }
-    })
-  );
-  if (options.length > 0) {
-    cameraMenu.append(
+  NEW_TAB_TYPES.forEach((tabType) => {
+    newTabMenu.append(
       new MenuItem({
-        type: "separator"
-      })
-    );
-  }
-  options.forEach((option, index) => {
-    cameraMenu.append(
-      new MenuItem({
-        label: option,
-        type: "checkbox",
-        checked: index === selectedIndex,
+        label: getTabIcon(tabType) + " " + getDefaultTabTitle(tabType),
+        accelerator: getTabAccelerator(tabType),
         click() {
-          sendMessage(window, "set-3d-camera", index);
+          sendMessage(window, "new-tab", tabType);
         }
       })
     );
   });
-  cameraMenu.popup({
+  newTabMenu.popup({
     window: window,
-    x: Math.round(position[0]),
-    y: Math.round(position[1])
+    x: Math.round(rect.x + rect.width),
+    y: Math.round(rect.y)
   });
 }
 
@@ -1394,7 +1322,10 @@ function select2DCameraPopup(window: BrowserWindow, position: [number, number], 
 
 /** Returns the ID of the selected live source, falling back to the first registered source. */
 function getSelectedLiveSourceId(prefs: Preferences): string | undefined {
-  return liveSources.find((source) => source.id === prefs.liveMode)?.id ?? liveSources[0]?.id;
+  return (
+    liveSources.find((source) => source.id === prefs.liveMode)?.id ??
+    liveSources.find((source) => source.id === "mur")?.id
+  );
 }
 
 /** Finds a menu template item by ID (searching submenus recursively). */
@@ -1510,7 +1441,7 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv", "mcap", "jsonl", "mf4", "mdf"]
+                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv", "jsonl", "mf4", "mdf"]
                   }
                 ]
               })
@@ -1534,7 +1465,7 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv", "mcap", "jsonl", "mf4", "mdf"]
+                    extensions: ["rlog", "wpilog", "wpilogxz", "log", "csv", "jsonl", "mf4", "mdf"]
                   }
                 ]
               })
@@ -1793,19 +1724,17 @@ function setupMenu() {
       submenu: [
         {
           label: "New Tab",
-          submenu: getAllTabTypes()
-            .slice(1)
-            .map((tabType) => {
-              return {
-                label: getTabIcon(tabType) + " " + getDefaultTabTitle(tabType),
-                accelerator: getTabAccelerator(tabType),
-                click(_, baseWindow) {
-                  const window = baseWindow as BrowserWindow | undefined;
-                  if (window === undefined || !hubWindows.includes(window)) return;
-                  sendMessage(window, "new-tab", tabType);
-                }
-              };
-            })
+          submenu: NEW_TAB_TYPES.map((tabType) => {
+            return {
+              label: getTabIcon(tabType) + " " + getDefaultTabTitle(tabType),
+              accelerator: getTabAccelerator(tabType),
+              click(_, baseWindow) {
+                const window = baseWindow as BrowserWindow | undefined;
+                if (window === undefined || !hubWindows.includes(window)) return;
+                sendMessage(window, "new-tab", tabType);
+              }
+            };
+          })
         },
         {
           label: "New Tab (Shortcut)", // Hidden item to add keyboard shortcut
@@ -2067,17 +1996,15 @@ function createHubWindow(state?: WindowState, layoutOverride?: any) {
                 new TouchBar.TouchBarScrubber({
                   selectedStyle: "background",
                   continuous: false,
-                  items: getAllTabTypes()
-                    .slice(1)
-                    .map((type) => {
-                      return {
-                        label: getTabIcon(type) + " " + getDefaultTabTitle(type)
-                      };
-                    }),
+                  items: NEW_TAB_TYPES.map((type) => {
+                    return {
+                      label: getTabIcon(type) + " " + getDefaultTabTitle(type)
+                    };
+                  }),
                   select(index) {
                     if (newCreated) return;
                     newCreated = true;
-                    sendMessage(window, "new-tab", index + 1);
+                    sendMessage(window, "new-tab", NEW_TAB_TYPES[index]);
                     setTimeout(resetTouchBar, 350);
                   }
                 })
@@ -2316,48 +2243,6 @@ function createRenameTabWindow(
 }
 
 /**
- * Creates a new window to edit the 3D field FOV.
- * @param parentWindow The parent window to use for alignment
- * @param fov Current FOV.
- * @param callback Window callback.
- */
-function createEditFovWindow(parentWindow: Electron.BrowserWindow, fov: number, callback: (newFov: number) => void) {
-  const editFovWindow = new BrowserWindow({
-    width: 300,
-    height: 81,
-    useContentSize: true,
-    resizable: false,
-    icon: WINDOW_ICON,
-    show: false,
-
-    parent: parentWindow,
-    modal: true,
-    webPreferences: {
-      preload: path.join(__dirname, "preload.js")
-    }
-  });
-
-  // Finish setup
-  editFovWindow.setMenu(null);
-  editFovWindow.setMenuBarVisibility(false);
-  editFovWindow.once("ready-to-show", editFovWindow.show);
-  editFovWindow.webContents.on("dom-ready", () => {
-    // Create ports on reload
-    const { port1, port2 } = new MessageChannelMain();
-    editFovWindow.webContents.postMessage("port", null, [port1]);
-    port2.postMessage(fov);
-    port2.on("message", (event) => {
-      editFovWindow.destroy();
-      callback(event.data);
-    });
-    editFovWindow.on("blur", () => port2.postMessage({ isFocused: false }));
-    editFovWindow.on("focus", () => port2.postMessage({ isFocused: true }));
-    port2.start();
-  });
-  editFovWindow.loadFile(path.join(__dirname, "../www/editFov.html"));
-}
-
-/**
  * Creates a new window for export options.
  * @param parentWindow The parent window to use for alignment
  * @param supportsAkit Whether AdvantageKit timestamps are supported
@@ -2476,6 +2361,7 @@ function createSatellite(
       })
     : undefined;
   const state = "state" in config ? config.state : undefined;
+  if (!getAllTabTypes().includes(configData?.type ?? state!.state.type)) return;
   const uuid = configData !== undefined ? configData.uuid : state!.uuid;
 
   const width = state === undefined ? SATELLITE_DEFAULT_WIDTH : state.width;
@@ -2534,16 +2420,6 @@ function createSatellite(
             }
             satellite.setContentSize(Math.round(newX), Math.round(newY));
           }
-          break;
-
-        case "ask-3d-camera":
-          select3DCameraPopup(
-            satellite,
-            message.data.position,
-            message.data.options,
-            message.data.selectedIndex,
-            message.data.fov
-          );
           break;
 
         case "ask-2d-camera":
@@ -2837,7 +2713,6 @@ app.whenReady().then(async () => {
       x.endsWith(".rlog") ||
       x.endsWith(".log") ||
       x.endsWith(".csv") ||
-      x.endsWith(".mcap") ||
       x.endsWith(".mf4") ||
       x.endsWith(".mdf") ||
       x.endsWith(".jsonl")

@@ -14,10 +14,6 @@ const DBC_FOLDER = document.getElementById("dbcFolder") as HTMLInputElement;
 const LIVE_SUBSCRIBE_MODE = document.getElementById("liveSubscribeMode") as HTMLInputElement;
 const LIVE_DISCARD = document.getElementById("liveDiscard") as HTMLInputElement;
 const TIMESTAMPS = document.getElementById("timestamps") as HTMLInputElement;
-const FIELD_3D_MODE_AC = document.getElementById("field3dModeAc") as HTMLInputElement;
-const FIELD_3D_MODE_AC_LABEL = document.getElementById("field3dModeAcLabel") as HTMLElement;
-const FIELD_3D_MODE_BATTERY = document.getElementById("field3dModeBattery") as HTMLInputElement;
-const FIELD_3D_ANTIALIASING = document.getElementById("field3dAntialiasing") as HTMLInputElement;
 const EXIT_BUTTON = document.getElementById("exit") as HTMLInputElement;
 const CONFIRM_BUTTON = document.getElementById("confirm") as HTMLInputElement;
 
@@ -51,7 +47,6 @@ window.addEventListener("message", (event) => {
 
         case "lite":
           document.body.classList.add("lite");
-          FIELD_3D_MODE_AC_LABEL.innerText = "3D Mode";
           break;
       }
       THEME.value = oldPrefs.theme;
@@ -61,9 +56,6 @@ window.addEventListener("message", (event) => {
       LIVE_SUBSCRIBE_MODE.value = oldPrefs.liveSubscribeMode;
       LIVE_DISCARD.value = oldPrefs.liveDiscard.toString();
       TIMESTAMPS.value = oldPrefs.timestamps;
-      FIELD_3D_MODE_AC.value = oldPrefs.field3dModeAc;
-      FIELD_3D_MODE_BATTERY.value = oldPrefs.field3dModeBattery;
-      FIELD_3D_ANTIALIASING.value = oldPrefs.field3dAntialiasing.toString();
 
       // Close function
       function close(useNewPrefs: boolean) {
@@ -77,17 +69,6 @@ window.addEventListener("message", (event) => {
           if (LIVE_SUBSCRIBE_MODE.value === "low-bandwidth") liveSubscribeMode = "low-bandwidth";
           if (LIVE_SUBSCRIBE_MODE.value === "logging") liveSubscribeMode = "logging";
 
-          let field3dModeAc: "cinematic" | "standard" | "low-power" = "standard";
-          if (FIELD_3D_MODE_AC.value === "cinematic") field3dModeAc = "cinematic";
-          if (FIELD_3D_MODE_AC.value === "standard") field3dModeAc = "standard";
-          if (FIELD_3D_MODE_AC.value === "low-power") field3dModeAc = "low-power";
-
-          let field3dModeBattery: "" | "cinematic" | "standard" | "low-power" = "";
-          if (FIELD_3D_MODE_BATTERY.value === "") field3dModeBattery = "";
-          if (FIELD_3D_MODE_BATTERY.value === "cinematic") field3dModeBattery = "cinematic";
-          if (FIELD_3D_MODE_BATTERY.value === "standard") field3dModeBattery = "standard";
-          if (FIELD_3D_MODE_BATTERY.value === "low-power") field3dModeBattery = "low-power";
-
           let timestamps: "start-zero" | "original" = "start-zero";
           if (TIMESTAMPS.value === "start-zero") timestamps = "start-zero";
           if (TIMESTAMPS.value === "original") timestamps = "original";
@@ -99,11 +80,7 @@ window.addEventListener("message", (event) => {
             liveMode: oldPrefs.liveMode,
             liveSubscribeMode: liveSubscribeMode,
             liveDiscard: Number(LIVE_DISCARD.value),
-            liveRecent: oldPrefs.liveRecent ?? [],
             mqttConnections: oldPrefs.mqttConnections ?? {},
-            field3dModeAc: field3dModeAc,
-            field3dModeBattery: field3dModeBattery,
-            field3dAntialiasing: FIELD_3D_ANTIALIASING.value === "true",
             userAssetsFolder: oldPrefs.userAssetsFolder,
             dbcFolder: DBC_FOLDER.value.trim(),
             hasScrolledLineGraph: oldPrefs.hasScrolledLineGraph,

@@ -10,11 +10,10 @@ import NamedMessage from "./shared/NamedMessage";
 import Preferences from "./shared/Preferences";
 import { RenderGuard, inlineStatus } from "./shared/RenderGuard";
 import Selection, { SelectionMode } from "./shared/Selection";
-import TabType, { getTabIcon } from "./shared/TabType";
+import TabType, { getAllTabTypes, getTabIcon } from "./shared/TabType";
 import ConsoleRenderer from "./shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "./shared/renderers/DocumentationRenderer";
 import Field2dRenderer from "./shared/renderers/Field2dRenderer";
-import Field3dRenderer from "./shared/renderers/Field3dRenderer";
 import LapRenderer from "./shared/renderers/LapRenderer";
 import LineGraphRenderer from "./shared/renderers/LineGraphRenderer";
 import MetadataRenderer from "./shared/renderers/MetadataRenderer";
@@ -58,15 +57,13 @@ let lastCommand: any = null;
 
 /** Updates the current visualizer based on the type. */
 function updateVisualizer() {
-  if (type === null) return;
+  renderer = null;
+  if (type === null || !getAllTabTypes().includes(type)) return;
 
   // Update visible elements
-  for (let i = 0; i < document.body.childElementCount; i++) {
-    let element = document.getElementById("renderer" + i.toString());
-    if (element !== null) {
-      element.hidden = type !== i;
-    }
-  }
+  document.querySelectorAll<HTMLElement>("body > [id^='renderer']").forEach((element) => {
+    element.hidden = element.id !== "renderer" + type!.toString();
+  });
 
   // Create renderer
   let root = document.getElementById("renderer" + type.toString()) as HTMLElement;
@@ -79,9 +76,6 @@ function updateVisualizer() {
       break;
     case TabType.Field2d:
       renderer = new Field2dRenderer(root);
-      break;
-    case TabType.Field3d:
-      renderer = new Field3dRenderer(root);
       break;
     case TabType.Table:
       renderer = new TableRenderer(root, false);
@@ -172,21 +166,9 @@ window.addEventListener("message", (event) => {
           }
           break;
 
-        case "set-3d-camera":
-          if (type === TabType.Field3d) {
-            (renderer as Field3dRenderer).set3DCamera(message.data);
-          }
-          break;
-
         case "set-2d-camera":
           if (type === TabType.Field2d) {
             (renderer as Field2dRenderer).set2DCamera(message.data);
-          }
-          break;
-
-        case "edit-fov":
-          if (type === TabType.Field3d) {
-            (renderer as Field3dRenderer).setFov(message.data);
           }
           break;
 
