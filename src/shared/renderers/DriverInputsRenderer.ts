@@ -44,7 +44,6 @@ export default class DriverInputsRenderer implements TabRenderer {
     let renderState: any[] = [canvasWidth, canvasHeight, isLight, window.devicePixelRatio, command];
     let renderStateString = JSON.stringify(renderState);
     if (renderStateString === this.lastRenderState) {
-      this.lastRenderState = renderStateString;
       return;
     }
 
