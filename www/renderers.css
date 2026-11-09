@@ -921,7 +921,8 @@ table.metadata-table td.no-data {
   background: var(--background-color);
   font-size: 13px;
 }
-.lap-toolbar button {
+.lap-toolbar button,
+.lap-map-setup button {
   min-height: 22px;
   padding: 2px 8px;
   font: inherit;
@@ -1118,4 +1119,14 @@ table.metadata-table td.no-data {
   .lap-axis-mode option {
     background: #333;
   }
+}
+
+/* Track Map uses the 2D Field controller's settings column. */
+.lap-map-setup button {
+  display: block;
+  width: calc(100% - 20px);
+  margin: 5px 10px;
+}
+.lap-map-setup .title .full {
+  font-size: 13px;
 }

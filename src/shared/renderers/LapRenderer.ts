@@ -73,6 +73,7 @@ export default class LapRenderer implements TabRenderer {
   private lastDraw = "";
   private lastTrace = "";
   private toolbarKey = "";
+  private setup?: HTMLElement;
   private zoom = 1;
   private overlaysOnly = false;
   private colorMode = "laps";
@@ -269,7 +270,9 @@ export default class LapRenderer implements TabRenderer {
       command.settings
     ]);
     // Rebuilding would take the focus from a field being edited, but a clicked button shouldn't hold back the result.
-    const editing = this.toolbar.contains(document.activeElement) && document.activeElement?.matches("input, select");
+    const editing =
+      (this.toolbar.contains(document.activeElement) || this.setup?.contains(document.activeElement)) &&
+      document.activeElement?.matches("input, select");
     if (this.last !== key && !editing && !this.pressing) {
       this.last = key;
       this.build();
@@ -340,15 +343,20 @@ export default class LapRenderer implements TabRenderer {
           this.action({ type: "overlay", indices: laps.slice(0, 3).map((lap) => lap.index) });
         });
       }
-      const details = document.createElement("details"),
-        summary = document.createElement("summary");
-      details.open = setupOpen;
-      summary.textContent = "Lap setup";
-      details.append(summary);
       const panel = document.createElement("div");
-      panel.className = "lap-setup";
-      details.append(panel);
-      this.toolbar.append(details);
+      this.setup = panel;
+      if (c.map) {
+        panel.className = "lap-map-setup";
+        this.action({ type: "setup", panel });
+      } else {
+        const details = document.createElement("details"),
+          summary = document.createElement("summary");
+        details.open = setupOpen;
+        summary.textContent = "Lap setup";
+        details.append(summary, panel);
+        panel.className = "lap-setup";
+        this.toolbar.append(details);
+      }
       const setting = (key: string, title: string, value: unknown, options?: string[]) => {
         const l = document.createElement("label");
         l.textContent = title;
@@ -357,8 +365,22 @@ export default class LapRenderer implements TabRenderer {
         if (input instanceof HTMLSelectElement) options!.forEach((v) => input.add(new Option(v, v)));
         input.value = String(value ?? "");
         input.onchange = () => this.action({ type: "setting", key, value: input.value });
-        l.append(input);
-        panel.append(l);
+        if (c.map) {
+          const heading = document.createElement("div"),
+            row = document.createElement("div"),
+            full = document.createElement("div");
+          heading.className = "title";
+          full.className = "full";
+          full.append(l);
+          heading.append(full);
+          row.className = "input";
+          input.setAttribute("aria-label", title);
+          row.append(input);
+          panel.append(heading, row);
+        } else {
+          l.append(input);
+          panel.append(l);
+        }
         return input;
       };
       setting("mode", "Event", c.settings.config.mode ?? "circuit", [
