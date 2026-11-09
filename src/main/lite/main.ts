@@ -187,7 +187,6 @@ function openPreferences() {
 }
 
 // Keep File objects rather than duplicate large byte arrays while the importer runs.
-let latestState: HubState | null = null;
 let uploadedFiles = new Map<string, File>();
 
 function chooseFile(accept: string, multiple: boolean, callback: (files: File[]) => void) {
@@ -210,9 +209,21 @@ function openLocalLog() {
   });
 }
 
-function exportLayout() {
-  const state = latestState;
-  if (!state) return;
+let layoutExportId = 0;
+let pendingLayoutExport: { id: number; timeout: number } | null = null;
+
+function requestLayoutExport() {
+  if (pendingLayoutExport !== null) return;
+  const id = ++layoutExportId;
+  const timeout = window.setTimeout(() => {
+    pendingLayoutExport = null;
+    window.alert("Failed to export layout: the hub response timed out. Please try again.");
+  }, 3000);
+  pendingLayoutExport = { id, timeout };
+  sendMessage(hubPort, "export-layout", id);
+}
+
+function exportLayout(state: HubState) {
   const url = URL.createObjectURL(
     new Blob([JSON.stringify({ version: LITE_VERSION, hubs: [state], satellites: [] }, null, 2)], {
       type: "application/json"
@@ -388,8 +399,14 @@ async function handleHubMessage(message: NamedMessage) {
       window.alert(message.data.content);
       break;
 
+    case "export-layout":
+      if (pendingLayoutExport === null || message.data.id !== pendingLayoutExport.id) break;
+      window.clearTimeout(pendingLayoutExport.timeout);
+      pendingLayoutExport = null;
+      exportLayout(message.data.state);
+      break;
+
     case "save-state":
-      latestState = message.data;
       localStorage.setItem(LocalStorageKeys.STATE, JSON.stringify(message.data));
       localStorage.setItem(LocalStorageKeys.SIDEBAR_WIDTH, JSON.stringify(message.data.sidebar.width));
       break;
@@ -561,7 +578,7 @@ async function handleHubMessage(message: NamedMessage) {
                 }
               },
               { content: "Browse Base Station Logs…", callback: openDownload },
-              { content: "Export Layout…", callback: exportLayout },
+              { content: "Export Layout…", callback: requestLayoutExport },
               { content: "Import Layout…", callback: importLayout },
               {
                 content: `Connect\u2026 (${modifier} K)`,

@@ -539,7 +539,7 @@ function startLive(sourceType: "robot" | "sim", target?: { sourceId: string; add
       if (liveConnection !== connection) return;
       stopLive();
       setWindowTitle(address, "Error");
-      if (!connectDialog.isVisible()) connectDialog.show(address);
+      connectDialog.show(address, sourceDefinition.id);
       connectDialog.connectionFailed(detail);
     }
   );
@@ -614,6 +614,10 @@ async function handleMainMessage(message: NamedMessage) {
       window.requestAnimationFrame(() => {
         window.sendMainMessage("show");
       });
+      break;
+
+    case "export-layout":
+      window.sendMainMessage("export-layout", IS_LITE ? { id: message.data, state: saveState() } : saveState());
       break;
 
     case "restore-state":
