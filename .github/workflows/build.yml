@@ -297,7 +297,7 @@ jobs:
           ELECTRON_BUILDER_7Z_FILTER: BCJ # https://github.com/electron-userland/electron-builder/issues/9983
       - name: Prepare artifact
         run: |
-          Move-Item -Path "dist\AdvantageScope*.exe" -Destination "advantagescope-win-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.exe"
+          Move-Item -Path "dist\mur-voir*.exe" -Destination "advantagescope-win-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.exe"
       - name: Upload development artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v7
@@ -361,7 +361,7 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
-          mv dist/AdvantageScope-*.dmg advantagescope-mac-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.dmg
+          mv dist/mur-voir-*.dmg advantagescope-mac-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.dmg
       - name: Upload development artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v7
@@ -486,7 +486,7 @@ jobs:
       - name: Prepare artifact
         run: |
           Set-Location -Path "dist\win*"
-          Move-Item -Path "AdvantageScope.exe" -Destination "AdvantageScope (WPILib).exe"
+          Move-Item -Path "mur-voir.exe" -Destination "mur-voir (WPILib).exe"
           Set-Location -Path "..\.."
           Compress-Archive -Path "dist\win*\*" -DestinationPath "advantagescope-wpilib-win-${{ matrix.arch }}.zip"
       - name: Upload development artifact
@@ -554,11 +554,11 @@ jobs:
       - name: Prepare artifact
         run: |
           if [ "${{ matrix.arch }}" == "arm64" ]; then
-            mv dist/mac-arm64/AdvantageScope.app "AdvantageScope (WPILib).app"
+            mv dist/mac-arm64/mur-voir.app "mur-voir (WPILib).app"
           else
-            mv dist/mac/AdvantageScope.app "AdvantageScope (WPILib).app"
+            mv dist/mac/mur-voir.app "mur-voir (WPILib).app"
           fi
-          tar -zcvf advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz "AdvantageScope (WPILib).app"
+          tar -zcvf advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz "mur-voir (WPILib).app"
       - name: Upload development artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v7
@@ -606,7 +606,7 @@ jobs:
       - name: Prepare artifact
         run: |
           cd dist/linux*
-          mv advantagescope advantagescope-wpilib
+          mv mur-voir mur-voir-wpilib
           zip -r ../../advantagescope-wpilib-linux-${{ matrix.arch }}.zip ./*
           cd ../..
       - name: Upload development artifact
