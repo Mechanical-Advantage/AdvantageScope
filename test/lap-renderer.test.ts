@@ -60,3 +60,24 @@ test("a setup press holds rebuilds through field blur and button click", async (
   renderer.render({ ...command, version: 5 });
   assert.equal(builds, 3, "a cancelled press releases the rebuild hold");
 });
+
+test("layout save drops a sector fit and keeps a later manual view", () => {
+  const renderer: any = Object.create(LapRenderer.prototype);
+  renderer.zoom = 2.1;
+  renderer.pan = [-147, -23];
+  renderer.viewBeforeSector = { zoom: 1, pan: [0, 0] };
+  renderer.overlaysOnly = false;
+  renderer.colorMode = "laps";
+  const state = renderer.saveState();
+  assert.equal(state.zoom, 1);
+  assert.deepEqual(state.pan, [0, 0]);
+  assert.equal(renderer.zoom, 2.1);
+  renderer.restoreState(state);
+  assert.equal(renderer.zoom, 1);
+  assert.deepEqual(renderer.pan, [0, 0]);
+  assert.equal(renderer.viewBeforeSector, undefined);
+  renderer.zoom = 3;
+  renderer.pan = [10, 10];
+  assert.equal(renderer.saveState().zoom, 3);
+  assert.deepEqual(renderer.saveState().pan, [10, 10]);
+});

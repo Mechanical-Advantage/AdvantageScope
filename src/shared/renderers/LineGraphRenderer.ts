@@ -624,7 +624,7 @@ export default class LineGraphRenderer implements TabRenderer {
     context.globalAlpha = 1;
 
     // Sector gates on the distance axis (dotted verticals through plot and strip)
-    if (command.sectorMarks?.length) {
+    if (!sectorBlocks.length && command.sectorMarks?.length) {
       context.lineWidth = 1;
       context.textAlign = "center";
       context.setLineDash([2, 3]);
@@ -1006,7 +1006,7 @@ export default class LineGraphRenderer implements TabRenderer {
     context.globalAlpha = 1;
     context.fillStyle = light ? "#222" : "#eee";
     context.textAlign = "center";
-    for (const mark of command.sectorMarks ?? []) {
+    for (const mark of sectorBlocks.length ? [] : command.sectorMarks ?? []) {
       const x = xScaler.calculate(mark.x);
       if (x >= graphLeft && x <= graphLeft + graphWidth) context.fillText(mark.label, x, graphTop + graphHeight + 29);
     }

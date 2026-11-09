@@ -117,6 +117,7 @@ export default class LapRenderer implements TabRenderer {
   private colorMode = "laps";
   private restoredColor = false;
   private pan: [number, number] = [0, 0];
+  private viewBeforeSector?: { zoom: number; pan: [number, number] };
   private focusId?: number;
   private focus?: LapCommand["focus"];
   private baseScale = 1;
@@ -166,6 +167,7 @@ export default class LapRenderer implements TabRenderer {
     this.scrollSensor = new ScrollSensor(
       this.scroll,
       (dx, dy, isPan, cursorX, cursorY) => {
+        this.viewBeforeSector = undefined;
         this.zoom = scrollZoomPan(
           this.zoom,
           this.pan,
@@ -387,6 +389,7 @@ export default class LapRenderer implements TabRenderer {
         toggle.checked = this.overlaysOnly;
         toggle.onchange = () => {
           this.overlaysOnly = toggle.checked;
+          this.viewBeforeSector = undefined;
           this.zoom = 1;
           this.pan = [0, 0];
           this.lastDraw = "";
@@ -682,6 +685,7 @@ export default class LapRenderer implements TabRenderer {
       focusBox = focusLap && sectorBounds(focusLap, ss, this.focus!.range);
     this.focus = undefined;
     if (focusBox) {
+      this.viewBeforeSector ??= { zoom: this.zoom, pan: [...this.pan] };
       ({ zoom: this.zoom, pan: this.pan } = fitTrackView(this.bounds, focusBox, w, h));
       this.lastTrace = "";
     }
@@ -988,9 +992,15 @@ export default class LapRenderer implements TabRenderer {
     }
   }
   saveState() {
-    return { zoom: this.zoom, pan: this.pan, overlaysOnly: this.overlaysOnly, colorMode: this.colorMode };
+    // The graph does not save its x zoom, so keep the sector fit temporary here too.
+    return {
+      ...(this.viewBeforeSector ?? { zoom: this.zoom, pan: this.pan }),
+      overlaysOnly: this.overlaysOnly,
+      colorMode: this.colorMode
+    };
   }
   restoreState(state: unknown) {
+    this.viewBeforeSector = undefined;
     if (typeof state !== "object" || state === null) return;
     if (
       "colorMode" in state &&

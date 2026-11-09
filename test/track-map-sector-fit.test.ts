@@ -102,7 +102,8 @@ test("a new focus refits the map once, and a map keeps the view the user scrolls
   const expected = fitTrackView(renderer.bounds, sectorBounds(lap, result.samples, focus.range as any)!, 600, 400);
   assert.equal(renderer.zoom, expected.zoom);
   assert.deepEqual(renderer.pan, expected.pan);
-  assert.deepEqual(renderer.saveState().pan, expected.pan, "the fitted view is saved with the layout");
+  assert.deepEqual(renderer.saveState().pan, [0, 0], "the layout keeps the view before the sector fit");
+  assert.equal(renderer.saveState().zoom, 1);
   // Scrolling after the fit keeps the user's view while the same focus is still in the command.
   renderer.zoom = 3;
   renderer.render({ ...command, focus, time: 1 });

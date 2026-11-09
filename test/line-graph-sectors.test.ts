@@ -182,6 +182,7 @@ test("the split bar labels each sector and shades every other one", () => {
       calls.some((c) => c.startsWith(`fillText(["${label}"`)),
       label
     );
+  for (const label of ["S2", "S3"]) assert.equal(calls.filter((c) => c.startsWith(`fillText(["${label}"`)).length, 1);
   const hits = (renderer as any).sectorBarHits;
   assert.deepEqual(
     hits.blocks.map((b: any) => b.label),

@@ -109,6 +109,10 @@ window.sendMainMessage = (name: string, data?: any) => {
   }
 };
 
+window.addEventListener("sector-zoom", (event) => {
+  window.sendMainMessage("sector-zoom", (event as CustomEvent).detail);
+});
+
 window.addEventListener("message", (event) => {
   if (event.data === "port") {
     messagePort = event.ports[0];

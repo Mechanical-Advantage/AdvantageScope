@@ -103,6 +103,16 @@ export default class LineGraphController implements TabController {
       },
       { signal: this.events.signal }
     );
+    window.messagePort?.addEventListener(
+      "message",
+      (event) => {
+        const message = event.data;
+        if (message.name === "sector-zoom" && message.data.uuid === this.UUID) {
+          lapService.focus = { ...message.data.focus, id: performance.now() };
+        }
+      },
+      { signal: this.events.signal }
+    );
     // Make source lists
     this.leftSourceList = new SourceList(
       root.getElementsByClassName("line-graph-left")[0] as HTMLElement,
