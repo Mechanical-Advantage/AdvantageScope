@@ -61,6 +61,12 @@ export default class SourceList {
   private getNumberPreview: ((key: string, time: number) => string | null) | undefined;
   private mouseDownInfo: [number, number] | null = null;
 
+  private dbcLookup?: {
+    log: typeof window.log;
+    fieldsVersion: number;
+    metadataVersion: number;
+    keys: Map<string, string[]>;
+  };
   private refreshLastFields: Set<string> = new Set();
   private refreshLastStructTypes: { [key: string]: string | null } = {};
 
@@ -381,24 +387,37 @@ export default class SourceList {
 
   /** Call when a new set of log fields may be available. */
   refresh() {
-    let dbcKeys: Map<string, string[]> | undefined;
     this.state.forEach((item, index) => {
       if (this.isFieldAvailable(item) || !item.dbcSignal) return;
-      if (dbcKeys === undefined) {
-        dbcKeys = new Map();
+      if (
+        this.dbcLookup?.log !== window.log ||
+        this.dbcLookup.fieldsVersion !== window.log.getFieldKeysVersion() ||
+        this.dbcLookup.metadataVersion !== window.log.getMetadataVersion()
+      ) {
+        let dbcKeys = new Map<string, string[]>();
         window.log.getFieldKeys().forEach((key) => {
+          let metadata = window.log.getMetadataString(key);
+          if (metadata.length === 0) return;
           try {
-            let dbcSignal = JSON.parse(window.log.getMetadataString(key)).dbcSignal;
+            let dbcSignal = JSON.parse(metadata).dbcSignal;
             if (typeof dbcSignal !== "string" || dbcSignal.length === 0) return;
-            let keys = dbcKeys!.get(dbcSignal) ?? [];
+            let keys = dbcKeys.get(dbcSignal) ?? [];
             keys.push(key);
-            dbcKeys!.set(dbcSignal, keys);
+            dbcKeys.set(dbcSignal, keys);
           } catch {
             // Not every field has JSON metadata.
           }
         });
+        this.dbcLookup = {
+          log: window.log,
+          fieldsVersion: window.log.getFieldKeysVersion(),
+          metadataVersion: window.log.getMetadataVersion(),
+          keys: dbcKeys
+        };
       }
-      let matches = (dbcKeys.get(item.dbcSignal) ?? []).filter((logKey) => this.isFieldAvailable({ ...item, logKey }));
+      let matches = (this.dbcLookup.keys.get(item.dbcSignal) ?? []).filter((logKey) =>
+        this.isFieldAvailable({ ...item, logKey })
+      );
       if (matches.length === 1) {
         item.logKey = matches[0];
         let element = this.LIST.children[index] as HTMLElement;

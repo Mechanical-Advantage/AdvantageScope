@@ -64,6 +64,34 @@ test("refresh distinguishes enum labels and raw values and scans once for severa
   assert.equal(scans, 1);
 });
 
+test("refresh caches unresolved DBC lookups until fields or the log change", () => {
+  const log = new Log();
+  log.createBlankField("OTHER/Temperature", LoggableType.Number);
+  let scans = 0;
+  const getFieldKeys = log.getFieldKeys.bind(log);
+  log.getFieldKeys = () => {
+    scans++;
+    return getFieldKeys();
+  };
+  const { list } = sourceList(log, [item()]);
+  list.refresh();
+  assert.equal(scans, 1);
+  for (let i = 0; i < 20; i++) list.refresh();
+  assert.equal(scans, 1);
+  assert.deepEqual(list.getActiveFields(), [liveKey]);
+  log.deleteField("OTHER/Temperature");
+  field(log, "INVERTER/INV_MotorTemp");
+  list.refresh();
+  assert.equal(scans, 2);
+  assert.deepEqual(list.getActiveFields(), ["INVERTER/INV_MotorTemp"]);
+
+  const replacement = new Log();
+  field(replacement, "NEW/Temperature");
+  (globalThis as any).window.log = replacement;
+  list.refresh();
+  assert.deepEqual(list.getActiveFields(), ["NEW/Temperature"]);
+});
+
 test("refresh leaves absent, ambiguous, and wrong-type matches missing and retries on later refresh", () => {
   const log = new Log();
   field(log, "OTHER/Temperature", LoggableType.Number, "OtherSignal");

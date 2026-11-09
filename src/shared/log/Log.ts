@@ -42,6 +42,10 @@ export default class Log {
   getFieldKeysVersion() {
     return this.fieldKeysVersion;
   }
+  private metadataVersion = 0;
+  getMetadataVersion() {
+    return this.metadataVersion;
+  }
   private fieldKeysCache: string[] | null = null;
   private historyVersions = new Map<string, number>();
   private historyEnds = new Map<string, number>();
@@ -360,6 +364,7 @@ export default class Log {
   setMetadataString(key: string, type: string) {
     if (key in this.fields) {
       if (this.fields[key].metadataString !== type) {
+        this.metadataVersion++;
         this.profileCache.clear();
         this.fieldUnitCache = {};
       }
