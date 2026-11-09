@@ -74,3 +74,24 @@ test("missing fields, samples before the first one and NaN sentinels read as no 
   assert.equal(numberAt("/CAN/Dashboard_Dynamics/DASH_SteeringAngle", 0, "degrees", "t"), null);
   assert.equal(numberAt("/CAN/ECU_DashData2/ECU_BrakePressFront", 2, "psi", "t"), null);
 });
+
+test("a dropped field takes the slot of its DBC signal unless the tab remembers a type for it", () => {
+  makeLog();
+  (globalThis as any).window.typeMemory = {
+    tab: { "/CAN/Pedal_Status/PEDAL_Position1": { type: "steering", options: {} } }
+  };
+  const fields = new DbcSlotFields({
+    steering: ["DASH_SteeringAngle"],
+    brakeFront: ["ECU_BrakePressFront"],
+    throttle: ["PEDAL_Position1"]
+  });
+  const sourceList: { beforeAdd?: (key: string) => boolean } = {};
+  fields.assignDroppedFields(sourceList as any, "tab");
+  assert.equal(sourceList.beforeAdd!("/CAN/ECU_DashData2/ECU_BrakePressFront"), true);
+  assert.equal(sourceList.beforeAdd!("/CAN/Pedal_Status/PEDAL_Position1"), true);
+  assert.equal(sourceList.beforeAdd!("/live/driver/throttle"), true);
+  assert.deepEqual((globalThis as any).window.typeMemory.tab, {
+    "/CAN/ECU_DashData2/ECU_BrakePressFront": { type: "brakeFront", options: {} },
+    "/CAN/Pedal_Status/PEDAL_Position1": { type: "steering", options: {} }
+  });
+});

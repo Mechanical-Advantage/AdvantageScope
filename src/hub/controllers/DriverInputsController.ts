@@ -23,6 +23,7 @@ export default class DriverInputsController implements TabController {
 
   constructor(root: HTMLElement) {
     this.sourceList = new SourceList(root.firstElementChild as HTMLElement, DriverInputsController_Config, []);
+    this.fields.assignDroppedFields(this.sourceList, DriverInputsController_Config.typeMemoryId!);
     let settings = root.getElementsByClassName("driver-inputs-settings")[0] as HTMLElement;
     this.BRAKE_SCALE = settings.getElementsByClassName("brake-scale")[0] as HTMLInputElement;
 

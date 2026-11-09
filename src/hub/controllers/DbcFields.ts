@@ -9,6 +9,7 @@ import LoggableType from "../../shared/log/LoggableType";
 import { getOrDefault } from "../../shared/log/LogUtil";
 import { SourceListState, SourceListTypeConfig } from "../../shared/SourceListConfig";
 import { Units } from "../../shared/units";
+import SourceList from "../SourceList";
 
 /** A source list type that takes one numeric field for a slot. */
 export function numberSlot(key: string, display: string, symbol: string): SourceListTypeConfig {
@@ -42,6 +43,24 @@ export class DbcSlotFields {
 
   refresh() {
     this.bySignal = null;
+  }
+
+  /**
+   * Makes a field dropped into the source list take the slot its DBC signal belongs to, unless this tab
+   * already remembers a type for that field. The drop reads the source list's type memory.
+   */
+  assignDroppedFields(sourceList: SourceList, typeMemoryId: string) {
+    sourceList.beforeAdd = (key) => {
+      if (!(typeMemoryId in window.typeMemory)) window.typeMemory[typeMemoryId] = {};
+      const memory = window.typeMemory[typeMemoryId];
+      let signal: unknown;
+      try {
+        signal = JSON.parse(window.log.getMetadataString(key)).dbcSignal;
+      } catch {}
+      const slot = Object.keys(this.defaults).find((slot) => this.defaults[slot].includes(signal as string));
+      if (slot !== undefined && !(key in memory)) memory[key] = { type: slot, options: {} };
+      return true;
+    };
   }
 
   /** The fields the slots read, so live sources subscribe to defaults as well as dragged fields. */

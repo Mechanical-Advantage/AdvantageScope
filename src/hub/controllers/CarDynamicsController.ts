@@ -37,6 +37,7 @@ export default class CarDynamicsController implements TabController {
 
   constructor(root: HTMLElement) {
     this.sourceList = new SourceList(root.firstElementChild as HTMLElement, CarDynamicsController_Config, []);
+    this.fields.assignDroppedFields(this.sourceList, CarDynamicsController_Config.typeMemoryId!);
     let settings = root.getElementsByClassName("car-dynamics-settings")[0] as HTMLElement;
     this.MAX_SPEED = settings.getElementsByClassName("max-speed")[0] as HTMLInputElement;
     this.STEERING_RATIO = settings.getElementsByClassName("steering-ratio")[0] as HTMLInputElement;
@@ -137,7 +138,8 @@ export default class CarDynamicsController implements TabController {
     let fields = this.fields.resolve(this.sourceList.getState());
     let read = (slot: string, unit: string) => numberAt(fields[slot], time!, unit, this.UUID);
 
-    // Front wheels turn by the road wheel angle, rear wheels stay straight
+    // The front wheels turn by the road wheel angle. The rear wheels have no measurements, so the
+    // renderer draws only their outlines.
     let steering = read("steering", "degrees");
     let speedFL = read("speedFL", "kilometers/hour");
     let speedFR = read("speedFR", "kilometers/hour");
@@ -148,9 +150,7 @@ export default class CarDynamicsController implements TabController {
       moduleVelocities.push({
         values: [
           { velocity: normalize(speedFL), angle: roadWheelAngle },
-          { velocity: normalize(speedFR), angle: roadWheelAngle },
-          { velocity: 0, angle: 0 },
-          { velocity: 0, angle: 0 }
+          { velocity: normalize(speedFR), angle: roadWheelAngle }
         ],
         color: NeonColors_RedStart[0].key
       });
@@ -163,8 +163,7 @@ export default class CarDynamicsController implements TabController {
       robotVelocities.push({ value: { vx: 0, vy: 0, omega: yawRate }, color: NeonColors_RedStart[1].key });
     }
 
-    // Acceleration scaled to the g circle. The DBC unit "m/s^2" is not a recognised unit name, so
-    // unconverted values are taken as m/s².
+    // Acceleration scaled to the g circle. Values with no known unit are taken as m/s², the DBC unit.
     let accelX = read("accelX", "meters/second²");
     let accelY = read("accelY", "meters/second²");
     let accel: CarDynamicsRendererCommand["accel"] = null;
