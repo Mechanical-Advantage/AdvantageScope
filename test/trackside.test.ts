@@ -10,7 +10,7 @@ import { test } from "node:test";
 import TracksideController from "../src/hub/controllers/TracksideController";
 import SourceList from "../src/hub/SourceList";
 import { channelProfile } from "../src/shared/display/ChannelProfile";
-import { alertLine, dbcDefinition, tileState } from "../src/shared/Trackside";
+import { alertLine, dbcDefinition, isTracksideLive, tileState } from "../src/shared/Trackside";
 
 const profile = channelProfile({ name: "Motor temp", unit: "degC" });
 const definition = { name: "IMD_State", values: { 0: "Normal", 4: "Earth Fault", 5: "Ground Fault Warning" } };
@@ -90,4 +90,28 @@ test("healthy live tiles have no status dot and keep alarm text", () => {
   const live = { summary, freshness: "online" as const, age: 0.1 };
   assert.equal(tileState("/Motor temp", 90, profile, { high: 110 }, null, live).state, "");
   assert.equal(tileState("/Motor temp", 112, profile, { high: 110 }, null, live).state, "Alarm");
+});
+
+test("latest live runs retain status after disconnect and across reconnects", () => {
+  const summary = { backend: "error" as const, hasFreshData: false, backendDetail: "", viewedRun: 0, runCount: 1 };
+  assert.equal(isTracksideLive(summary, null, 100), true);
+  const tile = tileState(
+    "/Motor temp",
+    112,
+    profile,
+    { high: 110 },
+    null,
+    isTracksideLive(summary, null, 100) ? { summary, freshness: "offline", age: 1 } : undefined
+  );
+  assert.equal(tile.severity, "ok");
+  assert.equal(tile.state, "⊘ link lost");
+  assert.equal(tile.freshness, "offline");
+  assert.equal(alertLine([{ tile, value: 112, profile, limits: { high: 110 } }]).text, "");
+  const connected = { ...summary, backend: "connected" as const, hasFreshData: true };
+  assert.equal(isTracksideLive(connected, 100, 100), true);
+  assert.equal(isTracksideLive(connected, 100, 90), false);
+  assert.equal(isTracksideLive(connected, 100), true);
+  assert.equal(isTracksideLive({ ...connected, runCount: 2 }, null), false);
+  assert.equal(isTracksideLive({ ...connected, runCount: 2, viewedRun: 1 }, null), true);
+  assert.equal(isTracksideLive(undefined, null, 100), false);
 });

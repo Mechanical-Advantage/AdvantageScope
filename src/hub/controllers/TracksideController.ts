@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import { SourceListState } from "../../shared/SourceListConfig";
-import { dbcDefinition, Limits, tileState } from "../../shared/Trackside";
+import { dbcDefinition, isTracksideLive, Limits, tileState } from "../../shared/Trackside";
 import { TracksideRendererCommand } from "../../shared/renderers/TracksideRenderer";
 import { createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
@@ -60,8 +60,7 @@ export default class TracksideController implements TabController {
     const time = window.selection.getRenderTime() ?? window.log.getTimestampRange()[1];
     const liveTime = window.selection.getCurrentLiveTime();
     const summary = window.liveStatus?.getLiveStatus();
-    const liveEdge =
-      liveTime !== null && time >= liveTime - 0.05 && summary && summary.viewedRun === summary.runCount - 1;
+    const liveEdge = isTracksideLive(summary, liveTime, time);
     return {
       message:
         liveEdge && summary.backend === "connected" && !summary.hasFreshData ? "Base connected, no car data" : "",

@@ -20,6 +20,18 @@ export type TracksideTile = {
   age: number | null;
 };
 
+export function isTracksideLive(
+  summary: LiveStatusSummary | undefined,
+  liveTime: number | null,
+  renderTime?: number
+): summary is LiveStatusSummary {
+  return (
+    summary !== undefined &&
+    summary.viewedRun === summary.runCount - 1 &&
+    (renderTime === undefined || liveTime === null || renderTime >= liveTime - 0.05)
+  );
+}
+
 export function dbcDefinition(metadataString: string, path: string): DBCFaultDefinition | null {
   if (path.endsWith("/raw")) return null;
   try {

@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { alertLine, dbcDefinition, Limits, tileState } from "../shared/Trackside";
+import { alertLine, dbcDefinition, isTracksideLive, Limits, tileState } from "../shared/Trackside";
 
 export function updateTracksideAlerts(element: HTMLElement, allLimits: { [key: string]: Limits }[]) {
   const liveTime = window.selection.getCurrentLiveTime();
@@ -33,7 +33,7 @@ export function updateTracksideAlerts(element: HTMLElement, allLimits: { [key: s
         profile,
         limits,
         fault ? definitions.get(key) : null,
-        liveTime !== null && summary
+        isTracksideLive(summary, liveTime)
           ? { summary, freshness: window.liveStatus!.getFieldFreshness(key), age: window.liveStatus!.getFieldAge(key) }
           : undefined
       );
