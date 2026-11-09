@@ -34,10 +34,21 @@ export default class LapController implements TabController {
     private map: boolean,
     controls: HTMLElement
   ) {
-    this.sources = LapSourceConfigs.map((config, i) => new SourceList(controls.children[i] as HTMLElement, config, []));
+    this.sources = LapSourceConfigs.map(
+      (config, i) => new SourceList(controls.querySelectorAll<HTMLElement>(".lap-sources")[i], config, [])
+    );
     this.syncSources();
     root.addEventListener("lap-action", (event) => {
       const a = (event as CustomEvent).detail;
+      if (a.type === "setup" && this.map) {
+        const settings = controls.querySelector(".field-2d-settings");
+        if (settings) {
+          const scrollTop = settings.scrollTop;
+          settings.replaceChildren(a.panel);
+          settings.scrollTop = scrollTop;
+        }
+        return;
+      }
       // Selection ignores a new time while locked to live, so a deliberate seek unlocks it first.
       const seek = (time: number) => {
         window.selection.unlock();

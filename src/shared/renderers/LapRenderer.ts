@@ -69,6 +69,7 @@ export default class LapRenderer implements TabRenderer {
   private lastDraw = "";
   private lastTrace = "";
   private toolbarKey = "";
+  private setup?: HTMLElement;
   private zoom = 1;
   private overlaysOnly = false;
   private colorMode = "laps";
@@ -205,10 +206,24 @@ export default class LapRenderer implements TabRenderer {
       this.dragMoved = false;
       if (this.command?.map) this.draw();
     });
-    // A rebuild mid-click would take away the row or checkbox being clicked.
-    this.content.addEventListener("pointerdown", () => (this.pressing = true));
-    for (const end of ["pointerup", "pointercancel", "pointerleave"])
-      this.content.addEventListener(end, () => (this.pressing = false));
+    this.holdRebuildDuringPress(this.root);
+  }
+  private holdRebuildDuringPress(element: HTMLElement) {
+    element.addEventListener(
+      "pointerdown",
+      () => {
+        this.pressing = true;
+        const events = new AbortController();
+        const release = () => {
+          events.abort();
+          // Let the click fire before a render can replace its button.
+          setTimeout(() => (this.pressing = false), 0);
+        };
+        for (const type of ["pointerup", "pointercancel"])
+          document.addEventListener(type, release, { once: true, signal: events.signal });
+      },
+      { capture: true }
+    );
   }
   /** Gates on the map: the start/finish line, sectors, and the finish line in autocross. */
   private gates(): (Gate | undefined)[] {
@@ -265,7 +280,9 @@ export default class LapRenderer implements TabRenderer {
       command.settings
     ]);
     // Rebuilding would take the focus from a field being edited, but a clicked button shouldn't hold back the result.
-    const editing = this.toolbar.contains(document.activeElement) && document.activeElement?.matches("input, select");
+    const editing =
+      (this.toolbar.contains(document.activeElement) || this.setup?.contains(document.activeElement)) &&
+      document.activeElement?.matches("input, select");
     if (this.last !== key && !editing && !this.pressing) {
       this.last = key;
       this.build();
@@ -336,25 +353,45 @@ export default class LapRenderer implements TabRenderer {
           this.action({ type: "overlay", indices: laps.slice(0, 3).map((lap) => lap.index) });
         });
       }
-      const details = document.createElement("details"),
-        summary = document.createElement("summary");
-      details.open = setupOpen;
-      summary.textContent = "Lap setup";
-      details.append(summary);
       const panel = document.createElement("div");
-      panel.className = "lap-setup";
-      details.append(panel);
-      this.toolbar.append(details);
+      this.setup = panel;
+      this.holdRebuildDuringPress(panel);
+      if (c.map) {
+        panel.className = "lap-map-setup";
+      } else {
+        const details = document.createElement("details"),
+          summary = document.createElement("summary");
+        details.open = setupOpen;
+        summary.textContent = "Lap setup";
+        details.append(summary, panel);
+        panel.className = "lap-setup";
+        this.toolbar.append(details);
+      }
       const setting = (key: string, title: string, value: unknown, options?: string[]) => {
         const l = document.createElement("label");
         l.textContent = title;
+        l.title = title;
         const input = options ? document.createElement("select") : document.createElement("input");
         if (input instanceof HTMLSelectElement) input.classList.add("mv-select");
         if (input instanceof HTMLSelectElement) options!.forEach((v) => input.add(new Option(v, v)));
         input.value = String(value ?? "");
         input.onchange = () => this.action({ type: "setting", key, value: input.value });
-        l.append(input);
-        panel.append(l);
+        if (c.map) {
+          const heading = document.createElement("div"),
+            row = document.createElement("div"),
+            full = document.createElement("div");
+          heading.className = "title";
+          full.className = "full";
+          full.append(l);
+          heading.append(full);
+          row.className = "input";
+          input.setAttribute("aria-label", title);
+          row.append(input);
+          panel.append(heading, row);
+        } else {
+          l.append(input);
+          panel.append(l);
+        }
         return input;
       };
       setting("mode", "Event", c.settings.config.mode ?? "circuit", [
@@ -417,6 +454,7 @@ export default class LapRenderer implements TabRenderer {
       }
       // Only autocross ends a run on a separate line.
       if (c.settings.config.mode === "autocross") this.button(panel, "Set finish at cursor", () => addGate(-2));
+      if (c.map) this.action({ type: "setup", panel });
     }
     if (this.bestButton) this.bestButton.disabled = !c.result.laps.some((lap) => lap.valid);
     if (c.map) {
