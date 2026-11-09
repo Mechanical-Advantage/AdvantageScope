@@ -23,7 +23,7 @@ values. Stateful conformance rules are in the pinned upstream `api/live/v1/READM
 Stream-aware history and descriptor DBC provenance are optional. Descriptors retain
 `dbc?: DBCProvenance` in the generated types. Timestamps use Unix nanoseconds.
 
-Proposed release tag after merge: `live-api-v1.0.0`. Runtime `hello.api_version`
+No mur-msgs release tag exists yet, so the pin is the commit itself. Runtime `hello.api_version`
 and `unsupported_api_version` remain necessary because components deploy separately.
 
 This protocol-only copy exposes no credentials or vendor DBC contents. The public

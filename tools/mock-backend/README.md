@@ -3,7 +3,7 @@
 Wire types come from the pinned mur-msgs schema in `src/shared/mur/api/`. Its README
 describes pin updates and drift checks.
 
-This deterministic backend implements `specs/01-live-telemetry-interface.md` with an HTTP catalogue,
+This deterministic backend implements that schema with an HTTP catalogue,
 rolling history and a live WebSocket. A vehicle model laps a roughly 1 km circuit near Melton, VIC.
 Track curvature determines speed, braking and acceleration. Seeded noise varies the sensor values.
 
@@ -71,7 +71,7 @@ HTTP errors have `error` and `message` fields. CORS allows all origins.
 Paths begin with `vehicles/mur27/`. Signals cover the inverter, accumulator, driver inputs, vehicle
 dynamics, GNSS, ECU, PDU and gateway diagnostics. Units follow the contract, including K, Pa, rad,
 rad/s, m and fractions. GNSS latitude and longitude use degrees. The autonomy signals are `pose3`,
-`trajectory` and `cone_array` JSON values, with `frame_id` retained in their values.
+`trajectory` and `cone_array` JSON values.
 
 The vehicle starts with TS active at second 2, becomes ready to drive at second 6 and drives from
 second 7. The optional lap beacon reports crossings of the start/finish line.

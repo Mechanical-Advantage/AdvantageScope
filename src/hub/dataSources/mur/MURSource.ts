@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 // Live source for the MUR telemetry backend (spec 01 §5: HTTP catalogue/history + WebSocket live).
-// Contract types come from tools/mock-backend/src/contract.ts.
+// Contract types come from src/shared/mur/contract.ts, generated from the pinned live API schema.
 //
 // - Catalogue: hello -> catalogue_snapshot builds the tree; upserts/removes update it live. The descriptor
 //   unit goes into field metadata so Log.getUnit and unit conversion work (MURLogAdapter).
