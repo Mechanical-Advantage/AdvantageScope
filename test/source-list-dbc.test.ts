@@ -24,11 +24,11 @@ function field(log: Log, key: string, type = LoggableType.Number, dbcSignal = si
   log.setMetadataString(key, JSON.stringify({ dbcSignal }));
 }
 
-function sourceList(log: Log, state: SourceListItemState[]) {
+function sourceList(log: Log, state: SourceListItemState[], sourceTypes = ["Number", "String"]) {
   (globalThis as any).window = { log, typeMemory: {} };
   const list = Object.create(SourceList.prototype) as any;
   list.state = state;
-  list.config = { types: [{ key: "test", sourceTypes: ["Number", "String"], options: [] }] };
+  list.config = { types: [{ key: "test", sourceTypes, options: [] }] };
   list.supplementalStateSuppliers = [];
   list.refreshLastFields = new Set();
   list.refreshLastStructTypes = {};
@@ -170,4 +170,39 @@ test("setState resolves a layout loaded onto a log that is already open", () => 
   list.addListItem = (state: SourceListItemState) => list.state.push(state);
   list.setState([item()]);
   assert.deepEqual(list.getActiveFields(), ["INVERTER/INV_MotorTemp"]);
+});
+
+for (const [savedType, candidateType] of [
+  ["Boolean", LoggableType.Number],
+  ["Number", LoggableType.Boolean]
+] as const) {
+  test(`discrete sources resolve ${savedType} to ${LoggableType[candidateType]}`, () => {
+    const log = new Log();
+    field(log, "INVERTER/Enabled", candidateType);
+    const { list } = sourceList(log, [item(savedType)], ["Number", "Boolean", "String"]);
+    list.refresh();
+    assert.equal(list.getState()[0].logType, LoggableType[candidateType]);
+    assert.deepEqual(list.getActiveFields(), ["INVERTER/Enabled"]);
+    assert.equal(list.getState(true).length, 1);
+  });
+}
+
+test("numeric sources leave Boolean candidates missing", () => {
+  const log = new Log();
+  field(log, "INVERTER/Enabled", LoggableType.Boolean);
+  const { list } = sourceList(log, [item()], ["Number"]);
+  list.refresh();
+  assert.equal(list.getState()[0].logType, "Number");
+  assert.equal(list.getState()[0].logKey, liveKey);
+  assert.equal(list.getState(true).length, 0);
+});
+
+test("cross-type fallback requires one candidate overall", () => {
+  const log = new Log();
+  field(log, "INVERTER/Enabled", LoggableType.Number);
+  field(log, "OTHER/Enabled", LoggableType.String);
+  const { list } = sourceList(log, [item("Boolean")], ["Number", "Boolean", "String"]);
+  list.refresh();
+  assert.equal(list.getState(true).length, 0);
+  assert.equal(list.getState()[0].logType, "Boolean");
 });

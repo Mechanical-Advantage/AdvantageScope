@@ -416,9 +416,20 @@ export default class SourceList {
           keys: dbcKeys
         };
       }
-      let matches = (this.dbcLookup.keys.get(item.dbcSignal) ?? []).filter((logKey) =>
-        this.isFieldAvailable({ ...item, logKey })
-      );
+      let candidates = this.dbcLookup.keys.get(item.dbcSignal) ?? [];
+      let matches = candidates.filter((logKey) => this.isFieldAvailable({ ...item, logKey }));
+      if (matches.length === 0 && candidates.length === 1) {
+        let candidateType = window.log.getType(candidates[0]);
+        let sourceTypes = this.config.types.find((type) => type.key === item.type)?.sourceTypes ?? [];
+        if (
+          ((item.logType === "Boolean" && candidateType === LoggableType.Number) ||
+            (item.logType === "Number" && candidateType === LoggableType.Boolean)) &&
+          sourceTypes.includes(LoggableType[candidateType])
+        ) {
+          matches = candidates;
+          item.logType = LoggableType[candidateType];
+        }
+      }
       if (matches.length === 1) {
         item.logKey = matches[0];
         let element = this.LIST.children[index] as HTMLElement;
