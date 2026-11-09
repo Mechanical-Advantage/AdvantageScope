@@ -264,7 +264,10 @@ export default class LapRenderer implements TabRenderer {
     const c = this.command!;
     const scrollTop = this.content.scrollTop,
       scrollLeft = this.content.scrollLeft;
-    const toolbarKey = JSON.stringify([c.field, c.unit, c.map, c.settings, this.colorMode]);
+    const toolbarKey = JSON.stringify(
+      [c.field, c.unit, c.map, c.settings, this.colorMode, c.origin, c.result.gate],
+      (_key, value) => (typeof value === "number" ? Number(value.toFixed(8)) : value)
+    );
     if (toolbarKey !== this.toolbarKey) {
       this.toolbarKey = toolbarKey;
       this.toolbar.replaceChildren();
@@ -379,18 +382,19 @@ export default class LapRenderer implements TabRenderer {
                 input.reportValidity();
                 return;
               }
-              const next = structuredClone(coordinates);
+              const current = this.command!;
+              if (!current.origin || !current.result.gate) return;
+              const next = geographicGate(current.result.gate, current.origin);
               next[endpoint][axis] = value;
               const gate = {
-                a: project(next.a.lat, next.a.lon, c.origin!),
-                b: project(next.b.lat, next.b.lon, c.origin!)
+                a: project(next.a.lat, next.a.lon, current.origin),
+                b: project(next.b.lat, next.b.lon, current.origin)
               };
               if (Math.hypot(gate.b.x - gate.a.x, gate.b.y - gate.a.y) < 0.01) {
                 input.setCustomValidity("The line endpoints must be apart.");
                 input.reportValidity();
                 return;
               }
-              coordinates[endpoint][axis] = value;
               this.action({ type: "gate", index: -1, gate });
             };
           }

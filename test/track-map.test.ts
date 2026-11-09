@@ -273,7 +273,7 @@ test("a saved geographic line follows the track when the log starts at a differe
   assert.equal(service.result.laps.filter((l) => l.valid).length, 2);
 });
 
-test("old metre gates keep their results and save as geographic gates", () => {
+test("old metre gates keep their results and convert only on an edit", () => {
   const log = new Log();
   for (const p of circuit(LAP_TIMES)) {
     log.putNumber("gps/latitude", p.t, -37 + p.y / 111195);
@@ -292,10 +292,17 @@ test("old metre gates keep their results and save as geographic gates", () => {
     service.result.laps.map((l) => [+l.start.toFixed(7), +l.end.toFixed(7)]),
     expected.laps.map((l) => [+l.start.toFixed(7), +l.end.toFixed(7)])
   );
-  assert.equal(service.settings.config.gate, undefined);
+  assert.deepEqual(service.settings.config, config);
+  const version = service.version;
+  service.update();
+  assert.equal(service.version, version);
+  service.setGate(0, gate);
   assert.equal(service.settings.config.sectors, undefined);
-  assert.equal(service.settings.config.finish, undefined);
   assert.ok(service.settings.config.geographic?.sectors?.length);
+  service.setGate(-1, gate);
+  service.setGate(-2, gate);
+  assert.equal(service.settings.config.gate, undefined);
+  assert.equal(service.settings.config.finish, undefined);
   assert.ok(service.settings.config.geographic?.finish);
 });
 
@@ -323,4 +330,106 @@ test("map replay interpolates position by time and clamps at the finish", async 
   };
   assert.equal(renderer.gridTimeAt(lap, 10), 2);
   assert.equal(renderer.gridTimeAt(lap, 100), 5);
+});
+
+const gpsLog = (points: Sample[]) => {
+  const log = new Log();
+  for (const p of points) {
+    log.putNumber("gps/latitude", p.t, -37 + p.y / 111195);
+    log.putNumber("gps/longitude", p.t, 145 + p.x / 88800);
+  }
+  return log;
+};
+const lapTimes = (s: LapService) => s.result.laps.filter((l) => l.valid).map((l) => +(l.end - l.start).toFixed(2));
+
+// A metre gate saved by an old layout on the synthetic circuit.
+function legacyGate() {
+  (globalThis as any).window = { log: gpsLog(circuit(LAP_TIMES)) };
+  const s = new LapService();
+  s.update();
+  return { gate: gateAt(s.result.samples, 110)!, samples: s.result.samples };
+}
+
+test("an old metre gate survives a log with no GPS fix", () => {
+  const { gate, samples } = legacyGate();
+  const expected = analyze(samples, { gate })
+    .laps.filter((l) => l.valid)
+    .map((l) => +(l.end - l.start).toFixed(2));
+  // A log where the GPS reports 0,0 (no fix), e.g. the first seconds of a live session.
+  const noFix = new Log();
+  for (let t = 0; t < 5; t += 0.1) {
+    noFix.putNumber("gps/latitude", t, 0);
+    noFix.putNumber("gps/longitude", t, 0);
+  }
+  (globalThis as any).window = { log: noFix };
+  const service = new LapService();
+  service.settings.config = { gate: structuredClone(gate) };
+  service.update();
+  assert.equal(service.origin, undefined);
+  // Then the real log of the track opens with the same layout.
+  (globalThis as any).window = { log: gpsLog(circuit(LAP_TIMES)) };
+  service.invalidate();
+  service.update();
+  assert.deepEqual(lapTimes(service), expected);
+});
+
+test("loading a metre gate does not repeat analysis on an unchanged log", () => {
+  const { gate } = legacyGate();
+  (globalThis as any).window = { log: gpsLog(circuit(LAP_TIMES)) };
+  const service = new LapService();
+  service.update();
+  service.settings.config = { gate };
+  service.invalidate();
+  service.update();
+  const v = service.version;
+  service.update(); // within 500 ms and nothing changed in the log
+  assert.equal(service.version, v);
+});
+
+test("a sector added in the old build preserves saved geographic sectors", () => {
+  (globalThis as any).window = { log: gpsLog(circuit(LAP_TIMES)) };
+  const service = new LapService();
+  service.update();
+  const g = (t: number) => gateAt(service.result.samples, t)!;
+  service.setGate(0, g(105));
+  service.setGate(1, g(115));
+  service.update();
+  const saved = JSON.parse(JSON.stringify(service.settings));
+  // The old build ignores config.geographic, so its "Add sector at cursor" writes sectors[0].
+  saved.config.sectors = [g(125)];
+  const first = JSON.stringify(saved.config.geographic.sectors[0]);
+  service.settings = saved;
+  service.invalidate();
+  service.update();
+  const sectors = service.localConfig().sectors!;
+  assert.equal(sectors.length, 3);
+  assert.equal(JSON.stringify(service.settings.config.geographic!.sectors![0]), first);
+  service.setGate(2, g(120));
+  assert.equal(service.settings.config.sectors, undefined);
+  assert.equal(service.settings.config.geographic!.sectors!.length, 3);
+  assert.equal(JSON.stringify(service.settings.config.geographic!.sectors![0]), first);
+});
+
+test("a live metre gate survives rejection of the initial GPS fix", () => {
+  const { gate, samples } = legacyGate();
+  const expected = analyze(samples, { gate })
+    .laps.filter((l) => l.valid)
+    .map((l) => +(l.end - l.start).toFixed(2));
+  const log = new Log();
+  // The receiver's first fix is 2 km off; it is the only fix at the first update.
+  log.putNumber("gps/latitude", 99.9, -37 + 2000 / 111195);
+  log.putNumber("gps/longitude", 99.9, 145 + 100 / 88800);
+  let live = 99.9;
+  (globalThis as any).window = { log, selection: { getCurrentLiveTime: () => live } };
+  const service = new LapService();
+  service.settings.config = { gate: structuredClone(gate) };
+  service.update();
+  for (const p of circuit(LAP_TIMES)) {
+    log.putNumber("gps/latitude", p.t, -37 + p.y / 111195);
+    log.putNumber("gps/longitude", p.t, 145 + p.x / 88800);
+  }
+  live = 300;
+  service.invalidate();
+  service.update();
+  assert.deepEqual(lapTimes(service), expected);
 });

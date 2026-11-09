@@ -70,7 +70,7 @@ export function projectConfig(config: LapConfig, origin?: Coordinate): LapConfig
   return {
     ...config,
     gate: origin && geo?.gate ? local(geo.gate) : config.gate,
-    sectors: origin && geo?.sectors ? geo.sectors.map(local) : config.sectors,
+    sectors: origin && geo?.sectors ? [...geo.sectors.map(local), ...(config.sectors ?? [])] : config.sectors,
     finish: origin && geo?.finish ? local(geo.finish) : config.finish
   };
 }

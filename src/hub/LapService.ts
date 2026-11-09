@@ -77,6 +77,7 @@ export class LapService {
   setGate(index: number, gate: Gate) {
     const config = this.settings.config;
     if (this.origin) {
+      const local = this.localConfig();
       const geo = (config.geographic ??= {});
       const saved = geographicGate(gate, this.origin);
       if (index === -2) {
@@ -86,7 +87,9 @@ export class LapService {
         geo.gate = saved;
         delete config.gate;
       } else {
-        (geo.sectors ??= [])[index] = saved;
+        const sectors = local.sectors ?? [];
+        sectors[index] = gate;
+        geo.sectors = sectors.map((sector) => geographicGate(sector, this.origin!));
         delete config.sectors;
       }
     } else if (index === -2) config.finish = gate;
@@ -285,23 +288,28 @@ export class LapService {
       };
       // Choose a locally consistent initial pair so one bad first fix cannot anchor
       // the rejection filter on the other side of the planet.
-      const firstFix =
-        timestamps.find((t, i) => {
-          if (!validFix(t)) return false;
-          const next = timestamps[i + 1];
-          if (next === undefined) return true;
-          if (!validFix(next)) return false;
-          const delta = project(coordinate(s.latitude, next), coordinate(s.longitude, next), {
-            lat: coordinate(s.latitude, t),
-            lon: coordinate(s.longitude, t)
-          });
-          return Math.hypot(delta.x, delta.y) <= 100 * (next - t);
-        }) ?? timestamps.at(-1)!;
-      const origin = { lat: coordinate(s.latitude, firstFix) || 0, lon: coordinate(s.longitude, firstFix) || 0 };
-      if (lat && lon && Number.isFinite(origin.lat) && Number.isFinite(origin.lon)) this.origin = origin;
+      const firstFix = timestamps.find((t, i) => {
+        if (!validFix(t)) return false;
+        const next = timestamps[i + 1];
+        if (next === undefined) return true;
+        if (!validFix(next)) return false;
+        const delta = project(coordinate(s.latitude, next), coordinate(s.longitude, next), {
+          lat: coordinate(s.latitude, t),
+          lon: coordinate(s.longitude, t)
+        });
+        return Math.hypot(delta.x, delta.y) <= 100 * (next - t);
+      });
+      const origin =
+        firstFix === undefined
+          ? undefined
+          : {
+              lat: coordinate(s.latitude, firstFix),
+              lon: coordinate(s.longitude, firstFix)
+            };
+      if (lat && lon && origin) this.origin = origin;
       let accepted: (Sample & { latitude: number; longitude: number }) | undefined;
       timestamps.forEach((t) => {
-        if (lat && t < firstFix) return;
+        if (lat && (firstFix === undefined || t < firstFix)) return;
         const latitude = coordinate(s.latitude, t),
           longitude = coordinate(s.longitude, t);
         if (
@@ -320,7 +328,7 @@ export class LapService {
           v = (rpm * (unit === "radians/second" || unit === "rad/s" ? 1 : Math.PI / 30) * s.radius) / s.ratio;
         }
         if (!Number.isFinite(v)) v = speed(s.speed, t);
-        const point = lat ? project(latitude, longitude, origin) : { x: 0, y: 0 };
+        const point = lat ? project(latitude, longitude, origin!) : { x: 0, y: 0 };
         // Reject GPS jumps above 100 m/s (360 km/h). Compare with the last accepted
         // fix, so an isolated outlier does not poison the next good sample.
         if (lat && accepted && Math.hypot(point.x - accepted.x, point.y - accepted.y) > 100 * (t - accepted.t)) return;
@@ -378,15 +386,6 @@ export class LapService {
             "(mean front-wheel circumferential speed − GPS ground speed) / GPS ground speed; invalid below 2 m/s or after 250 ms without samples"
         })
       );
-    }
-    // Convert old metre gates only after this log has supplied its GPS origin.
-    if (this.origin) {
-      if (s.config.gate) this.setGate(-1, s.config.gate);
-      if (s.config.finish) this.setGate(-2, s.config.finish);
-      if (s.config.sectors) {
-        const sectors = s.config.sectors;
-        sectors.forEach((gate, index) => this.setGate(index, gate));
-      }
     }
     const config = this.localConfig();
     this.result = analyze(samples, config);
