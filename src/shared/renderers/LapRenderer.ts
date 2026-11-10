@@ -168,6 +168,7 @@ export default class LapRenderer implements TabRenderer {
   private tableToolbarKey = "";
   private setup?: HTMLElement;
   private zoom = 1;
+  private restoredView = false;
   private scope: MapScope = "session";
   private colorMode = "laps";
   private restoredColor = false;
@@ -258,6 +259,11 @@ export default class LapRenderer implements TabRenderer {
       ScrollSensorMouseControl.PanXY
     );
 
+    this.scroll.addEventListener("dblclick", (event) => {
+      event.preventDefault();
+      this.fitTrack();
+    });
+
     // Gate endpoints take the drag before the scroll sensor can pan. A click without a drag moves the cursor.
     const point = (e: PointerEvent) => {
       const rect = this.scroll.getBoundingClientRect();
@@ -346,6 +352,15 @@ export default class LapRenderer implements TabRenderer {
   dispose() {
     this.events.abort();
   }
+  private fitTrack() {
+    this.zoom = 1;
+    this.pan = [0, 0];
+    this.viewBeforeSector = undefined;
+    this.lastDraw = "";
+    this.lastTrace = "";
+    if (this.command && this.shown.map) this.draw();
+  }
+
   /** Keeps both panes at their minimum size, applies the share at once and saves it through the controller. */
   private setSplit(split: number) {
     const rect = this.body.getBoundingClientRect(),
@@ -668,6 +683,7 @@ export default class LapRenderer implements TabRenderer {
     );
     if (c.field)
       this.button(this.mapToolbar, "Clear field", () => this.action({ type: "field", target: "map", field: "" }));
+    this.button(this.mapToolbar, "Fit track", () => this.fitTrack());
     // Whole session is the default, as the map has always shown.
     this.mapToolbar.append(
       this.labelled(
@@ -896,6 +912,21 @@ export default class LapRenderer implements TabRenderer {
       }
       this.bounds = [xmin, xmax, ymin, ymax];
     }
+    const width = Math.max(1, this.bounds[1] - this.bounds[0]),
+      height = Math.max(1, this.bounds[3] - this.bounds[2]);
+    if (this.restoredView) {
+      this.restoredView = false;
+      const view = trackView(this.bounds, w, h, this.zoom, [...this.pan]);
+      if (
+        Math.abs(this.pan[0]) > width / 2 + w / (2 * view.scale) ||
+        Math.abs(this.pan[1]) > height / 2 + h / (2 * view.scale)
+      ) {
+        this.zoom = 1;
+        this.pan = [0, 0];
+      }
+    }
+    this.pan[0] = Math.min(width * 3, Math.max(-width * 3, this.pan[0]));
+    this.pan[1] = Math.min(height * 3, Math.max(-height * 3, this.pan[1]));
     // Fit a sector double-clicked on a Line Graph's split bar. The view is saved like a scrolled one.
     const focusLap = this.focus && c.result.laps.find((lap) => lap.index === this.focus!.lap),
       focusBox = focusLap && sectorBounds(focusLap, ss, this.focus!.range);
@@ -1252,8 +1283,16 @@ export default class LapRenderer implements TabRenderer {
       this.scope = state.scope;
     else if ("overlaysOnly" in state && typeof state.overlaysOnly === "boolean")
       this.scope = state.overlaysOnly ? "overlaid" : "session";
-    if ("zoom" in state && typeof state.zoom === "number") this.zoom = state.zoom;
-    if ("pan" in state && Array.isArray(state.pan) && state.pan.length === 2) this.pan = state.pan as [number, number];
+    if ("zoom" in state && typeof state.zoom === "number")
+      this.zoom = Number.isFinite(state.zoom) ? Math.min(1e4, Math.max(1e-3, state.zoom)) : 1;
+    if ("pan" in state && Array.isArray(state.pan) && state.pan.length === 2)
+      this.pan = state.pan.map((value) => (typeof value === "number" && Number.isFinite(value) ? value : 0)) as [
+        number,
+        number
+      ];
+    this.restoredView = true;
+    this.lastDraw = "";
+    this.lastTrace = "";
   }
   getAspectRatio() {
     return null;

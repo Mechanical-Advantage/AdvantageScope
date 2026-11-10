@@ -199,3 +199,36 @@ test("endpoint and Shift drags commit once on release without recalculating duri
     assert.equal(actions[0].index, shiftKey ? -1 : 0);
   }
 });
+
+test("double-click fits the track and an off-screen restored view recovers", () => {
+  const g = globalThis as any;
+  g.document = Object.assign(new EventTarget(), { createElement: () => new Element(), activeElement: null });
+  g.window = Object.assign(new EventTarget(), { devicePixelRatio: 1 });
+  g.matchMedia = () => ({ matches: false });
+  const renderer: any = new LapRenderer(new Element() as any, false);
+  renderer.build = () => {};
+  renderer.drawTrace = () => {};
+  const command: any = {
+    view: "map",
+    split: 0.55,
+    result: circleLaps(),
+    settings: { config: {} },
+    field: "",
+    values: [],
+    overlays: [],
+    reference: null,
+    selected: null,
+    time: null,
+    version: 1
+  };
+  renderer.render(command);
+  renderer.zoom = 20;
+  renderer.pan = [10000, -10000];
+  renderer.scroll.dispatchEvent(new Event("dblclick"));
+  assert.equal(renderer.zoom, 1);
+  assert.deepEqual(renderer.pan, [0, 0]);
+  renderer.restoreState({ zoom: 10, pan: [10000, -10000] });
+  renderer.render({ ...command, version: 2 });
+  assert.equal(renderer.zoom, 1);
+  assert.deepEqual(renderer.pan, [0, 0]);
+});
