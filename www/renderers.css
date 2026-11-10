@@ -794,9 +794,7 @@ table.metadata-table td.no-data {
 .lap-summary {
   font-size: 12px;
   opacity: 0.75;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
 }
 .lap-toolbar {
   display: flex;
