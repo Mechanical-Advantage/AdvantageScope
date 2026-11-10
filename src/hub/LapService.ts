@@ -117,6 +117,8 @@ export class LapService {
   version = 0;
   private log?: Log;
   private signature = "";
+  private sampleSignature = "";
+  private samples: Sample[] = [];
   private nextUpdate = 0;
   private derivedEnd = -Infinity;
   private slipEnd = -Infinity;
@@ -206,6 +208,7 @@ export class LapService {
       this.nextUpdate = 0;
       this.signature = "";
       this.derivedSignature = "";
+      this.sampleSignature = "";
       this.derivedEnd = -Infinity;
       this.slipEnd = -Infinity;
       this.slipSignature = "";
@@ -218,14 +221,24 @@ export class LapService {
     this.nextUpdate = performance.now() + 500;
     const fields = this.fields();
     const data = new Map(fields.map((k) => [k, window.log.getNumber(k, -Infinity, Infinity)]));
-    const signature = JSON.stringify([
-      this.settings,
+    const inputs = JSON.stringify([
       !data.get(this.settings.latitude) ? window.log.getTimestampRange()[1] : undefined,
-      fields.map((k) => [k, data.get(k)?.timestamps.length, data.get(k)?.timestamps.at(-1), data.get(k)?.values.at(-1)])
+      fields.map((k) => [
+        k,
+        window.log.getUnit(k),
+        data.get(k)?.timestamps.length,
+        data.get(k)?.timestamps.at(-1),
+        data.get(k)?.values.at(-1)
+      ])
     ]);
+    const signature = JSON.stringify([this.settings, inputs]);
     if (signature === this.signature) return;
     this.signature = signature;
     const s = this.settings;
+    // Samples depend on the data and sources but not on the lap settings, so an Event change reuses them.
+    const sampleSignature = JSON.stringify([{ ...s, config: undefined }, inputs]);
+    const reuse = sampleSignature === this.sampleSignature;
+    this.sampleSignature = sampleSignature;
     const at = (key: string, t: number) => {
       const d = data.get(key);
       return d ? interpolate(d.timestamps, d.values, t) : NaN;
@@ -284,10 +297,11 @@ export class LapService {
         ? d.values[i - 1]
         : at(key, t);
     };
-    const samples: Sample[] = [];
+    const samples: Sample[] = reuse ? this.samples : [];
+    this.samples = samples;
     const previousOrigin = this.origin;
-    this.origin = undefined;
-    if (base) {
+    if (!reuse) this.origin = undefined;
+    if (base && !reuse) {
       // Log compresses unchanged values independently per channel. Use the union so a
       // constant latitude does not hide wheel-speed or longitude changes.
       let timestamps = [...new Set([...data.values()].flatMap((d) => d?.timestamps ?? []))].sort((a, b) => a - b);
