@@ -12,8 +12,75 @@ export type TracksideRendererCommand = { tiles: TracksideTile[]; message: string
 
 export default class TracksideRenderer implements TabRenderer {
   private grid: HTMLElement;
-  constructor(root: HTMLElement) {
+  constructor(root: HTMLElement, reorder?: (from: number, to: number) => void) {
     this.grid = root.firstElementChild as HTMLElement;
+    if (!reorder) return;
+    let pressed: { x: number; y: number; cell: HTMLElement } | null = null;
+    this.grid.addEventListener("mousedown", (event) => {
+      if (event.button !== 0) return;
+      const cell = (event.target as HTMLElement).closest<HTMLElement>(".trackside-tile");
+      if (!cell) return;
+      pressed = { x: event.clientX, y: event.clientY, cell };
+      window.addEventListener("mouseup", () => (pressed = null), { once: true });
+    });
+    this.grid.addEventListener("mousemove", (event) => {
+      if (!pressed || (Math.abs(event.clientX - pressed.x) < 5 && Math.abs(event.clientY - pressed.y) < 5)) return;
+      const { cell } = pressed;
+      pressed = null;
+      const from = Array.from(this.grid.children).indexOf(cell);
+      if (from < 0) return;
+      const rect = cell.getBoundingClientRect();
+      const ghost = cell.cloneNode(true) as HTMLElement;
+      ghost.style.width = rect.width + "px";
+      ghost.style.height = rect.height + "px";
+      ghost.style.boxSizing = "border-box";
+      document.getElementById("dragItem")!.replaceChildren(ghost);
+      const highlight = document.createElement("div");
+      highlight.className = "trackside-drag-highlight";
+      root.append(highlight);
+      const data = { trackside: this };
+      const update = (event: Event) => {
+        const drag = (event as CustomEvent).detail;
+        if (drag.data !== data) return;
+        const gridRect = this.grid.getBoundingClientRect();
+        const inside =
+          this.grid.offsetParent !== null &&
+          drag.x >= gridRect.left &&
+          drag.x <= gridRect.right &&
+          drag.y >= gridRect.top &&
+          drag.y <= gridRect.bottom;
+        highlight.hidden = !inside;
+        let to = 0;
+        let distance = Infinity;
+        let target: DOMRect = rect;
+        let edge = rect.left;
+        Array.from(this.grid.children).forEach((element, index) => {
+          const bounds = element.getBoundingClientRect();
+          for (const after of [false, true]) {
+            const x = after ? bounds.right : bounds.left;
+            const d = Math.hypot(drag.x - x, drag.y - Math.max(bounds.top, Math.min(bounds.bottom, drag.y)));
+            if (d < distance) {
+              distance = d;
+              to = index + Number(after);
+              target = bounds;
+              edge = x;
+            }
+          }
+        });
+        if (drag.end) {
+          window.removeEventListener("drag-update", update);
+          highlight.remove();
+          if (inside) reorder(from, to);
+        } else {
+          const rootRect = root.getBoundingClientRect();
+          highlight.style.left = edge - rootRect.left - 6 + "px";
+          highlight.style.top = target.top - rootRect.top + "px";
+          highlight.style.height = target.height + "px";
+        }
+      };
+      window.addEventListener("drag-update", update);
+      window.startDrag(event.clientX, event.clientY, event.clientX - rect.left, event.clientY - rect.top, data);
+    });
   }
   saveState() {
     return null;

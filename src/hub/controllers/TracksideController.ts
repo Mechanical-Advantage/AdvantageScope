@@ -13,6 +13,26 @@ import SourceList from "../SourceList";
 import TabController from "./TabController";
 import TracksideController_Config from "./TracksideController_Config";
 
+/** Moves a visible tile to an insertion boundary while retaining hidden list entries. */
+export function reorderTiles(sources: SourceListState, from: number, to: number): SourceListState {
+  const visible = sources.flatMap((source, index) => (source.visible ? [index] : []));
+  const result = sources.slice();
+  if (
+    !Number.isInteger(from) ||
+    !Number.isInteger(to) ||
+    from < 0 ||
+    from >= visible.length ||
+    to < 0 ||
+    to > visible.length
+  )
+    return result;
+  const start = visible[from];
+  const end = visible[to] ?? sources.length;
+  const [source] = result.splice(start, 1);
+  result.splice(end > start ? end - 1 : end, 0, source);
+  return result;
+}
+
 export default class TracksideController implements TabController {
   UUID = createUUID();
   limits: { [logKey: string]: Limits } = {};
@@ -31,6 +51,9 @@ export default class TracksideController implements TabController {
   }
   dispose() {
     this.sourceList.stop();
+  }
+  reorderTiles(from: number, to: number) {
+    this.sourceList.setState(reorderTiles(this.sourceList.getState(), from, to));
   }
   saveState() {
     return { sources: this.sourceList.getState(), limits: this.limits };

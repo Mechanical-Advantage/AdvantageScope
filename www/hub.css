@@ -1214,7 +1214,8 @@ div.source-list div.item.child div.value {
   left: 70px;
 }
 
-div.source-list div.drag-highlight {
+div.source-list div.drag-highlight,
+.trackside-drag-highlight {
   position: absolute;
   z-index: 11;
   background-color: lightgreen;
@@ -1945,4 +1946,8 @@ body.has-trackside-alerts:not(.fancy-title-bar-mac):not(.fancy-title-bar-lite):n
 }
 body.has-trackside-alerts.fancy-title-bar-win button.tab-control {
   top: 77px;
+}
+
+.trackside-drag-highlight {
+  width: 12px;
 }

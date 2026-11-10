@@ -598,7 +598,9 @@ export default class Tabs {
         break;
       case TabType.Trackside:
         controller = new TracksideController(controlsElement);
-        renderer = new TracksideRenderer(rendererElement);
+        renderer = new TracksideRenderer(rendererElement, (from, to) =>
+          (controller as TracksideController).reorderTiles(from, to)
+        );
         break;
       case TabType.Points:
         controller = new PointsController(controlsElement);

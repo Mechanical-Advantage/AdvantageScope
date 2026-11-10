@@ -7,7 +7,7 @@
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import TracksideController from "../src/hub/controllers/TracksideController";
+import TracksideController, { reorderTiles } from "../src/hub/controllers/TracksideController";
 import SourceList from "../src/hub/SourceList";
 import { channelProfile } from "../src/shared/display/ChannelProfile";
 import { alertLine, dbcDefinition, isTracksideLive, tileState } from "../src/shared/Trackside";
@@ -114,4 +114,31 @@ test("latest live runs retain status after disconnect and across reconnects", ()
   assert.equal(isTracksideLive({ ...connected, runCount: 2 }, null), false);
   assert.equal(isTracksideLive({ ...connected, runCount: 2, viewedRun: 1 }, null), true);
   assert.equal(isTracksideLive(undefined, null, 100), false);
+});
+
+test("tile reorder uses insertion boundaries and retains hidden entries and source configuration", () => {
+  const sources = ["a", "hidden", "b", "c", "d"].map((logKey) => ({
+    type: "tile",
+    logKey,
+    logType: "Number",
+    visible: logKey !== "hidden",
+    options: { unit: "original" }
+  }));
+  const keys = (state: typeof sources) => state.map((source) => source.logKey);
+  const moved = reorderTiles(sources, 3, 0);
+  assert.deepEqual(keys(moved), ["d", "a", "hidden", "b", "c"]);
+  assert.equal(moved[0], sources[4]);
+  assert.deepEqual(keys(reorderTiles(sources, 0, 4)), ["hidden", "b", "c", "d", "a"]);
+  assert.deepEqual(keys(reorderTiles(sources, 1, 3)), ["a", "hidden", "c", "b", "d"]);
+  for (const [from, to] of [
+    [1, 1],
+    [1, 2],
+    [-1, 0],
+    [4, 0],
+    [0, 5]
+  ]) {
+    assert.deepEqual(reorderTiles(sources, from, to), sources);
+  }
+  assert.deepEqual(reorderTiles([], 0, 0), []);
+  assert.deepEqual(keys(sources), ["a", "hidden", "b", "c", "d"]);
 });
