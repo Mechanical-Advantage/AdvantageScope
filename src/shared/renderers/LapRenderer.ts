@@ -5,9 +5,10 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-// Draws lap tables and track maps with replay dots, colour modes, and lap overlays.
+// Draws the Track and laps tab: a shared Event header above a track map, a lap table, or both side by side.
 
 import type { LapSettings } from "../../hub/LapService";
+import { attachResizeHandle } from "../../hub/ResizeHandle";
 import ScrollSensor, { ScrollSensorMouseControl } from "../../hub/ScrollSensor";
 import {
   Coordinate,
@@ -36,15 +37,24 @@ function viridis(value: number): string {
     i = Math.min(3, Math.floor(x));
   return `rgb(${stops[i].map((v, j) => Math.round(v + (stops[i + 1][j] - v) * (x - i))).join(",")})`;
 }
+export type LapView = "map" | "laps" | "split";
+/** Which laps the map draws: all of them, the reference and overlays, or the row selected in the table. */
+export type MapScope = "session" | "overlaid" | "selected";
 export type LapCommand = {
-  map: boolean;
-  display?: { colorMode: string; overlaysOnly: boolean };
+  view: LapView;
+  /** The table's share of the split view. */
+  split: number;
+  display?: { colorMode: string; scope: MapScope };
   origin?: Coordinate;
   result: LapResult;
   settings: LapSettings;
+  /** The map's colour field, with its unit and a value per sample. */
   field: string;
   unit: string;
   values: number[];
+  /** The table's metric field. `metrics` holds its min, max and average for each lap. */
+  tableField: string;
+  tableUnit: string;
   selected: number | null;
   reference: number | null;
   overlays: number[];
@@ -93,13 +103,59 @@ export function fitTrackView(
     pan: [(box[0] + box[1]) / 2 - (bounds[0] + bounds[1]) / 2, (bounds[2] + bounds[3]) / 2 - (box[2] + box[3]) / 2]
   };
 }
+/** The shared scope line under the Event selector, from saved setup and the calculated laps. */
+export function lapSummary(settings: LapSettings, result: LapResult): string {
+  const config = settings.config;
+  const counts = new Map<string, number>();
+  for (const lap of result.laps) if (lap.valid) counts.set(lap.source, (counts.get(lap.source) ?? 0) + 1);
+  const source = [...counts].sort((a, b) => b[1] - a[1])[0]?.[0];
+  const sources: Record<string, string> = {
+    gps: config.gate ? "the drawn line" : "the automatic GPS line",
+    counter: "the lap counter",
+    beacon: "the beacon",
+    manual: "manual splits",
+    distance: "the reference length",
+    accel: "75 m runs"
+  };
+  // A drawn line the car doesn't cross twice is kept but gives way to the next timing source.
+  const startFinish = !config.gate
+    ? "Start/finish automatic"
+    : source === "gps"
+    ? "Start/finish drawn"
+    : "Drawn line configured, not timing";
+  const gates = config.sectors?.length ?? 0;
+  const sectors = gates
+    ? `${gates} ${gates === 1 ? "gate" : "gates"}, ${gates + 1} sectors`
+    : `Fractions ${(config.fractions ?? [1 / 3, 2 / 3]).map((f) => f.toFixed(3)).join(", ")}`;
+  return [
+    startFinish,
+    source ? `Laps from ${sources[source] ?? source}` : "No laps yet",
+    sectors,
+    "Shared across lap views"
+  ].join(" · ");
+}
+/** Smallest pane sizes in the split view, in CSS pixels. Narrower renderers stack the map above the table. */
+const SPLIT_MIN = { table: 360, map: 280, tableHeight: 140, mapHeight: 160 };
+const DEFAULT_SPLIT = 0.55;
 const colors = ["#58a7ff", "#f4b860", "#72d6a0", "#d49bff", "#ff8c9c", "#70d6de"];
 const duration = (t: number) =>
   Number.isFinite(t) ? `${Math.floor(t / 60)}:${(t % 60).toFixed(3).padStart(6, "0")}` : "—";
 export default class LapRenderer implements TabRenderer {
-  private toolbar: HTMLElement;
+  private events = new AbortController();
+  private header: HTMLElement;
+  private body: HTMLElement;
+  private mapPane: HTMLElement;
+  private tablePane: HTMLElement;
+  private handle: HTMLElement;
+  private mapToolbar: HTMLElement;
+  private tableToolbar: HTMLElement;
   private bestButton?: HTMLButtonElement;
+  /** Holds the map. It stays mounted while hidden, so the scroll sensor and camera survive a view switch. */
   private content: HTMLElement;
+  private tableContent: HTMLElement;
+  /** The panes on screen. Split falls back to the map alone when even stacked panes don't fit. */
+  private shown = { map: true, table: false, stacked: false };
+  private flex = "";
   private canvas: HTMLCanvasElement;
   private traceLayer = document.createElement("canvas");
   private mapView: HTMLElement;
@@ -110,10 +166,13 @@ export default class LapRenderer implements TabRenderer {
   private last = "";
   private lastDraw = "";
   private lastTrace = "";
-  private toolbarKey = "";
+  private headerKey = "";
+  private setupKey = "";
+  private mapToolbarKey = "";
+  private tableToolbarKey = "";
   private setup?: HTMLElement;
   private zoom = 1;
-  private overlaysOnly = false;
+  private scope: MapScope = "session";
   private colorMode = "laps";
   private restoredColor = false;
   private pan: [number, number] = [0, 0];
@@ -134,12 +193,30 @@ export default class LapRenderer implements TabRenderer {
     private interactive = true
   ) {
     root.classList.add("lap-view");
-    this.toolbar = document.createElement("div");
-    this.toolbar.className = "lap-toolbar";
-    if (!interactive) this.toolbar.style.display = "none";
-    this.content = document.createElement("div");
-    this.content.className = "lap-content";
-    root.append(this.toolbar, this.content);
+    const div = (className: string) => {
+      const element = document.createElement("div");
+      element.className = className;
+      return element;
+    };
+    this.header = div("lap-header");
+    this.body = div("lap-body");
+    this.tablePane = div("lap-pane lap-table-pane");
+    this.mapPane = div("lap-pane lap-map-pane");
+    this.handle = div("lap-split-handle");
+    this.mapToolbar = div("lap-toolbar");
+    this.tableToolbar = div("lap-toolbar");
+    // Satellites are read-only, so they show the header's summary but no editing toolbars.
+    if (!interactive) {
+      this.mapToolbar.style.display = "none";
+      this.tableToolbar.style.display = "none";
+      root.classList.add("lap-readonly");
+    }
+    this.content = div("lap-content");
+    this.tableContent = div("lap-content");
+    this.tablePane.append(this.tableToolbar, this.tableContent);
+    this.mapPane.append(this.mapToolbar, this.content);
+    this.body.append(this.tablePane, this.handle, this.mapPane);
+    root.append(this.header, this.body);
 
     // Same elements and scroll sensor as the 2D Field
     this.canvas = document.createElement("canvas");
@@ -164,6 +241,7 @@ export default class LapRenderer implements TabRenderer {
     this.mapView.append(container, this.scroll);
     this.message = document.createElement("p");
     this.message.className = "lap-empty";
+    this.content.append(this.mapView, this.message);
     this.scrollSensor = new ScrollSensor(
       this.scroll,
       (dx, dy, isPan, cursorX, cursorY) => {
@@ -179,7 +257,7 @@ export default class LapRenderer implements TabRenderer {
           this.baseScale
         );
         window.requestAnimationFrame(() => {
-          if (this.command?.map) this.draw();
+          if (this.command && this.shown.map) this.draw();
         });
       },
       ScrollSensorMouseControl.PanXY
@@ -244,15 +322,68 @@ export default class LapRenderer implements TabRenderer {
       this.dragging = undefined;
       this.pressed = undefined;
       if (this.scroll.hasPointerCapture(e.pointerId)) this.scroll.releasePointerCapture(e.pointerId);
-      if (this.command?.map) this.draw();
+      if (this.command && this.shown.map) this.draw();
     });
     this.scroll.addEventListener("pointercancel", () => {
       this.dragging = undefined;
       this.pressed = undefined;
       this.dragMoved = false;
-      if (this.command?.map) this.draw();
+      if (this.command && this.shown.map) this.draw();
     });
     this.holdRebuildDuringPress(this.root);
+
+    // The split divider drags like the sidebar and controls handles. A double-click restores the default.
+    if (interactive)
+      attachResizeHandle(
+        this.handle,
+        () => (this.shown.stacked ? "row-resize" : "col-resize"),
+        (event) => {
+          const rect = this.body.getBoundingClientRect();
+          this.setSplit(
+            this.shown.stacked ? (rect.bottom - event.clientY) / rect.height : (event.clientX - rect.left) / rect.width
+          );
+        },
+        () => this.setSplit(DEFAULT_SPLIT),
+        undefined,
+        this.events.signal
+      );
+  }
+  dispose() {
+    this.events.abort();
+  }
+  /** Keeps both panes at their minimum size, applies the share at once and saves it through the controller. */
+  private setSplit(split: number) {
+    const rect = this.body.getBoundingClientRect(),
+      size = this.shown.stacked ? rect.height : rect.width,
+      [tableMin, mapMin] = this.shown.stacked
+        ? [SPLIT_MIN.tableHeight, SPLIT_MIN.mapHeight]
+        : [SPLIT_MIN.table, SPLIT_MIN.map];
+    split = Math.max(tableMin / size, Math.min(1 - mapMin / size, split));
+    if (!Number.isFinite(split)) return;
+    this.tablePane.style.flex = this.flex = `0 0 ${(split * 100).toFixed(2)}%`;
+    this.action({ type: "split", split });
+  }
+  /** Shows the panes for the view, and stacks or drops a pane when the renderer is too small for both. */
+  private layout(c: LapCommand) {
+    const split = c.view === "split",
+      width = this.body.clientWidth,
+      height = this.body.clientHeight,
+      sideBySide = width >= SPLIT_MIN.table + SPLIT_MIN.map,
+      stacked = split && !sideBySide && height >= SPLIT_MIN.tableHeight + SPLIT_MIN.mapHeight;
+    this.shown = {
+      map: c.view !== "laps",
+      table: c.view === "laps" || (split && (sideBySide || stacked)),
+      stacked
+    };
+    const both = this.shown.map && this.shown.table;
+    this.mapPane.hidden = !this.shown.map;
+    this.tablePane.hidden = !this.shown.table;
+    this.handle.hidden = !both;
+    this.body.classList.toggle("lap-split", both);
+    this.body.classList.toggle("lap-stacked", both && stacked);
+    // CSS minimum sizes hold the panes apart when the window shrinks after a drag.
+    const flex = both ? `0 0 ${(c.split * 100).toFixed(2)}%` : "";
+    if (flex !== this.flex) this.tablePane.style.flex = this.flex = flex;
   }
   private holdRebuildDuringPress(element: HTMLElement) {
     element.addEventListener(
@@ -310,7 +441,7 @@ export default class LapRenderer implements TabRenderer {
       this.colorMode = command.field ? "field" : "laps";
     if (!this.interactive && command.display) {
       this.colorMode = command.display.colorMode;
-      this.overlaysOnly = command.display.overlaysOnly;
+      this.scope = command.display.scope;
     }
     if (this.colorMode === "field" && !command.field) this.colorMode = "laps";
     if (command.focus && command.focus.id !== this.focusId) {
@@ -319,216 +450,293 @@ export default class LapRenderer implements TabRenderer {
       this.lastDraw = "";
     }
     this.command = command;
-    if (this.interactive) this.action({ type: "display", colorMode: this.colorMode, overlaysOnly: this.overlaysOnly });
+    if (this.interactive) this.action({ type: "display", colorMode: this.colorMode, scope: this.scope });
+    this.layout(command);
     const key = JSON.stringify([
       this.colorMode,
+      this.scope,
       command.version,
       command.field,
+      command.tableField,
       command.reference,
       command.overlays,
       command.selected,
-      command.map,
+      this.shown,
       command.settings
     ]);
     // Rebuilding would take the focus from a field being edited, but a clicked button shouldn't hold back the result.
     const editing =
-      (this.toolbar.contains(document.activeElement) || this.setup?.contains(document.activeElement)) &&
-      document.activeElement?.matches("input, select");
+      [this.header, this.mapToolbar, this.tableToolbar, this.setup].some(
+        (element) => element?.contains(document.activeElement)
+      ) && document.activeElement?.matches("input, select");
     if (this.last !== key && !editing && !this.pressing) {
       this.last = key;
       this.build();
     }
     this.scrollSensor.periodic();
-    if (command.map) this.draw();
+    if (this.shown.map) this.draw();
+  }
+  private select(label: string, options: [string, string][], value: string, onchange: (value: string) => void) {
+    const select = document.createElement("select");
+    select.className = "mv-select";
+    select.setAttribute("aria-label", label);
+    for (const [value, text] of options) select.add(new Option(text, value));
+    select.value = value;
+    select.onchange = () => onchange(select.value);
+    return select;
+  }
+  private labelled(text: string, control: HTMLElement) {
+    const label = document.createElement("label");
+    label.append(text, control);
+    return label;
+  }
+  /** The Event selector, view choice and shared scope line, shown in every view and, read-only, in satellites. */
+  private buildHeader(c: LapCommand) {
+    const summary = lapSummary(c.settings, c.result),
+      mode = c.settings.config.mode ?? "circuit";
+    const key = JSON.stringify([summary, mode, c.view]);
+    if (key === this.headerKey) return;
+    this.headerKey = key;
+    const row = document.createElement("div"),
+      title = document.createElement("span"),
+      note = document.createElement("div");
+    row.className = "lap-header-row";
+    title.className = "lap-header-title";
+    title.textContent = "Event and lap setup";
+    title.title = "Sets lap timing, start/finish and sectors for every lap view";
+    row.append(title);
+    if (this.interactive) {
+      const modes = ["circuit", "accel", "skidpad", "autocross", "endurance"].map((m) => [m, m] as [string, string]);
+      row.append(
+        this.labelled(
+          "Event ",
+          this.select("Event", modes, mode, (value) => this.action({ type: "setting", key: "mode", value }))
+        )
+      );
+      const end = document.createElement("span");
+      end.className = "lap-header-end";
+      const view = this.select(
+        "View",
+        [
+          ["map", "Map"],
+          ["laps", "Laps"],
+          ["split", "Split"]
+        ],
+        c.view,
+        (value) => {
+          this.action({ type: "view", view: value });
+          // A focused select holds rebuilds, and the newly shown pane needs one.
+          view.blur();
+        }
+      );
+      end.append(this.labelled("View ", view));
+      this.button(end, "Show lap setup", () => this.action({ type: "show-setup" }));
+      row.append(end);
+    } else {
+      const event = document.createElement("span");
+      event.textContent = `Event ${mode}`;
+      row.append(event);
+    }
+    note.className = "lap-summary";
+    note.textContent =
+      (this.interactive
+        ? "Timing mode. Edit start/finish and sectors in Lap setup. "
+        : "Timing mode. Edit in main window. ") + summary;
+    note.title = summary;
+    this.header.replaceChildren(row, note);
+  }
+  /** Lap setup goes to the controller's settings column below the views. */
+  private buildSetup(c: LapCommand) {
+    const key = JSON.stringify([c.settings, c.origin, c.result.gate], (_key, value) =>
+      typeof value === "number" ? Number(value.toFixed(8)) : value
+    );
+    if (key === this.setupKey) return;
+    this.setupKey = key;
+    const panel = document.createElement("div");
+    panel.className = "lap-setup";
+    this.setup = panel;
+    this.holdRebuildDuringPress(panel);
+    const setting = (key: string, title: string, value: unknown) => {
+      const l = document.createElement("label");
+      l.textContent = title;
+      l.title = title;
+      const input = document.createElement("input");
+      input.value = String(value ?? "");
+      input.onchange = () => this.action({ type: "setting", key, value: input.value });
+      const heading = document.createElement("div"),
+        row = document.createElement("div"),
+        full = document.createElement("div");
+      heading.className = "title";
+      full.className = "full";
+      full.append(l);
+      heading.append(full);
+      row.className = "input";
+      input.setAttribute("aria-label", title);
+      row.append(input);
+      panel.append(heading, row);
+      return { input, heading };
+    };
+    setting("radius", "Wheel radius [m]", c.settings.radius);
+    setting("ratio", "Motor / wheel ratio", c.settings.ratio);
+    setting("minTime", "Minimum lap [s]", c.settings.config.minTime ?? 20);
+    setting("length", "Reference length [m]", c.settings.config.length);
+    // "Show lap setup" scrolls the column to here, where the start/finish and sector controls begin.
+    setting(
+      "fractions",
+      "Sector fractions",
+      (c.settings.config.fractions ?? [1 / 3, 2 / 3]).join(",")
+    ).heading.dataset.lapTiming = "";
+    setting("manual", "Manual splits [log seconds]", c.settings.config.manual?.join(","));
+    this.button(panel, "Split at cursor", () => this.action({ type: "marker" }));
+    this.button(panel, "Auto start gate", () => this.action({ type: "auto" }));
+    const addGate = (index: number) => {
+      const c = this.command!,
+        gate = c.time === null ? undefined : gateAt(c.result.samples, c.time);
+      if (gate) this.action({ type: "gate", index, gate });
+    };
+    this.button(panel, "Add sector at cursor", () => addGate(c.settings.config.sectors?.length ?? 0));
+    this.button(panel, "Set start/finish at cursor", () => addGate(-1));
+    if (c.origin && c.result.gate) {
+      const coordinates = geographicGate(c.result.gate, c.origin);
+      for (const endpoint of ["a", "b"] as const) {
+        for (const axis of ["lat", "lon"] as const) {
+          const title = `Start/finish ${endpoint.toUpperCase()} ${axis === "lat" ? "latitude" : "longitude"} [°]`;
+          const { input } = setting("", title, Number(coordinates[endpoint][axis].toFixed(8)));
+          input.type = "number";
+          input.step = "any";
+          input.min = String(axis === "lat" ? -90 : -180);
+          input.max = String(axis === "lat" ? 90 : 180);
+          input.required = true;
+          input.oninput = () => input.setCustomValidity("");
+          input.onchange = () => {
+            const value = Number(input.value);
+            if (!input.value.trim() || !input.checkValidity() || !Number.isFinite(value)) {
+              input.reportValidity();
+              return;
+            }
+            const current = this.command!;
+            if (!current.origin || !current.result.gate) return;
+            const next = geographicGate(current.result.gate, current.origin);
+            next[endpoint][axis] = value;
+            const gate = {
+              a: project(next.a.lat, next.a.lon, current.origin),
+              b: project(next.b.lat, next.b.lon, current.origin)
+            };
+            if (Math.hypot(gate.b.x - gate.a.x, gate.b.y - gate.a.y) < 0.01) {
+              input.setCustomValidity("The line endpoints must be apart.");
+              input.reportValidity();
+              return;
+            }
+            this.action({ type: "gate", index: -1, gate });
+          };
+        }
+      }
+    }
+    // Only autocross ends a run on a separate line.
+    if (c.settings.config.mode === "autocross") this.button(panel, "Set finish at cursor", () => addGate(-2));
+    this.action({ type: "setup", panel });
+  }
+  /** Colour, the colour field and which laps the map draws. */
+  private buildMapToolbar(c: LapCommand) {
+    const selected = c.result.laps.some((lap) => lap.index === c.selected) ? c.selected : null;
+    const key = JSON.stringify([c.field, c.unit, this.colorMode, this.scope, selected]);
+    if (key === this.mapToolbarKey) return;
+    this.mapToolbarKey = key;
+    this.mapToolbar.replaceChildren(
+      this.labelled(
+        "Colour ",
+        this.select(
+          "Map colour",
+          [
+            ["laps", "Laps"],
+            ["sector", "Sectors"],
+            ["compare", "Time compare"],
+            ...(c.field ? [["field", c.field.split("/").at(-1)!] as [string, string]] : [])
+          ],
+          this.colorMode,
+          (value) => (this.colorMode = value)
+        )
+      )
+    );
+    if (c.field)
+      this.button(this.mapToolbar, "Clear field", () => this.action({ type: "field", target: "map", field: "" }));
+    // Whole session is the default, as the map has always shown.
+    this.mapToolbar.append(
+      this.labelled(
+        "Show ",
+        this.select(
+          "Map scope",
+          [
+            ["session", "Whole session"],
+            ["overlaid", "Overlaid laps"],
+            ["selected", selected === null ? "Selected lap" : `Selected lap (L${selected})`]
+          ],
+          this.scope,
+          (value) => {
+            this.scope = value as MapScope;
+            this.viewBeforeSector = undefined;
+            this.zoom = 1;
+            this.pan = [0, 0];
+            this.lastDraw = "";
+          }
+        )
+      )
+    );
+  }
+  /** The metric field and the best-laps shortcut. */
+  private buildTableToolbar(c: LapCommand) {
+    const key = JSON.stringify([c.tableField, c.tableUnit]);
+    if (key !== this.tableToolbarKey) {
+      this.tableToolbarKey = key;
+      this.tableToolbar.replaceChildren();
+      const label = document.createElement("span");
+      label.textContent =
+        "Metrics: " +
+        (c.tableField.split("/").at(-1) || "drag a numeric field") +
+        (c.tableUnit ? ` [${c.tableUnit}]` : "");
+      label.title = c.tableField;
+      this.tableToolbar.append(label);
+      if (c.tableField)
+        this.button(this.tableToolbar, "Clear field", () => this.action({ type: "field", target: "table", field: "" }));
+      this.bestButton = this.button(this.tableToolbar, "Select best 3 laps", () => {
+        const laps = this.command!.result.laps.filter((lap) => lap.valid).sort(
+          (a, b) => a.end - a.start - (b.end - b.start) || a.index - b.index
+        );
+        this.action({ type: "overlay", indices: laps.slice(0, 3).map((lap) => lap.index) });
+      });
+    }
+    this.bestButton!.disabled = !c.result.laps.some((lap) => lap.valid);
   }
   private build() {
     this.lastDraw = "";
-    const setupOpen = this.toolbar.querySelector("details")?.open ?? false;
     const c = this.command!;
-    const scrollTop = this.content.scrollTop,
-      scrollLeft = this.content.scrollLeft;
-    const toolbarKey = JSON.stringify(
-      [c.field, c.unit, c.map, c.settings, this.colorMode, c.origin, c.result.gate],
-      (_key, value) => (typeof value === "number" ? Number(value.toFixed(8)) : value)
-    );
-    if (toolbarKey !== this.toolbarKey) {
-      this.toolbarKey = toolbarKey;
-      this.toolbar.replaceChildren();
-      this.bestButton = undefined;
-      const label = document.createElement("span");
-      label.textContent =
-        (c.map ? "Colour: " : "Metrics: ") +
-        (c.field.split("/").at(-1) || (c.map ? "laps, or drag a numeric field here" : "drag a numeric field")) +
-        (c.unit ? ` [${c.unit}]` : "");
-      label.title = c.field;
-      if (c.map) {
-        label.textContent = "Colour: ";
-        const select = document.createElement("select");
-        select.className = "mv-select";
-        select.setAttribute("aria-label", "Map colour");
-        for (const [value, text] of [
-          ["laps", "Laps"],
-          ["sector", "Sectors"],
-          ["compare", "Time compare"],
-          ...(c.field ? [["field", c.field.split("/").at(-1)!]] : [])
-        ])
-          select.add(new Option(text, value));
-        select.value = this.colorMode;
-        select.onchange = () => {
-          this.colorMode = select.value;
-        };
-        label.append(select);
-      }
-      this.toolbar.append(label);
-      if (c.field) this.button(this.toolbar, "Clear field", () => this.action({ type: "field", field: "" }));
-      if (c.map) {
-        const label = document.createElement("label"),
-          toggle = document.createElement("input");
-        toggle.type = "checkbox";
-        toggle.className = "mv-checkbox";
-        toggle.checked = this.overlaysOnly;
-        toggle.onchange = () => {
-          this.overlaysOnly = toggle.checked;
-          this.viewBeforeSector = undefined;
-          this.zoom = 1;
-          this.pan = [0, 0];
-          this.lastDraw = "";
-        };
-        label.append(toggle, "Overlaid laps only");
-        this.toolbar.append(label);
-      }
-      if (!c.map) {
-        this.bestButton = this.button(this.toolbar, "Select best 3 laps", () => {
-          const laps = this.command!.result.laps.filter((lap) => lap.valid).sort(
-            (a, b) => a.end - a.start - (b.end - b.start) || a.index - b.index
-          );
-          this.action({ type: "overlay", indices: laps.slice(0, 3).map((lap) => lap.index) });
-        });
-      }
-      const panel = document.createElement("div");
-      this.setup = panel;
-      this.holdRebuildDuringPress(panel);
-      if (c.map) {
-        panel.className = "lap-map-setup";
-      } else {
-        const details = document.createElement("details"),
-          summary = document.createElement("summary");
-        details.open = setupOpen;
-        summary.textContent = "Lap setup";
-        details.append(summary, panel);
-        panel.className = "lap-setup";
-        this.toolbar.append(details);
-      }
-      const setting = (key: string, title: string, value: unknown, options?: string[]) => {
-        const l = document.createElement("label");
-        l.textContent = title;
-        l.title = title;
-        const input = options ? document.createElement("select") : document.createElement("input");
-        if (input instanceof HTMLSelectElement) input.classList.add("mv-select");
-        if (input instanceof HTMLSelectElement) options!.forEach((v) => input.add(new Option(v, v)));
-        input.value = String(value ?? "");
-        input.onchange = () => this.action({ type: "setting", key, value: input.value });
-        if (c.map) {
-          const heading = document.createElement("div"),
-            row = document.createElement("div"),
-            full = document.createElement("div");
-          heading.className = "title";
-          full.className = "full";
-          full.append(l);
-          heading.append(full);
-          row.className = "input";
-          input.setAttribute("aria-label", title);
-          row.append(input);
-          panel.append(heading, row);
-        } else {
-          l.append(input);
-          panel.append(l);
-        }
-        return input;
-      };
-      setting("mode", "Event", c.settings.config.mode ?? "circuit", [
-        "circuit",
-        "accel",
-        "skidpad",
-        "autocross",
-        "endurance"
-      ]);
-      setting("radius", "Wheel radius [m]", c.settings.radius);
-      setting("ratio", "Motor / wheel ratio", c.settings.ratio);
-      setting("minTime", "Minimum lap [s]", c.settings.config.minTime ?? 20);
-      setting("length", "Reference length [m]", c.settings.config.length);
-      setting("fractions", "Sector fractions", (c.settings.config.fractions ?? [1 / 3, 2 / 3]).join(","));
-      setting("manual", "Manual splits [log seconds]", c.settings.config.manual?.join(","));
-      this.button(panel, "Split at cursor", () => this.action({ type: "marker" }));
-      this.button(panel, "Auto start gate", () => this.action({ type: "auto" }));
-      const addGate = (index: number) => {
-        const c = this.command!,
-          gate = c.time === null ? undefined : gateAt(c.result.samples, c.time);
-        if (gate) this.action({ type: "gate", index, gate });
-      };
-      this.button(panel, "Add sector at cursor", () => addGate(c.settings.config.sectors?.length ?? 0));
-      this.button(panel, "Set start/finish at cursor", () => addGate(-1)).style.gridColumn = "1 / -1";
-      if (c.origin && c.result.gate) {
-        const coordinates = geographicGate(c.result.gate, c.origin);
-        for (const endpoint of ["a", "b"] as const) {
-          for (const axis of ["lat", "lon"] as const) {
-            const title = `Start/finish ${endpoint.toUpperCase()} ${axis === "lat" ? "latitude" : "longitude"} [°]`;
-            const input = setting("", title, Number(coordinates[endpoint][axis].toFixed(8))) as HTMLInputElement;
-            input.type = "number";
-            input.step = "any";
-            input.min = String(axis === "lat" ? -90 : -180);
-            input.max = String(axis === "lat" ? 90 : 180);
-            input.required = true;
-            input.oninput = () => input.setCustomValidity("");
-            input.onchange = () => {
-              const value = Number(input.value);
-              if (!input.value.trim() || !input.checkValidity() || !Number.isFinite(value)) {
-                input.reportValidity();
-                return;
-              }
-              const current = this.command!;
-              if (!current.origin || !current.result.gate) return;
-              const next = geographicGate(current.result.gate, current.origin);
-              next[endpoint][axis] = value;
-              const gate = {
-                a: project(next.a.lat, next.a.lon, current.origin),
-                b: project(next.b.lat, next.b.lon, current.origin)
-              };
-              if (Math.hypot(gate.b.x - gate.a.x, gate.b.y - gate.a.y) < 0.01) {
-                input.setCustomValidity("The line endpoints must be apart.");
-                input.reportValidity();
-                return;
-              }
-              this.action({ type: "gate", index: -1, gate });
-            };
-          }
-        }
-      }
-      // Only autocross ends a run on a separate line.
-      if (c.settings.config.mode === "autocross") this.button(panel, "Set finish at cursor", () => addGate(-2));
-      if (c.map) this.action({ type: "setup", panel });
+    this.buildHeader(c);
+    if (this.interactive) {
+      this.buildSetup(c);
+      this.buildMapToolbar(c);
+      this.buildTableToolbar(c);
     }
-    if (this.bestButton) this.bestButton.disabled = !c.result.laps.some((lap) => lap.valid);
-    if (c.map) {
-      // The scroll sensor loses its position if the map leaves the page.
-      if (this.mapView.parentElement !== this.content) this.content.replaceChildren(this.mapView, this.message);
+    if (this.shown.map)
       this.message.textContent =
         !c.result.samples.length || !c.settings.latitude || !c.settings.longitude
           ? "Open a log or connect to telemetry with GPS. Add latitude and longitude to the Position source list."
           : "";
-      return;
-    }
-    this.content.replaceChildren();
+    if (this.shown.table) this.buildTable(c);
+  }
+  private buildTable(c: LapCommand) {
+    const scrollTop = this.tableContent.scrollTop,
+      scrollLeft = this.tableContent.scrollLeft;
+    this.tableContent.replaceChildren();
     if (!c.result.laps.some((l) => l.valid)) {
       const p = document.createElement("p");
       p.className = "lap-empty";
       p.textContent = "No laps found from the lap counter, beacon or GPS. Add manual splits under Lap setup.";
-      this.content.append(p);
+      this.tableContent.append(p);
     }
     const signed = (v: number) => (Number.isFinite(v) ? (v > 0 ? "+" : "") + v.toFixed(3) : "—");
     const table = document.createElement("table");
     table.className = "lap-table";
-    this.content.append(table);
+    this.tableContent.append(table);
     const row = (texts: string[]) => {
       const r = table.insertRow();
       texts.forEach((t) => (r.insertCell().textContent = t));
@@ -561,7 +769,7 @@ export default class LapRenderer implements TabRenderer {
         ...Array.from({ length: sectors }, (_, j) => duration(lap.sectors[j])),
         lap.valid && lap.index !== c.reference ? signed(time - refTime) : lap.index === c.reference ? "ref" : "—",
         `${lap.source} · ${lap.label}${lap.valid ? "" : " (excluded)"}`,
-        ...c.metrics[i].map((v) => (Number.isFinite(v) ? v.toFixed(2) : "—"))
+        ...(c.metrics[i] ?? []).map((v) => (Number.isFinite(v) ? v.toFixed(2) : "—"))
       ]);
       r.cells[sectors + 5].className = "lap-source";
       r.onclick = () => this.action({ type: "lap", index: lap.index });
@@ -604,7 +812,7 @@ export default class LapRenderer implements TabRenderer {
       radio.onclick = (e) => e.stopPropagation();
       radio.onchange = () => this.action({ type: "reference", index: lap.index });
       r.cells[1].append(radio);
-      c.metrics[i].forEach((v, j) => {
+      c.metrics[i]?.forEach((v, j) => {
         const all = c.metrics.map((m) => m[j]).filter(Number.isFinite),
           min = Math.min(...all),
           max = Math.max(...all);
@@ -623,9 +831,9 @@ export default class LapRenderer implements TabRenderer {
     hint.className = "lap-hint";
     hint.textContent =
       "Select a row to seek · choose reference and overlays for Line Graph · purple: session best · green: improved personal best. Partial / invalid laps excluded from bests. Drag a numeric field here for metrics.";
-    this.content.append(hint);
-    this.content.scrollTop = scrollTop;
-    this.content.scrollLeft = scrollLeft;
+    this.tableContent.append(hint);
+    this.tableContent.scrollTop = scrollTop;
+    this.tableContent.scrollLeft = scrollLeft;
   }
   private draw() {
     const c = this.command!,
@@ -647,7 +855,7 @@ export default class LapRenderer implements TabRenderer {
       h,
       ratio,
       this.zoom,
-      this.overlaysOnly,
+      this.scope,
       this.pan,
       dark
     ]);
@@ -866,15 +1074,19 @@ export default class LapRenderer implements TabRenderer {
       ctx.fillStyle = text;
       ctx.textAlign = "center";
       ctx.fillText(
-        "Scroll to zoom · Drag to pan · Shift+drag to draw start/finish · Click the trace to move the cursor",
+        w < 640
+          ? "Scroll to zoom · Drag to pan · Shift+drag for start/finish"
+          : "Scroll to zoom · Drag to pan · Shift+drag to draw start/finish · Click the trace to move the cursor",
         w / 2,
         h - 16
       );
     }
   }
+  /** The laps the map scope keeps. Empty means the whole session, also when no lap is selected. */
   private visibleLaps() {
     const c = this.command!;
-    return this.overlaysOnly
+    if (this.scope === "selected") return c.result.laps.filter((lap) => lap.index === c.selected);
+    return this.scope === "overlaid"
       ? c.result.laps.filter((lap) => lap.valid && (c.overlays.includes(lap.index) || lap.index === c.reference))
       : [];
   }
@@ -995,7 +1207,9 @@ export default class LapRenderer implements TabRenderer {
     // The graph does not save its x zoom, so keep the sector fit temporary here too.
     return {
       ...(this.viewBeforeSector ?? { zoom: this.zoom, pan: this.pan }),
-      overlaysOnly: this.overlaysOnly,
+      scope: this.scope,
+      // Older versions read only this flag.
+      overlaysOnly: this.scope === "overlaid",
       colorMode: this.colorMode
     };
   }
@@ -1010,7 +1224,10 @@ export default class LapRenderer implements TabRenderer {
       this.colorMode = state.colorMode;
       this.restoredColor = true;
     }
-    if ("overlaysOnly" in state && typeof state.overlaysOnly === "boolean") this.overlaysOnly = state.overlaysOnly;
+    if ("scope" in state && (state.scope === "session" || state.scope === "overlaid" || state.scope === "selected"))
+      this.scope = state.scope;
+    else if ("overlaysOnly" in state && typeof state.overlaysOnly === "boolean")
+      this.scope = state.overlaysOnly ? "overlaid" : "session";
     if ("zoom" in state && typeof state.zoom === "number") this.zoom = state.zoom;
     if ("pan" in state && Array.isArray(state.pan) && state.pan.length === 2) this.pan = state.pan as [number, number];
   }

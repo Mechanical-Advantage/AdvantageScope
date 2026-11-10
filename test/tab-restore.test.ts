@@ -33,5 +33,6 @@ test("restoring clamps selection when no predecessor survives", () => {
 
 test("2D Field stays restorable while new tabs use the core menu order", () => {
   assert.ok(getAllTabTypes().includes(TabType.Field2d));
-  assert.deepEqual(NEW_TAB_TYPES, [1, 13, 14, 4, 6, 5, 7, 11, 12]);
+  assert.deepEqual(NEW_TAB_TYPES, [1, 13, 4, 6, 5, 7, 11, 12]);
+  assert.ok(getAllTabTypes().includes(TabType.Laps), "old Laps tabs stay restorable");
 });

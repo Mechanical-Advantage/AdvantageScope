@@ -53,7 +53,7 @@ test("the Track Map fits a double-clicked sector's stretch of the reference lap"
 });
 
 class Element extends EventTarget {
-  classList = { add() {} };
+  classList = { add() {}, toggle() {} };
   style = {};
   className = "";
   tabIndex = 0;
@@ -84,7 +84,8 @@ test("a new focus refits the map once, and a map keeps the view the user scrolls
   const lap = result.laps.find((l) => l.valid)!;
   const [, s2, s3] = sectorBlocks(lap);
   const command: any = {
-    map: true,
+    view: "map",
+    split: 0.55,
     result,
     settings: { config: {} },
     field: "",

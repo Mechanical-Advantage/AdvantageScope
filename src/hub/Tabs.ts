@@ -22,6 +22,7 @@ import TableRenderer from "../shared/renderers/TableRenderer";
 import VideoRenderer from "../shared/renderers/VideoRenderer";
 import { Units } from "../shared/units";
 import { clampValue } from "../shared/util";
+import { attachResizeHandle } from "./ResizeHandle";
 import ScrollSensor, { ScrollSensorMouseControl } from "./ScrollSensor";
 import Timeline, { TimelineBand } from "./Timeline";
 import { updateTracksideLayout } from "./TracksideLayout";
@@ -77,7 +78,6 @@ export default class Tabs {
   private selectedTab = 0;
   private activeSatellites: string[] = [];
   private fieldDragHover: { index: number; timer: number } | null = null;
-  private controlsHandleActive = false;
 
   constructor() {
     // Set up tab configs
@@ -207,29 +207,18 @@ export default class Tabs {
     });
 
     // Controls handle
-    this.CONTROLS_HANDLE.addEventListener("mousedown", () => {
-      this.controlsHandleActive = true;
-      document.body.style.cursor = "row-resize";
-    });
-    window.addEventListener("mouseup", () => {
-      this.controlsHandleActive = false;
-      document.body.style.cursor = "initial";
-    });
-    window.addEventListener("mousemove", (event) => {
-      if (this.controlsHandleActive) {
+    attachResizeHandle(
+      this.CONTROLS_HANDLE,
+      "row-resize",
+      (event) => {
         this.tabList[this.selectedTab].controlsHeight = window.innerHeight - event.clientY;
         this.updateControlsHeight();
-      }
-    });
-    let lastClick = 0;
-    this.CONTROLS_HANDLE.addEventListener("click", () => {
-      let now = new Date().getTime();
-      if (now - lastClick < 400) {
-        this.toggleControlsVisible();
-        lastClick = 0;
-      } else {
-        lastClick = now;
-      }
+      },
+      () => this.toggleControlsVisible()
+    );
+    // A lap tab's "Show lap setup" opens collapsed controls. Open ones stay at their height.
+    window.addEventListener("show-tab-controls", () => {
+      if (this.tabList[this.selectedTab]?.controlsHeight <= 0) this.toggleControlsVisible();
     });
     this.updateControlsHeight();
 

@@ -17,6 +17,7 @@ enum TabType {
   // 8-10 were Joysticks, Swerve and Mechanism (removed); values kept stable for saved layouts
   Points = 11,
   Metadata = 12,
+  // 13 is the combined Track and laps tab. 14 was the separate Laps tab, which saved layouts can still hold.
   TrackMap = 13,
   Laps = 14
   // 20-22 were Raw Messages, Log and Image. These values stay reserved for saved layouts.
@@ -31,7 +32,6 @@ export function getAllTabTypes(): TabType[] {
 export const NEW_TAB_TYPES = [
   TabType.LineGraph,
   TabType.TrackMap,
-  TabType.Laps,
   TabType.Table,
   TabType.Statistics,
   TabType.Console,
@@ -72,7 +72,7 @@ export function getDefaultTabTitle(type: TabType): string {
     case TabType.Points:
       return "Points";
     case TabType.TrackMap:
-      return "Track Map";
+      return "Track and laps";
     case TabType.Laps:
       return "Laps";
     case TabType.Metadata:
