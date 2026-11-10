@@ -25,7 +25,7 @@ function controller() {
     sourceList: { getState: () => [] },
     orientation: 1,
     MAX_SPEED: { value: "100" },
-    STEERING_RATIO: { value: "10" },
+    STEERING_RATIO: { value: "3.827" },
     SIZE_X: { value: "2" },
     SIZE_Y: { value: "3" }
   });
@@ -47,8 +47,8 @@ test("wheel direction requires steering, missing wheel speed stays null, and g d
   c.refresh = () => c.fields.refresh();
   c.refresh();
   assert.deepEqual(c.getCommand().moduleVelocities[0].values, [
-    { velocity: 0.4, angle: Math.PI / 20 },
-    { velocity: null, angle: Math.PI / 20 }
+    { velocity: 0.4, angle: ((90 / 3.827) * Math.PI) / 180 },
+    { velocity: null, angle: ((90 / 3.827) * Math.PI) / 180 }
   ]);
   put("SBG_FRONT_AccelY", 4);
   c.refresh();
@@ -96,7 +96,7 @@ test("restoring invalid scales and dimensions preserves the current defaults", (
     c.restoreState({ maxSpeed: invalid, steeringRatio: invalid, sizeX: invalid, sizeY: invalid });
     driver.restoreState({ brakeScale: invalid });
     assert.equal(c.MAX_SPEED.value, "100");
-    assert.equal(c.STEERING_RATIO.value, "10");
+    assert.equal(c.STEERING_RATIO.value, "3.827");
     assert.equal(c.SIZE_X.value, "2");
     assert.equal(c.SIZE_Y.value, "3");
     assert.equal(driver.BRAKE_SCALE.value, "2000");

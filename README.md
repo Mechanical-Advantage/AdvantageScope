@@ -23,7 +23,7 @@ Driver Inputs and Car Dynamics draw the car at the timeline cursor, which follow
 - **Driver Inputs** replaces Joysticks. It draws a steering wheel from `DASH_SteeringAngle` (positive left), a throttle bar from `ECU_ThrottlePos`, else `PEDAL_Position1` or `PEDAL_Position2`, and brake bars from `ECU_BrakePressFront` and `ECU_BrakePressRear`. Brake Full Scale sets the pressure of a full bar. It defaults to 2000 psi, the top of the DBC range.
 - **Car Dynamics** replaces Swerve. It draws a top-down car with these parts:
 
-  - front wheels turned by `DASH_SteeringAngle` divided by the steering ratio, 4.5:1 by default
+  - front wheels turned by `DASH_SteeringAngle` divided by the steering ratio, 3.827:1 straight ahead by default
   - front wheel speed arrows from `DASH_SpeedFL` and `DASH_SpeedFR`, full length at Max Speed
   - the yaw rate from `SBG_FRONT_GyroZ` as an arc
   - an acceleration dot in a 2 g circle from `SBG_FRONT_AccelX` (forward) and `SBG_FRONT_AccelY` (left)
