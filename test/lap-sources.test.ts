@@ -11,6 +11,7 @@ import { LapService, lapService } from "../src/hub/LapService";
 import SourceList from "../src/hub/SourceList";
 import LapController from "../src/hub/controllers/LapController";
 import { LapSourceConfigs } from "../src/hub/controllers/LapController_Config";
+import { geographicGate } from "../src/shared/laps/LapEngine";
 import Log from "../src/shared/log/Log";
 
 function node(list?: any): any {
@@ -281,4 +282,151 @@ test("a constant wheel speed advances distance when only the log end advances", 
   (service as any).nextUpdate = 0;
   service.update();
   assert.equal(service.result.samples.at(-1)!.distance, 40);
+});
+
+test("changing the event does not rewrite live slip history", () => {
+  const log = new Log();
+  for (let i = 0; i < 100; i++) {
+    for (const [key, value] of [
+      ["WheelSpeedFL", 10 + i / 100],
+      ["WheelSpeedFR", 10 + i / 100],
+      ["ground_speed", 10]
+    ] as const) {
+      log.putNumber(key, i / 10, value);
+      log.setMetadataString(key, JSON.stringify({ unit: "m/s" }));
+    }
+  }
+  (globalThis as any).window = { log, selection: { getCurrentLiveTime: () => 10 } };
+  const service = new LapService();
+  service.update();
+  const before = log.getNumber("Laps/SlipRatio", -Infinity, Infinity);
+  const putNumber = log.putNumber.bind(log);
+  let writes = 0;
+  log.putNumber = (key, time, value) => {
+    if (key === "Laps/SlipRatio") writes++;
+    putNumber(key, time, value);
+  };
+  for (const mode of ["skidpad", "accel", "autocross", "endurance", "circuit"] as const) {
+    service.settings.config.mode = mode;
+    service.invalidate();
+    service.update();
+    assert.deepEqual(log.getNumber("Laps/SlipRatio", -Infinity, Infinity), before);
+  }
+  assert.equal(writes, 0);
+  service.settings.radius *= 2;
+  service.invalidate();
+  service.update();
+  assert.ok(writes > 0, "wheel calibration still rebuilds slip history");
+});
+
+test("a legacy sector stays on the track when live retention moves the GPS origin", () => {
+  const log = new Log();
+  for (let i = 0; i <= 100; i++) {
+    log.putNumber("latitude", i / 10, -37 + i * 0.000001);
+    log.putNumber("longitude", i / 10, 145 + i * 0.000001);
+  }
+  (globalThis as any).window = { log, selection: { getCurrentLiveTime: () => 10 } };
+  const service = new LapService();
+  service.settings.config.sectors = [{ a: { x: 2, y: 3 }, b: { x: 4, y: 5 } }];
+  service.update();
+  const before = geographicGate(service.localConfig().sectors![0], service.origin!);
+  log.clearBeforeTime(5, false);
+  service.invalidate();
+  service.update();
+  const after = geographicGate(service.localConfig().sectors![0], service.origin!);
+  assert.deepEqual(after, before);
+});
+
+test("a legacy sector stays on the track when a log of the same track replaces the current one", () => {
+  const track = (from: number) => {
+    const log = new Log();
+    for (let i = from; i <= 100; i++) {
+      log.putNumber("latitude", i / 10, -37 + i * 0.000001);
+      log.putNumber("longitude", i / 10, 145 + i * 0.000001);
+    }
+    return log;
+  };
+  (globalThis as any).window = { log: track(0), selection: { getCurrentLiveTime: () => 10 } };
+  const service = new LapService();
+  service.settings.config.sectors = [{ a: { x: 2, y: 3 }, b: { x: 4, y: 5 } }];
+  service.update();
+  const before = geographicGate(service.localConfig().sectors![0], service.origin!);
+  // The second log starts five seconds later, so its first GPS fix is elsewhere on the track.
+  (globalThis as any).window.log = track(50);
+  service.update();
+  const after = geographicGate(service.localConfig().sectors![0], service.origin!);
+  assert.notDeepEqual(service.origin, undefined);
+  assert.ok(Math.hypot(after.a.lat - before.a.lat, after.a.lon - before.a.lon) < 1e-9);
+  assert.ok(Math.hypot(after.b.lat - before.b.lat, after.b.lon - before.b.lon) < 1e-9);
+});
+
+test("changing the event keeps derived lap channels that stay the same", () => {
+  const log = new Log();
+  for (let i = 0; i < 3000; i++) {
+    const t = i / 5;
+    log.putNumber("latitude", t, -37 + 0.001 * Math.sin(t / 7));
+    log.putNumber("longitude", t, 145 + 0.001 * Math.cos(t / 7));
+    log.putNumber("lap_count", t, Math.floor(t / 44));
+  }
+  const channels = () =>
+    ["Number", "Time", "Distance", "Sector", "DeltaToReference"].map((n) =>
+      log.getNumber("Laps/" + n, -Infinity, Infinity)
+    );
+  (globalThis as any).window = { log, selection: { getCurrentLiveTime: () => 600 } };
+  const service = new LapService();
+  service.update();
+  const before = channels();
+  const putNumber = log.putNumber.bind(log);
+  let writes = 0;
+  log.putNumber = (key, time, value) => {
+    if (key.startsWith("Laps/")) writes++;
+    putNumber(key, time, value);
+  };
+  // Counter laps and the reference stay the same in these modes, so every channel does too.
+  for (const mode of ["autocross", "endurance", "circuit"] as const) {
+    service.settings.config.mode = mode;
+    service.invalidate();
+    service.update();
+    assert.deepEqual(channels(), before);
+  }
+  assert.equal(writes, 0);
+  // Accel times runs instead of laps, so its channels are rewritten.
+  service.settings.config.mode = "accel";
+  service.invalidate();
+  service.update();
+  assert.ok(writes > 0);
+  assert.notDeepEqual(channels(), before);
+});
+
+test("cached lap samples refresh after data, units and wheel settings change", () => {
+  const log = new Log();
+  for (let i = 0; i < 20; i++) {
+    log.putNumber("latitude", i / 5, -37 + i * 0.000001);
+    log.putNumber("longitude", i / 5, 145 + i * 0.000001);
+    log.putNumber("WheelSpeedFL", i / 5, 10 + i);
+    log.putNumber("WheelSpeedFR", i / 5, 10 + i);
+  }
+  for (const key of ["WheelSpeedFL", "WheelSpeedFR"]) log.setMetadataString(key, JSON.stringify({ unit: "rad/s" }));
+  (globalThis as any).window = { log, selection: { getCurrentLiveTime: () => 4 } };
+  const service = new LapService();
+  service.update();
+  const before = service.result.samples;
+  service.settings.config.mode = "skidpad";
+  service.invalidate();
+  service.update();
+  assert.deepEqual(service.result.samples, before);
+  service.settings.radius *= 2;
+  service.invalidate();
+  service.update();
+  assert.equal(service.result.samples[0].speed, before[0].speed! * 2);
+  for (const key of ["WheelSpeedFL", "WheelSpeedFR"]) log.setMetadataString(key, JSON.stringify({ unit: "m/s" }));
+  service.invalidate();
+  service.update();
+  assert.equal(service.result.samples[0].speed, 10);
+  log.putNumber("latitude", 4, -37 + 20 * 0.000001);
+  log.putNumber("longitude", 4, 145 + 20 * 0.000001);
+  service.invalidate();
+  service.update();
+  assert.equal(service.result.samples.length, 21);
+  assert.equal(service.result.samples.at(-1)!.t, 4);
 });

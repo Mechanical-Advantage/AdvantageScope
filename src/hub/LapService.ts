@@ -12,6 +12,7 @@ import {
   Coordinate,
   Gate,
   geographicGate,
+  indexAt,
   interpolate,
   LapConfig,
   LapResult,
@@ -51,6 +52,19 @@ const SOURCE_ROLES: LapSourceRole[] = [
   "counter",
   "beacon"
 ];
+/** Whether a channel already holds exactly what writing these values to an empty channel would store. */
+function storedAs(key: string, times: number[], values: number[]): boolean {
+  const stored = window.log.getNumber(key, -Infinity, Infinity);
+  if (!stored || !times.length) return false;
+  // Log keeps only the first of consecutive equal values.
+  let n = 0;
+  for (let i = 0; i < times.length; i++) {
+    if (n && values[i] === values[i - 1]) continue;
+    if (stored.timestamps[n] !== times[i] || !Object.is(stored.values[n], values[i])) return false;
+    n++;
+  }
+  return n === stored.timestamps.length;
+}
 export class LapService {
   settings: LapSettings = {
     latitude: "",
@@ -103,6 +117,10 @@ export class LapService {
   version = 0;
   private log?: Log;
   private signature = "";
+  private sampleSignature = "";
+  /** The origin of the last log's track, kept until the next log has its own origin. */
+  private switchOrigin?: Coordinate;
+  private samples: Sample[] = [];
   private nextUpdate = 0;
   private derivedEnd = -Infinity;
   private slipEnd = -Infinity;
@@ -188,9 +206,14 @@ export class LapService {
   update() {
     if (this.log !== window.log) {
       this.log = window.log;
+      // Legacy local gates already placed on a track keep that position on the next log.
+      // One lone fix is not a track, so it can't anchor them.
+      if (this.origin && this.result.samples.length > 1) this.switchOrigin = this.origin;
+      this.origin = undefined;
       this.nextUpdate = 0;
       this.signature = "";
       this.derivedSignature = "";
+      this.sampleSignature = "";
       this.derivedEnd = -Infinity;
       this.slipEnd = -Infinity;
       this.slipSignature = "";
@@ -203,14 +226,24 @@ export class LapService {
     this.nextUpdate = performance.now() + 500;
     const fields = this.fields();
     const data = new Map(fields.map((k) => [k, window.log.getNumber(k, -Infinity, Infinity)]));
-    const signature = JSON.stringify([
-      this.settings,
+    const inputs = JSON.stringify([
       !data.get(this.settings.latitude) ? window.log.getTimestampRange()[1] : undefined,
-      fields.map((k) => [k, data.get(k)?.timestamps.length, data.get(k)?.timestamps.at(-1), data.get(k)?.values.at(-1)])
+      fields.map((k) => [
+        k,
+        window.log.getUnit(k),
+        data.get(k)?.timestamps.length,
+        data.get(k)?.timestamps.at(-1),
+        data.get(k)?.values.at(-1)
+      ])
     ]);
+    const signature = JSON.stringify([this.settings, inputs]);
     if (signature === this.signature) return;
     this.signature = signature;
     const s = this.settings;
+    // Samples depend on the data and sources but not on the lap settings, so an Event change reuses them.
+    const sampleSignature = JSON.stringify([{ ...s, config: undefined }, inputs]);
+    const reuse = sampleSignature === this.sampleSignature;
+    this.sampleSignature = sampleSignature;
     const at = (key: string, t: number) => {
       const d = data.get(key);
       return d ? interpolate(d.timestamps, d.values, t) : NaN;
@@ -269,9 +302,11 @@ export class LapService {
         ? d.values[i - 1]
         : at(key, t);
     };
-    const samples: Sample[] = [];
-    this.origin = undefined;
-    if (base) {
+    const samples: Sample[] = reuse ? this.samples : [];
+    this.samples = samples;
+    const previousOrigin = this.origin;
+    if (!reuse) this.origin = undefined;
+    if (base && !reuse) {
       // Log compresses unchanged values independently per channel. Use the union so a
       // constant latitude does not hide wheel-speed or longitude changes.
       let timestamps = [...new Set([...data.values()].flatMap((d) => d?.timestamps ?? []))].sort((a, b) => a - b);
@@ -370,7 +405,13 @@ export class LapService {
     if (gpsKey && s.frontLeft && s.frontRight) {
       // Live data only appends, so rewriting the whole session on each update would grow without bound.
       // A static log recomputes in full, because a lazily loaded field can add earlier samples.
-      const slipSignature = JSON.stringify([s, gpsKey]);
+      const slipSignature = JSON.stringify([
+        s.frontLeft,
+        s.frontRight,
+        gpsKey,
+        s.radius,
+        [s.frontLeft, s.frontRight, gpsKey].map((key) => window.log.getUnit(key))
+      ]);
       const live = window.selection?.getCurrentLiveTime() != null;
       if (!live || slipSignature !== this.slipSignature) this.slipEnd = -Infinity;
       this.slipSignature = slipSignature;
@@ -397,6 +438,24 @@ export class LapService {
         })
       );
     }
+    const anchor =
+      this.switchOrigin ??
+      (window.log.getTimestampRange()[0] > (this.result.samples[0]?.t ?? Infinity) ? previousOrigin : undefined);
+    if (anchor && this.origin && (anchor.lat !== this.origin.lat || anchor.lon !== this.origin.lon)) {
+      // Old layouts store local gates. Anchor them before a log switch or retention moves the local origin.
+      const config = s.config;
+      if (config.gate || config.finish || config.sectors?.length) {
+        const geo = (config.geographic ??= {});
+        if (config.gate) geo.gate ??= geographicGate(config.gate, anchor);
+        if (config.finish) geo.finish ??= geographicGate(config.finish, anchor);
+        if (config.sectors?.length)
+          geo.sectors = [...(geo.sectors ?? []), ...config.sectors.map((gate) => geographicGate(gate, anchor))];
+        delete config.gate;
+        delete config.finish;
+        delete config.sectors;
+      }
+    }
+    if (this.origin) this.switchOrigin = undefined;
     const config = this.localConfig();
     this.result = analyze(samples, config);
     const ref = this.result.laps.find((l) => l.index === (this.reference ?? this.result.best));
@@ -415,19 +474,25 @@ export class LapService {
       this.reference,
       this.result.laps.filter((l) => l.complete).map((l) => [l.start, l.end])
     ]);
-    const names = ["Number", "Time", "Distance", "Sector", "DeltaToReference"];
-    if (ds !== this.derivedSignature) {
-      names.forEach((n) => window.log.deleteField("Laps/" + n));
+    const names = ["Laps/Number", "Laps/Time", "Laps/Distance", "Laps/Sector", "Laps/DeltaToReference"];
+    const rebuild = ds !== this.derivedSignature;
+    if (rebuild) {
       this.derivedEnd = -Infinity;
       this.derivedSignature = ds;
     }
     const reference = this.result.laps.find((l) => l.index === this.reference);
+    const refDistances = reference?.grid.map((g) => g.distance) ?? [],
+      refTimes = reference?.grid.map((g) => g.time) ?? [];
+    const times: number[] = [],
+      columns: number[][] = names.map(() => []);
     for (const lap of this.result.laps) {
-      const points = this.result.samples.filter((p) => p.t >= lap.start && p.t < lap.end && p.t > this.derivedEnd);
+      const all = this.result.samples,
+        points = all.slice(
+          Math.max(indexAt(all, lap.start), indexAt(all, this.derivedEnd, true)),
+          indexAt(all, lap.end)
+        );
       const gridTimes = lap.grid.map((g) => g.time),
         gridDistances = lap.grid.map((g) => g.distance);
-      const refDistances = reference?.grid.map((g) => g.distance) ?? [],
-        refTimes = reference?.grid.map((g) => g.time) ?? [];
       points.forEach((p) => {
         const elapsed = p.t - lap.start;
         const distance = interpolate(gridTimes, gridDistances, elapsed);
@@ -446,13 +511,21 @@ export class LapService {
           sector,
           reference ? elapsed - interpolate(refDistances, refTimes, distance) : NaN
         ];
-        names.forEach((n, i) => window.log.putNumber("Laps/" + n, p.t, values[i]));
+        times.push(p.t);
+        columns.forEach((column, i) => column.push(values[i]));
         this.derivedEnd = p.t;
       });
     }
-    names.forEach((n, i) =>
-      window.log.setMetadataString("Laps/" + n, JSON.stringify({ unit: ["", "s", "m", "", "s"][i] }))
-    );
+    names.forEach((n, i) => {
+      // A rebuild usually leaves most channels as they were, as when only the Event changes.
+      // Rewriting a long session's channel costs more than comparing it.
+      if (rebuild) {
+        if (storedAs(n, times, columns[i])) return;
+        window.log.deleteField(n);
+      }
+      times.forEach((t, j) => window.log.putNumber(n, t, columns[i][j]));
+    });
+    names.forEach((n, i) => window.log.setMetadataString(n, JSON.stringify({ unit: ["", "s", "m", "", "s"][i] })));
     this.version++;
   }
   bands() {
