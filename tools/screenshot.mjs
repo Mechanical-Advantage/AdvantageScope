@@ -28,8 +28,9 @@ const HELP = `Usage: npm run screenshot -- [options]
   --theme <t>          light, dark or system (default dark)
   --log <file>         open a log file
   --mock               start the mock backend (seed 1, lap counter) and connect live
-  --mock-args <args>   extra mock backend flags, e.g. "--fault-demo --unsync"
-  --layout trackside   apply the trackside layout
+  --mock-args=<args>   extra mock backend flags, e.g. --mock-args="--fault-demo --unsync"
+                       (use "=", since the value starts with a dash)
+  --layout trackside   add and select a Trackside tab
   --tab <index|title>  select a tab before capturing; repeat to capture several tabs
   --eval <js>          run JavaScript in the hub page before capturing (may await); repeatable.
                        A returned value prints as [eval] <json>
@@ -194,7 +195,8 @@ try {
         .some((key) => window.log.getNumber(key, -Infinity, Infinity)?.values.some(Number.isFinite))
     );
   }
-  if (opts.layout === "trackside") await send("trackside-layout");
+  // 15 is TabType.Trackside. addTab selects the new tab.
+  if (opts.layout === "trackside") await hub.evaluate(() => window.tabs.addTab(15));
   for (const script of opts.eval) {
     const result = await hub.evaluate(`(async () => { ${script} })()`);
     if (result !== undefined) console.log("[eval] " + JSON.stringify(result));
