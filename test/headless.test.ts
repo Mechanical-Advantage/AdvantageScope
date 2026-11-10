@@ -62,3 +62,25 @@ test("normal runs keep native menu popups", () => {
   const { Menu } = load(false);
   assert.throws(() => new Menu().popup(), /native popup/);
 });
+
+test("headless visibility follows show, showInactive and hide for each window", () => {
+  const { BrowserWindow } = load();
+  const satellite = new BrowserWindow();
+  const other = new BrowserWindow();
+  assert.equal(satellite.isVisible(), false);
+  satellite.show();
+  assert.equal(satellite.isVisible(), true);
+  assert.equal(other.isVisible(), false);
+  satellite.hide();
+  assert.equal(satellite.isVisible(), false);
+  satellite.showInactive();
+  assert.equal(satellite.isVisible(), true);
+});
+
+test("normal runs keep native window visibility and show methods", () => {
+  const { BrowserWindow } = load(false);
+  const window = new BrowserWindow();
+  assert.equal(window.isVisible(), false);
+  assert.throws(() => window.show(), /native show/);
+  assert.throws(() => window.showInactive(), /native showInactive/);
+});

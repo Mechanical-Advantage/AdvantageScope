@@ -28,7 +28,20 @@ if (HEADLESS) {
   const log = (what: string, detail?: unknown) => console.log(`[headless] suppressed ${what}`, detail ?? "");
   const noop = () => {};
   const proto = BrowserWindow.prototype as any;
-  for (const method of ["show", "showInactive", "focus", "moveTop"]) proto[method] = noop;
+  // Track the app's requested visibility while every native window stays hidden.
+  const visible = new WeakSet<BrowserWindow>();
+  for (const method of ["show", "showInactive"]) {
+    proto[method] = function () {
+      visible.add(this);
+    };
+  }
+  proto.hide = function () {
+    visible.delete(this);
+  };
+  proto.isVisible = function () {
+    return visible.has(this);
+  };
+  for (const method of ["focus", "moveTop"]) proto[method] = noop;
   Menu.prototype.popup = function () {
     log(
       "menu",
