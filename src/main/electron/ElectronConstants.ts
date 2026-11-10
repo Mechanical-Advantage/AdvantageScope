@@ -7,6 +7,8 @@
 
 import { app } from "electron";
 import path from "path";
+// Applies headless mode, which can move userData, before the paths below read it.
+import "./headless";
 
 // General
 export const APP_VERSION = app.isPackaged ? app.getVersion() : "dev";

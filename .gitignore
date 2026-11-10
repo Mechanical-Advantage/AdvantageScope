@@ -1,4 +1,5 @@
 /node_modules
+/.screenshots
 /dist
 /bundles
 /lite/static/bundles

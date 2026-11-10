@@ -28,6 +28,7 @@
     "lite-build": "node bundleLiteAssets.mjs && ASCOPE_DISTRIBUTION=LITE npm run compile",
     "lite-serve": "node tools/lite-serve/main.mjs",
     "lite-smoke": "node tools/lite-smoke.mjs",
+    "screenshot": "node tools/screenshot.mjs",
     "live-api:generate": "node tools/live-api.mjs generate",
     "live-api:check": "node tools/live-api.mjs check"
   },
