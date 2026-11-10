@@ -397,3 +397,36 @@ test("changing the event keeps derived lap channels that stay the same", () => {
   assert.ok(writes > 0);
   assert.notDeepEqual(channels(), before);
 });
+
+test("cached lap samples refresh after data, units and wheel settings change", () => {
+  const log = new Log();
+  for (let i = 0; i < 20; i++) {
+    log.putNumber("latitude", i / 5, -37 + i * 0.000001);
+    log.putNumber("longitude", i / 5, 145 + i * 0.000001);
+    log.putNumber("WheelSpeedFL", i / 5, 10 + i);
+    log.putNumber("WheelSpeedFR", i / 5, 10 + i);
+  }
+  for (const key of ["WheelSpeedFL", "WheelSpeedFR"]) log.setMetadataString(key, JSON.stringify({ unit: "rad/s" }));
+  (globalThis as any).window = { log, selection: { getCurrentLiveTime: () => 4 } };
+  const service = new LapService();
+  service.update();
+  const before = service.result.samples;
+  service.settings.config.mode = "skidpad";
+  service.invalidate();
+  service.update();
+  assert.deepEqual(service.result.samples, before);
+  service.settings.radius *= 2;
+  service.invalidate();
+  service.update();
+  assert.equal(service.result.samples[0].speed, before[0].speed! * 2);
+  for (const key of ["WheelSpeedFL", "WheelSpeedFR"]) log.setMetadataString(key, JSON.stringify({ unit: "m/s" }));
+  service.invalidate();
+  service.update();
+  assert.equal(service.result.samples[0].speed, 10);
+  log.putNumber("latitude", 4, -37 + 20 * 0.000001);
+  log.putNumber("longitude", 4, 145 + 20 * 0.000001);
+  service.invalidate();
+  service.update();
+  assert.equal(service.result.samples.length, 21);
+  assert.equal(service.result.samples.at(-1)!.t, 4);
+});
