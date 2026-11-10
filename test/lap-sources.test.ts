@@ -456,3 +456,13 @@ test("gate edits reuse slip samples on a static log", () => {
   assert.equal(writes, 0);
   assert.deepEqual(log.getNumber("Laps/SlipRatio", -Infinity, Infinity), before);
 });
+
+test("lap bands reuse their cached objects until laps or highlighting change", () => {
+  (globalThis as any).window = { log: new Log() };
+  const service = new LapService();
+  service.update();
+  const first = service.bands();
+  assert.equal(service.bands(), first);
+  service.selected = 2;
+  assert.notEqual(service.bands(), first);
+});

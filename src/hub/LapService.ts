@@ -528,16 +528,28 @@ export class LapService {
     names.forEach((n, i) => window.log.setMetadataString(n, JSON.stringify({ unit: ["", "s", "m", "", "s"][i] })));
     this.version++;
   }
+  private bandKey = "";
+  private bandCache: {
+    start: number;
+    end: number;
+    color: string;
+    darkColor: string;
+    label: string;
+    highlighted: boolean;
+  }[] = [];
   bands() {
     this.update();
-    return this.result.laps.map((l) => ({
+    const key = JSON.stringify([this.version, this.selected, this.reference]);
+    if (key === this.bandKey) return this.bandCache;
+    this.bandKey = key;
+    return (this.bandCache = this.result.laps.map((l) => ({
       start: l.start,
       end: l.end,
       color: l.index % 2 ? "#637986" : "#8a9299",
       darkColor: l.index % 2 ? "#637986" : "#8a9299",
       label: `L${l.index}${l.index === this.reference ? " ref" : ""}`,
       highlighted: l.index === this.selected || l.index === this.reference
-    }));
+    })));
   }
   delta(lap: number, distance: number) {
     const l = this.result.laps.find((l) => l.index === lap),
