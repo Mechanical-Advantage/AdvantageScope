@@ -295,3 +295,25 @@ test("single critical limits clear independently and reject invalid values on ei
   assert.ok("error" in parseCriticalLimit("low", "91", [null, 90]));
   assert.ok("error" in parseCriticalLimit("high", "-6", [-5, null]));
 });
+
+test("single critical edits drive tile alarms and clearing restores a healthy tile", () => {
+  for (const [side, text] of [
+    ["low", "100"],
+    ["high", "0"]
+  ] as const) {
+    const result = parseCriticalLimit(side, text, [null, null]);
+    assert.ok("range" in result);
+    const limits = { low: result.range[0] ?? undefined, high: result.range[1] ?? undefined };
+    assert.equal(tileState("/Motor temp", 50, profile, limits).severity, "critical");
+    const cleared = parseCriticalLimit(side, "", result.range);
+    assert.ok("range" in cleared);
+    assert.deepEqual(cleared.range, [null, null]);
+    assert.equal(
+      tileState("/Motor temp", 50, profile, {
+        low: cleared.range[0] ?? undefined,
+        high: cleared.range[1] ?? undefined
+      }).severity,
+      "ok"
+    );
+  }
+});
