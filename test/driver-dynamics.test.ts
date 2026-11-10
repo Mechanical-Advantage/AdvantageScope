@@ -451,9 +451,29 @@ test("source previews use Line Graph precision and logged units before Invert", 
   const log = new Log();
   log.putNumber("steering", 1, 12.3456789);
   log.setMetadataString("steering", JSON.stringify({ unit: "deg" }));
-  (globalThis as any).window = { log };
+  (globalThis as any).window = { log, selection: { getTimelineRange: () => [1, 3], getMode: () => 0 } };
   assert.equal(numberPreview("steering", 2), formatNumericPreview(12.3456789, "°"));
   assert.equal(numberPreview("missing", 2), null);
   assert.equal(numberPreview("steering", 0), null);
   assert.equal(formatNumericPreview(2, "rotation", true), "2 rotations");
+});
+
+test("source previews retain NaN and respect the graph timeline", () => {
+  const log = new Log();
+  log.putNumber("value", 1, 5);
+  log.putNumber("value", 2, NaN);
+  (globalThis as any).window = { log, selection: { getTimelineRange: () => [1, 3], getMode: () => 0 } };
+  assert.equal(numberPreview("value", 2), "NaN");
+  assert.equal(numberPreview("value", 4), null);
+});
+
+test("single-field previews use the graph display unit and enum labels", () => {
+  const log = new Log();
+  (globalThis as any).window = { log, selection: { getTimelineRange: () => [1, 3], getMode: () => 0 } };
+  log.putNumber("angle", 1, 2);
+  log.setMetadataString("angle", JSON.stringify({ unit: "rad" }));
+  assert.equal(numberPreview("angle", 2), "2 rads");
+  log.putNumber("enum", 1, 1);
+  log.setMetadataString("enum", JSON.stringify({ enumLabels: { 1: "On" } }));
+  assert.equal(numberPreview("enum", 2), "On");
 });

@@ -5,12 +5,13 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { formatChannelValue } from "../../shared/display/ChannelProfile";
-import { formatNumericPreview } from "../../shared/display/NumericPreview";
+import { axisDisplayUnit } from "../../shared/display/ChannelProfile";
 import LoggableType from "../../shared/log/LoggableType";
 import { getOrDefault } from "../../shared/log/LogUtil";
 import { SourceListState, SourceListTypeConfig } from "../../shared/SourceListConfig";
 import { Units } from "../../shared/units";
+import { clampValue } from "../../shared/util";
+import { previewNumberCommand } from "./NumberPreview";
 
 /** A source list type that takes one numeric field for a slot. */
 export function numberSlot(key: string, display: string, symbol: string, invert = false): SourceListTypeConfig {
@@ -69,11 +70,22 @@ export function numberAt(key: string | undefined, time: number, unit: string, uu
 
 /** Previews the logged value before the source's Invert option, as Line Graph does. */
 export function numberPreview(key: string, time: number): string | null {
-  const value = getOrDefault(window.log, key, LoggableType.Number, time, null);
-  if (value === null || !Number.isFinite(value)) return null;
-  const profile = window.log.getChannelProfile(key);
-  if (profile.enumLabels) return formatChannelValue(value, profile);
-  const unit = window.log.getUnit(key);
-  const config = unit === null ? undefined : Units.ALL_UNITS[unit];
-  return formatNumericPreview(value, config?.suffix, config?.pluralizeSuffix);
+  const range = window.selection.getTimelineRange();
+  const data = window.log.getNumber(key, range[0], range[1]);
+  if (data === undefined) return null;
+  const from = window.log.getUnit(key);
+  const to = from === null ? null : axisDisplayUnit(from, window.log.getChannelProfile(key));
+  const unit = to === null ? null : Units.ALL_UNITS[to] ?? null;
+  return previewNumberCommand(
+    key,
+    time,
+    {
+      timestamps: data.timestamps,
+      values: data.values.map((value) =>
+        clampValue(from !== null && to !== null ? Units.convert(value, from, to) : value, -1e20, 1e20)
+      ),
+      hasUnit: unit !== null
+    },
+    unit
+  );
 }
