@@ -188,6 +188,7 @@ export class LapService {
   update() {
     if (this.log !== window.log) {
       this.log = window.log;
+      this.origin = undefined;
       this.nextUpdate = 0;
       this.signature = "";
       this.derivedSignature = "";
@@ -270,6 +271,7 @@ export class LapService {
         : at(key, t);
     };
     const samples: Sample[] = [];
+    const previousOrigin = this.origin;
     this.origin = undefined;
     if (base) {
       // Log compresses unchanged values independently per channel. Use the union so a
@@ -370,7 +372,13 @@ export class LapService {
     if (gpsKey && s.frontLeft && s.frontRight) {
       // Live data only appends, so rewriting the whole session on each update would grow without bound.
       // A static log recomputes in full, because a lazily loaded field can add earlier samples.
-      const slipSignature = JSON.stringify([s, gpsKey]);
+      const slipSignature = JSON.stringify([
+        s.frontLeft,
+        s.frontRight,
+        gpsKey,
+        s.radius,
+        [s.frontLeft, s.frontRight, gpsKey].map((key) => window.log.getUnit(key))
+      ]);
       const live = window.selection?.getCurrentLiveTime() != null;
       if (!live || slipSignature !== this.slipSignature) this.slipEnd = -Infinity;
       this.slipSignature = slipSignature;
@@ -396,6 +404,25 @@ export class LapService {
             "(mean front-wheel circumferential speed − GPS ground speed) / GPS ground speed; invalid below 2 m/s or after 250 ms without samples"
         })
       );
+    }
+    if (
+      previousOrigin &&
+      this.origin &&
+      window.log.getTimestampRange()[0] > (this.result.samples[0]?.t ?? Infinity) &&
+      (previousOrigin.lat !== this.origin.lat || previousOrigin.lon !== this.origin.lon)
+    ) {
+      // Old layouts store local gates. Anchor them before retention moves the local origin.
+      const config = s.config;
+      if (config.gate || config.finish || config.sectors?.length) {
+        const geo = (config.geographic ??= {});
+        if (config.gate) geo.gate ??= geographicGate(config.gate, previousOrigin);
+        if (config.finish) geo.finish ??= geographicGate(config.finish, previousOrigin);
+        if (config.sectors?.length)
+          geo.sectors = [...(geo.sectors ?? []), ...config.sectors.map((gate) => geographicGate(gate, previousOrigin))];
+        delete config.gate;
+        delete config.finish;
+        delete config.sectors;
+      }
     }
     const config = this.localConfig();
     this.result = analyze(samples, config);

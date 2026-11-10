@@ -11,6 +11,7 @@ import { LapService, lapService } from "../src/hub/LapService";
 import SourceList from "../src/hub/SourceList";
 import LapController from "../src/hub/controllers/LapController";
 import { LapSourceConfigs } from "../src/hub/controllers/LapController_Config";
+import { geographicGate } from "../src/shared/laps/LapEngine";
 import Log from "../src/shared/log/Log";
 
 function node(list?: any): any {
@@ -281,4 +282,57 @@ test("a constant wheel speed advances distance when only the log end advances", 
   (service as any).nextUpdate = 0;
   service.update();
   assert.equal(service.result.samples.at(-1)!.distance, 40);
+});
+
+test("changing the event does not rewrite live slip history", () => {
+  const log = new Log();
+  for (let i = 0; i < 100; i++) {
+    for (const [key, value] of [
+      ["WheelSpeedFL", 10 + i / 100],
+      ["WheelSpeedFR", 10 + i / 100],
+      ["ground_speed", 10]
+    ] as const) {
+      log.putNumber(key, i / 10, value);
+      log.setMetadataString(key, JSON.stringify({ unit: "m/s" }));
+    }
+  }
+  (globalThis as any).window = { log, selection: { getCurrentLiveTime: () => 10 } };
+  const service = new LapService();
+  service.update();
+  const before = log.getNumber("Laps/SlipRatio", -Infinity, Infinity);
+  const putNumber = log.putNumber.bind(log);
+  let writes = 0;
+  log.putNumber = (key, time, value) => {
+    if (key === "Laps/SlipRatio") writes++;
+    putNumber(key, time, value);
+  };
+  for (const mode of ["skidpad", "accel", "autocross", "endurance", "circuit"] as const) {
+    service.settings.config.mode = mode;
+    service.invalidate();
+    service.update();
+    assert.deepEqual(log.getNumber("Laps/SlipRatio", -Infinity, Infinity), before);
+  }
+  assert.equal(writes, 0);
+  service.settings.radius *= 2;
+  service.invalidate();
+  service.update();
+  assert.ok(writes > 0, "wheel calibration still rebuilds slip history");
+});
+
+test("a legacy sector stays on the track when live retention moves the GPS origin", () => {
+  const log = new Log();
+  for (let i = 0; i <= 100; i++) {
+    log.putNumber("latitude", i / 10, -37 + i * 0.000001);
+    log.putNumber("longitude", i / 10, 145 + i * 0.000001);
+  }
+  (globalThis as any).window = { log, selection: { getCurrentLiveTime: () => 10 } };
+  const service = new LapService();
+  service.settings.config.sectors = [{ a: { x: 2, y: 3 }, b: { x: 4, y: 5 } }];
+  service.update();
+  const before = geographicGate(service.localConfig().sectors![0], service.origin!);
+  log.clearBeforeTime(5, false);
+  service.invalidate();
+  service.update();
+  const after = geographicGate(service.localConfig().sectors![0], service.origin!);
+  assert.deepEqual(after, before);
 });
