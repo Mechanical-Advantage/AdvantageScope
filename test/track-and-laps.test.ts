@@ -169,3 +169,18 @@ test("a saved split keeps both minimum widths after the window shrinks", () => {
   assert.equal(renderer.shown.stacked, true);
   assert.equal(renderer.tablePane.style.flex, "0 0 68.00%");
 });
+
+test("the view selector updates when Split falls back to the same map pane", () => {
+  const renderer: any = Object.create(LapRenderer.prototype);
+  (globalThis as any).document = { activeElement: null };
+  renderer.shown = { map: true, table: false, stacked: false };
+  renderer.layout = () => {};
+  renderer.scrollSensor = { periodic() {} };
+  renderer.draw = () => {};
+  renderer.colorMode = "laps";
+  let builds = 0;
+  renderer.build = () => builds++;
+  renderer.render({ view: "map", field: "" });
+  renderer.render({ view: "split", field: "" });
+  assert.equal(builds, 2);
+});

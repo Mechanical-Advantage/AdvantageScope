@@ -465,6 +465,7 @@ export default class LapRenderer implements TabRenderer {
     if (this.interactive) this.action({ type: "display", colorMode: this.colorMode, scope: this.scope });
     this.layout(command);
     const key = JSON.stringify([
+      command.view,
       this.colorMode,
       this.scope,
       command.version,
