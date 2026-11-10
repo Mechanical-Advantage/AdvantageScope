@@ -1041,11 +1041,11 @@ table.metadata-table td.no-data {
 
 /* Keep scrolling available without permanent bars, as in the sidebar. */
 .lap-content,
-.tab-controls .field-2d-settings {
+.field-2d-settings[aria-label="Lap setup"] {
   scrollbar-width: none;
 }
 .lap-content::-webkit-scrollbar,
-.tab-controls .field-2d-settings::-webkit-scrollbar {
+.field-2d-settings[aria-label="Lap setup"]::-webkit-scrollbar {
   display: none;
 }
 .lap-table input.mv-checkbox,
