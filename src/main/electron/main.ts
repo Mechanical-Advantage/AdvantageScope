@@ -665,17 +665,10 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               new MenuItem({
                 label: side === "low" ? "Set critical minimum" : "Set critical maximum",
                 click() {
-                  createEditRangeWindow<number | null>(
-                    window,
-                    [critical.limits.low ?? null, critical.limits.high ?? null],
-                    (range) =>
-                      sendMessage(window, "edit-trackside-limits", {
-                        uuid: critical.uuid,
-                        key: state.logKey,
-                        limits: { low: range[0] ?? undefined, high: range[1] ?? undefined }
-                      }),
-                    { field: state.logKey, unit: critical.unit, side }
-                  );
+                  handleHubMessage(window, {
+                    name: "ask-edit-critical-limit",
+                    data: { ...critical, key: state.logKey, side }
+                  });
                 }
               })
             );
@@ -879,6 +872,23 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
     case "source-list-help":
       openSourceListHelp(window, message.data);
       break;
+
+    case "ask-edit-critical-limit": {
+      const { uuid, key, unit, limits, side } = message.data;
+      if (side !== "low" && side !== "high") break;
+      createEditRangeWindow<number | null>(
+        window,
+        [limits.low ?? null, limits.high ?? null],
+        (range) =>
+          sendMessage(window, "edit-trackside-limits", {
+            uuid,
+            key,
+            limits: { low: range[0] ?? undefined, high: range[1] ?? undefined }
+          }),
+        { field: key, unit, side }
+      );
+      break;
+    }
 
     case "ask-edit-axis":
       {
