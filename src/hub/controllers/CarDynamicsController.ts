@@ -15,8 +15,8 @@ import { Orientation } from "../../shared/renderers/Field2dRenderer";
 import { Units } from "../../shared/units";
 import { clampValue, createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
-import CarDynamicsController_Config, { CarDynamicsDefaults } from "./CarDynamicsController_Config";
-import { DbcSlotFields, numberAt } from "./DbcFields";
+import CarDynamicsController_Config from "./CarDynamicsController_Config";
+import { sourceNumberAt } from "./DbcFields";
 import TabController, { setupKeyboardControls } from "./TabController";
 
 /** Acceleration at the edge of the g circle */
@@ -33,12 +33,10 @@ export default class CarDynamicsController implements TabController {
   private ORIENTATION_SWITCHER: HTMLElement;
 
   private sourceList: SourceList;
-  private fields = new DbcSlotFields(CarDynamicsDefaults);
   private orientation = Orientation.DEG_90;
 
   constructor(root: HTMLElement) {
     this.sourceList = new SourceList(root.firstElementChild as HTMLElement, CarDynamicsController_Config, []);
-    this.fields.assignDroppedFields(this.sourceList, CarDynamicsController_Config.typeMemoryId!);
     let settings = root.getElementsByClassName("car-dynamics-settings")[0] as HTMLElement;
     this.MAX_SPEED = settings.getElementsByClassName("max-speed")[0] as HTMLInputElement;
     this.WHEEL_RADIUS = settings.getElementsByClassName("wheel-radius")[0] as HTMLInputElement;
@@ -145,13 +143,12 @@ export default class CarDynamicsController implements TabController {
 
   refresh(): void {
     this.sourceList.refresh();
-    this.fields.refresh();
   }
 
   newAssets(): void {}
 
   getActiveFields(): string[] {
-    return [...this.sourceList.getActiveFields(), ...this.fields.keys(this.sourceList.getState())];
+    return this.sourceList.getActiveFields();
   }
 
   showTimeline(): boolean {
@@ -162,15 +159,15 @@ export default class CarDynamicsController implements TabController {
     let time = window.selection.getRenderTime();
     if (time === null) time = window.log.getTimestampRange()[1];
 
-    let fields = this.fields.resolve(this.sourceList.getState());
-    let read = (slot: string, unit: string) => numberAt(fields[slot], time!, unit, this.UUID);
+    let sources = this.sourceList.getState();
+    let read = (slot: string, unit: string) => sourceNumberAt(sources, slot, time!, unit, this.UUID);
 
     // The front wheels turn by the road wheel angle. The rear wheels have no measurements, so the
     // renderer draws only their outlines.
     let steering = read("steering", "degrees");
     // Angular wheel speed needs a physical radius before normalizing against km/h.
     let wheelSpeed = (slot: string) => {
-      const key = fields[slot];
+      const key = sources.find((source) => source.type === slot && source.visible)?.logKey;
       const unit = key === undefined ? null : window.log.getUnit(key);
       if (unit !== null && Units.GROUP_BY_UNIT[unit] === Units.GROUP_BY_UNIT["radians/second"]) {
         const angular = read(slot, "radians/second");

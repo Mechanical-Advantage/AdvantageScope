@@ -8,32 +8,18 @@
 import { SourceListConfig } from "../../shared/SourceListConfig";
 import { numberSlot } from "./DbcFields";
 
-/** Each slot's default DBC signal, used when no field is dragged into that slot. */
-export const CarDynamicsDefaults: { [slot: string]: string[] } = {
-  steering: ["DASH_SteeringAngle"],
-  speedFL: ["DASH_SpeedFL"],
-  speedFR: ["DASH_SpeedFR"],
-  yawRate: ["SBG_FRONT_GyroZ"],
-  accelX: ["SBG_FRONT_AccelX"],
-  accelY: ["SBG_FRONT_AccelY"],
-  shockFL: ["DASH_ShockPotFrontLeft"],
-  shockFR: ["DASH_ShockPotFrontRight"],
-  shockRL: ["REAR_ShockPotRearLeft"],
-  shockRR: ["REAR_ShockPotRearRight"]
-};
-
 const CarDynamicsController_Config: SourceListConfig = {
   title: "Sources",
   autoAdvance: true,
   allowChildrenFromDrag: true,
   typeMemoryId: "carDynamics",
   types: [
-    numberSlot("steering", "Steering Angle", "360"),
+    numberSlot("steering", "Steering Angle", "360", true),
     numberSlot("speedFL", "Wheel Speed FL", "speed"),
     numberSlot("speedFR", "Wheel Speed FR", "speed"),
-    numberSlot("yawRate", "Yaw Rate", "explore"),
-    numberSlot("accelX", "Longitudinal Accel", "target"),
-    numberSlot("accelY", "Lateral Accel", "target"),
+    numberSlot("yawRate", "Yaw Rate", "explore", true),
+    numberSlot("accelX", "Longitudinal Accel", "target", true),
+    numberSlot("accelY", "Lateral Accel", "target", true),
     numberSlot("shockFL", "Damper FL", "earthquake"),
     numberSlot("shockFR", "Damper FR", "earthquake"),
     numberSlot("shockRL", "Damper RL", "earthquake"),

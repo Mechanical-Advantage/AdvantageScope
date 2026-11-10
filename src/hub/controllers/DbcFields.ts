@@ -5,15 +5,13 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import Log from "../../shared/log/Log";
 import LoggableType from "../../shared/log/LoggableType";
 import { getOrDefault } from "../../shared/log/LogUtil";
 import { SourceListState, SourceListTypeConfig } from "../../shared/SourceListConfig";
 import { Units } from "../../shared/units";
-import SourceList from "../SourceList";
 
 /** A source list type that takes one numeric field for a slot. */
-export function numberSlot(key: string, display: string, symbol: string): SourceListTypeConfig {
+export function numberSlot(key: string, display: string, symbol: string, invert = false): SourceListTypeConfig {
   return {
     key: key,
     display: display,
@@ -23,82 +21,34 @@ export function numberSlot(key: string, display: string, symbol: string): Source
     darkColor: "#ffffff",
     sourceTypes: ["Number"],
     showDocs: true,
-    options: [],
+    options: invert
+      ? [
+          {
+            key: "invert",
+            display: "Invert",
+            showInTypeName: true,
+            values: [
+              { key: "normal", display: "Normal" },
+              { key: "inverted", display: "Inverted" }
+            ]
+          }
+        ]
+      : [],
     previewType: null
   };
 }
 
-/**
- * Picks a field for each slot of a tab. A field dragged into the source list wins, and hiding it leaves
- * the slot empty. Otherwise the slot takes the first numeric field whose `metadata.dbcSignal` matches one
- * of its DBC signal names, tried in order. The signal lookup is rebuilt when the log or its field-key
- * version changes.
- */
-export class DbcSlotFields {
-  private defaults: { [slot: string]: string[] };
-  private bySignal: Map<string, string> | null = null;
-
-  private log: Log | null = null;
-  private fieldKeysVersion = -1;
-
-  constructor(defaults: { [slot: string]: string[] }) {
-    this.defaults = defaults;
-  }
-
-  refresh() {
-    const log = window.log;
-    const version = log.getFieldKeysVersion();
-    if (log !== this.log || version !== this.fieldKeysVersion) {
-      this.bySignal = null;
-      this.log = log;
-      this.fieldKeysVersion = version;
-    }
-  }
-
-  /**
-   * Makes a field dropped into the source list take the slot its DBC signal belongs to, unless this tab
-   * already remembers a type for that field. The drop reads the source list's type memory.
-   */
-  assignDroppedFields(sourceList: SourceList, typeMemoryId: string) {
-    sourceList.beforeAdd = (key) => {
-      if (!(typeMemoryId in window.typeMemory)) window.typeMemory[typeMemoryId] = {};
-      const memory = window.typeMemory[typeMemoryId];
-      let signal: unknown;
-      try {
-        signal = JSON.parse(window.log.getMetadataString(key)).dbcSignal;
-      } catch {}
-      const slot = Object.keys(this.defaults).find((slot) => this.defaults[slot].includes(signal as string));
-      if (slot !== undefined && !(key in memory)) memory[key] = { type: slot, options: {} };
-      return true;
-    };
-  }
-
-  /** The fields the slots read, so live sources subscribe to defaults as well as dragged fields. */
-  keys(sources: SourceListState): string[] {
-    return Object.values(this.resolve(sources)).filter((key): key is string => key !== undefined);
-  }
-
-  resolve(sources: SourceListState): { [slot: string]: string | undefined } {
-    this.refresh();
-    if (this.bySignal === null) {
-      const bySignal = new Map<string, string>();
-      window.log.getFieldKeys().forEach((key) => {
-        if (window.log.getType(key) !== LoggableType.Number) return;
-        try {
-          const signal = JSON.parse(window.log.getMetadataString(key)).dbcSignal;
-          if (typeof signal === "string" && !bySignal.has(signal)) bySignal.set(signal, key);
-        } catch {}
-      });
-      this.bySignal = bySignal;
-    }
-    const fields: { [slot: string]: string | undefined } = {};
-    Object.entries(this.defaults).forEach(([slot, signals]) => {
-      const dragged = sources.find((source) => source.type === slot);
-      if (dragged) fields[slot] = dragged.visible ? dragged.logKey : undefined;
-      else fields[slot] = signals.map((signal) => this.bySignal!.get(signal)).find((key) => key);
-    });
-    return fields;
-  }
+/** Reads only the visible source assigned to a slot, including its saved sign option. */
+export function sourceNumberAt(
+  sources: SourceListState,
+  slot: string,
+  time: number,
+  unit: string,
+  uuid: string
+): number | null {
+  const source = sources.find((source) => source.type === slot && source.visible);
+  const value = numberAt(source?.logKey, time, unit, uuid);
+  return value === null ? null : value * (source?.options.invert === "inverted" ? -1 : 1);
 }
 
 /**

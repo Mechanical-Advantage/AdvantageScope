@@ -9,8 +9,8 @@ import { SourceListState } from "../../shared/SourceListConfig";
 import { DriverInputsRendererCommand } from "../../shared/renderers/DriverInputsRenderer";
 import { createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
-import { DbcSlotFields, numberAt } from "./DbcFields";
-import DriverInputsController_Config, { DriverInputsDefaults } from "./DriverInputsController_Config";
+import { sourceNumberAt } from "./DbcFields";
+import DriverInputsController_Config from "./DriverInputsController_Config";
 import TabController from "./TabController";
 
 export default class DriverInputsController implements TabController {
@@ -19,11 +19,9 @@ export default class DriverInputsController implements TabController {
   private BRAKE_SCALE: HTMLInputElement;
 
   private sourceList: SourceList;
-  private fields = new DbcSlotFields(DriverInputsDefaults);
 
   constructor(root: HTMLElement) {
     this.sourceList = new SourceList(root.firstElementChild as HTMLElement, DriverInputsController_Config, []);
-    this.fields.assignDroppedFields(this.sourceList, DriverInputsController_Config.typeMemoryId!);
     let settings = root.getElementsByClassName("driver-inputs-settings")[0] as HTMLElement;
     this.BRAKE_SCALE = settings.getElementsByClassName("brake-scale")[0] as HTMLInputElement;
 
@@ -63,13 +61,12 @@ export default class DriverInputsController implements TabController {
 
   refresh(): void {
     this.sourceList.refresh();
-    this.fields.refresh();
   }
 
   newAssets(): void {}
 
   getActiveFields(): string[] {
-    return [...this.sourceList.getActiveFields(), ...this.fields.keys(this.sourceList.getState())];
+    return this.sourceList.getActiveFields();
   }
 
   showTimeline(): boolean {
@@ -80,12 +77,12 @@ export default class DriverInputsController implements TabController {
     let time = window.selection.getRenderTime();
     if (time === null) time = window.log.getTimestampRange()[1];
 
-    let fields = this.fields.resolve(this.sourceList.getState());
+    let sources = this.sourceList.getState();
     return {
-      steering: numberAt(fields.steering, time, "degrees", this.UUID),
-      throttle: numberAt(fields.throttle, time, "percent", this.UUID),
-      brakeFront: numberAt(fields.brakeFront, time, "psi", this.UUID),
-      brakeRear: numberAt(fields.brakeRear, time, "psi", this.UUID),
+      steering: sourceNumberAt(sources, "steering", time, "degrees", this.UUID),
+      throttle: sourceNumberAt(sources, "throttle", time, "percent", this.UUID),
+      brakeFront: sourceNumberAt(sources, "brakeFront", time, "psi", this.UUID),
+      brakeRear: sourceNumberAt(sources, "brakeRear", time, "psi", this.UUID),
       brakeScale: Number(this.BRAKE_SCALE.value)
     };
   }

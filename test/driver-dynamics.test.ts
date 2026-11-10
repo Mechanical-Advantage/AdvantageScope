@@ -8,21 +8,20 @@
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
 import CarDynamicsController from "../src/hub/controllers/CarDynamicsController";
-import { CarDynamicsDefaults } from "../src/hub/controllers/CarDynamicsController_Config";
-import { DbcSlotFields } from "../src/hub/controllers/DbcFields";
 import DriverInputsController from "../src/hub/controllers/DriverInputsController";
 import Log from "../src/shared/log/Log";
 import CarDynamicsRenderer from "../src/shared/renderers/CarDynamicsRenderer";
 import DriverInputsRenderer from "../src/shared/renderers/DriverInputsRenderer";
+import { SourceListState } from "../src/shared/SourceListConfig";
 
 function controller() {
   const log = new Log();
   (globalThis as any).window = { log, selection: { getRenderTime: () => 2 } };
   const controller = Object.create(CarDynamicsController.prototype) as any;
+  let sources: SourceListState = [];
   Object.assign(controller, {
     UUID: "test",
-    fields: new DbcSlotFields(CarDynamicsDefaults),
-    sourceList: { getState: () => [] },
+    sourceList: { getState: () => sources, setState: (state: SourceListState) => (sources = state) },
     orientation: 1,
     MAX_SPEED: { value: "100" },
     WHEEL_RADIUS: { value: "0.203" },
@@ -31,6 +30,16 @@ function controller() {
     SIZE_Y: { value: "3" }
   });
   const put = (signal: string, value: number) => {
+    const slots: Record<string, string> = {
+      DASH_SteeringAngle: "steering",
+      DASH_SpeedFL: "speedFL",
+      DASH_SpeedFR: "speedFR",
+      SBG_FRONT_AccelX: "accelX",
+      SBG_FRONT_AccelY: "accelY",
+      SBG_FRONT_GyroZ: "yawRate"
+    };
+    if (slots[signal] && !sources.some((s) => s.logKey === signal))
+      sources.push({ type: slots[signal], logKey: signal, logType: "Number", visible: true, options: {} });
     log.putNumber(signal, 1, value);
     log.setMetadataString(signal, JSON.stringify({ dbcSignal: signal }));
   };
@@ -45,14 +54,12 @@ test("wheel direction requires steering, missing wheel speed stays null, and g d
   assert.deepEqual(c.getCommand().moduleVelocities, []);
   assert.equal(c.getCommand().accel, null);
   put("DASH_SteeringAngle", 90);
-  c.refresh = () => c.fields.refresh();
-  c.refresh();
+
   assert.deepEqual(c.getCommand().moduleVelocities[0].values, [
     { velocity: 0.4, angle: ((90 / 3.827) * Math.PI) / 180 },
     { velocity: null, angle: ((90 / 3.827) * Math.PI) / 180 }
   ]);
   put("SBG_FRONT_AccelY", 4);
-  c.refresh();
   assert.notEqual(c.getCommand().accel, null);
   c.sourceList.getState = () => [{ type: "accelY", logKey: "SBG_FRONT_AccelY", visible: false }];
   assert.equal(c.getCommand().accel, null);
@@ -195,8 +202,9 @@ test("angular wheel speeds produce proportional arrows through the controller an
     log.setMetadataString(key, JSON.stringify({ unit: "rad/s" }));
   }
   c.sourceList.getState = () => [
-    { type: "speedFL", logKey: "wheel_speed_FL", visible: true },
-    { type: "speedFR", logKey: "wheel_speed_FR", visible: true }
+    { type: "steering", logKey: "DASH_SteeringAngle", visible: true, options: {} },
+    { type: "speedFL", logKey: "wheel_speed_FL", visible: true, options: {} },
+    { type: "speedFR", logKey: "wheel_speed_FR", visible: true, options: {} }
   ];
   assert.equal(log.getUnit("wheel_speed_FL"), "radians/second");
   const command = c.getCommand();
