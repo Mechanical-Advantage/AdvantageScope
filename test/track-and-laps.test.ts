@@ -130,6 +130,8 @@ test("the summary names the timing source and counts gates apart from sectors", 
     /^Drawn line configured, not timing · Laps from the lap counter/
   );
   assert.match(lapSummary(settings, { ...result, laps: [] }), /No laps yet/);
+  const partial = { ...result, laps: result.laps.map((lap) => ({ ...lap, valid: false })) };
+  assert.match(lapSummary(settings, partial), /No complete laps yet/);
 });
 
 test("the map scope restores from old saves and saves a flag older versions read", () => {

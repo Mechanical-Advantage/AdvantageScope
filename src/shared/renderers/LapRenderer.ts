@@ -129,7 +129,7 @@ export function lapSummary(settings: LapSettings, result: LapResult): string {
     : `Fractions ${(config.fractions ?? [1 / 3, 2 / 3]).map((f) => f.toFixed(3)).join(", ")}`;
   return [
     startFinish,
-    source ? `Laps from ${sources[source] ?? source}` : "No laps yet",
+    source ? `Laps from ${sources[source] ?? source}` : result.laps.length ? "No complete laps yet" : "No laps yet",
     sectors,
     "Shared across lap views"
   ].join(" · ");
