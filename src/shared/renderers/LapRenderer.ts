@@ -987,6 +987,7 @@ export default class LapRenderer implements TabRenderer {
         24
       );
     }
+    const labels: { x: number; y: number; width: number }[] = [];
     const gates = this.gates();
     gates.forEach((g, index) => {
       if (!g) return;
@@ -1010,11 +1011,17 @@ export default class LapRenderer implements TabRenderer {
       ctx.fillStyle = text;
       ctx.textAlign = a.x >= b.x ? "left" : "right";
       ctx.textBaseline = "middle";
-      ctx.fillText(
-        finish ? "Finish" : index ? `S${index}` : "Start / finish",
-        a.x + ((a.x - b.x) / n) * 12,
-        a.y + ((a.y - b.y) / n) * 12
-      );
+      const label = finish ? "Finish" : index ? `S${index}` : "Start / finish",
+        x = a.x + ((a.x - b.x) / n) * 12,
+        y = a.y + ((a.y - b.y) / n) * 12,
+        metrics = ctx.measureText(label);
+      ctx.fillText(label, x, y);
+      // Store the gate label in the same baseline coordinates as replay labels.
+      labels.push({
+        x: x - metrics.actualBoundingBoxLeft,
+        y: y - metrics.actualBoundingBoxAscent + 9,
+        width: metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight
+      });
       ctx.textBaseline = "alphabetic";
     });
     if (c.time !== null) {
@@ -1024,7 +1031,6 @@ export default class LapRenderer implements TabRenderer {
         ),
         reference = overlaid.find((lap) => lap.index === c.reference),
         elapsed = cursorLap ? c.time - cursorLap.start : 0;
-      const labels: { x: number; y: number; width: number }[] = [];
       const dot = (time: number, color: string, label?: string) => {
         const p = this.sampleAt(time),
           q = this.transform(p);
@@ -1037,16 +1043,26 @@ export default class LapRenderer implements TabRenderer {
         ctx.stroke();
         if (label) {
           ctx.textAlign = "left";
-          const width = ctx.measureText(label).width,
-            x = Math.max(8, Math.min(w - width - 8, q.x + 12));
-          let y = Math.max(42, Math.min(h - 36, q.y - 12));
+          const width = ctx.measureText(label).width;
+          let x = Math.max(8, Math.min(w - width - 8, q.x + 12)),
+            y = Math.max(42, Math.min(h - 36, q.y - 12));
           const overlaps = () =>
             labels.some((p) => x < p.x + p.width + 4 && x + width + 4 > p.x && Math.abs(y - p.y) < 18);
-          while (overlaps() && y < h - 54) y += 18;
-          if (overlaps()) {
-            y = Math.max(42, Math.min(h - 36, q.y - 30));
-            while (overlaps() && y > 60) y -= 18;
+          const preferredY = y;
+          // Short maps may have only two rows. Try the other side of the dot before omitting a label.
+          const columns = [x, Math.max(8, q.x - width - 12), 8, Math.max(8, w - width - 8)];
+          search: for (const column of columns) {
+            x = column;
+            for (let offset = 0; offset <= h; offset += 18) {
+              for (const candidate of [preferredY + offset, preferredY - offset]) {
+                if (candidate < 42 || candidate > h - 36) continue;
+                y = candidate;
+                if (!overlaps()) break search;
+              }
+            }
+            y = preferredY;
           }
+          if (overlaps()) return;
           labels.push({ x, y, width });
           ctx.lineWidth = 4;
           ctx.strokeText(label, x, y);
