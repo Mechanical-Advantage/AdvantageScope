@@ -269,7 +269,9 @@ test("tile drops keep graph opt-ins attached to their fields and retain hidden r
 });
 
 test("single critical limit edits preserve the opposite limit and validate ordering", () => {
-  for (const value of [Number.MIN_VALUE, Number.MAX_VALUE, 1e-7, 1e303]) {
+  for (const value of [Number.MIN_VALUE, Number.MAX_VALUE, 1e-7, 1e303, -Number.MIN_VALUE, -Number.MAX_VALUE]) {
+    assert.deepEqual(parseCriticalLimit("low", String(value), [null, null]), { range: [value, null] });
+    assert.deepEqual(parseCriticalLimit("high", String(value), [null, null]), { range: [null, value] });
     assert.deepEqual(parseCriticalLimit("low", "", [null, value]), { range: [null, value] });
     assert.deepEqual(parseCriticalLimit("high", "", [value, null]), { range: [value, null] });
   }
@@ -278,4 +280,18 @@ test("single critical limit edits preserve the opposite limit and validate order
   assert.ok("error" in parseCriticalLimit("low", "1", [null, 1]));
   assert.ok("error" in parseCriticalLimit("high", "0", [0, null]));
   assert.ok("error" in parseCriticalLimit("high", "invalid", [0, null]));
+});
+
+test("single critical limits clear independently and reject invalid values on either side", () => {
+  assert.deepEqual(parseCriticalLimit("low", " ", [-5, 90]), { range: [null, 90] });
+  assert.deepEqual(parseCriticalLimit("high", "", [-5, 90]), { range: [-5, null] });
+  for (const side of ["low", "high"] as const) {
+    for (const text of ["invalid", "-", "1e999", "NaN", "Infinity"]) {
+      assert.deepEqual(parseCriticalLimit(side, text, [null, null]), {
+        error: "Enter a number, or leave the box blank."
+      });
+    }
+  }
+  assert.ok("error" in parseCriticalLimit("low", "91", [null, 90]));
+  assert.ok("error" in parseCriticalLimit("high", "-6", [-5, null]));
 });
