@@ -31,3 +31,13 @@ Every new PNG was opened for visual inspection. Each successful run opens the ac
 There were no other suppressed actions. The initial two screenshot attempts failed before launch because the shell set `ELECTRON_RUN_AS_NODE=1`. Successful screenshot commands unset that variable. No run timed out.
 
 `npm test`, `npm run typecheck`, `npm run compile`, `npm run check-format`, and `npm run lite-smoke` passed with a 180-second limit per command. Screenshots use a 90-second limit. Full screenshot commands and evaluation bodies are in `critical-commands.log` in the capture folder.
+
+## Prompt radius comparison, item 5
+
+No radius change was needed at `db3100c4`. `editRange.html`, `renameTab.html`, and `unitConversion.html` all load `global.css` and `prompts.css`, with no local radius rules. `upstream-base` has the same relevant rules. Before and after this verification, the body radius is 0px and the shared button radius is 6px. The numeric and text inputs compute to 0px in the Electron captures. The non-input focus outline uses 3px in the shared stylesheet.
+
+The native BrowserWindow outer corners belong to macOS. The limits window uses the same default framed modal window options as the stock Edit Range and Unit Conversion windows. There is no `roundedCorners`, `frame`, or `titleBarStyle` override on these prompts. Native outer corner pixels cannot be measured in a hidden hub iframe, so no numeric native radius is claimed.
+
+The two `critical-prompts-*.png` captures provide the side-by-side comparison with Rename Tab and the unchanged Line Graph range mode. Adding a CSS radius override would diverge from stock. The result of item 5 is a documented stock match, with no styling change.
+
+Items 4 and 5 are verified within the headless capture limits above. The optional graph, row toggle, Trackside renderer, and CSS layout were not changed.
