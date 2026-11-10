@@ -359,3 +359,41 @@ test("a legacy sector stays on the track when a log of the same track replaces t
   assert.ok(Math.hypot(after.a.lat - before.a.lat, after.a.lon - before.a.lon) < 1e-9);
   assert.ok(Math.hypot(after.b.lat - before.b.lat, after.b.lon - before.b.lon) < 1e-9);
 });
+
+test("changing the event keeps derived lap channels that stay the same", () => {
+  const log = new Log();
+  for (let i = 0; i < 3000; i++) {
+    const t = i / 5;
+    log.putNumber("latitude", t, -37 + 0.001 * Math.sin(t / 7));
+    log.putNumber("longitude", t, 145 + 0.001 * Math.cos(t / 7));
+    log.putNumber("lap_count", t, Math.floor(t / 44));
+  }
+  const channels = () =>
+    ["Number", "Time", "Distance", "Sector", "DeltaToReference"].map((n) =>
+      log.getNumber("Laps/" + n, -Infinity, Infinity)
+    );
+  (globalThis as any).window = { log, selection: { getCurrentLiveTime: () => 600 } };
+  const service = new LapService();
+  service.update();
+  const before = channels();
+  const putNumber = log.putNumber.bind(log);
+  let writes = 0;
+  log.putNumber = (key, time, value) => {
+    if (key.startsWith("Laps/")) writes++;
+    putNumber(key, time, value);
+  };
+  // Counter laps and the reference stay the same in these modes, so every channel does too.
+  for (const mode of ["autocross", "endurance", "circuit"] as const) {
+    service.settings.config.mode = mode;
+    service.invalidate();
+    service.update();
+    assert.deepEqual(channels(), before);
+  }
+  assert.equal(writes, 0);
+  // Accel times runs instead of laps, so its channels are rewritten.
+  service.settings.config.mode = "accel";
+  service.invalidate();
+  service.update();
+  assert.ok(writes > 0);
+  assert.notDeepEqual(channels(), before);
+});
