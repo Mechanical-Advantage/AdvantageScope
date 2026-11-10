@@ -1781,6 +1781,11 @@ div.car-dynamics-settings {
   }
 }
 
+/* Give the stock split buttons a definite height for their percentage-sized icons. */
+div.car-dynamics-settings div.input {
+  height: 40px;
+}
+
 /* Connect dialog (same layout as the Preferences prompt) */
 
 div.connect-dialog-backdrop {
