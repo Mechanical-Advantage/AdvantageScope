@@ -231,3 +231,44 @@ test("appending samples does not traverse a completed lap's cached grid", () => 
   analyze(all.slice(0, 920), config, cache, all[898].t);
   assert.equal(reads, 0);
 });
+
+test("Track Map sector labels follow lap crossing order when gates are added in reverse", () => {
+  const g = globalThis as any;
+  g.document = Object.assign(new EventTarget(), { createElement: () => new Element(), activeElement: null });
+  g.window = Object.assign(g.window ?? new EventTarget(), { devicePixelRatio: 1 });
+  g.matchMedia = () => ({ matches: false });
+  const labels: string[] = [];
+  const canvas = new Element();
+  canvas.getContext = () =>
+    new Proxy(
+      {},
+      {
+        get: (_, key) => (key === "fillText" ? (text: string) => labels.push(text) : () => ({ width: 0 })),
+        set: () => true
+      }
+    );
+  g.document.createElement = () => canvas;
+  const renderer: any = new LapRenderer(new Element() as any, false);
+  renderer.build = () => {};
+  renderer.drawTrace = () => {};
+  const samples = circleLaps().samples;
+  const sectors = [gateAt(samples, 13)!, gateAt(samples, 5)!];
+  const result = analyze(samples, { manual: [0, 20, 40, 60], sectors });
+  const lap = result.laps.find((l) => l.complete)!;
+  renderer.render({
+    map: true,
+    result,
+    settings: { config: { sectors } },
+    field: "",
+    values: [],
+    overlays: [],
+    reference: lap.index,
+    selected: null,
+    time: null,
+    version: 1
+  });
+  assert.deepEqual(
+    labels.filter((label) => /^S\d$/.test(label)),
+    ["S2", "S1"]
+  );
+});

@@ -19,7 +19,8 @@ import {
   Point,
   project,
   sectorAt,
-  sectorBounds
+  sectorBounds,
+  sectorCrossings
 } from "../laps/LapEngine";
 import { Units } from "../units";
 import { panMargin, scrollZoomPan } from "./FieldZoomPan";
@@ -765,6 +766,14 @@ export default class LapRenderer implements TabRenderer {
       );
     }
     const gates = this.gates();
+    // Sector times follow lap crossing order, so the gate labels do too.
+    const labelLap =
+      c.result.laps.find((lap) => lap.index === c.reference && lap.complete) ??
+      c.result.laps.find((lap) => lap.complete) ??
+      c.result.laps[0];
+    const sectorOrder = labelLap
+      ? sectorCrossings(ss, labelLap, c.settings.config.sectors ?? []).map((crossing) => crossing.index)
+      : [];
     gates.forEach((g, index) => {
       if (!g) return;
       const finish = index === gates.length - 1,
@@ -788,7 +797,11 @@ export default class LapRenderer implements TabRenderer {
       ctx.textAlign = a.x >= b.x ? "left" : "right";
       ctx.textBaseline = "middle";
       ctx.fillText(
-        finish ? "Finish" : index ? `S${index}` : "Start / finish",
+        finish
+          ? "Finish"
+          : index
+          ? `S${sectorOrder.length ? sectorOrder.indexOf(index - 1) + 1 : index}`
+          : "Start / finish",
         a.x + ((a.x - b.x) / n) * 12,
         a.y + ((a.y - b.y) / n) * 12
       );
