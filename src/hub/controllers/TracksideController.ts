@@ -23,7 +23,9 @@ export function reorderTiles(sources: SourceListState, from: number, to: number)
     from < 0 ||
     from >= visible.length ||
     to < 0 ||
-    to > visible.length
+    to > visible.length ||
+    to === from ||
+    to === from + 1
   )
     return result;
   const start = visible[from];

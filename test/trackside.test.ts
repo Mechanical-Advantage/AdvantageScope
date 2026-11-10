@@ -140,5 +140,12 @@ test("tile reorder uses insertion boundaries and retains hidden entries and sour
     assert.deepEqual(reorderTiles(sources, from, to), sources);
   }
   assert.deepEqual(reorderTiles([], 0, 0), []);
+  const beforeHidden = ["a", "b", "hidden", "c"].map((logKey) => ({
+    ...sources[0],
+    logKey,
+    visible: logKey !== "hidden"
+  }));
+  assert.deepEqual(reorderTiles(beforeHidden, 1, 1), beforeHidden);
+  assert.deepEqual(reorderTiles(beforeHidden, 1, 2), beforeHidden);
   assert.deepEqual(keys(sources), ["a", "hidden", "b", "c", "d"]);
 });
