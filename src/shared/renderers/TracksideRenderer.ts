@@ -16,6 +16,8 @@ export type TracksideRendererCommand = {
 };
 
 export default class TracksideRenderer implements TabRenderer {
+  private events = new AbortController();
+  private finishDrag = () => {};
   private grid: HTMLElement;
   private graphRoot: HTMLElement;
   private graph: LineGraphRenderer;
@@ -31,89 +33,101 @@ export default class TracksideRenderer implements TabRenderer {
     let cancelled: AbortController;
     let finish = () => {};
     let clearDrag = () => {};
-    this.grid.addEventListener("mousedown", (event) => {
-      if (event.button !== 0) return;
-      const cell = (event.target as HTMLElement).closest<HTMLElement>(".trackside-tile");
-      if (!cell) return;
-      finish();
-      cancelled = new AbortController();
-      pressed = { x: event.clientX, y: event.clientY, cell };
-      finish = () => {
-        pressed = null;
-        cancelled.abort();
-        clearDrag();
-        clearDrag = () => {};
-        document.getElementById("dragItem")!.hidden = true;
-        document.body.style.cursor = "";
-      };
-      window.addEventListener("mouseup", finish, { signal: cancelled.signal });
-      window.addEventListener("keydown", (event) => event.key === "Escape" && finish(), { signal: cancelled.signal });
-      window.addEventListener("pointercancel", finish, { signal: cancelled.signal });
-      window.addEventListener("blur", finish, { signal: cancelled.signal });
-    });
-    this.grid.addEventListener("mousemove", (event) => {
-      if (!pressed || (Math.abs(event.clientX - pressed.x) < 5 && Math.abs(event.clientY - pressed.y) < 5)) return;
-      const { cell } = pressed;
-      pressed = null;
-      const from = Array.from(this.grid.children).indexOf(cell);
-      if (from < 0) {
+    this.grid.addEventListener(
+      "mousedown",
+      (event) => {
+        if (event.button !== 0) return;
+        const cell = (event.target as HTMLElement).closest<HTMLElement>(".trackside-tile");
+        if (!cell) return;
         finish();
-        return;
-      }
-      const rect = cell.getBoundingClientRect();
-      const ghost = cell.cloneNode(true) as HTMLElement;
-      ghost.style.width = rect.width + "px";
-      ghost.style.height = rect.height + "px";
-      ghost.style.boxSizing = "border-box";
-      document.getElementById("dragItem")!.replaceChildren(ghost);
-      const highlight = document.createElement("div");
-      highlight.className = "trackside-drag-highlight";
-      root.append(highlight);
-      const data = { trackside: this };
-      const update = (event: Event) => {
-        const drag = (event as CustomEvent).detail;
-        if (drag.data !== data) return;
-        const gridRect = this.grid.getBoundingClientRect();
-        const inside =
-          this.grid.offsetParent !== null &&
-          drag.x >= gridRect.left &&
-          drag.x <= gridRect.right &&
-          drag.y >= gridRect.top &&
-          drag.y <= gridRect.bottom;
-        highlight.hidden = !inside;
-        let to = 0;
-        let distance = Infinity;
-        let target: DOMRect = rect;
-        let edge = rect.left;
-        Array.from(this.grid.children).forEach((element, index) => {
-          const bounds = element.getBoundingClientRect();
-          for (const after of [false, true]) {
-            const x = after ? bounds.right : bounds.left;
-            const d = Math.hypot(drag.x - x, drag.y - Math.max(bounds.top, Math.min(bounds.bottom, drag.y)));
-            if (d < distance) {
-              distance = d;
-              to = index + Number(after);
-              target = bounds;
-              edge = x;
-            }
-          }
-        });
-        if (drag.end) {
+        cancelled = new AbortController();
+        pressed = { x: event.clientX, y: event.clientY, cell };
+        finish = () => {
+          pressed = null;
+          this.finishDrag = () => {};
+          cancelled.abort();
+          clearDrag();
+          clearDrag = () => {};
+          document.getElementById("dragItem")!.hidden = true;
+          document.body.style.cursor = "";
+        };
+        this.finishDrag = finish;
+        window.addEventListener("mouseup", finish, { signal: cancelled.signal });
+        window.addEventListener("keydown", (event) => event.key === "Escape" && finish(), { signal: cancelled.signal });
+        window.addEventListener("pointercancel", finish, { signal: cancelled.signal });
+        window.addEventListener("blur", finish, { signal: cancelled.signal });
+      },
+      { signal: this.events.signal }
+    );
+    this.grid.addEventListener(
+      "mousemove",
+      (event) => {
+        if (!pressed || (Math.abs(event.clientX - pressed.x) < 5 && Math.abs(event.clientY - pressed.y) < 5)) return;
+        const { cell } = pressed;
+        pressed = null;
+        const from = Array.from(this.grid.children).indexOf(cell);
+        if (from < 0) {
           finish();
-          if (inside) reorder(from, to);
-        } else {
-          const rootRect = root.getBoundingClientRect();
-          highlight.style.left = edge - rootRect.left - 6 + "px";
-          highlight.style.top = target.top - rootRect.top + "px";
-          highlight.style.height = target.height + "px";
+          return;
         }
-      };
-      clearDrag = () => highlight.remove();
-      window.addEventListener("drag-update", update, { signal: cancelled.signal });
-      window.startDrag(event.clientX, event.clientY, event.clientX - rect.left, event.clientY - rect.top, data);
-    });
+        const rect = cell.getBoundingClientRect();
+        const ghost = cell.cloneNode(true) as HTMLElement;
+        ghost.style.width = rect.width + "px";
+        ghost.style.height = rect.height + "px";
+        ghost.style.boxSizing = "border-box";
+        document.getElementById("dragItem")!.replaceChildren(ghost);
+        const highlight = document.createElement("div");
+        highlight.className = "trackside-drag-highlight";
+        root.append(highlight);
+        const data = { trackside: this };
+        const update = (event: Event) => {
+          const drag = (event as CustomEvent).detail;
+          if (drag.data !== data) return;
+          const gridRect = this.grid.getBoundingClientRect();
+          const inside =
+            this.grid.offsetParent !== null &&
+            drag.x >= gridRect.left &&
+            drag.x <= gridRect.right &&
+            drag.y >= gridRect.top &&
+            drag.y <= gridRect.bottom;
+          highlight.hidden = !inside;
+          let to = 0;
+          let distance = Infinity;
+          let target: DOMRect = rect;
+          let edge = rect.left;
+          Array.from(this.grid.children).forEach((element, index) => {
+            const bounds = element.getBoundingClientRect();
+            for (const after of [false, true]) {
+              const x = after ? bounds.right : bounds.left;
+              const d = Math.hypot(drag.x - x, drag.y - Math.max(bounds.top, Math.min(bounds.bottom, drag.y)));
+              if (d < distance) {
+                distance = d;
+                to = index + Number(after);
+                target = bounds;
+                edge = x;
+              }
+            }
+          });
+          if (drag.end) {
+            finish();
+            if (inside) reorder(from, to);
+          } else {
+            const rootRect = root.getBoundingClientRect();
+            highlight.style.left = edge - rootRect.left - 6 + "px";
+            highlight.style.top = target.top - rootRect.top + "px";
+            highlight.style.height = target.height + "px";
+          }
+        };
+        clearDrag = () => highlight.remove();
+        window.addEventListener("drag-update", update, { signal: cancelled.signal });
+        window.startDrag(event.clientX, event.clientY, event.clientX - rect.left, event.clientY - rect.top, data);
+      },
+      { signal: this.events.signal }
+    );
   }
   dispose() {
+    this.finishDrag();
+    this.events.abort();
     this.graph.dispose();
   }
   saveState() {

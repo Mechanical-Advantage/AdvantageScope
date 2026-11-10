@@ -243,3 +243,26 @@ test("graph opt-in rejects false and missing options without changing the source
   assert.deepEqual(sources, before);
   assert.deepEqual(tracksideGraphSources([]), { leftSources: [], discreteSources: [] });
 });
+
+test("tile drops keep graph opt-ins attached to their fields and retain hidden rows", () => {
+  const sources = ["a", "hidden", "b"].map((logKey) => ({
+    type: "tile",
+    logKey,
+    logType: "Number",
+    visible: logKey !== "hidden",
+    options: { showInGraph: logKey === "b" ? "false" : "true" }
+  }));
+  const moved = reorderTiles(sources, 0, 2);
+  assert.deepEqual(
+    moved.map((source) => source.logKey),
+    ["hidden", "b", "a"]
+  );
+  assert.deepEqual(
+    tracksideGraphSources(moved).leftSources.map((source) => source.logKey),
+    ["hidden", "a"]
+  );
+  assert.deepEqual(
+    sources.map((source) => source.logKey),
+    ["a", "hidden", "b"]
+  );
+});
