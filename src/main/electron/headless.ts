@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { app, BrowserWindow, dialog, nativeTheme, shell } from "electron";
+import { app, BrowserWindow, dialog, Menu, nativeTheme, shell } from "electron";
 
 /**
  * Headless mode for agents and scripts (tools/screenshot.mjs). With MURVOIR_HEADLESS=1 the app never
@@ -29,6 +29,12 @@ if (HEADLESS) {
   const noop = () => {};
   const proto = BrowserWindow.prototype as any;
   for (const method of ["show", "showInactive", "focus", "moveTop"]) proto[method] = noop;
+  Menu.prototype.popup = function () {
+    log(
+      "menu",
+      this.items.map((item) => item.label)
+    );
+  };
   app.focus = noop;
   app.on("web-contents-created", (_, contents) => {
     // Dev builds dock DevTools into the hub, which would shrink the page in every screenshot.
