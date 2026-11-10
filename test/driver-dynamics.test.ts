@@ -8,6 +8,7 @@
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
 import CarDynamicsController from "../src/hub/controllers/CarDynamicsController";
+import CarDynamicsController_Config from "../src/hub/controllers/CarDynamicsController_Config";
 import DriverInputsController from "../src/hub/controllers/DriverInputsController";
 import Log from "../src/shared/log/Log";
 import CarDynamicsRenderer from "../src/shared/renderers/CarDynamicsRenderer";
@@ -257,4 +258,53 @@ test("wheel radius is saved and restored", () => {
   c.restoreState({ wheelRadius: 0.2 });
   assert.equal(c.WHEEL_RADIUS.value, "0.2");
   assert.equal(c.saveState().wheelRadius, 0.2);
+});
+
+test("empty source lists stay empty even when matching DBC signals exist", () => {
+  const { controller: c, put } = controller();
+  put("DASH_SteeringAngle", 90);
+  put("SBG_FRONT_GyroZ", 2);
+  c.sourceList.setState([]);
+  assert.deepEqual(c.getCommand().moduleVelocities, []);
+  assert.deepEqual(c.getCommand().robotVelocities, []);
+  assert.equal(c.getCommand().accel, null);
+});
+
+test("inverted sources map sensor back, right and down to vehicle forward, left and up", () => {
+  const { controller: c, put } = controller();
+  put("SBG_FRONT_AccelX", 2);
+  put("SBG_FRONT_AccelY", 3);
+  put("SBG_FRONT_GyroZ", 0.5);
+  put("DASH_SteeringAngle", 30);
+  c.sourceList.setState([
+    { type: "accelX", logKey: "SBG_FRONT_AccelY", visible: true, options: { invert: "inverted" } },
+    { type: "accelY", logKey: "SBG_FRONT_AccelX", visible: true, options: { invert: "inverted" } },
+    { type: "yawRate", logKey: "SBG_FRONT_GyroZ", visible: true, options: { invert: "inverted" } },
+    { type: "steering", logKey: "DASH_SteeringAngle", visible: true, options: { invert: "inverted" } }
+  ]);
+  const command = c.getCommand();
+  assert.ok(Math.abs(command.accel.x + 3 / 9.80665 / 2) < 1e-9);
+  assert.ok(Math.abs(command.accel.y + 2 / 9.80665 / 2) < 1e-9);
+  assert.equal(command.robotVelocities[0].value.omega, -0.5);
+  assert.ok(command.moduleVelocities[0].values[0].angle < 0);
+  c.sourceList.getState().forEach((source: any) => (source.options.invert = "normal"));
+  assert.equal(c.getCommand().robotVelocities[0].value.omega, 0.5);
+  assert.ok(c.getCommand().accel.x > 0);
+});
+
+test("Invert survives controller saveState and restoreState", () => {
+  const { controller: c, put } = controller();
+  put("SBG_FRONT_GyroZ", 0.5);
+  c.sourceList.getState()[0].options.invert = "inverted";
+  const saved = JSON.parse(JSON.stringify(c.saveState()));
+  c.sourceList.setState([]);
+  c.restoreState(saved);
+  assert.equal(c.sourceList.getState()[0].options.invert, "inverted");
+  assert.equal(c.getCommand().robotVelocities[0].value.omega, -0.5);
+  for (const slot of ["steering", "accelX", "accelY", "yawRate"]) {
+    assert.deepEqual(
+      CarDynamicsController_Config.types.find((t) => t.key === slot)!.options[0].values.map((v) => v.key),
+      ["normal", "inverted"]
+    );
+  }
 });
