@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import { SourceListState } from "../../shared/SourceListConfig";
-import { dbcDefinition, isTracksideLive, Limits, tileState } from "../../shared/Trackside";
+import { dbcDefinition, isTracksideLive, Limits, limitUnit, tileState } from "../../shared/Trackside";
 import { TracksideRendererCommand } from "../../shared/renderers/TracksideRenderer";
 import { createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
@@ -45,9 +45,11 @@ export default class TracksideController implements TabController {
       window.sendMainMessage("ask-edit-trackside-limits", {
         uuid: this.UUID,
         rect,
-        fields: this.sourceList
-          .getState()
-          .map((source) => ({ key: source.logKey, limits: this.limits[source.logKey] ?? {} }))
+        fields: this.sourceList.getState().map((source) => ({
+          key: source.logKey,
+          unit: limitUnit(window.log.getChannelProfile(source.logKey)),
+          limits: this.limits[source.logKey] ?? {}
+        }))
       });
     });
   }

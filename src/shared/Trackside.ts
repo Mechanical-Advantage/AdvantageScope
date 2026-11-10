@@ -44,6 +44,24 @@ export function dbcDefinition(metadataString: string, path: string): DBCFaultDef
   }
 }
 
+/** Unit suffix for a field's limits: the same display unit `tileState` compares against, or none if unitless. */
+export function limitUnit(profile: ChannelProfile): string {
+  return profile.enumLabels || profile.unit === "1" ? "" : profile.unit;
+}
+
+/** Parses the limits prompt's boxes. A blank box means no limit on that side. */
+export function parseLimitInputs(
+  low: string,
+  high: string
+): { range: [number | null, number | null] } | { error: string } {
+  const range = [low, high].map((text) => (text.trim() === "" ? null : Number(text))) as [number | null, number | null];
+  if (range.some((value) => value !== null && !Number.isFinite(value)))
+    return { error: "Enter a number, or leave the box blank." };
+  if (range[0] !== null && range[1] !== null && range[0] >= range[1])
+    return { error: "The below limit must be lower than the above limit." };
+  return { range };
+}
+
 export function tileState(
   path: string,
   value: unknown,
@@ -76,10 +94,7 @@ export function tileState(
   return {
     label: path.split("/").pop() || path,
     text: value === undefined ? "—" : fault?.label ?? formatChannelValue(value, { ...profile, unit: "" }),
-    unit:
-      value !== undefined && typeof value === "number" && !fault && !profile.enumLabels && profile.unit !== "1"
-        ? profile.unit
-        : "",
+    unit: value !== undefined && typeof value === "number" && !fault ? limitUnit(profile) : "",
     state,
     severity,
     freshness: live?.freshness ?? null,

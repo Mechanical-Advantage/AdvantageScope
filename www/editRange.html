@@ -23,16 +23,32 @@
   <body>
     <table>
       <tbody>
-        <tr>
-          <td class="label">Maximum Value</td>
-          <td class="input">
-            <input type="number" id="max" title="Maximum value" />
+        <tr class="limits" hidden>
+          <td class="title" colspan="3" id="field"></td>
+        </tr>
+        <tr class="limits" hidden>
+          <td class="title" colspan="3">
+            <hr />
+            Warnings
           </td>
         </tr>
         <tr>
-          <td class="label">Minimum Value</td>
+          <td class="label" id="max-label">Maximum Value</td>
+          <td class="input">
+            <input type="number" id="max" title="Maximum value" />
+          </td>
+          <td class="unit" hidden></td>
+        </tr>
+        <tr>
+          <td class="label" id="min-label">Minimum Value</td>
           <td class="input">
             <input type="number" id="min" title="Minimum value" />
+          </td>
+          <td class="unit" hidden></td>
+        </tr>
+        <tr class="limits" hidden>
+          <td class="info" colspan="3">
+            Leave a box blank for no limit on that side.<br />Outside these limits, the tile shows Alarm.
           </td>
         </tr>
       </tbody>

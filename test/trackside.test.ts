@@ -10,7 +10,14 @@ import { test } from "node:test";
 import TracksideController, { reorderTiles } from "../src/hub/controllers/TracksideController";
 import SourceList from "../src/hub/SourceList";
 import { channelProfile } from "../src/shared/display/ChannelProfile";
-import { alertLine, dbcDefinition, isTracksideLive, tileState } from "../src/shared/Trackside";
+import {
+  alertLine,
+  dbcDefinition,
+  isTracksideLive,
+  limitUnit,
+  parseLimitInputs,
+  tileState
+} from "../src/shared/Trackside";
 
 const profile = channelProfile({ name: "Motor temp", unit: "degC" });
 const definition = { name: "IMD_State", values: { 0: "Normal", 4: "Earth Fault", 5: "Ground Fault Warning" } };
@@ -23,6 +30,26 @@ test("tiles use display units for limits and do not ship numeric alarms", () => 
   assert.equal(tileState("/Motor temp", -1, profile, { low: 0 }).severity, "critical");
   assert.equal(tileState("/missing", undefined, profile).text, "—");
   assert.equal(tileState("/bool", false, profile).text, "false");
+});
+
+test("limit prompt units match the tile's display unit, even before data arrives", () => {
+  assert.equal(limitUnit(channelProfile({ name: "temperature", unit: "kelvin" })), "°C");
+  assert.equal(limitUnit(channelProfile({ name: "pack_voltage", unit: "V" })), "V");
+  assert.equal(limitUnit(channelProfile({ name: "ratio", unit: "1" })), "");
+  assert.equal(limitUnit(channelProfile({ name: "IMD_State", enumLabels: { 0: "Normal" } })), "");
+  assert.equal(limitUnit(channelProfile({ name: "mystery" })), "");
+});
+
+test("limit prompt treats blank as no limit, keeps zero and rejects bad ranges", () => {
+  assert.deepEqual(parseLimitInputs("", "4.2"), { range: [null, 4.2] });
+  assert.deepEqual(parseLimitInputs("2.8", " "), { range: [2.8, null] });
+  assert.deepEqual(parseLimitInputs("", ""), { range: [null, null] });
+  assert.deepEqual(parseLimitInputs("0", "90"), { range: [0, 90] });
+  const order = { error: "The below limit must be lower than the above limit." };
+  assert.deepEqual(parseLimitInputs("5", "5"), order);
+  assert.deepEqual(parseLimitInputs("6", "5"), order);
+  assert.ok("error" in parseLimitInputs("1e999", ""));
+  assert.ok("error" in parseLimitInputs("", "invalid"));
 });
 
 test("DBC classification controls tile severity and rejects non-DBC metadata", () => {

@@ -871,7 +871,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                     limits: { low: range[0] ?? undefined, high: range[1] ?? undefined }
                   });
                 },
-                true
+                { field: field.key, unit: field.unit }
               );
             }
           })
@@ -2131,11 +2131,11 @@ function createEditRangeWindow<T extends number | null = number>(
   parentWindow: Electron.BrowserWindow,
   range: [T, T],
   callback: (range: [T, T]) => void,
-  limits = false
+  limits?: { field: string; unit: string }
 ) {
   const editWindow = new BrowserWindow({
-    width: 300,
-    height: 108,
+    width: limits ? 360 : 300,
+    height: limits ? 190 : 108,
     useContentSize: true,
     resizable: false,
     icon: WINDOW_ICON,
@@ -2156,7 +2156,7 @@ function createEditRangeWindow<T extends number | null = number>(
     // Create ports on reload
     const { port1, port2 } = new MessageChannelMain();
     editWindow.webContents.postMessage("port", null, [port1]);
-    port2.postMessage(limits ? { limits: true, range } : range);
+    port2.postMessage(limits ? { limits: true, range, ...limits } : range);
     port2.on("message", (event) => {
       editWindow.destroy();
       callback(event.data);
