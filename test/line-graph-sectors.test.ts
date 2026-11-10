@@ -56,7 +56,7 @@ class FakeElement extends EventTarget {
 }
 
 /** A renderer on fake DOM elements. Returns the renderer, its canvas and the call log. */
-function fakeLineGraph() {
+function fakeLineGraph(hasController = true) {
   const calls: string[] = [];
   const canvas = new FakeElement(recordingContext(calls));
   const scroll = new FakeElement();
@@ -74,8 +74,8 @@ function fakeLineGraph() {
     selection: { setHoveredTime() {}, getCurrentLiveTime: () => null }
   });
   g.document ??= { body: { classList: { contains: () => false } } };
-  const renderer = new LineGraphRenderer(root as unknown as HTMLElement, true);
-  return { renderer, canvas, root, calls };
+  const renderer = new LineGraphRenderer(root as unknown as HTMLElement, hasController);
+  return { renderer, canvas, root, calls, help, scroll };
 }
 
 const field = (color: string, offset: number) => ({
@@ -163,6 +163,40 @@ test("without a sector bar the graph makes the same drawing calls as mur-voir/ma
   const { renderer, calls } = fakeLineGraph();
   renderer.render({ ...sampleCommand("distance"), sectorBar: { lap: 1, blocks: [] } });
   assert.equal(digest(calls), STOCK.distance);
+});
+
+test("a fresh-profile satellite draws historical and live graphs without selection getters", () => {
+  for (const selectionMode of [SelectionMode.Static, SelectionMode.Locked]) {
+    const { renderer, calls, help } = fakeLineGraph(false);
+    const win = (globalThis as any).window;
+    win.preferences = {};
+    win.selection.getCurrentLiveTime = () => {
+      throw new Error("Method not implemented.");
+    };
+    assert.doesNotThrow(() => renderer.render({ ...sampleCommand("time"), selectionMode }));
+    assert.ok(calls.length > 100, "the satellite draws the graph");
+    assert.equal(help.style.display, "flex");
+    renderer.dispose();
+  }
+});
+
+test("hub graph hints still hide during live data and after interaction", () => {
+  const { renderer, help, scroll } = fakeLineGraph();
+  const win = (globalThis as any).window;
+  win.preferences = {};
+  const command = sampleCommand("time");
+  renderer.render(command);
+  assert.equal(help.style.display, "flex");
+  win.selection.getCurrentLiveTime = () => 0;
+  renderer.render(command);
+  assert.equal(help.style.display, "none");
+  win.selection.getCurrentLiveTime = () => null;
+  renderer.render(command);
+  assert.equal(help.style.display, "flex");
+  scroll.dispatchEvent(new Event("wheel"));
+  renderer.render(command);
+  assert.equal(help.style.display, "none");
+  renderer.dispose();
 });
 
 const bar = {
