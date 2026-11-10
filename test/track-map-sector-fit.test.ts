@@ -311,3 +311,15 @@ test("analysis checkpoints stay bounded and an older edit still matches full ana
   input[5].speed = 5;
   assert.deepEqual(analyze(input, {}, cache, input[5].t), analyze(input));
 });
+
+test("a missed gate keeps its unknown sector positions when gates already follow lap order", () => {
+  const samples = circleLaps().samples;
+  const result = analyze(samples, {
+    manual: [0, 20, 40, 60],
+    sectors: [{ a: { x: 1000, y: 1000 }, b: { x: 1001, y: 1000 } }, gateAt(samples, 13)!]
+  });
+  const lap = result.laps.find((lap) => lap.complete)!;
+  assert.ok(Number.isNaN(lap.sectors[0]));
+  assert.ok(Number.isNaN(lap.sectors[1]));
+  assert.ok(lap.sectors[2] > 0);
+});

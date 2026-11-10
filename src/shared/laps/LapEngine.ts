@@ -213,21 +213,18 @@ export function deltaTime(lap: Lap, reference: Lap, distance: number): number {
   };
   return at(lap) - at(reference);
 }
-/** Gate crossings in travel order. Missed gates stay at the end with an unknown time. */
+/** Known gate crossings follow travel order. Missed gates keep their unknown sector positions. */
 export function sectorCrossings(samples: Sample[], lap: { start: number; end: number }, gates: Gate[]) {
-  return gates
-    .map((gate, index) => {
-      for (
-        let j = Math.max(0, indexAt(samples, lap.start) - 2);
-        j < samples.length - 1 && samples[j].t < lap.end;
-        j++
-      ) {
-        const time = crossing(samples[j], samples[j + 1], gate);
-        if (time !== undefined && time > lap.start && time < lap.end) return { index, time };
-      }
-      return { index, time: NaN };
-    })
-    .sort((a, b) => (Number.isFinite(a.time) ? a.time : Infinity) - (Number.isFinite(b.time) ? b.time : Infinity));
+  const crossings = gates.map((gate, index) => {
+    for (let j = Math.max(0, indexAt(samples, lap.start) - 2); j < samples.length - 1 && samples[j].t < lap.end; j++) {
+      const time = crossing(samples[j], samples[j + 1], gate);
+      if (time !== undefined && time > lap.start && time < lap.end) return { index, time };
+    }
+    return { index, time: NaN };
+  });
+  const ordered = crossings.filter((crossing) => Number.isFinite(crossing.time)).sort((a, b) => a.time - b.time);
+  let next = 0;
+  return crossings.map((crossing) => (Number.isFinite(crossing.time) ? ordered[next++] : crossing));
 }
 
 /** Reuses sample prefixes and scan checkpoints until an input or configuration edit changes them. */
