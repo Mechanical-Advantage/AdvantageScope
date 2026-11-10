@@ -256,6 +256,14 @@ export default class LapRenderer implements TabRenderer {
           cursorY - this.scroll.clientHeight / 2,
           this.baseScale
         );
+        // Only a scroll or drag clamps the saved pan. A narrower Split map draws a clamped copy, so Map gets it back.
+        trackView(
+          this.bounds,
+          Math.max(1, this.content.clientWidth),
+          Math.max(1, this.content.clientHeight),
+          this.zoom,
+          this.pan
+        );
         window.requestAnimationFrame(() => {
           if (this.command && this.shown.map) this.draw();
         });
@@ -462,7 +470,9 @@ export default class LapRenderer implements TabRenderer {
       command.overlays,
       command.selected,
       this.shown,
-      command.settings
+      command.settings,
+      // A metric field that loads after the laps fills its cells without waiting for the next lap update.
+      command.metrics?.map((metric) => Number.isFinite(metric[2]))
     ]);
     // Rebuilding would take the focus from a field being edited, but a clicked button shouldn't hold back the result.
     const editing =
@@ -897,7 +907,7 @@ export default class LapRenderer implements TabRenderer {
       ({ zoom: this.zoom, pan: this.pan } = fitTrackView(this.bounds, focusBox, w, h));
       this.lastTrace = "";
     }
-    const view = trackView(this.bounds, w, h, this.zoom, this.pan),
+    const view = trackView(this.bounds, w, h, this.zoom, [...this.pan]),
       scale = view.scale;
     this.baseScale = view.baseScale;
     this.transform = view.transform;
