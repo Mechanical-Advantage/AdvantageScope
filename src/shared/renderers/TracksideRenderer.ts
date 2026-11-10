@@ -16,19 +16,38 @@ export default class TracksideRenderer implements TabRenderer {
     this.grid = root.firstElementChild as HTMLElement;
     if (!reorder) return;
     let pressed: { x: number; y: number; cell: HTMLElement } | null = null;
+    let cancelled: AbortController;
+    let finish = () => {};
+    let clearDrag = () => {};
     this.grid.addEventListener("mousedown", (event) => {
       if (event.button !== 0) return;
       const cell = (event.target as HTMLElement).closest<HTMLElement>(".trackside-tile");
       if (!cell) return;
+      finish();
+      cancelled = new AbortController();
       pressed = { x: event.clientX, y: event.clientY, cell };
-      window.addEventListener("mouseup", () => (pressed = null), { once: true });
+      finish = () => {
+        pressed = null;
+        cancelled.abort();
+        clearDrag();
+        clearDrag = () => {};
+        document.getElementById("dragItem")!.hidden = true;
+        document.body.style.cursor = "";
+      };
+      window.addEventListener("mouseup", finish, { signal: cancelled.signal });
+      window.addEventListener("keydown", (event) => event.key === "Escape" && finish(), { signal: cancelled.signal });
+      window.addEventListener("pointercancel", finish, { signal: cancelled.signal });
+      window.addEventListener("blur", finish, { signal: cancelled.signal });
     });
     this.grid.addEventListener("mousemove", (event) => {
       if (!pressed || (Math.abs(event.clientX - pressed.x) < 5 && Math.abs(event.clientY - pressed.y) < 5)) return;
       const { cell } = pressed;
       pressed = null;
       const from = Array.from(this.grid.children).indexOf(cell);
-      if (from < 0) return;
+      if (from < 0) {
+        finish();
+        return;
+      }
       const rect = cell.getBoundingClientRect();
       const ghost = cell.cloneNode(true) as HTMLElement;
       ghost.style.width = rect.width + "px";
@@ -77,22 +96,8 @@ export default class TracksideRenderer implements TabRenderer {
           highlight.style.height = target.height + "px";
         }
       };
-      // Escape, pointercancel or blur ends the drag without a reorder. The hub's later end event finds no listener.
-      const cancelled = new AbortController();
-      const finish = () => {
-        cancelled.abort();
-        window.removeEventListener("drag-update", update);
-        highlight.remove();
-      };
-      const cancel = () => {
-        finish();
-        document.getElementById("dragItem")!.hidden = true;
-        document.body.style.cursor = "";
-      };
-      window.addEventListener("keydown", (event) => event.key === "Escape" && cancel(), { signal: cancelled.signal });
-      window.addEventListener("pointercancel", cancel, { signal: cancelled.signal });
-      window.addEventListener("blur", cancel, { signal: cancelled.signal });
-      window.addEventListener("drag-update", update);
+      clearDrag = () => highlight.remove();
+      window.addEventListener("drag-update", update, { signal: cancelled.signal });
       window.startDrag(event.clientX, event.clientY, event.clientX - rect.left, event.clientY - rect.top, data);
     });
   }
