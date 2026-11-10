@@ -24,7 +24,7 @@ Driver Inputs and Car Dynamics draw the car at the timeline cursor, which follow
 - **Car Dynamics** replaces Swerve. It draws a top-down car with these parts:
 
   - front wheels turned by `DASH_SteeringAngle` divided by the steering ratio, 3.827:1 straight ahead by default
-  - front wheel speed arrows from `DASH_SpeedFL` and `DASH_SpeedFR`, full length at Max Speed
+  - front wheel speed arrows from `DASH_SpeedFL` and `DASH_SpeedFR`, full length at Max Speed. Linear speed units convert to km/h; angular speeds convert using Wheel Radius, default 0.203 m as in Laps. Set the rolling radius for the car
   - the yaw rate from `SBG_FRONT_GyroZ` as an arc
   - an acceleration dot in a 2 g circle from `SBG_FRONT_AccelX` (forward) and `SBG_FRONT_AccelY` (left)
   - the damper position in mm beside each wheel from the four `ShockPot` signals

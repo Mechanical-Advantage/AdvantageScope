@@ -26,6 +26,7 @@ export default class CarDynamicsController implements TabController {
   UUID = createUUID();
 
   private MAX_SPEED: HTMLInputElement;
+  private WHEEL_RADIUS: HTMLInputElement;
   private STEERING_RATIO: HTMLInputElement;
   private SIZE_X: HTMLInputElement;
   private SIZE_Y: HTMLInputElement;
@@ -40,12 +41,17 @@ export default class CarDynamicsController implements TabController {
     this.fields.assignDroppedFields(this.sourceList, CarDynamicsController_Config.typeMemoryId!);
     let settings = root.getElementsByClassName("car-dynamics-settings")[0] as HTMLElement;
     this.MAX_SPEED = settings.getElementsByClassName("max-speed")[0] as HTMLInputElement;
+    this.WHEEL_RADIUS = settings.getElementsByClassName("wheel-radius")[0] as HTMLInputElement;
     this.STEERING_RATIO = settings.getElementsByClassName("steering-ratio")[0] as HTMLInputElement;
     this.SIZE_X = settings.getElementsByClassName("size-x")[0] as HTMLInputElement;
     this.SIZE_Y = settings.getElementsByClassName("size-y")[0] as HTMLInputElement;
     this.ORIENTATION_SWITCHER = settings.getElementsByClassName("orientation-switcher")[0] as HTMLElement;
 
     // Enforce ranges
+    this.WHEEL_RADIUS.addEventListener("change", () => {
+      if (!Number.isFinite(Number(this.WHEEL_RADIUS.value)) || Number(this.WHEEL_RADIUS.value) <= 0)
+        this.WHEEL_RADIUS.value = "0.203";
+    });
     this.MAX_SPEED.addEventListener("change", () => {
       if (!Number.isFinite(Number(this.MAX_SPEED.value)) || Number(this.MAX_SPEED.value) <= 0)
         this.MAX_SPEED.value = "0.1";
@@ -82,6 +88,7 @@ export default class CarDynamicsController implements TabController {
     return {
       sources: this.sourceList.getState(),
       maxSpeed: Number(this.MAX_SPEED.value),
+      wheelRadius: Number(this.WHEEL_RADIUS.value),
       steeringRatio: Number(this.STEERING_RATIO.value),
       sizeX: Number(this.SIZE_X.value),
       sizeY: Number(this.SIZE_Y.value),
@@ -94,6 +101,14 @@ export default class CarDynamicsController implements TabController {
 
     if ("sources" in state) {
       this.sourceList.setState(state.sources as SourceListState);
+    }
+    if (
+      "wheelRadius" in state &&
+      typeof state.wheelRadius === "number" &&
+      Number.isFinite(state.wheelRadius) &&
+      state.wheelRadius > 0
+    ) {
+      this.WHEEL_RADIUS.value = state.wheelRadius.toString();
     }
     if (
       "maxSpeed" in state &&
@@ -153,8 +168,20 @@ export default class CarDynamicsController implements TabController {
     // The front wheels turn by the road wheel angle. The rear wheels have no measurements, so the
     // renderer draws only their outlines.
     let steering = read("steering", "degrees");
-    let speedFL = read("speedFL", "kilometers/hour");
-    let speedFR = read("speedFR", "kilometers/hour");
+    // Angular wheel speed needs a physical radius before normalizing against km/h.
+    let wheelSpeed = (slot: string) => {
+      const key = fields[slot];
+      const unit = key === undefined ? null : window.log.getUnit(key);
+      if (unit !== null && Units.GROUP_BY_UNIT[unit] === Units.GROUP_BY_UNIT["radians/second"]) {
+        const angular = read(slot, "radians/second");
+        return angular === null
+          ? null
+          : Units.convert(angular * Number(this.WHEEL_RADIUS.value), "meters/second", "kilometers/hour");
+      }
+      return read(slot, "kilometers/hour");
+    };
+    let speedFL = wheelSpeed("speedFL");
+    let speedFR = wheelSpeed("speedFR");
     let moduleVelocities: CarDynamicsRendererCommand["moduleVelocities"] = [];
     if (steering !== null) {
       let roadWheelAngle = ((steering / Number(this.STEERING_RATIO.value)) * Math.PI) / 180;
