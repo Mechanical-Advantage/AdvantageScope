@@ -27,19 +27,18 @@ export function attachResizeHandle(
     },
     { signal }
   );
-  window.addEventListener(
-    "mouseup",
-    () => {
-      if (!active) return;
-      active = false;
-      document.body.style.cursor = "initial";
-      onActiveChange?.(false);
-    },
-    { signal }
-  );
+  const stop = () => {
+    if (!active) return;
+    active = false;
+    document.body.style.cursor = "initial";
+    onActiveChange?.(false);
+  };
+  window.addEventListener("mouseup", stop, { signal });
+  window.addEventListener("blur", stop, { signal });
   window.addEventListener(
     "mousemove",
     (event) => {
+      if (!(event.buttons & 1)) stop();
       if (active) onMove(event);
     },
     { signal }
