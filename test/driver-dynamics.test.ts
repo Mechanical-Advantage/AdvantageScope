@@ -9,7 +9,9 @@ import { strict as assert } from "node:assert";
 import { test } from "node:test";
 import CarDynamicsController from "../src/hub/controllers/CarDynamicsController";
 import CarDynamicsController_Config from "../src/hub/controllers/CarDynamicsController_Config";
+import { numberPreview } from "../src/hub/controllers/DbcFields";
 import DriverInputsController from "../src/hub/controllers/DriverInputsController";
+import { formatNumericPreview } from "../src/shared/display/NumericPreview";
 import Log from "../src/shared/log/Log";
 import CarDynamicsRenderer from "../src/shared/renderers/CarDynamicsRenderer";
 import DriverInputsRenderer from "../src/shared/renderers/DriverInputsRenderer";
@@ -91,6 +93,9 @@ for (const steering of ["unassigned", "hidden"]) {
 }
 
 function canvas() {
+  (globalThis as any).Path2D = class {
+    constructor(public path: string) {}
+  };
   const calls: { name: string; args: any[] }[] = [];
   const context = new Proxy({} as any, {
     get:
@@ -379,6 +384,8 @@ test("invalid setting changes use their own fallback values", () => {
   });
   const car = new CarDynamicsController(root as any);
   const driver = new DriverInputsController(root as any);
+  assert.equal((car as any).sourceList.getNumberPreview, numberPreview);
+  assert.equal((driver as any).sourceList.getNumberPreview, numberPreview);
   try {
     for (const invalid of ["0", "-1", "", "NaN", "Infinity"]) {
       for (const input of Object.values(inputs)) {
@@ -399,4 +406,54 @@ test("invalid setting changes use their own fallback values", () => {
     (globalThis as any).document = previousDocument;
     (globalThis as any).window = previousWindow;
   }
+});
+
+test("damper bars clamp to 50 mm and missing dampers draw no bar", () => {
+  const { root, calls } = canvas();
+  new CarDynamicsRenderer(root).render({
+    rotation: Math.PI / 2,
+    frameAspectRatio: 1,
+    moduleVelocities: [],
+    robotVelocities: [],
+    accel: null,
+    dampers: [25, 100, -5, null]
+  });
+  assert.equal(calls.filter((c) => c.name === "strokeRect").length, 3);
+  assert.deepEqual(
+    calls.filter((c) => c.name === "fillRect").map((c) => c.args.slice(2)),
+    [
+      [18, 36],
+      [18, 72],
+      [18, 0]
+    ]
+  );
+});
+
+test("the formula wheel rotates left for positive steering and retains its openings", () => {
+  for (const steering of [30, -30]) {
+    const { root, calls } = canvas();
+    new DriverInputsRenderer(root).render({
+      steering,
+      throttle: null,
+      brakeFront: null,
+      brakeRear: null,
+      brakeScale: 1000
+    });
+    assert.equal(calls.find((c) => c.name === "rotate")!.args[0], (-steering * Math.PI) / 180);
+    const fill = calls.find((c) => c.name === "fill")!;
+    assert.equal(fill.args[1], "evenodd");
+    assert.ok(fill.args[0].path.includes("M -36 -55"));
+    assert.ok(calls.some((c) => c.name === "fillText" && c.args[0] === steering.toFixed(1) + "°"));
+  }
+});
+
+test("source previews use Line Graph precision and logged units before Invert", () => {
+  const log = new Log();
+  log.putNumber("steering", 1, 12.3456789);
+  log.setMetadataString("steering", JSON.stringify({ unit: "deg" }));
+  (globalThis as any).window = { log };
+  assert.equal(numberPreview("steering", 2), formatNumericPreview(12.3456789, "°"));
+  assert.equal(numberPreview("missing", 2), null);
+  assert.equal(numberPreview("steering", 0), null);
+  assert.equal(formatNumericPreview(2, "rotation", true), "2 rotations");
 });

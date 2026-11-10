@@ -1,4 +1,3 @@
-import { formatNumericPreview } from "../../shared/display/NumericPreview";
 // Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
@@ -12,6 +11,7 @@ import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
 import { clipGaps, TraceGapCache } from "../../shared/TraceGaps";
 import { axisDisplayUnit, formatChannelValue } from "../../shared/display/ChannelProfile";
+import { formatNumericPreview } from "../../shared/display/NumericPreview";
 import { formatSignedSeconds, heldValueAt, sectorDeltaText } from "../../shared/laps/LapAnalysis";
 import { interpolate, lapSamples, sectorBlocks } from "../../shared/laps/LapEngine";
 import { getLogValueText } from "../../shared/log/LogUtil";
