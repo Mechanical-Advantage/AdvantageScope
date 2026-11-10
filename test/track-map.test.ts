@@ -12,6 +12,7 @@ import { LapSourceConfigs } from "../src/hub/controllers/LapController_Config";
 import { LapService, lapService } from "../src/hub/LapService";
 import { analyze, Gate, gateAt, Sample } from "../src/shared/laps/LapEngine";
 import Log from "../src/shared/log/Log";
+import { panMargin, scrollZoomPan } from "../src/shared/renderers/FieldZoomPan";
 
 const RADIUS = 100;
 function circuit(lapTimes: number[], hz = 10): Sample[] {
@@ -458,4 +459,14 @@ test("map rendering restores supported colours and receives satellite display ch
   r.render({ field: "", view: "map", display: { colorMode: "sector", scope: "overlaid" } });
   assert.equal(r.colorMode, "sector");
   assert.equal(r.scope, "overlaid");
+});
+
+test("extreme Track Map scrolls and margins stay finite", () => {
+  let zoom = 1;
+  const pan: [number, number] = [0, 0];
+  for (let i = 0; i < 320; i++) zoom = scrollZoomPan(zoom, pan, 0, -500, false, 100, 150, 1, false);
+  assert.ok(Number.isFinite(zoom) && zoom <= 1e4);
+  for (let i = 0; i < 640; i++) zoom = scrollZoomPan(zoom, pan, 0, 500, false, 100, 150, 1, false);
+  assert.ok(zoom >= 1e-3 && pan.every(Number.isFinite));
+  assert.ok(Number.isFinite(panMargin(Infinity, 400, 0)));
 });
