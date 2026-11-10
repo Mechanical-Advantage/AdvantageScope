@@ -56,7 +56,7 @@ export default class CarDynamicsController implements TabController {
     });
     this.STEERING_RATIO.addEventListener("change", () => {
       if (!Number.isFinite(Number(this.STEERING_RATIO.value)) || Number(this.STEERING_RATIO.value) <= 0)
-        this.STEERING_RATIO.value = "0.1";
+        this.STEERING_RATIO.value = "3.827";
     });
     this.SIZE_X.addEventListener("change", () => {
       if (!Number.isFinite(Number(this.SIZE_X.value)) || Number(this.SIZE_X.value) <= 0) this.SIZE_X.value = "0.1";

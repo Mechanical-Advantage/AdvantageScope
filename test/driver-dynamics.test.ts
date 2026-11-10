@@ -344,3 +344,59 @@ test("Driver Inputs steering Invert survives saveState and restoreState", () => 
   assert.equal(driver.getCommand().throttle, null);
   assert.equal(driver.saveState().sources[0].options.invert, "inverted");
 });
+
+test("invalid setting changes use their own fallback values", () => {
+  class Element extends EventTarget {
+    value = "";
+    style = {};
+    classList = { add() {} };
+    children: Element[] = [];
+    replaceChildren() {
+      this.children = [];
+    }
+    appendChild(child: Element) {
+      this.children.push(child);
+    }
+  }
+  const inputs = Object.fromEntries(
+    ["max-speed", "wheel-radius", "steering-ratio", "size-x", "size-y", "brake-scale"].map((key) => [
+      key,
+      new Element()
+    ])
+  );
+  const orientation = new Element();
+  orientation.children = [new Element(), new Element()];
+  const settings = {
+    getElementsByClassName: (name: string) => [name === "orientation-switcher" ? orientation : inputs[name]]
+  };
+  const root = { firstElementChild: new Element(), getElementsByClassName: () => [settings] };
+  const previousDocument = (globalThis as any).document;
+  const previousWindow = (globalThis as any).window;
+  (globalThis as any).document = { getElementById: () => null, createElement: () => new Element() };
+  (globalThis as any).window = Object.assign(new EventTarget(), {
+    requestAnimationFrame: () => 0,
+    cancelAnimationFrame() {}
+  });
+  const car = new CarDynamicsController(root as any);
+  const driver = new DriverInputsController(root as any);
+  try {
+    for (const invalid of ["0", "-1", "", "NaN", "Infinity"]) {
+      for (const input of Object.values(inputs)) {
+        input.value = invalid;
+        input.dispatchEvent(new Event("change"));
+      }
+      const saved = car.saveState() as any;
+      assert.equal(saved.steeringRatio, 3.827, `steering ratio after ${invalid}`);
+      assert.equal(saved.wheelRadius, 0.203);
+      assert.equal(saved.maxSpeed, 0.1);
+      assert.equal(saved.sizeX, 0.1);
+      assert.equal(saved.sizeY, 0.1);
+      assert.equal((driver.saveState() as any).brakeScale, 1000);
+    }
+  } finally {
+    car.dispose();
+    driver.dispose();
+    (globalThis as any).document = previousDocument;
+    (globalThis as any).window = previousWindow;
+  }
+});
