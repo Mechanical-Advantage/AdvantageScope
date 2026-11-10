@@ -120,24 +120,27 @@ export default class DriverInputsRenderer implements TabRenderer {
       context.fillRect(x, y + axisHeight - axisHeight * scaledValue, axisWidth, axisHeight * scaledValue);
     };
 
-    // Draw steering wheel (outline from the joysticks renderer, marker at the top when straight)
+    // Draw an original formula wheel silhouette with grip openings and a blank display.
     let wheelCenter: [number, number] = [150, 130];
-    let wheelRadius = 100;
-    let angle = ((command.steering ?? 0) * Math.PI) / 180; // Positive turns left
-    let markerX = scaleX(wheelCenter[0] - wheelRadius * Math.sin(angle));
-    let markerY = scaleY(wheelCenter[1] - wheelRadius * Math.cos(angle));
-    context.beginPath();
-    context.arc(scaleX(wheelCenter[0]), scaleY(wheelCenter[1]), scaleSize(wheelRadius), 0, Math.PI * 2);
-    context.stroke();
-    if (command.steering !== null) {
-      context.beginPath();
-      context.moveTo(scaleX(wheelCenter[0]), scaleY(wheelCenter[1]));
-      context.lineTo(markerX, markerY);
-      context.stroke();
-      context.beginPath();
-      context.arc(markerX, markerY, scaleSize(wheelRadius * 0.15), 0, Math.PI * 2);
-      context.fill();
-    }
+    context.save();
+    context.translate(scaleX(wheelCenter[0]), scaleY(wheelCenter[1]));
+    context.rotate(-((command.steering ?? 0) * Math.PI) / 180); // Positive turns left
+    context.scale(scaleSize(1), scaleSize(1));
+    context.lineWidth = 5 / scaleSize(1);
+    const wheel = new Path2D(
+      "M -105 -62 Q -120 -30 -116 22 Q -112 66 -87 70 " +
+        "L -63 66 Q -35 48 0 48 Q 35 48 63 66 L 87 70 " +
+        "Q 112 66 116 22 Q 120 -30 105 -62 Q 94 -78 72 -70 " +
+        "Q 0 -86 -72 -70 Q -94 -78 -105 -62 Z " +
+        "M -84 -48 Q -97 -29 -94 12 Q -92 37 -79 43 " +
+        "L -58 30 Q -48 20 -59 7 L -65 -5 Q -47 -34 -65 -48 Z " +
+        "M 84 -48 Q 97 -29 94 12 Q 92 37 79 43 " +
+        "L 58 30 Q 48 20 59 7 L 65 -5 Q 47 -34 65 -48 Z " +
+        "M -36 -55 L 36 -55 L 36 -15 L -36 -15 Z"
+    );
+    context.fill(wheel, "evenodd");
+    context.stroke(wheel);
+    context.restore();
     drawLabel(wheelCenter[0], "Steering", command.steering === null ? "—" : command.steering.toFixed(1) + "°");
 
     // Draw pedal bars
