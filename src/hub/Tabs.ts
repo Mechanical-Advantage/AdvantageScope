@@ -216,10 +216,7 @@ export default class Tabs {
       },
       () => this.toggleControlsVisible()
     );
-    // A lap tab's "Show lap setup" opens collapsed controls. Open ones stay at their height.
-    window.addEventListener("show-tab-controls", () => {
-      if (this.tabList[this.selectedTab]?.controlsHeight <= 0) this.toggleControlsVisible();
-    });
+    window.addEventListener("toggle-tab-controls", () => this.toggleControlsVisible());
     this.updateControlsHeight();
 
     // Control buttons
@@ -504,6 +501,9 @@ export default class Tabs {
   }
 
   /** Toggles the visibility of the tab controls. */
+  getControlsVisible() {
+    return this.tabList[this.selectedTab]?.controlsHeight > 0;
+  }
   toggleControlsVisible() {
     let fixedHeight = this.FIXED_CONTROL_HEIGHTS.get(this.tabList[this.selectedTab].type);
     if (this.tabList[this.selectedTab].controlsHeight === 0) {

@@ -1038,3 +1038,18 @@ table.metadata-table td.no-data {
 .lap-setup .title .full {
   font-size: 13px;
 }
+
+/* Keep scrolling available without permanent bars, as in the sidebar. */
+.lap-content,
+.tab-controls .field-2d-settings {
+  scrollbar-width: none;
+}
+.lap-content::-webkit-scrollbar,
+.tab-controls .field-2d-settings::-webkit-scrollbar {
+  display: none;
+}
+.lap-table input.mv-checkbox,
+.lap-table input.mv-radio {
+  position: relative;
+  inset: auto;
+}

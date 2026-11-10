@@ -59,8 +59,8 @@ export default class LapController implements TabController {
         return;
       }
       if (a.type === "show-setup") {
-        // The tab manager opens collapsed controls. The column then scrolls to start/finish and sectors.
-        window.dispatchEvent(new CustomEvent("show-tab-controls"));
+        // The tab manager toggles the controls, then the column scrolls to the timing controls.
+        window.dispatchEvent(new CustomEvent("toggle-tab-controls"));
         window.requestAnimationFrame(() => {
           const timing = settings?.querySelector("[data-lap-timing]");
           if (settings && timing)
@@ -241,6 +241,7 @@ export default class LapController implements TabController {
     const keys = window.log.getFieldKeys();
     if (this.mapField && !keys.includes(this.mapField)) this.mapField = "";
     if (this.tableField && !keys.includes(this.tableField)) this.tableField = "";
+    const setupVisible = window.tabs?.getControlsVisible?.() ?? true;
     const showsMap = this.view !== "laps",
       showsTable = this.view !== "map";
     // The map colours each lap until a field is dropped on it. The table shows speed until then.
@@ -265,7 +266,7 @@ export default class LapController implements TabController {
     ]);
     // Dragging the split moves no data, so it doesn't recalculate the colours or metrics.
     if (this.cached && cacheKey === this.cacheKey)
-      return { ...this.cached, split: this.split, time: window.selection.getRenderTime() };
+      return { ...this.cached, split: this.split, setupVisible, time: window.selection.getRenderTime() };
     this.cacheKey = cacheKey;
     const samples = lapService.result.samples;
     const valuesOf = (data: typeof mapData) =>
@@ -276,6 +277,7 @@ export default class LapController implements TabController {
       view: this.view,
       split: this.split,
       display: this.display,
+      setupVisible,
       origin: lapService.origin,
       result: lapService.result,
       settings: { ...lapService.settings, config: lapService.localConfig() },

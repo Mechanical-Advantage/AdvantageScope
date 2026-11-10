@@ -23,7 +23,7 @@ import {
   sectorBounds
 } from "../laps/LapEngine";
 import { Units } from "../units";
-import { panMargin, scrollZoomPan } from "./FieldZoomPan";
+import { scrollZoomPan } from "./FieldZoomPan";
 import TabRenderer from "./TabRenderer";
 function viridis(value: number): string {
   const stops = [
@@ -42,6 +42,7 @@ export type LapView = "map" | "laps" | "split";
 export type MapScope = "session" | "overlaid" | "selected";
 export type LapCommand = {
   view: LapView;
+  setupVisible?: boolean;
   /** The table's share of the split view. */
   split: number;
   display?: { colorMode: string; scope: MapScope };
@@ -66,18 +67,13 @@ export type LapCommand = {
 };
 /**
  * Maps track metres to canvas pixels. At a zoom of 1 the whole track fits with an 8% margin, and pan is in
- * metres from the track's centre. Clamps `pan` in place so the track can't leave the canvas.
+ * metres from the track's centre.
  */
 export function trackView(bounds: number[], w: number, h: number, zoom: number, pan: [number, number]) {
   const [xmin, xmax, ymin, ymax] = bounds;
   const margin = Math.max(xmax - xmin, ymax - ymin, 1) * 0.08,
     baseScale = Math.min(w / (xmax - xmin + margin * 2), h / (ymax - ymin + margin * 2));
-  // A track rarely has the canvas's shape, so the limits come from the canvas. Zooming in lets both axes pan.
-  const scale = baseScale * zoom,
-    marginX = panMargin(w * zoom, w, scale),
-    marginY = panMargin(h * zoom, h, scale);
-  pan[0] = Math.max(-marginX, Math.min(marginX, pan[0]));
-  pan[1] = Math.max(-marginY, Math.min(marginY, pan[1]));
+  const scale = baseScale * zoom;
   const centerX = (xmin + xmax) / 2 + pan[0],
     centerY = (ymin + ymax) / 2 - pan[1];
   return {
@@ -98,8 +94,7 @@ export function fitTrackView(
   const margin = Math.max(box[1] - box[0], box[3] - box[2], 1) * 0.08,
     scale = Math.min(w / (box[1] - box[0] + margin * 2), h / (box[3] - box[2] + margin * 2));
   return {
-    // Scrolling stops at a zoom of 10, so a short sector of a long track may not fill the map.
-    zoom: Math.min(10, Math.max(1, scale / baseScale)),
+    zoom: scale / baseScale,
     pan: [(box[0] + box[1]) / 2 - (bounds[0] + bounds[1]) / 2, (bounds[2] + bounds[3]) / 2 - (box[2] + box[3]) / 2]
   };
 }
@@ -168,6 +163,7 @@ export default class LapRenderer implements TabRenderer {
   private lastTrace = "";
   private headerKey = "";
   private setupKey = "";
+  private setupToggle?: HTMLButtonElement;
   private mapToolbarKey = "";
   private tableToolbarKey = "";
   private setup?: HTMLElement;
@@ -231,8 +227,6 @@ export default class LapRenderer implements TabRenderer {
     this.scroll = document.createElement("div");
     this.scroll.className = "field-2d-scroll";
     this.scroll.tabIndex = -1;
-    this.scroll.title =
-      "Replay gaps are relative to the reference lap. Positive seconds mean behind; positive metres mean ahead.";
     const scrollContent = document.createElement("div");
     scrollContent.className = "field-2d-scroll-content";
     this.scroll.append(scrollContent);
@@ -254,15 +248,8 @@ export default class LapRenderer implements TabRenderer {
           isPan,
           cursorX - this.scroll.clientWidth / 2,
           cursorY - this.scroll.clientHeight / 2,
-          this.baseScale
-        );
-        // Only a scroll or drag clamps the saved pan. A narrower Split map draws a clamped copy, so Map gets it back.
-        trackView(
-          this.bounds,
-          Math.max(1, this.content.clientWidth),
-          Math.max(1, this.content.clientHeight),
-          this.zoom,
-          this.pan
+          this.baseScale,
+          false
         );
         window.requestAnimationFrame(() => {
           if (this.command && this.shown.map) this.draw();
@@ -488,8 +475,14 @@ export default class LapRenderer implements TabRenderer {
       this.last = key;
       this.build();
     }
+    this.updateSetupToggle(command.setupVisible ?? true);
     this.scrollSensor.periodic();
     if (this.shown.map) this.draw();
+  }
+  private updateSetupToggle(visible: boolean) {
+    if (!this.setupToggle) return;
+    this.setupToggle.textContent = visible ? "Hide lap setup" : "Show lap setup";
+    this.setupToggle.setAttribute("aria-pressed", String(visible));
   }
   private select(label: string, options: [string, string][], value: string, onchange: (value: string) => void) {
     const select = document.createElement("select");
@@ -545,7 +538,7 @@ export default class LapRenderer implements TabRenderer {
         }
       );
       end.append(this.labelled("View ", view));
-      this.button(end, "Show lap setup", () => this.action({ type: "show-setup" }));
+      this.setupToggle = this.button(end, "Show lap setup", () => this.action({ type: "show-setup" }));
       row.append(end);
     } else {
       const event = document.createElement("span");
@@ -1095,11 +1088,9 @@ export default class LapRenderer implements TabRenderer {
               : `L${lap.index}`
           );
         });
-      } else if (
-        !this.visibleLaps().length ||
-        this.visibleLaps().some((lap) => c.time! >= lap.start && c.time! <= lap.end)
-      )
-        dot(c.time, "#fff");
+      }
+      // Replay dots compare laps. The white dot always shows the actual cursor sample.
+      dot(c.time, "#fff");
     }
     if (hint) {
       ctx.fillStyle = text;

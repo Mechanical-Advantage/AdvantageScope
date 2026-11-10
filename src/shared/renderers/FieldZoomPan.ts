@@ -21,14 +21,15 @@ export function scrollZoomPan(
   isPan: boolean,
   centerX: number,
   centerY: number,
-  scale: number
+  scale: number,
+  limited = true
 ): number {
   if (isPan) {
     pan[0] += dx / (scale * zoom);
     pan[1] += dy / (scale * zoom);
     return zoom;
   }
-  let newZoom = Math.min(10, Math.max(1, zoom + dy * -0.005));
+  const newZoom = limited ? Math.min(10, Math.max(1, zoom + dy * -0.005)) : zoom * Math.exp(-dy * 0.005);
   if (newZoom !== zoom) {
     pan[0] += (centerX / scale) * (1 / zoom - 1 / newZoom);
     pan[1] += (centerY / scale) * (1 / zoom - 1 / newZoom);
