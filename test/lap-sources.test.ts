@@ -430,3 +430,29 @@ test("cached lap samples refresh after data, units and wheel settings change", (
   assert.equal(service.result.samples.length, 21);
   assert.equal(service.result.samples.at(-1)!.t, 4);
 });
+
+test("gate edits reuse slip samples on a static log", () => {
+  const log = new Log();
+  for (let i = 0; i < 100; i++) {
+    for (const key of ["WheelSpeedFL", "WheelSpeedFR", "gps/ground_speed"]) {
+      log.putNumber(key, i / 10, 10 + i / 100);
+      log.setMetadataString(key, JSON.stringify({ unit: "m/s" }));
+    }
+    log.putNumber("latitude", i / 10, -37 + i * 1e-6);
+    log.putNumber("longitude", i / 10, 145);
+  }
+  (globalThis as any).window = { log, selection: { getCurrentLiveTime: () => null } };
+  const service = new LapService();
+  service.update();
+  const before = log.getNumber("Laps/SlipRatio", -Infinity, Infinity);
+  let writes = 0;
+  const put = log.putNumber.bind(log);
+  log.putNumber = (key, t, v) => {
+    if (key === "Laps/SlipRatio") writes++;
+    put(key, t, v);
+  };
+  service.setGate(0, { a: { x: 0, y: 0 }, b: { x: 10, y: 0 } });
+  service.update();
+  assert.equal(writes, 0);
+  assert.deepEqual(log.getNumber("Laps/SlipRatio", -Infinity, Infinity), before);
+});

@@ -7,7 +7,7 @@
 
 // Manages sources, settings and the view choice for the Track and laps tab, and builds its render commands.
 
-import { interpolate } from "../../shared/laps/LapEngine";
+import { indexAt, interpolate } from "../../shared/laps/LapEngine";
 import { LapCommand, LapView } from "../../shared/renderers/LapRenderer";
 import { createUUID } from "../../shared/util";
 import { lapService, LapSettings } from "../LapService";
@@ -293,9 +293,7 @@ export default class LapController implements TabController {
       metrics: !showsTable
         ? []
         : lapService.result.laps.map((l) => {
-            const vs = tableValues.filter(
-              (v, i) => samples[i].t >= l.start && samples[i].t < l.end && Number.isFinite(v)
-            );
+            const vs = tableValues.slice(indexAt(samples, l.start), indexAt(samples, l.end)).filter(Number.isFinite);
             return vs.length
               ? [Math.min(...vs), Math.max(...vs), vs.reduce((a, b) => a + b, 0) / vs.length]
               : [NaN, NaN, NaN];

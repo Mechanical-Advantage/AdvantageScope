@@ -402,7 +402,7 @@ export class LapService {
       }
       return lo ? t - ts[lo - 1] : Infinity;
     };
-    if (gpsKey && s.frontLeft && s.frontRight) {
+    if (!reuse && gpsKey && s.frontLeft && s.frontRight) {
       // Live data only appends, so rewriting the whole session on each update would grow without bound.
       // A static log recomputes in full, because a lazily loaded field can add earlier samples.
       const slipSignature = JSON.stringify([
