@@ -83,6 +83,17 @@ export function crossing(p: Sample, q: Sample, gate: Gate): number | undefined {
     v = cross(offset, s) / den;
   if (v > 0 && v <= 1 && u >= 0 && u <= 1) return p.t + v * (q.t - p.t);
 }
+/** The first index whose time is at least `time`, or above it when `after` is set. Times must increase. */
+export function indexAt(samples: { t: number }[], time: number, after = false): number {
+  let lo = 0,
+    hi = samples.length;
+  while (lo < hi) {
+    const mid = (lo + hi) >>> 1;
+    if (after ? samples[mid].t <= time : samples[mid].t < time) lo = mid + 1;
+    else hi = mid;
+  }
+  return lo;
+}
 export function interpolate(xs: number[], ys: number[], x: number): number {
   if (!xs.length) return NaN;
   let lo = 0,
@@ -359,7 +370,7 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
         : boundaries.includes(start) && boundaries.includes(end);
     if (end - start < 1e-8) continue;
     if (config.mode === "endurance") stint = 1 + stops.filter((t) => t <= start).length;
-    const inside = samples.filter((p) => p.t > start && p.t < end);
+    const inside = samples.slice(indexAt(samples, start, true), indexAt(samples, end));
     const ts = [start, ...inside.map((p) => p.t), end],
       ds = ts.map(dAt);
     const length = complete && config.mode !== "accel" ? config.length ?? ds.at(-1)! - ds[0] : ds.at(-1)! - ds[0];
@@ -377,13 +388,14 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
           )
       );
     if (config.sectors?.length)
-      splits = config.sectors.map(
-        (g) =>
-          samples
-            .slice(1)
-            .map((p, j) => crossing(samples[j], p, g))
-            .find((t) => t !== undefined && t > start && t < end) ?? NaN
-      );
+      splits = config.sectors.map((g) => {
+        // A crossing lies between its two samples, give or take rounding, so scan only this lap's samples.
+        for (let j = Math.max(0, indexAt(samples, start) - 2); j < samples.length - 1 && samples[j].t < end; j++) {
+          const t = crossing(samples[j], samples[j + 1], g);
+          if (t !== undefined && t > start && t < end) return t;
+        }
+        return NaN;
+      });
     const sectorEdges = [start, ...splits, end];
     const valid =
       complete &&
@@ -410,7 +422,7 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
     const laps = result.laps.filter((l) => l.complete);
     const labels = classifySkidpad(
       laps.map((l) => {
-        const ys = samples.filter((p) => p.t >= l.start && p.t < l.end).map((p) => p.yaw ?? 0);
+        const ys = samples.slice(indexAt(samples, l.start), indexAt(samples, l.end)).map((p) => p.yaw ?? 0);
         return ys.reduce((a, b) => a + b, 0);
       })
     );

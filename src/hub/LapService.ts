@@ -12,6 +12,7 @@ import {
   Coordinate,
   Gate,
   geographicGate,
+  indexAt,
   interpolate,
   LapConfig,
   LapResult,
@@ -450,7 +451,11 @@ export class LapService {
     }
     const reference = this.result.laps.find((l) => l.index === this.reference);
     for (const lap of this.result.laps) {
-      const points = this.result.samples.filter((p) => p.t >= lap.start && p.t < lap.end && p.t > this.derivedEnd);
+      const all = this.result.samples,
+        points = all.slice(
+          Math.max(indexAt(all, lap.start), indexAt(all, this.derivedEnd, true)),
+          indexAt(all, lap.end)
+        );
       const gridTimes = lap.grid.map((g) => g.time),
         gridDistances = lap.grid.map((g) => g.distance);
       const refDistances = reference?.grid.map((g) => g.distance) ?? [],
