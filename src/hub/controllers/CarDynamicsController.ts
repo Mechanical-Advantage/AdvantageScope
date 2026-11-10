@@ -180,8 +180,8 @@ export default class CarDynamicsController implements TabController {
     let speedFL = wheelSpeed("speedFL");
     let speedFR = wheelSpeed("speedFR");
     let moduleVelocities: CarDynamicsRendererCommand["moduleVelocities"] = [];
-    if (steering !== null) {
-      let roadWheelAngle = ((steering / Number(this.STEERING_RATIO.value)) * Math.PI) / 180;
+    if (steering !== null || speedFL !== null || speedFR !== null) {
+      let roadWheelAngle = steering === null ? null : ((steering / Number(this.STEERING_RATIO.value)) * Math.PI) / 180;
       let normalize = (speed: number | null) =>
         speed === null ? null : clampValue(speed / Number(this.MAX_SPEED.value), -1, 1);
       moduleVelocities.push({

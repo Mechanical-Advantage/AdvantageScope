@@ -143,27 +143,29 @@ export default class CarDynamicsRenderer implements TabRenderer {
       ]);
 
       // Draw module data
-      let drawModuleData = (state: { angle: number; velocity: number | null }, color: string) => {
-        let fullRotation = command.rotation + state.angle;
+      let drawModuleData = (state: { angle: number | null; velocity: number | null }, color: string) => {
+        let fullRotation = command.rotation + (state.angle ?? 0);
         context.fillStyle = color;
         context.strokeStyle = color;
         context.lineWidth = 4;
 
         // Draw rotation
-        context.beginPath();
-        if (command.moduleVelocities.length >= 2) {
-          context.moveTo(...moduleCenterPx);
-        } else {
-          context.moveTo(...transformPx(moduleCenterPx, fullRotation, [moduleRadiusPx, 0]));
+        if (state.angle !== null) {
+          context.beginPath();
+          if (command.moduleVelocities.length >= 2) {
+            context.moveTo(...moduleCenterPx);
+          } else {
+            context.moveTo(...transformPx(moduleCenterPx, fullRotation, [moduleRadiusPx, 0]));
+          }
+          context.arc(
+            ...moduleCenterPx,
+            moduleRadiusPx,
+            -wrapRadians(fullRotation - (5 * Math.PI) / 6),
+            -wrapRadians(fullRotation + (5 * Math.PI) / 6)
+          );
+          context.closePath();
+          context.fill();
         }
-        context.arc(
-          ...moduleCenterPx,
-          moduleRadiusPx,
-          -wrapRadians(fullRotation - (5 * Math.PI) / 6),
-          -wrapRadians(fullRotation + (5 * Math.PI) / 6)
-        );
-        context.closePath();
-        context.fill();
 
         // Draw speed
         if (state.velocity === null || Math.abs(state.velocity) <= 0.001) return;
@@ -328,7 +330,7 @@ export type CarDynamicsRendererCommand = {
   rotation: Rotation2d;
   frameAspectRatio: number;
   moduleVelocities: {
-    values: { angle: number; velocity: number | null }[];
+    values: { angle: number | null; velocity: number | null }[];
     color: string;
   }[];
   robotVelocities: {

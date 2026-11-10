@@ -52,7 +52,10 @@ test("wheel direction requires steering, missing wheel speed stays null, and g d
   put("DASH_SpeedFL", 40);
   put("DASH_SpeedFR", NaN);
   put("SBG_FRONT_AccelX", 3);
-  assert.deepEqual(c.getCommand().moduleVelocities, []);
+  assert.deepEqual(c.getCommand().moduleVelocities[0].values, [
+    { velocity: 0.4, angle: null },
+    { velocity: null, angle: null }
+  ]);
   assert.equal(c.getCommand().accel, null);
   put("DASH_SteeringAngle", 90);
 
@@ -65,6 +68,27 @@ test("wheel direction requires steering, missing wheel speed stays null, and g d
   c.sourceList.getState = () => [{ type: "accelY", logKey: "SBG_FRONT_AccelY", visible: false }];
   assert.equal(c.getCommand().accel, null);
 });
+
+for (const steering of ["unassigned", "hidden"]) {
+  test(`wheel speed draws a forward arrow without a direction wedge when steering is ${steering}`, () => {
+    const { controller: c, put } = controller();
+    put("DASH_SpeedFL", 50);
+    if (steering === "hidden") {
+      put("DASH_SteeringAngle", 90);
+      c.sourceList.getState().find((s: any) => s.type === "steering").visible = false;
+    }
+    const command = c.getCommand();
+    assert.deepEqual(command.moduleVelocities[0]?.values, [
+      { velocity: 0.5, angle: null },
+      { velocity: null, angle: null }
+    ]);
+    const { root, calls } = canvas();
+    new CarDynamicsRenderer(root).render(command);
+    assert.equal(calls.filter((call) => call.name === "fill").length, 0);
+    assert.equal(calls.filter((call) => call.name === "stroke").length, 10);
+    assert.ok(calls.some((call) => call.name === "lineTo" && call.args[0] === 210 && call.args[1] === 135));
+  });
+}
 
 function canvas() {
   const calls: { name: string; args: any[] }[] = [];
