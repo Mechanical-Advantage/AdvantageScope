@@ -156,3 +156,34 @@ test("cursor draws outside selected and overlaid lap ranges", () => {
     );
   }
 });
+
+test("endpoint and Shift drags commit once on release without recalculating during movement", () => {
+  const g = globalThis as any;
+  g.document = Object.assign(new EventTarget(), { createElement: () => new Element(), activeElement: null });
+  g.window = new EventTarget();
+  const renderer: any = new LapRenderer(new Element() as any);
+  renderer.command = { result: { samples: [{ t: 0, x: 0, y: 0 }] } };
+  renderer.scroll.getBoundingClientRect = () => ({ left: 0, top: 0 });
+  renderer.scroll.setPointerCapture = () => {};
+  renderer.scroll.releasePointerCapture = () => {};
+  renderer.scroll.hasPointerCapture = () => false;
+  renderer.inverse = (p: unknown) => p;
+  renderer.draw = () => {};
+  renderer.endpointAt = () => ({ index: 0, endpoint: "a", gate: { a: { x: 0, y: 0 }, b: { x: 0, y: 10 } } });
+  const actions: any[] = [];
+  renderer.action = (action: unknown) => actions.push(action);
+  for (const shiftKey of [false, true]) {
+    actions.length = 0;
+    const send = (type: string, x: number) =>
+      renderer.scroll.dispatchEvent(
+        Object.assign(new Event(type), { clientX: x, clientY: 0, button: 0, pointerId: 1, shiftKey })
+      );
+    send("pointerdown", 0);
+    for (let x = 1; x <= 100; x++) send("pointermove", x);
+    assert.equal(actions.length, 0);
+    send("pointerup", 100);
+    assert.equal(actions.length, 1);
+    assert.equal(actions[0].type, "gate");
+    assert.equal(actions[0].index, shiftKey ? -1 : 0);
+  }
+});
