@@ -118,6 +118,8 @@ export class LapService {
   private log?: Log;
   private signature = "";
   private sampleSignature = "";
+  /** The origin of the last log's track, kept until the next log has its own origin. */
+  private switchOrigin?: Coordinate;
   private samples: Sample[] = [];
   private nextUpdate = 0;
   private derivedEnd = -Infinity;
@@ -204,6 +206,9 @@ export class LapService {
   update() {
     if (this.log !== window.log) {
       this.log = window.log;
+      // Legacy local gates already placed on a track keep that position on the next log.
+      // One lone fix is not a track, so it can't anchor them.
+      if (this.origin && this.result.samples.length > 1) this.switchOrigin = this.origin;
       this.origin = undefined;
       this.nextUpdate = 0;
       this.signature = "";
@@ -433,25 +438,24 @@ export class LapService {
         })
       );
     }
-    if (
-      previousOrigin &&
-      this.origin &&
-      window.log.getTimestampRange()[0] > (this.result.samples[0]?.t ?? Infinity) &&
-      (previousOrigin.lat !== this.origin.lat || previousOrigin.lon !== this.origin.lon)
-    ) {
-      // Old layouts store local gates. Anchor them before retention moves the local origin.
+    const anchor =
+      this.switchOrigin ??
+      (window.log.getTimestampRange()[0] > (this.result.samples[0]?.t ?? Infinity) ? previousOrigin : undefined);
+    if (anchor && this.origin && (anchor.lat !== this.origin.lat || anchor.lon !== this.origin.lon)) {
+      // Old layouts store local gates. Anchor them before a log switch or retention moves the local origin.
       const config = s.config;
       if (config.gate || config.finish || config.sectors?.length) {
         const geo = (config.geographic ??= {});
-        if (config.gate) geo.gate ??= geographicGate(config.gate, previousOrigin);
-        if (config.finish) geo.finish ??= geographicGate(config.finish, previousOrigin);
+        if (config.gate) geo.gate ??= geographicGate(config.gate, anchor);
+        if (config.finish) geo.finish ??= geographicGate(config.finish, anchor);
         if (config.sectors?.length)
-          geo.sectors = [...(geo.sectors ?? []), ...config.sectors.map((gate) => geographicGate(gate, previousOrigin))];
+          geo.sectors = [...(geo.sectors ?? []), ...config.sectors.map((gate) => geographicGate(gate, anchor))];
         delete config.gate;
         delete config.finish;
         delete config.sectors;
       }
     }
+    if (this.origin) this.switchOrigin = undefined;
     const config = this.localConfig();
     this.result = analyze(samples, config);
     const ref = this.result.laps.find((l) => l.index === (this.reference ?? this.result.best));

@@ -336,3 +336,26 @@ test("a legacy sector stays on the track when live retention moves the GPS origi
   const after = geographicGate(service.localConfig().sectors![0], service.origin!);
   assert.deepEqual(after, before);
 });
+
+test("a legacy sector stays on the track when a log of the same track replaces the current one", () => {
+  const track = (from: number) => {
+    const log = new Log();
+    for (let i = from; i <= 100; i++) {
+      log.putNumber("latitude", i / 10, -37 + i * 0.000001);
+      log.putNumber("longitude", i / 10, 145 + i * 0.000001);
+    }
+    return log;
+  };
+  (globalThis as any).window = { log: track(0), selection: { getCurrentLiveTime: () => 10 } };
+  const service = new LapService();
+  service.settings.config.sectors = [{ a: { x: 2, y: 3 }, b: { x: 4, y: 5 } }];
+  service.update();
+  const before = geographicGate(service.localConfig().sectors![0], service.origin!);
+  // The second log starts five seconds later, so its first GPS fix is elsewhere on the track.
+  (globalThis as any).window.log = track(50);
+  service.update();
+  const after = geographicGate(service.localConfig().sectors![0], service.origin!);
+  assert.notDeepEqual(service.origin, undefined);
+  assert.ok(Math.hypot(after.a.lat - before.a.lat, after.a.lon - before.a.lon) < 1e-9);
+  assert.ok(Math.hypot(after.b.lat - before.b.lat, after.b.lon - before.b.lon) < 1e-9);
+});
