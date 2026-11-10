@@ -84,3 +84,30 @@ test("normal runs keep native window visibility and show methods", () => {
   assert.throws(() => window.show(), /native show/);
   assert.throws(() => window.showInactive(), /native showInactive/);
 });
+
+test("suppressed message boxes keep all details on one forwarded line", async () => {
+  const { BrowserWindow, dialog, calls } = load();
+  const options = {
+    type: "warning",
+    title: "Export warning",
+    message: "Cannot export",
+    detail: "First line\nSecond line",
+    buttons: ["Continue", "Cancel"],
+    cancelId: 1
+  };
+  assert.equal((await dialog.showMessageBox(new BrowserWindow(), options)).response, 1);
+  assert.equal(dialog.showMessageBoxSync(options), 1);
+  for (const args of calls) {
+    assert.equal(args.length, 1);
+    const line = String(args[0]);
+    assert.equal(line.split("\n").length, 1);
+    const details = JSON.parse(line.slice("[headless] suppressed message box ".length));
+    assert.deepEqual(details, {
+      type: options.type,
+      title: options.title,
+      message: options.message,
+      detail: options.detail,
+      buttons: options.buttons
+    });
+  }
+});

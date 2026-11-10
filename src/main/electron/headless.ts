@@ -25,7 +25,8 @@ if (HEADLESS) {
   if (userData) app.setPath("userData", userData);
   if (process.platform === "darwin") app.setActivationPolicy("accessory");
 
-  const log = (what: string, detail?: unknown) => console.log(`[headless] suppressed ${what}`, detail ?? "");
+  const log = (what: string, detail?: unknown) =>
+    console.log(`[headless] suppressed ${what}${detail === undefined ? "" : " " + JSON.stringify(detail)}`);
   const noop = () => {};
   const proto = BrowserWindow.prototype as any;
   // Track the app's requested visibility while every native window stays hidden.
@@ -67,12 +68,24 @@ if (HEADLESS) {
   const optionsOf = (args: any[]) => (args[0] instanceof BrowserWindow ? args[1] : args[0]);
   dialog.showMessageBox = (async (...args: any[]) => {
     const options = optionsOf(args);
-    log("message box", { message: options?.message, detail: options?.detail, buttons: options?.buttons });
+    log("message box", {
+      type: options?.type,
+      title: options?.title,
+      message: options?.message,
+      detail: options?.detail,
+      buttons: options?.buttons
+    });
     return { response: pick(options), checkboxChecked: false };
   }) as any;
   dialog.showMessageBoxSync = ((...args: any[]) => {
     const options = optionsOf(args);
-    log("message box", { message: options?.message, detail: options?.detail, buttons: options?.buttons });
+    log("message box", {
+      type: options?.type,
+      title: options?.title,
+      message: options?.message,
+      detail: options?.detail,
+      buttons: options?.buttons
+    });
     return pick(options);
   }) as any;
   dialog.showErrorBox = (title, content) => log("error box", { title, content });
