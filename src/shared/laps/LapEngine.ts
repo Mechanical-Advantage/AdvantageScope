@@ -536,20 +536,21 @@ export function analyze(
       ds = ts.map(dAt);
     const length = complete && config.mode !== "accel" ? config.length ?? ds.at(-1)! - ds[0] : ds.at(-1)! - ds[0];
     const grid = saved?.grid ?? resample(ds, ts, length);
-    let splits = (config.fractions ?? [1 / 3, 2 / 3])
-      .filter((f) => f > 0 && f < 1)
-      .sort((a, b) => a - b)
-      .map(
-        (f) =>
-          start +
-          interpolate(
-            grid.map((p) => p.distance),
-            grid.map((p) => p.time),
-            f * length
-          )
-      );
-    if (saved) splits = saved.splits;
-    else if (config.sectors?.length)
+    let splits =
+      saved?.splits ??
+      (config.fractions ?? [1 / 3, 2 / 3])
+        .filter((f) => f > 0 && f < 1)
+        .sort((a, b) => a - b)
+        .map(
+          (f) =>
+            start +
+            interpolate(
+              grid.map((p) => p.distance),
+              grid.map((p) => p.time),
+              f * length
+            )
+        );
+    if (!saved && config.sectors?.length)
       splits = sectorCrossings(samples, { start, end }, config.sectors).map((crossing) => crossing.time);
     const gap = saved?.gap ?? ts.some((t, j) => j > 0 && t - ts[j - 1] > 1);
     const yaw =

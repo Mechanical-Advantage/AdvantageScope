@@ -323,3 +323,32 @@ test("a missed gate keeps its unknown sector positions when gates already follow
   assert.ok(Number.isNaN(lap.sectors[1]));
   assert.ok(lap.sectors[2] > 0);
 });
+
+test("appending samples does not traverse a completed lap's cached grid", () => {
+  const all = circleLaps().samples;
+  const cache = new LapAnalysisCache();
+  const config = { manual: [0, 20, 40, 60] };
+  const result = analyze(all.slice(0, 900), config, cache);
+  let reads = 0;
+  for (const lap of result.laps.filter((lap) => lap.complete)) {
+    for (const point of lap.grid) {
+      const { distance, time } = point;
+      Object.defineProperties(point, {
+        distance: {
+          get: () => {
+            reads++;
+            return distance;
+          }
+        },
+        time: {
+          get: () => {
+            reads++;
+            return time;
+          }
+        }
+      });
+    }
+  }
+  analyze(all.slice(0, 920), config, cache, all[898].t);
+  assert.equal(reads, 0);
+});
