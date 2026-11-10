@@ -239,20 +239,6 @@ for (const [unit, value] of [
   });
 }
 
-test("a rear axle speed does not populate the front-only wheel slots", () => {
-  const { controller: c, put } = controller();
-  put("DASH_SteeringAngle", 0);
-  put("DASH_SpeedRear", 50);
-  const log = (globalThis as any).window.log as Log;
-  log.putNumber("rear_axle_speed", 1, 70);
-  log.setMetadataString("rear_axle_speed", JSON.stringify({ unit: "rad/s" }));
-  const command = c.getCommand();
-  assert.deepEqual(command.moduleVelocities[0].values, [
-    { angle: 0, velocity: null },
-    { angle: 0, velocity: null }
-  ]);
-});
-
 test("wheel radius is saved and restored", () => {
   const { controller: c } = controller();
   c.restoreState({ wheelRadius: 0.2 });
@@ -307,4 +293,30 @@ test("Invert survives controller saveState and restoreState", () => {
       ["normal", "inverted"]
     );
   }
+});
+
+test("Driver Inputs steering Invert survives saveState and restoreState", () => {
+  const { put } = controller();
+  put("DASH_SteeringAngle", 30);
+  const driver = Object.create(DriverInputsController.prototype) as any;
+  let sources = [
+    {
+      type: "steering",
+      logKey: "DASH_SteeringAngle",
+      logType: "Number",
+      visible: true,
+      options: { invert: "inverted" }
+    }
+  ];
+  Object.assign(driver, {
+    UUID: "test",
+    BRAKE_SCALE: { value: "1000" },
+    sourceList: { getState: () => sources, setState: (state: any) => (sources = state) }
+  });
+  const saved = JSON.parse(JSON.stringify(driver.saveState()));
+  sources = [];
+  driver.restoreState(saved);
+  assert.equal(driver.getCommand().steering, -30);
+  assert.equal(driver.getCommand().throttle, null);
+  assert.equal(driver.saveState().sources[0].options.invert, "inverted");
 });

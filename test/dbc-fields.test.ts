@@ -67,3 +67,15 @@ for (const operation of ["setField", "mergeWith", "metadata"]) {
     assert.equal(numberAt(key, 2, "degrees", "t"), null);
   });
 }
+
+test("metadata changes bump the field-key version only when metadata changes", () => {
+  const log = makeLog();
+  const key = "/live/driver/steering_angle";
+  const version = log.getFieldKeysVersion();
+  const metadata = JSON.stringify({ dbcSignal: "LIVE_Steering", unit: "rad" });
+  log.setMetadataString(key, metadata);
+  assert.equal(log.getFieldKeysVersion(), version + 1);
+  log.setMetadataString(key, metadata);
+  log.setMetadataString("/missing", metadata);
+  assert.equal(log.getFieldKeysVersion(), version + 1);
+});
