@@ -842,11 +842,12 @@ table.metadata-table td.no-data {
 .lap-split-handle[hidden] {
   display: none;
 }
+/* These match SPLIT_MIN in LapRenderer.ts. */
 .lap-split .lap-table-pane {
-  min-width: 360px;
+  min-width: 480px;
 }
 .lap-split .lap-map-pane {
-  min-width: 280px;
+  min-width: 320px;
   /* The same edge as the stock tab controls divider */
   box-shadow: 0px 0px 3px 2px #00000022;
 }

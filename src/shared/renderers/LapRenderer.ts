@@ -135,7 +135,7 @@ export function lapSummary(settings: LapSettings, result: LapResult): string {
   ].join(" · ");
 }
 /** Smallest pane sizes in the split view, in CSS pixels. Narrower renderers stack the map above the table. */
-const SPLIT_MIN = { table: 360, map: 280, tableHeight: 140, mapHeight: 160 };
+const SPLIT_MIN = { table: 480, map: 320, tableHeight: 140, mapHeight: 160 };
 const DEFAULT_SPLIT = 0.55;
 const colors = ["#58a7ff", "#f4b860", "#72d6a0", "#d49bff", "#ff8c9c", "#70d6de"];
 const duration = (t: number) =>
@@ -1084,7 +1084,9 @@ export default class LapRenderer implements TabRenderer {
       ctx.fillStyle = text;
       ctx.textAlign = "center";
       ctx.fillText(
-        w < 640
+        w < 400
+          ? "Scroll to zoom · Drag to pan"
+          : w < 640
           ? "Scroll to zoom · Drag to pan · Shift+drag for start/finish"
           : "Scroll to zoom · Drag to pan · Shift+drag to draw start/finish · Click the trace to move the cursor",
         w / 2,
