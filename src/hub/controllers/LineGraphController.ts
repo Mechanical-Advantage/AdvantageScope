@@ -1,3 +1,4 @@
+import { formatNumericPreview } from "../../shared/display/NumericPreview";
 // Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
@@ -49,10 +50,6 @@ export default class LineGraphController implements TabController {
   private MIN_AXIS_RANGE = 1e-5;
   private MAX_AXIS_RANGE = 1e20;
   private MAX_VALUE = 1e20;
-  private PREVIEW_FORMAT = new Intl.NumberFormat("en-US", {
-    maximumFractionDigits: 6,
-    useGrouping: false
-  });
 
   private leftSourceList: SourceList;
   private discreteSourceList: SourceList;
@@ -446,14 +443,11 @@ export default class LineGraphController implements TabController {
     }
     const profile = window.log.getChannelProfile(key);
     if (profile.enumLabels) return formatChannelValue(command.values[index], profile);
-    let output = this.PREVIEW_FORMAT.format(command.values[index]);
-    if (unitCache !== null && command.hasUnit) {
-      let suffix = Units.getSuffixForFilter(unitCache.suffix, filter);
-      output += suffix.length > 1 ? " " : "";
-      output += suffix;
-      if (filter === LineGraphFilter.None && unitCache.pluralizeSuffix && command.values[index] !== 1) output += "s";
-    }
-    return output;
+    return formatNumericPreview(
+      command.values[index],
+      unitCache !== null && command.hasUnit ? Units.getSuffixForFilter(unitCache.suffix, filter) : "",
+      unitCache !== null && command.hasUnit && filter === LineGraphFilter.None && unitCache.pluralizeSuffix
+    );
   }
 
   /** Returns the auto target type for an axis, based on a manual override or field selection. */

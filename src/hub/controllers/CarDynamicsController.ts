@@ -16,7 +16,7 @@ import { Units } from "../../shared/units";
 import { clampValue, createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import CarDynamicsController_Config from "./CarDynamicsController_Config";
-import { sourceNumberAt } from "./DbcFields";
+import { numberPreview, sourceNumberAt } from "./DbcFields";
 import TabController, { setupKeyboardControls } from "./TabController";
 
 /** Acceleration at the edge of the g circle */
@@ -36,7 +36,13 @@ export default class CarDynamicsController implements TabController {
   private orientation = Orientation.DEG_90;
 
   constructor(root: HTMLElement) {
-    this.sourceList = new SourceList(root.firstElementChild as HTMLElement, CarDynamicsController_Config, []);
+    this.sourceList = new SourceList(
+      root.firstElementChild as HTMLElement,
+      CarDynamicsController_Config,
+      [],
+      undefined,
+      numberPreview
+    );
     let settings = root.getElementsByClassName("car-dynamics-settings")[0] as HTMLElement;
     this.MAX_SPEED = settings.getElementsByClassName("max-speed")[0] as HTMLInputElement;
     this.WHEEL_RADIUS = settings.getElementsByClassName("wheel-radius")[0] as HTMLInputElement;

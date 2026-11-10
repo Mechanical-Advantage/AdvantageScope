@@ -5,6 +5,8 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { formatChannelValue } from "../../shared/display/ChannelProfile";
+import { formatNumericPreview } from "../../shared/display/NumericPreview";
 import LoggableType from "../../shared/log/LoggableType";
 import { getOrDefault } from "../../shared/log/LogUtil";
 import { SourceListState, SourceListTypeConfig } from "../../shared/SourceListConfig";
@@ -63,4 +65,15 @@ export function numberAt(key: string | undefined, time: number, unit: string, uu
   if (from === null || Units.GROUP_BY_UNIT[from] === undefined || from === unit) return value;
   if (Units.GROUP_BY_UNIT[from] !== Units.GROUP_BY_UNIT[unit]) return null;
   return Units.convert(value, from, unit);
+}
+
+/** Previews the logged value before the source's Invert option, as Line Graph does. */
+export function numberPreview(key: string, time: number): string | null {
+  const value = getOrDefault(window.log, key, LoggableType.Number, time, null);
+  if (value === null || !Number.isFinite(value)) return null;
+  const profile = window.log.getChannelProfile(key);
+  if (profile.enumLabels) return formatChannelValue(value, profile);
+  const unit = window.log.getUnit(key);
+  const config = unit === null ? undefined : Units.ALL_UNITS[unit];
+  return formatNumericPreview(value, config?.suffix, config?.pluralizeSuffix);
 }

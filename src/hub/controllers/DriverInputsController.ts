@@ -9,7 +9,7 @@ import { SourceListState } from "../../shared/SourceListConfig";
 import { DriverInputsRendererCommand } from "../../shared/renderers/DriverInputsRenderer";
 import { createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
-import { sourceNumberAt } from "./DbcFields";
+import { numberPreview, sourceNumberAt } from "./DbcFields";
 import DriverInputsController_Config from "./DriverInputsController_Config";
 import TabController from "./TabController";
 
@@ -21,7 +21,13 @@ export default class DriverInputsController implements TabController {
   private sourceList: SourceList;
 
   constructor(root: HTMLElement) {
-    this.sourceList = new SourceList(root.firstElementChild as HTMLElement, DriverInputsController_Config, []);
+    this.sourceList = new SourceList(
+      root.firstElementChild as HTMLElement,
+      DriverInputsController_Config,
+      [],
+      undefined,
+      numberPreview
+    );
     let settings = root.getElementsByClassName("driver-inputs-settings")[0] as HTMLElement;
     this.BRAKE_SCALE = settings.getElementsByClassName("brake-scale")[0] as HTMLInputElement;
 
