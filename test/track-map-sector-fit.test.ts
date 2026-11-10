@@ -112,3 +112,47 @@ test("a new focus refits the map once, and a map keeps the view the user scrolls
   renderer.render({ ...command, focus: { ...focus, range: [s3.start, s3.end], id: 8 } });
   assert.notEqual(renderer.zoom, 3);
 });
+
+test("cursor draws outside selected and overlaid lap ranges", () => {
+  const g = globalThis as any;
+  g.document = Object.assign(new EventTarget(), { createElement: () => new Element(), activeElement: null });
+  g.window = Object.assign(g.window ?? new EventTarget(), { devicePixelRatio: 1 });
+  g.matchMedia = () => ({ matches: false });
+  const renderer: any = new LapRenderer(new Element() as any, false);
+  renderer.build = () => {};
+  renderer.drawTrace = () => {};
+  const result = circleLaps();
+  const lap = result.laps.find((l) => l.valid)!;
+  const arcs: number[][] = [];
+  const context = new Proxy(
+    {},
+    {
+      get: (_, key) => (key === "arc" ? (...args: number[]) => arcs.push(args) : () => ({ width: 0 })),
+      set: () => true
+    }
+  );
+  renderer.canvas.getContext = () => context;
+  for (const scope of ["selected", "overlaid"]) {
+    renderer.scope = scope;
+    arcs.length = 0;
+    renderer.lastDraw = "";
+    renderer.render({
+      view: "map",
+      split: 0.55,
+      result,
+      settings: { config: {} },
+      field: "",
+      values: [],
+      overlays: [lap.index],
+      reference: lap.index,
+      selected: lap.index,
+      time: 1,
+      version: 1
+    });
+    const point = renderer.transform(renderer.sampleAt(1));
+    assert.ok(
+      arcs.some(([x, y, radius]) => radius === 6 && Math.abs(x - point.x) < 1e-6 && Math.abs(y - point.y) < 1e-6),
+      scope
+    );
+  }
+});

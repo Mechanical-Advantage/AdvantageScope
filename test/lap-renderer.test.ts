@@ -82,3 +82,14 @@ test("layout save drops a sector fit and keeps a later manual view", () => {
   assert.equal(renderer.saveState().zoom, 3);
   assert.deepEqual(renderer.saveState().pan, [10, 10]);
 });
+
+test("setup toggle reports both states", () => {
+  const renderer: any = Object.create(LapRenderer.prototype);
+  const attributes = new Map();
+  renderer.setupToggle = { textContent: "", setAttribute: (k: string, v: string) => attributes.set(k, v) };
+  for (const visible of [true, false, true]) {
+    renderer.updateSetupToggle(visible);
+    assert.equal(renderer.setupToggle.textContent, visible ? "Hide lap setup" : "Show lap setup");
+    assert.equal(attributes.get("aria-pressed"), String(visible));
+  }
+});
