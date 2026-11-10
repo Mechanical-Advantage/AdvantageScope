@@ -7,7 +7,15 @@
 
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
-import { analyze, gateAt, LapResult, Sample, sectorBlocks, sectorBounds } from "../src/shared/laps/LapEngine";
+import {
+  analyze,
+  gateAt,
+  LapAnalysisCache,
+  LapResult,
+  Sample,
+  sectorBlocks,
+  sectorBounds
+} from "../src/shared/laps/LapEngine";
 import LapRenderer, { fitTrackView, trackView } from "../src/shared/renderers/LapRenderer";
 
 /** Three laps of a 40 m circle, with a gate a quarter of the way round and another half way. */
@@ -244,4 +252,62 @@ test("sectors added in reverse lap order retain positive times and the final sec
     assert.equal(lap.sectors.length, 3);
     assert.ok(lap.sectors.every((time) => time > 0 && Number.isFinite(time)));
   }
+});
+
+test("cached analysis matches full results while revisiting only the appended tail", () => {
+  const all = circleLaps().samples;
+  for (const mode of ["circuit", "accel", "skidpad", "autocross", "endurance"] as const) {
+    const cache = new LapAnalysisCache();
+    const config = { mode, manual: [0, 20, 40, 60] };
+    for (let count = 20; count < all.length; count += 20) {
+      const input = all.slice(0, count);
+      const from = all[Math.max(0, count - 22)].t;
+      const before = cache.processed;
+      assert.deepEqual(analyze(input, config, cache, from), analyze(input, config));
+      assert.ok(cache.processed - before < 500);
+    }
+  }
+});
+
+test("cached analysis handles signal timing, gate edits, stops and revised tails", () => {
+  const all = circleLaps().samples.map((p) => ({
+    ...p,
+    counter: Math.floor(p.t / 20),
+    beacon: p.t % 20 < 0.2 ? 1 : 0,
+    speed: p.t % 20 < 1 ? 0 : p.speed,
+    yaw: Math.sin(p.t / 15)
+  }));
+  const gate = gateAt(all, 0)!;
+  const finish = gateAt(all, 15)!;
+  for (const mode of ["circuit", "accel", "skidpad", "autocross", "endurance"] as const) {
+    for (const config of [{ mode }, { mode, gate }, { mode, gate: { ...gate, direction: undefined }, finish }]) {
+      const cache = new LapAnalysisCache();
+      for (let count = 20; count < all.length; count += 20) {
+        const input = all.slice(0, count).map((p) => ({ ...p }));
+        input.at(-1)!.speed = 0;
+        const from = all[Math.max(0, count - 22)].t;
+        assert.deepEqual(analyze(input, config, cache, from), analyze(input, config));
+      }
+      const edited = { ...config, sectors: [gateAt(all, 5)!, gateAt(all, 13)!] };
+      assert.deepEqual(analyze(all, edited, cache), analyze(all, edited));
+    }
+  }
+});
+
+test("analysis checkpoints stay bounded and an older edit still matches full analysis", () => {
+  const cache = new LapAnalysisCache();
+  const input = Array.from({ length: 12000 }, (_, i) => ({
+    t: i / 50,
+    x: i / 5,
+    y: 0,
+    speed: 10,
+    counter: Math.floor(i / 1000)
+  }));
+  for (let count = 500; count <= input.length; count += 500) {
+    const samples = input.slice(0, count);
+    assert.deepEqual(analyze(samples, {}, cache, Math.max(0, count - 502) / 50), analyze(samples));
+    for (const scan of cache.scans.values()) assert.ok(scan.states.length <= 4096);
+  }
+  input[5].speed = 5;
+  assert.deepEqual(analyze(input, {}, cache, input[5].t), analyze(input));
 });

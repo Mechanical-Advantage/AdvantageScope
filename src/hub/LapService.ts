@@ -14,6 +14,7 @@ import {
   geographicGate,
   indexAt,
   interpolate,
+  LapAnalysisCache,
   LapConfig,
   LapResult,
   project,
@@ -121,6 +122,8 @@ export class LapService {
   /** The origin of the last log's track, kept until the next log has its own origin. */
   private switchOrigin?: Coordinate;
   private samples: Sample[] = [];
+  private analysis = new LapAnalysisCache();
+  private referenceAnalysis = new LapAnalysisCache();
   private inputCache = new Map<string, { timestamps: number[]; values: number[]; version: number }>();
   private inputStart = -Infinity;
   private sourceSignature = "";
@@ -129,6 +132,7 @@ export class LapService {
   private slipEnd = -Infinity;
   private slipSignature = "";
   private derivedSignature = "";
+  private derivedLapStart = -Infinity;
   private grids = new WeakMap<object, { d: number[]; t: number[] }>();
   private sourceLog?: Log;
   private cleared = new Set<LapSourceRole>();
@@ -520,10 +524,11 @@ export class LapService {
     }
     if (this.origin) this.switchOrigin = undefined;
     const config = this.localConfig();
-    this.result = analyze(samples, config);
+    const analysisFrom = append ? changedFrom : reuse ? Infinity : -Infinity;
+    this.result = analyze(samples, config, this.analysis, analysisFrom);
     const ref = this.result.laps.find((l) => l.index === (this.reference ?? this.result.best));
     if (ref && !s.config.length && s.config.mode !== "accel")
-      this.result = analyze(samples, { ...config, length: ref.distance });
+      this.result = analyze(samples, { ...config, length: ref.distance }, this.referenceAnalysis, analysisFrom);
     if (this.reference === null || !this.result.laps.some((l) => l.index === this.reference))
       this.reference = this.result.best ?? null;
     // Until the user chooses, live overlays the latest laps and a log the first.
@@ -532,23 +537,24 @@ export class LapService {
       this.overlays = window.selection?.getCurrentLiveTime() != null ? valid.slice(-4) : valid.slice(0, 4);
     }
     // Rebuild derived channels after edits or when the reference changes. Otherwise only append the active lap.
-    const ds = JSON.stringify([
-      s,
-      this.reference,
-      this.result.laps.filter((l) => l.complete).map((l) => [l.start, l.end])
-    ]);
+    const ds = JSON.stringify([s, this.reference]);
     const names = ["Laps/Number", "Laps/Time", "Laps/Distance", "Laps/Sector", "Laps/DeltaToReference"];
     const rebuild = ds !== this.derivedSignature;
     if (rebuild) {
       this.derivedEnd = -Infinity;
       this.derivedSignature = ds;
+    } else if (this.derivedLapStart !== this.result.laps.at(-1)?.start) {
+      // Finalising a lap can change its grid and sectors. Rewrite only that lap's tail.
+      this.derivedEnd = Math.min(this.derivedEnd, this.derivedLapStart - 1e-9);
     }
+    this.derivedLapStart = this.result.laps.at(-1)?.start ?? -Infinity;
     const reference = this.result.laps.find((l) => l.index === this.reference);
     const refDistances = reference?.grid.map((g) => g.distance) ?? [],
       refTimes = reference?.grid.map((g) => g.time) ?? [];
     const times: number[] = [],
       columns: number[][] = names.map(() => []);
     for (const lap of this.result.laps) {
+      if (lap.end <= this.derivedEnd) continue;
       const all = this.result.samples,
         points = all.slice(
           Math.max(indexAt(all, lap.start), indexAt(all, this.derivedEnd, true)),
