@@ -1904,7 +1904,7 @@ div.trackside-sources {
 .trackside-alerts {
   position: absolute;
   top: 0;
-  left: 0;
+  left: var(--side-bar-width);
   right: 0;
   height: 28px;
   box-sizing: border-box;
@@ -1933,13 +1933,6 @@ body.has-trackside-alerts:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-
 .trackside-alerts {
   z-index: 6;
 }
-body.has-trackside-alerts div.side-bar {
-  top: 28px;
-}
-body.has-trackside-alerts:is(.fancy-title-bar-mac, .fancy-title-bar-win, .fancy-title-bar-lite) div.side-bar {
-  top: 66px;
-}
-
 body.has-trackside-alerts:not(.fancy-title-bar-mac):not(.fancy-title-bar-lite):not(.fancy-title-bar-win)
   button.tab-control {
   top: 39px;
