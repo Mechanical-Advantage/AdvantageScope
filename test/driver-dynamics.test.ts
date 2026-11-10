@@ -229,3 +229,24 @@ for (const [unit, value] of [
     assert.ok(Math.abs(c.getCommand().moduleVelocities[0].values[0].velocity - 0.45504) < 1e-9);
   });
 }
+
+test("a rear axle speed does not populate the front-only wheel slots", () => {
+  const { controller: c, put } = controller();
+  put("DASH_SteeringAngle", 0);
+  put("DASH_SpeedRear", 50);
+  const log = (globalThis as any).window.log as Log;
+  log.putNumber("rear_axle_speed", 1, 70);
+  log.setMetadataString("rear_axle_speed", JSON.stringify({ unit: "rad/s" }));
+  const command = c.getCommand();
+  assert.deepEqual(command.moduleVelocities[0].values, [
+    { angle: 0, velocity: null },
+    { angle: 0, velocity: null }
+  ]);
+});
+
+test("wheel radius is saved and restored", () => {
+  const { controller: c } = controller();
+  c.restoreState({ wheelRadius: 0.2 });
+  assert.equal(c.WHEEL_RADIUS.value, "0.2");
+  assert.equal(c.saveState().wheelRadius, 0.2);
+});
