@@ -52,6 +52,19 @@ const SOURCE_ROLES: LapSourceRole[] = [
   "counter",
   "beacon"
 ];
+/** Whether a channel already holds exactly what writing these values to an empty channel would store. */
+function storedAs(key: string, times: number[], values: number[]): boolean {
+  const stored = window.log.getNumber(key, -Infinity, Infinity);
+  if (!stored || !times.length) return false;
+  // Log keeps only the first of consecutive equal values.
+  let n = 0;
+  for (let i = 0; i < times.length; i++) {
+    if (n && values[i] === values[i - 1]) continue;
+    if (stored.timestamps[n] !== times[i] || !Object.is(stored.values[n], values[i])) return false;
+    n++;
+  }
+  return n === stored.timestamps.length;
+}
 export class LapService {
   settings: LapSettings = {
     latitude: "",
@@ -443,13 +456,17 @@ export class LapService {
       this.reference,
       this.result.laps.filter((l) => l.complete).map((l) => [l.start, l.end])
     ]);
-    const names = ["Number", "Time", "Distance", "Sector", "DeltaToReference"];
-    if (ds !== this.derivedSignature) {
-      names.forEach((n) => window.log.deleteField("Laps/" + n));
+    const names = ["Laps/Number", "Laps/Time", "Laps/Distance", "Laps/Sector", "Laps/DeltaToReference"];
+    const rebuild = ds !== this.derivedSignature;
+    if (rebuild) {
       this.derivedEnd = -Infinity;
       this.derivedSignature = ds;
     }
     const reference = this.result.laps.find((l) => l.index === this.reference);
+    const refDistances = reference?.grid.map((g) => g.distance) ?? [],
+      refTimes = reference?.grid.map((g) => g.time) ?? [];
+    const times: number[] = [],
+      columns: number[][] = names.map(() => []);
     for (const lap of this.result.laps) {
       const all = this.result.samples,
         points = all.slice(
@@ -458,8 +475,6 @@ export class LapService {
         );
       const gridTimes = lap.grid.map((g) => g.time),
         gridDistances = lap.grid.map((g) => g.distance);
-      const refDistances = reference?.grid.map((g) => g.distance) ?? [],
-        refTimes = reference?.grid.map((g) => g.time) ?? [];
       points.forEach((p) => {
         const elapsed = p.t - lap.start;
         const distance = interpolate(gridTimes, gridDistances, elapsed);
@@ -478,13 +493,21 @@ export class LapService {
           sector,
           reference ? elapsed - interpolate(refDistances, refTimes, distance) : NaN
         ];
-        names.forEach((n, i) => window.log.putNumber("Laps/" + n, p.t, values[i]));
+        times.push(p.t);
+        columns.forEach((column, i) => column.push(values[i]));
         this.derivedEnd = p.t;
       });
     }
-    names.forEach((n, i) =>
-      window.log.setMetadataString("Laps/" + n, JSON.stringify({ unit: ["", "s", "m", "", "s"][i] }))
-    );
+    names.forEach((n, i) => {
+      // A rebuild usually leaves most channels as they were, as when only the Event changes.
+      // Rewriting a long session's channel costs more than comparing it.
+      if (rebuild) {
+        if (storedAs(n, times, columns[i])) return;
+        window.log.deleteField(n);
+      }
+      times.forEach((t, j) => window.log.putNumber(n, t, columns[i][j]));
+    });
+    names.forEach((n, i) => window.log.setMetadataString(n, JSON.stringify({ unit: ["", "s", "m", "", "s"][i] })));
     this.version++;
   }
   bands() {
