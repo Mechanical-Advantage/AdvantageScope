@@ -124,17 +124,28 @@ test("cursor draws outside selected and overlaid lap ranges", () => {
   const result = circleLaps();
   const lap = result.laps.find((l) => l.valid)!;
   const arcs: number[][] = [];
+  const fills: string[] = [];
+  let fillStyle = "";
   const context = new Proxy(
     {},
     {
-      get: (_, key) => (key === "arc" ? (...args: number[]) => arcs.push(args) : () => ({ width: 0 })),
-      set: () => true
+      get: (_, key) =>
+        key === "arc"
+          ? (...args: number[]) => arcs.push(args)
+          : key === "fill"
+          ? () => fills.push(fillStyle)
+          : () => ({ width: 0 }),
+      set: (_, key, value) => {
+        if (key === "fillStyle") fillStyle = value;
+        return true;
+      }
     }
   );
   renderer.canvas.getContext = () => context;
   for (const scope of ["selected", "overlaid"]) {
     renderer.scope = scope;
     arcs.length = 0;
+    fills.length = 0;
     renderer.lastDraw = "";
     renderer.render({
       view: "map",
@@ -149,6 +160,7 @@ test("cursor draws outside selected and overlaid lap ranges", () => {
       time: 1,
       version: 1
     });
+    assert.equal(fills.at(-1), "#222", "the cursor contrasts with a light map");
     const point = renderer.transform(renderer.sampleAt(1));
     assert.ok(
       arcs.some(([x, y, radius]) => radius === 6 && Math.abs(x - point.x) < 1e-6 && Math.abs(y - point.y) < 1e-6),

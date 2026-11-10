@@ -1089,8 +1089,8 @@ export default class LapRenderer implements TabRenderer {
           );
         });
       }
-      // Replay dots compare laps. The white dot always shows the actual cursor sample.
-      dot(c.time, "#fff");
+      // Replay dots compare laps. The cursor dot contrasts with either theme.
+      dot(c.time, dark ? "#fff" : "#222");
     }
     if (hint) {
       ctx.fillStyle = text;
