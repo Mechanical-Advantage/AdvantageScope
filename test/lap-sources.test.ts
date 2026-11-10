@@ -466,3 +466,40 @@ test("lap bands reuse their cached objects until laps or highlighting change", (
   service.selected = 2;
   assert.notEqual(service.bands(), first);
 });
+
+test("live appends read only each source tail and match a fresh full analysis", () => {
+  const log = new Log();
+  (globalThis as any).window = { log, selection: { getCurrentLiveTime: () => 100 } };
+  const service = new LapService();
+  let read = 0;
+  const get = log.getNumber.bind(log);
+  log.getNumber = (...args) => {
+    const data = get(...args);
+    if (!args[0].startsWith("Laps/")) read += data?.timestamps.length ?? 0;
+    return data;
+  };
+  for (let batch = 0; batch < 30; batch++) {
+    for (let j = 0; j < 20; j++) {
+      const t = batch * 2 + j / 10;
+      log.putNumber("latitude", t, -37 + Math.sin(t) * 0.0001);
+      log.putNumber("longitude", t, 145 + Math.cos(t) * 0.0001);
+      log.putNumber("vehicle_speed", t, 10 + Math.sin(t));
+    }
+    log.setMetadataString("vehicle_speed", JSON.stringify({ unit: "m/s" }));
+    if (batch % 5 === 0) {
+      service.settings.config.mode = (["circuit", "accel", "skidpad", "autocross", "endurance"] as const)[
+        (batch / 5) % 5
+      ];
+      service.setGate(0, { a: { x: -10 + batch, y: -10 }, b: { x: -10 + batch, y: 10 } });
+    }
+    read = 0;
+    service.invalidate();
+    service.update();
+    const consumed = read;
+    const expected = new LapService();
+    expected.settings = structuredClone(service.settings);
+    expected.update();
+    assert.deepEqual(service.result, expected.result);
+    if (batch > 2) assert.ok(consumed < 150, `read ${consumed} input samples`);
+  }
+});
