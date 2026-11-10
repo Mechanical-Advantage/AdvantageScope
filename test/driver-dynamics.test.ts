@@ -494,3 +494,27 @@ test("damper range persists, rejects invalid restores and defaults old layouts t
   c.restoreState({ maxSpeed: 120 });
   assert.equal(c.saveState().damperRange, 50);
 });
+
+test("the wheel silhouette centre stays fixed through full and multiple turns", () => {
+  for (const steering of [0, 90, -90, 180, -180, 450, -450]) {
+    const { root, calls } = canvas();
+    new DriverInputsRenderer(root).render({
+      steering,
+      throttle: null,
+      brakeFront: null,
+      brakeRear: null,
+      brakeScale: 1000
+    });
+    const fillIndex = calls.findIndex((c) => c.name === "fill");
+    const transforms = calls.slice(0, fillIndex);
+    const translations = transforms.filter((c) => c.name === "translate");
+    const localOffset = translations[1]?.args ?? [0, 0];
+    // The outer quadratic curves have bounds x = ±116.444444, y = -78..70.
+    const centre = [localOffset[0], -4 + localOffset[1]];
+    const angle = transforms.find((c) => c.name === "rotate")!.args[0];
+    const x = centre[0] * Math.cos(angle) - centre[1] * Math.sin(angle);
+    const y = centre[0] * Math.sin(angle) + centre[1] * Math.cos(angle);
+    assert.ok(Math.abs(x) < 1e-9 && Math.abs(y) < 1e-9, `centre moved at ${steering} degrees`);
+    assert.equal(angle, (-steering * Math.PI) / 180);
+  }
+});

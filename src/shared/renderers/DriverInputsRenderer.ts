@@ -127,6 +127,8 @@ export default class DriverInputsRenderer implements TabRenderer {
     context.rotate(-((command.steering ?? 0) * Math.PI) / 180); // Positive turns left
     context.scale(scaleSize(1), scaleSize(1));
     context.lineWidth = 5 / scaleSize(1);
+    // The silhouette bounds are y = -78..70, so its centre is at y = -4.
+    context.translate(0, 4);
     const wheel = new Path2D(
       "M -105 -62 Q -120 -30 -116 22 Q -112 66 -87 70 " +
         "L -63 66 Q -35 48 0 48 Q 35 48 63 66 L 87 70 " +
