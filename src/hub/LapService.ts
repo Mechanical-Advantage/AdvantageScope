@@ -126,6 +126,8 @@ export class LapService {
   private referenceAnalysis = new LapAnalysisCache();
   private inputCache = new Map<string, { timestamps: number[]; values: number[]; version: number }>();
   private inputStart = -Infinity;
+  /** The first input time. The 0.5 s grid for logs without GPS counts from here. */
+  private gridStart = 0;
   private sourceSignature = "";
   private nextUpdate = 0;
   private derivedEnd = -Infinity;
@@ -376,12 +378,14 @@ export class LapService {
         if (!timestamps.length) timestamps.push(changedFrom);
         // Unchanged wheel values still cover time. Keep intervals within the engine's
         // speed integration limit, including the held tail through the log end.
-        const start = append ? Math.max(samples.at(-1)?.t ?? timestamps[0], changedFrom) : timestamps[0],
+        // A live append continues the grid from the first input time, so it matches a full analysis.
+        if (!append || !samples.length) this.gridStart = timestamps[0];
+        const from = append ? Math.max(samples.at(-1)?.t ?? -Infinity, changedFrom) : this.gridStart,
           end = window.log.getTimestampRange()[1];
-        const count = fixedSampleCount(start, end, 0.5);
-        timestamps = [
-          ...new Set([...timestamps, end, ...Array.from({ length: count }, (_, i) => start + i * 0.5)])
-        ].sort((a, b) => a - b);
+        const count = fixedSampleCount(this.gridStart, end, 0.5),
+          first = Math.min(count, Math.max(0, Math.floor((from - this.gridStart) / 0.5)));
+        const grid = Array.from({ length: count - first }, (_, i) => this.gridStart + (first + i) * 0.5);
+        timestamps = [...new Set([...timestamps, end, ...grid.filter((t) => t >= from)])].sort((a, b) => a - b);
       }
       const validFix = (t: number) => {
         const latitude = coordinate(s.latitude, t),
