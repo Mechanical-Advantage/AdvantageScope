@@ -7,7 +7,7 @@
 
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
-import { analyze, LapResult, Sample, sectorBlocks, sectorBounds } from "../src/shared/laps/LapEngine";
+import { analyze, gateAt, LapResult, Sample, sectorBlocks, sectorBounds } from "../src/shared/laps/LapEngine";
 import LapRenderer, { fitTrackView, trackView } from "../src/shared/renderers/LapRenderer";
 
 /** Three laps of a 40 m circle, with a gate a quarter of the way round and another half way. */
@@ -231,4 +231,17 @@ test("double-click fits the track and an off-screen restored view recovers", () 
   renderer.render({ ...command, version: 2 });
   assert.equal(renderer.zoom, 1);
   assert.deepEqual(renderer.pan, [0, 0]);
+});
+
+test("sectors added in reverse lap order retain positive times and the final sector", () => {
+  const samples = circleLaps().samples;
+  const gates = [gateAt(samples, 5)!, gateAt(samples, 13)!];
+  const config = { manual: [0, 20, 40, 60], sectors: gates };
+  const ordered = analyze(samples, config);
+  const reversed = analyze(samples, { ...config, sectors: [...gates].reverse() });
+  assert.deepEqual(reversed, ordered);
+  for (const lap of reversed.laps.filter((lap) => lap.complete)) {
+    assert.equal(lap.sectors.length, 3);
+    assert.ok(lap.sectors.every((time) => time > 0 && Number.isFinite(time)));
+  }
 });

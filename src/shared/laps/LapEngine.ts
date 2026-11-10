@@ -213,6 +213,23 @@ export function deltaTime(lap: Lap, reference: Lap, distance: number): number {
   };
   return at(lap) - at(reference);
 }
+/** Gate crossings in travel order. Missed gates stay at the end with an unknown time. */
+export function sectorCrossings(samples: Sample[], lap: { start: number; end: number }, gates: Gate[]) {
+  return gates
+    .map((gate, index) => {
+      for (
+        let j = Math.max(0, indexAt(samples, lap.start) - 2);
+        j < samples.length - 1 && samples[j].t < lap.end;
+        j++
+      ) {
+        const time = crossing(samples[j], samples[j + 1], gate);
+        if (time !== undefined && time > lap.start && time < lap.end) return { index, time };
+      }
+      return { index, time: NaN };
+    })
+    .sort((a, b) => (Number.isFinite(a.time) ? a.time : Infinity) - (Number.isFinite(b.time) ? b.time : Infinity));
+}
+
 export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
   const samples: LapResult["samples"] = [];
   input.forEach((p) => {
@@ -388,14 +405,7 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
           )
       );
     if (config.sectors?.length)
-      splits = config.sectors.map((g) => {
-        // A crossing lies between its two samples, give or take rounding, so scan only this lap's samples.
-        for (let j = Math.max(0, indexAt(samples, start) - 2); j < samples.length - 1 && samples[j].t < end; j++) {
-          const t = crossing(samples[j], samples[j + 1], g);
-          if (t !== undefined && t > start && t < end) return t;
-        }
-        return NaN;
-      });
+      splits = sectorCrossings(samples, { start, end }, config.sectors).map((crossing) => crossing.time);
     const sectorEdges = [start, ...splits, end];
     const valid =
       complete &&

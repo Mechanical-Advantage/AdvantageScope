@@ -20,7 +20,8 @@ import {
   Point,
   project,
   sectorAt,
-  sectorBounds
+  sectorBounds,
+  sectorCrossings
 } from "../laps/LapEngine";
 import { Units } from "../units";
 import { scrollZoomPan } from "./FieldZoomPan";
@@ -1013,6 +1014,13 @@ export default class LapRenderer implements TabRenderer {
     }
     const labels: { x: number; y: number; width: number }[] = [];
     const gates = this.gates();
+    const labelLap =
+      c.result.laps.find((lap) => lap.index === c.reference && lap.complete) ??
+      c.result.laps.find((lap) => lap.complete) ??
+      c.result.laps[0];
+    const sectorOrder = labelLap
+      ? sectorCrossings(ss, labelLap, c.settings.config.sectors ?? []).map((crossing) => crossing.index)
+      : [];
     gates.forEach((g, index) => {
       if (!g) return;
       const finish = index === gates.length - 1,
@@ -1035,7 +1043,11 @@ export default class LapRenderer implements TabRenderer {
       ctx.fillStyle = text;
       ctx.textAlign = a.x >= b.x ? "left" : "right";
       ctx.textBaseline = "middle";
-      const label = finish ? "Finish" : index ? `S${index}` : "Start / finish",
+      const label = finish
+          ? "Finish"
+          : index
+          ? `S${sectorOrder.length ? sectorOrder.indexOf(index - 1) + 1 : index}`
+          : "Start / finish",
         x = a.x + ((a.x - b.x) / n) * 12,
         y = a.y + ((a.y - b.y) / n) * 12,
         metrics = ctx.measureText(label);
