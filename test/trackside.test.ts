@@ -52,6 +52,13 @@ test("limit prompt treats blank as no limit, keeps zero and rejects bad ranges",
   assert.ok("error" in parseLimitInputs("", "invalid"));
 });
 
+test("limit input parsing preserves finite extremes on either side", () => {
+  for (const value of [1e-7, 1e303, Number.MIN_VALUE, Number.MAX_VALUE, -1e-7, -1e303]) {
+    assert.deepEqual(parseLimitInputs("", String(value)), { range: [null, value] });
+    assert.deepEqual(parseLimitInputs(String(value), ""), { range: [value, null] });
+  }
+});
+
 test("DBC classification controls tile severity and rejects non-DBC metadata", () => {
   assert.equal(tileState("/IMD_State", 4, profile, {}, definition).severity, "critical");
   assert.equal(tileState("/IMD_State", 5, profile, {}, definition).severity, "warn");

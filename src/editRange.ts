@@ -50,8 +50,8 @@ window.addEventListener("message", (event) => {
       }
 
       // Update values
-      MIN_INPUT.value = range[0] === null ? "" : cleanFloat(range[0]).toString();
-      MAX_INPUT.value = range[1] === null ? "" : cleanFloat(range[1]).toString();
+      MIN_INPUT.value = range[0] === null ? "" : (limits ? range[0] : cleanFloat(range[0])).toString();
+      MAX_INPUT.value = range[1] === null ? "" : (limits ? range[1] : cleanFloat(range[1])).toString();
       MAX_INPUT.select();
 
       // Close function
