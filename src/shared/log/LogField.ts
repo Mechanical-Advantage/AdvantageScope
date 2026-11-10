@@ -318,16 +318,11 @@ export default class LogField {
       // There's a good chance this data is at the end of the log, so check that first
       insertIndex = this.data.timestamps.length;
     } else {
-      // Adding in the middle, find where to insert it
-      let alreadyExists = false;
-      insertIndex =
-        this.data.timestamps.findLastIndex((x) => {
-          if (alreadyExists) return;
-          if (x === timestamp) alreadyExists = true;
-          return x < timestamp;
-        }) + 1;
-      if (alreadyExists) {
-        this.data.values[this.data.timestamps.indexOf(timestamp)] = value;
+      // Adding in the middle. A linear scan here made rewriting a recent live range cost the whole history.
+      insertIndex = this.findTimestampIndex(timestamp, true);
+      if (insertIndex === -1) insertIndex = this.data.timestamps.length;
+      if (this.data.timestamps[insertIndex] === timestamp) {
+        this.data.values[insertIndex] = value;
         return;
       }
     }

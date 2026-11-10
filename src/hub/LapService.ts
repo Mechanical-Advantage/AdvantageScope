@@ -14,6 +14,7 @@ import {
   geographicGate,
   indexAt,
   interpolate,
+  LapAnalysisCache,
   LapConfig,
   LapResult,
   project,
@@ -121,11 +122,17 @@ export class LapService {
   /** The origin of the last log's track, kept until the next log has its own origin. */
   private switchOrigin?: Coordinate;
   private samples: Sample[] = [];
+  private analysis = new LapAnalysisCache();
+  private referenceAnalysis = new LapAnalysisCache();
+  private inputCache = new Map<string, { timestamps: number[]; values: number[]; version: number }>();
+  private inputStart = -Infinity;
+  private sourceSignature = "";
   private nextUpdate = 0;
   private derivedEnd = -Infinity;
   private slipEnd = -Infinity;
   private slipSignature = "";
   private derivedSignature = "";
+  private derivedLapStart = -Infinity;
   private grids = new WeakMap<object, { d: number[]; t: number[] }>();
   private sourceLog?: Log;
   private cleared = new Set<LapSourceRole>();
@@ -214,6 +221,8 @@ export class LapService {
       this.signature = "";
       this.derivedSignature = "";
       this.sampleSignature = "";
+      this.inputCache.clear();
+      this.sourceSignature = "";
       this.derivedEnd = -Infinity;
       this.slipEnd = -Infinity;
       this.slipSignature = "";
@@ -225,12 +234,47 @@ export class LapService {
     if (performance.now() < this.nextUpdate) return;
     this.nextUpdate = performance.now() + 500;
     const fields = this.fields();
-    const data = new Map(fields.map((k) => [k, window.log.getNumber(k, -Infinity, Infinity)]));
+    const live = window.selection?.getCurrentLiveTime() != null;
+    const sourceSignature = JSON.stringify([
+      { ...this.settings, config: undefined },
+      fields.map((key) => [key, window.log.getUnit(key)])
+    ]);
+    const start = window.log.getTimestampRange()[0];
+    let append = live && sourceSignature === this.sourceSignature && start === this.inputStart;
+    if (fields.some((key) => this.inputCache.get(key)?.version !== window.log.getHistoryVersion(key))) append = false;
+    this.sourceSignature = sourceSignature;
+    this.inputStart = start;
+    let changedFrom = Infinity;
+    const data = new Map(
+      fields.map((key) => {
+        const cached = append ? this.inputCache.get(key) : undefined;
+        const end = cached?.timestamps.at(-1) ?? -Infinity;
+        const tail = window.log.getNumber(key, end, Infinity);
+        if (!cached) {
+          if (tail) this.inputCache.set(key, { ...tail, version: window.log.getHistoryVersion(key) });
+          changedFrom = -Infinity;
+          return [key, tail] as const;
+        }
+        if (tail)
+          for (let i = 0; i < tail.timestamps.length; i++) {
+            if (tail.timestamps[i] <= end) continue;
+            // Interpolation can revise the held tail when the next value arrives.
+            changedFrom = Math.min(
+              changedFrom,
+              key === this.settings.counter || key === this.settings.beacon ? tail.timestamps[i] : end
+            );
+            cached.timestamps.push(tail.timestamps[i]);
+            cached.values.push(tail.values[i]);
+          }
+        return [key, cached] as const;
+      })
+    );
     const inputs = JSON.stringify([
       !data.get(this.settings.latitude) ? window.log.getTimestampRange()[1] : undefined,
       fields.map((k) => [
         k,
         window.log.getUnit(k),
+        window.log.getHistoryVersion(k),
         data.get(k)?.timestamps.length,
         data.get(k)?.timestamps.at(-1),
         data.get(k)?.values.at(-1)
@@ -302,18 +346,37 @@ export class LapService {
         ? d.values[i - 1]
         : at(key, t);
     };
-    const samples: Sample[] = reuse ? this.samples : [];
+    append &&= this.samples.length > 1;
+    if (append && !lat) changedFrom = Math.min(changedFrom, this.samples.at(-1)!.t);
+    const samples: Sample[] = reuse || append ? this.samples : [];
+    if (!reuse && append) samples.length = indexAt(samples, changedFrom);
     this.samples = samples;
     const previousOrigin = this.origin;
-    if (!reuse) this.origin = undefined;
+    if (!reuse && !append) this.origin = undefined;
     if (base && !reuse) {
       // Log compresses unchanged values independently per channel. Use the union so a
       // constant latitude does not hide wheel-speed or longitude changes.
-      let timestamps = [...new Set([...data.values()].flatMap((d) => d?.timestamps ?? []))].sort((a, b) => a - b);
-      if (!lat && timestamps.length) {
+      let timestamps = [
+        ...new Set(
+          [...data.values()].flatMap((d) => {
+            if (!d) return [];
+            if (!append) return d.timestamps;
+            let lo = 0,
+              hi = d.timestamps.length;
+            while (lo < hi) {
+              const mid = (lo + hi) >>> 1;
+              if (d.timestamps[mid] < changedFrom) lo = mid + 1;
+              else hi = mid;
+            }
+            return d.timestamps.slice(lo);
+          })
+        )
+      ].sort((a, b) => a - b);
+      if (!lat && (timestamps.length || append)) {
+        if (!timestamps.length) timestamps.push(changedFrom);
         // Unchanged wheel values still cover time. Keep intervals within the engine's
         // speed integration limit, including the held tail through the log end.
-        const start = timestamps[0],
+        const start = append ? Math.max(samples.at(-1)?.t ?? timestamps[0], changedFrom) : timestamps[0],
           end = window.log.getTimestampRange()[1];
         const count = fixedSampleCount(start, end, 0.5);
         timestamps = [
@@ -333,26 +396,31 @@ export class LapService {
       };
       // Choose a locally consistent initial pair so one bad first fix cannot anchor
       // the rejection filter on the other side of the planet.
-      const firstFix = timestamps.find((t, i) => {
-        if (!validFix(t)) return false;
-        const next = timestamps[i + 1];
-        if (next === undefined) return true;
-        if (!validFix(next)) return false;
-        const delta = project(coordinate(s.latitude, next), coordinate(s.longitude, next), {
-          lat: coordinate(s.latitude, t),
-          lon: coordinate(s.longitude, t)
-        });
-        return Math.hypot(delta.x, delta.y) <= 100 * (next - t);
-      });
+      const firstFix =
+        append && this.origin
+          ? -Infinity
+          : timestamps.find((t, i) => {
+              if (!validFix(t)) return false;
+              const next = timestamps[i + 1];
+              if (next === undefined) return true;
+              if (!validFix(next)) return false;
+              const delta = project(coordinate(s.latitude, next), coordinate(s.longitude, next), {
+                lat: coordinate(s.latitude, t),
+                lon: coordinate(s.longitude, t)
+              });
+              return Math.hypot(delta.x, delta.y) <= 100 * (next - t);
+            });
       const origin =
-        firstFix === undefined
+        append && this.origin
+          ? this.origin
+          : firstFix === undefined
           ? undefined
           : {
               lat: coordinate(s.latitude, firstFix),
               lon: coordinate(s.longitude, firstFix)
             };
       if (lat && lon && origin) this.origin = origin;
-      let accepted: (Sample & { latitude: number; longitude: number }) | undefined;
+      let accepted: Sample | undefined = samples.at(-1);
       timestamps.forEach((t) => {
         if (lat && (firstFix === undefined || t < firstFix)) return;
         const latitude = coordinate(s.latitude, t),
@@ -377,7 +445,7 @@ export class LapService {
         // Reject GPS jumps above 100 m/s (360 km/h). Compare with the last accepted
         // fix, so an isolated outlier does not poison the next good sample.
         if (lat && accepted && Math.hypot(point.x - accepted.x, point.y - accepted.y) > 100 * (t - accepted.t)) return;
-        if (lat) accepted = { ...point, t, latitude, longitude };
+        if (lat) accepted = { ...point, t };
         samples.push({
           ...point,
           t,
@@ -402,7 +470,7 @@ export class LapService {
       }
       return lo ? t - ts[lo - 1] : Infinity;
     };
-    if (gpsKey && s.frontLeft && s.frontRight) {
+    if (!reuse && gpsKey && s.frontLeft && s.frontRight) {
       // Live data only appends, so rewriting the whole session on each update would grow without bound.
       // A static log recomputes in full, because a lazily loaded field can add earlier samples.
       const slipSignature = JSON.stringify([
@@ -415,8 +483,8 @@ export class LapService {
       const live = window.selection?.getCurrentLiveTime() != null;
       if (!live || slipSignature !== this.slipSignature) this.slipEnd = -Infinity;
       this.slipSignature = slipSignature;
-      for (const p of samples) {
-        if (p.t <= this.slipEnd) continue;
+      for (let i = indexAt(samples, this.slipEnd, true); i < samples.length; i++) {
+        const p = samples[i];
         window.log.putNumber(
           "Laps/SlipRatio",
           p.t,
@@ -457,10 +525,11 @@ export class LapService {
     }
     if (this.origin) this.switchOrigin = undefined;
     const config = this.localConfig();
-    this.result = analyze(samples, config);
+    const analysisFrom = append ? changedFrom : reuse ? Infinity : -Infinity;
+    this.result = analyze(samples, config, this.analysis, analysisFrom);
     const ref = this.result.laps.find((l) => l.index === (this.reference ?? this.result.best));
     if (ref && !s.config.length && s.config.mode !== "accel")
-      this.result = analyze(samples, { ...config, length: ref.distance });
+      this.result = analyze(samples, { ...config, length: ref.distance }, this.referenceAnalysis, analysisFrom);
     if (this.reference === null || !this.result.laps.some((l) => l.index === this.reference))
       this.reference = this.result.best ?? null;
     // Until the user chooses, live overlays the latest laps and a log the first.
@@ -469,23 +538,24 @@ export class LapService {
       this.overlays = window.selection?.getCurrentLiveTime() != null ? valid.slice(-4) : valid.slice(0, 4);
     }
     // Rebuild derived channels after edits or when the reference changes. Otherwise only append the active lap.
-    const ds = JSON.stringify([
-      s,
-      this.reference,
-      this.result.laps.filter((l) => l.complete).map((l) => [l.start, l.end])
-    ]);
+    const ds = JSON.stringify([s, this.reference]);
     const names = ["Laps/Number", "Laps/Time", "Laps/Distance", "Laps/Sector", "Laps/DeltaToReference"];
     const rebuild = ds !== this.derivedSignature;
     if (rebuild) {
       this.derivedEnd = -Infinity;
       this.derivedSignature = ds;
+    } else if (this.derivedLapStart !== this.result.laps.at(-1)?.start) {
+      // Finalising a lap can change its grid and sectors. Rewrite only that lap's tail.
+      this.derivedEnd = Math.min(this.derivedEnd, this.derivedLapStart - 1e-9);
     }
+    this.derivedLapStart = this.result.laps.at(-1)?.start ?? -Infinity;
     const reference = this.result.laps.find((l) => l.index === this.reference);
     const refDistances = reference?.grid.map((g) => g.distance) ?? [],
       refTimes = reference?.grid.map((g) => g.time) ?? [];
     const times: number[] = [],
       columns: number[][] = names.map(() => []);
     for (const lap of this.result.laps) {
+      if (lap.end <= this.derivedEnd) continue;
       const all = this.result.samples,
         points = all.slice(
           Math.max(indexAt(all, lap.start), indexAt(all, this.derivedEnd, true)),
@@ -528,16 +598,28 @@ export class LapService {
     names.forEach((n, i) => window.log.setMetadataString(n, JSON.stringify({ unit: ["", "s", "m", "", "s"][i] })));
     this.version++;
   }
+  private bandKey = "";
+  private bandCache: {
+    start: number;
+    end: number;
+    color: string;
+    darkColor: string;
+    label: string;
+    highlighted: boolean;
+  }[] = [];
   bands() {
     this.update();
-    return this.result.laps.map((l) => ({
+    const key = JSON.stringify([this.version, this.selected, this.reference]);
+    if (key === this.bandKey) return this.bandCache;
+    this.bandKey = key;
+    return (this.bandCache = this.result.laps.map((l) => ({
       start: l.start,
       end: l.end,
       color: l.index % 2 ? "#637986" : "#8a9299",
       darkColor: l.index % 2 ? "#637986" : "#8a9299",
       label: `L${l.index}${l.index === this.reference ? " ref" : ""}`,
       highlighted: l.index === this.selected || l.index === this.reference
-    }));
+    })));
   }
   delta(lap: number, distance: number) {
     const l = this.result.laps.find((l) => l.index === lap),
