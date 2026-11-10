@@ -25,6 +25,8 @@ const G_CIRCLE_FULL_SCALE = 2;
 export default class CarDynamicsController implements TabController {
   UUID = createUUID();
 
+  private damperRange = 50;
+  private DAMPER_RANGE: HTMLInputElement;
   private MAX_SPEED: HTMLInputElement;
   private WHEEL_RADIUS: HTMLInputElement;
   private STEERING_RATIO: HTMLInputElement;
@@ -44,6 +46,7 @@ export default class CarDynamicsController implements TabController {
       numberPreview
     );
     let settings = root.getElementsByClassName("car-dynamics-settings")[0] as HTMLElement;
+    this.DAMPER_RANGE = settings.getElementsByClassName("damper-range")[0] as HTMLInputElement;
     this.MAX_SPEED = settings.getElementsByClassName("max-speed")[0] as HTMLInputElement;
     this.WHEEL_RADIUS = settings.getElementsByClassName("wheel-radius")[0] as HTMLInputElement;
     this.STEERING_RATIO = settings.getElementsByClassName("steering-ratio")[0] as HTMLInputElement;
@@ -52,6 +55,12 @@ export default class CarDynamicsController implements TabController {
     this.ORIENTATION_SWITCHER = settings.getElementsByClassName("orientation-switcher")[0] as HTMLElement;
 
     // Enforce ranges
+    this.damperRange = Number(this.DAMPER_RANGE.value);
+    this.DAMPER_RANGE.addEventListener("change", () => {
+      if (!Number.isFinite(Number(this.DAMPER_RANGE.value)) || Number(this.DAMPER_RANGE.value) <= 0)
+        this.DAMPER_RANGE.value = this.damperRange.toString();
+      else this.damperRange = Number(this.DAMPER_RANGE.value);
+    });
     this.WHEEL_RADIUS.addEventListener("change", () => {
       if (!Number.isFinite(Number(this.WHEEL_RADIUS.value)) || Number(this.WHEEL_RADIUS.value) <= 0)
         this.WHEEL_RADIUS.value = "0.203";
@@ -92,6 +101,7 @@ export default class CarDynamicsController implements TabController {
     return {
       sources: this.sourceList.getState(),
       maxSpeed: Number(this.MAX_SPEED.value),
+      damperRange: Number(this.DAMPER_RANGE.value),
       wheelRadius: Number(this.WHEEL_RADIUS.value),
       steeringRatio: Number(this.STEERING_RATIO.value),
       sizeX: Number(this.SIZE_X.value),
@@ -103,6 +113,16 @@ export default class CarDynamicsController implements TabController {
   restoreState(state: unknown): void {
     if (typeof state !== "object" || state === null) return;
 
+    if (!("damperRange" in state)) this.DAMPER_RANGE.value = "50";
+    if (
+      "damperRange" in state &&
+      typeof state.damperRange === "number" &&
+      Number.isFinite(state.damperRange) &&
+      state.damperRange > 0
+    ) {
+      this.DAMPER_RANGE.value = state.damperRange.toString();
+    }
+    this.damperRange = Number(this.DAMPER_RANGE.value);
     if ("sources" in state) {
       this.sourceList.setState(state.sources as SourceListState);
     }
@@ -227,6 +247,7 @@ export default class CarDynamicsController implements TabController {
       moduleVelocities: moduleVelocities,
       robotVelocities: robotVelocities,
       accel: accel,
+      damperRange: Number(this.DAMPER_RANGE.value),
       dampers: ["shockFL", "shockFR", "shockRL", "shockRR"].map((slot) => read(slot, "millimeters"))
     };
   }

@@ -27,6 +27,7 @@ function controller() {
     sourceList: { getState: () => sources, setState: (state: SourceListState) => (sources = state) },
     orientation: 1,
     MAX_SPEED: { value: "100" },
+    DAMPER_RANGE: { value: "50" },
     WHEEL_RADIUS: { value: "0.203" },
     STEERING_RATIO: { value: "3.827" },
     SIZE_X: { value: "2" },
@@ -364,7 +365,7 @@ test("invalid setting changes use their own fallback values", () => {
     }
   }
   const inputs = Object.fromEntries(
-    ["max-speed", "wheel-radius", "steering-ratio", "size-x", "size-y", "brake-scale"].map((key) => [
+    ["damper-range", "max-speed", "wheel-radius", "steering-ratio", "size-x", "size-y", "brake-scale"].map((key) => [
       key,
       new Element()
     ])
@@ -387,12 +388,15 @@ test("invalid setting changes use their own fallback values", () => {
   assert.equal((car as any).sourceList.getNumberPreview, numberPreview);
   assert.equal((driver as any).sourceList.getNumberPreview, numberPreview);
   try {
+    inputs["damper-range"].value = "80";
+    inputs["damper-range"].dispatchEvent(new Event("change"));
     for (const invalid of ["0", "-1", "", "NaN", "Infinity"]) {
       for (const input of Object.values(inputs)) {
         input.value = invalid;
         input.dispatchEvent(new Event("change"));
       }
       const saved = car.saveState() as any;
+      assert.equal(saved.damperRange, 80);
       assert.equal(saved.steeringRatio, 3.827, `steering ratio after ${invalid}`);
       assert.equal(saved.wheelRadius, 0.203);
       assert.equal(saved.maxSpeed, 0.1);
@@ -476,4 +480,17 @@ test("single-field previews use the graph display unit and enum labels", () => {
   log.putNumber("enum", 1, 1);
   log.setMetadataString("enum", JSON.stringify({ enumLabels: { 1: "On" } }));
   assert.equal(numberPreview("enum", 2), "On");
+});
+
+test("damper range persists, rejects invalid restores and defaults old layouts to 50", () => {
+  const { controller: c } = controller();
+  c.restoreState({ damperRange: 80 });
+  assert.equal(c.saveState().damperRange, 80);
+  assert.equal(c.getCommand().damperRange, 80);
+  for (const damperRange of [0, -1, NaN, Infinity, "90", null]) {
+    c.restoreState({ damperRange });
+    assert.equal(c.saveState().damperRange, 80);
+  }
+  c.restoreState({ maxSpeed: 120 });
+  assert.equal(c.saveState().damperRange, 50);
 });
