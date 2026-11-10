@@ -68,8 +68,7 @@ export default class TracksideRenderer implements TabRenderer {
           }
         });
         if (drag.end) {
-          window.removeEventListener("drag-update", update);
-          highlight.remove();
+          finish();
           if (inside) reorder(from, to);
         } else {
           const rootRect = root.getBoundingClientRect();
@@ -78,6 +77,21 @@ export default class TracksideRenderer implements TabRenderer {
           highlight.style.height = target.height + "px";
         }
       };
+      // Escape, pointercancel or blur ends the drag without a reorder. The hub's later end event finds no listener.
+      const cancelled = new AbortController();
+      const finish = () => {
+        cancelled.abort();
+        window.removeEventListener("drag-update", update);
+        highlight.remove();
+      };
+      const cancel = () => {
+        finish();
+        document.getElementById("dragItem")!.hidden = true;
+        document.body.style.cursor = "";
+      };
+      window.addEventListener("keydown", (event) => event.key === "Escape" && cancel(), { signal: cancelled.signal });
+      window.addEventListener("pointercancel", cancel, { signal: cancelled.signal });
+      window.addEventListener("blur", cancel, { signal: cancelled.signal });
       window.addEventListener("drag-update", update);
       window.startDrag(event.clientX, event.clientY, event.clientX - rect.left, event.clientY - rect.top, data);
     });
