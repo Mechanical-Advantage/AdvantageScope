@@ -503,3 +503,20 @@ test("live appends read only each source tail and match a fresh full analysis", 
     if (batch > 2) assert.ok(consumed < 150, `read ${consumed} input samples`);
   }
 });
+
+test("a live source edit refreshes samples even when its last value stays unchanged", () => {
+  const log = new Log();
+  (globalThis as any).window = { log, selection: { getCurrentLiveTime: () => 2 } };
+  for (let i = 0; i < 20; i++) {
+    log.putNumber("latitude", i / 10, -37 + i * 1e-6);
+    log.putNumber("longitude", i / 10, 145 + i * 1e-6);
+  }
+  const service = new LapService();
+  service.update();
+  log.putNumber("latitude", 0.5, -37 + 5.5e-6);
+  service.invalidate();
+  service.update();
+  const fresh = new LapService();
+  fresh.update();
+  assert.deepEqual(service.result, fresh.result);
+});

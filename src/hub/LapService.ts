@@ -274,6 +274,7 @@ export class LapService {
       fields.map((k) => [
         k,
         window.log.getUnit(k),
+        window.log.getHistoryVersion(k),
         data.get(k)?.timestamps.length,
         data.get(k)?.timestamps.at(-1),
         data.get(k)?.values.at(-1)
