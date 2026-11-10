@@ -246,11 +246,14 @@ export default class LapController implements TabController {
       showsTable = this.view !== "map";
     // The map colours each lap until a field is dropped on it. The table shows speed until then.
     if (showsTable) this.tableField ||= lapService.settings.speed || lapService.settings.frontLeft;
-    const mapData = showsMap ? window.log.getNumber(this.mapField, -Infinity, Infinity) : undefined,
-      tableData = showsTable ? window.log.getNumber(this.tableField, -Infinity, Infinity) : undefined;
+    const mapData = showsMap ? window.log.getNumber(this.mapField, Infinity, Infinity) : undefined,
+      tableData = showsTable ? window.log.getNumber(this.tableField, Infinity, Infinity) : undefined;
     const cacheKey = JSON.stringify([
       this.display,
       this.view,
+      window.log.getTimestampRange()[0],
+      window.log.getHistoryVersion(this.mapField),
+      window.log.getHistoryVersion(this.tableField),
       ...[mapData, tableData].flatMap((data) => [
         data?.timestamps.length,
         data?.timestamps.at(-1),
@@ -271,8 +274,13 @@ export default class LapController implements TabController {
     const samples = lapService.result.samples;
     const valuesOf = (data: typeof mapData) =>
       samples.map((p) => (data ? interpolate(data.timestamps, data.values, p.t) : NaN));
-    const values = showsMap ? valuesOf(mapData) : [],
-      tableValues = !showsTable ? [] : this.tableField === this.mapField && showsMap ? values : valuesOf(tableData);
+    // Read full histories only when the command changes, rather than copying them every frame.
+    const values = showsMap ? valuesOf(window.log.getNumber(this.mapField, -Infinity, Infinity)) : [],
+      tableValues = !showsTable
+        ? []
+        : this.tableField === this.mapField && showsMap
+        ? values
+        : valuesOf(window.log.getNumber(this.tableField, -Infinity, Infinity));
     this.cached = {
       view: this.view,
       split: this.split,

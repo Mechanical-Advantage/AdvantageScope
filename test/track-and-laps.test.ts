@@ -184,3 +184,23 @@ test("the view selector updates when Split falls back to the same map pane", () 
   renderer.render({ view: "split", field: "" });
   assert.equal(builds, 2);
 });
+
+test("cached lap commands do not copy full metric history on every frame", () => {
+  const log = new Log();
+  for (let t = 0; t < 1000; t++) log.putNumber("gps/speed", t, t % 20);
+  const controller = controllerFor(false, log);
+  lapService.invalidate();
+  controller.getCommand();
+  let reads = 0;
+  const get = log.getNumber.bind(log);
+  log.getNumber = (key, start, end, ...rest) => {
+    if (start === -Infinity && end === Infinity) reads++;
+    return get(key, start, end, ...rest);
+  };
+  for (let frame = 0; frame < 100; frame++) controller.getCommand();
+  assert.equal(reads, 0);
+  log.putNumber("gps/speed", 999, 99);
+  const updated = controller.getCommand();
+  assert.ok(reads > 0, "a correction to stored history invalidates the command");
+  assert.ok(updated);
+});
