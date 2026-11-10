@@ -15,6 +15,7 @@ import {
   dbcDefinition,
   isTracksideLive,
   limitUnit,
+  parseCriticalLimit,
   parseLimitInputs,
   tileState
 } from "../src/shared/Trackside";
@@ -45,7 +46,7 @@ test("limit prompt treats blank as no limit, keeps zero and rejects bad ranges",
   assert.deepEqual(parseLimitInputs("2.8", " "), { range: [2.8, null] });
   assert.deepEqual(parseLimitInputs("", ""), { range: [null, null] });
   assert.deepEqual(parseLimitInputs("0", "90"), { range: [0, 90] });
-  const order = { error: "The below limit must be lower than the above limit." };
+  const order = { error: "Critical minimum must be lower than critical maximum." };
   assert.deepEqual(parseLimitInputs("5", "5"), order);
   assert.deepEqual(parseLimitInputs("6", "5"), order);
   assert.ok("error" in parseLimitInputs("1e999", ""));
@@ -265,4 +266,16 @@ test("tile drops keep graph opt-ins attached to their fields and retain hidden r
     sources.map((source) => source.logKey),
     ["a", "hidden", "b"]
   );
+});
+
+test("single critical limit edits preserve the opposite limit and validate ordering", () => {
+  for (const value of [Number.MIN_VALUE, Number.MAX_VALUE, 1e-7, 1e303]) {
+    assert.deepEqual(parseCriticalLimit("low", "", [null, value]), { range: [null, value] });
+    assert.deepEqual(parseCriticalLimit("high", "", [value, null]), { range: [value, null] });
+  }
+  assert.deepEqual(parseCriticalLimit("low", "0", [null, 1]), { range: [0, 1] });
+  assert.deepEqual(parseCriticalLimit("high", "1", [0, null]), { range: [0, 1] });
+  assert.ok("error" in parseCriticalLimit("low", "1", [null, 1]));
+  assert.ok("error" in parseCriticalLimit("high", "0", [0, null]));
+  assert.ok("error" in parseCriticalLimit("high", "invalid", [0, null]));
 });

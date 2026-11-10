@@ -58,8 +58,16 @@ export function parseLimitInputs(
   if (range.some((value) => value !== null && !Number.isFinite(value)))
     return { error: "Enter a number, or leave the box blank." };
   if (range[0] !== null && range[1] !== null && range[0] >= range[1])
-    return { error: "The below limit must be lower than the above limit." };
+    return { error: "Critical minimum must be lower than critical maximum." };
   return { range };
+}
+
+/** Edits one limit while retaining the other value exactly. */
+export function parseCriticalLimit(side: "low" | "high", text: string, range: [number | null, number | null]) {
+  return parseLimitInputs(
+    side === "low" ? text : range[0] === null ? "" : String(range[0]),
+    side === "high" ? text : range[1] === null ? "" : String(range[1])
+  );
 }
 
 export function tileState(

@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { parseLimitInputs } from "./shared/Trackside";
+import { parseCriticalLimit } from "./shared/Trackside";
 import { cleanFloat } from "./shared/util";
 
 const MIN_INPUT = document.getElementById("min") as HTMLInputElement;
@@ -33,16 +33,18 @@ window.addEventListener("message", (event) => {
       const limits = event.data.limits === true;
       let range: [number | null, number | null] = limits ? event.data.range : event.data;
       if (limits) {
-        document.title = "Edit Limits";
+        document.title = event.data.side === "low" ? "Set critical minimum" : "Set critical maximum";
         const field = document.getElementById("field")!;
         field.innerText = event.data.field.split("/").pop() || event.data.field;
         field.title = event.data.field;
-        document.getElementById("max-label")!.innerText = "Alert above";
-        document.getElementById("min-label")!.innerText = "Alert below";
-        MAX_INPUT.title = "Alert above";
-        MIN_INPUT.title = "Alert below";
+        document.getElementById("max-label")!.innerText = "Critical maximum";
+        document.getElementById("min-label")!.innerText = "Critical minimum";
+        MAX_INPUT.title = "Critical maximum";
+        MIN_INPUT.title = "Critical minimum";
         MAX_INPUT.placeholder = MIN_INPUT.placeholder = "No limit";
         document.querySelectorAll<HTMLElement>(".limits").forEach((row) => (row.hidden = false));
+        MIN_INPUT.closest("tr")!.hidden = event.data.side !== "low";
+        MAX_INPUT.closest("tr")!.hidden = event.data.side !== "high";
         document.querySelectorAll<HTMLElement>(".unit").forEach((cell) => {
           cell.innerText = event.data.unit;
           cell.hidden = event.data.unit === "";
@@ -52,15 +54,19 @@ window.addEventListener("message", (event) => {
       // Update values
       MIN_INPUT.value = range[0] === null ? "" : (limits ? range[0] : cleanFloat(range[0])).toString();
       MAX_INPUT.value = range[1] === null ? "" : (limits ? range[1] : cleanFloat(range[1])).toString();
-      MAX_INPUT.select();
+      (limits && event.data.side === "low" ? MIN_INPUT : MAX_INPUT).select();
 
       // Close function
       function confirm() {
         if (limits) {
           // A number input reports partial text such as "-" as blank, so treat it as invalid instead.
           const text = (input: HTMLInputElement) => (input.validity.badInput ? "invalid" : input.value);
-          const result = parseLimitInputs(text(MIN_INPUT), text(MAX_INPUT));
-          if ("error" in result) alert(result.error);
+          const result = parseCriticalLimit(
+            event.data.side,
+            text(event.data.side === "low" ? MIN_INPUT : MAX_INPUT),
+            range
+          );
+          if ("error" in result) document.getElementById("error")!.innerText = result.error;
           else messagePort.postMessage(result.range);
           return;
         }

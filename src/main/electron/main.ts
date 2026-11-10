@@ -658,6 +658,32 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           });
         };
 
+        const critical = message.data.criticalLimits;
+        if (critical) {
+          for (const side of ["low", "high"] as const) {
+            menu.append(
+              new MenuItem({
+                label: side === "low" ? "Set critical minimum" : "Set critical maximum",
+                click() {
+                  createEditRangeWindow<number | null>(
+                    window,
+                    [critical.limits.low ?? null, critical.limits.high ?? null],
+                    (range) =>
+                      sendMessage(window, "edit-trackside-limits", {
+                        uuid: critical.uuid,
+                        key: state.logKey,
+                        limits: { low: range[0] ?? undefined, high: range[1] ?? undefined }
+                      }),
+                    { field: state.logKey, unit: critical.unit, side }
+                  );
+                }
+              })
+            );
+          }
+          menu.popup({ window, x: Math.round(rect.x + rect.width), y: Math.round(rect.y) });
+          break;
+        }
+
         // Make color icon
         let getIcon = (value: string): Electron.NativeImage | undefined => {
           if (!value.startsWith("#")) {
@@ -853,35 +879,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
     case "source-list-help":
       openSourceListHelp(window, message.data);
       break;
-
-    case "ask-edit-trackside-limits": {
-      const menu = new Menu();
-      for (const field of message.data.fields) {
-        menu.append(
-          new MenuItem({
-            label: field.key,
-            click() {
-              createEditRangeWindow(
-                window,
-                [field.limits.low ?? null, field.limits.high ?? null],
-                (range) => {
-                  sendMessage(window, "edit-trackside-limits", {
-                    uuid: message.data.uuid,
-                    key: field.key,
-                    limits: { low: range[0] ?? undefined, high: range[1] ?? undefined }
-                  });
-                },
-                { field: field.key, unit: field.unit }
-              );
-            }
-          })
-        );
-      }
-      if (!message.data.fields.length)
-        menu.append(new MenuItem({ label: "Add tile fields to edit limits", enabled: false }));
-      menu.popup({ window, x: Math.round(message.data.rect.x), y: Math.round(message.data.rect.y) });
-      break;
-    }
 
     case "ask-edit-axis":
       {
@@ -2131,11 +2128,11 @@ function createEditRangeWindow<T extends number | null = number>(
   parentWindow: Electron.BrowserWindow,
   range: [T, T],
   callback: (range: [T, T]) => void,
-  limits?: { field: string; unit: string }
+  limits?: { field: string; unit: string; side: "low" | "high" }
 ) {
   const editWindow = new BrowserWindow({
     width: limits ? 360 : 300,
-    height: limits ? 220 : 108,
+    height: limits ? 160 : 108,
     useContentSize: true,
     resizable: false,
     icon: WINDOW_ICON,

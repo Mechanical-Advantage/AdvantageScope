@@ -58,6 +58,7 @@ export default class SourceList {
   private independentAllowedTypes: Set<string> = new Set(); // Types that are not only children
   private parentKeys: Map<string, string> = new Map(); // Map type key to parent key
   private supplementalStateSuppliers: (() => SourceListState)[];
+  getCriticalLimits?: (key: string) => { uuid: string; unit: string; limits: { low?: number; high?: number } };
   private getNumberPreview: ((key: string, time: number) => string | null) | undefined;
   private mouseDownInfo: [number, number] | null = null;
 
@@ -947,7 +948,8 @@ export default class SourceList {
         uuid: this.UUID,
         config: this.config,
         state: this.state[index],
-        rect: rect
+        rect: rect,
+        criticalLimits: this.getCriticalLimits?.(this.state[index].logKey)
       });
       let originalType = this.state[index].type;
       SourceList.typePromptCallbacks[this.UUID] = (newState) => {

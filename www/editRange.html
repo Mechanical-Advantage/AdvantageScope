@@ -26,12 +26,6 @@
         <tr class="limits" hidden>
           <td class="title" colspan="3" id="field"></td>
         </tr>
-        <tr class="limits" hidden>
-          <td class="title" colspan="3">
-            <hr />
-            Warnings
-          </td>
-        </tr>
         <tr>
           <td class="label" id="max-label">Maximum Value</td>
           <td class="input">
@@ -48,8 +42,11 @@
         </tr>
         <tr class="limits" hidden>
           <td class="info" colspan="3">
-            Leave a box blank for no limit on that side.<br />Outside these limits, the tile shows Alarm.
+            Leave the box blank for no limit.<br />Outside these limits, the tile shows Alarm.
           </td>
+        </tr>
+        <tr class="limits" hidden>
+          <td class="info" id="error" colspan="3" role="alert"></td>
         </tr>
       </tbody>
     </table>
