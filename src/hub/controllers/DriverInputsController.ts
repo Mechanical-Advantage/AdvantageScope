@@ -16,6 +16,8 @@ import TabController from "./TabController";
 export default class DriverInputsController implements TabController {
   UUID = createUUID();
 
+  // Last valid brake scale, so unfinished input text never reaches a command or layout
+  private brakeScale = 1000;
   private BRAKE_SCALE: HTMLInputElement;
 
   private sourceList: SourceList;
@@ -32,9 +34,11 @@ export default class DriverInputsController implements TabController {
     this.BRAKE_SCALE = settings.getElementsByClassName("brake-scale")[0] as HTMLInputElement;
 
     // Enforce ranges
+    this.brakeScale = Number(this.BRAKE_SCALE.value);
     this.BRAKE_SCALE.addEventListener("change", () => {
       if (!Number.isFinite(Number(this.BRAKE_SCALE.value)) || Number(this.BRAKE_SCALE.value) <= 0)
         this.BRAKE_SCALE.value = "1000";
+      this.brakeScale = Number(this.BRAKE_SCALE.value);
     });
   }
 
@@ -45,7 +49,7 @@ export default class DriverInputsController implements TabController {
   saveState(): unknown {
     return {
       sources: this.sourceList.getState(),
-      brakeScale: Number(this.BRAKE_SCALE.value)
+      brakeScale: this.brakeScale
     };
   }
 
@@ -63,6 +67,7 @@ export default class DriverInputsController implements TabController {
     ) {
       this.BRAKE_SCALE.value = state.brakeScale.toString();
     }
+    this.brakeScale = Number(this.BRAKE_SCALE.value);
   }
 
   refresh(): void {
@@ -89,7 +94,7 @@ export default class DriverInputsController implements TabController {
       throttle: sourceNumberAt(sources, "throttle", time, "percent", this.UUID),
       brakeFront: sourceNumberAt(sources, "brakeFront", time, "psi", this.UUID),
       brakeRear: sourceNumberAt(sources, "brakeRear", time, "psi", this.UUID),
-      brakeScale: Number(this.BRAKE_SCALE.value)
+      brakeScale: this.brakeScale
     };
   }
 }

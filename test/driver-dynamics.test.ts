@@ -31,7 +31,10 @@ function controller() {
     WHEEL_RADIUS: { value: "0.203" },
     STEERING_RATIO: { value: "3.827" },
     SIZE_X: { value: "2" },
-    SIZE_Y: { value: "3" }
+    SIZE_Y: { value: "3" },
+    damperRange: 50,
+    wheelRadius: 0.203,
+    steeringRatio: 3.827
   });
   const put = (signal: string, value: number) => {
     const slots: Record<string, string> = {
@@ -130,7 +133,7 @@ test("a missing wheel speed draws its direction but no speed arrow", () => {
 test("restoring invalid scales and dimensions preserves the current defaults", () => {
   const { controller: c } = controller();
   const driver = Object.create(DriverInputsController.prototype) as any;
-  driver.BRAKE_SCALE = { value: "1000" };
+  Object.assign(driver, { BRAKE_SCALE: { value: "1000" }, brakeScale: 1000 });
   for (const invalid of [0, -1, NaN, Infinity, -Infinity, "12", null]) {
     c.restoreState({ maxSpeed: invalid, steeringRatio: invalid, wheelRadius: invalid, sizeX: invalid, sizeY: invalid });
     driver.restoreState({ brakeScale: invalid });
@@ -223,7 +226,7 @@ test("angular wheel speeds produce proportional arrows through the controller an
   const log = (globalThis as any).window.log as Log;
   c.MAX_SPEED.value = "120";
   c.SIZE_Y.value = "2";
-  c.WHEEL_RADIUS.value = "0.2";
+  c.restoreState({ wheelRadius: 0.2 });
   for (const [slot, value] of [
     ["FL", 63.2],
     ["FR", 69.8]
@@ -264,7 +267,7 @@ for (const [unit, value] of [
       "DASH_SpeedFL",
       JSON.stringify({ dbcSignal: "DASH_SpeedFL", unit })
     );
-    c.WHEEL_RADIUS.value = "0.2";
+    c.restoreState({ wheelRadius: 0.2 });
     assert.ok(Math.abs(c.getCommand().moduleVelocities[0].values[0].velocity - 0.45504) < 1e-9);
   });
 }
@@ -341,6 +344,7 @@ test("Driver Inputs steering Invert survives saveState and restoreState", () => 
   Object.assign(driver, {
     UUID: "test",
     BRAKE_SCALE: { value: "1000" },
+    brakeScale: 1000,
     sourceList: { getState: () => sources, setState: (state: any) => (sources = state) }
   });
   const saved = JSON.parse(JSON.stringify(driver.saveState()));
@@ -351,7 +355,8 @@ test("Driver Inputs steering Invert survives saveState and restoreState", () => 
   assert.equal(driver.saveState().sources[0].options.invert, "inverted");
 });
 
-test("invalid setting changes use their own fallback values", () => {
+/** Builds both controllers through their constructors so input change listeners run. */
+function realControllers() {
   class Element extends EventTarget {
     value = "";
     style = {};
@@ -385,6 +390,17 @@ test("invalid setting changes use their own fallback values", () => {
   });
   const car = new CarDynamicsController(root as any);
   const driver = new DriverInputsController(root as any);
+  const cleanup = () => {
+    car.dispose();
+    driver.dispose();
+    (globalThis as any).document = previousDocument;
+    (globalThis as any).window = previousWindow;
+  };
+  return { inputs, car, driver, cleanup };
+}
+
+test("invalid setting changes use their own fallback values", () => {
+  const { inputs, car, driver, cleanup } = realControllers();
   assert.equal((car as any).sourceList.getNumberPreview, numberPreview);
   assert.equal((driver as any).sourceList.getNumberPreview, numberPreview);
   try {
@@ -405,10 +421,51 @@ test("invalid setting changes use their own fallback values", () => {
       assert.equal((driver.saveState() as any).brakeScale, 1000);
     }
   } finally {
-    car.dispose();
-    driver.dispose();
-    (globalThis as any).document = previousDocument;
-    (globalThis as any).window = previousWindow;
+    cleanup();
+  }
+});
+
+test("tab settings keep their last valid value while the input holds unfinished text", () => {
+  const { inputs, car, driver, cleanup } = realControllers();
+  try {
+    const log = new Log();
+    Object.assign((globalThis as any).window, { log, selection: { getRenderTime: () => 2 } });
+    log.putNumber("steering", 1, 90);
+    log.putNumber("speedFL", 1, 50);
+    log.setMetadataString("speedFL", JSON.stringify({ unit: "rad/s" }));
+    log.putNumber("brakeFront", 1, 500);
+    log.setMetadataString("brakeFront", JSON.stringify({ unit: "psi" }));
+    const source = (type: string) => ({ type, logKey: type, logType: "Number", visible: true, options: {} });
+    (car as any).sourceList = { getState: () => [source("steering"), source("speedFL")], stop() {} };
+    (driver as any).sourceList = { getState: () => [source("brakeFront")], stop() {} };
+    inputs["max-speed"].value = "100";
+    inputs["size-x"].value = "2";
+    inputs["size-y"].value = "3";
+
+    const settings = { "damper-range": "80", "steering-ratio": "5", "wheel-radius": "0.25", "brake-scale": "2000" };
+    for (const [key, value] of Object.entries(settings)) {
+      inputs[key].value = value;
+      inputs[key].dispatchEvent(new Event("change"));
+    }
+    const carCommand = car.getCommand();
+    const driverCommand = driver.getCommand();
+    assert.equal(carCommand.damperRange, 80);
+    assert.ok(Math.abs(carCommand.moduleVelocities[0].values[0].angle! - (18 * Math.PI) / 180) < 1e-12);
+    assert.ok(Math.abs(carCommand.moduleVelocities[0].values[0].velocity! - (12.5 * 3.6) / 100) < 1e-12);
+    assert.equal(driverCommand.brakeScale, 2000);
+
+    for (const typing of ["", "0", "-", "1e"]) {
+      for (const key of Object.keys(settings)) inputs[key].value = typing;
+      assert.deepEqual(car.getCommand(), carCommand, `car command while typing "${typing}"`);
+      assert.deepEqual(driver.getCommand(), driverCommand, `driver command while typing "${typing}"`);
+      const saved = car.saveState() as any;
+      assert.equal(saved.damperRange, 80, `damper range while typing "${typing}"`);
+      assert.equal(saved.steeringRatio, 5, `steering ratio while typing "${typing}"`);
+      assert.equal(saved.wheelRadius, 0.25, `wheel radius while typing "${typing}"`);
+      assert.equal((driver.saveState() as any).brakeScale, 2000, `brake scale while typing "${typing}"`);
+    }
+  } finally {
+    cleanup();
   }
 });
 
