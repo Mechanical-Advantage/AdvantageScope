@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { app, BrowserWindow, dialog, nativeTheme, shell } from "electron";
+import { app, BrowserWindow, dialog, Menu, nativeTheme, shell } from "electron";
 
 /**
  * Headless mode for agents and scripts (tools/screenshot.mjs). With MURVOIR_HEADLESS=1 the app never
@@ -25,10 +25,30 @@ if (HEADLESS) {
   if (userData) app.setPath("userData", userData);
   if (process.platform === "darwin") app.setActivationPolicy("accessory");
 
-  const log = (what: string, detail?: unknown) => console.log(`[headless] suppressed ${what}`, detail ?? "");
+  const log = (what: string, detail?: unknown) =>
+    console.log(`[headless] suppressed ${what}${detail === undefined ? "" : " " + JSON.stringify(detail)}`);
   const noop = () => {};
   const proto = BrowserWindow.prototype as any;
-  for (const method of ["show", "showInactive", "focus", "moveTop"]) proto[method] = noop;
+  // Track the app's requested visibility while every native window stays hidden.
+  const visible = new WeakSet<BrowserWindow>();
+  for (const method of ["show", "showInactive"]) {
+    proto[method] = function () {
+      visible.add(this);
+    };
+  }
+  proto.hide = function () {
+    visible.delete(this);
+  };
+  proto.isVisible = function () {
+    return visible.has(this);
+  };
+  for (const method of ["focus", "moveTop"]) proto[method] = noop;
+  Menu.prototype.popup = function () {
+    log(
+      "menu",
+      this.items.map((item) => item.label)
+    );
+  };
   app.focus = noop;
   app.on("web-contents-created", (_, contents) => {
     // Dev builds dock DevTools into the hub, which would shrink the page in every screenshot.
@@ -48,12 +68,24 @@ if (HEADLESS) {
   const optionsOf = (args: any[]) => (args[0] instanceof BrowserWindow ? args[1] : args[0]);
   dialog.showMessageBox = (async (...args: any[]) => {
     const options = optionsOf(args);
-    log("message box", { message: options?.message, detail: options?.detail, buttons: options?.buttons });
+    log("message box", {
+      type: options?.type,
+      title: options?.title,
+      message: options?.message,
+      detail: options?.detail,
+      buttons: options?.buttons
+    });
     return { response: pick(options), checkboxChecked: false };
   }) as any;
   dialog.showMessageBoxSync = ((...args: any[]) => {
     const options = optionsOf(args);
-    log("message box", { message: options?.message, detail: options?.detail, buttons: options?.buttons });
+    log("message box", {
+      type: options?.type,
+      title: options?.title,
+      message: options?.message,
+      detail: options?.detail,
+      buttons: options?.buttons
+    });
     return pick(options);
   }) as any;
   dialog.showErrorBox = (title, content) => log("error box", { title, content });
