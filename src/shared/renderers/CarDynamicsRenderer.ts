@@ -269,6 +269,8 @@ export default class CarDynamicsRenderer implements TabRenderer {
       }
     });
 
+    // Use a 50 mm display scale so typical 15 to 35 mm motion remains readable.
+    // This is a display range, not the 500 mm sensor range or a mechanical travel limit.
     // Draw damper positions beside each wheel
     context.fillStyle = strokeColor;
     context.font = (size * 0.035).toString() + "px sans-serif";
@@ -286,7 +288,17 @@ export default class CarDynamicsRenderer implements TabRenderer {
         (frameHeightPx / 2) * corner[0],
         (frameWidthPx / 2 + moduleRadiusPx + size * 0.08) * corner[1]
       ]);
-      context.fillText(value.toFixed(1) + " mm", ...textPx);
+      const axisWidth = size * 0.03;
+      const axisHeight = size * 0.12;
+      const x = textPx[0] - axisWidth / 2;
+      const y = textPx[1] - axisHeight / 2;
+      const scaledValue = Math.max(Math.min(value / 50, 1), 0);
+      context.strokeStyle = strokeColor;
+      context.lineWidth = 5;
+      context.strokeRect(x, y, axisWidth, axisHeight);
+      context.fillRect(x, y + axisHeight - axisHeight * scaledValue, axisWidth, axisHeight * scaledValue);
+      context.font = (size * 0.025).toString() + "px sans-serif";
+      context.fillText(value.toFixed(1) + " / 50 mm", textPx[0], y + axisHeight + size * 0.025);
     });
 
     // Draw g circle in the bottom left corner, turned with the car
