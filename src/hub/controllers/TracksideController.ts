@@ -5,11 +5,13 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { GraphColors } from "../../shared/Colors";
 import { SourceListState } from "../../shared/SourceListConfig";
 import { dbcDefinition, isTracksideLive, Limits, limitUnit, tileState } from "../../shared/Trackside";
 import { TracksideRendererCommand } from "../../shared/renderers/TracksideRenderer";
 import { createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
+import LineGraphController from "./LineGraphController";
 import TabController from "./TabController";
 import TracksideController_Config from "./TracksideController_Config";
 
@@ -35,12 +37,37 @@ export function reorderTiles(sources: SourceListState, from: number, to: number)
   return result;
 }
 
+/** Map opted-in tiles to the stock graph's numeric and discrete sources. */
+export function tracksideGraphSources(sources: SourceListState) {
+  const selected = sources.filter((source) => source.options.showInGraph === "true");
+  const fields = selected.map((source, index) => ({
+    ...source,
+    visible: true,
+    type: source.logType === "Number" ? "stepped" : "stripes",
+    options: { color: GraphColors[index % GraphColors.length].key, size: "normal" }
+  }));
+  return {
+    leftSources: fields.filter((source) => source.logType === "Number"),
+    discreteSources: fields.filter((source) => source.logType !== "Number")
+  };
+}
+
 export default class TracksideController implements TabController {
   UUID = createUUID();
   limits: { [logKey: string]: Limits } = {};
   private sourceList: SourceList;
+  private graphController: LineGraphController;
+  private graphSources = "";
 
   constructor(root: HTMLElement) {
+    // Use the stock command pipeline, including units, gaps, axes and selection.
+    const graphRoot = document.createElement("div");
+    for (const axis of ["left", "right", "discrete"]) {
+      const element = document.createElement("div");
+      element.className = "line-graph-" + axis;
+      graphRoot.append(element);
+    }
+    this.graphController = new LineGraphController(graphRoot);
     this.sourceList = new SourceList(root.firstElementChild as HTMLElement, TracksideController_Config, [], (rect) => {
       window.sendMainMessage("ask-edit-trackside-limits", {
         uuid: this.UUID,
@@ -55,6 +82,7 @@ export default class TracksideController implements TabController {
   }
   dispose() {
     this.sourceList.stop();
+    this.graphController.dispose();
   }
   reorderTiles(from: number, to: number) {
     this.sourceList.setState(reorderTiles(this.sourceList.getState(), from, to));
@@ -88,7 +116,14 @@ export default class TracksideController implements TabController {
     const liveTime = window.selection.getCurrentLiveTime();
     const summary = window.liveStatus?.getLiveStatus();
     const liveEdge = isTracksideLive(summary, liveTime, time);
+    const sources = tracksideGraphSources(this.sourceList.getState());
+    const serialized = JSON.stringify(sources);
+    if (serialized !== this.graphSources) {
+      this.graphSources = serialized;
+      this.graphController.restoreState(sources);
+    }
     return {
+      graph: sources.leftSources.length || sources.discreteSources.length ? this.graphController.getCommand() : null,
       message:
         liveEdge && summary.backend === "connected" && !summary.hasFreshData ? "Base connected, no car data" : "",
       tiles: this.sourceList

@@ -911,6 +911,25 @@ export default class SourceList {
       this.LIST.insertBefore(item, this.LIST.children[insertIndex!]);
       this.state.splice(insertIndex, 0, state);
     }
+    if (this.config.showInGraph) {
+      item.classList.add("has-graph-toggle");
+      const button = document.createElement("button");
+      button.className = "show-in-graph";
+      const icon = document.createElement("img");
+      icon.src = "symbols/sourceList/gesture.svg";
+      button.append(icon);
+      button.addEventListener("mousedown", (event) => event.stopPropagation(), { signal: this.events.signal });
+      button.addEventListener(
+        "click",
+        () => {
+          const state = this.state[Array.from(this.LIST.children).indexOf(item)];
+          state.options.showInGraph = state.options.showInGraph === "true" ? "false" : "true";
+          this.updateItem(item, state);
+        },
+        { signal: this.events.signal }
+      );
+      item.append(button);
+    }
     this.updateItem(item, state);
     this.updateHandIcon();
 
@@ -1172,6 +1191,14 @@ export default class SourceList {
     if (typeNameWidth > 0) typeNameWidth += 3; //Add extra margin after colon
     document.body.removeChild(mockSourceContainer);
     keyContainer.style.setProperty("--type-width", typeNameWidth.toString() + "px");
+
+    const graphButton = item.querySelector<HTMLButtonElement>(".show-in-graph");
+    if (graphButton) {
+      const enabled = state.options.showInGraph === "true";
+      graphButton.title = "Show in graph";
+      graphButton.setAttribute("aria-label", "Show " + state.logKey + " in graph");
+      graphButton.setAttribute("aria-pressed", String(enabled));
+    }
 
     // Update hide button
     let hideButton = item.getElementsByClassName("hide")[0] as HTMLButtonElement;

@@ -7,7 +7,7 @@
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import TracksideController, { reorderTiles } from "../src/hub/controllers/TracksideController";
+import TracksideController, { reorderTiles, tracksideGraphSources } from "../src/hub/controllers/TracksideController";
 import SourceList from "../src/hub/SourceList";
 import { channelProfile } from "../src/shared/display/ChannelProfile";
 import {
@@ -182,4 +182,47 @@ test("tile reorder uses insertion boundaries and retains hidden entries and sour
   assert.deepEqual(reorderTiles(beforeHidden, 1, 1), beforeHidden);
   assert.deepEqual(reorderTiles(beforeHidden, 1, 2), beforeHidden);
   assert.deepEqual(keys(sources), ["a", "hidden", "b", "c", "d"]);
+});
+
+test("graph sources opt in independently of tile visibility and use stock styles", () => {
+  const sources = ["Number", "Boolean", "String", "Number"].map((logType, index) => ({
+    type: "tile",
+    logKey: String(index),
+    logType,
+    visible: false,
+    options: index < 3 ? { showInGraph: "true" } : {}
+  }));
+  const result = tracksideGraphSources(sources);
+  assert.deepEqual(
+    result.leftSources.map((s) => s.logKey),
+    ["0"]
+  );
+  assert.deepEqual(
+    result.discreteSources.map((s) => s.logKey),
+    ["1", "2"]
+  );
+  assert.equal(result.leftSources[0].type, "stepped");
+  assert.equal(result.leftSources[0].options.size, "normal");
+  assert.equal(result.leftSources[0].visible, true);
+  assert.equal(sources[0].visible, false);
+  assert.deepEqual(tracksideGraphSources([sources[3]]), { leftSources: [], discreteSources: [] });
+});
+
+test("Trackside saves and restores graph toggles alongside tile options", () => {
+  let sources = [{ type: "tile", logKey: "/temp", logType: "Number", visible: true, options: { showInGraph: "true" } }];
+  const controller: TracksideController = Object.assign(Object.create(TracksideController.prototype), {
+    sourceList: {
+      getState: () => sources,
+      setState: (state: typeof sources) => {
+        sources = state;
+      }
+    },
+    limits: {}
+  });
+  const saved = JSON.parse(JSON.stringify(controller.saveState()));
+  sources = [];
+  controller.restoreState(saved);
+  assert.equal(sources[0].options.showInGraph, "true");
+  assert.equal(tracksideGraphSources(sources).leftSources.length, 1);
+  assert.equal(reorderTiles(sources, 0, 1)[0].options.showInGraph, "true");
 });

@@ -1057,3 +1057,13 @@ table.metadata-table td.no-data {
   font-size: 0.5em;
   font-weight: 400;
 }
+
+.trackside-grid.with-graph {
+  bottom: 60%;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  grid-auto-rows: minmax(120px, 1fr);
+}
+.trackside-graph {
+  position: absolute;
+  inset: 40% 0 0;
+}

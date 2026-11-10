@@ -6,14 +6,26 @@
 // at the root directory of this project.
 
 import { TracksideTile } from "../Trackside";
+import LineGraphRenderer, { LineGraphRendererCommand } from "./LineGraphRenderer";
 import TabRenderer from "./TabRenderer";
 
-export type TracksideRendererCommand = { tiles: TracksideTile[]; message: string };
+export type TracksideRendererCommand = {
+  tiles: TracksideTile[];
+  message: string;
+  graph: LineGraphRendererCommand | null;
+};
 
 export default class TracksideRenderer implements TabRenderer {
   private grid: HTMLElement;
+  private graphRoot: HTMLElement;
+  private graph: LineGraphRenderer;
   constructor(root: HTMLElement, reorder?: (from: number, to: number) => void) {
     this.grid = root.firstElementChild as HTMLElement;
+    this.graphRoot = document.createElement("div");
+    this.graphRoot.className = "trackside-graph";
+    this.graphRoot.innerHTML = document.getElementById("renderer1")!.innerHTML;
+    root.append(this.graphRoot);
+    this.graph = new LineGraphRenderer(this.graphRoot, !!reorder);
     if (!reorder) return;
     let pressed: { x: number; y: number; cell: HTMLElement } | null = null;
     let cancelled: AbortController;
@@ -101,14 +113,22 @@ export default class TracksideRenderer implements TabRenderer {
       window.startDrag(event.clientX, event.clientY, event.clientX - rect.left, event.clientY - rect.top, data);
     });
   }
-  saveState() {
-    return null;
+  dispose() {
+    this.graph.dispose();
   }
-  restoreState(_state: unknown) {}
+  saveState() {
+    return this.graph.saveState();
+  }
+  restoreState(state: unknown) {
+    this.graph.restoreState(state);
+  }
   getAspectRatio() {
     return null;
   }
   render(command: TracksideRendererCommand) {
+    this.graphRoot.hidden = !command.graph;
+    this.grid.classList.toggle("with-graph", !!command.graph);
+    if (command.graph) this.graph.render(command.graph);
     if (command.message || !command.tiles.length) {
       this.grid.replaceChildren();
       const message = document.createElement("div");

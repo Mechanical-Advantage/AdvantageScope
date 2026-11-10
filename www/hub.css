@@ -1951,3 +1951,15 @@ body.has-trackside-alerts.fancy-title-bar-win button.tab-control {
 .trackside-drag-highlight {
   width: 12px;
 }
+
+div.source-list button.show-in-graph {
+  top: 15px;
+  right: 65px;
+  transform: translate(50%, -50%);
+}
+div.source-list button.show-in-graph[aria-pressed="false"] {
+  opacity: 0.4;
+}
+div.source-list .has-graph-toggle div.key-container {
+  max-width: calc(100% - 31px - var(--type-width) - 80px);
+}

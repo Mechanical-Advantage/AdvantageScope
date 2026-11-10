@@ -9,6 +9,7 @@ import { SourceListConfig } from "../../shared/SourceListConfig";
 
 const TracksideController_Config: SourceListConfig = {
   title: "Tiles",
+  showInGraph: true,
   autoAdvance: false,
   allowChildrenFromDrag: false,
   types: [
