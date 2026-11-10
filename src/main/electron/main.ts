@@ -2135,7 +2135,7 @@ function createEditRangeWindow<T extends number | null = number>(
 ) {
   const editWindow = new BrowserWindow({
     width: limits ? 360 : 300,
-    height: limits ? 190 : 108,
+    height: limits ? 220 : 108,
     useContentSize: true,
     resizable: false,
     icon: WINDOW_ICON,
