@@ -390,7 +390,11 @@ export default class LapRenderer implements TabRenderer {
     this.body.classList.toggle("lap-split", both);
     this.body.classList.toggle("lap-stacked", both && stacked);
     // CSS minimum sizes hold the panes apart when the window shrinks after a drag.
-    const flex = both ? `0 0 ${(c.split * 100).toFixed(2)}%` : "";
+    const size = stacked ? height : width;
+    const tableMin = stacked ? SPLIT_MIN.tableHeight : SPLIT_MIN.table;
+    const mapMin = stacked ? SPLIT_MIN.mapHeight : SPLIT_MIN.map;
+    const share = Math.max(tableMin / size, Math.min(1 - mapMin / size, c.split));
+    const flex = both ? `0 0 ${(share * 100).toFixed(2)}%` : "";
     if (flex !== this.flex) this.tablePane.style.flex = this.flex = flex;
   }
   private holdRebuildDuringPress(element: HTMLElement) {

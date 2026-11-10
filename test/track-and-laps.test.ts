@@ -153,3 +153,19 @@ test("the map scope restores from old saves and saves a flag older versions read
   renderer.command.selected = null;
   assert.deepEqual(renderer.visibleLaps(), [], "no selected row shows the whole session");
 });
+
+test("a saved split keeps both minimum widths after the window shrinks", () => {
+  const renderer: any = Object.create(LapRenderer.prototype);
+  renderer.body = { clientWidth: 900, clientHeight: 500, classList: { toggle() {} } };
+  renderer.mapPane = { hidden: false };
+  renderer.tablePane = { hidden: false, style: {} };
+  renderer.handle = { hidden: false };
+  renderer.layout({ view: "split", split: 0.9 });
+  assert.equal(renderer.tablePane.style.flex, "0 0 64.44%");
+  renderer.layout({ view: "split", split: 0.1 });
+  assert.equal(renderer.tablePane.style.flex, "0 0 53.33%");
+  renderer.body.clientWidth = 600;
+  renderer.layout({ view: "split", split: 0.9 });
+  assert.equal(renderer.shown.stacked, true);
+  assert.equal(renderer.tablePane.style.flex, "0 0 68.00%");
+});
