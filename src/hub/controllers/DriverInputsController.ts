@@ -30,7 +30,7 @@ export default class DriverInputsController implements TabController {
     // Enforce ranges
     this.BRAKE_SCALE.addEventListener("change", () => {
       if (!Number.isFinite(Number(this.BRAKE_SCALE.value)) || Number(this.BRAKE_SCALE.value) <= 0)
-        this.BRAKE_SCALE.value = "2000";
+        this.BRAKE_SCALE.value = "1000";
     });
   }
 

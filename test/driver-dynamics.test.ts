@@ -91,7 +91,7 @@ test("a missing wheel speed draws its direction but no speed arrow", () => {
 test("restoring invalid scales and dimensions preserves the current defaults", () => {
   const { controller: c } = controller();
   const driver = Object.create(DriverInputsController.prototype) as any;
-  driver.BRAKE_SCALE = { value: "2000" };
+  driver.BRAKE_SCALE = { value: "1000" };
   for (const invalid of [0, -1, NaN, Infinity, -Infinity, "12", null]) {
     c.restoreState({ maxSpeed: invalid, steeringRatio: invalid, sizeX: invalid, sizeY: invalid });
     driver.restoreState({ brakeScale: invalid });
@@ -99,7 +99,7 @@ test("restoring invalid scales and dimensions preserves the current defaults", (
     assert.equal(c.STEERING_RATIO.value, "3.827");
     assert.equal(c.SIZE_X.value, "2");
     assert.equal(c.SIZE_Y.value, "3");
-    assert.equal(driver.BRAKE_SCALE.value, "2000");
+    assert.equal(driver.BRAKE_SCALE.value, "1000");
   }
   c.restoreState({ maxSpeed: 50, steeringRatio: 5, sizeX: 1, sizeY: 2 });
   driver.restoreState({ brakeScale: 1000 });
@@ -135,7 +135,7 @@ for (const Renderer of [CarDynamicsRenderer, DriverInputsRenderer]) {
             accel: null,
             dampers: []
           }
-        : { steering: null, throttle: null, brakeFront: null, brakeRear: null, brakeScale: 2000 };
+        : { steering: null, throttle: null, brakeFront: null, brakeRear: null, brakeScale: 1000 };
     assert.throws(() => renderer.render(command), /canvas failed once/);
     renderer.render(command);
     assert.equal(attempts, 2);
@@ -164,7 +164,7 @@ for (const Renderer of [CarDynamicsRenderer, DriverInputsRenderer]) {
     const a: any =
       Renderer === CarDynamicsRenderer
         ? { rotation: 0, frameAspectRatio: 1, moduleVelocities: [], robotVelocities: [], accel: null, dampers: [] }
-        : { steering: 0, throttle: 20, brakeFront: null, brakeRear: null, brakeScale: 2000 };
+        : { steering: 0, throttle: 20, brakeFront: null, brakeRear: null, brakeScale: 1000 };
     renderer.render(a);
     fail = true;
     const b = Renderer === CarDynamicsRenderer ? { ...a, rotation: 1 } : { ...a, throttle: 30 };

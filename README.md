@@ -20,7 +20,7 @@ The available tabs are Line Graph, Track Map, Laps, Table, Statistics, Console, 
 
 Driver Inputs and Car Dynamics draw the car at the timeline cursor, which follows hover. Each tab fills itself from fields whose DBC signal names it knows. A field dragged into Sources replaces the default for the type it is given, and right-clicking a source changes its type. Each tab converts values from the field's unit, so live data in SI units and logs in DBC units draw the same.
 
-- **Driver Inputs** replaces Joysticks. It draws a steering wheel from `DASH_SteeringAngle` (positive left), a throttle bar from `ECU_ThrottlePos`, else `PEDAL_Position1` or `PEDAL_Position2`, and brake bars from `ECU_BrakePressFront` and `ECU_BrakePressRear`. Brake Full Scale sets the pressure of a full bar. It defaults to 2000 psi, the top of the DBC range.
+- **Driver Inputs** replaces Joysticks. It draws a steering wheel from `DASH_SteeringAngle` (positive left), a throttle bar from `ECU_ThrottlePos`, else `PEDAL_Position1` or `PEDAL_Position2`, and brake bars from `ECU_BrakePressFront` and `ECU_BrakePressRear`. Brake Full Scale sets the pressure of a full bar. It defaults to 1000 psi.
 - **Car Dynamics** replaces Swerve. It draws a top-down car with these parts:
 
   - front wheels turned by `DASH_SteeringAngle` divided by the steering ratio, 3.827:1 straight ahead by default
