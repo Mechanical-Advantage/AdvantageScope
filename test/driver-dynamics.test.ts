@@ -509,7 +509,7 @@ test("the wheel silhouette centre stays fixed through full and multiple turns", 
     const transforms = calls.slice(0, fillIndex);
     const translations = transforms.filter((c) => c.name === "translate");
     const localOffset = translations[1]?.args ?? [0, 0];
-    // The outer quadratic curves have bounds x = ±116.444444, y = -78..70.
+    // The outer path is symmetric in x and its quadratic curves span y = -78..70.
     const centre = [localOffset[0], -4 + localOffset[1]];
     const angle = transforms.find((c) => c.name === "rotate")!.args[0];
     const x = centre[0] * Math.cos(angle) - centre[1] * Math.sin(angle);

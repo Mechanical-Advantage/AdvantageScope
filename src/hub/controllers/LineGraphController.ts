@@ -9,7 +9,7 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SourceListState } from "../../shared/SourceListConfig";
 import { clipGaps, TraceGapCache } from "../../shared/TraceGaps";
-import { axisDisplayUnit } from "../../shared/display/ChannelProfile";
+import { axisDisplayUnit, formatChannelValue } from "../../shared/display/ChannelProfile";
 import { formatSignedSeconds, heldValueAt, sectorDeltaText } from "../../shared/laps/LapAnalysis";
 import { interpolate, lapSamples, sectorBlocks } from "../../shared/laps/LapEngine";
 import { getLogValueText } from "../../shared/log/LogUtil";
