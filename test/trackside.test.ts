@@ -226,3 +226,20 @@ test("Trackside saves and restores graph toggles alongside tile options", () => 
   assert.equal(tracksideGraphSources(sources).leftSources.length, 1);
   assert.equal(reorderTiles(sources, 0, 1)[0].options.showInGraph, "true");
 });
+
+test("graph opt-in rejects false and missing options without changing the source list", () => {
+  const sources = [undefined, "false", "true"].map((showInGraph, index) => ({
+    type: "tile",
+    logKey: String(index),
+    logType: "Number",
+    visible: true,
+    options: showInGraph === undefined ? {} : { showInGraph }
+  }));
+  const before = structuredClone(sources);
+  assert.deepEqual(
+    tracksideGraphSources(sources).leftSources.map((source) => source.logKey),
+    ["2"]
+  );
+  assert.deepEqual(sources, before);
+  assert.deepEqual(tracksideGraphSources([]), { leftSources: [], discreteSources: [] });
+});
