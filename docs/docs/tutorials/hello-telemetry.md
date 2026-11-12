@@ -167,12 +167,6 @@ After testing or running a match, you can download `.wpilog` files from the robo
 
 <img src={DownloadImage} alt="The download dialog showing available WPILOG files on the robot storage." height="350" />
 
-## 7. Universal Logging with WPILOG
-
-WPILOG is the standard open logging format used across the WPILib ecosystem. Some vendor libraries produce separate log files in alternative formats by default, but AdvantageScope enables WPILOG to serve as a universal container for all of your log files! This means that you can store all of your data in a single file managed by WPILib's `DataLogManager`.
-
-**See 🪐 [Universal Logging with WPILOG](/more-features/universal-logging) for details on this feature.**
-
 ## What's Next?
 
 Now that you have basic telemetry and logging running, take your visualization to the next level:
