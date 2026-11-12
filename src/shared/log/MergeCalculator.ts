@@ -31,7 +31,7 @@ type ResidualSample = {
 };
 
 // Minimum delay (seconds) from log start to first enabled sample to treat it as a rising transition rather than starting mid-enable
-const START_ENABLED_GAP_THRESHOLD = 0.1;
+const START_ENABLED_GAP_THRESHOLD = 5.0;
 // Floating-point tolerance when comparing coarse alignment scores for tie-breaking
 const SCORE_EPSILON = 1e-6;
 // Maximum time error (seconds) from the coarse offset for a transition pair to be considered an inlier
@@ -347,7 +347,7 @@ function refineOffsetWithTransitions(
   const coreMean = meanOffset(cluster);
   const inlierRadius = Math.max(MIN_INLIER_RADIUS, Math.min(MAX_INLIER_RADIUS, span * INLIER_SPAN_MULTIPLIER));
   const inliers = residuals.filter((item) => Math.abs(item.offset - coreMean) <= inlierRadius);
-  return meanOffset(inliers);
+  return inliers.length > 0 ? meanOffset(inliers) : coreMean;
 }
 
 /** Greedily pairs 1-to-1 compatible transitions within `INLIER_TOLERANCE` of `coarseOffset`. */
