@@ -28,6 +28,7 @@ download:
   sizeLessThanMinimum: "（<0.1 兆字节）"
   sizeValue: "（{{size}} 兆字节）"
   alertSelectLog: "请选择要下载的日志。"
+  alertNoNewLogs: "未找到新日志。"
 
 editFov:
   title: "编辑视野 — AdvantageScope"
@@ -705,6 +706,7 @@ menu:
     stopPublish: "停止发布"
     exportLayout: "导出布局..."
     importLayout: "导入布局..."
+    resetDsLayout: "重置为 DS 布局"
     newWindow: "新建窗口"
     closeWindow: "关闭窗口"
     recentPresets: "最近预设"
@@ -750,6 +752,7 @@ menu:
   sidebar:
     clearAll: "全部清除"
     copyToClipboard: "将“{{title}}”复制到剪贴板"
+    copyTunedValues: "复制调参值"
 
   help:
     heading: "帮助"
@@ -801,7 +804,7 @@ menu:
 main:
   language:
     welcomeMessage: "欢迎"
-    welcomeDetail: "点击标题栏中的紫色图标向我们提供关于 AdvantageScope 中文版本的反馈。"
+    welcomeDetail: "AdvantageScope 中文版是在 AI 的支持下创建的，可能包含不准确之处。点击标题栏中的紫色图标向我们反馈任何问题。"
     reloadLite: "AdvantageScope Lite 需要重新加载以切换语言。继续吗？"
     reloadResetLite: "AdvantageScope Lite 需要重新加载并重置以切换语言。继续吗？"
     restart: "AdvantageScope 需要重新启动以切换语言。"
@@ -841,6 +844,8 @@ main:
     stop: "停止"
     skip: "跳过"
     dontShowAgain: "不再显示"
+    reset: "重置"
+    documentation: "文档"
 
   app:
     selectAssetsFolder: "选择包含自定义 AdvantageScope 资源的文件夹"
@@ -889,6 +894,14 @@ main:
     textFilter: "文本文件"
     openQuery: "打开日志？"
     openDetail: "你要打开日志文件“{{name}}”吗？"
+    openDsLogTitle: "打开 DS 日志"
+    openDsLogQuery: "使用 DS 布局打开此日志？"
+    openDsLogDetail: "Driver Station 布局可以在单独的窗口中打开，而不会更改你当前的布局。"
+    openDsInDsWindow: "在 DS 窗口中打开"
+    openDsInNewWindow: "在新窗口中打开"
+    openDsInThisWindow: "在此窗口中打开"
+    unsupportedFormatLite: "AdvantageScope Lite 不支持的文件格式。"
+    decompressFailed: "解压 WPILOG 文件失败。"
     limitedSignals: "可用信号有限"
     limitedSignalsDetail: "此日志文件包含来自 Phoenix 设备的有限数量的信号。请查看 Phoenix 文档了解详细信息。"
 
@@ -901,6 +914,8 @@ main:
     invalidDetail: "所选布局文件为无法识别的格式。"
     versionMismatch: "版本不匹配"
     versionMismatchDetail: "该布局文件由不同版本的 AdvantageScope 生成。无法保证兼容性。"
+    resetDsQuery: "重置为 DS 布局？"
+    resetDsDetail: "此窗口的布局将被替换为 DS 布局。此操作无法撤销。"
 
   video:
     pythonRequired: "需要安装 Python"
@@ -952,6 +967,12 @@ main:
     feedbackAlphaDetail: "请花 30 秒时间分享你使用 AdvantageScope Alpha 版本的体验。我们会很快完成的。"
     feedbackBetaDetail: "请花 30 秒时间分享你使用 AdvantageScope Beta 版本的体验。我们会很快完成的。"
     notNow: "暂不"
+
+  coordinateSystem:
+    legacyFrcMessage: "传统坐标系"
+    legacyFrcDetail: "为了与 2027 年之前的 WPILib 兼容，该场地默认使用传统坐标系。如果你的机器人代码使用 2027 WPILib，可以在 AdvantageScope 首选项中更改“坐标系”选项。详情请参阅文档。"
+    systemcoreFtcMessage: "Systemcore 坐标系"
+    systemcoreFtcDetail: "该场地默认使用 Systemcore 坐标系。如果你的机器人代码使用传统的 FTC 坐标系，可以在 AdvantageScope 首选项中更改“坐标系”选项。详情请参阅文档。"
 
 units:
   defaultLabel: "{{unit}}（默认）"

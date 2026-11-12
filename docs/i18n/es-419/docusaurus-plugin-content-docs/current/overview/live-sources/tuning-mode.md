@@ -10,6 +10,7 @@ Por defecto, todos los valores en AdvantageScope son de solo lectura. Para activ
 
 - Para editar un **campo numérico**, ingresa un nuevo valor utilizando el cuadro de texto a la derecha del campo en la barra lateral. El valor se publica después de anular la selección de la entrada o presionar la tecla "Enter". Deja el cuadro de texto en blanco para usar el valor publicado por el robot.
 - Para alternar un **campo booleano**, haz clic en el círculo rojo o verde a la derecha del campo en la barra lateral.
+- Para copiar todos los valores publicados al portapapeles, **haz clic derecho en el ícono del control deslizante** y selecciona **"Copiar valores ajustados"**.
 
 :::warning
 Esta función no está destinada a controlar el robot en el campo. No se admiten las entradas de estilo de panel (dashboard) como selectores, botones de activación, etc.

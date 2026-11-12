@@ -10,6 +10,7 @@ Unele surse live suportă ajustarea în timp real a valorilor numerice și boole
 
 - Pentru a edita un **câmp numeric**, introduceți o valoare nouă folosind caseta de text din dreapta câmpului în bara laterală. Valoarea este publicată după ce caseta este deselectată sau este apăsată tasta „Enter”. Lăsați caseta de text necompletată pentru a utiliza valoarea publicată de robot.
 - Pentru a comuta un **câmp boolean**, dați clic pe cercul roșu sau verde din dreapta câmpului în bara laterală.
+- Pentru a copia toate valorile publicate în clipboard, **dați clic dreapta pe pictograma glisor** și selectați **„Copiază valorile ajustate”**.
 
 :::warning
 Această caracteristică nu este destinată controlului robotului pe teren. Intrările în stil panou de bord (dashboard), cum ar fi opțiunile de selecție (choosers), butoanele de declanșare etc. nu sunt suportate.

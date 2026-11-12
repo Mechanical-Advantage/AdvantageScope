@@ -42,7 +42,7 @@ Here is an example of logging a string with a Simplified Chinese key:
 <TabItem value="wpilib" label="WPILib" default>
 
 ```java
-SmartDashboard.putString("驱动/右电机速度", "快");
+Telemetry.log("驱动/右电机速度", "快");
 ```
 
 </TabItem>

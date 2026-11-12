@@ -28,6 +28,7 @@ download:
   sizeLessThanMinimum: "(<0,1 MB)"
   sizeValue: "({{size}} MB)"
   alertSelectLog: "Selecteer een logbestand om te downloaden."
+  alertNoNewLogs: "Geen nieuwe logs gevonden."
 
 editFov:
   title: "FOV bewerken — AdvantageScope"
@@ -710,6 +711,7 @@ menu:
     stopPublish: "Publiceren stoppen"
     exportLayout: "Indeling exporteren..."
     importLayout: "Indeling importeren..."
+    resetDsLayout: "Resetten naar DS-indeling"
     newWindow: "Nieuw venster"
     closeWindow: "Venster sluiten"
     recentPresets: "Recente voorinstellingen"
@@ -755,6 +757,7 @@ menu:
   sidebar:
     clearAll: "Alles wissen"
     copyToClipboard: '"{{title}}" naar klembord kopiëren'
+    copyTunedValues: "Getunede waarden kopiëren"
 
   help:
     heading: "Hulp"
@@ -806,7 +809,7 @@ menu:
 main:
   language:
     welcomeMessage: "Welkom"
-    welcomeDetail: "Klik op het paarse pictogram in de titelbalk om ons feedback te geven over de Nederlandse versie van AdvantageScope."
+    welcomeDetail: "De Nederlandse versie van AdvantageScope is gemaakt met de ondersteuning van AI en kan onnauwkeurigheden bevatten. Klik op het paarse pictogram in de titelbalk om eventuele problemen aan ons door te geven."
     reloadLite: "AdvantageScope Lite moet opnieuw worden geladen om van taal te wisselen. Doorgaan?"
     reloadResetLite: "AdvantageScope Lite moet opnieuw worden geladen en gereset om van taal te wisselen. Doorgaan?"
     restart: "AdvantageScope moet opnieuw worden gestart om van taal te wisselen."
@@ -846,6 +849,8 @@ main:
     stop: "Stoppen"
     skip: "Overslaan"
     dontShowAgain: "Niet meer tonen"
+    reset: "Resetten"
+    documentation: "Documentatie"
 
   app:
     selectAssetsFolder: "Selecteer de map met aangepaste AdvantageScope-assets"
@@ -894,6 +899,14 @@ main:
     textFilter: "Tekstbestanden"
     openQuery: "Logbestand openen?"
     openDetail: 'Wil je het logbestand "{{name}}" openen?'
+    openDsLogTitle: "DS-logbestand openen"
+    openDsLogQuery: "Dit logbestand openen met de DS-indeling?"
+    openDsLogDetail: "De Driver Station-indeling kan in een apart venster worden geopend zonder je huidige indeling te wijzigen."
+    openDsInDsWindow: "Openen in DS-venster"
+    openDsInNewWindow: "Openen in nieuw venster"
+    openDsInThisWindow: "Openen in dit venster"
+    unsupportedFormatLite: "Niet-ondersteund bestandsformaat in AdvantageScope Lite."
+    decompressFailed: "WPILOG-bestand decomprimeren mislukt."
     limitedSignals: "Beperkte signalen beschikbaar"
     limitedSignalsDetail: "Dit logbestand bevat een beperkt aantal signalen van Phoenix-apparaten. Bekijk de Phoenix-documentatie voor details."
 
@@ -906,6 +919,8 @@ main:
     invalidDetail: "Het geselecterde indelingsbestand was geen herkend formaat."
     versionMismatch: "Versieverschil"
     versionMismatchDetail: "Het indelingsbestand is gegenereerd door een andere versie van AdvantageScope. Compatibiliteit is niet gegarandeerd."
+    resetDsQuery: "Resetten naar DS-indeling?"
+    resetDsDetail: "De indeling van dit venster wordt vervangen door de DS-indeling. Dit kan niet ongedaan worden gemaakt."
 
   video:
     pythonRequired: "Python-installatie vereist"
@@ -957,6 +972,12 @@ main:
     feedbackAlphaDetail: "Neem 30 seconden de tijd om je ervaring met de AdvantageScope-alfa te delen. We houden het kort."
     feedbackBetaDetail: "Neem 30 seconden de tijd om je ervaring met de AdvantageScope-bèta te delen. We houden het kort."
     notNow: "Nu niet"
+
+  coordinateSystem:
+    legacyFrcMessage: "Verouderd coördinatenstelsel"
+    legacyFrcDetail: 'Dit veld gebruikt standaard een verouderd coördinatenstelsel voor compatibiliteit met WPILib van vóór 2027. Als je robotcode WPILib 2027 gebruikt, kun je de optie "Coördinatenstelsel" wijzigen in de AdvantageScope-voorkeuren. Raadpleeg de documentatie voor meer informatie.'
+    systemcoreFtcMessage: "Systemcore-coördinatenstelsel"
+    systemcoreFtcDetail: 'Dit veld gebruikt standaard het Systemcore-coördinatenstelsel. Als je robotcode het traditionele FTC-coördinatenstelsel gebruikt, kun je de optie "Coördinatenstelsel" wijzigen in de AdvantageScope-voorkeuren. Raadpleeg de documentatie voor meer informatie.'
 
 units:
   defaultLabel: "{{unit}} (standaard)"

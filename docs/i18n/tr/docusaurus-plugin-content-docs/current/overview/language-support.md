@@ -40,7 +40,7 @@ Aşağıda Türkçe bir anahtarla dize kaydetme örneği verilmiştir:
 <TabItem value="wpilib" label="WPILib" default>
 
 ```java
-SmartDashboard.putString("Sürüş/Sağ motor hızı", "Hızlı");
+Telemetry.log("Sürüş/Sağ motor hızı", "Hızlı");
 ```
 
 </TabItem>
@@ -59,6 +59,6 @@ Birim üst verilerini iletme hakkında daha fazla ayrıntı için [birim desteğ
 
 ## Geliştirme {#development}
 
-AdvantageScope'un yerelleştirmesi, yapay zekâ ve topluluk iş birliğinin birleşimiyle yürütülmektedir. AdvantageScope hızla gelişen bir proje olduğundan, çevrilen uygulamanın ve belgelerin her dilde senkronize tutulması için yapay zekâ kullanımı zorunludur. Bu, seçtiğiniz dilden bağımsız olarak yeni özelliklerin ve güncellemelerin her zaman eşzamanlı olarak mevcut olduğu anlamına gelir.
+AdvantageScope'un yerelleştirmesi, yapay zekâ ve topluluk iş birliğinin birleşimiyle oluşturulmaktadır. AdvantageScope hızla gelişen bir proje olduğundan, çevrilen uygulamanın ve belgelerin her dilde senkronize tutulması için yapay zekâ kullanımı zorunludur. Bu, seçtiğiniz dilden bağımsız olarak yeni özelliklerin ve güncellemelerin her zaman eşzamanlı olarak mevcut olduğu anlamına gelir.
 
-En yüksek kalitede çevirileri sağlamak amacıyla sürecimiz, her dil için ayrıntılı sözlükler ve yönergeler oluşturmak üzere FIRST topluluğundaki anadili konuşan kişilerin kapsamlı referans materyallerine dayanır. Bu, çevirilerin yerel takımların aşina olduğu belirli kelime dağarcığına, alıntı kelimelere ve transliterasyonlara uymasına yardımcı olur. Temel çeviriler, kritik seçimler (FIRST terimleri çevirileri gibi) üzerinde insan denetimi ile yapay zekâ kullanılarak yinelemeli olarak oluşturulur. Kullanıcılar ayrıca uygulamadaki mor simgeye tıklayarak çeviriler hakkında geri bildirim sağlayabilirler (İngilizce dışındaki herhangi bir dile ayarlandığında).
+Sürecimiz, yerel ekiplerin aşina olduğu belirli kelime dağarcığına, alıntı sözcüklere ve transliterasyonlara uyacak şekilde tasarlanmıştır. Bununla birlikte, yapay zekâ çevirileri genellikle doğal olmayan ifadeler veya başka yanlışlıklar içerir. Geri bildirimlerinizi memnuniyetle karşılıyoruz; uygulamadaki mor simgeye tıklayarak çeviriler hakkında geri bildirim sağlayabilirsiniz (İngilizce dışındaki herhangi bir dile ayarlandığında).

@@ -6,10 +6,8 @@ sidebar_position: 2
 
 O AdvantageScope suporta transmissão ao vivo de sinais de dispositivos Phoenix 6 **sem nenhuma configuração no código do usuário**. Isso permite fácil depuração e ajuste de dispositivos Phoenix usando a interface familiar e o poder total do AdvantageScope:
 
-- Opções de visualização flexíveis, incluindo suporte a múltiplos eixos e campos discretos
+- Opções de visualização flexíveis, incluindo suporte a tabelas e análise estatística
 - Suporte completo a gráficos conscientes de unidades, incluindo conversão de unidades implícita e com um clique ([docs](/tab-reference/line-graph/units))
-- Pré-visualização ao vivo de todos os valores na barra lateral para fácil navegação
-- Suporte para plotagem e pré-visualização de sinais de múltiplos dispositivos simultaneamente
 - Decodificação de valores enum como strings legíveis por humanos (modos de controle, status de ponte, estado do ímã do CANcoder, etc.)
 - Dicas de ferramentas integradas na barra lateral com descrições e unidades para cada sinal
 - Organização hierárquica de sinais, agrupados por barramento CAN, dispositivo e tipo de sinal

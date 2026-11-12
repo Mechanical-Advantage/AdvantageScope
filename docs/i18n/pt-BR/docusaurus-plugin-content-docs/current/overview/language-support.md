@@ -40,7 +40,7 @@ Aqui está um exemplo de gravação de uma string com uma chave em português:
 <TabItem value="wpilib" label="WPILib" default>
 
 ```java
-SmartDashboard.putString("Tração/Velocidade do motor direito", "Rápido");
+Telemetry.log("Tração/Velocidade do motor direito", "Rápido");
 ```
 
 </TabItem>
@@ -59,6 +59,6 @@ Consulte a página sobre [suporte a unidades](/tab-reference/line-graph/units) p
 
 ## Desenvolvimento {#development}
 
-A localização do AdvantageScope é impulsionada por uma combinação de inteligência artificial e colaboração comunitária. Como o AdvantageScope é um projeto em rápida evolução, a utilização de IA é essencial para manter o aplicativo traduzido e a documentação sincronizados em todos os idiomas. Isso significa que novos recursos e atualizações estão sempre disponíveis simultaneamente, independentemente do idioma selecionado.
+A localização do AdvantageScope é criada com uma combinação de inteligência artificial e colaboração comunitária. Como o AdvantageScope é um projeto em rápida evolução, a utilização de IA é essencial para manter o aplicativo traduzido e a documentação sincronizados em todos os idiomas. Isso significa que novos recursos e atualizações estão sempre disponíveis simultaneamente, independentemente do idioma selecionado.
 
-Para garantir traduções da mais alta qualidade, nosso processo depende de extensos materiais de referência de falantes nativos da comunidade FIRST para construir glossários e diretrizes detalhadas para cada idioma. Isso ajuda as traduções a corresponderem ao vocabulário específico, estrangeirismos e transliterações com os quais as equipes locais estão familiarizadas. As traduções fundamentais são geradas iterativamente usando IA com supervisão humana sobre escolhas críticas (como termos de vocabulário da FIRST). Os usuários também podem fornecer feedback sobre as traduções clicando no ícone roxo no aplicativo (quando configurado para qualquer idioma além do inglês).
+Nosso processo é projetado para corresponder ao vocabulário específico, termos estrangeiros e transliterações com os quais as equipes locais estão familiarizadas. No entanto, as traduções por IA frequentemente incluem frases pouco naturais ou outras imprecisões. Agradecemos seus comentários; você pode fornecer feedback sobre as traduções clicando no ícone roxo no aplicativo (quando configurado para qualquer idioma além do inglês).

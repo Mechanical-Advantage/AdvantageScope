@@ -28,6 +28,7 @@ download:
   sizeLessThanMinimum: "(<0.1 MB)"
   sizeValue: "({{size}} MB)"
   alertSelectLog: "Lütfen indirmek için bir log seçin."
+  alertNoNewLogs: "Yeni log bulunamadı."
 
 editFov:
   title: "FOV düzenle — AdvantageScope"
@@ -701,6 +702,7 @@ menu:
     stopPublish: "Yayınlamayı durdur"
     exportLayout: "Düzeni dışa aktar..."
     importLayout: "Düzeni içe aktar..."
+    resetDsLayout: "DS düzenine sıfırla"
     newWindow: "Yeni pencere"
     closeWindow: "Pencereyi kapat"
     recentPresets: "Son önayarlar"
@@ -746,6 +748,7 @@ menu:
   sidebar:
     clearAll: "Tümünü temizle"
     copyToClipboard: "Panoya kopyala: “{{title}}”"
+    copyTunedValues: "Ayarlanan değerleri kopyala"
 
   help:
     heading: "Yardım"
@@ -797,7 +800,7 @@ menu:
 main:
   language:
     welcomeMessage: "Hoş geldiniz"
-    welcomeDetail: "AdvantageScope'un Türkçe sürümü hakkında bize geri bildirimde bulunmak için başlık çubuğundaki mor simgeye tıklayın."
+    welcomeDetail: "AdvantageScope'un Türkçe sürümü yapay zekâ desteğiyle oluşturulmuştur ve yanlışlıklar içerebilir. Herhangi bir sorunu bize bildirmek için başlık çubuğundaki mor simgeye tıklayın."
     reloadLite: "Dilleri değiştirmek için AdvantageScope Lite'ın yeniden yüklenmesi gerekiyor. Devam edilsin mi?"
     reloadResetLite: "Dilleri değiştirmek için AdvantageScope Lite'ın düzeni sıfırlaması ve yeniden yüklenmesi gerekiyor. Devam edilsin mi?"
     restart: "Dilleri değiştirmek için AdvantageScope'un yeniden başlatılması gerekiyor."
@@ -837,6 +840,8 @@ main:
     stop: "Durdur"
     skip: "Atla"
     dontShowAgain: "Tekrar gösterme"
+    reset: "Sıfırla"
+    documentation: "Belgeler"
 
   app:
     selectAssetsFolder: "Özel AdvantageScope varlıklarını içeren klasörü seçin"
@@ -885,6 +890,14 @@ main:
     textFilter: "Metin dosyaları"
     openQuery: "Log açılsın mı?"
     openDetail: "“{{name}}” log dosyasını açmak ister misiniz?"
+    openDsLogTitle: "DS logunu aç"
+    openDsLogQuery: "Bu log DS düzeni kullanılarak açılsın mı?"
+    openDsLogDetail: "Sürücü İstasyonu düzeni, mevcut düzeninizi değiştirmeden ayrı bir pencerede açılabilir."
+    openDsInDsWindow: "DS penceresinde aç"
+    openDsInNewWindow: "Yeni pencerede aç"
+    openDsInThisWindow: "Bu pencerede aç"
+    unsupportedFormatLite: "AdvantageScope Lite'ta desteklenmeyen dosya formatı."
+    decompressFailed: "WPILOG dosyasının sıkıştırmasını açma başarısız oldu."
     limitedSignals: "Sınırlı sinyal mevcut"
     limitedSignalsDetail: "Bu log dosyası Phoenix cihazlarından sınırlı sayıda sinyal içeriyor. Detaylar için Phoenix belgelerine bakın."
 
@@ -897,6 +910,8 @@ main:
     invalidDetail: "Seçilen düzen dosyası tanınan bir formatta değil."
     versionMismatch: "Sürüm uyuşmazlığı"
     versionMismatchDetail: "Düzen dosyası AdvantageScope'un farklı bir sürümü tarafından oluşturulmuş. Uyumluluk garanti edilmez."
+    resetDsQuery: "DS düzenine sıfırlansın mı?"
+    resetDsDetail: "Bu pencerenin düzeni DS düzeni ile değiştirilecek. Bu işlem geri alınamaz."
 
   video:
     pythonRequired: "Python kurulumu gereklidir"
@@ -948,6 +963,12 @@ main:
     feedbackAlphaDetail: "AdvantageScope alfa sürümünü kullanma deneyiminizi paylaşmak için lütfen 30 saniyenizi ayırın. Bunu kısa tutacağız."
     feedbackBetaDetail: "AdvantageScope beta sürümünü kullanma deneyiminizi paylaşmak için lütfen 30 saniyenizi ayırın. Bunu kısa tutacağız."
     notNow: "Şimdi değil"
+
+  coordinateSystem:
+    legacyFrcMessage: "Eski koordinat sistemi"
+    legacyFrcDetail: "Bu alan, 2027 öncesi WPILib ile uyumluluk için varsayılan olarak eski bir koordinat sistemi kullanır. Robot kodunuz 2027 WPILib kullanıyorsa AdvantageScope tercihlerindeki “Koordinat Sistemi” seçeneğini değiştirebilirsiniz. Ayrıntılar için belgelere bakın."
+    systemcoreFtcMessage: "Systemcore koordinat sistemi"
+    systemcoreFtcDetail: "Bu alan, varsayılan olarak Systemcore koordinat sistemini kullanır. Robot kodunuz geleneksel FTC koordinat sistemini kullanıyorsa AdvantageScope tercihlerindeki “Koordinat Sistemi” seçeneğini değiştirebilirsiniz. Ayrıntılar için belgelere bakın."
 
 units:
   defaultLabel: "{{unit}} (Varsayılan)"

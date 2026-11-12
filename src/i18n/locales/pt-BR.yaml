@@ -28,6 +28,7 @@ download:
   sizeLessThanMinimum: "(<0,1 MB)"
   sizeValue: "({{size}} MB)"
   alertSelectLog: "Selecione um log para baixar."
+  alertNoNewLogs: "Nenhum novo log encontrado."
 
 editFov:
   title: "Editar FOV — AdvantageScope"
@@ -709,6 +710,7 @@ menu:
     stopPublish: "Parar de publicar"
     exportLayout: "Exportar layout..."
     importLayout: "Importar layout..."
+    resetDsLayout: "Redefinir para o layout da DS"
     newWindow: "Nova janela"
     closeWindow: "Fechar janela"
     recentPresets: "Predefinições recentes"
@@ -754,6 +756,7 @@ menu:
   sidebar:
     clearAll: "Limpar tudo"
     copyToClipboard: 'Copiar "{{title}}" para a área de transferência'
+    copyTunedValues: "Copiar valores ajustados"
 
   help:
     heading: "Ajuda"
@@ -805,7 +808,7 @@ menu:
 main:
   language:
     welcomeMessage: "Boas-vindas"
-    welcomeDetail: "Clique no ícone roxo na barra de título para nos enviar seus comentários sobre a versão em português do AdvantageScope."
+    welcomeDetail: "A versão em português do AdvantageScope é criada com o apoio de IA e pode conter imprecisões. Clique no ícone roxo na barra de título para nos avisar sobre qualquer problema."
     reloadLite: "O AdvantageScope Lite precisa ser recarregado para mudar de idioma. Continuar?"
     reloadResetLite: "O AdvantageScope Lite precisa redefinir o layout e ser recarregado para mudar de idioma. Continuar?"
     restart: "O AdvantageScope precisa ser reiniciado para mudar de idioma."
@@ -845,6 +848,8 @@ main:
     stop: "Parar"
     skip: "Pular"
     dontShowAgain: "Não mostrar novamente"
+    reset: "Redefinir"
+    documentation: "Documentação"
 
   app:
     selectAssetsFolder: "Selecionar pasta contendo recursos personalizados do AdvantageScope"
@@ -893,6 +898,14 @@ main:
     textFilter: "Arquivos de texto"
     openQuery: "Abrir log?"
     openDetail: 'Deseja abrir o arquivo de log "{{name}}"?'
+    openDsLogTitle: "Abrir log da DS"
+    openDsLogQuery: "Abrir este log usando o layout da DS?"
+    openDsLogDetail: "O layout da Driver Station pode ser aberto em uma janela separada sem alterar seu layout atual."
+    openDsInDsWindow: "Abrir na janela da DS"
+    openDsInNewWindow: "Abrir em nova janela"
+    openDsInThisWindow: "Abrir nesta janela"
+    unsupportedFormatLite: "Formato de arquivo não suportado no AdvantageScope Lite."
+    decompressFailed: "Falha ao descompactar arquivo WPILOG."
     limitedSignals: "Sinais limitados disponíveis"
     limitedSignalsDetail: "Este arquivo de log inclui um número limitado de sinais de dispositivos Phoenix. Verifique a documentação do Phoenix para mais detalhes."
 
@@ -905,6 +918,8 @@ main:
     invalidDetail: "O arquivo de layout selecionado não estava em um formato reconhecido."
     versionMismatch: "Incompatibilidade de versão"
     versionMismatchDetail: "O arquivo de layout foi gerado por uma versão diferente do AdvantageScope. A compatibilidade não é garantida."
+    resetDsQuery: "Redefinir para o layout da DS?"
+    resetDsDetail: "O layout desta janela será substituído pelo layout da DS. Isso não pode ser desfeito."
 
   video:
     pythonRequired: "Instalação do Python necessária"
@@ -956,6 +971,12 @@ main:
     feedbackAlphaDetail: "Por favor, reserve 30 segundos para compartilhar sua experiência de uso da versão alpha do AdvantageScope. Prometemos ser rápidos."
     feedbackBetaDetail: "Por favor, reserve 30 segundos para compartilhar sua experiência de uso da versão beta do AdvantageScope. Prometemos ser rápidos."
     notNow: "Agora não"
+
+  coordinateSystem:
+    legacyFrcMessage: "Sistema de coordenadas legado"
+    legacyFrcDetail: 'Este campo usa um sistema de coordenadas legado por padrão para compatibilidade com a WPILib pré-2027. Se o código do seu robô usa a WPILib 2027, você pode alterar a opção "Sistema de coordenadas" nas preferências do AdvantageScope. Consulte a documentação para mais detalhes.'
+    systemcoreFtcMessage: "Sistema de coordenadas do Systemcore"
+    systemcoreFtcDetail: 'Este campo usa o sistema de coordenadas do Systemcore por padrão. Se o código do seu robô usa o sistema de coordenadas tradicional da FTC, você pode alterar a opção "Sistema de coordenadas" nas preferências do AdvantageScope. Consulte a documentação para mais detalhes.'
 
 units:
   defaultLabel: "{{unit}} (Padrão)"

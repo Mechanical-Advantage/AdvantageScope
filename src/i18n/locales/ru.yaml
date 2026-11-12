@@ -28,6 +28,7 @@ download:
   sizeLessThanMinimum: "(<0,1 МБ)"
   sizeValue: "({{size}} МБ)"
   alertSelectLog: "Пожалуйста, выберите лог для скачивания."
+  alertNoNewLogs: "Новых логов не найдено."
 
 editFov:
   title: "Изменить поле зрения — AdvantageScope"
@@ -734,6 +735,7 @@ menu:
     stopPublish: "Остановить публикацию"
     exportLayout: "Экспортировать макет..."
     importLayout: "Импортировать макет..."
+    resetDsLayout: "Сбросить к макету DS"
     newWindow: "Новое окно"
     closeWindow: "Закрыть окно"
     recentPresets: "Недавние пресеты"
@@ -779,6 +781,7 @@ menu:
   sidebar:
     clearAll: "Очистить все"
     copyToClipboard: "Скопировать «{{title}}» в буфер обмена"
+    copyTunedValues: "Скопировать настроенные значения"
 
   help:
     heading: "Помощь"
@@ -830,7 +833,7 @@ menu:
 main:
   language:
     welcomeMessage: "Добро пожаловать"
-    welcomeDetail: "Нажмите на фиолетовую иконку в строке заголовка, чтобы оставить отзыв о русской версии AdvantageScope."
+    welcomeDetail: "Русская версия AdvantageScope создана с поддержкой ИИ и может содержать неточности. Нажмите на фиолетовую иконку в строке заголовка, чтобы сообщить нам о любых проблемах."
     reloadLite: "AdvantageScope Lite необходимо перезагрузить для смены языка. Продолжить?"
     reloadResetLite: "AdvantageScope Lite необходимо сбросить и перезагрузить для смены языка. Продолжить?"
     restart: "AdvantageScope необходимо перезапустить для смены языка."
@@ -870,6 +873,8 @@ main:
     stop: "Остановить"
     skip: "Пропустить"
     dontShowAgain: "Больше не показывать"
+    reset: "Сбросить"
+    documentation: "Документация"
 
   app:
     selectAssetsFolder: "Выберите папку, содержащую пользовательские ресурсы AdvantageScope"
@@ -918,6 +923,14 @@ main:
     textFilter: "Текстовые файлы"
     openQuery: "Открыть лог?"
     openDetail: "Вы хотите открыть файл лога «{{name}}»?"
+    openDsLogTitle: "Открыть лог DS"
+    openDsLogQuery: "Открыть этот лог, используя макет DS?"
+    openDsLogDetail: "Макет Driver Station можно открыть в отдельном окне без изменения текущего макета."
+    openDsInDsWindow: "Открыть в окне DS"
+    openDsInNewWindow: "Открыть в новом окне"
+    openDsInThisWindow: "Открыть в этом окне"
+    unsupportedFormatLite: "Неподдерживаемый формат файла в AdvantageScope Lite."
+    decompressFailed: "Не удалось распаковать файл WPILOG."
     limitedSignals: "Доступно ограниченное количество сигналов"
     limitedSignalsDetail: "Этот файл лога включает ограниченное количество сигналов от устройств Phoenix. Обратитесь к документации Phoenix для получения подробной информации."
 
@@ -930,6 +943,8 @@ main:
     invalidDetail: "Выбранный файл макета имеет нераспознанный формат."
     versionMismatch: "Несовпадение версий"
     versionMismatchDetail: "Файл макета был сгенерирован другой версией AdvantageScope. Совместимость не гарантируется."
+    resetDsQuery: "Сбросить к макету DS?"
+    resetDsDetail: "Макет этого окна будет заменён макетом DS. Это действие нельзя отменить."
 
   video:
     pythonRequired: "Требуется установка Python"
@@ -981,6 +996,12 @@ main:
     feedbackAlphaDetail: "Пожалуйста, уделите 30 секунд, чтобы поделиться своим опытом использования альфа-версии AdvantageScope. Это займет совсем немного времени."
     feedbackBetaDetail: "Пожалуйста, уделите 30 секунд, чтобы поделиться своим опытом использования бета-версии AdvantageScope. Это займет совсем немного времени."
     notNow: "Не сейчас"
+
+  coordinateSystem:
+    legacyFrcMessage: "Устаревшая система координат"
+    legacyFrcDetail: "Это поле по умолчанию использует устаревшую систему координат для совместимости с WPILib версий до 2027 года. Если код Вашего робота использует WPILib 2027, Вы можете изменить параметр «Система координат» в настройках AdvantageScope. Подробности см. в документации."
+    systemcoreFtcMessage: "Система координат Systemcore"
+    systemcoreFtcDetail: "Это поле по умолчанию использует систему координат Systemcore. Если код Вашего робота использует традиционную систему координат FTC, Вы можете изменить параметр «Система координат» в настройках AdvantageScope. Подробности см. в документации."
 
 units:
   defaultLabel: "{{unit}} (по умолчанию)"

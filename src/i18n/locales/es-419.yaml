@@ -28,6 +28,7 @@ download:
   sizeLessThanMinimum: "(<0.1 MB)"
   sizeValue: "({{size}} MB)"
   alertSelectLog: "Selecciona un registro para descargar."
+  alertNoNewLogs: "No se encontraron registros nuevos."
 
 editFov:
   title: "Editar FOV — AdvantageScope"
@@ -710,6 +711,7 @@ menu:
     stopPublish: "Detener publicación"
     exportLayout: "Exportar disposición..."
     importLayout: "Importar disposición..."
+    resetDsLayout: "Restablecer a la disposición de DS"
     newWindow: "Nueva ventana"
     closeWindow: "Cerrar ventana"
     recentPresets: "Ajustes preestablecidos recientes"
@@ -755,6 +757,7 @@ menu:
   sidebar:
     clearAll: "Borrar todo"
     copyToClipboard: 'Copiar "{{title}}" al portapapeles'
+    copyTunedValues: "Copiar valores ajustados"
 
   help:
     heading: "Ayuda"
@@ -806,7 +809,7 @@ menu:
 main:
   language:
     welcomeMessage: "Bienvenida"
-    welcomeDetail: "Haz clic en el ícono morado en la barra de título para darnos tu opinión sobre la versión en español de AdvantageScope."
+    welcomeDetail: "La versión en español de AdvantageScope se crea con el apoyo de IA y puede incluir imprecisiones. Haz clic en el ícono morado en la barra de título para informarnos sobre cualquier problema."
     reloadLite: "AdvantageScope Lite necesita recargarse para cambiar de idioma. ¿Continuar?"
     reloadResetLite: "AdvantageScope Lite necesita recargarse y restablecerse para cambiar de idioma. ¿Continuar?"
     restart: "AdvantageScope necesita reiniciarse para cambiar de idioma."
@@ -846,6 +849,8 @@ main:
     stop: "Detener"
     skip: "Omitir"
     dontShowAgain: "No volver a mostrar"
+    reset: "Restablecer"
+    documentation: "Documentación"
 
   app:
     selectAssetsFolder: "Seleccionar carpeta que contiene recursos personalizados de AdvantageScope"
@@ -894,6 +899,14 @@ main:
     textFilter: "Archivos de texto"
     openQuery: "¿Abrir registro?"
     openDetail: '¿Deseas abrir el archivo de registro "{{name}}"?'
+    openDsLogTitle: "Abrir registro de DS"
+    openDsLogQuery: "¿Abrir este registro usando la disposición de DS?"
+    openDsLogDetail: "La disposición de Driver Station se puede abrir en una ventana separada sin cambiar tu disposición actual."
+    openDsInDsWindow: "Abrir en ventana de DS"
+    openDsInNewWindow: "Abrir en una ventana nueva"
+    openDsInThisWindow: "Abrir en esta ventana"
+    unsupportedFormatLite: "Formato de archivo no compatible en AdvantageScope Lite."
+    decompressFailed: "Fallo al descomprimir el archivo WPILOG."
     limitedSignals: "Señales limitadas disponibles"
     limitedSignalsDetail: "Este archivo de registro incluye un número limitado de señales de dispositivos Phoenix. Consulta la documentación de Phoenix para obtener detalles."
 
@@ -906,6 +919,8 @@ main:
     invalidDetail: "El archivo de disposición seleccionado no tenía un formato reconocido."
     versionMismatch: "Discrepancia de versión"
     versionMismatchDetail: "El archivo de disposición fue generado por una versión diferente de AdvantageScope. No se garantiza la compatibilidad."
+    resetDsQuery: "¿Restablecer a la disposición de DS?"
+    resetDsDetail: "La disposición de esta ventana se reemplazará con la disposición de DS. Esto no se puede deshacer."
 
   video:
     pythonRequired: "Se requiere instalación de Python"
@@ -957,6 +972,12 @@ main:
     feedbackAlphaDetail: "Tómate 30 segundos para compartir tu experiencia al usar la alfa de AdvantageScope. Lo mantendremos breve."
     feedbackBetaDetail: "Tómate 30 segundos para compartir tu experiencia al usar la beta de AdvantageScope. Lo mantendremos breve."
     notNow: "Ahora no"
+
+  coordinateSystem:
+    legacyFrcMessage: "Sistema de coordenadas heredado"
+    legacyFrcDetail: 'Este campo utiliza de forma predeterminada un sistema de coordenadas heredado por compatibilidad con WPILib anterior a 2027. Si el código de tu robot utiliza WPILib 2027, puedes cambiar la opción "Sistema de coordenadas" en las preferencias de AdvantageScope. Consulta la documentación para obtener más detalles.'
+    systemcoreFtcMessage: "Sistema de coordenadas de Systemcore"
+    systemcoreFtcDetail: 'Este campo utiliza de forma predeterminada el sistema de coordenadas de Systemcore. Si el código de tu robot utiliza el sistema de coordenadas tradicional de FTC, puedes cambiar la opción "Sistema de coordenadas" en las preferencias de AdvantageScope. Consulta la documentación para obtener más detalles.'
 
 units:
   defaultLabel: "{{unit}} (predeterminado)"

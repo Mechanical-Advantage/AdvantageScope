@@ -6,10 +6,8 @@ sidebar_position: 2
 
 AdvantageScope suportă streaming live al semnalelor de la dispozitivele Phoenix 6 fără **nicio configurare în codul utilizatorului**. Acest lucru permite depanarea și ajustarea ușoară a dispozitivelor Phoenix folosind interfața familiară și întreaga putere a AdvantageScope:
 
-- Opțiuni flexibile de vizualizare, inclusiv suport pentru axe multiple și câmpuri discrete
+- Opțiuni flexibile de vizualizare, inclusiv suport pentru tabele și analiză statistică
 - Suport complet pentru diagrame bazate pe unități, inclusiv conversie implicită și printr-un singur clic a unităților ([docs](/tab-reference/line-graph/units))
-- Previzualizare live a tuturor valorilor în bara laterală pentru o navigare ușoară
-- Suport pentru reprezentarea grafică și previzualizarea semnalului de la mai multe dispozitive simultan
 - Decodarea valorilor enum ca șiruri lizibile de către om (moduri de control, starea punții, starea magnetului CANcoder etc.)
 - Informații tooltip integrate în bara laterală cu descrieri și unități pentru fiecare semnal
 - Organizarea ierarhică a semnalelor, grupate după magistrala CAN, dispozitiv și tipul de semnal

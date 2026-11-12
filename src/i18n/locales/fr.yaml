@@ -28,6 +28,7 @@ download:
   sizeLessThanMinimum: "(<0,1 Mo)"
   sizeValue: "({{size}} Mo)"
   alertSelectLog: "Veuillez sélectionner un journal à télécharger."
+  alertNoNewLogs: "Aucun nouveau journal trouvé."
 
 editFov:
   title: "Modifier le champ de vision — AdvantageScope"
@@ -710,6 +711,7 @@ menu:
     stopPublish: "Arrêter la publication"
     exportLayout: "Exporter la disposition..."
     importLayout: "Importer la disposition..."
+    resetDsLayout: "Réinitialiser à la disposition DS"
     newWindow: "Nouvelle fenêtre"
     closeWindow: "Fermer la fenêtre"
     recentPresets: "Préréglages récents"
@@ -755,6 +757,7 @@ menu:
   sidebar:
     clearAll: "Tout effacer"
     copyToClipboard: "Copier « {{title}} » dans le presse-papiers"
+    copyTunedValues: "Copier les valeurs réglées"
 
   help:
     heading: "Aide"
@@ -806,7 +809,7 @@ menu:
 main:
   language:
     welcomeMessage: "Bienvenue"
-    welcomeDetail: "Cliquez sur l'icône violette dans la barre de titre pour nous faire part de vos commentaires sur la version française d'AdvantageScope."
+    welcomeDetail: "La version française d'AdvantageScope est créée avec l'aide de l'IA et peut comporter des inexactitudes. Cliquez sur l'icône violette dans la barre de titre pour nous signaler tout problème."
     reloadLite: "AdvantageScope Lite doit se recharger pour changer de langue. Continuer?"
     reloadResetLite: "AdvantageScope Lite doit se recharger et se réinitialiser pour changer de langue. Continuer?"
     restart: "AdvantageScope doit redémarrer pour changer de langue."
@@ -846,6 +849,8 @@ main:
     stop: "Arrêter"
     skip: "Ignorer"
     dontShowAgain: "Ne plus afficher"
+    reset: "Réinitialiser"
+    documentation: "Documentation"
 
   app:
     selectAssetsFolder: "Sélectionnez le dossier contenant des ressources AdvantageScope personnalisées"
@@ -894,6 +899,14 @@ main:
     textFilter: "Fichiers texte"
     openQuery: "Ouvrir le journal?"
     openDetail: "Souhaitez-vous ouvrir le fichier journal « {{name}} »?"
+    openDsLogTitle: "Ouvrir le journal de la DS"
+    openDsLogQuery: "Ouvrir ce journal avec la disposition de la DS?"
+    openDsLogDetail: "La disposition de la console de pilotage peut être ouverte dans une fenêtre séparée sans modifier votre disposition actuelle."
+    openDsInDsWindow: "Ouvrir dans la fenêtre de la DS"
+    openDsInNewWindow: "Ouvrir dans une nouvelle fenêtre"
+    openDsInThisWindow: "Ouvrir dans cette fenêtre"
+    unsupportedFormatLite: "Format de fichier non pris en charge dans AdvantageScope Lite."
+    decompressFailed: "Échec de la décompression du fichier WPILOG."
     limitedSignals: "Signaux limités disponibles"
     limitedSignalsDetail: "Ce fichier journal inclut un nombre limité de signaux provenant des appareils Phoenix. Consultez la documentation Phoenix pour plus de détails."
 
@@ -906,6 +919,8 @@ main:
     invalidDetail: "Le fichier de disposition sélectionné n'est pas dans un format reconnu."
     versionMismatch: "Incompatibilité de version"
     versionMismatchDetail: "Le fichier de disposition a été généré par une version différente d'AdvantageScope. La compatibilité n'est pas garantie."
+    resetDsQuery: "Réinitialiser à la disposition DS?"
+    resetDsDetail: "La disposition de cette fenêtre sera remplacée par la disposition DS. Cette action ne peut pas être annulée."
 
   video:
     pythonRequired: "Installation de Python requise"
@@ -957,6 +972,12 @@ main:
     feedbackAlphaDetail: "Veuillez prendre 30 secondes pour partager votre expérience avec la version alpha d'AdvantageScope. Nous ferons court."
     feedbackBetaDetail: "Veuillez prendre 30 secondes pour partager votre expérience avec la version bêta d'AdvantageScope. Nous ferons court."
     notNow: "Pas maintenant"
+
+  coordinateSystem:
+    legacyFrcMessage: "Système de coordonnées hérité"
+    legacyFrcDetail: "Ce champ utilise par défaut un système de coordonnées hérité pour assurer la compatibilité avec WPILib avant 2027. Si le code de votre robot utilise WPILib 2027, vous pouvez modifier l'option « Système de coordonnées » dans les préférences d'AdvantageScope. Consultez la documentation pour plus de détails."
+    systemcoreFtcMessage: "Système de coordonnées Systemcore"
+    systemcoreFtcDetail: "Ce champ utilise par défaut le système de coordonnées Systemcore. Si le code de votre robot utilise le système de coordonnées traditionnel de la FTC, vous pouvez modifier l'option « Système de coordonnées » dans les préférences d'AdvantageScope. Consultez la documentation pour plus de détails."
 
 units:
   defaultLabel: "{{unit}} (par défaut)"

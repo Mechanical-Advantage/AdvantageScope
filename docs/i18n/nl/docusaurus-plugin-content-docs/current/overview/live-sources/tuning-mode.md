@@ -10,6 +10,7 @@ Standaard zijn alle waarden in AdvantageScope alleen-lezen. Om de tuning-modus i
 
 - Om een **numeriek veld** te bewerken, voer je een nieuwe waarde in via het tekstvak rechts van het veld in de zijbalk. De waarde wordt gepubliceerd nadat de invoer is gedeselecteerd of op de "Enter"-toets wordt gedrukt. Laat het tekstvak leeg om de door de robot gepubliceerde waarde te gebruiken.
 - Om een **booleaans veld** om te schakelen, klik je op het rode of groene cirkeltje rechts van het veld in de zijbalk.
+- Om alle gepubliceerde waarden naar het klembord te kopiëren, **klik je met de rechtermuisknop op het schuifregelaarpictogram** en selecteer je **"Getunede waarden kopiëren"**.
 
 :::warning
 Deze functie is niet bedoeld voor het besturen van de robot op het veld. Dashboard-achtige invoerelementen zoals keuzemenu's, triggerknoppen, enz. worden niet ondersteund.

@@ -28,6 +28,7 @@ download:
   sizeLessThanMinimum: "(أقل من 0.1 ميجابايت)"
   sizeValue: "({{size}} ميجابايت)"
   alertSelectLog: "يرجى تحديد سجل لتنزيله."
+  alertNoNewLogs: "لم يتم العثور على سجلات جديدة."
 
 editFov:
   title: "تعديل FOV — AdvantageScope"
@@ -757,6 +758,7 @@ menu:
     stopPublish: "إيقاف النشر"
     exportLayout: "تصدير التخطيط..."
     importLayout: "استيراد التخطيط..."
+    resetDsLayout: "إعادة التعيين إلى تخطيط DS"
     newWindow: "نافذة جديدة"
     closeWindow: "إغلاق النافذة"
     recentPresets: "الإعدادات المسبقة الأخيرة"
@@ -802,6 +804,7 @@ menu:
   sidebar:
     clearAll: "مسح الكل"
     copyToClipboard: "نسخ «{{title}}» إلى الحافظة"
+    copyTunedValues: "نسخ القيم المضبوطة"
 
   help:
     heading: "مساعدة"
@@ -853,7 +856,7 @@ menu:
 main:
   language:
     welcomeMessage: "مرحبًا"
-    welcomeDetail: "انقر فوق الأيقونة البنفسجية في شريط العنوان لتزويدنا بملاحظاتك حول الإصدار العربي من AdvantageScope."
+    welcomeDetail: "تم إنشاء النسخة العربية من AdvantageScope بدعم من الذكاء الاصطناعي وقد تحتوي على أخطاء. انقر فوق الأيقونة البنفسجية في شريط العنوان لإبلاغنا بأي مشكلات."
     reloadLite: "يحتاج AdvantageScope Lite إلى إعادة التحميل لتبديل اللغات. هل ترغب في المتابعة؟"
     reloadResetLite: "يحتاج AdvantageScope Lite إلى إعادة التحميل وإعادة التعيين لتبديل اللغات. هل ترغب في المتابعة؟"
     restart: "يحتاج AdvantageScope إلى إعادة التشغيل لتبديل اللغات."
@@ -893,6 +896,8 @@ main:
     stop: "إيقاف"
     skip: "تخطي"
     dontShowAgain: "عدم الإظهار مرة أخرى"
+    reset: "إعادة تعيين"
+    documentation: "الوثائق"
 
   app:
     selectAssetsFolder: "تحديد المجلد الذي يحتوي على أصول AdvantageScope المخصصة"
@@ -941,6 +946,14 @@ main:
     textFilter: "ملفات نصية"
     openQuery: "فتح السجل؟"
     openDetail: "هل ترغب في فتح ملف السجل «{{name}}»؟"
+    openDsLogTitle: "فتح سجل DS"
+    openDsLogQuery: "هل ترغب في فتح هذا السجل باستخدام تخطيط DS؟"
+    openDsLogDetail: "يمكن فتح تخطيط محطة السائق في نافذة منفصلة دون تغيير التخطيط الحالي."
+    openDsInDsWindow: "فتح في نافذة DS"
+    openDsInNewWindow: "فتح في نافذة جديدة"
+    openDsInThisWindow: "فتح في هذه النافذة"
+    unsupportedFormatLite: "تنسيق ملف غير مدعوم في AdvantageScope Lite."
+    decompressFailed: "فشل فك ضغط ملف WPILOG."
     limitedSignals: "إشارات محدودة متاحة"
     limitedSignalsDetail: "يتضمن ملف السجل هذا عددًا محدودًا من الإشارات من أجهزة Phoenix. راجع وثائق Phoenix للحصول على التفاصيل."
 
@@ -953,6 +966,8 @@ main:
     invalidDetail: "ملف التخطيط المحدد لم يكن بتنسيق معترف به."
     versionMismatch: "عدم تطابق الإصدار"
     versionMismatchDetail: "تم إنشاء ملف التخطيط بواسطة إصدار مختلف من AdvantageScope. التوافق غير مضمون."
+    resetDsQuery: "هل ترغب في إعادة التعيين إلى تخطيط DS؟"
+    resetDsDetail: "سيتم استبدال تخطيط هذه النافذة بتخطيط DS. لا يمكن التراجع عن هذا الإجراء."
 
   video:
     pythonRequired: "تثبيت Python مطلوب"
@@ -1004,6 +1019,12 @@ main:
     feedbackAlphaDetail: "يُرجى أخذ 30 ثانية لمشاركة تجربتك في استخدام إصدار AdvantageScope ألفا. سنجعل هذا سريعًا."
     feedbackBetaDetail: "يُرجى أخذ 30 ثانية لمشاركة تجربتك في استخدام إصدار AdvantageScope بيتا. سنجعل هذا سريعًا."
     notNow: "ليس الآن"
+
+  coordinateSystem:
+    legacyFrcMessage: "نظام الإحداثيات القديم"
+    legacyFrcDetail: "يستخدم هذا الملعب نظام إحداثيات قديمًا بشكل افتراضي للتوافق مع إصدارات WPILib السابقة لعام 2027. إذا كان رمز الروبوت الخاص بك يستخدم WPILib 2027، فيمكنك تغيير خيار «نظام الإحداثيات» في تفضيلات AdvantageScope. راجع الوثائق لمزيد من التفاصيل."
+    systemcoreFtcMessage: "نظام إحداثيات Systemcore"
+    systemcoreFtcDetail: "يستخدم هذا الملعب نظام إحداثيات Systemcore بشكل افتراضي. إذا كان رمز الروبوت الخاص بك يستخدم نظام إحداثيات FTC التقليدي، فيمكنك تغيير خيار «نظام الإحداثيات» في تفضيلات AdvantageScope. راجع الوثائق لمزيد من التفاصيل."
 
 units:
   defaultLabel: "{{unit}} (الافتراضي)"

@@ -10,6 +10,7 @@ Varsayılan olarak AdvantageScope'taki tüm değerler salt okunurdur. Ayar modun
 
 - Bir **sayısal alanı** düzenlemek için kenar çubuğundaki alanın sağında bulunan metin kutusunu kullanarak yeni bir değer girin. Değer, girdi seçimi kaldırıldıktan veya "Enter" tuşuna basıldıktan sonra yayınlanır. Robot tarafından yayınlanan değeri kullanmak için metin kutusunu boş bırakın.
 - Bir **boole alanını** açıp kapatmak için kenar çubuğundaki alanın sağında bulunan kırmızı veya yeşil daireye tıklayın.
+- Yayınlanan tüm değerleri panoya kopyalamak için **kaydırıcı simgesine sağ tıklayın** ve **"Ayarlanan değerleri kopyala"** seçeneğini seçin.
 
 :::warning
 Bu özellik robotu sahada kontrol etmek için tasarlanmamıştır. Seçiciler, tetikleyici düğmeler vb. gibi gösterge paneli tarzı girdiler desteklenmez.

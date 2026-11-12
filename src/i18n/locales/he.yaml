@@ -28,6 +28,7 @@ download:
   sizeLessThanMinimum: '(<0.1 מ"ב)'
   sizeValue: '({{size}} מ"ב)'
   alertSelectLog: "יש לבחור יומן להורדה."
+  alertNoNewLogs: "לא נמצאו יומנים חדשים."
 
 editFov:
   title: "עריכת שדה ראייה (FOV) — AdvantageScope"
@@ -722,6 +723,7 @@ menu:
     stopPublish: "הפסקת פרסום"
     exportLayout: "ייצוא פריסה..."
     importLayout: "ייבוא פריסה..."
+    resetDsLayout: "איפוס לפריסת DS"
     newWindow: "חלון חדש"
     closeWindow: "סגירת חלון"
     recentPresets: "הגדרות קבועות אחרונות"
@@ -767,6 +769,7 @@ menu:
   sidebar:
     clearAll: "ניקוי הכול"
     copyToClipboard: 'העתקת "{{title}}" ללוח'
+    copyTunedValues: "העתקת ערכים מכווננים"
 
   help:
     heading: "עזרה"
@@ -818,7 +821,7 @@ menu:
 main:
   language:
     welcomeMessage: "ברוכים הבאים"
-    welcomeDetail: "יש ללחוץ על הסמל הסגול בשורת הכותרת כדי לתת לנו משוב על הגרסה העברית של AdvantageScope."
+    welcomeDetail: "הגרסה העברית של AdvantageScope נוצרת בתמיכת AI ועשויה לכלול אי-דיוקים. יש ללחוץ על הסמל הסגול בשורת הכותרת כדי לדווח לנו על כל בעיה."
     reloadLite: "AdvantageScope Lite צריך להיטען מחדש כדי להחליף שפה. להמשיך?"
     reloadResetLite: "AdvantageScope Lite צריך להתאפס ולהיטען מחדש כדי להחליף שפה. להמשיך?"
     restart: "AdvantageScope צריך לבצע הפעלה מחדש כדי להחליף שפה."
@@ -858,6 +861,8 @@ main:
     stop: "עצירה"
     skip: "דילוג"
     dontShowAgain: "לא להציג שוב"
+    reset: "איפוס"
+    documentation: "תיעוד"
 
   app:
     selectAssetsFolder: "בחירת תיקייה המכילה נכסי AdvantageScope מותאמים אישית"
@@ -906,6 +911,14 @@ main:
     textFilter: "קובצי טקסט"
     openQuery: "לפתוח יומן?"
     openDetail: 'האם ברצונך לפתוח את קובץ היומן "{{name}}"?'
+    openDsLogTitle: "פתיחת יומן DS"
+    openDsLogQuery: "האם לפתוח יומן זה באמצעות פריסת DS?"
+    openDsLogDetail: "ניתן לפתוח את פריסת ה-Driver Station בחלון נפרד מבלי לשנות את הפריסה הנוכחית שלכם."
+    openDsInDsWindow: "פתיחה בחלון DS"
+    openDsInNewWindow: "פתיחה בחלון חדש"
+    openDsInThisWindow: "פתיחה בחלון זה"
+    unsupportedFormatLite: "פורמט קובץ שאינו נתמך ב-AdvantageScope Lite."
+    decompressFailed: "חילוץ קובץ ה-WPILOG נכשל."
     limitedSignals: "אותות זמינים מוגבלים"
     limitedSignalsDetail: "קובץ יומן זה כולל מספר מוגבל של אותות ממכשירי Phoenix. יש לבדוק את התיעוד של Phoenix לפרטים נוספים."
 
@@ -918,6 +931,8 @@ main:
     invalidDetail: "קובץ הפריסה שנבחר אינו בפורמט מוכר."
     versionMismatch: "חוסר התאמה בגרסאות"
     versionMismatchDetail: "קובץ הפריסה נוצר על ידי גרסה שונה של AdvantageScope. לא מובטחת תאימות מלאה."
+    resetDsQuery: "לאפס לפריסת DS?"
+    resetDsDetail: "פריסת חלון זה תוחלף בפריסת ה-DS. לא ניתן לבטל פעולה זו."
 
   video:
     pythonRequired: "נדרשת התקנת Python"
@@ -969,6 +984,12 @@ main:
     feedbackAlphaDetail: "נשמח אם תקדישו 30 שניות לשיתוף חוויותיכם מהשימוש באלפא של AdvantageScope. נשמור על זה קצר."
     feedbackBetaDetail: "נשמח אם תקדישו 30 שניות לשיתוף חוויותיכם מהשימוש בבטא של AdvantageScope. נשמור על זה קצר."
     notNow: "לא עכשיו"
+
+  coordinateSystem:
+    legacyFrcMessage: "מערכת צירים מדור קודם"
+    legacyFrcDetail: 'מגרש זה משתמש כברירת מחדל במערכת צירים מדור קודם לצורך תאימות עם WPILib מלפני 2027. אם קוד הרובוט שלכם משתמש ב-WPILib 2027, תוכלו לשנות את האפשרות "מערכת צירים" בהעדפות של AdvantageScope. ראו את התיעוד לפרטים נוספים.'
+    systemcoreFtcMessage: "מערכת צירים של Systemcore"
+    systemcoreFtcDetail: 'מגרש זה משתמש כברירת מחדל במערכת הצירים של Systemcore. אם קוד הרובוט שלכם משתמש במערכת הצירים המסורתית של FTC, תוכלו לשנות את האפשרות "מערכת צירים" בהעדפות של AdvantageScope. ראו את התיעוד לפרטים נוספים.'
 
 units:
   defaultLabel: "{{unit}} (ברירת מחדל)"

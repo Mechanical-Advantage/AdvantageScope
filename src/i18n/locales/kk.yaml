@@ -28,6 +28,7 @@ download:
   sizeLessThanMinimum: "(<0,1 МБ)"
   sizeValue: "({{size}} МБ)"
   alertSelectLog: "Жүктеп алу үшін журналды таңдаңыз."
+  alertNoNewLogs: "Жаңа журналдар табылмады."
 
 editFov:
   title: "FOV өңдеу — AdvantageScope"
@@ -708,6 +709,7 @@ menu:
     stopPublish: "Жариялауды тоқтату"
     exportLayout: "Орналасуды экспорттау..."
     importLayout: "Орналасуды импорттау..."
+    resetDsLayout: "DS орналасуына қалпына келтіру"
     newWindow: "Жаңа терезе"
     closeWindow: "Терезені жабу"
     recentPresets: "Соңғы алдын ала орнатулар"
@@ -753,6 +755,7 @@ menu:
   sidebar:
     clearAll: "Барлығын тазарту"
     copyToClipboard: "«{{title}}» алмасу буферіне көшіру"
+    copyTunedValues: "Бапталған мәндерді көшіру"
 
   help:
     heading: "Анықтама"
@@ -804,7 +807,7 @@ menu:
 main:
   language:
     welcomeMessage: "Қош келдіңіз"
-    welcomeDetail: "AdvantageScope бағдарламасының қазақша нұсқасы бойынша пікір қалдыру үшін тақырып жолағындағы күлгін белгішені басыңыз."
+    welcomeDetail: "AdvantageScope бағдарламасының қазақша нұсқасы ЖИ қолдауымен жасалған және дәлсіздіктерді қамтуы мүмкін. Кез келген мәселе туралы хабарлау үшін тақырып жолағындағы күлгін белгішені басыңыз."
     reloadLite: "Тілдерді ауыстыру үшін AdvantageScope Lite қолданбасын қайта жүктеу қажет. Жалғастырайық па?"
     reloadResetLite: "Тілдерді ауыстыру үшін AdvantageScope Lite қолданбасын қалпына келтіріп, қайта жүктеу қажет. Жалғастырайық па?"
     restart: "Тілдерді ауыстыру үшін AdvantageScope қолданбасын қайта іске қосу қажет."
@@ -844,6 +847,8 @@ main:
     stop: "Тоқтату"
     skip: "Өткізіп жіберу"
     dontShowAgain: "Қайта көрсетпеу"
+    reset: "Қалпына келтіру"
+    documentation: "Құжаттама"
 
   app:
     selectAssetsFolder: "Таңдамалы AdvantageScope активтері бар қалтаны таңдау"
@@ -892,6 +897,14 @@ main:
     textFilter: "Мәтіндік файлдар"
     openQuery: "Журналды ашу керек пе?"
     openDetail: "«{{name}}» журнал файлын ашқыңыз келе ме?"
+    openDsLogTitle: "DS журналын ашу"
+    openDsLogQuery: "Бұл журналды DS орналасуын пайдаланып ашу керек пе?"
+    openDsLogDetail: "Driver Station орналасуын ағымдағы орналасуды өзгертпей бөлек терезеде ашуға болады."
+    openDsInDsWindow: "DS терезесінде ашу"
+    openDsInNewWindow: "Жаңа терезеде ашу"
+    openDsInThisWindow: "Осы терезеде ашу"
+    unsupportedFormatLite: "AdvantageScope Lite нұсқасында қолдау көрсетілмейтін файл пішімі."
+    decompressFailed: "WPILOG файлын қысудан шығару сәтсіз аяқталды."
     limitedSignals: "Шектеулі сигналдар қолжетімді"
     limitedSignalsDetail: "Бұл журнал файлында Phoenix құрылғыларының шектеулі сигналдары бар. Мәліметтер алу үшін Phoenix құжаттамасын қараңыз."
 
@@ -904,6 +917,8 @@ main:
     invalidDetail: "Таңдалған орналасу файлы танылатын пішімде емес."
     versionMismatch: "Нұсқалар сәйкессіздігі"
     versionMismatchDetail: "Орналасу файлын AdvantageScope қолданбасының басқа нұсқасы жасаған. Үйлесімділікке кепілдік берілмейді."
+    resetDsQuery: "DS орналасуына қалпына келтіру керек пе?"
+    resetDsDetail: "Бұл терезенің орналасуы DS орналасуымен ауыстырылады. Бұл әрекетті қайтару мүмкін емес."
 
   video:
     pythonRequired: "Python орнату қажет"
@@ -955,6 +970,12 @@ main:
     feedbackAlphaDetail: "AdvantageScope альфа-нұсқасын пайдалану тәжірибеңізбен бөлісуге 30 секунд уақыт бөліңіз."
     feedbackBetaDetail: "AdvantageScope бета-нұсқасын пайдалану тәжірибеңізбен бөлісуге 30 секунд уақыт бөліңіз."
     notNow: "Қазір емес"
+
+  coordinateSystem:
+    legacyFrcMessage: "Ескі координаттар жүйесі"
+    legacyFrcDetail: "Бұл алаң 2027 жылға дейінгі WPILib нұсқаларымен үйлесімділік үшін әдепкі бойынша ескі координаттар жүйесін пайдаланады. Егер робот кодыңыз 2027 WPILib нұсқасын пайдаланса, AdvantageScope қалауларындағы «Координаттар жүйесі» параметрін өзгерте аласыз. Толық ақпаратты құжаттамадан қараңыз."
+    systemcoreFtcMessage: "Systemcore координаттар жүйесі"
+    systemcoreFtcDetail: "Бұл алаң әдепкі бойынша Systemcore координаттар жүйесін пайдаланады. Егер робот кодыңыз дәстүрлі FTC координаттар жүйесін пайдаланса, AdvantageScope қалауларындағы «Координаттар жүйесі» параметрін өзгерте аласыз. Толық ақпаратты құжаттамадан қараңыз."
 
 units:
   defaultLabel: "{{unit}} (Әдепкі)"

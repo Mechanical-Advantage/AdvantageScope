@@ -40,7 +40,7 @@ Voici un exemple d'enregistrement d'une chaîne avec une clé en français :
 <TabItem value="wpilib" label="WPILib" default>
 
 ```java
-SmartDashboard.putString("Entraînement/Vitesse du moteur droit", "Rapide");
+Telemetry.log("Entraînement/Vitesse du moteur droit", "Rapide");
 ```
 
 </TabItem>
@@ -59,6 +59,6 @@ Consultez la page sur la [prise en charge des unités](/tab-reference/line-graph
 
 ## Développement {#development}
 
-La localisation d'AdvantageScope repose sur une combinaison d'intelligence artificielle et de collaboration communautaire. Comme AdvantageScope est un projet qui évolue rapidement, l'utilisation de l'IA est essentielle pour maintenir synchronisées l'application traduite et la documentation dans chaque langue. Cela signifie que les nouvelles fonctionnalités et mises à jour sont toujours disponibles simultanément, quelle que soit la langue choisie.
+La localisation d'AdvantageScope est créée avec une combinaison d'intelligence artificielle et de collaboration communautaire. Comme AdvantageScope est un projet qui évolue rapidement, l'utilisation de l'IA est essentielle pour maintenir synchronisées l'application traduite et la documentation dans chaque langue. Cela signifie que les nouvelles fonctionnalités et mises à jour sont toujours disponibles simultanément, quelle que soit la langue choisie.
 
-Pour garantir des traductions de la plus haute qualité, notre processus s'appuie sur des ressources de référence détaillées fournies par des locuteurs natifs de la communauté FIRST pour élaborer des glossaires et des directives précises pour chaque langue. Cela aide les traductions à correspondre au vocabulaire spécifique, aux emprunts linguistiques et aux translittérations familiers aux équipes locales. Les traductions de base sont générées de manière itérative à l'aide de l'IA avec une supervision humaine sur les choix critiques (tels que les termes de vocabulaire FIRST). Les utilisateurs peuvent également donner leur avis sur les traductions en cliquant sur l'icône violette dans l'application (lorsqu'elle est configurée dans une autre langue que l'anglais).
+Notre processus est conçu pour correspondre au vocabulaire spécifique, aux emprunts linguistiques et aux translittérations familiers aux équipes locales. Cependant, les traductions par IA comportent souvent des tournures peu naturelles ou d'autres inexactitudes. Vos retours sont les bienvenus; vous pouvez faire part de vos commentaires sur les traductions en cliquant sur l'icône violette dans l'application (lorsqu'elle est configurée dans une autre langue que l'anglais).

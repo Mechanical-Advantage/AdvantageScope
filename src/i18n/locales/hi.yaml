@@ -28,6 +28,7 @@ download:
   sizeLessThanMinimum: "(<0.1 MB)"
   sizeValue: "({{size}} MB)"
   alertSelectLog: "कृपया डाउनलोड करने के लिए एक लॉग चुनें।"
+  alertNoNewLogs: "कोई नया लॉग नहीं मिला।"
 
 editFov:
   title: "FOV संपादित करें — AdvantageScope"
@@ -710,6 +711,7 @@ menu:
     stopPublish: "पब्लिशिंग रोकें"
     exportLayout: "लेआउट एक्सपोर्ट करें..."
     importLayout: "लेआउट इम्पोर्ट करें..."
+    resetDsLayout: "DS लेआउट पर रीसेट करें"
     newWindow: "नई विंडो"
     closeWindow: "विंडो बंद करें"
     recentPresets: "हाल के प्रीसेट्स"
@@ -755,6 +757,7 @@ menu:
   sidebar:
     clearAll: "सभी साफ़ करें"
     copyToClipboard: '"{{title}}" को क्लिपबोर्ड पर कॉपी करें'
+    copyTunedValues: "ट्यून किए गए मान कॉपी करें"
 
   help:
     heading: "सहायता"
@@ -806,7 +809,7 @@ menu:
 main:
   language:
     welcomeMessage: "स्वागत है"
-    welcomeDetail: "AdvantageScope के हिंदी संस्करण पर हमें फ़ीडबैक देने के लिए टाइटल बार में बैंगनी आइकन पर क्लिक करें।"
+    welcomeDetail: "AdvantageScope का हिंदी संस्करण AI के सहयोग से बनाया गया है और इसमें अशुद्धियाँ हो सकती हैं। किसी भी समस्या के बारे में हमें बताने के लिए टाइटल बार में बैंगनी आइकन पर क्लिक करें।"
     reloadLite: "भाषा बदलने के लिए AdvantageScope लाइट को रीलोड करने की आवश्यकता है। जारी रखें?"
     reloadResetLite: "भाषा बदलने के लिए AdvantageScope लाइट को रीसेट और रीलोड करने की आवश्यकता है। जारी रखें?"
     restart: "भाषा बदलने के लिए AdvantageScope को पुनरारंभ करने की आवश्यकता है।"
@@ -846,6 +849,8 @@ main:
     stop: "रोकें"
     skip: "छोड़ें"
     dontShowAgain: "फिर से न दिखाएँ"
+    reset: "रीसेट करें"
+    documentation: "डॉक्यूमेंटेशन"
 
   app:
     selectAssetsFolder: "कस्टम AdvantageScope एसेट्स युक्त फ़ोल्डर चुनें"
@@ -894,6 +899,14 @@ main:
     textFilter: "टेक्स्ट फ़ाइलें"
     openQuery: "लॉग खोलें?"
     openDetail: 'क्या आप लॉग फ़ाइल "{{name}}" खोलना चाहेंगे?'
+    openDsLogTitle: "DS लॉग खोलें"
+    openDsLogQuery: "क्या इस लॉग को DS लेआउट का उपयोग करके खोलना है?"
+    openDsLogDetail: "ड्राइवर स्टेशन लेआउट को आपके वर्तमान लेआउट को बदले बिना एक अलग विंडो में खोला जा सकता है।"
+    openDsInDsWindow: "DS विंडो में खोलें"
+    openDsInNewWindow: "नई विंडो में खोलें"
+    openDsInThisWindow: "इस विंडो में खोलें"
+    unsupportedFormatLite: "AdvantageScope Lite में असमर्थित फ़ाइल प्रारूप।"
+    decompressFailed: "WPILOG फ़ाइल को डीकंप्रेस करने में विफल।"
     limitedSignals: "सीमित सिग्नल उपलब्ध हैं"
     limitedSignalsDetail: "इस लॉग फ़ाइल में Phoenix उपकरणों से सीमित संख्या में सिग्नल शामिल हैं। विवरण के लिए Phoenix दस्तावेज़ देखें।"
 
@@ -906,6 +919,8 @@ main:
     invalidDetail: "चयनित लेआउट फ़ाइल एक मान्यता प्राप्त प्रारूप नहीं थी।"
     versionMismatch: "संस्करण बेमेल"
     versionMismatchDetail: "लेआउट फ़ाइल AdvantageScope के भिन्न संस्करण द्वारा जनरेट की गई थी। संगतता की गारंटी नहीं है।"
+    resetDsQuery: "DS लेआउट पर रीसेट करें?"
+    resetDsDetail: "इस विंडो का लेआउट DS लेआउट से बदल दिया जाएगा। इसे पूर्ववत नहीं किया जा सकता है।"
 
   video:
     pythonRequired: "Python इंस्टॉलेशन आवश्यक है"
@@ -957,6 +972,12 @@ main:
     feedbackAlphaDetail: "AdvantageScope अल्फा का उपयोग करने के अपने अनुभव को साझा करने के लिए कृपया 30 सेकंड का समय लें। हम इसे त्वरित रखेंगे।"
     feedbackBetaDetail: "AdvantageScope बीटा का उपयोग करने के अपने अनुभव को साझा करने के लिए कृपया 30 सेकंड का समय लें। हम इसे त्वरित रखेंगे।"
     notNow: "अभी नहीं"
+
+  coordinateSystem:
+    legacyFrcMessage: "लीगेसी कोऑर्डिनेट सिस्टम"
+    legacyFrcDetail: 'यह फ़ील्ड 2027 से पहले के WPILib के साथ संगतता के लिए डिफ़ॉल्ट रूप से एक लीगेसी कोऑर्डिनेट सिस्टम का उपयोग करता है। यदि आपका रोबोट कोड 2027 WPILib का उपयोग करता है, तो आप AdvantageScope प्राथमिकताओं में "कोऑर्डिनेट सिस्टम" विकल्प बदल सकते हैं। विवरण के लिए डॉक्यूमेंटेशन देखें।'
+    systemcoreFtcMessage: "Systemcore कोऑर्डिनेट सिस्टम"
+    systemcoreFtcDetail: 'यह फ़ील्ड डिफ़ॉल्ट रूप से Systemcore कोऑर्डिनेट सिस्टम का उपयोग करता है। यदि आपका रोबोट कोड पारंपरिक FTC कोऑर्डिनेट सिस्टम का उपयोग करता है, तो आप AdvantageScope प्राथमिकताओं में "कोऑर्डिनेट सिस्टम" विकल्प बदल सकते हैं। विवरण के लिए डॉक्यूमेंटेशन देखें।'
 
 units:
   defaultLabel: "{{unit}} (डिफ़ॉल्ट)"

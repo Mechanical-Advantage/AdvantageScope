@@ -40,7 +40,7 @@ Iată un exemplu de înregistrare a unui șir de caractere cu o cheie în limba 
 <TabItem value="wpilib" label="WPILib" default>
 
 ```java
-SmartDashboard.putString("Tracțiune/Viteză motor dreapta", "Rapid");
+Telemetry.log("Tracțiune/Viteză motor dreapta", "Rapid");
 ```
 
 </TabItem>
@@ -59,6 +59,6 @@ Consultă pagina despre [suportul pentru unități](/tab-reference/line-graph/un
 
 ## Dezvoltare {#development}
 
-Localizarea AdvantageScope este realizată printr-o combinație de inteligență artificială și colaborare comunitară. Deoarece AdvantageScope este un proiect în continuă evoluție, utilizarea IA este esențială pentru a menține sincronizate aplicația tradusă și documentația în fiecare limbă. Aceasta înseamnă că noile funcționalități și actualizări sunt întotdeauna disponibile simultan, indiferent de limba selectată.
+Localizarea AdvantageScope este creată printr-o combinație de inteligență artificială și colaborare comunitară. Deoarece AdvantageScope este un proiect în continuă evoluție, utilizarea IA este esențială pentru a menține sincronizate aplicația tradusă și documentația în fiecare limbă. Aceasta înseamnă că noile funcționalități și actualizări sunt întotdeauna disponibile simultan, indiferent de limba selectată.
 
-Pentru a asigura traduceri de cea mai înaltă calitate, procesul nostru se bazează pe materiale de referință extinse de la vorbitori nativi din comunitatea FIRST pentru a crea glosare și ghiduri detaliate pentru fiecare limbă. Acest lucru ajută ca traducerile să se potrivească cu vocabularul specific, neologismele și transliterările cu care echipele locale sunt familiarizate. Traducerile de bază sunt generate iterativ folosind IA, cu supraveghere umană asupra alegerilor critice (cum ar fi traducerile vocabularului FIRST). De asemenea, utilizatorii pot oferi feedback cu privire la traduceri făcând clic pe pictograma mov din aplicație (când este configurată pentru orice altă limbă în afară de engleză).
+Procesul nostru este conceput pentru a se potrivi cu vocabularul specific, împrumuturile lexicale și transliterările cu care echipele locale sunt familiarizate. Cu toate acestea, traducerile generate de IA includ adesea formulări nenaturale sau alte inexactități. Apreciem feedbackul tău; poți oferi feedback cu privire la traduceri făcând clic pe pictograma mov din aplicație (când este configurată pentru orice altă limbă în afară de engleză).

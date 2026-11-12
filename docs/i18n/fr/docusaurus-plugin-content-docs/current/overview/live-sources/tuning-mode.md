@@ -10,6 +10,7 @@ Par défaut, toutes les valeurs dans AdvantageScope sont en lecture seule. Pour 
 
 - Pour modifier un **champ numérique**, saisissez une nouvelle valeur à l'aide de la zone de texte à droite du champ dans la barre latérale. La valeur est publiée après la désélection de la saisie ou lorsque la touche « Entrée » est enfoncée. Laissez la zone de texte vide pour utiliser la valeur publiée par le robot.
 - Pour basculer un **champ booléen**, cliquez sur le cercle rouge ou vert à droite du champ dans la barre latérale.
+- Pour copier toutes les valeurs publiées dans le presse-papiers, **faites un clic droit sur l'icône de curseur** et sélectionnez **« Copier les valeurs réglées »**.
 
 :::warning
 Cette fonctionnalité n'est pas destinée à contrôler le robot sur le terrain. Les saisies de type tableau de bord comme les sélecteurs, boutons de déclenchement, etc. ne sont pas prises en charge.

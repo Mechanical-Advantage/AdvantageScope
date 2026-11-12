@@ -6,10 +6,8 @@ sidebar_position: 2
 
 AdvantageScope prend en charge la diffusion en direct de signaux depuis des appareils Phoenix 6 **sans aucune configuration dans le code utilisateur**. Cela permet un débogage et un réglage faciles des appareils Phoenix à l'aide de l'interface familière et de toute la puissance d'AdvantageScope :
 
-- Des options de visualisation flexibles, y compris la prise en charge de plusieurs axes et de champs discrets
+- Des options de visualisation flexibles, y compris la prise en charge des tableaux et de l'analyse statistique
 - La prise en charge complète des graphiques avec unités, y compris la conversion d'unités implicite et en un clic ([docs](/tab-reference/line-graph/units))
-- Un aperçu en direct de toutes les valeurs dans la barre latérale pour une navigation facile
-- La prise en charge du tracé et de l'aperçu du signal depuis plusieurs appareils simultanément
 - Le décodage des valeurs d'énumération sous forme de chaînes lisibles par l'homme (modes de contrôle, état du pont, état de l'aimant CANcoder, etc.)
 - Des info-bulles de barre latérale intégrées avec des descriptions et des unités pour chaque signal
 - Une organisation hiérarchique des signaux, regroupés par bus CAN, appareil et type de signal

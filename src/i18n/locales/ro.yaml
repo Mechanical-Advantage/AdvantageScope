@@ -28,6 +28,7 @@ download:
   sizeLessThanMinimum: "(<0,1 MB)"
   sizeValue: "({{size}} MB)"
   alertSelectLog: "Selectează un log pentru descărcare."
+  alertNoNewLogs: "Nu s-au găsit log-uri noi."
 
 editFov:
   title: "Editare FOV — AdvantageScope"
@@ -722,6 +723,7 @@ menu:
     stopPublish: "Oprește publicarea"
     exportLayout: "Exportă aranjamentul..."
     importLayout: "Importă aranjamentul..."
+    resetDsLayout: "Resetează la aranjamentul DS"
     newWindow: "Fereastră nouă"
     closeWindow: "Închide fereastra"
     recentPresets: "Presetări recente"
@@ -767,6 +769,7 @@ menu:
   sidebar:
     clearAll: "Șterge tot"
     copyToClipboard: "Copiază „{{title}}” în clipboard"
+    copyTunedValues: "Copiază valorile ajustate"
 
   help:
     heading: "Ajutor"
@@ -818,7 +821,7 @@ menu:
 main:
   language:
     welcomeMessage: "Bun venit"
-    welcomeDetail: "Dă clic pe pictograma mov din bara de titlu pentru a ne oferi feedback despre versiunea în română a AdvantageScope."
+    welcomeDetail: "Versiunea în română a AdvantageScope este creată cu sprijinul IA și poate include inexactități. Dă clic pe pictograma mov din bara de titlu pentru a ne semnala orice probleme."
     reloadLite: "AdvantageScope Lite necesită reîncărcare pentru a schimba limba. Continui?"
     reloadResetLite: "AdvantageScope Lite necesită reîncărcare și resetare pentru a schimba limba. Continui?"
     restart: "AdvantageScope necesită repornire pentru a schimba limba."
@@ -858,6 +861,8 @@ main:
     stop: "Oprește"
     skip: "Sari"
     dontShowAgain: "Nu mai afișa"
+    reset: "Resetează"
+    documentation: "Documentație"
 
   app:
     selectAssetsFolder: "Selectează folderul care conține resursele personalizate AdvantageScope"
@@ -906,6 +911,14 @@ main:
     textFilter: "Fișiere text"
     openQuery: "Deschizi logul?"
     openDetail: "Ai dori să deschizi fișierul log „{{name}}”?"
+    openDsLogTitle: "Deschidere log DS"
+    openDsLogQuery: "Deschizi acest log folosind aranjamentul DS?"
+    openDsLogDetail: "Aranjamentul Driver Station poate fi deschis într-o fereastră separată fără a modifica aranjamentul curent."
+    openDsInDsWindow: "Deschide în fereastra DS"
+    openDsInNewWindow: "Deschide în fereastră nouă"
+    openDsInThisWindow: "Deschide în această fereastră"
+    unsupportedFormatLite: "Format de fișier neacceptat în AdvantageScope Lite."
+    decompressFailed: "Eșec la decomprimarea fișierului WPILOG."
     limitedSignals: "Semnale limitate disponibile"
     limitedSignalsDetail: "Acest fișier log include un număr limitat de semnale de la dispozitivele Phoenix. Consultă documentația Phoenix pentru detalii."
 
@@ -918,6 +931,8 @@ main:
     invalidDetail: "Fișierul de aranjament selectat nu are un format recunoscut."
     versionMismatch: "Nepotrivire de versiune"
     versionMismatchDetail: "Fișierul de aranjament a fost generat de o versiune diferită a AdvantageScope. Compatibilitatea nu este garantată."
+    resetDsQuery: "Resetezi la aranjamentul DS?"
+    resetDsDetail: "Aranjamentul acestei ferestre va fi înlocuit cu aranjamentul DS. Această acțiune nu poate fi anulată."
 
   video:
     pythonRequired: "Este necesară instalarea Python"
@@ -969,6 +984,12 @@ main:
     feedbackAlphaDetail: "Te rugăm să acorzi 30 de secunde pentru a ne împărtăși experiența ta cu versiunea alpha AdvantageScope. Nu îți va lua mult."
     feedbackBetaDetail: "Te rugăm să acorzi 30 de secunde pentru a ne împărtăși experiența ta cu versiunea beta AdvantageScope. Nu îți va lua mult."
     notNow: "Nu acum"
+
+  coordinateSystem:
+    legacyFrcMessage: "Sistem de coordonate moștenit"
+    legacyFrcDetail: "Acest teren folosește în mod implicit un sistem de coordonate moștenit pentru compatibilitate cu versiunile WPILib anterioare anului 2027. Dacă codul robotului tău folosește WPILib 2027, poți schimba opțiunea „Sistem de coordonate” din preferințele AdvantageScope. Consultă documentația pentru detalii."
+    systemcoreFtcMessage: "Sistem de coordonate Systemcore"
+    systemcoreFtcDetail: "Acest teren folosește în mod implicit sistemul de coordonate Systemcore. Dacă codul robotului tău folosește sistemul de coordonate tradițional FTC, poți schimba opțiunea „Sistem de coordonate” din preferințele AdvantageScope. Consultă documentația pentru detalii."
 
 units:
   defaultLabel: "{{unit}} (Implicit)"
