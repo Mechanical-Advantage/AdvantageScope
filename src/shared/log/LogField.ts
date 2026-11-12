@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { lowerBound, upperBound } from "../util";
 import LoggableType from "./LoggableType";
 import { isChildLog } from "./LogKeyUtils";
 import { logValuesEqual } from "./LogUtil";
@@ -86,40 +87,34 @@ export default class LogField {
       cacheIndex = this.getRangeCache[uuid];
     }
 
-    let startValueIndex = -1;
-    if (
+    let startSearchIndex =
       cacheIndex !== null &&
+      cacheIndex >= 0 &&
       cacheIndex < this.data.timestamps.length &&
       !(this.data.timestamps[cacheIndex] > start)
-    ) {
-      // Search from previous location
-      let rawIndex = this.data.timestamps.slice(cacheIndex).findIndex((x) => x > start);
-      if (rawIndex !== -1) startValueIndex = rawIndex + cacheIndex;
-    }
-    if (startValueIndex === -1) {
-      // Search from start
-      startValueIndex = this.data.timestamps.findIndex((x) => x > start);
-    }
-    if (startValueIndex === -1) {
-      startValueIndex = this.data.timestamps.length - 1;
-    } else if (startValueIndex !== 0) {
-      startValueIndex -= 1;
-    }
+        ? cacheIndex + 1
+        : 0;
+    let startUpper = upperBound(this.data.timestamps, start, startSearchIndex);
+    let startValueIndex = startUpper > 0 ? startUpper - 1 : 0;
     if (startOffset !== undefined && startOffset >= -startValueIndex) {
       startValueIndex += startOffset;
     }
 
-    let endValueIndex = -1;
-    if (cacheIndex !== null && cacheIndex < this.data.timestamps.length && !(this.data.timestamps[cacheIndex] >= end)) {
-      // Search from previous location
-      let rawIndex = this.data.timestamps.slice(cacheIndex).findIndex((x) => x >= end);
-      if (rawIndex !== -1) endValueIndex = rawIndex + cacheIndex;
+    let endValueIndex: number;
+    if (start === end) {
+      if (startUpper === 0 || this.data.timestamps[startUpper - 1] < end) {
+        endValueIndex = startUpper;
+      } else if (startUpper === 1 || this.data.timestamps[startUpper - 2] < end) {
+        endValueIndex = startUpper - 1;
+      } else {
+        endValueIndex = lowerBound(this.data.timestamps, end);
+      }
+    } else if (end > start) {
+      endValueIndex = lowerBound(this.data.timestamps, end, startUpper);
+    } else {
+      endValueIndex = lowerBound(this.data.timestamps, end);
     }
-    if (endValueIndex === -1) {
-      // Search from start
-      endValueIndex = this.data.timestamps.findIndex((x) => x >= end);
-    }
-    if (endValueIndex === -1 || endValueIndex === this.data.timestamps.length - 1) {
+    if (endValueIndex >= this.data.timestamps.length - 1) {
       // Extend to end of timestamps
       timestamps = this.data.timestamps.slice(startValueIndex);
       values = this.data.values.slice(startValueIndex);
@@ -180,40 +175,34 @@ export default class LogField {
     if (value === null) return;
 
     // Find position to insert based on timestamp
-    let insertIndex: number;
-    if (this.data.timestamps.length > 0 && timestamp > this.data.timestamps[this.data.timestamps.length - 1]) {
-      // There's a good chance this data is at the end of the log, so check that first
-      insertIndex = this.data.timestamps.length;
-    } else {
-      // Adding in the middle, find where to insert it
-      let alreadyExists = false;
-      insertIndex =
-        this.data.timestamps.findLastIndex((x) => {
-          if (alreadyExists) return;
-          if (x === timestamp) alreadyExists = true;
-          return x < timestamp;
-        }) + 1;
-      if (alreadyExists) {
-        this.data.values[this.data.timestamps.indexOf(timestamp)] = value;
-        return;
-      }
+    let timestamps = this.data.timestamps;
+    let values = this.data.values;
+    let length = timestamps.length;
+    if (length > 0 && timestamps[length - 1] === timestamp) {
+      values[length - 1] = value;
+      return;
+    }
+    let insertIndex = lowerBound(timestamps, timestamp);
+    if (insertIndex < length && timestamps[insertIndex] === timestamp) {
+      values[insertIndex] = value;
+      return;
     }
 
     // Compare to adjacent values
-    let childLog = isChildLog(this.wpilibType, this.structuredType);
-    if (!childLog && insertIndex > 0 && logValuesEqual(this.type, value, this.data.values[insertIndex - 1])) {
+    let childLog = this.type === LoggableType.Raw && isChildLog(this.wpilibType, this.structuredType);
+    if (!childLog && insertIndex > 0 && logValuesEqual(this.type, value, values[insertIndex - 1])) {
       // Same as the previous value
-    } else if (
-      !childLog &&
-      insertIndex < this.data.values.length &&
-      logValuesEqual(this.type, value, this.data.values[insertIndex])
-    ) {
+    } else if (!childLog && insertIndex < values.length && logValuesEqual(this.type, value, values[insertIndex])) {
       // Same as the next value
-      this.data.timestamps[insertIndex] = timestamp;
+      timestamps[insertIndex] = timestamp;
+    } else if (insertIndex === length) {
+      // New value at the end
+      timestamps.push(timestamp);
+      values.push(value);
     } else {
-      // New value
-      this.data.timestamps.splice(insertIndex, 0, timestamp);
-      this.data.values.splice(insertIndex, 0, value);
+      // New value in the middle
+      timestamps.splice(insertIndex, 0, timestamp);
+      values.splice(insertIndex, 0, value);
     }
   }
 

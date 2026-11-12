@@ -9,7 +9,7 @@ import { SelectionMode } from "../Selection";
 import { getLogValueText } from "../log/LogUtil";
 import { LogValueSetAny } from "../log/LogValueSets";
 import LoggableType from "../log/LoggableType";
-import { arraysEqual, createUUID, formatTimeWithMS } from "../util";
+import { arraysEqual, createUUID, formatTimeWithMS, lowerBound, upperBound } from "../util";
 import TabRenderer from "./TabRenderer";
 
 export default class TableRenderer implements TabRenderer {
@@ -107,7 +107,7 @@ export default class TableRenderer implements TabRenderer {
    */
   private scrollToSelected() {
     if (this.selectedTime !== null) {
-      let targetRow = this.timestamps.findLastIndex((timestamp) => timestamp <= this.selectedTime!);
+      let targetRow = upperBound(this.timestamps, this.selectedTime!) - 1;
       if (targetRow === -1) targetRow = 0;
 
       const visibleHeight = this.TABLE_CONTAINER.clientHeight - this.TABLE_BODY.firstElementChild!.clientHeight;
@@ -170,7 +170,7 @@ export default class TableRenderer implements TabRenderer {
     let highlight = (time: number | null, className: string) => {
       this.dataRows.forEach((row) => row.classList.remove(className));
       if (time) {
-        let dataRowIndex = this.dataRowTimestamps.findLastIndex((timestamp) => timestamp <= time);
+        let dataRowIndex = upperBound(this.dataRowTimestamps, time) - 1;
         if (dataRowIndex !== -1 && dataRowIndex < this.dataRows.length) {
           this.dataRows[dataRowIndex].classList.add(className);
         }
@@ -258,7 +258,8 @@ export default class TableRenderer implements TabRenderer {
     }
 
     // Update timestamps, count removed rows from start
-    let removedRows = this.timestamps.findIndex((timestamp) => timestamp === command.timestamps[1]) - 1;
+    let matchIndex = command.timestamps.length > 1 ? lowerBound(this.timestamps, command.timestamps[1]) : -1;
+    let removedRows = matchIndex !== -1 && this.timestamps[matchIndex] === command.timestamps[1] ? matchIndex - 1 : -2;
     if (removedRows > 0) {
       this.TABLE_CONTAINER.scrollTop = initialScrollPosition - removedRows * this.ROW_HEIGHT_PX;
     }
@@ -320,9 +321,9 @@ export default class TableRenderer implements TabRenderer {
           cellText[i - dataRowStart].push("null");
         }
       } else {
+        let nextIndex = 0;
         for (let i = dataRowStart; i < dataRowEnd; i++) {
-          let nextIndex = field.data!.timestamps.findIndex((value) => value > this.timestamps[i]);
-          if (nextIndex === -1) nextIndex = field.data!.timestamps.length;
+          nextIndex = upperBound(field.data!.timestamps, this.timestamps[i], nextIndex);
           if (nextIndex === 0 || field.type === null) {
             cellText[i - dataRowStart].push("null");
           } else {
