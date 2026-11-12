@@ -74,6 +74,7 @@ let popupMenu = new TinyPopupMenu();
 let assetsPromise: Promise<AdvantageScopeAssets>;
 let downloadInterval: number | null = null;
 let popupRequiresForceClose = false;
+let isReloading = false;
 
 // Set up locale
 function getLocale(prefs: Preferences | null = null): string {
@@ -431,6 +432,7 @@ async function handleHubMessage(message: NamedMessage) {
       break;
 
     case "save-state":
+      if (isReloading) break;
       localStorage.setItem(LocalStorageKeys.STATE, JSON.stringify(message.data));
       localStorage.setItem(LocalStorageKeys.SIDEBAR_WIDTH, JSON.stringify(message.data.sidebar.width));
       break;
@@ -649,9 +651,9 @@ async function handleHubMessage(message: NamedMessage) {
                               localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(newPrefs));
                               sendMessage(hubPort, "set-preferences", newPrefs);
                               if (reload) {
-                                // Switch to new language to get updated DS layout strings
-                                window.t = setupI18n(newLang);
-                                localStorage.setItem(LocalStorageKeys.STATE, JSON.stringify(getDefaultDsLayout()));
+                                // Reset layout so the tab names are updated for the new language
+                                isReloading = true;
+                                localStorage.removeItem(LocalStorageKeys.STATE);
                                 location.reload();
                               }
                             }
