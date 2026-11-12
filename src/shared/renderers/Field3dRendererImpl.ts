@@ -857,6 +857,7 @@ export default class Field3dRendererImpl implements TabRenderer {
             type: entry.type as "robot" | "ghost",
             model: model,
             color: "#000000",
+            fadeFactor: 1,
             poses: [],
             components: [],
             mechanisms: { xz: null, yz: null },

@@ -25,7 +25,7 @@ import {
   Orientation
 } from "../../shared/renderers/Field2dRenderer";
 import { Units } from "../../shared/units";
-import { createUUID } from "../../shared/util";
+import { clampValue, createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import Field2dController_Config from "./Field2dController_Config";
 import TabController, { setupKeyboardControls } from "./TabController";
@@ -35,6 +35,8 @@ export default class Field2dController implements TabController {
 
   private static TRAIL_LENGTH_SECS = 3;
   private static TRAIL_DT = 0.1;
+
+  private static FADE_LENGTH_SECS = 1.5;
 
   private SETTINGS: HTMLElement;
   private ORIENTATION_SWITCHER: HTMLElement;
@@ -343,6 +345,18 @@ export default class Field2dController implements TabController {
           });
         }
       }
+      
+      // Get time since update and fade opacity for ghost
+      let fadeFactor: number = 1;
+      if (time !== null && source.type === "ghost" && source.options.fadeOut === "on") {
+        const values = window.log.getRange(source.logKey, time, time, this.UUID);
+
+        if (values !== undefined && values.timestamps.length > 0) {
+          const ageSeconds = time - values.timestamps[0];
+
+          fadeFactor = clampValue(Field2dController.FADE_LENGTH_SECS - ageSeconds, 0, Field2dController.FADE_LENGTH_SECS) / Field2dController.FADE_LENGTH_SECS;
+        }
+      }
 
       // Add data from children
       let visionTargets: AnnotatedPose2d[] = [];
@@ -439,6 +453,7 @@ export default class Field2dController implements TabController {
             type: "ghost",
             poses: poses,
             color: source.options.color,
+            fadeFactor: fadeFactor,
             visionTargets: visionTargets,
             swerveModuleVelocities: swerveModuleVelocities
           });

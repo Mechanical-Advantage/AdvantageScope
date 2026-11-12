@@ -160,6 +160,7 @@ export type Field3dRendererCommand_RobotObj = Field3dRendererCommand_GenericRobo
 export type Field3dRendererCommand_GhostObj = Field3dRendererCommand_GenericRobotObj & {
   type: "ghost";
   color: string;
+  fadeFactor: number;
 };
 
 export type Field3dRendererCommand_GamePieceObj = {
