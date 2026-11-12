@@ -25,7 +25,7 @@ export const offlineInfoAnnouncement: Record<string, string> = {
 
 export const localizationFeedbackAnnouncement: Record<string, string> = {
   "en-US":
-    "Click the link in the title bar to give us feedback on the English version of the AdvantageScope documentation.",
+    "The English version of the AdvantageScope documentation is created with the support of AI and may include inaccuracies. Click the link in the title bar to give us feedback.",
   "es-419":
     "Haz clic en el enlace de la barra de título para darnos tu opinión sobre la versión en español de la documentación de AdvantageScope.",
   fr: "Cliquez sur le lien dans la barre de titre pour nous faire part de vos commentaires sur la version française de la documentation d'AdvantageScope.",
