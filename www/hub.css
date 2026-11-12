@@ -67,8 +67,8 @@ body.fancy-title-bar-mac div.title-bar-text {
 }
 
 body.fancy-title-bar-lite div.title-bar-text {
-  left: calc(var(--side-bar-width) + 20px);
-  right: calc(
+  inset-inline-start: calc(var(--side-bar-width) + 20px);
+  inset-inline-end: calc(
     154px - 33px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) *
       38px
   );
