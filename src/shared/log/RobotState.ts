@@ -68,8 +68,10 @@ export const DRIVER_STATION_KEYS = [
   "AllianceStation" // Phoenix
 ];
 export const SYSTEM_TIME_KEYS = [
-  "/SystemStats/EpochTimeMicros", // AdvantageKit
-  "NT:/AdvantageKit/SystemStats/EpochTimeMicros", // AdvantageKit
+  "/SystemStats/EpochTime", // AdvantageKit, post-2027
+  "NT:/AdvantageKit/SystemStats/EpochTime", // AdvantageKit, post-2027
+  "/SystemStats/EpochTimeMicros", // AdvantageKit, pre-2027
+  "NT:/AdvantageKit/SystemStats/EpochTimeMicros", // AdvantageKit, pre-2027
   "systemTime" // DataLog
 ];
 export const AKIT_TIMESTAMP_KEYS = ["/Timestamp", "NT:/AdvantageKit/Timestamp"];
@@ -486,8 +488,9 @@ export function getMatchInfo(log: Log): MatchInfo | null {
     matchNumber: 1
   };
   if (systemTimeKey) {
-    let epochMicros = getOrDefault(log, systemTimeKey, LoggableType.Number, enabledTime, info.year);
-    info.year = new Date(epochMicros / 1000).getUTCFullYear();
+    let epoch = getOrDefault(log, systemTimeKey, LoggableType.Number, enabledTime, info.year);
+    let epochMillis = systemTimeKey.endsWith("Micros") ? epoch / 1.0e3 : epoch / 1.0e6;
+    info.year = new Date(epochMillis).getUTCFullYear();
     // Reset to current year if the logged year is clearly wrong
     if (info.year < 2022) info.year = new Date().getUTCFullYear();
   }
