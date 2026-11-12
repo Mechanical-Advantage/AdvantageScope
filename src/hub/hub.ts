@@ -555,10 +555,6 @@ FEEDBACK_BUTTON.addEventListener("click", () => {
 if (window.lang !== "en-US") {
   document.documentElement.style.setProperty("--show-feedback-button", "1");
   FEEDBACK_BUTTON.hidden = false;
-  const img = FEEDBACK_BUTTON.querySelector("img");
-  if (img) {
-    img.src = "symbols/quote.bubble.svg";
-  }
 }
 
 // Update touch bar slider position
