@@ -68,8 +68,10 @@ export const DRIVER_STATION_KEYS = [
   "AllianceStation" // Phoenix
 ];
 export const SYSTEM_TIME_KEYS = [
-  "/SystemStats/EpochTimeMicros", // AdvantageKit
-  "NT:/AdvantageKit/SystemStats/EpochTimeMicros", // AdvantageKit
+  "/SystemStats/EpochTime", // AdvantageKit, post-2027
+  "NT:/AdvantageKit/SystemStats/EpochTime", // AdvantageKit, post-2027
+  "/SystemStats/EpochTimeMicros", // AdvantageKit, pre-2027
+  "NT:/AdvantageKit/SystemStats/EpochTimeMicros", // AdvantageKit, pre-2027
   "systemTime" // DataLog
 ];
 export const AKIT_TIMESTAMP_KEYS = ["/Timestamp", "NT:/AdvantageKit/Timestamp"];
@@ -108,7 +110,11 @@ export const MATCH_NUMBER_KEYS = [
   "NT:/Netcomm/Control/MatchInfo/MatchNumber", // Systemcore
   "DS:matchInfo/matchNumber" // Phoenix
 ];
-export const PROGRAM_START_TIME_KEYS = ["NT:/Robot/ProgramStartTime", "/Robot/ProgramStartTime"];
+export const PROGRAM_START_TIME_KEYS = [
+  "NT:/Robot/ProgramStartTime", // DataLog/NT
+  "/Robot/ProgramStartTime", // DataLog/NT
+  "DS:/Dscomm/Control/Robot/ControlData/ControlWord" // FIRST DS
+];
 
 export type RobotMode = "disabled" | "auto" | "teleop" | "utility";
 export type RobotStateRange = { start: number; end?: number; mode: RobotMode };
@@ -118,9 +124,18 @@ export function getEnabledKey(log: Log): string | undefined {
   return findKey(log, ENABLED_KEYS);
 }
 
-/** Finds the first matching key that indicates program start time. */
-export function getProgramStartTimeKey(log: Log): string | undefined {
-  return findKey(log, PROGRAM_START_TIME_KEYS);
+/** Retrieves the timestamp when the robot program started. */
+export function getProgramStartTime(log: Log): number | null {
+  let key = findKey(log, PROGRAM_START_TIME_KEYS);
+  if (!key) return null;
+  let data = log.getNumber(key, -Infinity, Infinity);
+  if (!data || data.timestamps.length === 0) return null;
+  if (key.endsWith("ProgramStartTime")) {
+    return data.values[data.values.length - 1] / 1e9;
+  } else if (key.endsWith("ControlWord")) {
+    return data.timestamps[0];
+  }
+  return null;
 }
 
 /** Retrieves the boolean values representing the robot's enabled state over time. */
@@ -474,8 +489,9 @@ export function getMatchInfo(log: Log): MatchInfo | null {
     matchNumber: 1
   };
   if (systemTimeKey) {
-    let epochMicros = getOrDefault(log, systemTimeKey, LoggableType.Number, enabledTime, info.year);
-    info.year = new Date(epochMicros / 1000).getUTCFullYear();
+    let epoch = getOrDefault(log, systemTimeKey, LoggableType.Number, enabledTime, info.year);
+    let epochMillis = systemTimeKey.endsWith("Micros") ? epoch / 1.0e3 : epoch / 1.0e6;
+    info.year = new Date(epochMillis).getUTCFullYear();
     // Reset to current year if the logged year is clearly wrong
     if (info.year < 2022) info.year = new Date().getUTCFullYear();
   }
