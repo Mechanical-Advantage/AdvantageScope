@@ -24,7 +24,7 @@ All of this data appears in a single unified tree in AdvantageScope, as shown be
 AdvantageKit users can also take advantage of XZ compression to significantly reduce the size of third-party logs stored within a WPILOG. Check the AdvantageKit documentation on log data receivers for details.
 :::
 
-## Vendor Logging
+## Experimental: Vendor Logging
 
 Many robot projects generate multiple log files simultaneously: a standard WPILOG file for WPILib/AdvantageKit telemetry alongside proprietary files from vendor libraries. Universal logging eliminates this split by embedding those vendor logs directly into the main `.wpilog`. See the instructions below for WPILib and AdvantageKit.
 
