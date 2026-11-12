@@ -108,16 +108,29 @@ export const MATCH_NUMBER_KEYS = [
   "NT:/Netcomm/Control/MatchInfo/MatchNumber", // Systemcore
   "DS:matchInfo/matchNumber" // Phoenix
 ];
-export const PROGRAM_START_TIME_KEYS = ["NT:/Robot/ProgramStartTime", "/Robot/ProgramStartTime"];
+export const PROGRAM_START_TIME_KEYS = [
+  "NT:/Robot/ProgramStartTime", // DataLog/NT
+  "/Robot/ProgramStartTime", // DataLog/NT
+  "DS:/Dscomm/Control/Robot/ControlData/ControlWord" // FIRST DS
+];
 
 /** Finds the first matching key that indicates enabled state. */
 export function getEnabledKey(log: Log): string | undefined {
   return findKey(log, ENABLED_KEYS);
 }
 
-/** Finds the first matching key that indicates program start time. */
-export function getProgramStartTimeKey(log: Log): string | undefined {
-  return findKey(log, PROGRAM_START_TIME_KEYS);
+/** Retrieves the timestamp when the robot program started. */
+export function getProgramStartTime(log: Log): number | null {
+  let key = findKey(log, PROGRAM_START_TIME_KEYS);
+  if (!key) return null;
+  let data = log.getNumber(key, -Infinity, Infinity);
+  if (!data || data.timestamps.length === 0) return null;
+  if (key.endsWith("ProgramStartTime")) {
+    return data.values[data.values.length - 1] / 1e9;
+  } else if (key.endsWith("ControlWord")) {
+    return data.timestamps[0];
+  }
+  return null;
 }
 
 /** Retrieves the boolean values representing the robot's enabled state over time. */
