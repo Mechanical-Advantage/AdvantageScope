@@ -26,10 +26,13 @@ export default interface Preferences {
   userAssetsFolder: string | null;
   skipHootNonProWarning: boolean;
   skipLanguageWarning: boolean;
+  skipFRCCoordinateSystemWarning: boolean;
+  skipFTCCoordinateSystemWarning: boolean;
   ctreLicenseAccepted: boolean;
   systemcoreStaticAddress: "" | "usb" | "wifi";
   hasScrolledLineGraph: boolean;
   hasScrolledTimeline: boolean;
+  prefersFTC: boolean;
   timestamps: "start-zero" | "original";
 }
 
@@ -68,10 +71,13 @@ export const DEFAULT_PREFS: Preferences = {
   userAssetsFolder: null,
   skipHootNonProWarning: false,
   skipLanguageWarning: false,
+  skipFRCCoordinateSystemWarning: false,
+  skipFTCCoordinateSystemWarning: false,
   ctreLicenseAccepted: false,
   systemcoreStaticAddress: "",
   hasScrolledLineGraph: false,
   hasScrolledTimeline: false,
+  prefersFTC: false,
   timestamps: "start-zero"
 };
 
@@ -215,6 +221,12 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   if ("skipLanguageWarning" in newPrefs && typeof newPrefs.skipLanguageWarning === "boolean") {
     basePrefs.skipLanguageWarning = newPrefs.skipLanguageWarning;
   }
+  if ("skipFRCCoordinateSystemWarning" in newPrefs && typeof newPrefs.skipFRCCoordinateSystemWarning === "boolean") {
+    basePrefs.skipFRCCoordinateSystemWarning = newPrefs.skipFRCCoordinateSystemWarning;
+  }
+  if ("skipFTCCoordinateSystemWarning" in newPrefs && typeof newPrefs.skipFTCCoordinateSystemWarning === "boolean") {
+    basePrefs.skipFTCCoordinateSystemWarning = newPrefs.skipFTCCoordinateSystemWarning;
+  }
   if ("ctreLicenseAccepted" in newPrefs && typeof newPrefs.ctreLicenseAccepted === "boolean") {
     basePrefs.ctreLicenseAccepted = newPrefs.ctreLicenseAccepted;
   }
@@ -231,6 +243,9 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   }
   if ("hasScrolledTimeline" in newPrefs && typeof newPrefs.hasScrolledTimeline === "boolean") {
     basePrefs.hasScrolledTimeline = newPrefs.hasScrolledTimeline;
+  }
+  if ("prefersFTC" in newPrefs && typeof newPrefs.prefersFTC === "boolean") {
+    basePrefs.prefersFTC = newPrefs.prefersFTC;
   }
   if ("timestamps" in newPrefs && (newPrefs.timestamps === "start-zero" || newPrefs.timestamps === "original")) {
     basePrefs.timestamps = newPrefs.timestamps;

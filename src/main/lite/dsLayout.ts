@@ -5,24 +5,38 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { Distribution, DISTRIBUTION } from "../../shared/buildConstants";
 import { HubState } from "../../shared/HubState";
+import TabType from "../../shared/TabType";
 
 export function getDefaultDsLayout(): HubState {
   return {
     sidebar: { width: 300, expanded: ["/Control", "/Status"] },
     tabs: {
-      selected: 0,
+      selected: DISTRIBUTION !== Distribution.LiteDS ? 1 : 0,
       tabs: [
+        ...(DISTRIBUTION !== Distribution.LiteDS
+          ? [
+              {
+                type: TabType.Documentation,
+                title: "",
+                controller: null,
+                controllerUUID: "0",
+                renderer: "",
+                controlsHeight: 0
+              }
+            ]
+          : []),
         {
-          type: 5,
+          type: TabType.Console,
           title: "",
           controller: "DS:/Dscomm/Console",
-          controllerUUID: "0",
+          controllerUUID: "1",
           renderer: { highlight: true },
           controlsHeight: 0
         },
         {
-          type: 1,
+          type: TabType.LineGraph,
           title: t("tabs.communication"),
           controller: {
             leftSources: [
@@ -74,12 +88,12 @@ export function getDefaultDsLayout(): HubState {
             rightFilter: 0,
             showRobotMode: true
           },
-          controllerUUID: "1",
+          controllerUUID: "2",
           renderer: null,
           controlsHeight: 200
         },
         {
-          type: 1,
+          type: TabType.LineGraph,
           title: t("tabs.power"),
           controller: {
             leftSources: [
@@ -101,12 +115,12 @@ export function getDefaultDsLayout(): HubState {
             rightFilter: 0,
             showRobotMode: true
           },
-          controllerUUID: "2",
+          controllerUUID: "3",
           renderer: null,
           controlsHeight: 200
         },
         {
-          type: 1,
+          type: TabType.LineGraph,
           title: t("tabs.cpu"),
           controller: {
             leftSources: [
@@ -135,15 +149,15 @@ export function getDefaultDsLayout(): HubState {
             rightFilter: 0,
             showRobotMode: true
           },
-          controllerUUID: "3",
+          controllerUUID: "4",
           renderer: null,
           controlsHeight: 200
         },
         {
-          type: 8,
-          title: t("tabs.joysticks"),
+          type: TabType.Joysticks,
+          title: "",
           controller: ["Generic Joystick", "None", "None", "None", "None", "None"],
-          controllerUUID: "4",
+          controllerUUID: "5",
           renderer: null,
           controlsHeight: 85
         }
@@ -151,3 +165,5 @@ export function getDefaultDsLayout(): HubState {
     }
   };
 }
+
+export default getDefaultDsLayout;

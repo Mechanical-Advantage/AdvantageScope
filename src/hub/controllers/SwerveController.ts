@@ -53,13 +53,13 @@ export default class SwerveController implements TabController {
     // Orientation controls
     setupKeyboardControls(this.ORIENTATION_SWITCHER.children[0] as HTMLElement);
     this.ORIENTATION_SWITCHER.children[0].addEventListener("click", () => {
-      this.orientation--;
-      if (this.orientation < 0) this.orientation = 3;
+      this.orientation++;
+      if (this.orientation > 3) this.orientation = 0;
     });
     setupKeyboardControls(this.ORIENTATION_SWITCHER.children[1] as HTMLElement);
     this.ORIENTATION_SWITCHER.children[1].addEventListener("click", () => {
-      this.orientation++;
-      if (this.orientation > 3) this.orientation = 0;
+      this.orientation--;
+      if (this.orientation < 0) this.orientation = 3;
     });
   }
 

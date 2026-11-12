@@ -7,6 +7,7 @@
 
 import { TFunction } from "i18next";
 import TinyPopupMenu, { MenuItem, Submenu } from "tiny-popup-menu";
+import WorkerManager from "../../hub/WorkerManager";
 import { getBestLanguage, setupI18n, translateHTML } from "../../i18n/i18n";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import { BUILD_DATE, COPYRIGHT, Distribution, DISTRIBUTION, LITE_VERSION } from "../../shared/buildConstants";
@@ -338,6 +339,20 @@ async function initHub() {
   });
   hubPort.start();
 
+  // Propagate the hub's title to the parent tab
+  const hubTitleElement = HUB_FRAME.contentDocument?.querySelector("title");
+  if (hubTitleElement) {
+    const syncTitle = () => {
+      if (hubTitleElement.textContent) document.title = hubTitleElement.textContent;
+    };
+    new MutationObserver(syncTitle).observe(hubTitleElement, {
+      childList: true,
+      characterData: true,
+      subtree: true
+    });
+    syncTitle();
+  }
+
   // Set up locale
   if (HUB_FRAME.contentWindow) {
     (HUB_FRAME.contentWindow as any).t = window.t;
@@ -406,6 +421,10 @@ async function handleHubMessage(message: NamedMessage) {
       HUB_FRAME.style.opacity = "100%";
       break;
 
+    case "open-files-request":
+      sendMessage(hubPort, "open-files", { files: message.data.files, merge: false });
+      break;
+
     case "alert":
     case "error":
       window.alert(message.data.content);
@@ -452,10 +471,48 @@ async function handleHubMessage(message: NamedMessage) {
       }
       break;
 
+    case "frc-coordinate-system-warning":
+      {
+        let prefs = Object.assign({}, DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS);
+        let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
+        if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+        if (prefs.skipFRCCoordinateSystemWarning) return;
+        if (confirm(window.t("main.coordinateSystem.legacyFrcDetail"))) {
+          prefs.skipFRCCoordinateSystemWarning = true;
+          localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
+          sendMessage(hubPort, "set-preferences", prefs);
+        }
+      }
+      break;
+
+    case "ftc-coordinate-system-warning":
+      {
+        let prefs = Object.assign({}, DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS);
+        let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
+        if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+        if (prefs.skipFTCCoordinateSystemWarning) return;
+        if (confirm(window.t("main.coordinateSystem.systemcoreFtcDetail"))) {
+          prefs.skipFTCCoordinateSystemWarning = true;
+          localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
+          sendMessage(hubPort, "set-preferences", prefs);
+        }
+      }
+      break;
+
     case "historical-start":
       {
         const uuid: string = message.data.uuid;
         const path: string = message.data.path;
+
+        let extension = path.split(".").pop();
+        if (extension === "hoot" || extension === "revlog") {
+          sendMessage(hubPort, "historical-data", {
+            files: [null],
+            error: window.t("main.logs.unsupportedFormatLite"),
+            uuid: uuid
+          });
+          break;
+        }
 
         let prefs = DEFAULT_PREFS;
         let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
@@ -464,12 +521,45 @@ async function handleHubMessage(message: NamedMessage) {
         let response = await fetch(`logs/${encodeURIComponent(path)}?folder=${encodeURIComponent(prefs.remotePath)}`);
         let buffer = await response.arrayBuffer();
         let array = new Uint8Array(buffer);
+        let error: string | null = null;
+        if (extension === "wpilogxz") {
+          array = await WorkerManager.request("bundles/xzWorker.js", array);
+          if (array.length === 0) error = window.t("main.logs.decompressFailed");
+        }
 
         sendMessage(hubPort, "historical-data", {
           files: [array],
-          error: null,
+          error: error,
           uuid: uuid
         });
+      }
+      break;
+
+    case "historical-start-raw":
+      {
+        const uuid: string = message.data.uuid;
+        const extension: string = message.data.extension;
+
+        if (extension === "hoot" || extension === "revlog") {
+          sendMessage(hubPort, "historical-data", {
+            files: [null],
+            error: window.t("main.logs.unsupportedFormatLite"),
+            uuid: uuid
+          });
+        } else if (extension === "wpilogxz") {
+          const decompressed = await WorkerManager.request("bundles/xzWorker.js", message.data.data);
+          sendMessage(hubPort, "historical-data", {
+            files: [decompressed],
+            error: decompressed.length === 0 ? window.t("main.logs.decompressFailed") : null,
+            uuid: uuid
+          });
+        } else {
+          sendMessage(hubPort, "historical-data", {
+            files: [message.data.data],
+            error: null,
+            uuid: uuid
+          });
+        }
       }
       break;
 
@@ -479,6 +569,9 @@ async function handleHubMessage(message: NamedMessage) {
 
     case "ask-open-sidebar-context-menu":
       // Sidebar context menu is currently not implemented in the Lite version since the only current options require HTTPS APIs (navigator.clipboard APIs).
+      break;
+
+    case "ask-open-tuning-context-menu":
       break;
 
     case "open-app-menu":

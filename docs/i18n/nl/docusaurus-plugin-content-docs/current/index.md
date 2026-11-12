@@ -8,7 +8,8 @@ import DocCardList from "@theme/DocCardList";
 
 #
 
-<img src="/img/banner-ltr.webp" alt="AdvantageScope" />
+<img src="/img/banner-ltr-light.webp" className="light-only" />
+<img src="/img/banner-ltr-dark.webp" className="dark-only" />
 
 AdvantageScope is een applicatie voor robotdiagnostiek, logbeoordeling/-analyse en datavisualisatie voor FIRST-teams, ontwikkeld door [Team 6328](https://littletonrobotics.org). Het leest logs in de bestandsformaten WPILOG, Hoot (CTRE), REVLOG (REV Robotics), Road Runner, CSV, NI DS-logbestand en RLOG, plus het live bekijken van robotdata via NT4-, Phoenix-, RLOG- of FTC Dashboard-streaming. AdvantageScope kan worden gebruikt met elk WPILib-project, maar is ook geoptimaliseerd voor gebruik met ons [AdvantageKit](https://docs.advantagekit.org)-logherhalingsframework. Let op: **AdvantageKit is niet vereist om AdvantageScope te gebruiken**.
 
@@ -60,4 +61,4 @@ style={{ marginBottom: "15px" }}
 Feedback, functieverzoeken en foutmeldingen zijn welkom op de [issues-pagina](https://github.com/Mechanical-Advantage/AdvantageScope/issues). Zie de [bijdragepagina](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/CONTRIBUTING.md) voor meer informatie over bijdragen aan AdvantageScope. Stuur voor niet-openbare vragen een bericht naar software@team6328.org.
 
 <img src="/img/screenshot-light.webp" className="light-only" />
-<img src="/img/screenshot-light.webp" className="dark-only" />
+<img src="/img/screenshot-dark.webp" className="dark-only" />

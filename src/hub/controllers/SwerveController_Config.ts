@@ -18,7 +18,7 @@ const SwerveController_Config: SourceListConfig = {
   types: [
     {
       key: "moduleVelocities",
-      symbol: "arrow.up.left.and.down.right.and.arrow.up.right.and.down.left",
+      symbol: "zoomoutmap",
       showInTypeName: true,
       color: "color",
       sourceTypes: ["SwerveModuleVelocity[]", "SwerveModuleState[]"],
@@ -40,7 +40,7 @@ const SwerveController_Config: SourceListConfig = {
     },
     {
       key: "robotVelocities",
-      symbol: "arrow.up.and.down.square.fill",
+      symbol: "speed",
       showInTypeName: true,
       color: "color",
       sourceTypes: ["ChassisVelocities", "ChassisSpeeds"],
@@ -57,7 +57,7 @@ const SwerveController_Config: SourceListConfig = {
     },
     {
       key: "rotation",
-      symbol: "angle",
+      symbol: "360",
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",
@@ -68,7 +68,7 @@ const SwerveController_Config: SourceListConfig = {
     },
     {
       key: "rotationLegacy",
-      symbol: "angle",
+      symbol: "360",
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",

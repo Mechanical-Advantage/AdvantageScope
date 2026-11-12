@@ -87,7 +87,8 @@ export namespace Units {
           "metrepersecond",
           "metre per second",
           "metrespersecond",
-          "metres per second"
+          "metres per second",
+          "m/s" // WPILib unit name
         ]
       },
       inchesPerSecond: {
@@ -134,7 +135,8 @@ export namespace Units {
           "rad per sec",
           "rad per second",
           "rads per sec",
-          "rads per second"
+          "rads per second",
+          "rad/s" // WPILib unit name
         ]
       },
       degreesPerSecond: {
@@ -226,7 +228,8 @@ export namespace Units {
           "metre per second squared",
           "metres per second squared",
           "metre per second per second",
-          "metres per second per second"
+          "metres per second per second",
+          "m/s/s" // WPILib unit name
         ]
       },
       inchesPerSecondSquared: {
@@ -353,7 +356,8 @@ export namespace Units {
           "rads per second2",
           "rads per second²",
           "rads per second squared",
-          "rads per second per second"
+          "rads per second per second",
+          "rad/s/s" // WPILib unit name
         ]
       },
       degreesPerSecondSquared: {
@@ -550,7 +554,12 @@ export namespace Units {
     frequency: {
       hertz: {
         value: 1,
-        names: ["hz", "hertz", "frequency"]
+        names: [
+          "hz",
+          "hertz",
+          "frequency",
+          "<?>/s" // WPILib unit name
+        ]
       },
       kilohertz: {
         value: 1e-3,
@@ -564,7 +573,7 @@ export namespace Units {
     ratio: {
       ratio: {
         value: 1,
-        names: ["ratio", "ratios", "fraction", "proportion", "duty cycle", "dutycycle"]
+        names: ["ratio", "ratios", "fraction", "proportion", "duty cycle", "dutycycle", "<?>"]
       },
       percent: {
         value: 100,
@@ -598,7 +607,7 @@ export namespace Units {
     current: {
       amps: {
         value: 1,
-        names: ["amp", "amps", "amperage", "current"]
+        names: ["a", "amp", "amps", "amperage", "current"]
       },
       milliamps: {
         value: 1000,
@@ -608,7 +617,13 @@ export namespace Units {
     power: {
       watts: {
         value: 1,
-        names: ["w", "watt", "watts", "power"]
+        names: [
+          "w",
+          "watt",
+          "watts",
+          "power",
+          "j/s" // WPILib unit name
+        ]
       },
       milliwatts: {
         value: 1000,
@@ -735,12 +750,14 @@ export namespace Units {
       distance: "meters"
     },
     SwerveModuleVelocity: {
+      velocity: "metersPerSecond",
       speed: "metersPerSecond"
     },
     SwerveModuleState: {
       speed: "metersPerSecond"
     },
     SwerveModuleAcceleration: {
+      acceleration: "metersPerSecondSquared",
       speed: "metersPerSecondSquared"
     },
     ArmFeedforward: {

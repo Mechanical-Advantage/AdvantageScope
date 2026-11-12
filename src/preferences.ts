@@ -124,10 +124,13 @@ window.addEventListener("message", (event) => {
             userAssetsFolder: oldPrefs.userAssetsFolder,
             skipHootNonProWarning: oldPrefs.skipHootNonProWarning,
             skipLanguageWarning: oldPrefs.skipLanguageWarning,
+            skipFRCCoordinateSystemWarning: oldPrefs.skipFRCCoordinateSystemWarning,
+            skipFTCCoordinateSystemWarning: oldPrefs.skipFTCCoordinateSystemWarning,
             ctreLicenseAccepted: oldPrefs.ctreLicenseAccepted,
             systemcoreStaticAddress: oldPrefs.systemcoreStaticAddress,
             hasScrolledLineGraph: oldPrefs.hasScrolledLineGraph,
             hasScrolledTimeline: oldPrefs.hasScrolledTimeline,
+            prefersFTC: oldPrefs.prefersFTC,
             timestamps: timestamps
           };
           messagePort.postMessage(newPrefs);

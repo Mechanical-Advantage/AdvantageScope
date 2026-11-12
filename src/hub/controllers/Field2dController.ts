@@ -19,7 +19,7 @@ import {
   grabPosesAuto,
   rotation3dTo2d
 } from "../../shared/geometry";
-import { ALLIANCE_KEYS, getIsRedAlliance } from "../../shared/log/LogUtil";
+import { ALLIANCE_KEYS, getIsRedAlliance } from "../../shared/log/RobotState";
 import {
   Field2dRendererCommand,
   Field2dRendererCommand_AnyObj,
@@ -47,6 +47,7 @@ export default class Field2dController implements TabController {
 
   private orientationSetting = Orientation.DEG_0;
   private sizeSetting: "large" | "medium" | "small" = "large";
+  private lastCoordinateSystemAlert: "none" | "frc" | "ftc" = "none";
 
   constructor(root: HTMLElement) {
     this.sourceList = new SourceList(
@@ -62,6 +63,11 @@ export default class Field2dController implements TabController {
 
     // Set up field select
     this.FIELD_SELECT.addEventListener("change", () => {
+      let isFTC = window.assets?.field2ds.find((field) => field.id === this.FIELD_SELECT.value)?.isFTC;
+      if (isFTC !== undefined) {
+        if (window.preferences) window.preferences.prefersFTC = isFTC;
+        window.sendMainMessage("update-preferences", { prefersFTC: isFTC });
+      }
       this.updateFieldDependentControls();
     });
     this.FIELD_SOURCE.addEventListener("click", () => {
@@ -75,13 +81,13 @@ export default class Field2dController implements TabController {
     // Set up switchers
     setupKeyboardControls(this.ORIENTATION_SWITCHER.children[0] as HTMLElement);
     this.ORIENTATION_SWITCHER.children[0].addEventListener("click", () => {
-      this.orientationSetting--;
-      if (this.orientationSetting < 0) this.orientationSetting = 3;
+      this.orientationSetting++;
+      if (this.orientationSetting > 3) this.orientationSetting = 0;
     });
     setupKeyboardControls(this.ORIENTATION_SWITCHER.children[1] as HTMLElement);
     this.ORIENTATION_SWITCHER.children[1].addEventListener("click", () => {
-      this.orientationSetting++;
-      if (this.orientationSetting > 3) this.orientationSetting = 0;
+      this.orientationSetting--;
+      if (this.orientationSetting < 0) this.orientationSetting = 3;
     });
     (["large", "medium", "small"] as const).forEach((value, index) => {
       setupKeyboardControls(this.SIZE_SWITCHER.children[index] as HTMLElement);
@@ -117,9 +123,28 @@ export default class Field2dController implements TabController {
     if (options.includes(value)) {
       this.FIELD_SELECT.value = value;
     } else {
-      this.FIELD_SELECT.selectedIndex = 0;
+      this.selectDefaultField();
     }
     this.updateFieldDependentControls();
+  }
+
+  /** Selects the default field based on whether the user prefers FTC. */
+  private selectDefaultField() {
+    let prefersFTC = window.preferences?.prefersFTC ?? false;
+    let primaryGroup = prefersFTC
+      ? (this.FIELD_SELECT.lastElementChild as HTMLElement)
+      : (this.FIELD_SELECT.firstElementChild as HTMLElement);
+    let secondaryGroup = prefersFTC
+      ? (this.FIELD_SELECT.firstElementChild as HTMLElement)
+      : (this.FIELD_SELECT.lastElementChild as HTMLElement);
+
+    if (primaryGroup.children.length > 0) {
+      this.FIELD_SELECT.value = (primaryGroup.children[0] as HTMLOptionElement).value;
+    } else if (secondaryGroup.children.length > 0) {
+      this.FIELD_SELECT.value = (secondaryGroup.children[0] as HTMLOptionElement).value;
+    } else {
+      this.FIELD_SELECT.selectedIndex = 0;
+    }
   }
 
   /** Updates the source link and size switcher based on the selected field. */
@@ -170,7 +195,7 @@ export default class Field2dController implements TabController {
     if ("field" in state && typeof state.field === "string") {
       this.FIELD_SELECT.value = state.field;
       if (this.FIELD_SELECT.value === "") {
-        this.FIELD_SELECT.selectedIndex = 0;
+        this.selectDefaultField();
       }
     }
     if (
@@ -217,6 +242,24 @@ export default class Field2dController implements TabController {
       (window.preferences?.coordinateSystem === "automatic"
         ? fieldData?.coordinateSystem
         : window.preferences?.coordinateSystem) ?? "center-red";
+    if (fieldData !== undefined && window.preferences !== null) {
+      let currentAlert: "none" | "frc" | "ftc" = "none";
+      if (!fieldData.isFTC && fieldData.coordinateSystem !== "center-red") {
+        currentAlert = "frc";
+      } else if (fieldData.isFTC && fieldData.coordinateSystem === "center-red") {
+        currentAlert = "ftc";
+      }
+      if (currentAlert !== this.lastCoordinateSystemAlert) {
+        if (window.preferences.coordinateSystem === "automatic") {
+          if (currentAlert === "frc") {
+            window.sendMainMessage("frc-coordinate-system-warning");
+          } else if (currentAlert === "ftc") {
+            window.sendMainMessage("ftc-coordinate-system-warning");
+          }
+        }
+        this.lastCoordinateSystemAlert = currentAlert;
+      }
+    }
 
     // Get alliance
     let isRedAlliance = time === null ? false : getIsRedAlliance(window.log, time);

@@ -72,10 +72,11 @@
     "tiny-popup-menu": "github:jwbonner/tiny-popup-menu#bce7cabccbf35a8e6b21a1f4e7eae635efd389d4",
     "tslib": "^2.6.2",
     "type-fest": "^4.26.1",
-    "typescript": "5.6.3"
+    "typescript": "5.6.3",
+    "xz-decompress": "^0.2.3"
   },
   "dependencies": {
-    "@rev-robotics/revlog-converter": "^1.0.5",
+    "@rev-robotics/revlog-converter": "^2.0.0",
     "@types/emscripten": "^1.39.13",
     "@types/ws": "^8.5.13",
     "check-disk-space": "^3.4.0",
@@ -208,11 +209,10 @@
     ],
     "mac": {
       "target": "dmg",
-      "icon": "icons/app/app-icon.icns",
+      "icon": "icons/app/app-icon.icon",
       "entitlements": "entitlements.mac.plist",
       "entitlementsInherit": "entitlements.mac.plist",
       "extendInfo": {
-        "CFBundleIconName": "AppIcon",
         "CFBundleAllowMixedLocalizations": true,
         "CFBundleLocalizations": [
           "en_US",
@@ -241,13 +241,7 @@
             ]
           }
         }
-      },
-      "extraResources": [
-        {
-          "from": "icons/macos-assets.car",
-          "to": "Assets.car"
-        }
-      ]
+      }
     },
     "linux": {
       "target": [

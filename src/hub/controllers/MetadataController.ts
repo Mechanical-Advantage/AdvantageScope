@@ -4,8 +4,8 @@
 // Use of this source code is governed by a BSD
 // license that can be found in the LICENSE file
 // at the root directory of this project.
-
-import { MERGE_PREFIX, METADATA_KEYS } from "../../shared/log/LogUtil";
+import { extractMergePrefix, removeMergePrefix } from "../../shared/log/LogKeyUtils";
+import { METADATA_KEYS } from "../../shared/log/RobotState";
 import { MetadataRendererCommand } from "../../shared/renderers/MetadataRenderer";
 import { createUUID } from "../../shared/util";
 import TabController from "./TabController";
@@ -26,12 +26,11 @@ export default class MetadataController implements TabController {
   refresh(): void {
     this.command = {};
     window.log.getFieldKeys().forEach((key) => {
+      let unmergedKey = removeMergePrefix(key);
+      let mergePrefix = extractMergePrefix(key);
       METADATA_KEYS.forEach((metadataKey) => {
-        if (key.startsWith(metadataKey)) {
-          let cleanKey = key.slice(metadataKey.length);
-          if (key.startsWith("/" + MERGE_PREFIX)) {
-            cleanKey = key.slice(0, key.indexOf("/", MERGE_PREFIX.length + 1)) + cleanKey;
-          }
+        if (unmergedKey.startsWith(metadataKey)) {
+          let cleanKey = mergePrefix + unmergedKey.slice(metadataKey.length);
           if (!(cleanKey in this.command)) {
             this.command[cleanKey] = { generic: null, real: null, replay: null };
           }

@@ -25,7 +25,8 @@ import {
   rotation3dTo2d,
   rotation3dToRPY
 } from "../shared/geometry";
-import { getLogValueText, getMechanismState, getOrDefault } from "../shared/log/LogUtil";
+import { getMechanismState } from "../shared/log/LogMechanismState";
+import { getLogValueText, getOrDefault } from "../shared/log/LogUtil";
 import LoggableType from "../shared/log/LoggableType";
 import { Units } from "../shared/units";
 import { createUUID, formatNumber, jsonCopy } from "../shared/util";
@@ -97,7 +98,7 @@ export default class SourceList {
     this.EDIT_BUTTON.title = t("sourceList.editSettings");
     let editIcon = document.createElement("img");
     this.EDIT_BUTTON.appendChild(editIcon);
-    editIcon.src = "symbols/ellipsis.svg";
+    editIcon.src = "symbols/morehoriz.svg";
     this.EDIT_BUTTON.hidden = editButtonCallback === undefined;
 
     this.CLEAR_BUTTON = document.createElement("button");
@@ -106,7 +107,7 @@ export default class SourceList {
     this.CLEAR_BUTTON.title = t("sourceList.clearFields");
     let clearButton = document.createElement("img");
     this.CLEAR_BUTTON.appendChild(clearButton);
-    clearButton.src = "symbols/trash.fill.svg";
+    clearButton.src = "symbols/delete.svg";
     this.CLEAR_BUTTON.hidden = editButtonCallback !== undefined;
 
     this.HELP_BUTTON = document.createElement("button");
@@ -115,7 +116,7 @@ export default class SourceList {
     this.HELP_BUTTON.title = t("sourceList.help");
     let helpIcon = document.createElement("img");
     this.HELP_BUTTON.appendChild(helpIcon);
-    helpIcon.src = "symbols/questionmark.circle.svg";
+    helpIcon.src = "symbols/help.svg";
     this.HELP_BUTTON.hidden = editButtonCallback !== undefined;
 
     this.LIST = document.createElement("div");
@@ -125,7 +126,7 @@ export default class SourceList {
     this.HAND_ICON = document.createElement("img");
     this.ROOT.appendChild(this.HAND_ICON);
     this.HAND_ICON.classList.add("hand-icon");
-    this.HAND_ICON.src = "symbols/rectangle.and.hand.point.up.left.filled.svg";
+    this.HAND_ICON.src = "symbols/trackpadinput.svg";
     this.updateHandIcon();
 
     this.DRAG_HIGHLIGHT = document.createElement("div");
@@ -470,17 +471,7 @@ export default class SourceList {
     // Add to list
     let options: { [key: string]: string } = {};
     bestType.typeConfig.options.forEach((optionConfig) => {
-      if (
-        memory !== null &&
-        optionConfig.key in memory.options &&
-        optionConfig.values.includes(memory.options[optionConfig.key])
-      ) {
-        // Select value from type memory
-        options[optionConfig.key] = memory.options[optionConfig.key];
-      } else if (this.config.autoAdvance !== optionConfig.key) {
-        // Select first value
-        options[optionConfig.key] = optionConfig.values[0];
-      } else {
+      if (this.config.autoAdvance === optionConfig.key) {
         // Select least used value
         let useCounts: { value: string; uses: number }[] = optionConfig.values.map((value) => {
           return {
@@ -492,6 +483,16 @@ export default class SourceList {
         });
         useCounts.sort((a, b) => a.uses - b.uses);
         options[optionConfig.key] = useCounts[0].value;
+      } else if (
+        memory !== null &&
+        optionConfig.key in memory.options &&
+        optionConfig.values.includes(memory.options[optionConfig.key])
+      ) {
+        // Select value from type memory
+        options[optionConfig.key] = memory.options[optionConfig.key];
+      } else {
+        // Select first value
+        options[optionConfig.key] = optionConfig.values[0];
       }
     });
     let state: SourceListItemState = {
@@ -1023,7 +1024,7 @@ export default class SourceList {
     // Update hide button
     let hideButton = item.getElementsByClassName("hide")[0] as HTMLButtonElement;
     let hideIcon = hideButton.firstElementChild as HTMLImageElement;
-    hideIcon.src = "symbols/" + (state.visible ? "eye.svg" : "eye.slash.svg");
+    hideIcon.src = "symbols/" + (state.visible ? "visibility.svg" : "visibilityoff.svg");
     let titleText = state.visible ? t("sourceList.hideField") : t("sourceList.showField");
     hideButton.title = titleText;
     if (state.visible) {

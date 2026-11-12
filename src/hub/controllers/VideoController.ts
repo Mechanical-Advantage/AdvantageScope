@@ -8,7 +8,7 @@
 import { KeyboardUtil } from "../../shared/KeyboardUtil";
 import { MatchType } from "../../shared/MatchInfo";
 import VideoSource from "../../shared/VideoSource";
-import { getEnabledData, getMatchInfo } from "../../shared/log/LogUtil";
+import { getEnabledData, getMatchInfo } from "../../shared/log/RobotState";
 import { createUUID } from "../../shared/util";
 import TabController from "./TabController";
 

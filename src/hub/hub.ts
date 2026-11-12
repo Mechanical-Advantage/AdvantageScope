@@ -14,7 +14,8 @@ import Selection from "../shared/Selection";
 import { SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
 import { Distribution, DISTRIBUTION, IS_LITE } from "../shared/buildConstants";
 import Log from "../shared/log/Log";
-import { AKIT_TIMESTAMP_KEYS, getEnabledData, MERGE_PREFIX } from "../shared/log/LogUtil";
+import { MERGE_PREFIX } from "../shared/log/LogKeyUtils";
+import { AKIT_TIMESTAMP_KEYS, getEnabledData } from "../shared/log/RobotState";
 import { calcMockProgress, clampValue, htmlEncode, scaleValue } from "../shared/util";
 import SelectionImpl from "./SelectionImpl";
 import Sidebar from "./Sidebar";
@@ -120,7 +121,13 @@ let dragData: any = null;
 
 function setWindowTitle(name: string, status?: string) {
   let title =
-    "\u2066" + htmlEncode(name) + "\u2069" + (status ? " (" + htmlEncode(status) + ")" : "") + " — AdvantageScope";
+    "\u2066" +
+    htmlEncode(name) +
+    "\u2069" +
+    (status ? " (" + htmlEncode(status) + ")" : "") +
+    " &mdash; AdvantageScope" +
+    (IS_LITE ? " Lite" : "") +
+    (DISTRIBUTION === Distribution.LiteDS ? " (DS)" : "");
   document.getElementsByTagName("title")[0].innerHTML = title;
   document.getElementsByClassName("title-bar-text")[0].innerHTML = title;
 }
@@ -513,9 +520,7 @@ document.addEventListener("drop", (event) => {
       files.push(window.electron.getFilePath(file));
     }
     if (files.length > 0) {
-      files.forEach((file, index) => {
-        startHistorical(file, index === 0, files.length > 1);
-      });
+      window.sendMainMessage("open-files-request", { files: files });
     }
   }
 });

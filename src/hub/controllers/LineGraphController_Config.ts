@@ -15,7 +15,7 @@ export const LineGraphController_NumericConfig: SourceListConfig = {
   types: [
     {
       key: "stepped",
-      symbol: "stairs",
+      symbol: "floor",
       showInTypeName: false,
       color: "color",
       sourceTypes: ["Number"],
@@ -35,7 +35,7 @@ export const LineGraphController_NumericConfig: SourceListConfig = {
     },
     {
       key: "smooth",
-      symbol: "scribble.variable",
+      symbol: "gesture",
       showInTypeName: false,
       color: "color",
       sourceTypes: ["Number"],
@@ -55,7 +55,7 @@ export const LineGraphController_NumericConfig: SourceListConfig = {
     },
     {
       key: "points",
-      symbol: "smallcircle.filled.circle",
+      symbol: "scatterplot",
       showInTypeName: false,
       color: "color",
       sourceTypes: ["Number"],
@@ -78,7 +78,7 @@ export const LineGraphController_DiscreteConfig: SourceListConfig = {
   types: [
     {
       key: "stripes",
-      symbol: "square.stack.3d.forward.dottedline.fill",
+      symbol: "barcode",
       showInTypeName: false,
       color: "color",
       sourceTypes: ["Raw", "Boolean", "Number", "String", "BooleanArray", "NumberArray", "StringArray"],
@@ -93,7 +93,7 @@ export const LineGraphController_DiscreteConfig: SourceListConfig = {
     },
     {
       key: "graph",
-      symbol: "chart.xyaxis.line",
+      symbol: "earthquake",
       showInTypeName: false,
       color: "color",
       sourceTypes: ["Raw", "Boolean", "Number", "String", "BooleanArray", "NumberArray", "StringArray"],
@@ -108,7 +108,7 @@ export const LineGraphController_DiscreteConfig: SourceListConfig = {
     },
     {
       key: "alerts",
-      symbol: "list.bullet",
+      symbol: "list",
       showInTypeName: false,
       color: "#ffaa00",
       sourceTypes: ["Alerts"],

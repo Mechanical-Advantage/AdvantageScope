@@ -8,10 +8,11 @@
 import { Decoder } from "@msgpack/msgpack";
 import { Pose2d, Translation2d } from "../geometry";
 import { Units } from "../units";
-import { arraysEqual, checkArrayType } from "../util";
+import { arraysEqual, checkArrayType, lowerBound } from "../util";
 import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
-import { PHOTON_PREFIX, STRUCT_PREFIX, TYPE_KEY, applyKeyPrefix, getEnabledData, splitLogKey } from "./LogUtil";
+import { PHOTON_PREFIX, STRUCT_PREFIX, applyKeyPrefix, getSchemaType, splitLogKey } from "./LogKeyUtils";
+import { TYPE_KEY } from "./LogUtil";
 import {
   LogValueSetAny,
   LogValueSetBoolean,
@@ -23,6 +24,7 @@ import {
   LogValueSetStringArray
 } from "./LogValueSets";
 import LoggableType from "./LoggableType";
+import { getMergeOffset } from "./MergeCalculator";
 import PhotonStructDecoder from "./PhotonStructDecoder";
 import ProtoDecoder from "./ProtoDecoder";
 import StructDecoder from "./StructDecoder";
@@ -157,12 +159,15 @@ export default class Log {
     // Update timestamp set caches
     if (this.enableTimestampSetCache) {
       Object.values(this.timestampSetCache).forEach((cache) => {
-        if (cache.keys.includes(key) && !cache.timestamps.includes(timestamp)) {
-          let insertIndex = cache.timestamps.findIndex((x) => x > timestamp);
-          if (insertIndex === -1) {
-            insertIndex = cache.timestamps.length;
+        if (cache.keys.includes(key)) {
+          let insertIndex = lowerBound(cache.timestamps, timestamp);
+          if (cache.timestamps[insertIndex] !== timestamp) {
+            if (insertIndex === cache.timestamps.length) {
+              cache.timestamps.push(timestamp);
+            } else {
+              cache.timestamps.splice(insertIndex, 0, timestamp);
+            }
           }
-          cache.timestamps.splice(insertIndex, 0, timestamp);
         }
       });
     }
@@ -291,7 +296,7 @@ export default class Log {
       });
       if (structType !== null) {
         let structUnitInfo = Units.STRUCT_UNITS[structType];
-        if (structUnitInfo !== undefined) {
+        if (structUnitInfo !== undefined && structChildKey in structUnitInfo) {
           return structUnitInfo[structChildKey];
         }
       }
@@ -333,7 +338,7 @@ export default class Log {
     // Apply cache
     if (!(key in this.fields)) return null;
     if (this.fields[key].getType() !== LoggableType.Number) return null;
-    if (!(key in this.fieldUnitCache)) this.fieldUnitCache[key] = getUnitImpl();
+    if (!(key in this.fieldUnitCache)) this.fieldUnitCache[key] = getUnitImpl() ?? null;
     return this.fieldUnitCache[key];
   }
 
@@ -457,7 +462,9 @@ export default class Log {
         }
         position = position.children[table];
       });
-      position.fullKey = key;
+      if (position.fullKey === null || !key.endsWith("/")) {
+        position.fullKey = key;
+      }
     });
     return root;
   }
@@ -567,14 +574,17 @@ export default class Log {
     }
 
     // Check for struct schema
-    if (key.includes("/.schema/" + STRUCT_PREFIX)) {
-      this.structDecoder.addSchema(key.split(STRUCT_PREFIX)[1], value);
-      this.photonDecoder.addSchema(key.split(STRUCT_PREFIX)[1], value);
-      this.attemptQueuedStructures();
-    }
-    if (key.includes("/.schema/" + PHOTON_PREFIX)) {
-      this.photonDecoder.addSchema(key.split(PHOTON_PREFIX)[1], value);
-      this.attemptQueuedStructures();
+    let schemaType = getSchemaType(key);
+    if (schemaType !== null) {
+      if (schemaType.startsWith(STRUCT_PREFIX)) {
+        this.structDecoder.addSchema(schemaType.slice(STRUCT_PREFIX.length), value);
+        this.photonDecoder.addSchema(schemaType.slice(STRUCT_PREFIX.length), value);
+        this.attemptQueuedStructures();
+      }
+      if (schemaType.startsWith(PHOTON_PREFIX)) {
+        this.photonDecoder.addSchema(schemaType.slice(PHOTON_PREFIX.length), value);
+        this.attemptQueuedStructures();
+      }
     }
   }
 
@@ -972,19 +982,7 @@ export default class Log {
   /** Merges a new log into this log. Returns the timestamp offset. */
   mergeWith(source: Log, prefix = ""): number {
     // Serialize source and adjust timestamps
-    let offset = 0;
-    let targetEnabledData = getEnabledData(this);
-    let sourceEnabledData = getEnabledData(source);
-    if (
-      targetEnabledData &&
-      sourceEnabledData &&
-      targetEnabledData.values.includes(true) &&
-      sourceEnabledData.values.includes(true)
-    ) {
-      offset =
-        targetEnabledData.timestamps[targetEnabledData.values.indexOf(true)] -
-        sourceEnabledData.timestamps[sourceEnabledData.values.indexOf(true)];
-    }
+    let offset = this.timestampRange !== null && source.timestampRange !== null ? getMergeOffset(this, source) : 0;
     let sourceSerialized = source.toSerialized();
     Object.values(sourceSerialized.fields).forEach((field) => {
       let typedField = field as { timestamps: number[]; values: number[] };
@@ -1001,7 +999,9 @@ export default class Log {
 
     // Merge fields
     Object.entries(sourceSerialized.fields).forEach(([key, value]) => {
-      this.fields[applyKeyPrefix(prefix, key)] = LogField.fromSerialized(value);
+      let targetKey = applyKeyPrefix(prefix, key);
+      if (prefix.length > 0 && targetKey === prefix) return;
+      this.fields[targetKey] = LogField.fromSerialized(value);
     });
 
     // Merge generated parents
@@ -1040,6 +1040,9 @@ export default class Log {
       }
     });
     let protoDescriptors: any[] = [];
+    this.protoDecoder.toSerialized().forEach((descriptor: any) => {
+      protoDescriptors.push(descriptor);
+    });
     sourceSerialized.protoDecoder.forEach((descriptor: any) => {
       protoDescriptors.push(descriptor);
     });

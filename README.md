@@ -1,4 +1,10 @@
-# ![AdvantageScope](/docs/docs/img/banner.png)
+<h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/static/img/banner-ltr-dark.webp">
+    <source media="(prefers-color-scheme: light)" srcset="docs/static/img/banner-ltr-light.webp">
+    <img alt="AdvantageScope" src="docs/static/img/banner-ltr-light.webp">
+  </picture>
+</h1>
 
 [![Build](https://github.com/Mechanical-Advantage/AdvantageScope/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Mechanical-Advantage/AdvantageScope/actions/workflows/build.yml)
 

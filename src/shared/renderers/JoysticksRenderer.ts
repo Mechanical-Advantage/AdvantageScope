@@ -4,8 +4,7 @@
 // Use of this source code is governed by a BSD
 // license that can be found in the LICENSE file
 // at the root directory of this project.
-
-import { JoystickState } from "../log/LogUtil";
+import { JoystickState } from "../log/LogJoystickState";
 import { scaleValue } from "../util";
 import TabRenderer from "./TabRenderer";
 

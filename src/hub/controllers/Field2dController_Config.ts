@@ -17,7 +17,7 @@ const Field2dController_Config: SourceListConfig = {
   types: [
     {
       key: "robot",
-      symbol: "location.fill",
+      symbol: "nearme",
       showInTypeName: true,
       color: "bumpers",
       sourceTypes: [
@@ -43,7 +43,7 @@ const Field2dController_Config: SourceListConfig = {
     },
     {
       key: "ghost",
-      symbol: "location.fill.viewfinder",
+      symbol: "nearmeoutline",
       showInTypeName: true,
       color: "color",
       sourceTypes: [
@@ -70,7 +70,7 @@ const Field2dController_Config: SourceListConfig = {
     },
     {
       key: "vision",
-      symbol: "scope",
+      symbol: "target",
       showInTypeName: true,
       color: "color",
       sourceTypes: [
@@ -105,7 +105,7 @@ const Field2dController_Config: SourceListConfig = {
     },
     {
       key: "swerveModuleVelocities",
-      symbol: "arrow.up.left.and.down.right.and.arrow.up.right.and.down.left",
+      symbol: "zoomoutmap",
       showInTypeName: true,
       color: "color",
       sourceTypes: ["SwerveModuleVelocity[]", "SwerveModuleState[]"],
@@ -128,7 +128,7 @@ const Field2dController_Config: SourceListConfig = {
     },
     {
       key: "rotationOverride",
-      symbol: "angle",
+      symbol: "360",
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",
@@ -140,7 +140,7 @@ const Field2dController_Config: SourceListConfig = {
     },
     {
       key: "rotationOverrideLegacy",
-      symbol: "angle",
+      symbol: "360",
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",
@@ -158,7 +158,7 @@ const Field2dController_Config: SourceListConfig = {
     },
     {
       key: "trajectory",
-      symbol: "point.bottomleft.forward.to.point.topright.scurvepath.fill",
+      symbol: "conversionpath",
       showInTypeName: true,
       color: "color",
       sourceTypes: [
@@ -189,7 +189,7 @@ const Field2dController_Config: SourceListConfig = {
     },
     {
       key: "heatmap",
-      symbol: "map.fill",
+      symbol: "map",
       showInTypeName: true,
       color: "#ff0000",
       sourceTypes: [
@@ -219,7 +219,7 @@ const Field2dController_Config: SourceListConfig = {
     },
     {
       key: "arrow",
-      symbol: "arrow.up.circle",
+      symbol: "arrowcircleup",
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",

@@ -16,7 +16,7 @@ const PointsController_Config: SourceListConfig = {
   types: [
     {
       key: "plus",
-      symbol: "plus",
+      symbol: "add",
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",
@@ -38,7 +38,7 @@ const PointsController_Config: SourceListConfig = {
     },
     {
       key: "cross",
-      symbol: "xmark",
+      symbol: "close",
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",
@@ -60,7 +60,7 @@ const PointsController_Config: SourceListConfig = {
     },
     {
       key: "circle",
-      symbol: "circle.fill",
+      symbol: "circle",
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",
@@ -82,7 +82,7 @@ const PointsController_Config: SourceListConfig = {
     },
     {
       key: "plusSplit",
-      symbol: "plus",
+      symbol: "add",
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",
@@ -111,7 +111,7 @@ const PointsController_Config: SourceListConfig = {
     },
     {
       key: "crossSplit",
-      symbol: "xmark",
+      symbol: "close",
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",
@@ -140,7 +140,7 @@ const PointsController_Config: SourceListConfig = {
     },
     {
       key: "circleSplit",
-      symbol: "circle.fill",
+      symbol: "circle",
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",
@@ -169,7 +169,7 @@ const PointsController_Config: SourceListConfig = {
     },
     {
       key: "component",
-      symbol: "number",
+      symbol: "numbers",
       showInTypeName: false,
       color: "#000000",
       darkColor: "#ffffff",

@@ -11,12 +11,12 @@ import { SourceListConfig } from "../../shared/SourceListConfig";
 const StatisticsController_Config: SourceListConfig = {
   title: "hub.statistics.measurements",
   autoAdvance: "color",
-  allowChildrenFromDrag: false,
+  allowChildrenFromDrag: true,
   typeMemoryId: "statistics",
   types: [
     {
       key: "independent",
-      symbol: "line.3.horizontal",
+      symbol: "menu",
       showInTypeName: true,
       color: "color",
       sourceTypes: ["Number"],
@@ -32,7 +32,7 @@ const StatisticsController_Config: SourceListConfig = {
     },
     {
       key: "reference",
-      symbol: "line.horizontal.star.fill.line.horizontal",
+      symbol: "anchor",
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",
@@ -44,7 +44,7 @@ const StatisticsController_Config: SourceListConfig = {
     },
     {
       key: "relativeError",
-      symbol: "arrow.down.and.line.horizontal.and.arrow.up",
+      symbol: "verticalaligncenter",
       showInTypeName: true,
       color: "color",
       sourceTypes: ["Number"],
@@ -61,7 +61,7 @@ const StatisticsController_Config: SourceListConfig = {
     },
     {
       key: "absoluteError",
-      symbol: "arrow.down.to.line",
+      symbol: "verticalalignbottom",
       showInTypeName: true,
       color: "color",
       sourceTypes: ["Number"],

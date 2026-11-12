@@ -14,7 +14,7 @@ const MechanismController_Config: SourceListConfig = {
   types: [
     {
       key: "mechanism",
-      symbol: "gearshape.fill",
+      symbol: "settings",
       showInTypeName: false,
       color: "#888888",
       sourceTypes: ["Mechanism2d"],

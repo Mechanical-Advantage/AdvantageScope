@@ -9,8 +9,9 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
-import { AKIT_TIMESTAMP_KEYS, getLogValueText, getRobotStateRanges } from "../../shared/log/LogUtil";
+import { getLogValueText } from "../../shared/log/LogUtil";
 import { LogValueSetNumber } from "../../shared/log/LogValueSets";
+import { AKIT_TIMESTAMP_KEYS, getRobotStateRanges } from "../../shared/log/RobotState";
 import {
   LineGraphRendererCommand,
   LineGraphRendererCommand_Alert,
@@ -19,7 +20,7 @@ import {
   LineGraphRendererCommand_NumericField
 } from "../../shared/renderers/LineGraphRenderer";
 import { Units } from "../../shared/units";
-import { clampValue, createUUID, scaleValueClamped } from "../../shared/util";
+import { clampValue, createUUID, lowerBound, scaleValueClamped, upperBound } from "../../shared/util";
 import SourceList from "../SourceList";
 import { LineGraphController_DiscreteConfig, LineGraphController_NumericConfig } from "./LineGraphController_Config";
 import TabController from "./TabController";
@@ -354,7 +355,7 @@ export default class LineGraphController implements TabController {
       return null;
     }
     let command = commandCache[key];
-    let index = command.timestamps.findLastIndex((sample) => sample <= time);
+    let index = upperBound(command.timestamps, time) - 1;
     if (index === -1) {
       return null;
     }
@@ -387,12 +388,14 @@ export default class LineGraphController implements TabController {
     }
 
     // Use specified value if valid
-    if (options.autoTarget !== null) {
+    if (options.autoTarget !== null && options.autoTarget in Units.GROUP_BY_UNIT) {
       let autoTargetGroup = Units.GROUP_BY_UNIT[options.autoTarget];
       if (
         sourceVisible.every((item) => {
           let itemUnit = window.log.getUnit(item.logKey);
-          return itemUnit !== null && Units.GROUP_BY_UNIT[itemUnit] === autoTargetGroup;
+          return (
+            itemUnit !== null && itemUnit in Units.GROUP_BY_UNIT && Units.GROUP_BY_UNIT[itemUnit] === autoTargetGroup
+          );
         })
       ) {
         return { status: "success", unit: options.autoTarget };
@@ -405,7 +408,7 @@ export default class LineGraphController implements TabController {
     let unitsConsistent = true;
     for (let i = 0; i < sourceVisible.length; i++) {
       let unit = window.log.getUnit(sourceVisible[i].logKey);
-      if (unit !== null) {
+      if (unit !== null && unit in Units.GROUP_BY_UNIT) {
         if (firstUnit === null) {
           firstUnit = unit;
           firstUnitGroup = Units.GROUP_BY_UNIT[unit];
@@ -482,7 +485,7 @@ export default class LineGraphController implements TabController {
           if (fieldItem.type !== "stepped" || filter !== LineGraphFilter.None) {
             let newData: LogValueSetNumber = { timestamps: [], values: [] };
             let sourceIndex = 0;
-            let akitIndex = akitTimestamps.findIndex((akitTime) => akitTime >= data!.timestamps[0]);
+            let akitIndex = lowerBound(akitTimestamps, data!.timestamps[0]);
             while (
               akitIndex < akitTimestamps.length &&
               akitTimestamps[akitIndex] <= data!.timestamps[data!.timestamps.length - 1]
@@ -544,7 +547,12 @@ export default class LineGraphController implements TabController {
         let hasUnit = false;
         if (autoTargetResult.status === "success") {
           let sourceUnit = window.log.getUnit(fieldItem.logKey);
-          if (sourceUnit !== null && Units.GROUP_BY_UNIT[sourceUnit] === Units.GROUP_BY_UNIT[autoTargetResult.unit]) {
+          if (
+            sourceUnit !== null &&
+            sourceUnit in Units.GROUP_BY_UNIT &&
+            autoTargetResult.unit in Units.GROUP_BY_UNIT &&
+            Units.GROUP_BY_UNIT[sourceUnit] === Units.GROUP_BY_UNIT[autoTargetResult.unit]
+          ) {
             data.values = data.values.map((value) => Units.convert(value, sourceUnit, autoTargetResult.unit));
             hasUnit = true;
           }
@@ -664,7 +672,7 @@ export default class LineGraphController implements TabController {
 
       // Filter out ranges outside the time range
       let relevantRanges = ranges.filter(
-        (range) => range.start <= timeRange[1] && (range.end === undefined || range.end >= timeRange[0])
+        (range) => range.start <= timeRange[1] && (range.end === undefined || range.end > timeRange[0])
       );
 
       if (relevantRanges.length > 0) {
@@ -673,9 +681,13 @@ export default class LineGraphController implements TabController {
 
         relevantRanges.forEach((range) => {
           let start = Math.max(range.start, timeRange[0]);
-          if (timestamps.length === 0 || start > timestamps[timestamps.length - 1]) {
+          let value = t(`hub.lineGraph.robotMode.${range.mode}`);
+          if (timestamps.length > 0 && start <= timestamps[timestamps.length - 1]) {
+            // Same timestamp, later range wins
+            values[values.length - 1] = value;
+          } else {
             timestamps.push(start);
-            values.push(t(`hub.lineGraph.robotMode.${range.mode}`));
+            values.push(value);
           }
         });
 
