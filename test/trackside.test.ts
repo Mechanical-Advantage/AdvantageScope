@@ -23,6 +23,68 @@ import {
 const profile = channelProfile({ name: "Motor temp", unit: "degC" });
 const definition = { name: "IMD_State", values: { 0: "Normal", 4: "Earth Fault", 5: "Ground Fault Warning" } };
 
+test("Trackside reads the live edge and latest disconnected sample independently of the analysis cursor", () => {
+  const globals = globalThis as any;
+  const previous = globals.window;
+  let liveTime: number | null = 100;
+  const queriedTimes: number[] = [];
+  const graphTimes: number[] = [];
+  const summary = { backend: "connected", hasFreshData: true, viewedRun: 0, runCount: 1 };
+  globals.window = {
+    selection: {
+      getCurrentLiveTime: () => liveTime,
+      getRenderTime: () => {
+        throw new Error("Trackside must not read the analysis cursor");
+      }
+    },
+    log: {
+      getTimestampRange: () => [0, 99],
+      getRange: (_key: string, start: number, end: number) => {
+        assert.equal(start, end);
+        queriedTimes.push(start);
+        return { timestamps: [99], values: [112] };
+      },
+      getChannelProfile: () => profile,
+      getMetadataString: () => ""
+    },
+    liveStatus: {
+      getLiveStatus: () => summary,
+      getFieldFreshness: () => "online",
+      getFieldAge: () => 0.1
+    }
+  };
+  const controller: TracksideController = Object.assign(Object.create(TracksideController.prototype), {
+    sourceList: {
+      getState: () => [
+        { type: "tile", logKey: "/temp", logType: "Number", visible: true, options: { showInGraph: "true" } }
+      ]
+    },
+    graphController: {
+      restoreState: () => {},
+      getCommand: (time: number) => {
+        graphTimes.push(time);
+        return null;
+      }
+    },
+    limits: { "/temp": { high: 110 } }
+  });
+  try {
+    assert.equal(controller.showTimeline(), false);
+    assert.equal(controller.getCommand().tiles[0].severity, "critical");
+    liveTime = 101;
+    controller.getCommand();
+    liveTime = null;
+    summary.backend = "error";
+    const disconnected = controller.getCommand().tiles[0];
+    assert.equal(disconnected.severity, "ok");
+    assert.equal(disconnected.state, "⊘ link lost");
+    assert.deepEqual(queriedTimes, [100, 101, 99]);
+    assert.deepEqual(graphTimes, queriedTimes);
+  } finally {
+    globals.window = previous;
+  }
+});
+
 test("tiles use display units for limits and do not ship numeric alarms", () => {
   const kelvin = channelProfile({ name: "temperature", unit: "kelvin" });
   assert.equal(tileState("/Motor temp", 385.15, kelvin).severity, "ok");

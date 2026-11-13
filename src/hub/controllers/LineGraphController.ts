@@ -7,6 +7,7 @@
 
 import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
+import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
 import { clipGaps, TraceGapCache } from "../../shared/TraceGaps";
 import { axisDisplayUnit, formatChannelValue } from "../../shared/display/ChannelProfile";
@@ -418,7 +419,7 @@ export default class LineGraphController implements TabController {
   }
 
   showTimeline(): boolean {
-    return true;
+    return false;
   }
 
   private getPreview(
@@ -498,13 +499,18 @@ export default class LineGraphController implements TabController {
     }
   }
 
-  getCommand(): LineGraphRendererCommand {
+  getCommand(liveTime?: number): LineGraphRendererCommand {
     let leftDataRange: [number, number] = [Infinity, -Infinity];
     let rightDataRange: [number, number] = [Infinity, -Infinity];
     let leftFieldsCommand: LineGraphRendererCommand_NumericField[] = [];
     let rightFieldsCommand: LineGraphRendererCommand_NumericField[] = [];
     let discreteFieldsCommand: LineGraphRendererCommand_DiscreteField[] = [];
-    const timeRange = this.lapMode === "time" ? window.selection.getTimelineRange() : window.log.getTimestampRange();
+    const timeRange: [number, number] =
+      liveTime === undefined
+        ? this.lapMode === "time"
+          ? window.selection.getTimelineRange()
+          : window.log.getTimestampRange()
+        : [Math.max(window.log.getTimestampRange()[0], liveTime - 30), liveTime];
 
     // Add numeric fields
     this.leftNumericCommandCache = {};
@@ -945,10 +951,10 @@ export default class LineGraphController implements TabController {
       rightTitle: this.axisTitle(this.rightSourceList, this.rightUnitCache, this.rightFilter),
       timeRange: timeRange,
       displayOffset: window.log.getTimestampDisplayOffset(),
-      selectionMode: window.selection.getMode(),
-      selectedTime: window.selection.getSelectedTime(),
-      hoveredTime: window.selection.getHoveredTime(),
-      grabZoomRange: window.selection.getGrabZoomRange(),
+      selectionMode: liveTime === undefined ? window.selection.getMode() : SelectionMode.Locked,
+      selectedTime: liveTime === undefined ? window.selection.getSelectedTime() : liveTime,
+      hoveredTime: liveTime === undefined ? window.selection.getHoveredTime() : null,
+      grabZoomRange: liveTime === undefined ? window.selection.getGrabZoomRange() : null,
 
       leftRange: leftRange,
       rightRange: rightRange,

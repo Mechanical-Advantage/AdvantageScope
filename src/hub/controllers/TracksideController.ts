@@ -60,7 +60,7 @@ export default class TracksideController implements TabController {
   private graphSources = "";
 
   constructor(root: HTMLElement) {
-    // Use the stock command pipeline, including units, gaps, axes and selection.
+    // Use the stock graph pipeline for units, gaps and axes.
     const graphRoot = document.createElement("div");
     for (const axis of ["left", "right", "discrete"]) {
       const element = document.createElement("div");
@@ -104,11 +104,11 @@ export default class TracksideController implements TabController {
     return this.sourceList.getActiveFields();
   }
   showTimeline() {
-    return true;
+    return false;
   }
   getCommand(): TracksideRendererCommand {
-    const time = window.selection.getRenderTime() ?? window.log.getTimestampRange()[1];
     const liveTime = window.selection.getCurrentLiveTime();
+    const time = liveTime ?? window.log.getTimestampRange()[1];
     const summary = window.liveStatus?.getLiveStatus();
     const liveEdge = isTracksideLive(summary, liveTime, time);
     const sources = tracksideGraphSources(this.sourceList.getState());
@@ -118,7 +118,8 @@ export default class TracksideController implements TabController {
       this.graphController.restoreState(sources);
     }
     return {
-      graph: sources.leftSources.length || sources.discreteSources.length ? this.graphController.getCommand() : null,
+      graph:
+        sources.leftSources.length || sources.discreteSources.length ? this.graphController.getCommand(time) : null,
       message:
         liveEdge && summary.backend === "connected" && !summary.hasFreshData ? "Base connected, no car data" : "",
       tiles: this.sourceList

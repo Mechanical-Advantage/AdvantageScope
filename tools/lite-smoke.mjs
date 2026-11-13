@@ -78,13 +78,18 @@ try {
     });
   assert.ok(await frame.evaluate(() => window.tabs.saveState().tabs.some((tab) => tab.type === 1)));
   await frame.evaluate(() => window.tabs.setSelected(window.tabs.tabList.findIndex((tab) => tab.type === 1)));
-  assert.equal(await hub.locator(".timeline").isVisible(), true, "Line Graph keeps the shared session timeline");
+  await hub.locator(".timeline").waitFor({ state: "hidden" });
   const axisMode = hub.locator(".lap-axis-mode:visible");
   for (const mode of ["lapTime", "distance", "time"]) {
     if (mode !== "time") assert.match(await axisMode.locator(`option[value="${mode}"]`).textContent(), /experimental/);
     await axisMode.selectOption(mode);
-    assert.equal(await hub.locator(".timeline").isVisible(), true, `${mode} keeps the shared session timeline`);
+    assert.equal(await hub.locator(".timeline").isVisible(), false, `Line Graph uses its own timeline in ${mode} mode`);
   }
+  await frame.evaluate(() => window.tabs.setSelected(window.tabs.tabList.findIndex((tab) => tab.type === 13)));
+  await hub.locator(".timeline").waitFor({ state: "visible" });
+  await frame.evaluate(() => window.tabs.addTab(15));
+  await hub.locator(".timeline").waitFor({ state: "hidden" });
+  await frame.evaluate(() => window.tabs.setSelected(window.tabs.tabList.findIndex((tab) => tab.type === 1)));
   if (process.env.LITE_SCREENSHOTS) await page.screenshot({ path: process.env.LITE_SCREENSHOTS + "/lite_mur.png" });
 
   await hub.getByText("File", { exact: true }).click();

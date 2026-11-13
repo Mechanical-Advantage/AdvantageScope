@@ -104,7 +104,7 @@ try {
     tab.controller.restoreState(state);
     window.tabs.setSelected(window.tabs.tabList.indexOf(tab));
   }, speed);
-  assert.equal(await hub.locator(".timeline").isVisible(), true, "Line Graph keeps the shared session timeline");
+  await hub.locator(".timeline").waitFor({ state: "hidden" });
   await hub.waitForFunction((key) => {
     const data = window.log.getNumber(key, -Infinity, Infinity);
     return data && data.timestamps.at(-1) - data.timestamps[0] >= 295;
@@ -113,7 +113,7 @@ try {
   for (const mode of ["lapTime", "distance", "time"]) {
     if (mode !== "time") assert.match(await axisMode.locator(`option[value="${mode}"]`).textContent(), /experimental/);
     await axisMode.selectOption(mode);
-    assert.equal(await hub.locator(".timeline").isVisible(), true, `The shared timeline remains in ${mode} mode`);
+    assert.equal(await hub.locator(".timeline").isVisible(), false, `Line Graph uses its own timeline in ${mode} mode`);
   }
   assert.ok(sent.some((op) => op.op === "subscribe" && op.paths.includes(speed.slice(1))));
   assert.ok(history.some((url) => new URL(url).searchParams.get("path") === speed.slice(1)));
@@ -207,8 +207,28 @@ try {
       type
     );
     await hub.waitForTimeout(600);
-    assert.equal(await hub.locator(".timeline").isVisible(), true, `Tab ${type} keeps the shared timeline`);
+    assert.equal(
+      await hub.locator(".timeline").isVisible(),
+      ![1, 15].includes(type),
+      `Tab ${type} timeline visibility`
+    );
     assert.equal(await hub.evaluate(() => window.selection.getSelectedTime()), selectedTime, "Tabs share the cursor");
+    if (type === 15) {
+      const liveEnd = await hub.evaluate(() => {
+        const graph = window.tabs.tabList.find((tab) => tab.type === 15).controller.getCommand().graph;
+        return graph.timeRange[1];
+      });
+      assert.ok(liveEnd > selectedTime + 20, "Trackside stays at the live edge while the analysis cursor is paused");
+      await hub.waitForFunction((end) => {
+        const graph = window.tabs.tabList.find((tab) => tab.type === 15).controller.getCommand().graph;
+        return graph.timeRange[1] > end + 0.5 && Math.abs(graph.timeRange[1] - graph.timeRange[0] - 30) < 0.01;
+      }, liveEnd);
+      assert.equal(
+        await hub.evaluate(() => window.selection.getSelectedTime()),
+        selectedTime,
+        "Trackside preserves the analysis cursor"
+      );
+    }
     await hub.screenshot({ path: path.join(out, `tab-${type}.png`) });
   }
   await hub.evaluate(() => {

@@ -1177,4 +1177,8 @@ table.metadata-table td.no-data {
 .trackside-graph {
   position: absolute;
   inset: 40% 0 0;
+  pointer-events: none;
+}
+.trackside-graph .line-graph-help {
+  display: none !important;
 }
