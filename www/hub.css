@@ -1746,9 +1746,11 @@ div.video-timeline-controls button {
   transform: translateY(-50%);
 }
 
-/* Points */
+/* Points, Driver Inputs and Car Dynamics */
 
-div.points-sources {
+div.points-sources,
+div.driver-inputs-sources,
+div.car-dynamics-sources {
   position: absolute;
   top: 0%;
   height: 100%;
@@ -1757,7 +1759,9 @@ div.points-sources {
   min-width: calc(100% - 200px);
 }
 
-div.points-settings {
+div.points-settings,
+div.driver-inputs-settings,
+div.car-dynamics-settings {
   position: absolute;
   top: 0%;
   height: 100%;
@@ -1771,9 +1775,16 @@ div.points-settings {
 }
 
 @media (prefers-color-scheme: dark) {
-  div.points-settings {
+  div.points-settings,
+  div.driver-inputs-settings,
+  div.car-dynamics-settings {
     border-left: 1px solid black;
   }
+}
+
+/* Give the stock split buttons a definite height for their percentage-sized icons. */
+div.car-dynamics-settings div.input {
+  height: 40px;
 }
 
 /* Connect dialog (same layout as the Preferences prompt) */

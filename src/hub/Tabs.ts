@@ -11,8 +11,10 @@ import { RenderGuard, inlineStatus } from "../shared/RenderGuard";
 import TabType, { filterRestorableTabs, getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import { dbcDefinition } from "../shared/Trackside";
 import { getAutonomousKey, getEnabledKey, getUtilityKey } from "../shared/log/RobotState";
+import CarDynamicsRenderer from "../shared/renderers/CarDynamicsRenderer";
 import ConsoleRenderer from "../shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
+import DriverInputsRenderer from "../shared/renderers/DriverInputsRenderer";
 import Field2dRenderer from "../shared/renderers/Field2dRenderer";
 import LineGraphRenderer from "../shared/renderers/LineGraphRenderer";
 import MetadataRenderer from "../shared/renderers/MetadataRenderer";
@@ -28,7 +30,9 @@ import { attachResizeHandle } from "./ResizeHandle";
 import ScrollSensor, { ScrollSensorMouseControl } from "./ScrollSensor";
 import Timeline, { TimelineBand } from "./Timeline";
 import { updateTracksideAlerts } from "./TracksideAlerts";
+import CarDynamicsController from "./controllers/CarDynamicsController";
 import ConsoleController from "./controllers/ConsoleController";
+import DriverInputsController from "./controllers/DriverInputsController";
 import Field2dController from "./controllers/Field2dController";
 import LineGraphController from "./controllers/LineGraphController";
 import MetadataController from "./controllers/MetadataController";
@@ -93,6 +97,8 @@ export default class Tabs {
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Video, 85);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Points, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Trackside, undefined);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.DriverInputs, undefined);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.CarDynamics, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Metadata, 0);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.TrackMap, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Laps, undefined);
@@ -594,6 +600,14 @@ export default class Tabs {
       case TabType.Points:
         controller = new PointsController(controlsElement);
         renderer = new PointsRenderer(rendererElement);
+        break;
+      case TabType.DriverInputs:
+        controller = new DriverInputsController(controlsElement);
+        renderer = new DriverInputsRenderer(rendererElement);
+        break;
+      case TabType.CarDynamics:
+        controller = new CarDynamicsController(controlsElement);
+        renderer = new CarDynamicsRenderer(rendererElement);
         break;
       case TabType.TrackMap:
       case TabType.Laps:

@@ -7,10 +7,11 @@
 
 import assert from "node:assert/strict";
 import test from "node:test";
+import CarDynamicsController_Config from "../src/hub/controllers/CarDynamicsController_Config";
 import SourceList from "../src/hub/SourceList";
-import { SourceListItemState } from "../src/shared/SourceListConfig";
 import Log from "../src/shared/log/Log";
 import LoggableType from "../src/shared/log/LoggableType";
+import { SourceListItemState } from "../src/shared/SourceListConfig";
 
 const liveKey = "vehicles/test/powertrain/inverter/motor_temperature";
 const signal = "INV_MotorTemp";
@@ -205,4 +206,21 @@ test("cross-type fallback requires one candidate overall", () => {
   list.refresh();
   assert.equal(list.getState(true).length, 0);
   assert.equal(list.getState()[0].logType, "Boolean");
+});
+
+test("Invert survives a layout round-trip with DBC-name field resolution", () => {
+  const log = new Log();
+  field(log, "CAN/SBG_FRONT_GyroZ", LoggableType.Number, "SBG_FRONT_GyroZ");
+  const saved = { ...item(), type: "yawRate", dbcSignal: "SBG_FRONT_GyroZ", options: { invert: "inverted" } };
+  const { list } = sourceList(log, []);
+  list.config = CarDynamicsController_Config;
+  list.clear = () => (list.state = []);
+  list.addListItem = (state: SourceListItemState) => list.state.push(state);
+  list.setState(JSON.parse(JSON.stringify([saved])));
+  const state = list.getState()[0];
+  assert.equal(state.logKey, "CAN/SBG_FRONT_GyroZ");
+  assert.deepEqual(state.options, { invert: "inverted" });
+  assert.equal(state.dbcSignal, "SBG_FRONT_GyroZ");
+  list.setState(JSON.parse(JSON.stringify(list.getState())));
+  assert.deepEqual(list.getState()[0], state);
 });

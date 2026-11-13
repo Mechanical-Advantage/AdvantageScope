@@ -7,7 +7,6 @@
 
 import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
-import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
 import { clipGaps, TraceGapCache } from "../../shared/TraceGaps";
 import { axisDisplayUnit, formatChannelValue } from "../../shared/display/ChannelProfile";
@@ -28,6 +27,7 @@ import { clampValue, createUUID, scaleValueClamped } from "../../shared/util";
 import { LAP_COLORS, lapService } from "../LapService";
 import SourceList from "../SourceList";
 import { LineGraphController_DiscreteConfig, LineGraphController_NumericConfig } from "./LineGraphController_Config";
+import { previewNumberCommand } from "./NumberPreview";
 import TabController from "./TabController";
 
 type NumericCommandCacheValue = LineGraphRendererCommand_NumericField & { hasUnit: boolean };
@@ -49,10 +49,6 @@ export default class LineGraphController implements TabController {
   private MIN_AXIS_RANGE = 1e-5;
   private MAX_AXIS_RANGE = 1e20;
   private MAX_VALUE = 1e20;
-  private PREVIEW_FORMAT = new Intl.NumberFormat("en-US", {
-    maximumFractionDigits: 6,
-    useGrouping: false
-  });
 
   private leftSourceList: SourceList;
   private discreteSourceList: SourceList;
@@ -433,27 +429,7 @@ export default class LineGraphController implements TabController {
     filter: LineGraphFilter
   ): string | null {
     if (!(key in commandCache)) return null;
-    if (
-      time < window.selection.getTimelineRange()[0] ||
-      (time > window.selection.getTimelineRange()[1] && window.selection.getMode() !== SelectionMode.Locked)
-    ) {
-      return null;
-    }
-    let command = commandCache[key];
-    let index = command.timestamps.findLastIndex((sample) => sample <= time);
-    if (index === -1) {
-      return null;
-    }
-    const profile = window.log.getChannelProfile(key);
-    if (profile.enumLabels) return formatChannelValue(command.values[index], profile);
-    let output = this.PREVIEW_FORMAT.format(command.values[index]);
-    if (unitCache !== null && command.hasUnit) {
-      let suffix = Units.getSuffixForFilter(unitCache.suffix, filter);
-      output += suffix.length > 1 ? " " : "";
-      output += suffix;
-      if (filter === LineGraphFilter.None && unitCache.pluralizeSuffix && command.values[index] !== 1) output += "s";
-    }
-    return output;
+    return previewNumberCommand(key, time, commandCache[key], unitCache, filter);
   }
 
   /** Returns the auto target type for an axis, based on a manual override or field selection. */

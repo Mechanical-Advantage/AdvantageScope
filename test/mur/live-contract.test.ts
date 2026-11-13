@@ -181,7 +181,7 @@ test("mock DBC provenance names a signal in its declared database and message", 
       .split("\nBO_ ")[0];
     assert.ok(fields.includes(" SG_ " + desc.dbc.signal + " :"), desc.path);
   }
-  assert.equal(mapped, 44);
+  assert.equal(mapped, 46);
   for (const path of [
     "powertrain/inverter/dc_power",
     "powertrain/inverter/module_temperature",

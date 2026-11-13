@@ -282,6 +282,114 @@
       </div>
 
       <div id="controller15"><div class="trackside-sources"></div></div>
+      <!-- Driver Inputs -->
+      <div id="controller16">
+        <div class="driver-inputs-sources"></div>
+        <div class="driver-inputs-settings setting-blocks fix-second">
+          <div class="title">
+            <div class="full">Brake Full Scale (psi)</div>
+          </div>
+          <div class="input">
+            <div>
+              <input
+                class="brake-scale"
+                type="number"
+                value="1000"
+                step="50"
+                title="Brake pressure that fills a bar (psi). The default full scale is 1000 psi."
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Car Dynamics -->
+      <div id="controller17">
+        <div class="car-dynamics-sources"></div>
+        <div class="car-dynamics-settings setting-blocks">
+          <div class="title">
+            <div class="full">Damper Range (mm)</div>
+          </div>
+          <div class="input">
+            <div>
+              <input
+                class="damper-range"
+                type="number"
+                value="50"
+                min="0.1"
+                step="0.1"
+                title="Damper position of a full-height bar (mm)"
+              />
+            </div>
+          </div>
+
+          <div class="title">
+            <div class="full">Steering Ratio (x:1)</div>
+          </div>
+          <div class="input">
+            <div>
+              <input
+                class="steering-ratio"
+                type="number"
+                value="3.827"
+                step="0.1"
+                title="Steering wheel degrees per road wheel degree, x:1. The default 3.827:1 is the car's ratio straight ahead."
+              />
+            </div>
+          </div>
+
+          <div class="title">
+            <div class="full">Max Speed (km/h)</div>
+          </div>
+          <div class="input">
+            <div>
+              <input class="max-speed" type="number" value="120" title="Wheel speed of a full-length arrow (km/h)" />
+            </div>
+          </div>
+
+          <div class="title">
+            <div class="full">Wheel Radius (m)</div>
+          </div>
+          <div class="input">
+            <div>
+              <input
+                class="wheel-radius"
+                type="number"
+                value="0.203"
+                step="0.001"
+                title="Rolling radius used to convert angular wheel speed to km/h. Set this to the car's wheel radius."
+              />
+            </div>
+          </div>
+
+          <div class="title">
+            <div class="full">Wheelbase, Track (m)</div>
+          </div>
+          <div class="input">
+            <div class="half">
+              <input class="size-x" type="number" value="1.53" step="0.01" title="Wheelbase (meters)" />
+            </div>
+            <div class="half">
+              <input class="size-y" type="number" value="1.2" step="0.01" title="Track width (meters)" />
+            </div>
+          </div>
+
+          <div class="title">
+            <div class="full">Orientation</div>
+          </div>
+          <div class="input">
+            <div class="orientation-switcher split split-2">
+              <div tabindex="0" title="Rotate car counter-clockwise">
+                <img class="invertable" src="symbols/rotateleft.svg" />
+              </div>
+              <div tabindex="0" title="Rotate car clockwise">
+                <img class="invertable" src="symbols/rotateright.svg" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Points -->
       <div id="controller11">
         <div class="points-sources"></div>
@@ -488,6 +596,18 @@
       </div>
 
       <div id="renderer15"><div class="trackside-grid"></div></div>
+      <!-- Driver Inputs -->
+      <div id="renderer16">
+        <canvas class="driver-inputs-canvas"></canvas>
+      </div>
+
+      <!-- Car Dynamics -->
+      <div id="renderer17">
+        <div class="car-dynamics-canvas-container">
+          <canvas class="car-dynamics-canvas" width="100" height="100"></canvas>
+        </div>
+      </div>
+
       <!-- Points -->
       <div id="renderer11">
         <div class="points-background-container">
