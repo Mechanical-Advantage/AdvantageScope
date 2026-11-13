@@ -21,6 +21,7 @@ import PointsRenderer from "./shared/renderers/PointsRenderer";
 import StatisticsRenderer from "./shared/renderers/StatisticsRenderer";
 import TabRenderer from "./shared/renderers/TabRenderer";
 import TableRenderer from "./shared/renderers/TableRenderer";
+import TracksideRenderer from "./shared/renderers/TracksideRenderer";
 import VideoRenderer from "./shared/renderers/VideoRenderer";
 import { htmlEncode } from "./shared/util";
 
@@ -88,6 +89,9 @@ function updateVisualizer() {
       break;
     case TabType.Video:
       renderer = new VideoRenderer(root);
+      break;
+    case TabType.Trackside:
+      renderer = new TracksideRenderer(root);
       break;
     case TabType.Points:
       renderer = new PointsRenderer(root);

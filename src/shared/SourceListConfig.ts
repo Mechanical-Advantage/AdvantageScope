@@ -7,6 +7,8 @@
 
 export type SourceListConfig = {
   title: string;
+  /** Offer a saved graph toggle beside each field visibility button. */
+  showInGraph?: boolean;
   /** True advances type, string advances option */
   autoAdvance: boolean | string;
   /** Should be false if parent types (arrays/structs) are supported directly */
