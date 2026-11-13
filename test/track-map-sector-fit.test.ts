@@ -7,7 +7,15 @@
 
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
-import { analyze, LapResult, Sample, sectorBlocks, sectorBounds } from "../src/shared/laps/LapEngine";
+import {
+  analyze,
+  gateAt,
+  LapAnalysisCache,
+  LapResult,
+  Sample,
+  sectorBlocks,
+  sectorBounds
+} from "../src/shared/laps/LapEngine";
 import LapRenderer, { fitTrackView, trackView } from "../src/shared/renderers/LapRenderer";
 
 /** Three laps of a 40 m circle, with a gate a quarter of the way round and another half way. */
@@ -110,4 +118,157 @@ test("a new focus refits the map once, and a map keeps the view the user scrolls
   assert.equal(renderer.zoom, 3);
   renderer.render({ ...command, focus: { ...focus, range: [s3.start, s3.end], id: 8 } });
   assert.notEqual(renderer.zoom, 3);
+});
+
+test("sectors added in reverse lap order retain positive times and the final sector", () => {
+  const samples = circleLaps().samples;
+  const gates = [gateAt(samples, 5)!, gateAt(samples, 13)!];
+  const config = { manual: [0, 20, 40, 60], sectors: gates };
+  const ordered = analyze(samples, config);
+  const reversed = analyze(samples, { ...config, sectors: [...gates].reverse() });
+  assert.deepEqual(reversed, ordered);
+  for (const lap of reversed.laps.filter((lap) => lap.complete)) {
+    assert.equal(lap.sectors.length, 3);
+    assert.ok(lap.sectors.every((time) => time > 0 && Number.isFinite(time)));
+  }
+});
+
+test("cached analysis matches full results while revisiting only the appended tail", () => {
+  const all = circleLaps().samples;
+  for (const mode of ["circuit", "accel", "skidpad", "autocross", "endurance"] as const) {
+    const cache = new LapAnalysisCache();
+    const config = { mode, manual: [0, 20, 40, 60] };
+    for (let count = 20; count < all.length; count += 20) {
+      const input = all.slice(0, count);
+      const from = all[Math.max(0, count - 22)].t;
+      const before = cache.processed;
+      assert.deepEqual(analyze(input, config, cache, from), analyze(input, config));
+      assert.ok(cache.processed - before < 500);
+    }
+  }
+});
+
+test("cached analysis handles signal timing, gate edits, stops and revised tails", () => {
+  const all = circleLaps().samples.map((p) => ({
+    ...p,
+    counter: Math.floor(p.t / 20),
+    beacon: p.t % 20 < 0.2 ? 1 : 0,
+    speed: p.t % 20 < 1 ? 0 : p.speed,
+    yaw: Math.sin(p.t / 15)
+  }));
+  const gate = gateAt(all, 0)!;
+  const finish = gateAt(all, 15)!;
+  for (const mode of ["circuit", "accel", "skidpad", "autocross", "endurance"] as const) {
+    for (const config of [{ mode }, { mode, gate }, { mode, gate: { ...gate, direction: undefined }, finish }]) {
+      const cache = new LapAnalysisCache();
+      for (let count = 20; count < all.length; count += 20) {
+        const input = all.slice(0, count).map((p) => ({ ...p }));
+        input.at(-1)!.speed = 0;
+        const from = all[Math.max(0, count - 22)].t;
+        assert.deepEqual(analyze(input, config, cache, from), analyze(input, config));
+      }
+      const edited = { ...config, sectors: [gateAt(all, 5)!, gateAt(all, 13)!] };
+      assert.deepEqual(analyze(all, edited, cache), analyze(all, edited));
+    }
+  }
+});
+
+test("analysis checkpoints stay bounded and an older edit still matches full analysis", () => {
+  const cache = new LapAnalysisCache();
+  const input = Array.from({ length: 12000 }, (_, i) => ({
+    t: i / 50,
+    x: i / 5,
+    y: 0,
+    speed: 10,
+    counter: Math.floor(i / 1000)
+  }));
+  for (let count = 500; count <= input.length; count += 500) {
+    const samples = input.slice(0, count);
+    assert.deepEqual(analyze(samples, {}, cache, Math.max(0, count - 502) / 50), analyze(samples));
+    for (const scan of cache.scans.values()) assert.ok(scan.states.length <= 4096);
+  }
+  input[5].speed = 5;
+  assert.deepEqual(analyze(input, {}, cache, input[5].t), analyze(input));
+});
+
+test("a missed gate keeps its unknown sector positions when gates already follow lap order", () => {
+  const samples = circleLaps().samples;
+  const result = analyze(samples, {
+    manual: [0, 20, 40, 60],
+    sectors: [{ a: { x: 1000, y: 1000 }, b: { x: 1001, y: 1000 } }, gateAt(samples, 13)!]
+  });
+  const lap = result.laps.find((lap) => lap.complete)!;
+  assert.ok(Number.isNaN(lap.sectors[0]));
+  assert.ok(Number.isNaN(lap.sectors[1]));
+  assert.ok(lap.sectors[2] > 0);
+});
+
+test("appending samples does not traverse a completed lap's cached grid", () => {
+  const all = circleLaps().samples;
+  const cache = new LapAnalysisCache();
+  const config = { manual: [0, 20, 40, 60] };
+  const result = analyze(all.slice(0, 900), config, cache);
+  let reads = 0;
+  for (const lap of result.laps.filter((lap) => lap.complete)) {
+    for (const point of lap.grid) {
+      const { distance, time } = point;
+      Object.defineProperties(point, {
+        distance: {
+          get: () => {
+            reads++;
+            return distance;
+          }
+        },
+        time: {
+          get: () => {
+            reads++;
+            return time;
+          }
+        }
+      });
+    }
+  }
+  analyze(all.slice(0, 920), config, cache, all[898].t);
+  assert.equal(reads, 0);
+});
+
+test("Track Map sector labels follow lap crossing order when gates are added in reverse", () => {
+  const g = globalThis as any;
+  g.document = Object.assign(new EventTarget(), { createElement: () => new Element(), activeElement: null });
+  g.window = Object.assign(g.window ?? new EventTarget(), { devicePixelRatio: 1 });
+  g.matchMedia = () => ({ matches: false });
+  const labels: string[] = [];
+  const canvas = new Element();
+  canvas.getContext = () =>
+    new Proxy(
+      {},
+      {
+        get: (_, key) => (key === "fillText" ? (text: string) => labels.push(text) : () => ({ width: 0 })),
+        set: () => true
+      }
+    );
+  g.document.createElement = () => canvas;
+  const renderer: any = new LapRenderer(new Element() as any, false);
+  renderer.build = () => {};
+  renderer.drawTrace = () => {};
+  const samples = circleLaps().samples;
+  const sectors = [gateAt(samples, 13)!, gateAt(samples, 5)!];
+  const result = analyze(samples, { manual: [0, 20, 40, 60], sectors });
+  const lap = result.laps.find((l) => l.complete)!;
+  renderer.render({
+    map: true,
+    result,
+    settings: { config: { sectors } },
+    field: "",
+    values: [],
+    overlays: [],
+    reference: lap.index,
+    selected: null,
+    time: null,
+    version: 1
+  });
+  assert.deepEqual(
+    labels.filter((label) => /^S\d$/.test(label)),
+    ["S2", "S1"]
+  );
 });
