@@ -77,6 +77,14 @@ try {
       throw error;
     });
   assert.ok(await frame.evaluate(() => window.tabs.saveState().tabs.some((tab) => tab.type === 1)));
+  await frame.evaluate(() => window.tabs.setSelected(window.tabs.tabList.findIndex((tab) => tab.type === 1)));
+  assert.equal(await hub.locator(".timeline").isVisible(), true, "Line Graph keeps the shared session timeline");
+  const axisMode = hub.locator(".lap-axis-mode:visible");
+  for (const mode of ["lapTime", "distance", "time"]) {
+    if (mode !== "time") assert.match(await axisMode.locator(`option[value="${mode}"]`).textContent(), /experimental/);
+    await axisMode.selectOption(mode);
+    assert.equal(await hub.locator(".timeline").isVisible(), true, `${mode} keeps the shared session timeline`);
+  }
   if (process.env.LITE_SCREENSHOTS) await page.screenshot({ path: process.env.LITE_SCREENSHOTS + "/lite_mur.png" });
 
   await hub.getByText("File", { exact: true }).click();
@@ -101,7 +109,9 @@ try {
   });
   await frame.waitForFunction(() => window.log.getFieldKeys().some((key) => key.includes("Speed")));
   assert.deepEqual(errors, [], "Browser errors");
-  console.log("Lite smoke passed: same-host MUR HTTP/WS, live value, graph, layout download/upload, CSV picker.");
+  console.log(
+    "Lite smoke passed: same-host MUR HTTP/WS, live value, graph, shared timeline, experimental lap modes, layout download/upload, CSV picker."
+  );
 } finally {
   await browser?.close();
   for (const child of children.reverse()) if (child.exitCode === null) child.kill("SIGTERM");

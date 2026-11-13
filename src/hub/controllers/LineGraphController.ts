@@ -76,8 +76,8 @@ export default class LineGraphController implements TabController {
     mode.setAttribute("aria-label", "Line graph x-axis mode");
     [
       ["time", "Session time"],
-      ["lapTime", "Lap time overlay"],
-      ["distance", "Lap distance + ΔT"]
+      ["lapTime", "Lap time overlay · experimental"],
+      ["distance", "Lap distance + ΔT · experimental"]
     ].forEach(([value, label]) => mode.add(new Option(label, value)));
     mode.onchange = () => {
       this.lapMode = mode.value;
@@ -418,7 +418,7 @@ export default class LineGraphController implements TabController {
   }
 
   showTimeline(): boolean {
-    return false;
+    return true;
   }
 
   private getPreview(

@@ -17,6 +17,8 @@ The backend supplies the typed catalogue, signal availability and recent history
 
 ## Set up a layout
 
+The shared session timeline stays visible on time-based analysis tabs. Scrub it to inspect the same moment across graphs, tables and vehicle views. Session time is the default graph axis. Lap time overlays and lap distance with delta time are optional experimental axis modes.
+
 - Use **Trackside** for large readouts and an optional graph. Drag fields into Tiles, then toggle the graph icon for fields to plot. Click a field's type icon to set a critical minimum or maximum. Blank means no limit. Numeric limits save in the layout. DBC-defined faults can alert without a tile.
 - Use **Track and laps** for Map, Laps or Split views. Assign the lap setup fields, choose the Event and set the start/finish line if needed. Use the graph's lap-time or distance axis to compare laps. Old Track Map and Laps layouts restore into their corresponding views.
 - Use **Driver Inputs** for steering, throttle and brake pressures. Use **Car Dynamics** for steering, front wheel speeds, yaw, acceleration and damper positions. Assign fields in Sources and set the scales for the car. Both tabs follow the shared timeline cursor.

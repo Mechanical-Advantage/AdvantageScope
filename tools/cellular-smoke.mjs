@@ -104,10 +104,17 @@ try {
     tab.controller.restoreState(state);
     window.tabs.setSelected(window.tabs.tabList.indexOf(tab));
   }, speed);
+  assert.equal(await hub.locator(".timeline").isVisible(), true, "Line Graph keeps the shared session timeline");
   await hub.waitForFunction((key) => {
     const data = window.log.getNumber(key, -Infinity, Infinity);
     return data && data.timestamps.at(-1) - data.timestamps[0] >= 295;
   }, speed);
+  const axisMode = hub.locator(".lap-axis-mode:visible");
+  for (const mode of ["lapTime", "distance", "time"]) {
+    if (mode !== "time") assert.match(await axisMode.locator(`option[value="${mode}"]`).textContent(), /experimental/);
+    await axisMode.selectOption(mode);
+    assert.equal(await hub.locator(".timeline").isVisible(), true, `The shared timeline remains in ${mode} mode`);
+  }
   assert.ok(sent.some((op) => op.op === "subscribe" && op.paths.includes(speed.slice(1))));
   assert.ok(history.some((url) => new URL(url).searchParams.get("path") === speed.slice(1)));
 
@@ -159,6 +166,7 @@ try {
   const tabs = await hub.evaluate((key) => {
     const find = (name) => window.log.getFieldKeys().find((key) => key.endsWith("/" + name));
     const source = (type, logKey) => ({ type, logKey, logType: "Number", visible: true, options: {} });
+    window.tabs.tabList.find((tab) => tab.type === 1).controller.leftSourceList.addField(key);
     window.tabs.addTab(15);
     const tile = window.tabs.tabList.find((tab) => tab.type === 15);
     tile.controller.restoreState({ sources: [{ ...source("tile", key), options: { showInGraph: "true" } }] });
@@ -176,20 +184,35 @@ try {
       });
     window.tabs.addTab(13);
     window.tabs.tabList.find((tab) => tab.type === 13).controller.restoreState({ view: "split" });
+    for (const type of [4, 5, 6, 11]) window.tabs.addTab(type);
     const state = window.tabs.saveState();
     window.tabs.restoreState(state);
     return window.tabs.saveState().tabs.map((tab) => tab.type);
   }, speed);
   for (const type of [13, 15, 16, 17]) assert.ok(tabs.includes(type), `Tab ${type} survives a saved layout`);
-  for (const type of [13, 15, 16, 17]) {
+  await hub.locator(".unlock:visible").click();
+  const timeline = hub.locator(".timeline-scroll");
+  const bounds = await timeline.boundingBox();
+  assert.ok(bounds);
+  const position = { x: bounds.width * 0.9, y: bounds.height / 2 };
+  await timeline.hover({ position });
+  await hub.waitForFunction(() => window.selection.getHoveredTime() !== null);
+  await timeline.click({ position });
+  await hub.waitForFunction(() => window.selection.getMode() === 1);
+  const selectedTime = await hub.evaluate(() => window.selection.getSelectedTime());
+  assert.ok(Number.isFinite(selectedTime));
+  for (const type of [1, 4, 5, 6, 11, 13, 15, 16, 17]) {
     await hub.evaluate(
       (type) => window.tabs.setSelected(window.tabs.tabList.findIndex((tab) => tab.type === type)),
       type
     );
     await hub.waitForTimeout(600);
+    assert.equal(await hub.locator(".timeline").isVisible(), true, `Tab ${type} keeps the shared timeline`);
+    assert.equal(await hub.evaluate(() => window.selection.getSelectedTime()), selectedTime, "Tabs share the cursor");
     await hub.screenshot({ path: path.join(out, `tab-${type}.png`) });
   }
   await hub.evaluate(() => {
+    window.selection.lock();
     window.tabs.setSelected(window.tabs.tabList.findIndex((tab) => tab.type === 15));
     window.__releaseTasks = [];
     window.__releaseObserver = new PerformanceObserver((list) => {

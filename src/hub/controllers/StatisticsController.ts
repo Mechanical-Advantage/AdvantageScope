@@ -124,7 +124,7 @@ export default class StatisticsController implements TabController {
   }
 
   showTimeline(): boolean {
-    return this.TIME_RANGE.value === "visible";
+    return true;
   }
 
   getCommand(): StatisticsRendererCommand {

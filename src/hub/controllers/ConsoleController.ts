@@ -93,7 +93,7 @@ export default class ConsoleController implements TabController {
   }
 
   showTimeline(): boolean {
-    return false;
+    return true;
   }
 
   getCommand(): ConsoleRendererCommand {
