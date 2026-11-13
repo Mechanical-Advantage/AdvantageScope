@@ -520,3 +520,43 @@ test("a live source edit refreshes samples even when its last value stays unchan
   fresh.update();
   assert.deepEqual(service.result, fresh.result);
 });
+
+test("rolling live retention does not reread the whole window on each one-second trim", () => {
+  const log = new Log();
+  const write = (t: number) => {
+    log.putNumber("latitude", t, -37 + Math.sin(t / 7) * 0.001);
+    log.putNumber("longitude", t, 145 + Math.cos(t / 7) * 0.001);
+    log.putNumber("vehicle_speed", t, 10 + Math.sin(t));
+  };
+  for (let i = 0; i < 6000; i++) write(i / 10);
+  log.setMetadataString("vehicle_speed", JSON.stringify({ unit: "m/s" }));
+  (globalThis as any).window = { log, selection: { getCurrentLiveTime: () => 600 } };
+  const service = new LapService();
+  service.update();
+  let read = 0;
+  const get = log.getNumber.bind(log);
+  log.getNumber = (...args) => {
+    const data = get(...args);
+    if (!args[0].startsWith("Laps/")) read += data?.timestamps.length ?? 0;
+    return data;
+  };
+  for (let second = 1; second < 30; second++) {
+    for (let i = 0; i < 10; i++) write(600 + second + i / 10);
+    log.clearBeforeTime(second, false);
+    service.invalidate();
+    read = 0;
+    service.update();
+    assert.ok(read < 100, `one trim read ${read} source samples`);
+  }
+  log.clearBeforeTime(31, false);
+  service.invalidate();
+  service.update();
+  const fresh = new LapService();
+  fresh.update();
+  fresh.settings = structuredClone(service.settings);
+  fresh.reference = service.reference;
+  fresh.invalidate();
+  fresh.update();
+  assert.deepEqual(service.result, fresh.result, "the next retention checkpoint matches full analysis");
+  assert.ok(service.result.samples[0].t >= 31, "expired lap context is released");
+});

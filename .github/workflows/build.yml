@@ -36,7 +36,7 @@ jobs:
       - run: npm run wasm:compile
       - run: npx playwright install --with-deps chromium
       - name: Exercise the cellular API in Electron
-        run: xvfb-run -a npm run cellular-smoke -- --soak-seconds 30
+        run: xvfb-run -a npm run cellular-smoke -- --soak-seconds 120 --retention-seconds 330
         timeout-minutes: 5
       - uses: actions/upload-artifact@v7
         with:

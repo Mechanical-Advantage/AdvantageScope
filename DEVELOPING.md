@@ -75,6 +75,8 @@ Trackside has readout tiles, an optional stock graph and critical limits saved w
 
 `npm run cellular-smoke` launches the real Electron app headlessly with a separate profile. It checks five-minute history, wire subscriptions, outage/restart recovery, duplicate delivery and saved layouts for Track and laps, Trackside, Driver Inputs and Car Dynamics. Add `-- --soak-seconds 960` for a real-time long-session check or `-- --executable /path/to/mur-voir` to test an unpacked build.
 
+Live lap analysis keeps at most 30 seconds of context beyond the log's retention boundary, then rebuilds against the retained log. This preserves incremental updates between checkpoints instead of scanning the whole window on each one-second trim. Plot retention is unchanged. Use `--retention-seconds 330` with a soak to exercise the boundary sooner.
+
 The Build workflow runs the checks on Node 22 and packages macOS, Windows, Linux and Lite. A `v` tag matching `package.json` publishes the checked installers and checksums after every job passes. Add `docs/release-notes/<version>.md` before tagging. Desktop artifacts are unsigned.
 
 ## Build and serve Lite

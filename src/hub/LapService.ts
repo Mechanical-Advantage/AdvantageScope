@@ -53,6 +53,7 @@ const SOURCE_ROLES: LapSourceRole[] = [
   "counter",
   "beacon"
 ];
+const RETENTION_CONTEXT_SECONDS = 30;
 /** Whether a channel already holds exactly what writing these values to an empty channel would store. */
 function storedAs(key: string, times: number[], values: number[]): boolean {
   const stored = window.log.getNumber(key, -Infinity, Infinity);
@@ -242,10 +243,19 @@ export class LapService {
       fields.map((key) => [key, window.log.getUnit(key)])
     ]);
     const start = window.log.getTimestampRange()[0];
-    let append = live && sourceSignature === this.sourceSignature && start === this.inputStart;
+    // Keep bounded extra lap context while the log trims each second. Rebuilding the whole window
+    // at every trim otherwise discards the incremental analysis checkpoints continuously.
+    let append =
+      live &&
+      sourceSignature === this.sourceSignature &&
+      start >= this.inputStart &&
+      start - this.inputStart < RETENTION_CONTEXT_SECONDS;
     if (fields.some((key) => this.inputCache.get(key)?.version !== window.log.getHistoryVersion(key))) append = false;
     this.sourceSignature = sourceSignature;
-    this.inputStart = start;
+    if (!append) {
+      this.inputStart = start;
+      this.inputCache.clear();
+    }
     let changedFrom = Infinity;
     const data = new Map(
       fields.map((key) => {

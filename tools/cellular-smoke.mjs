@@ -18,16 +18,19 @@ const { values: opts } = parseArgs({
   options: {
     executable: { type: "string" },
     "soak-seconds": { type: "string", default: "0" },
+    "retention-seconds": { type: "string", default: "1200" },
     out: { type: "string", default: ".screenshots/cellular" }
   }
 });
 const soakSeconds = Number(opts["soak-seconds"]);
+const retentionSeconds = Number(opts["retention-seconds"]);
 assert.ok(Number.isFinite(soakSeconds) && soakSeconds >= 0 && soakSeconds <= 3600);
+assert.ok(Number.isFinite(retentionSeconds) && retentionSeconds >= 30);
 process.chdir(fileURLToPath(new URL("../", import.meta.url)));
 const out = path.resolve(opts.out);
 fs.mkdirSync(out, { recursive: true });
 const userData = fs.mkdtempSync(path.join(os.tmpdir(), "mur-cellular-"));
-fs.writeFileSync(path.join(userData, "prefs.json"), JSON.stringify({ theme: "dark", liveDiscard: 1200 }));
+fs.writeFileSync(path.join(userData, "prefs.json"), JSON.stringify({ theme: "dark", liveDiscard: retentionSeconds }));
 let backend;
 let app;
 const errors = [];
@@ -199,20 +202,30 @@ try {
     const seconds = Math.min(30, soakSeconds - elapsed);
     await hub.waitForTimeout(seconds * 1000);
     elapsed += seconds;
-    const row = await hub.evaluate(() => ({
-      end: window.log.getTimestampRange()[1],
-      tasks: window.__releaseTasks.splice(0),
-      backend: window.liveStatus.getLiveStatus().backend
-    }));
+    const row = await hub.evaluate(() => {
+      const result = window.tabs.tabList.find((tab) => tab.type === 13).controller.getCommand().result;
+      return {
+        end: window.log.getTimestampRange()[1],
+        start: window.log.getTimestampRange()[0],
+        lapStart: result.samples[0]?.t,
+        tasks: window.__releaseTasks.splice(0),
+        backend: window.liveStatus.getLiveStatus().backend
+      };
+    });
     assert.equal(row.backend, "connected");
+    if (row.lapStart !== undefined)
+      assert.ok(row.lapStart >= row.start - 31, "Lap context stays bounded after retention");
     measurements.push({ elapsed, ...row });
     console.log(
       JSON.stringify({ elapsed, end: row.end, longTasks: row.tasks.length, maxTaskMs: Math.max(0, ...row.tasks) })
     );
   }
-  if (soakSeconds >= 600) {
+  if (soakSeconds >= 120) {
     const tail = measurements.filter((row) => row.elapsed > soakSeconds - 300);
-    assert.ok(tail.reduce((count, row) => count + row.tasks.length, 0) <= 20, "Late-session long tasks stay bounded");
+    assert.ok(
+      tail.reduce((count, row) => count + row.tasks.length, 0) <= Math.ceil(Math.min(300, soakSeconds) / 15),
+      "Late-session long tasks stay bounded"
+    );
     assert.ok(measurements.at(-1).end - measurements[0].end >= soakSeconds - 40, "The live timeline keeps advancing");
   }
   await hub.evaluate(() => {
