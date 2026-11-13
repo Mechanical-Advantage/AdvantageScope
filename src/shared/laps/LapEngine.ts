@@ -213,9 +213,89 @@ export function deltaTime(lap: Lap, reference: Lap, distance: number): number {
   };
   return at(lap) - at(reference);
 }
-export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
-  const samples: LapResult["samples"] = [];
-  input.forEach((p) => {
+/** Known gate crossings follow travel order. Missed gates keep their unknown sector positions. */
+export function sectorCrossings(samples: Sample[], lap: { start: number; end: number }, gates: Gate[]) {
+  const crossings = gates.map((gate, index) => {
+    for (let j = Math.max(0, indexAt(samples, lap.start) - 2); j < samples.length - 1 && samples[j].t < lap.end; j++) {
+      const time = crossing(samples[j], samples[j + 1], gate);
+      if (time !== undefined && time > lap.start && time < lap.end) return { index, time };
+    }
+    return { index, time: NaN };
+  });
+  const ordered = crossings.filter((crossing) => Number.isFinite(crossing.time)).sort((a, b) => a.time - b.time);
+  let next = 0;
+  return crossings.map((crossing) => (Number.isFinite(crossing.time) ? ordered[next++] : crossing));
+}
+
+/** Reuses sample prefixes and scan checkpoints until an input or configuration edit changes them. */
+export class LapAnalysisCache {
+  samples: LapResult["samples"] = [];
+  times: number[] = [];
+  distances: number[] = [];
+  scans = new Map<string, { offset: number; before: unknown; states: unknown[] }>();
+  grids = new Map<string, { grid: Lap["grid"]; splits: number[]; gap: boolean; yaw: number }>();
+  signature = "";
+  from = 0;
+  processed = 0;
+  scan<T>(name: string, initial: T, step: (state: T, i: number) => T): T {
+    let entry = this.scans.get(name);
+    if (!entry || this.from < entry.offset) {
+      if (this.scans.size >= 16) this.scans.delete(this.scans.keys().next().value!);
+      this.scans.set(name, (entry = { offset: 0, before: initial, states: [] }));
+    }
+    const states = entry.states as T[];
+    states.length = Math.min(states.length, this.from - entry.offset);
+    for (let i = entry.offset + states.length; i < this.samples.length; i++) {
+      states.push(step(states.length ? states.at(-1)! : (entry.before as T), i));
+      this.processed++;
+    }
+    const result = states.length ? states.at(-1)! : (entry.before as T);
+    // Keep checkpoints for a bounded tail. An older edit takes the full-analysis path.
+    if (states.length > 4096) {
+      const trim = states.length - 4096;
+      entry.before = states[trim - 1];
+      states.splice(0, trim);
+      entry.offset += trim;
+    }
+    return result;
+  }
+}
+type TimeLink = { time: number; previous?: TimeLink };
+function linkTimes(link?: TimeLink): number[] {
+  const times: number[] = [];
+  while (link) {
+    times.push(link.time);
+    link = link.previous;
+  }
+  return times.reverse();
+}
+
+export function analyze(
+  input: Sample[],
+  config: LapConfig = {},
+  cache?: LapAnalysisCache,
+  changedFrom = -Infinity
+): LapResult {
+  const signature = JSON.stringify(config);
+  if (cache && signature !== cache.signature) {
+    cache.samples = [];
+    cache.times = [];
+    cache.distances = [];
+    cache.scans.clear();
+    cache.grids.clear();
+    cache.signature = signature;
+    changedFrom = -Infinity;
+  }
+  const samples: LapResult["samples"] = cache?.samples ?? [];
+  if (cache && changedFrom === -Infinity) cache.grids.clear();
+  const retained = cache ? indexAt(samples, changedFrom) : 0;
+  samples.length = retained;
+  if (cache) {
+    cache.times.length = retained;
+    cache.distances.length = retained;
+    cache.from = Math.max(0, retained - 2);
+  }
+  input.slice(cache ? indexAt(input, changedFrom) : 0).forEach((p) => {
     if (![p.t, p.x, p.y].every(Number.isFinite) || (samples.length && p.t <= samples.at(-1)!.t)) return;
     const prev = samples.at(-1);
     let distance = prev?.distance ?? 0;
@@ -233,69 +313,111 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
           : Math.hypot(p.x - prev.x, p.y - prev.y);
     }
     samples.push({ ...p, distance });
+    cache?.times.push(p.t);
+    cache?.distances.push(distance);
+    if (cache) cache.processed++;
   });
-  const gate = config.gate ?? autoGate(samples, config.minTime);
+  const scan = <T>(name: string, initial: T, step: (state: T, i: number) => T): T => {
+    if (cache) return cache.scan(name, initial, step);
+    let state = initial;
+    for (let i = 0; i < samples.length; i++) state = step(state, i);
+    return state;
+  };
+  const auto = scan("auto", { away: false, best: Infinity, index: -1 }, (state, i) => {
+    if (!i) return state;
+    const d = Math.hypot(samples[i].x - samples[0].x, samples[i].y - samples[0].y);
+    const away = state.away || d > 30;
+    return away && samples[i].t - samples[0].t >= (config.minTime ?? 20) && d < state.best
+      ? { away, best: d, index: i }
+      : { ...state, away };
+  });
+  let automatic: Gate | undefined;
+  if (samples.length >= 3 && auto.index >= 1 && auto.best <= 30) {
+    const c = samples[auto.index],
+      v = sub(c, samples[auto.index - 1]),
+      n = Math.hypot(v.x, v.y);
+    if (n)
+      automatic = {
+        a: { x: c.x - (v.y / n) * 12, y: c.y + (v.x / n) * 12 },
+        b: { x: c.x + (v.y / n) * 12, y: c.y - (v.x / n) * 12 },
+        direction: -1
+      };
+  }
+  const gate = config.gate ?? automatic;
   const result: LapResult = { laps: [], samples, gate, theoretical: [] };
   if (samples.length < 2) return result;
-  const times = samples.map((p) => p.t),
-    distances = samples.map((p) => p.distance);
+  const times = cache?.times ?? samples.map((p) => p.t),
+    distances = cache?.distances ?? samples.map((p) => p.distance);
   const dAt = (t: number) => interpolate(times, distances, t);
   const min = config.minTime ?? (config.mode === "skidpad" ? 4 : config.mode === "accel" ? 0 : 20);
   let boundaries: number[] = [],
     source = "gps";
   // Only consecutive integer increments, confirmed by the following sample, are counters.
   // A boolean beacon must similarly remain high for two samples. Never trust arbitrary positive IDs.
-  const counters: number[] = [],
-    beacons: number[] = [];
-  for (let i = 1; i < samples.length; i++) {
-    const p = samples[i],
-      prev = samples[i - 1],
-      next = samples[i + 1];
-    if (
-      Number.isSafeInteger(prev.counter) &&
-      prev.counter! >= 0 &&
-      p.counter === prev.counter! + 1 &&
-      (!next || next.counter === p.counter)
-    )
-      counters.push(p.t);
-    if (prev.beacon === 0 && p.beacon === 1 && next?.beacon === 1) beacons.push(p.t);
-  }
-  // A beacon is a mostly-low 0/1 pulse. Any other value, or idling high, means it can't mark laps.
-  const beaconValues = samples.map((p) => p.beacon).filter((b) => b !== undefined);
-  const beaconUsable =
-    beaconValues.every((b) => b === 0 || b === 1) &&
-    beaconValues.filter((b) => b === 1).length < beaconValues.length / 2;
+  const signals = scan(
+    "signals",
+    {
+      counter: undefined as TimeLink | undefined,
+      beacon: undefined as TimeLink | undefined,
+      count: 0,
+      high: 0,
+      invalid: false
+    },
+    (state, i) => {
+      const p = samples[i],
+        prev = samples[i - 1],
+        next = samples[i + 1];
+      return {
+        counter:
+          prev &&
+          Number.isSafeInteger(prev.counter) &&
+          prev.counter! >= 0 &&
+          p.counter === prev.counter! + 1 &&
+          (!next || next.counter === p.counter)
+            ? { time: p.t, previous: state.counter }
+            : state.counter,
+        beacon:
+          prev?.beacon === 0 && p.beacon === 1 && next?.beacon === 1
+            ? { time: p.t, previous: state.beacon }
+            : state.beacon,
+        count: state.count + Number(p.beacon !== undefined),
+        high: state.high + Number(p.beacon === 1),
+        invalid: state.invalid || (p.beacon !== undefined && p.beacon !== 0 && p.beacon !== 1)
+      };
+    }
+  );
+  const counters = linkTimes(signals.counter),
+    beacons = linkTimes(signals.beacon);
+  const beaconUsable = !signals.invalid && signals.high < signals.count / 2;
   /** Debounced crossings of a line. A dragged line has no direction, so laps run the way the car crosses it most. */
   const crossings = (line: Gate) => {
     const times: number[] = [],
       center = { x: (line.a.x + line.b.x) / 2, y: (line.a.y + line.b.y) / 2 };
     let direction = line.direction;
     if (!direction) {
-      let sum = 0,
-        first = 0;
-      for (let i = 1; i < samples.length; i++)
-        if (crossing(samples[i - 1], samples[i], line) !== undefined) {
-          const sign = Math.sign(cross(sub(samples[i], samples[i - 1]), sub(line.b, line.a)));
-          first ||= sign;
-          sum += sign;
-        }
-      direction = Math.sign(sum) || first;
+      const votes = scan(JSON.stringify(["votes", line]), { sum: 0, first: 0 }, (state, i) => {
+        if (!i || crossing(samples[i - 1], samples[i], line) === undefined) return state;
+        const sign = Math.sign(cross(sub(samples[i], samples[i - 1]), sub(line.b, line.a)));
+        return { sum: state.sum + sign, first: state.first || sign };
+      });
+      direction = Math.sign(votes.sum) || votes.first;
     }
     const directed = { ...line, direction };
-    // A drawn line's course can be compact, so it re-arms at half the line's length rather than the automatic 30 m.
     const rearm = config.rearm ?? (config.gate ? 12 : 30);
-    let armed = true,
-      last = -Infinity;
-    for (let i = 1; i < samples.length; i++) {
-      const p = samples[i];
-      if (Math.hypot(p.x - center.x, p.y - center.y) >= rearm) armed = true;
-      const t = crossing(samples[i - 1], p, directed);
-      if (armed && t !== undefined && t - last >= min) {
-        times.push(t);
-        last = t;
-        armed = false;
+    const state = scan(
+      JSON.stringify(["crossings", directed]),
+      { armed: true, last: -Infinity, link: undefined as TimeLink | undefined },
+      (state, i) => {
+        if (!i) return state;
+        const p = samples[i];
+        let armed = state.armed || Math.hypot(p.x - center.x, p.y - center.y) >= rearm;
+        const t = crossing(samples[i - 1], p, directed);
+        if (armed && t !== undefined && t - state.last >= min)
+          return { armed: false, last: t, link: { time: t, previous: state.link } };
+        return { ...state, armed };
       }
-    }
+    );
+    times.push(...linkTimes(state.link));
     return times;
   };
   // A drawn line wins unless the car doesn't cross it, as on another log. Autocross needs only the start of a run.
@@ -327,24 +449,57 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
   boundaries = [...new Set(boundaries)].sort((a, b) => a - b);
   if (config.mode === "accel") {
     source = "accel";
-    boundaries = [];
-    for (let i = 1; i < samples.length; i++)
-      if ((samples[i - 1].speed ?? 0) <= 0.5 && (samples[i].speed ?? 0) > 0.5) {
-        const start = samples[i - 1].t,
-          target = dAt(start) + 75;
-        if (target <= distances.at(-1)!) {
-          boundaries.push(start, interpolate(distances, times, target));
-          while (i < samples.length - 1 && samples[i].t < boundaries.at(-1)!) i++;
+    const runs = scan(
+      "accel",
+      { start: undefined as number | undefined, target: 0, link: undefined as TimeLink | undefined },
+      (state, i) => {
+        if (!i) return state;
+        if (state.start !== undefined) {
+          if (samples[i].distance < state.target) return state;
+          return {
+            start: undefined,
+            target: 0,
+            link: {
+              time: interpolate(distances, times, state.target),
+              previous: { time: state.start, previous: state.link }
+            }
+          };
         }
+        if ((samples[i - 1].speed ?? 0) <= 0.5 && (samples[i].speed ?? 0) > 0.5) {
+          const start = samples[i - 1].t,
+            target = dAt(start) + 75;
+          if (samples[i].distance >= target)
+            return {
+              start: undefined,
+              target: 0,
+              link: {
+                time: interpolate(distances, times, target),
+                previous: { time: start, previous: state.link }
+              }
+            };
+          return { ...state, start, target };
+        }
+        return state;
       }
+    );
+    boundaries = linkTimes(runs.link);
   }
   if (config.mode === "autocross" && config.finish) {
+    const finishes = scan("finish", undefined as TimeLink | undefined, (link, i) => {
+      if (!i) return link;
+      const time = crossing(samples[i - 1], samples[i], config.finish!);
+      return time === undefined ? link : { time, previous: link };
+    });
+    const finishTimes = linkTimes(finishes);
     boundaries = boundaries.flatMap((start) => {
-      const end = samples
-        .slice(1)
-        .map((p, i) => crossing(samples[i], p, config.finish!))
-        .find((t) => t !== undefined && t > start + min);
-      return end === undefined ? [] : [start, end];
+      let lo = 0,
+        hi = finishTimes.length;
+      while (lo < hi) {
+        const mid = (lo + hi) >>> 1;
+        if (finishTimes[mid] <= start + min) lo = mid + 1;
+        else hi = mid;
+      }
+      return lo === finishTimes.length ? [] : [start, finishTimes[lo]];
     });
   }
   const runPairs =
@@ -352,16 +507,20 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
       ? boundaries.filter((_, i) => i % 2 === 0).map((start, i) => [start, boundaries[i * 2 + 1]])
       : undefined;
   const edges = [times[0], ...boundaries.filter((t) => t > times[0] && t < times.at(-1)!), times.at(-1)!];
-  let stint = 1,
-    stopStart: number | undefined;
-  const stops: number[] = [];
-  samples.forEach((p) => {
-    if ((p.speed ?? Infinity) < 0.5) stopStart ??= p.t;
-    else {
-      if (stopStart !== undefined && p.t - stopStart > 60) stops.push(p.t);
-      stopStart = undefined;
+  let stint = 1;
+  const stopState = scan(
+    "stops",
+    { start: undefined as number | undefined, link: undefined as TimeLink | undefined },
+    (state, i) => {
+      const p = samples[i];
+      if ((p.speed ?? Infinity) < 0.5) return { ...state, start: state.start ?? p.t };
+      return {
+        start: undefined,
+        link: state.start !== undefined && p.t - state.start > 60 ? { time: p.t, previous: state.link } : state.link
+      };
     }
-  });
+  );
+  const stops = linkTimes(stopState.link);
   for (let i = 0; i < edges.length - 1; i++) {
     const start = edges[i],
       end = edges[i + 1],
@@ -370,38 +529,40 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
         : boundaries.includes(start) && boundaries.includes(end);
     if (end - start < 1e-8) continue;
     if (config.mode === "endurance") stint = 1 + stops.filter((t) => t <= start).length;
-    const inside = samples.slice(indexAt(samples, start, true), indexAt(samples, end));
+    const gridKey = JSON.stringify([start, end, complete]);
+    const saved = end < changedFrom ? cache?.grids.get(gridKey) : undefined;
+    const inside = saved ? [] : samples.slice(indexAt(samples, start, true), indexAt(samples, end));
     const ts = [start, ...inside.map((p) => p.t), end],
       ds = ts.map(dAt);
     const length = complete && config.mode !== "accel" ? config.length ?? ds.at(-1)! - ds[0] : ds.at(-1)! - ds[0];
-    const grid = resample(ds, ts, length);
-    let splits = (config.fractions ?? [1 / 3, 2 / 3])
-      .filter((f) => f > 0 && f < 1)
-      .sort((a, b) => a - b)
-      .map(
-        (f) =>
-          start +
-          interpolate(
-            grid.map((p) => p.distance),
-            grid.map((p) => p.time),
-            f * length
-          )
-      );
-    if (config.sectors?.length)
-      splits = config.sectors.map((g) => {
-        // A crossing lies between its two samples, give or take rounding, so scan only this lap's samples.
-        for (let j = Math.max(0, indexAt(samples, start) - 2); j < samples.length - 1 && samples[j].t < end; j++) {
-          const t = crossing(samples[j], samples[j + 1], g);
-          if (t !== undefined && t > start && t < end) return t;
-        }
-        return NaN;
-      });
+    const grid = saved?.grid ?? resample(ds, ts, length);
+    let splits =
+      saved?.splits ??
+      (config.fractions ?? [1 / 3, 2 / 3])
+        .filter((f) => f > 0 && f < 1)
+        .sort((a, b) => a - b)
+        .map(
+          (f) =>
+            start +
+            interpolate(
+              grid.map((p) => p.distance),
+              grid.map((p) => p.time),
+              f * length
+            )
+        );
+    if (!saved && config.sectors?.length)
+      splits = sectorCrossings(samples, { start, end }, config.sectors).map((crossing) => crossing.time);
+    const gap = saved?.gap ?? ts.some((t, j) => j > 0 && t - ts[j - 1] > 1);
+    const yaw =
+      saved?.yaw ??
+      samples.slice(indexAt(samples, start), indexAt(samples, end)).reduce((sum, p) => sum + (p.yaw ?? 0), 0);
+    if (cache && complete && !saved) cache.grids.set(gridKey, { grid, splits, gap, yaw });
     const sectorEdges = [start, ...splits, end];
     const valid =
       complete &&
       end - start >= min &&
       // Crossings of a drawn line time the lap, so a GPS gap between them can't change the time.
-      (usesDrawnLine || !ts.some((t, j) => j > 0 && t - ts[j - 1] > 1)) &&
+      (usesDrawnLine || !gap) &&
       !stops.some((t) => t > start && t < end);
     result.laps.push({
       index: i,
@@ -422,6 +583,8 @@ export function analyze(input: Sample[], config: LapConfig = {}): LapResult {
     const laps = result.laps.filter((l) => l.complete);
     const labels = classifySkidpad(
       laps.map((l) => {
+        const saved = cache?.grids.get(JSON.stringify([l.start, l.end, l.complete]));
+        if (saved) return saved.yaw;
         const ys = samples.slice(indexAt(samples, l.start), indexAt(samples, l.end)).map((p) => p.yaw ?? 0);
         return ys.reduce((a, b) => a + b, 0);
       })

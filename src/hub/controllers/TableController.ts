@@ -204,7 +204,7 @@ export default class TableController implements TabController {
   }
 
   showTimeline(): boolean {
-    return false;
+    return true;
   }
 
   addRendererRange(uuid: string, range: [number, number] | null) {

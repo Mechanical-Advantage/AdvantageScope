@@ -12,6 +12,7 @@ import { LapSourceConfigs } from "../src/hub/controllers/LapController_Config";
 import { LapService, lapService } from "../src/hub/LapService";
 import { analyze, Gate, gateAt, Sample } from "../src/shared/laps/LapEngine";
 import Log from "../src/shared/log/Log";
+import { panMargin, scrollZoomPan } from "../src/shared/renderers/FieldZoomPan";
 
 const RADIUS = 100;
 function circuit(lapTimes: number[], hz = 10): Sample[] {
@@ -238,12 +239,13 @@ test("the map cursor follows timeline hover through the render time", () => {
   const controller: any = Object.create(LapController.prototype);
   controller.sources = LapSourceConfigs.map(() => ({ getState: () => [], setState() {} }));
   controller.sourceStates = [];
-  controller.field = "";
-  controller.map = true;
-  controller.display = { colorMode: "sector", overlaysOnly: true };
+  controller.mapField = "";
+  controller.tableField = "";
+  controller.view = "map";
+  controller.display = { colorMode: "sector", scope: "overlaid" };
   lapService.invalidate();
   assert.deepEqual(controller.getCommand().display, controller.display);
-  controller.display = { colorMode: "compare", overlaysOnly: false };
+  controller.display = { colorMode: "compare", scope: "session" };
   assert.deepEqual(controller.getCommand().display, controller.display);
   assert.equal(controller.getCommand().time, 5);
   renderTime = 7;
@@ -442,18 +444,29 @@ test("map rendering restores supported colours and receives satellite display ch
   const { default: LapRenderer } = await import("../src/shared/renderers/LapRenderer");
   const r = Object.create(LapRenderer.prototype) as any;
   (globalThis as any).document = { activeElement: null };
-  r.toolbar = { contains: () => false };
   r.scrollSensor = { periodic() {} };
+  r.layout = () => {};
+  r.shown = { map: true, table: false, stacked: false };
   r.build = () => {};
   r.draw = () => {};
   r.action = () => {};
   r.interactive = true;
   r.colorMode = "field";
   r.restoredColor = true;
-  r.render({ field: "", map: true });
+  r.render({ field: "", view: "map" });
   assert.equal(r.colorMode, "laps");
   r.interactive = false;
-  r.render({ field: "", map: true, display: { colorMode: "sector", overlaysOnly: true } });
+  r.render({ field: "", view: "map", display: { colorMode: "sector", scope: "overlaid" } });
   assert.equal(r.colorMode, "sector");
-  assert.equal(r.overlaysOnly, true);
+  assert.equal(r.scope, "overlaid");
+});
+
+test("extreme Track Map scrolls and margins stay finite", () => {
+  let zoom = 1;
+  const pan: [number, number] = [0, 0];
+  for (let i = 0; i < 320; i++) zoom = scrollZoomPan(zoom, pan, 0, -500, false, 100, 150, 1, false);
+  assert.ok(Number.isFinite(zoom) && zoom <= 1e4);
+  for (let i = 0; i < 640; i++) zoom = scrollZoomPan(zoom, pan, 0, 500, false, 100, 150, 1, false);
+  assert.ok(zoom >= 1e-3 && pan.every(Number.isFinite));
+  assert.ok(Number.isFinite(panMargin(Infinity, 400, 0)));
 });

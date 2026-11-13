@@ -9,9 +9,12 @@ import { TabsState } from "../shared/HubState";
 import LineGraphFilter from "../shared/LineGraphFilter";
 import { RenderGuard, inlineStatus } from "../shared/RenderGuard";
 import TabType, { filterRestorableTabs, getDefaultTabTitle, getTabIcon } from "../shared/TabType";
+import { dbcDefinition } from "../shared/Trackside";
 import { getAutonomousKey, getEnabledKey, getUtilityKey } from "../shared/log/RobotState";
+import CarDynamicsRenderer from "../shared/renderers/CarDynamicsRenderer";
 import ConsoleRenderer from "../shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
+import DriverInputsRenderer from "../shared/renderers/DriverInputsRenderer";
 import Field2dRenderer from "../shared/renderers/Field2dRenderer";
 import LineGraphRenderer from "../shared/renderers/LineGraphRenderer";
 import MetadataRenderer from "../shared/renderers/MetadataRenderer";
@@ -19,13 +22,17 @@ import PointsRenderer from "../shared/renderers/PointsRenderer";
 import StatisticsRenderer from "../shared/renderers/StatisticsRenderer";
 import TabRenderer, { NoopRenderer } from "../shared/renderers/TabRenderer";
 import TableRenderer from "../shared/renderers/TableRenderer";
+import TracksideRenderer from "../shared/renderers/TracksideRenderer";
 import VideoRenderer from "../shared/renderers/VideoRenderer";
 import { Units } from "../shared/units";
 import { clampValue } from "../shared/util";
+import { attachResizeHandle } from "./ResizeHandle";
 import ScrollSensor, { ScrollSensorMouseControl } from "./ScrollSensor";
 import Timeline, { TimelineBand } from "./Timeline";
-import { updateTracksideLayout } from "./TracksideLayout";
+import { updateTracksideAlerts } from "./TracksideAlerts";
+import CarDynamicsController from "./controllers/CarDynamicsController";
 import ConsoleController from "./controllers/ConsoleController";
+import DriverInputsController from "./controllers/DriverInputsController";
 import Field2dController from "./controllers/Field2dController";
 import LineGraphController from "./controllers/LineGraphController";
 import MetadataController from "./controllers/MetadataController";
@@ -33,6 +40,7 @@ import PointsController from "./controllers/PointsController";
 import StatisticsController from "./controllers/StatisticsController";
 import TabController, { NoopController } from "./controllers/TabController";
 import TableController from "./controllers/TableController";
+import TracksideController from "./controllers/TracksideController";
 import VideoController from "./controllers/VideoController";
 
 import LapRenderer from "../shared/renderers/LapRenderer";
@@ -77,7 +85,6 @@ export default class Tabs {
   private selectedTab = 0;
   private activeSatellites: string[] = [];
   private fieldDragHover: { index: number; timer: number } | null = null;
-  private controlsHandleActive = false;
 
   constructor() {
     // Set up tab configs
@@ -89,6 +96,9 @@ export default class Tabs {
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Field2d, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Video, 85);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Points, undefined);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.Trackside, undefined);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.DriverInputs, undefined);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.CarDynamics, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Metadata, 0);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.TrackMap, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Laps, undefined);
@@ -207,30 +217,16 @@ export default class Tabs {
     });
 
     // Controls handle
-    this.CONTROLS_HANDLE.addEventListener("mousedown", () => {
-      this.controlsHandleActive = true;
-      document.body.style.cursor = "row-resize";
-    });
-    window.addEventListener("mouseup", () => {
-      this.controlsHandleActive = false;
-      document.body.style.cursor = "initial";
-    });
-    window.addEventListener("mousemove", (event) => {
-      if (this.controlsHandleActive) {
+    attachResizeHandle(
+      this.CONTROLS_HANDLE,
+      "row-resize",
+      (event) => {
         this.tabList[this.selectedTab].controlsHeight = window.innerHeight - event.clientY;
         this.updateControlsHeight();
-      }
-    });
-    let lastClick = 0;
-    this.CONTROLS_HANDLE.addEventListener("click", () => {
-      let now = new Date().getTime();
-      if (now - lastClick < 400) {
-        this.toggleControlsVisible();
-        lastClick = 0;
-      } else {
-        lastClick = now;
-      }
-    });
+      },
+      () => this.toggleControlsVisible()
+    );
+    window.addEventListener("toggle-tab-controls", () => this.toggleControlsVisible());
     this.updateControlsHeight();
 
     // Control buttons
@@ -328,12 +324,21 @@ export default class Tabs {
     this.timeline = new Timeline(this.TIMELINE_CONTAINER);
     this.setTimelineBandSupplier(() => lapService.bands());
 
+    const alertElement = document.createElement("div");
+    alertElement.className = "trackside-alerts";
+    alertElement.hidden = true;
+    document.body.append(alertElement);
+    let lastAlerts = 0;
     const periodicGuard = new RenderGuard();
     const guards = new WeakMap<object, RenderGuard>();
     // Periodic function
     let periodic = () => {
       window.requestAnimationFrame(periodic);
       periodicGuard.run(() => {
+        if (performance.now() - lastAlerts >= 200) {
+          lastAlerts = performance.now();
+          updateTracksideAlerts(alertElement, this.getTracksideLimits());
+        }
         // Update tab bar
         this.SHADOW_LEFT.style.opacity = Math.floor(this.TAB_BAR.scrollLeft) <= 0 ? "0" : "1";
         this.SHADOW_RIGHT.style.opacity =
@@ -469,7 +474,6 @@ export default class Tabs {
 
   /** Refresh based on new log data. */
   refresh() {
-    updateTracksideLayout();
     this.tabList.forEach((tab) => {
       tab.controller.refresh();
     });
@@ -491,7 +495,7 @@ export default class Tabs {
         (tab.type === TabType.LineGraph && (tab.controller as LineGraphController).getLapMode() !== "time")
     );
     let activeFields = new Set<string>([
-      ...(window.healthStrip?.getActiveFields() ?? []),
+      ...window.log.getFieldKeys().filter((key) => dbcDefinition(window.log.getMetadataString(key), key)),
       ...(hasLapView ? lapService.fields() : [])
     ]);
     this.tabList.forEach((tab) => {
@@ -514,7 +518,21 @@ export default class Tabs {
     return activeFields;
   }
 
+  getTracksideLimits() {
+    return this.tabList.flatMap((tab) =>
+      tab.controller instanceof TracksideController ? [tab.controller.getLimits()] : []
+    );
+  }
+
+  editTracksideLimits(uuid: string, key: string, limits: { low?: number; high?: number }) {
+    const controller = this.tabList.find((tab) => tab.controller.UUID === uuid)?.controller;
+    if (controller instanceof TracksideController) controller.limits[key] = limits;
+  }
+
   /** Toggles the visibility of the tab controls. */
+  getControlsVisible() {
+    return this.tabList[this.selectedTab]?.controlsHeight > 0;
+  }
   toggleControlsVisible() {
     let fixedHeight = this.FIXED_CONTROL_HEIGHTS.get(this.tabList[this.selectedTab].type);
     if (this.tabList[this.selectedTab].controlsHeight === 0) {
@@ -573,9 +591,23 @@ export default class Tabs {
         controller = new VideoController(controlsElement);
         renderer = new VideoRenderer(rendererElement);
         break;
+      case TabType.Trackside:
+        controller = new TracksideController(controlsElement);
+        renderer = new TracksideRenderer(rendererElement, (from, to) =>
+          (controller as TracksideController).reorderTiles(from, to)
+        );
+        break;
       case TabType.Points:
         controller = new PointsController(controlsElement);
         renderer = new PointsRenderer(rendererElement);
+        break;
+      case TabType.DriverInputs:
+        controller = new DriverInputsController(controlsElement);
+        renderer = new DriverInputsRenderer(rendererElement);
+        break;
+      case TabType.CarDynamics:
+        controller = new CarDynamicsController(controlsElement);
+        renderer = new CarDynamicsRenderer(rendererElement);
         break;
       case TabType.TrackMap:
       case TabType.Laps:

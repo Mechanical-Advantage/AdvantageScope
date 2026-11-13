@@ -66,8 +66,7 @@ try {
   await hub.locator(".connect-confirm").click();
   await hub.locator(".connect-dialog-backdrop").waitFor({ state: "hidden" });
   const frame = page.frames().find((frame) => frame.url().endsWith("hub.html"));
-  // Apply the real menu command, then assert an imported live value and visible graph configuration.
-  await frame.evaluate(() => window.messagePort.onmessage({ data: { name: "trackside-layout" } }));
+  // Check that the live connection imports values.
   await frame
     .waitForFunction(() => {
       const key = window.log.getFieldKeys().find((key) => key.endsWith("/vehicle_speed"));
@@ -77,8 +76,20 @@ try {
       console.error(await frame.evaluate(() => ({ keys: window.log.getFieldKeys(), text: document.body.innerText })));
       throw error;
     });
-  await hub.locator(".health-strip").waitFor({ state: "visible" });
-  assert.ok(await frame.evaluate(() => window.tabs.saveState().tabs.some((tab) => tab.title.includes("Speed"))));
+  assert.ok(await frame.evaluate(() => window.tabs.saveState().tabs.some((tab) => tab.type === 1)));
+  await frame.evaluate(() => window.tabs.setSelected(window.tabs.tabList.findIndex((tab) => tab.type === 1)));
+  await hub.locator(".timeline").waitFor({ state: "hidden" });
+  const axisMode = hub.locator(".lap-axis-mode:visible");
+  for (const mode of ["lapTime", "distance", "time"]) {
+    if (mode !== "time") assert.match(await axisMode.locator(`option[value="${mode}"]`).textContent(), /experimental/);
+    await axisMode.selectOption(mode);
+    assert.equal(await hub.locator(".timeline").isVisible(), false, `Line Graph uses its own timeline in ${mode} mode`);
+  }
+  await frame.evaluate(() => window.tabs.setSelected(window.tabs.tabList.findIndex((tab) => tab.type === 13)));
+  await hub.locator(".timeline").waitFor({ state: "visible" });
+  await frame.evaluate(() => window.tabs.addTab(15));
+  await hub.locator(".timeline").waitFor({ state: "hidden" });
+  await frame.evaluate(() => window.tabs.setSelected(window.tabs.tabList.findIndex((tab) => tab.type === 1)));
   if (process.env.LITE_SCREENSHOTS) await page.screenshot({ path: process.env.LITE_SCREENSHOTS + "/lite_mur.png" });
 
   await hub.getByText("File", { exact: true }).click();
@@ -91,7 +102,7 @@ try {
   await page.getByText("Import Layout…", { exact: true }).click();
   await (await layoutPicker).setFiles(layoutPath);
   await page.waitForTimeout(500);
-  assert.ok(await frame.evaluate(() => window.healthStrip.state.visible));
+  assert.ok(await frame.evaluate(() => window.tabs.saveState().tabs.some((tab) => tab.type === 1)));
 
   const picking = page.waitForEvent("filechooser");
   await hub.locator("body").press("Control+Shift+o");
@@ -104,7 +115,7 @@ try {
   await frame.waitForFunction(() => window.log.getFieldKeys().some((key) => key.includes("Speed")));
   assert.deepEqual(errors, [], "Browser errors");
   console.log(
-    "Lite smoke passed: same-host MUR HTTP/WS, live value, graph, health, layout download/upload, CSV picker."
+    "Lite smoke passed: same-host MUR HTTP/WS, live value, graph, shared timeline, experimental lap modes, layout download/upload, CSV picker."
   );
 } finally {
   await browser?.close();

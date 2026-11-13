@@ -658,6 +658,25 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           });
         };
 
+        const critical = message.data.criticalLimits;
+        if (critical) {
+          for (const side of ["low", "high"] as const) {
+            menu.append(
+              new MenuItem({
+                label: side === "low" ? "Set critical minimum" : "Set critical maximum",
+                click() {
+                  handleHubMessage(window, {
+                    name: "ask-edit-critical-limit",
+                    data: { ...critical, key: state.logKey, side }
+                  });
+                }
+              })
+            );
+          }
+          menu.popup({ window, x: Math.round(rect.x + rect.width), y: Math.round(rect.y) });
+          break;
+        }
+
         // Make color icon
         let getIcon = (value: string): Electron.NativeImage | undefined => {
           if (!value.startsWith("#")) {
@@ -853,6 +872,23 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
     case "source-list-help":
       openSourceListHelp(window, message.data);
       break;
+
+    case "ask-edit-critical-limit": {
+      const { uuid, key, unit, limits, side } = message.data;
+      if (side !== "low" && side !== "high") break;
+      createEditRangeWindow<number | null>(
+        window,
+        [limits.low ?? null, limits.high ?? null],
+        (range) =>
+          sendMessage(window, "edit-trackside-limits", {
+            uuid,
+            key,
+            limits: { low: range[0] ?? undefined, high: range[1] ?? undefined }
+          }),
+        { field: key, unit, side }
+      );
+      break;
+    }
 
     case "ask-edit-axis":
       {
@@ -1702,20 +1738,6 @@ function setupMenu() {
             sendMessage(window, "toggle-controls");
           }
         },
-        {
-          label: "Trackside Layout",
-          click(_, baseWindow) {
-            const window = baseWindow as BrowserWindow | undefined;
-            if (window && hubWindows.includes(window)) sendMessage(window, "trackside-layout");
-          }
-        },
-        {
-          label: "Toggle Tiles",
-          click(_, baseWindow) {
-            const window = baseWindow as BrowserWindow | undefined;
-            if (window && hubWindows.includes(window)) sendMessage(window, "toggle-health-strip");
-          }
-        },
         { role: "togglefullscreen" }
       ]
     },
@@ -2112,14 +2134,15 @@ function createHubWindow(state?: WindowState, layoutOverride?: any) {
  * @param range The window range
  * @param callback Window callback
  */
-function createEditRangeWindow(
+function createEditRangeWindow<T extends number | null = number>(
   parentWindow: Electron.BrowserWindow,
-  range: [number, number],
-  callback: (range: [number, number]) => void
+  range: [T, T],
+  callback: (range: [T, T]) => void,
+  limits?: { field: string; unit: string; side: "low" | "high" }
 ) {
   const editWindow = new BrowserWindow({
-    width: 300,
-    height: 108,
+    width: limits ? 360 : 300,
+    height: limits ? 160 : 108,
     useContentSize: true,
     resizable: false,
     icon: WINDOW_ICON,
@@ -2140,7 +2163,7 @@ function createEditRangeWindow(
     // Create ports on reload
     const { port1, port2 } = new MessageChannelMain();
     editWindow.webContents.postMessage("port", null, [port1]);
-    port2.postMessage(range);
+    port2.postMessage(limits ? { limits: true, range, ...limits } : range);
     port2.on("message", (event) => {
       editWindow.destroy();
       callback(event.data);

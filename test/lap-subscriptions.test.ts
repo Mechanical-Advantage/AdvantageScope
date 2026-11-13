@@ -17,7 +17,13 @@ test("lap inputs follow open lap views, including unselected satellite tabs", ()
   const previousWindow = globalThis.window;
   const fields = lapService.fields;
   let calls = 0;
-  (globalThis as any).window = { log: new Log(), healthStrip: { getActiveFields: () => ["health"] } };
+  const log = new Log();
+  log.putNumber("imd", 0, 0);
+  log.setMetadataString(
+    "imd",
+    JSON.stringify({ dbcSignal: "TTCS_IMDState", enumLabels: { "0": "Normal", "4": "Earth Fault" } })
+  );
+  (globalThis as any).window = { log };
   lapService.fields = () => {
     calls++;
     return ["latitude", "longitude", "lap_count"];
@@ -31,7 +37,7 @@ test("lap inputs follow open lap views, including unselected satellite tabs", ()
       const before = calls;
       assert.deepEqual(
         [...tabs.getActiveFields()].sort(),
-        ["health", "table", ...(lap ? ["latitude", "longitude", "lap_count"] : [])].sort()
+        ["imd", "table", ...(lap ? ["latitude", "longitude", "lap_count"] : [])].sort()
       );
       assert.equal(calls - before, lap ? 1 : 0);
     };

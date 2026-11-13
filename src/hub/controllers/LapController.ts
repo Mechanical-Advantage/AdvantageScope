@@ -5,10 +5,10 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-// Manages sources and settings for the Laps and Track Map tabs and builds their render commands.
+// Manages sources, settings and the view choice for the Track and laps tab, and builds its render commands.
 
-import { interpolate } from "../../shared/laps/LapEngine";
-import { LapCommand } from "../../shared/renderers/LapRenderer";
+import { indexAt, interpolate } from "../../shared/laps/LapEngine";
+import { LapCommand, LapView } from "../../shared/renderers/LapRenderer";
 import { createUUID } from "../../shared/util";
 import { lapService, LapSettings } from "../LapService";
 import SourceList from "../SourceList";
@@ -23,7 +23,13 @@ export default class LapController implements TabController {
   }
 
   UUID = createUUID();
-  private field = "";
+  /** Map, Laps or both. An old Laps tab (type 14) opens in Laps, and every other tab opens in Map. */
+  private view: LapView;
+  /** The map colours by one field and the table's metric columns use another, so a drop on one leaves the other. */
+  private mapField = "";
+  private tableField = "";
+  /** The table's share of the width, or of the height when the split view stacks. */
+  private split = 0.55;
   private display?: LapCommand["display"];
   private sources: SourceList[] = [];
   private sourceStates: string[] = [];
@@ -33,17 +39,18 @@ export default class LapController implements TabController {
   private focusAtStart = lapService.focus?.id;
   constructor(
     root: HTMLElement,
-    private map: boolean,
+    private legacyMap: boolean,
     controls: HTMLElement
   ) {
+    this.view = legacyMap ? "map" : "laps";
     this.sources = LapSourceConfigs.map(
       (config, i) => new SourceList(controls.querySelectorAll<HTMLElement>(".lap-sources")[i], config, [])
     );
     this.syncSources();
     root.addEventListener("lap-action", (event) => {
       const a = (event as CustomEvent).detail;
-      if (a.type === "setup" && this.map) {
-        const settings = controls.querySelector(".field-2d-settings");
+      const settings = controls.querySelector<HTMLElement>(".field-2d-settings");
+      if (a.type === "setup") {
         if (settings) {
           const scrollTop = settings.scrollTop;
           settings.replaceChildren(a.panel);
@@ -51,6 +58,18 @@ export default class LapController implements TabController {
         }
         return;
       }
+      if (a.type === "show-setup") {
+        // The tab manager toggles the controls, then the column scrolls to the timing controls.
+        window.dispatchEvent(new CustomEvent("toggle-tab-controls"));
+        window.requestAnimationFrame(() => {
+          const timing = settings?.querySelector("[data-lap-timing]");
+          if (settings && timing)
+            settings.scrollTop += timing.getBoundingClientRect().top - settings.getBoundingClientRect().top;
+        });
+        return;
+      }
+      if (a.type === "view") this.view = a.view;
+      if (a.type === "split") this.split = a.split;
       // Selection ignores a new time while locked to live, so a deliberate seek unlocks it first.
       const seek = (time: number) => {
         window.selection.unlock();
@@ -94,8 +113,11 @@ export default class LapController implements TabController {
       }
       if (a.type === "auto" && (lapService.settings.config.gate || lapService.settings.config.geographic?.gate))
         lapService.setStartLine();
-      if (a.type === "display") this.display = { colorMode: a.colorMode, overlaysOnly: a.overlaysOnly };
-      if (a.type === "field") this.field = a.field;
+      if (a.type === "display") this.display = { colorMode: a.colorMode, scope: a.scope };
+      if (a.type === "field") {
+        if (a.target === "table") this.tableField = a.field;
+        else this.mapField = a.field;
+      }
     });
     window.addEventListener(
       "drag-update",
@@ -111,11 +133,23 @@ export default class LapController implements TabController {
           d.data.fields?.length
         ) {
           const key = d.data.fields[0];
-          if (window.log.getNumber(key, -Infinity, Infinity)) this.field = key;
+          const target = this.dropTarget(root, d.x, d.y);
+          if (target && window.log.getNumber(key, -Infinity, Infinity)) {
+            if (target === "table") this.tableField = key;
+            else this.mapField = key;
+          }
         }
       },
       { signal: this.events.signal }
     );
+  }
+  /** Which pane a field dropped at a point colours. Split view asks which pane holds the point. */
+  private dropTarget(root: HTMLElement, x: number, y: number): "map" | "table" | undefined {
+    if (this.view !== "split") return this.view === "map" ? "map" : "table";
+    for (const target of ["map", "table"] as const) {
+      const rect = root.querySelector(`.lap-${target}-pane`)?.getBoundingClientRect();
+      if (rect && x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) return target;
+    }
   }
   private syncSources(readEdits = true) {
     lapService.fields();
@@ -143,7 +177,12 @@ export default class LapController implements TabController {
     this.syncSources();
     return {
       sourceLists: true,
-      field: this.field,
+      view: this.view,
+      split: this.split,
+      mapField: this.mapField,
+      tableField: this.tableField,
+      // Older versions read one field, which meant the map colour on type 13 and the metric on type 14.
+      field: this.legacyMap ? this.mapField : this.tableField,
       settings: lapService.settings,
       reference: lapService.reference,
       overlays: lapService.overlays
@@ -151,8 +190,23 @@ export default class LapController implements TabController {
   }
   restoreState(state: unknown) {
     if (!state || typeof state !== "object") return;
-    const s = state as { field?: string; settings?: LapSettings; reference?: number; overlays?: number[] };
-    if (s.field) this.field = s.field;
+    const s = state as {
+      view?: unknown;
+      split?: unknown;
+      field?: string;
+      mapField?: unknown;
+      tableField?: unknown;
+      settings?: LapSettings;
+      reference?: number;
+      overlays?: number[];
+    };
+    if (s.view === "map" || s.view === "laps" || s.view === "split") this.view = s.view;
+    if (typeof s.split === "number" && Number.isFinite(s.split)) this.split = Math.max(0.1, Math.min(0.9, s.split));
+    // A save from before the merge has one field, which belongs to the view its tab type had.
+    if (typeof s.mapField === "string") this.mapField = s.mapField;
+    else if (this.legacyMap && s.field) this.mapField = s.field;
+    if (typeof s.tableField === "string") this.tableField = s.tableField;
+    else if (!this.legacyMap && s.field) this.tableField = s.field;
     if (s.settings) {
       // Roles saved empty, as an old layout with no log has them, are left to auto-detection.
       const settings = { ...s.settings };
@@ -175,7 +229,8 @@ export default class LapController implements TabController {
   }
   newAssets() {}
   getActiveFields() {
-    return [...lapService.fields(), ...(this.field ? [this.field] : [])];
+    // Both fields stay subscribed, so switching view in live shows a colour scale and metrics with their history.
+    return [...lapService.fields(), ...[this.mapField, this.tableField].filter((field) => field)];
   }
   showTimeline() {
     return true;
@@ -183,47 +238,76 @@ export default class LapController implements TabController {
   getCommand(): LapCommand {
     this.syncSources();
     lapService.update();
-    if (this.field && !window.log.getFieldKeys().includes(this.field)) this.field = "";
-    // The map colours each lap until a field is dropped on it.
-    if (!this.map) this.field ||= lapService.settings.speed || lapService.settings.frontLeft;
-    const data = window.log.getNumber(this.field, -Infinity, Infinity);
+    const keys = window.log.getFieldKeys();
+    if (this.mapField && !keys.includes(this.mapField)) this.mapField = "";
+    if (this.tableField && !keys.includes(this.tableField)) this.tableField = "";
+    const setupVisible = window.tabs?.getControlsVisible?.() ?? true;
+    const showsMap = this.view !== "laps",
+      showsTable = this.view !== "map";
+    // The map colours each lap until a field is dropped on it. The table shows speed until then.
+    if (showsTable) this.tableField ||= lapService.settings.speed || lapService.settings.frontLeft;
+    const mapData = showsMap ? window.log.getNumber(this.mapField, Infinity, Infinity) : undefined,
+      tableData = showsTable ? window.log.getNumber(this.tableField, Infinity, Infinity) : undefined;
     const cacheKey = JSON.stringify([
       this.display,
-      data?.timestamps.length,
-      data?.timestamps.at(-1),
-      data?.values.at(-1),
+      this.view,
+      window.log.getTimestampRange()[0],
+      window.log.getHistoryVersion(this.mapField),
+      window.log.getHistoryVersion(this.tableField),
+      ...[mapData, tableData].flatMap((data) => [
+        data?.timestamps.length,
+        data?.timestamps.at(-1),
+        data?.values.at(-1)
+      ]),
       lapService.version,
-      this.field,
+      this.mapField,
+      this.tableField,
       lapService.reference,
       lapService.overlays,
       lapService.selected,
       lapService.focus?.id
     ]);
-    if (this.cached && cacheKey === this.cacheKey) return { ...this.cached, time: window.selection.getRenderTime() };
+    // Dragging the split moves no data, so it doesn't recalculate the colours or metrics.
+    if (this.cached && cacheKey === this.cacheKey)
+      return { ...this.cached, split: this.split, setupVisible, time: window.selection.getRenderTime() };
     this.cacheKey = cacheKey;
     const samples = lapService.result.samples;
-    const values = samples.map((p) => (data ? interpolate(data.timestamps, data.values, p.t) : NaN));
+    const valuesOf = (data: typeof mapData) =>
+      samples.map((p) => (data ? interpolate(data.timestamps, data.values, p.t) : NaN));
+    // Read full histories only when the command changes, rather than copying them every frame.
+    const values = showsMap ? valuesOf(window.log.getNumber(this.mapField, -Infinity, Infinity)) : [],
+      tableValues = !showsTable
+        ? []
+        : this.tableField === this.mapField && showsMap
+        ? values
+        : valuesOf(window.log.getNumber(this.tableField, -Infinity, Infinity));
     this.cached = {
-      map: this.map,
+      view: this.view,
+      split: this.split,
       display: this.display,
+      setupVisible,
       origin: lapService.origin,
       result: lapService.result,
       settings: { ...lapService.settings, config: lapService.localConfig() },
-      field: this.field,
-      unit: window.log.getUnit(this.field) ?? "",
+      field: this.mapField,
+      unit: window.log.getUnit(this.mapField) ?? "",
       values,
+      tableField: this.tableField,
+      tableUnit: window.log.getUnit(this.tableField) ?? "",
       selected: lapService.selected,
       reference: lapService.reference,
       overlays: lapService.overlays,
       time: window.selection.getRenderTime(),
       version: lapService.version,
-      focus: this.map && lapService.focus?.id !== this.focusAtStart ? lapService.focus : undefined,
-      metrics: lapService.result.laps.map((l) => {
-        const vs = values.filter((v, i) => samples[i].t >= l.start && samples[i].t < l.end && Number.isFinite(v));
-        return vs.length
-          ? [Math.min(...vs), Math.max(...vs), vs.reduce((a, b) => a + b, 0) / vs.length]
-          : [NaN, NaN, NaN];
-      })
+      focus: lapService.focus?.id !== this.focusAtStart ? lapService.focus : undefined,
+      metrics: !showsTable
+        ? []
+        : lapService.result.laps.map((l) => {
+            const vs = tableValues.slice(indexAt(samples, l.start), indexAt(samples, l.end)).filter(Number.isFinite);
+            return vs.length
+              ? [Math.min(...vs), Math.max(...vs), vs.reduce((a, b) => a + b, 0) / vs.length]
+              : [NaN, NaN, NaN];
+          })
     };
     return this.cached;
   }

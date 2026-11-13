@@ -14,11 +14,16 @@ enum TabType {
   Console,
   Statistics,
   Video,
-  // 8-10 were Joysticks, Swerve and Mechanism (removed); values kept stable for saved layouts
+  // 8-10 were Joysticks, Swerve and Mechanism (removed); values kept stable for saved layouts.
+  // Driver Inputs and Car Dynamics replace Joysticks and Swerve under new values.
   Points = 11,
   Metadata = 12,
+  // 13 is the combined Track and laps tab. 14 was the separate Laps tab, which saved layouts can still hold.
   TrackMap = 13,
-  Laps = 14
+  Laps = 14,
+  Trackside = 15,
+  DriverInputs = 16,
+  CarDynamics = 17
   // 20-22 were Raw Messages, Log and Image. These values stay reserved for saved layouts.
 }
 
@@ -31,12 +36,14 @@ export function getAllTabTypes(): TabType[] {
 export const NEW_TAB_TYPES = [
   TabType.LineGraph,
   TabType.TrackMap,
-  TabType.Laps,
   TabType.Table,
   TabType.Statistics,
   TabType.Console,
   TabType.Video,
+  TabType.Trackside,
   TabType.Points,
+  TabType.DriverInputs,
+  TabType.CarDynamics,
   TabType.Metadata
 ];
 
@@ -50,7 +57,9 @@ export const LITE_COMPATIBLE_TABS = [
   TabType.Points,
   TabType.Metadata,
   TabType.TrackMap,
-  TabType.Laps
+  TabType.Laps,
+  TabType.DriverInputs,
+  TabType.CarDynamics
 ];
 
 export function getDefaultTabTitle(type: TabType): string {
@@ -72,9 +81,15 @@ export function getDefaultTabTitle(type: TabType): string {
     case TabType.Points:
       return "Points";
     case TabType.TrackMap:
-      return "Track Map";
+      return "Track and laps";
     case TabType.Laps:
       return "Laps";
+    case TabType.Trackside:
+      return "Trackside";
+    case TabType.DriverInputs:
+      return "Driver Inputs";
+    case TabType.CarDynamics:
+      return "Car Dynamics";
     case TabType.Metadata:
       return "Metadata";
     default:
@@ -104,6 +119,10 @@ export function getTabIcon(type: TabType): string {
       return "";
     case TabType.Laps:
       return "";
+    case TabType.DriverInputs:
+      return "🎮";
+    case TabType.CarDynamics:
+      return "🏎";
     case TabType.Metadata:
       return "🔍";
     default:
@@ -129,6 +148,10 @@ export function getTabAccelerator(type: TabType): string {
           return "V";
         case TabType.Points:
           return "P";
+        case TabType.DriverInputs:
+          return "J";
+        case TabType.CarDynamics:
+          return "D";
         case TabType.Metadata:
           return "I";
         default:

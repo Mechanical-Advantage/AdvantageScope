@@ -11,8 +11,10 @@ import Preferences from "./shared/Preferences";
 import { RenderGuard, inlineStatus } from "./shared/RenderGuard";
 import Selection, { SelectionMode } from "./shared/Selection";
 import TabType, { getAllTabTypes, getTabIcon } from "./shared/TabType";
+import CarDynamicsRenderer from "./shared/renderers/CarDynamicsRenderer";
 import ConsoleRenderer from "./shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "./shared/renderers/DocumentationRenderer";
+import DriverInputsRenderer from "./shared/renderers/DriverInputsRenderer";
 import Field2dRenderer from "./shared/renderers/Field2dRenderer";
 import LapRenderer from "./shared/renderers/LapRenderer";
 import LineGraphRenderer from "./shared/renderers/LineGraphRenderer";
@@ -21,6 +23,7 @@ import PointsRenderer from "./shared/renderers/PointsRenderer";
 import StatisticsRenderer from "./shared/renderers/StatisticsRenderer";
 import TabRenderer from "./shared/renderers/TabRenderer";
 import TableRenderer from "./shared/renderers/TableRenderer";
+import TracksideRenderer from "./shared/renderers/TracksideRenderer";
 import VideoRenderer from "./shared/renderers/VideoRenderer";
 import { htmlEncode } from "./shared/util";
 
@@ -89,8 +92,17 @@ function updateVisualizer() {
     case TabType.Video:
       renderer = new VideoRenderer(root);
       break;
+    case TabType.Trackside:
+      renderer = new TracksideRenderer(root);
+      break;
     case TabType.Points:
       renderer = new PointsRenderer(root);
+      break;
+    case TabType.DriverInputs:
+      renderer = new DriverInputsRenderer(root);
+      break;
+    case TabType.CarDynamics:
+      renderer = new CarDynamicsRenderer(root);
       break;
     case TabType.TrackMap:
     case TabType.Laps:

@@ -259,10 +259,11 @@ function circleSamples(): Sample[] {
 const quarterGate = { a: { x: 30, y: -40 }, b: { x: 50, y: -40 } };
 const halfGate = { a: { x: 0, y: -70 }, b: { x: 0, y: -90 } };
 
-// Recorded from LapEngine on mur-voir/main (0b9ae435).
+// Recorded from LapEngine on mur-voir/main (0b9ae435), rounded to microseconds and micrometres.
+// Native trigonometry can differ below that precision across platforms.
 const STOCK_LAPS = {
-  fractions: "3d4c29bc4abf7e88",
-  gates: "504d89d76f06ea51"
+  fractions: "fdf6f050dc1aa068",
+  gates: "fb8529b88ed46a9a"
 };
 
 test("lap results match mur-voir/main", () => {
@@ -275,7 +276,10 @@ test("lap results match mur-voir/main", () => {
       name
     );
     assert.equal(
-      createHash("sha256").update(JSON.stringify(result)).digest("hex").slice(0, 16),
+      createHash("sha256")
+        .update(JSON.stringify(result, (_, value) => (typeof value === "number" ? Number(value.toFixed(6)) : value)))
+        .digest("hex")
+        .slice(0, 16),
       STOCK_LAPS[name as keyof typeof STOCK_LAPS],
       name
     );

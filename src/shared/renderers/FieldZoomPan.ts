@@ -21,22 +21,36 @@ export function scrollZoomPan(
   isPan: boolean,
   centerX: number,
   centerY: number,
-  scale: number
+  scale: number,
+  limited = true
 ): number {
+  if (!limited) {
+    zoom = Math.min(1e4, Math.max(1e-3, Number.isNaN(zoom) ? 1 : zoom));
+    scale = Number.isFinite(scale) && scale > 0 ? scale : 1;
+    for (let i = 0; i < 2; i++) pan[i] = Number.isFinite(pan[i]) ? pan[i] : 0;
+  }
+  const clampPan = () => {
+    if (!limited) for (let i = 0; i < 2; i++) pan[i] = Math.min(1e6, Math.max(-1e6, Number.isNaN(pan[i]) ? 0 : pan[i]));
+  };
   if (isPan) {
     pan[0] += dx / (scale * zoom);
     pan[1] += dy / (scale * zoom);
+    clampPan();
     return zoom;
   }
-  let newZoom = Math.min(10, Math.max(1, zoom + dy * -0.005));
+  const newZoom = limited
+    ? Math.min(10, Math.max(1, zoom + dy * -0.005))
+    : Math.min(1e4, Math.max(1e-3, zoom * Math.exp((Number.isNaN(dy) ? 0 : -dy) * 0.005)));
   if (newZoom !== zoom) {
     pan[0] += (centerX / scale) * (1 / zoom - 1 / newZoom);
     pan[1] += (centerY / scale) * (1 / zoom - 1 / newZoom);
   }
+  clampPan();
   return newZoom;
 }
 
 /** How far a view may pan along one axis, in view units, before its content leaves the canvas. */
 export function panMargin(displaySize: number, canvasSize: number, zoomedScale: number): number {
-  return Math.max(0, (displaySize - canvasSize) * 0.5) / zoomedScale;
+  const margin = Math.max(0, (displaySize - canvasSize) * 0.5) / zoomedScale;
+  return Number.isFinite(margin) ? margin : 0;
 }

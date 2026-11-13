@@ -33,5 +33,13 @@ test("restoring clamps selection when no predecessor survives", () => {
 
 test("2D Field stays restorable while new tabs use the core menu order", () => {
   assert.ok(getAllTabTypes().includes(TabType.Field2d));
-  assert.deepEqual(NEW_TAB_TYPES, [1, 13, 14, 4, 6, 5, 7, 11, 12]);
+  assert.deepEqual(NEW_TAB_TYPES, [1, 13, 4, 6, 5, 7, 15, 11, 16, 17, 12]);
+  assert.ok(getAllTabTypes().includes(TabType.Laps), "old Laps tabs stay restorable");
+});
+
+test("Driver Inputs and Car Dynamics restore under new ids while 8 and 9 stay removed", () => {
+  assert.deepEqual(
+    filterRestorableTabs(tabs([8, 16, 9, 17]), 3).tabs.map((tab) => tab.type),
+    [TabType.DriverInputs, TabType.CarDynamics]
+  );
 });

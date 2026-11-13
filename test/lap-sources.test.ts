@@ -430,3 +430,133 @@ test("cached lap samples refresh after data, units and wheel settings change", (
   assert.equal(service.result.samples.length, 21);
   assert.equal(service.result.samples.at(-1)!.t, 4);
 });
+
+test("gate edits reuse slip samples on a static log", () => {
+  const log = new Log();
+  for (let i = 0; i < 100; i++) {
+    for (const key of ["WheelSpeedFL", "WheelSpeedFR", "gps/ground_speed"]) {
+      log.putNumber(key, i / 10, 10 + i / 100);
+      log.setMetadataString(key, JSON.stringify({ unit: "m/s" }));
+    }
+    log.putNumber("latitude", i / 10, -37 + i * 1e-6);
+    log.putNumber("longitude", i / 10, 145);
+  }
+  (globalThis as any).window = { log, selection: { getCurrentLiveTime: () => null } };
+  const service = new LapService();
+  service.update();
+  const before = log.getNumber("Laps/SlipRatio", -Infinity, Infinity);
+  let writes = 0;
+  const put = log.putNumber.bind(log);
+  log.putNumber = (key, t, v) => {
+    if (key === "Laps/SlipRatio") writes++;
+    put(key, t, v);
+  };
+  service.setGate(0, { a: { x: 0, y: 0 }, b: { x: 10, y: 0 } });
+  service.update();
+  assert.equal(writes, 0);
+  assert.deepEqual(log.getNumber("Laps/SlipRatio", -Infinity, Infinity), before);
+});
+
+test("lap bands reuse their cached objects until laps or highlighting change", () => {
+  (globalThis as any).window = { log: new Log() };
+  const service = new LapService();
+  service.update();
+  const first = service.bands();
+  assert.equal(service.bands(), first);
+  service.selected = 2;
+  assert.notEqual(service.bands(), first);
+});
+
+test("live appends read only each source tail and match a fresh full analysis", () => {
+  const log = new Log();
+  (globalThis as any).window = { log, selection: { getCurrentLiveTime: () => 100 } };
+  const service = new LapService();
+  let read = 0;
+  const get = log.getNumber.bind(log);
+  log.getNumber = (...args) => {
+    const data = get(...args);
+    if (!args[0].startsWith("Laps/")) read += data?.timestamps.length ?? 0;
+    return data;
+  };
+  for (let batch = 0; batch < 30; batch++) {
+    for (let j = 0; j < 20; j++) {
+      const t = batch * 2 + j / 10;
+      log.putNumber("latitude", t, -37 + Math.sin(t) * 0.0001);
+      log.putNumber("longitude", t, 145 + Math.cos(t) * 0.0001);
+      log.putNumber("vehicle_speed", t, 10 + Math.sin(t));
+    }
+    log.setMetadataString("vehicle_speed", JSON.stringify({ unit: "m/s" }));
+    if (batch % 5 === 0) {
+      service.settings.config.mode = (["circuit", "accel", "skidpad", "autocross", "endurance"] as const)[
+        (batch / 5) % 5
+      ];
+      service.setGate(0, { a: { x: -10 + batch, y: -10 }, b: { x: -10 + batch, y: 10 } });
+    }
+    read = 0;
+    service.invalidate();
+    service.update();
+    const consumed = read;
+    const expected = new LapService();
+    expected.settings = structuredClone(service.settings);
+    expected.update();
+    assert.deepEqual(service.result, expected.result);
+    if (batch > 2) assert.ok(consumed < 150, `read ${consumed} input samples`);
+  }
+});
+
+test("a live source edit refreshes samples even when its last value stays unchanged", () => {
+  const log = new Log();
+  (globalThis as any).window = { log, selection: { getCurrentLiveTime: () => 2 } };
+  for (let i = 0; i < 20; i++) {
+    log.putNumber("latitude", i / 10, -37 + i * 1e-6);
+    log.putNumber("longitude", i / 10, 145 + i * 1e-6);
+  }
+  const service = new LapService();
+  service.update();
+  log.putNumber("latitude", 0.5, -37 + 5.5e-6);
+  service.invalidate();
+  service.update();
+  const fresh = new LapService();
+  fresh.update();
+  assert.deepEqual(service.result, fresh.result);
+});
+
+test("rolling live retention does not reread the whole window on each one-second trim", () => {
+  const log = new Log();
+  const write = (t: number) => {
+    log.putNumber("latitude", t, -37 + Math.sin(t / 7) * 0.001);
+    log.putNumber("longitude", t, 145 + Math.cos(t / 7) * 0.001);
+    log.putNumber("vehicle_speed", t, 10 + Math.sin(t));
+  };
+  for (let i = 0; i < 6000; i++) write(i / 10);
+  log.setMetadataString("vehicle_speed", JSON.stringify({ unit: "m/s" }));
+  (globalThis as any).window = { log, selection: { getCurrentLiveTime: () => 600 } };
+  const service = new LapService();
+  service.update();
+  let read = 0;
+  const get = log.getNumber.bind(log);
+  log.getNumber = (...args) => {
+    const data = get(...args);
+    if (!args[0].startsWith("Laps/")) read += data?.timestamps.length ?? 0;
+    return data;
+  };
+  for (let second = 1; second < 30; second++) {
+    for (let i = 0; i < 10; i++) write(600 + second + i / 10);
+    log.clearBeforeTime(second, false);
+    service.invalidate();
+    read = 0;
+    service.update();
+    assert.ok(read < 100, `one trim read ${read} source samples`);
+  }
+  log.clearBeforeTime(31, false);
+  service.invalidate();
+  service.update();
+  const fresh = new LapService();
+  fresh.update();
+  fresh.settings = structuredClone(service.settings);
+  fresh.reference = service.reference;
+  fresh.invalidate();
+  fresh.update();
+  assert.deepEqual(service.result, fresh.result, "the next retention checkpoint matches full analysis");
+  assert.ok(service.result.samples[0].t >= 31, "expired lap context is released");
+});
