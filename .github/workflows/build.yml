@@ -2,648 +2,152 @@ name: Build
 
 on:
   push:
-    branches:
-      - "*"
-    tags-ignore:
-      - "*"
+    branches: ["**"]
+    tags: ["v*"]
   pull_request:
 
-env:
-  VERSION_SUFFIX: ${{ case(startsWith(github.ref, 'refs/tags/v'), github.ref_name, 'dev') }}
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
 
 jobs:
-  check-formatting:
-    name: Check Formatting
-    runs-on: ubuntu-latest
-
+  verify:
+    name: Verify dashboard
+    runs-on: ubuntu-24.04
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
-          node-version: "20.x"
-          cache: "npm"
-      - name: Install Node.js dependencies
-        run: npm ci
-        env:
-          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
-      - name: Check pinned live API schema and generated types
-        run: npm run live-api:check
-      - name: Check formatting
-        run: npm run check-format
-
-  compile-frc6328:
-    name: Compile for FRC 6328
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: "20.x"
-          cache: "npm"
-      - name: Setup Emscripten
-        uses: emscripten-core/setup-emsdk@v16
+          node-version: "22.x"
+          cache: npm
+      - uses: emscripten-core/setup-emsdk@v16
         with:
           version: 4.0.12
-      - name: Install Node.js dependencies
-        run: npm ci
-        env:
-          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
-      - name: Compile WebAssembly
-        run: npm run wasm:compile
-      - name: Compile bundles
-        run: npm run compile
-      - name: Upload bundles
-        uses: actions/upload-artifact@v7
+      - run: npm ci
+      - run: npm run check-format
+      - run: npm run typecheck
+      - run: npm test
+      - run: node --test tools/mock-backend/test/*.test.ts
+      - run: npx tsc -p tools/mock-backend
+      - run: npm run compile
+      - run: npm run wasm:compile
+      - run: npx playwright install --with-deps chromium
+      - name: Exercise the cellular API in Electron
+        run: xvfb-run -a npm run cellular-smoke -- --soak-seconds 30
+        timeout-minutes: 5
+      - uses: actions/upload-artifact@v7
         with:
-          name: bundles
-          path: |
-            bundles/**/*.js
-            bundles/**/*.wasm
+          name: desktop-bundles
+          path: bundles/
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: cellular-verification
+          path: .screenshots/cellular/
 
-  compile-wpilib:
-    name: Compile for WPILib
-    runs-on: ubuntu-latest
-
+  lite:
+    name: Verify and package Lite
+    runs-on: ubuntu-24.04
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
-          node-version: "20.x"
-          cache: "npm"
-      - name: Setup Emscripten
-        uses: emscripten-core/setup-emsdk@v16
-        with:
-          version: 4.0.12
-      - name: Install Node.js dependencies
-        run: npm ci
-        env:
-          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
-      - name: Compile WebAssembly
-        run: npm run wasm:compile
-      - name: Compile bundles
-        run: npm run compile
-        env:
-          ASCOPE_DISTRIBUTION: WPILIB
-      - name: Upload bundles
-        uses: actions/upload-artifact@v7
-        with:
-          name: bundles-wpilib
-          path: |
-            bundles/**/*.js
-            bundles/**/*.wasm
-
-  compile-lite:
-    name: Compile for Lite
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: "20.x"
-          cache: "npm"
-      - name: Setup Emscripten
-        uses: emscripten-core/setup-emsdk@v16
-        with:
-          version: 4.0.12
-      - name: Install Node.js dependencies
-        run: npm ci
-        env:
-          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
-      - name: Compile WebAssembly
-        run: npm run wasm:compile
-      - name: Compile bundles
-        run: npm run compile
-        env:
-          ASCOPE_DISTRIBUTION: LITE
-      - name: Prepare artifact (desktop)
+          node-version: "22.x"
+          cache: npm
+      - run: npm ci
+      - run: npm run lite-build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run lite-smoke -- --skip-build
+        timeout-minutes: 5
+      - name: Package standalone Lite
         run: |
-          mkdir advantagescopelite-desktop
-          cp lite/lite_server.py advantagescopelite-desktop/lite_server.py
-          cp -rL lite/static advantagescopelite-desktop/static
-      - name: Upload development artifact (desktop)
-        uses: actions/upload-artifact@v7
+          VERSION=$(node -p "require('./package.json').version")
+          mkdir -p dist/lite/lite dist/lite/tools/lite-serve
+          cp -rL lite/static dist/lite/lite/static
+          cp tools/lite-serve/main.mjs dist/lite/tools/lite-serve/
+          cp LICENSE ThirdPartyLicenses.txt dist/lite/
+          cp docs/cellular-telemetry.md dist/lite/README.md
+          cd dist/lite
+          zip -qr ../mur-voir-lite-${VERSION}.zip .
+      - uses: actions/upload-artifact@v7
         with:
-          name: advantagescopelite-desktop
-          path: advantagescopelite-desktop/
-      - name: Build IPK (Systemcore)
-        run: cd lite/ipk && ./build.sh
-      - name: Prepare artifact (Systemcore)
-        run: mv lite/ipk/advantagescope-lite_*.ipk lite/ipk/advantagescopelite-systemcore.ipk
-      - name: Upload development artifact (Systemcore)
-        uses: actions/upload-artifact@v7
-        with:
-          archive: false
-          path: lite/ipk/advantagescopelite-systemcore.ipk
-      - name: "Release: Get release info"
-        if: github.event_name == 'release'
-        id: get_release_info
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
-      - name: "Release: Prepare artifact (Systemcore)"
-        run: mv lite/ipk/advantagescopelite-systemcore.ipk temp.ipk
-      - name: "Release: Upload artifact (Systemcore)"
-        if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: temp.ipk
-          asset_name: advantagescope-lite-${{ steps.get_release_info.outputs.tag_name }}.ipk
-          asset_content_type: "application/octet-stream"
+          name: mur-voir-lite
+          path: dist/mur-voir-lite-*.zip
 
-  compile-lite-ds:
-    name: Compile for Lite (DS)
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: "20.x"
-          cache: "npm"
-      - name: Setup Emscripten
-        uses: emscripten-core/setup-emsdk@v16
-        with:
-          version: 4.0.12
-      - name: Install Node.js dependencies
-        run: npm ci
-        env:
-          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
-          ASCOPE_DISTRIBUTION: LITEDS
-      - name: Compile WebAssembly
-        run: npm run wasm:compile
-      - name: Compile bundles
-        run: npm run compile
-        env:
-          ASCOPE_DISTRIBUTION: LITEDS
-      - name: Prepare artifact
-        run: |
-          cp -rL lite/static advantagescopelite-ds
-      - name: Upload development artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: advantagescopelite-ds
-          path: advantagescopelite-ds/
-      - name: "Release: Get release info"
-        if: github.event_name == 'release'
-        id: get_release_info
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
-      - name: "Release: Prepare artifact"
-        run: |
-          cd advantagescopelite-ds
-          zip -r ../advantagescopelite-ds.zip ./*
-          cd ..
-      - name: "Release: Upload artifact"
-        if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescopelite-ds.zip
-          asset_name: advantagescope-lite-ds-${{ steps.get_release_info.outputs.tag_name }}.zip
-          asset_content_type: "application/octet-stream"
-
-  build-ios:
-    # The fork removed the upstream XR iOS project in 50e84e59.
-    if: false
-    name: Build for iOS
-    runs-on: macos-26
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Install Metal toolchain
-        run: xcodebuild -downloadComponent MetalToolchain
-      - name: Download iOS simulator
-        run: |
-          n=0
-          until [ "$n" -ge 5 ]
-          do
-            echo "Attempting download (Try $((n+1)))..."
-            xcodebuild -downloadPlatform iOS && break
-            n=$((n+1))
-            echo "Download failed. Sleeping 10 seconds before retry..."
-            sleep 10
-          done
-
-          if [ "$n" -ge 5 ]; then
-            echo "Failed to download iOS simulator after 5 attempts."
-            exit 1
-          fi
-      - name: Build AdvantageScopeXR
-        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXR -sdk iphonesimulator build
-      - name: Build AdvantageScopeXRClip
-        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXRClip -sdk iphonesimulator build
-
-  build-win:
-    name: Build for Windows (${{ matrix.arch }})
-    needs: compile-frc6328
-    runs-on: windows-latest
-
+  desktop:
+    name: Package ${{ matrix.os }} ${{ matrix.arch }}
+    needs: verify
     strategy:
       fail-fast: false
       matrix:
-        arch: ["x64", "arm64"]
-
+        include:
+          - { runner: macos-latest, os: mac, arch: arm64 }
+          - { runner: macos-latest, os: mac, arch: x64 }
+          - { runner: windows-latest, os: win, arch: x64 }
+          - { runner: windows-latest, os: win, arch: arm64 }
+          - { runner: ubuntu-24.04, os: linux, arch: x64 }
+          - { runner: ubuntu-24.04, os: linux, arch: arm64 }
+    runs-on: ${{ matrix.runner }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
-          node-version: "20.x"
-          cache: "npm"
-      - name: Install Node.js dependencies
-        run: npm ci
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Download bundles
-        uses: actions/download-artifact@v8
+          node-version: "22.x"
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v8
         with:
-          name: bundles
+          name: desktop-bundles
           path: bundles
-      - name: Load Windows signing credentials
-        if: |
-          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
-          github.event_name == 'release'
+      - name: Build installer
         shell: bash
         run: |
-          echo "AZURE_TENANT_ID=${{ secrets.AZURE_SIGNING_TENANT_ID }}" >> $GITHUB_ENV
-          echo "AZURE_CLIENT_ID=${{ secrets.AZURE_SIGNING_CLIENT_ID }}" >> $GITHUB_ENV
-          echo "AZURE_CLIENT_SECRET=${{ secrets.AZURE_SIGNING_CLIENT_SECRET }}" >> $GITHUB_ENV
-          echo "WIN_SIGN_ARGS=-c.win.azureSignOptions.endpoint=${{ vars.AZURE_SIGNING_ENDPOINT }} -c.win.azureSignOptions.codeSigningAccountName=${{ vars.AZURE_SIGNING_ACCOUNT_NAME }} -c.win.azureSignOptions.certificateProfileName=${{ vars.AZURE_SIGNING_CERTIFICATE_PROFILE }} -c.win.azureSignOptions.publisherName=\"${{ vars.AZURE_SIGNING_PUBLISHER_NAME }}\"" >> $GITHUB_ENV
-      - name: Build app
-        shell: bash
-        run: npx electron-builder build --${{ matrix.arch }} --publish never ${{ env.WIN_SIGN_ARGS }}
-        env:
-          NODE_OPTIONS: --max-old-space-size=4096
-          ELECTRON_BUILDER_7Z_FILTER: BCJ # https://github.com/electron-userland/electron-builder/issues/9983
-      - name: Prepare artifact
-        run: |
-          Move-Item -Path "dist\mur-voir*.exe" -Destination "advantagescope-win-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.exe"
-      - name: Upload development artifact
-        if: github.event_name != 'release'
-        uses: actions/upload-artifact@v7
-        with:
-          archive: false
-          path: advantagescope-win-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.exe
-      - name: "Release: Upload artifact"
-        if: github.event_name == 'release'
-        uses: softprops/action-gh-release@v3
-        with:
-          files: advantagescope-win-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.exe
-
-  build-mac:
-    name: Build for macOS (${{ matrix.arch }})
-    needs: compile-frc6328
-    runs-on: macos-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        arch: ["x64", "arm64"]
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: "20.x"
-          cache: "npm"
-      - name: Install Node.js dependencies
-        run: npm ci
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Download bundles
-        uses: actions/download-artifact@v8
-        with:
-          name: bundles
-          path: bundles
-      - name: Load macOS certificate
-        if: |
-          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
-          github.event_name != 'pull_request'
-        uses: apple-actions/import-codesign-certs@v7
-        with:
-          p12-file-base64: ${{ secrets.APPLE_DEVELOPER_ID }}
-          p12-password: ${{ secrets.APPLE_DEVELOPER_ID_PWD }}
-      - name: Load macOS notarization credentials
-        if: |
-          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
-          github.event_name == 'release'
-        run: |
-          echo "${{ secrets.APPLE_NOTARIZATION_API_KEY }}" | base64 --decode > apple_api_key.p8
-          echo "APPLE_API_KEY=$PWD/apple_api_key.p8" >> $GITHUB_ENV
-          echo "APPLE_API_KEY_ID=${{ secrets.APPLE_NOTARIZATION_API_KEY_ID }}" >> $GITHUB_ENV
-          echo "APPLE_API_ISSUER=${{ secrets.APPLE_NOTARIZATION_API_ISSUER }}" >> $GITHUB_ENV
-          echo "APPLE_TEAM_ID=${{ vars.APPLE_TEAM_ID }}" >> $GITHUB_ENV
-      - name: Build app
-        run: npx electron-builder build --${{ matrix.arch }} --publish never
-        env:
-          NODE_OPTIONS: --max-old-space-size=4096
-      - name: Prepare artifact
-        run: |
-          mv dist/mur-voir-*.dmg advantagescope-mac-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.dmg
-      - name: Upload development artifact
-        if: github.event_name != 'release'
-        uses: actions/upload-artifact@v7
-        with:
-          archive: false
-          path: advantagescope-mac-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.dmg
-      - name: "Release: Upload artifact"
-        if: github.event_name == 'release'
-        uses: softprops/action-gh-release@v3
-        with:
-          files: advantagescope-mac-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.dmg
-
-  build-linux:
-    name: Build for Linux/${{ matrix.format }} (${{ matrix.arch.electronArch }})
-    needs: compile-frc6328
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        format: ${{ fromJson(github.event_name == 'release' && '["deb", "rpm", "pacman", "AppImage", "snap", "flatpak"]' || '["AppImage"]') }}
-        arch:
-          - { electronArch: "x64", flatpakArch: "x86_64" }
-          - { electronArch: "arm64", flatpakArch: "aarch64" }
-          - { electronArch: "armv7l", flatpakArch: "" }
-        exclude:
-          - arch: { electronArch: "arm64", flatpakArch: "aarch64" }
-            format: "snap"
-          - arch: { electronArch: "armv7l", flatpakArch: "" }
-            format: "flatpak"
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: "20.x"
-          cache: "npm"
-      - name: Install Node.js dependencies
-        run: npm ci
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Install Linux packages
-        run: |
-          sudo apt-get update; sudo apt-get install --no-install-recommends -y libarchive-tools snapd
-      - name: Install flatpak packages
-        if: matrix.format == 'flatpak'
-        run: |
-          sudo apt-get install -y flatpak flatpak-builder
-          sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-          sudo flatpak install flathub org.freedesktop.Platform/${{ matrix.arch.flatpakArch }}/22.08 --assumeyes
-          sudo flatpak install flathub org.freedesktop.Sdk/${{ matrix.arch.flatpakArch }}/22.08 --assumeyes
-          sudo flatpak install flathub org.electronjs.Electron2.BaseApp/${{ matrix.arch.flatpakArch }}/22.08 --assumeyes
-      - name: Download bundles
-        uses: actions/download-artifact@v8
-        with:
-          name: bundles
-          path: bundles
-      - name: Build app
-        run: npx electron-builder build -c.electronVersion=37.10.3 --${{ matrix.arch.electronArch }} -l ${{ matrix.format }} --publish never
-        env:
-          NODE_OPTIONS: --max-old-space-size=4096
-      - name: Prepare artifact
-        run: |
-          mv dist/*.${{ matrix.format }} advantagescope-linux-${{ matrix.arch.electronArch }}-${{ env.VERSION_SUFFIX }}.${{ matrix.format }}
-      - name: Upload development artifact
-        if: github.event_name != 'release'
-        uses: actions/upload-artifact@v7
-        with:
-          archive: false
-          path: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ env.VERSION_SUFFIX }}.${{ matrix.format }}
-      - name: "Release: Upload artifact"
-        if: github.event_name == 'release'
-        uses: softprops/action-gh-release@v3
-        with:
-          files: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ env.VERSION_SUFFIX }}.${{ matrix.format }}
-
-  build-wpilib-win:
-    name: "WPILib: Build for Windows (${{ matrix.arch }})"
-    needs: compile-wpilib
-    runs-on: windows-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        arch: ["x64", "arm64"]
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: "20.x"
-          cache: "npm"
-      - name: Install Node.js dependencies
-        run: npm ci
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Download bundles
-        uses: actions/download-artifact@v8
-        with:
-          name: bundles-wpilib
-          path: bundles
-      - name: Load Windows signing credentials
-        if: |
-          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
-          github.event_name == 'release'
-        shell: bash
-        run: |
-          echo "AZURE_TENANT_ID=${{ secrets.AZURE_SIGNING_TENANT_ID }}" >> $GITHUB_ENV
-          echo "AZURE_CLIENT_ID=${{ secrets.AZURE_SIGNING_CLIENT_ID }}" >> $GITHUB_ENV
-          echo "AZURE_CLIENT_SECRET=${{ secrets.AZURE_SIGNING_CLIENT_SECRET }}" >> $GITHUB_ENV
-          echo "WIN_SIGN_ARGS=-c.win.azureSignOptions.endpoint=${{ vars.AZURE_SIGNING_ENDPOINT }} -c.win.azureSignOptions.codeSigningAccountName=${{ vars.AZURE_SIGNING_ACCOUNT_NAME }} -c.win.azureSignOptions.certificateProfileName=${{ vars.AZURE_SIGNING_CERTIFICATE_PROFILE }} -c.win.azureSignOptions.publisherName=\"${{ vars.AZURE_SIGNING_PUBLISHER_NAME }}\"" >> $GITHUB_ENV
-      - name: Build app
-        shell: bash
-        run: npx electron-builder build --publish never --${{ matrix.arch }} -w dir ${{ env.WIN_SIGN_ARGS }}
-        env:
-          ASCOPE_DISTRIBUTION: WPILIB
-          NODE_OPTIONS: --max-old-space-size=4096
-      - name: Prepare artifact
-        run: |
-          Set-Location -Path "dist\win*"
-          Move-Item -Path "mur-voir.exe" -Destination "mur-voir (WPILib).exe"
-          Set-Location -Path "..\.."
-          Compress-Archive -Path "dist\win*\*" -DestinationPath "advantagescope-wpilib-win-${{ matrix.arch }}.zip"
-      - name: Upload development artifact
-        if: github.event_name != 'release'
-        uses: actions/upload-artifact@v7
-        with:
-          archive: false
-          path: advantagescope-wpilib-win-${{ matrix.arch }}.zip
-      - name: "Release: Upload artifact"
-        if: github.event_name == 'release'
-        uses: softprops/action-gh-release@v3
-        with:
-          files: advantagescope-wpilib-win-${{ matrix.arch }}.zip
-
-  build-wpilib-mac:
-    name: "WPILib: Build for macOS (${{ matrix.arch }})"
-    needs: compile-wpilib
-    runs-on: macos-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        arch: ["x64", "arm64"]
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: "20.x"
-          cache: "npm"
-      - name: Install Node.js dependencies
-        run: npm ci
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Download bundles
-        uses: actions/download-artifact@v8
-        with:
-          name: bundles-wpilib
-          path: bundles
-      - name: Load macOS certificate
-        if: |
-          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
-          github.event_name != 'pull_request'
-        uses: apple-actions/import-codesign-certs@v7
-        with:
-          p12-file-base64: ${{ secrets.APPLE_DEVELOPER_ID }}
-          p12-password: ${{ secrets.APPLE_DEVELOPER_ID_PWD }}
-      - name: Load macOS notarization credentials
-        if: |
-          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
-          github.event_name == 'release'
-        run: |
-          echo "${{ secrets.APPLE_NOTARIZATION_API_KEY }}" | base64 --decode > apple_api_key.p8
-          echo "APPLE_API_KEY=$PWD/apple_api_key.p8" >> $GITHUB_ENV
-          echo "APPLE_API_KEY_ID=${{ secrets.APPLE_NOTARIZATION_API_KEY_ID }}" >> $GITHUB_ENV
-          echo "APPLE_API_ISSUER=${{ secrets.APPLE_NOTARIZATION_API_ISSUER }}" >> $GITHUB_ENV
-          echo "APPLE_TEAM_ID=${{ vars.APPLE_TEAM_ID }}" >> $GITHUB_ENV
-      - name: Build app
-        run: npx electron-builder build --publish never --${{ matrix.arch }} -m dir
-        env:
-          ASCOPE_DISTRIBUTION: WPILIB
-          NODE_OPTIONS: --max-old-space-size=4096
-      - name: Prepare artifact
-        run: |
-          if [ "${{ matrix.arch }}" == "arm64" ]; then
-            mv dist/mac-arm64/mur-voir.app "mur-voir (WPILib).app"
+          if [ "${{ matrix.os }}" = "linux" ]; then
+            npx electron-builder --linux AppImage --${{ matrix.arch }} --publish never
           else
-            mv dist/mac/mur-voir.app "mur-voir (WPILib).app"
+            npx electron-builder --${{ matrix.os }} --${{ matrix.arch }} --publish never
           fi
-          tar -zcvf advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz "mur-voir (WPILib).app"
-      - name: Upload development artifact
-        if: github.event_name != 'release'
-        uses: actions/upload-artifact@v7
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+          ELECTRON_BUILDER_7Z_FILTER: BCJ
+      - uses: actions/upload-artifact@v7
         with:
-          archive: false
-          path: advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz
-      - name: "Release: Upload artifact"
-        if: github.event_name == 'release'
-        uses: softprops/action-gh-release@v3
-        with:
-          files: advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz
+          name: mur-voir-${{ matrix.os }}-${{ matrix.arch }}
+          path: |
+            dist/mur-voir-*.dmg
+            dist/mur-voir-*.exe
+            dist/mur-voir-*.AppImage
+          if-no-files-found: error
 
-  build-wpilib-linux:
-    name: "WPILib: Build for Linux (${{ matrix.arch }})"
-    needs: compile-wpilib
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        arch: ["x64", "arm64"]
-
+  release:
+    name: Publish mur-voir release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [verify, lite, desktop]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: "20.x"
-          cache: "npm"
-      - name: Install Node.js dependencies
-        run: npm ci
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Download bundles
-        uses: actions/download-artifact@v8
-        with:
-          name: bundles-wpilib
-          path: bundles
-      - name: Build app
-        run: npx electron-builder build -c.electronVersion=37.10.3 --publish never --${{ matrix.arch }} -l dir
-        env:
-          ASCOPE_DISTRIBUTION: WPILIB
-          NODE_OPTIONS: --max-old-space-size=4096
-      - name: Prepare artifact
+      - uses: actions/checkout@v6
+      - name: Verify release tag
         run: |
-          cd dist/linux*
-          mv mur-voir mur-voir-wpilib
-          zip -r ../../advantagescope-wpilib-linux-${{ matrix.arch }}.zip ./*
-          cd ../..
-      - name: Upload development artifact
-        if: github.event_name != 'release'
-        uses: actions/upload-artifact@v7
+          VERSION=$(node -p "require('./package.json').version")
+          test "$GITHUB_REF_NAME" = "v$VERSION"
+          test -f "docs/release-notes/$VERSION.md"
+      - uses: actions/download-artifact@v8
         with:
-          archive: false
-          path: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
-      - name: "Release: Upload artifact"
-        if: github.event_name == 'release'
-        uses: softprops/action-gh-release@v3
-        with:
-          files: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
-
-  finalize-release:
-    name: Finalize Release
-    needs: [build-win, build-mac, build-linux, build-wpilib-win, build-wpilib-mac, build-wpilib-linux]
-    if: github.event_name == 'release'
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Get release info
-        id: get_release_info
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
-      - name: Publish AppArmor profile
-        uses: softprops/action-gh-release@v3
-        with:
-          files: advantagescope.AppArmor
-      - name: Edit release
-        uses: irongut/EditRelease@v1.2.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          id: ${{ github.event.release.id }}
-          prerelease: false
-          replacebody: false
-          body: '<table><tr><th colspan="4">Common Downloads</th></tr><tr><td colspan="4">🪟 <a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-win-x64-${{ steps.get_release_info.outputs.tag_name }}.exe">Windows x64</a></td></tr><tr><td colspan="4">🍎 <a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-arm64-${{ steps.get_release_info.outputs.tag_name }}.dmg">macOS Apple Silicon</a></td></tr><tr><td colspan="4">🍎 <a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-x64-${{ steps.get_release_info.outputs.tag_name }}.dmg">macOS Intel</a></td></tr><tr><td colspan="4">🐧 <a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.deb">Linux x86 Deb</a></td></tr><tr><td colspan="4">🍋‍🟩 <a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-lite-${{ steps.get_release_info.outputs.tag_name }}.ipk">Systemcore (Lite)</a></td></tr><tr><th colspan="4">All Downloads</th></tr><tr><td>Windows</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-win-x64-${{ steps.get_release_info.outputs.tag_name }}.exe">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-win-arm64-${{ steps.get_release_info.outputs.tag_name }}.exe">arm64</a></td><td></td></tr><tr><td>macOS</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-x64-${{ steps.get_release_info.outputs.tag_name }}.dmg">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-arm64-${{ steps.get_release_info.outputs.tag_name }}.dmg">arm64</a></td><td></td></tr><tr><td>Linux/deb</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.deb">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.deb">arm64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.deb">arm32</a></td></tr><tr><td>Linux/rpm</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.rpm">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.rpm">arm64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.rpm">arm32</a></td></tr><tr><td>Linux/pacman</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.pacman">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.pacman">arm64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.pacman">arm32</a></td></tr><tr><td>Linux/AppImage</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.AppImage">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.AppImage">arm64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.AppImage">arm32</a></td></tr><tr><td>Linux/snap</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.snap">x64</a></td><td></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.snap">arm32</a></td></tr><tr><td>Linux/flatpak</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.flatpak">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.flatpak">arm64</a></td><td></td></tr></table>'
+          pattern: mur-voir-*
+          path: release-assets
+          merge-multiple: true
+      - name: Publish checked artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          cd release-assets
+          sha256sum * > SHA256SUMS.txt
+          cd ..
+          gh release create "$GITHUB_REF_NAME" release-assets/* --verify-tag \
+            --title "mur-voir $VERSION" --notes-file "docs/release-notes/$VERSION.md" --latest

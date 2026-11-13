@@ -4,7 +4,7 @@ mur-voir uses Electron and TypeScript. Its Lite build runs in a browser.
 
 ## Install and run
 
-Install Node.js and npm, then run:
+Install Node.js 22.18 or newer and npm, then run:
 
 ```sh
 npm install
@@ -22,6 +22,8 @@ The `postinstall` script runs `installElectron.mjs`, `getLicenses.mjs` and `bund
 ```sh
 npm run typecheck
 npm test
+node --test tools/mock-backend/test/*.test.ts
+npm run cellular-smoke
 npx prettier --check README.md DEVELOPING.md CONTRIBUTING.md
 ```
 
@@ -63,11 +65,17 @@ CAN decoding uses bundled mur-msgs DBCs unless you select a DBC folder in Prefer
 
 ## Use tabs and laps
 
-The available tabs are Line Graph, Track Map, Laps, Table, Statistics, Console, Video, Points, Metadata and Documentation. Points plots data in 2D.
+The available tabs are Line Graph, Track and laps, Trackside, Table, Statistics, Console, Video, Points, Driver Inputs, Car Dynamics, Metadata and Documentation. Points plots data in 2D.
 
-Track Map and Laps share lap setup. Use Laps to choose a reference lap and overlays. Line Graph offers log time, lap time and distance on its x axis. Missing stretches in numeric traces use a dotted bridge.
+Track and laps offers Map, Laps and adjustable Split views with shared lap setup. Use Laps to choose a reference lap and overlays. Line Graph offers log time, lap time and distance on its x axis. Missing stretches in numeric traces use a dotted bridge.
 
-View > Toggle Tiles shows configurable readouts above the tabs. View > Trackside Layout adds Speed/RPM and Torque graphs and enables the strip.
+Trackside has readout tiles, an optional stock graph and critical limits saved with the layout. DBC fault monitoring stays active across desktop tabs. See [the cellular guide](docs/cellular-telemetry.md) for operator instructions.
+
+## Verify and release
+
+`npm run cellular-smoke` launches the real Electron app headlessly with a separate profile. It checks five-minute history, wire subscriptions, outage/restart recovery, duplicate delivery and saved layouts for Track and laps, Trackside, Driver Inputs and Car Dynamics. Add `-- --soak-seconds 960` for a real-time long-session check or `-- --executable /path/to/mur-voir` to test an unpacked build.
+
+The Build workflow runs the checks on Node 22 and packages macOS, Windows, Linux and Lite. A `v` tag matching `package.json` publishes the checked installers and checksums after every job passes. Add `docs/release-notes/<version>.md` before tagging. Desktop artifacts are unsigned.
 
 ## Build and serve Lite
 

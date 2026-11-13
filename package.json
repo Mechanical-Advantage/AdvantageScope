@@ -1,7 +1,7 @@
 {
   "name": "mur-voir",
   "productName": "mur-voir",
-  "version": "0.1.0-alpha.1",
+  "version": "0.2.0",
   "description": "Telemetry dashboard for Melbourne Uni Motorsport (based on AdvantageScope)",
   "author": {
     "name": "Melbourne University Motorsports",
@@ -29,6 +29,7 @@
     "lite-serve": "node tools/lite-serve/main.mjs",
     "lite-smoke": "node tools/lite-smoke.mjs",
     "screenshot": "node tools/screenshot.mjs",
+    "cellular-smoke": "node tools/cellular-smoke.mjs",
     "live-api:generate": "node tools/live-api.mjs generate",
     "live-api:check": "node tools/live-api.mjs check"
   },
@@ -99,6 +100,7 @@
     ]
   },
   "build": {
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
     "appId": "io.github.melbourne-university-motorsports.mur-voir",
     "copyright": "Copyright © 2026 Melbourne University Motorsports. Based on AdvantageScope, © 2021-2026 Littleton Robotics.",
     "npmRebuild": false,

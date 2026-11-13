@@ -2,6 +2,8 @@
 
 mur-voir is the telemetry dashboard for Melbourne University Motorsports (MUR), our Formula SAE team. It displays live telemetry and recorded logs.
 
+Download an installer or the browser ZIP from [Releases](https://github.com/Melbourne-University-Motorsports/mur-voir/releases/latest). See the [cellular telemetry guide](docs/cellular-telemetry.md) for connection settings, layouts and troubleshooting.
+
 ## Connect to live telemetry
 
 Open File > Connect (Cmd/Ctrl+K). Choose MUR Telemetry and enter the backend address, or choose MQTT direct (debug) and enter a WebSocket broker address.
@@ -16,7 +18,7 @@ Use File > Open Log(s) to open MF4, candump with DBC, CSV, JSONL or WPILOG files
 
 ## View data
 
-The available tabs are Line Graph, Track Map, Laps, Table, Statistics, Console, Video, Points, Driver Inputs, Car Dynamics, Metadata and Documentation. Points is a plain 2D plot.
+The available tabs are Line Graph, Track and laps, Trackside, Table, Statistics, Console, Video, Points, Driver Inputs, Car Dynamics, Metadata and Documentation. Points is a plain 2D plot. Track and laps offers Map, Laps and Split views. Trackside has readout tiles, an optional graph and saved critical limits.
 
 Driver Inputs and Car Dynamics draw the car at the timeline cursor, which follows hover. There are no default fields. Drag fields into Sources or load a layout, then right-click a source to choose its type. Each slot reads only its visible source. Each tab converts values from the field's unit, so live data in SI units and logs in DBC units draw the same.
 

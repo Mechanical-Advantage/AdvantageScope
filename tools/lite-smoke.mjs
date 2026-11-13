@@ -101,9 +101,7 @@ try {
   });
   await frame.waitForFunction(() => window.log.getFieldKeys().some((key) => key.includes("Speed")));
   assert.deepEqual(errors, [], "Browser errors");
-  console.log(
-    "Lite smoke passed: same-host MUR HTTP/WS, live value, graph, health, layout download/upload, CSV picker."
-  );
+  console.log("Lite smoke passed: same-host MUR HTTP/WS, live value, graph, layout download/upload, CSV picker.");
 } finally {
   await browser?.close();
   for (const child of children.reverse()) if (child.exitCode === null) child.kill("SIGTERM");
