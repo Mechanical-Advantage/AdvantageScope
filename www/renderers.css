@@ -767,16 +767,47 @@ table.metadata-table td.no-data {
   display: flex;
   flex-direction: column;
 }
-.lap-toolbar {
+.lap-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 12px 6px;
+  background: var(--background-color);
+  border-bottom: 1px solid #8884;
+  font-size: 13px;
+}
+.lap-header-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 16px;
+}
+.lap-header-title {
+  font-weight: 600;
+}
+.lap-header-end {
   display: flex;
   align-items: center;
   gap: 16px;
+  margin-left: auto;
+}
+.lap-summary {
+  font-size: 12px;
+  opacity: 0.75;
+  white-space: normal;
+}
+.lap-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 16px;
   padding: 8px 12px;
   background: var(--background-color);
   font-size: 13px;
 }
+.lap-header button,
 .lap-toolbar button,
-.lap-map-setup button {
+.lap-setup button {
   min-height: 22px;
   padding: 2px 8px;
   font: inherit;
@@ -787,49 +818,73 @@ table.metadata-table td.no-data {
   border-radius: 4px;
   cursor: pointer;
 }
-.lap-toolbar details {
-  margin-left: auto;
+.lap-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
 }
-.lap-toolbar summary {
-  cursor: pointer;
+.lap-body.lap-stacked {
+  /* The table comes first in the page, so reversing puts the map on top. */
+  flex-direction: column-reverse;
 }
-.lap-setup {
-  position: absolute;
-  right: 8px;
-  top: 38px;
-  z-index: 5;
-  padding: 12px;
-  width: 520px;
-  max-height: 70%;
-  overflow: auto;
-  background: #fff;
-  border: 1px solid #ddd;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-.lap-setup button {
-  align-self: end;
-}
-.lap-setup label {
+.lap-pane {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  position: relative;
 }
-.lap-setup input,
-.lap-setup select {
-  width: 100%;
-  box-sizing: border-box;
+.lap-pane[hidden],
+.lap-split-handle[hidden] {
+  display: none;
 }
-.lap-setup input {
-  min-height: 22px;
-  padding: 2px 6px;
-  font: inherit;
-  font-size: 12px;
-  color: var(--mv-control-fg);
-  background: var(--mv-control-bg);
-  border: 1px solid var(--mv-control-border);
-  border-radius: 4px;
+/* These match SPLIT_MIN in LapRenderer.ts. */
+.lap-split .lap-table-pane {
+  min-width: 480px;
+}
+.lap-split .lap-map-pane {
+  min-width: 320px;
+  /* The same edge as the stock tab controls divider */
+  box-shadow: 0px 0px 3px 2px #00000022;
+}
+.lap-stacked .lap-table-pane,
+.lap-stacked .lap-map-pane {
+  min-width: 0;
+}
+.lap-stacked .lap-table-pane {
+  min-height: 140px;
+}
+.lap-stacked .lap-map-pane {
+  min-height: 160px;
+}
+/* Like the sidebar and controls handles, the divider is an invisible strip 10 px wide over the pane edge. */
+.lap-split-handle {
+  flex: 0 0 0;
+  position: relative;
+  z-index: 3;
+}
+.lap-split-handle::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -5px;
+  width: 10px;
+  cursor: col-resize;
+}
+.lap-stacked .lap-split-handle::before {
+  top: -5px;
+  bottom: auto;
+  left: 0;
+  right: 0;
+  width: auto;
+  height: 10px;
+  cursor: row-resize;
+}
+.lap-readonly .lap-split-handle::before {
+  cursor: default;
 }
 .lap-content {
   flex: 1;
@@ -910,10 +965,9 @@ table.metadata-table td.no-data {
   pointer-events: none;
 }
 @media (prefers-color-scheme: dark) {
-  .lap-setup {
-    border-color: black;
+  .lap-split .lap-map-pane {
+    box-shadow: 0px 0px 0px 0.7px #000;
   }
-  .lap-setup,
   .lap-heading {
     background: #222;
   }
@@ -975,12 +1029,27 @@ table.metadata-table td.no-data {
   }
 }
 
-/* Track Map uses the 2D Field controller's settings column. */
-.lap-map-setup button {
+/* Lap setup uses the 2D Field controller's settings column. */
+.lap-setup button {
   display: block;
   width: calc(100% - 20px);
   margin: 5px 10px;
 }
-.lap-map-setup .title .full {
+.lap-setup .title .full {
   font-size: 13px;
+}
+
+/* Keep scrolling available without permanent bars, as in the sidebar. */
+.lap-content,
+.field-2d-settings[aria-label="Lap setup"] {
+  scrollbar-width: none;
+}
+.lap-content::-webkit-scrollbar,
+.field-2d-settings[aria-label="Lap setup"]::-webkit-scrollbar {
+  display: none;
+}
+.lap-table input.mv-checkbox,
+.lap-table input.mv-radio {
+  position: relative;
+  inset: auto;
 }

@@ -61,7 +61,7 @@ test("the Track Map fits a double-clicked sector's stretch of the reference lap"
 });
 
 class Element extends EventTarget {
-  classList = { add() {} };
+  classList = { add() {}, toggle() {} };
   style = {};
   className = "";
   tabIndex = 0;
@@ -92,7 +92,8 @@ test("a new focus refits the map once, and a map keeps the view the user scrolls
   const lap = result.laps.find((l) => l.valid)!;
   const [, s2, s3] = sectorBlocks(lap);
   const command: any = {
-    map: true,
+    view: "map",
+    split: 0.55,
     result,
     settings: { config: {} },
     field: "",
@@ -118,6 +119,126 @@ test("a new focus refits the map once, and a map keeps the view the user scrolls
   assert.equal(renderer.zoom, 3);
   renderer.render({ ...command, focus: { ...focus, range: [s3.start, s3.end], id: 8 } });
   assert.notEqual(renderer.zoom, 3);
+});
+
+test("cursor draws outside selected and overlaid lap ranges", () => {
+  const g = globalThis as any;
+  g.document = Object.assign(new EventTarget(), { createElement: () => new Element(), activeElement: null });
+  g.window = Object.assign(g.window ?? new EventTarget(), { devicePixelRatio: 1 });
+  g.matchMedia = () => ({ matches: false });
+  const renderer: any = new LapRenderer(new Element() as any, false);
+  renderer.build = () => {};
+  renderer.drawTrace = () => {};
+  const result = circleLaps();
+  const lap = result.laps.find((l) => l.valid)!;
+  const arcs: number[][] = [];
+  const fills: string[] = [];
+  let fillStyle = "";
+  const context = new Proxy(
+    {},
+    {
+      get: (_, key) =>
+        key === "arc"
+          ? (...args: number[]) => arcs.push(args)
+          : key === "fill"
+          ? () => fills.push(fillStyle)
+          : () => ({ width: 0 }),
+      set: (_, key, value) => {
+        if (key === "fillStyle") fillStyle = value;
+        return true;
+      }
+    }
+  );
+  renderer.canvas.getContext = () => context;
+  for (const scope of ["selected", "overlaid"]) {
+    renderer.scope = scope;
+    arcs.length = 0;
+    fills.length = 0;
+    renderer.lastDraw = "";
+    renderer.render({
+      view: "map",
+      split: 0.55,
+      result,
+      settings: { config: {} },
+      field: "",
+      values: [],
+      overlays: [lap.index],
+      reference: lap.index,
+      selected: lap.index,
+      time: 1,
+      version: 1
+    });
+    assert.equal(fills.at(-1), "#222", "the cursor contrasts with a light map");
+    const point = renderer.transform(renderer.sampleAt(1));
+    assert.ok(
+      arcs.some(([x, y, radius]) => radius === 6 && Math.abs(x - point.x) < 1e-6 && Math.abs(y - point.y) < 1e-6),
+      scope
+    );
+  }
+});
+
+test("endpoint and Shift drags commit once on release without recalculating during movement", () => {
+  const g = globalThis as any;
+  g.document = Object.assign(new EventTarget(), { createElement: () => new Element(), activeElement: null });
+  g.window = new EventTarget();
+  const renderer: any = new LapRenderer(new Element() as any);
+  renderer.command = { result: { samples: [{ t: 0, x: 0, y: 0 }] } };
+  renderer.scroll.getBoundingClientRect = () => ({ left: 0, top: 0 });
+  renderer.scroll.setPointerCapture = () => {};
+  renderer.scroll.releasePointerCapture = () => {};
+  renderer.scroll.hasPointerCapture = () => false;
+  renderer.inverse = (p: unknown) => p;
+  renderer.draw = () => {};
+  renderer.endpointAt = () => ({ index: 0, endpoint: "a", gate: { a: { x: 0, y: 0 }, b: { x: 0, y: 10 } } });
+  const actions: any[] = [];
+  renderer.action = (action: unknown) => actions.push(action);
+  for (const shiftKey of [false, true]) {
+    actions.length = 0;
+    const send = (type: string, x: number) =>
+      renderer.scroll.dispatchEvent(
+        Object.assign(new Event(type), { clientX: x, clientY: 0, button: 0, pointerId: 1, shiftKey })
+      );
+    send("pointerdown", 0);
+    for (let x = 1; x <= 100; x++) send("pointermove", x);
+    assert.equal(actions.length, 0);
+    send("pointerup", 100);
+    assert.equal(actions.length, 1);
+    assert.equal(actions[0].type, "gate");
+    assert.equal(actions[0].index, shiftKey ? -1 : 0);
+  }
+});
+
+test("double-click fits the track and an off-screen restored view recovers", () => {
+  const g = globalThis as any;
+  g.document = Object.assign(new EventTarget(), { createElement: () => new Element(), activeElement: null });
+  g.window = Object.assign(new EventTarget(), { devicePixelRatio: 1 });
+  g.matchMedia = () => ({ matches: false });
+  const renderer: any = new LapRenderer(new Element() as any, false);
+  renderer.build = () => {};
+  renderer.drawTrace = () => {};
+  const command: any = {
+    view: "map",
+    split: 0.55,
+    result: circleLaps(),
+    settings: { config: {} },
+    field: "",
+    values: [],
+    overlays: [],
+    reference: null,
+    selected: null,
+    time: null,
+    version: 1
+  };
+  renderer.render(command);
+  renderer.zoom = 20;
+  renderer.pan = [10000, -10000];
+  renderer.scroll.dispatchEvent(new Event("dblclick"));
+  assert.equal(renderer.zoom, 1);
+  assert.deepEqual(renderer.pan, [0, 0]);
+  renderer.restoreState({ zoom: 10, pan: [10000, -10000] });
+  renderer.render({ ...command, version: 2 });
+  assert.equal(renderer.zoom, 1);
+  assert.deepEqual(renderer.pan, [0, 0]);
 });
 
 test("sectors added in reverse lap order retain positive times and the final sector", () => {
@@ -256,7 +377,8 @@ test("Track Map sector labels follow lap crossing order when gates are added in 
   const result = analyze(samples, { manual: [0, 20, 40, 60], sectors });
   const lap = result.laps.find((l) => l.complete)!;
   renderer.render({
-    map: true,
+    view: "map",
+    split: 0.55,
     result,
     settings: { config: { sectors } },
     field: "",

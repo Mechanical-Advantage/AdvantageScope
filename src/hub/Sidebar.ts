@@ -15,6 +15,7 @@ import { RenderGuard } from "../shared/RenderGuard";
 import { SelectionMode } from "../shared/Selection";
 import { arraysEqual, htmlEncode, setsEqual } from "../shared/util";
 import CustomSchemas from "./dataSources/schema/CustomSchemas";
+import { attachResizeHandle } from "./ResizeHandle";
 
 export default class Sidebar {
   private DEFAULT_SIDEBAR_WIDTH = 300;
@@ -59,7 +60,6 @@ export default class Sidebar {
   private VALUE_WIDTH_MARGIN_PX = 12;
 
   private getFilenames: () => string[];
-  private sidebarHandleActive = false;
   private sidebarWidth = this.DEFAULT_SIDEBAR_WIDTH;
   private fieldCount = 0;
   private isTuningMode = false;
@@ -92,18 +92,10 @@ export default class Sidebar {
         iframe.style.pointerEvents = enabled ? "initial" : "none";
       });
     };
-    this.SIDEBAR_HANDLE.addEventListener("mousedown", () => {
-      this.sidebarHandleActive = true;
-      document.body.style.cursor = "col-resize";
-      enableIframes(false);
-    });
-    window.addEventListener("mouseup", () => {
-      this.sidebarHandleActive = false;
-      document.body.style.cursor = "initial";
-      enableIframes(true);
-    });
-    window.addEventListener("mousemove", (event) => {
-      if (this.sidebarHandleActive) {
+    attachResizeHandle(
+      this.SIDEBAR_HANDLE,
+      "col-resize",
+      (event) => {
         let width = event.clientX;
         if (width > 500) width = 500;
         if (width >= 80 && width < 160) width = 160;
@@ -116,18 +108,10 @@ export default class Sidebar {
         }
         this.sidebarWidth = width;
         this.updateWidth();
-      }
-    });
-    let lastClick = 0;
-    this.SIDEBAR_HANDLE.addEventListener("click", () => {
-      let now = new Date().getTime();
-      if (now - lastClick < 400) {
-        this.toggleVisible();
-        lastClick = 0;
-      } else {
-        lastClick = now;
-      }
-    });
+      },
+      () => this.toggleVisible(),
+      (active) => enableIframes(!active)
+    );
     this.updateWidth();
 
     // Set up shadow when scrolling
