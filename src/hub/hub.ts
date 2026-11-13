@@ -324,6 +324,10 @@ window.getLoadingFields = () => {
 
 /** Connects to a historical data source. */
 function startHistorical(path: string, clear = true, merge = false) {
+  if (liveConnection !== null) {
+    window.selection.setLiveDisconnected();
+    window.selection.resetLiveSegment();
+  }
   clear = clear || !merge;
   let originalTimelineRange: null | [number, number] = null;
   let originalTimelineIsMaxZoom: null | boolean = null;

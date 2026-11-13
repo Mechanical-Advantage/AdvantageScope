@@ -55,6 +55,8 @@ try {
   app.process().stdout.on("data", (data) => {
     for (const line of String(data).split("\n")) if (line.startsWith("[headless]")) errors.push(line);
   });
+  app.process().stderr.on("data", (data) => fs.appendFileSync(path.join(out, "electron.log"), data));
+  app.process().on("exit", (code, signal) => console.log(JSON.stringify({ appExit: { code, signal } })));
   app.on("window", (page) => page.on("pageerror", (error) => errors.push(error.message)));
   let hub;
   for (let attempt = 0; attempt < 200; attempt++) {
@@ -213,10 +215,40 @@ try {
     assert.ok(tail.reduce((count, row) => count + row.tasks.length, 0) <= 20, "Late-session long tasks stay bounded");
     assert.ok(measurements.at(-1).end - measurements[0].end >= soakSeconds - 40, "The live timeline keeps advancing");
   }
+  await hub.evaluate(() => {
+    const graph = window.tabs.tabList.find((tab) => tab.type === 1);
+    graph.controller.restoreState({ leftSources: [] });
+    graph.controller.leftSourceList.addField("/vehicles/mur27/powertrain/inverter/motor_speed");
+    window.tabs.setSelected(window.tabs.tabList.indexOf(graph));
+    const source = graph.controller.saveState().leftSources[0];
+    if (source?.dbcSignal !== "INV_MotorSpeedRPM") throw new Error("The live layout lacks DBC signal provenance");
+  });
+  await send("open-files", { files: [path.resolve("test/fixtures/mf4/bus.mf4")], merge: false });
+  await hub.waitForFunction(() => {
+    const graph = window.tabs.tabList.find((tab) => tab.type === 1);
+    const source = graph.controller.saveState().leftSources[0];
+    return (
+      source?.logKey === "INVERTER/INV_MotorSpeedRPM" &&
+      window.log.getNumber(source.logKey, -Infinity, Infinity)?.values.length === 4
+    );
+  });
+  assert.deepEqual(
+    await hub.evaluate(() => window.log.getNumber("INVERTER/INV_MotorSpeedRPM", -Infinity, Infinity).values),
+    [1000, 2000, 3000, 4000],
+    "The live layout resolves and decodes the closed MF4 without reassignment"
+  );
+  await hub.waitForTimeout(1200);
+  const recordedRange = await hub.evaluate(() => ({
+    timeline: window.selection.getTimelineRange(),
+    live: window.selection.getCurrentLiveTime()
+  }));
+  assert.equal(recordedRange.live, null, "Opening a closed MF4 disconnects the live timeline clock");
+  assert.ok(recordedRange.timeline[1] <= 10, "The recorded timeline fits the MF4 instead of the old live session");
+  await hub.screenshot({ path: path.join(out, "mf4-layout.png") });
   assert.deepEqual(errors, [], "No renderer errors or suppressed dialogs");
   fs.writeFileSync(path.join(out, "results.json"), JSON.stringify({ tabs, sent, history, measurements }, null, 2));
   console.log(
-    "Cellular smoke passed: five-minute history, wire subscriptions, outage, backend restart, dedup and saved tabs."
+    "Cellular smoke passed: history, subscriptions, outage, restart, dedup, saved tabs and live-to-MF4 layout."
   );
 } finally {
   await app?.close().catch(() => {});
