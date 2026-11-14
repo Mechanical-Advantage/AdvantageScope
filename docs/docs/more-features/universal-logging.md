@@ -93,7 +93,7 @@ class Robot(wpilib.TimedRobot):
 ```
 
 </TabItem>
-<TabItem value="advantagekit" label="AdvantageKit">
+<TabItem value="advantagekit" label="AdvantageKit (Coming Soon)">
 
 Vendor log capture is built into AdvantageKit and can be enabled as shown below. You must select an appropriate directory (such as `/U/logs/` on a USB drive or `/home/systemcore/logs/`) for temporarily staging vendor logs during capture. See the [How It Works](#how-it-works) section for details.
 
