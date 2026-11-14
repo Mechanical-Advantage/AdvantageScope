@@ -96,7 +96,7 @@ New telemetry data is only published when `Telemetry.log` is called. Periodic me
 
 ## 4. Connect AdvantageScope Live
 
-Launch the AdvantageScope desktop application. In the top menu, select `File` > `Connect to Robot` > `NetworkTables` (or `File` > `Connect to Simulator` if simulating). Once connected, the window title will show **Connected** and the left sidebar will populate with published fields under `NT:/Telemetry`.
+Launch the AdvantageScope desktop application. In the top menu, select `File` > `Connect to Robot` > `NetworkTables` (or `File` > `Connect to Simulator` if simulating). Once connected, the left sidebar will populate with published fields under `NT:/Telemetry`.
 
 :::tip Keyboard Shortcuts
 Press `Ctrl+K` / `Cmd+K` to quickly connect to the robot, or `Ctrl+Shift+K` / `Cmd+Shift+K` to connect to the simulator.
