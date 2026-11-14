@@ -2,8 +2,6 @@
 sidebar_position: 2
 ---
 
-import Image3 from "./img/to-the-field-3.png";
-
 # 🤖 To the Field: Robot Visualization
 
 Now that you have basic telemetry running, it's time to visualize your robot! AdvantageScope provides powerful 2D and 3D field viewers that bring odometry, vision estimates, trajectories, and articulated mechanisms to life on FRC & FTC field models.
@@ -68,7 +66,7 @@ public class ExampleTeleop implements OpMode {
 
 In AdvantageScope, geometry values in the sidebar are labeled with their type. You can also expand each field to examine the individual components of the pose such as the X, Y, and rotation values:
 
-![Viewing pose data in the AdvantageScope sidebar.](./img/to-the-field-1.png)
+<img src="/img/tutorials/to-the-field-1.webp" alt="Viewing pose data in the AdvantageScope sidebar." />
 
 ## 2. Visualizing 2D Data
 
@@ -85,7 +83,7 @@ The 🗺️ [2D Field](/tab-reference/2d-field) tab displays a top-down view of 
 Right-click anywhere on the field canvas to choose between **Unlocked**, **Locked to Robot** (pans with the robot), or **Locked to Robot & Rotation** (rotates the field so your robot always points up). Click the buttons under "Orientation" to adjust the rotation.
 :::
 
-![Robot visualization on the 2026 FRC field.](./img/to-the-field-2.png)
+<img src="/img/tutorials/to-the-field-2.webp" alt="Robot visualization on the 2026 FRC field." />
 
 ## 3. Switching Object Types
 
@@ -96,7 +94,7 @@ AdvantageScope supports many visual object types beyond simple robot poses, incl
 
 Click the icon next to each pose in the control pane to switch the object type. Try switching the robot pose to a different object type like a ghost, arrow, or heatmap!
 
-<img src={Image3} alt="Built-in help window for the 2D field." height="500" />
+<img src="/img/tutorials/to-the-field-3.webp" alt="Built-in help window for the 2D field." height="500" />
 
 ## 4. Visualizing 3D Data
 
@@ -110,7 +108,7 @@ The 👀 [3D Field](/tab-reference/3d-field) tab renders a 3D field complete wit
 6. Alternatively, use **WASD** to translate, **IJKL** to rotate, and **Q/E** to move up and down.
 7. Right-click the 3D viewport to switch between **Orbit Robot**, **Driver Station** (view the match from your alliance perspective), and **Fixed Camera** (view from on-robot vision cameras).
 
-![3D field tab rendering a 3D robot model navigating on the field with a trajectory ribbon.](./img/to-the-field-4.png)
+<img src="/img/tutorials/to-the-field-4.webp" alt="3D field tab rendering a 3D robot model navigating on the field with a trajectory ribbon." />
 
 ## 5. Publishing Mechanism Data
 
@@ -147,7 +145,7 @@ The ⚙️ [Mechanism](/tab-reference/mechanism) tab can be used to visualize me
 1. Click **+** in the tab bar and select **Mechanism**.
 2. Drag `NT:/Telemetry/Superstructure/Mechanism` into the control pane. You will see the animated 2D arm move in real time.
 
-![The mechanism tab displaying a 2D jointed arm visualization.](./img/to-the-field-5.png)
+<img src="/img/tutorials/to-the-field-5.webp" alt="The mechanism tab displaying a 2D jointed arm visualization." />
 
 ## 7. Visualizing Mechanisms in 3D
 
@@ -157,7 +155,7 @@ You can project this same `Mechanism2d` directly onto your robot in the 3D field
 2. Drag `NT:/Telemetry/Superstructure/Mechanism` **onto the robot pose entry** in the object list (as a child object).
 3. The 2D mechanism is projected into 3D space on the robot chassis! Click the gear icon next to the mechanism to toggle between the **XZ** (side profile) and **YZ** (front profile) planes.
 
-![3D field tab displaying a mechanism projected onto a 3D robot model.](./img/to-the-field-6.png)
+<img src="/img/tutorials/to-the-field-6.webp" alt="3D field tab displaying a mechanism projected onto a 3D robot model." />
 
 ## What's Next?
 

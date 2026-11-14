@@ -3,13 +3,6 @@ title: What's New in 2027?
 sidebar_position: 2
 ---
 
-# <<<<<<< HEAD
-
-import BannerLight from "./img/whats-new/banner-light.png";
-import BannerDark from "./img/whats-new/banner-dark.png";
-
-> > > > > > > b51c9e07 (Begin outline of 2027 docs)
-
 #
 
 <img src="/img/whats-new/banner-light.webp" className="light-only" />

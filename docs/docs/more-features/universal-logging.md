@@ -18,7 +18,7 @@ This feature is designed to streamline diagnostics by collecting **all of a robo
 
 All of this data appears in a single unified tree in AdvantageScope, as shown below with an AdvantageKit WPILOG containing device signals captured by multiple vendors.
 
-![A WPILOG file showing multiple vendor logs in the sidebar.](img/universal-logging-1.png)
+<img src="/img/more-features/universal-logging-1.webp" alt="A WPILOG file showing multiple vendor logs in the sidebar." />
 
 :::tip
 AdvantageKit users can also take advantage of XZ compression to significantly reduce the size of third-party logs stored within a WPILOG. Check the AdvantageKit documentation on log data receivers for details.
