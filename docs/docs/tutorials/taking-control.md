@@ -18,7 +18,7 @@ In this tutorial, you will learn how to:
 
 💡 [AdvantageScope Lite](/more-features/advantagescope-lite) is integrated directly with the FIRST Driver Station. It can be accessed by clicking the ⚙️ icon and then "Open Log Viewer in Browser".
 
-![The "Open Log Viewer In Browser" button in the FIRST Driver Station](./img/taking-control-1.png)
+<img src="/img/tutorials/taking-control-1.webp" alt="The &quot;Open Log Viewer In Browser&quot; button in the FIRST Driver Station" />
 
 ## 2. Connecting to the Driver Station Live
 
@@ -57,7 +57,7 @@ AdvantageScope allows you to open and synchronize logs from multiple sources on 
 3. AdvantageScope will automatically align both logs to a synchronized timeline! The fields from each log are organized under distinct tables (e.g. `Log0` and `Log1`).
 4. You can now overlay on-robot telemetry (like motor current or pose estimates) directly against Driver Station signals (like packet loss or battery voltage) in the 📉 [Line Graph](/tab-reference/line-graph) to see if an unexpected robot behavior coincided with a radio drop or brownout.
 
-![Opening saved log files in AdvantageScope.](../overview/log-files/img/open-file-1.png)
+<img src="/img/overview/log-files/open-file-1.webp" alt="Opening saved log files in AdvantageScope." />
 
 ## 5. Viewing Console Data
 
@@ -73,7 +73,7 @@ To view console data:
 3. Each row represents a log message with its timestamp. Click any message to jump the synchronized timeline across all open tabs to that exact moment!
 4. Use the "Filter" box (or press `Ctrl+F` / `Cmd+F`) to search for specific messages, or click the color palette icon to toggle highlighting for warnings and errors.
 
-![Console tab displaying log messages.](../tab-reference/img/console-1.png)
+<img src="/img/tab-reference/console-1.webp" alt="Console tab displaying log messages." />
 
 ## 6. Visualizing Joysticks
 
@@ -83,7 +83,7 @@ The 🎮 [Joysticks](/tab-reference/joysticks) tab provides a real-time visual r
 2. In the table at the bottom of the tab, assign each joystick ID (0 to 5) to the appropriate layout (e.g. **Xbox Controller**, **PS4 Controller**, or **Generic Joystick**).
 3. As you scrub through a log file or stream live data from the Driver Station, buttons will light up and thumbsticks will move in sync with the driver's actions!
 
-![Joysticks tab displaying active controller button presses and analog stick positions.](../tab-reference/img/joysticks-1.png)
+<img src="/img/tab-reference/joysticks-1.webp" alt="Joysticks tab displaying active controller button presses and analog stick positions." />
 
 ## What's Next?
 

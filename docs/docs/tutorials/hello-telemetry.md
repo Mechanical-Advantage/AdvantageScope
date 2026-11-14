@@ -2,9 +2,6 @@
 sidebar_position: 1
 ---
 
-import Image2 from "./img/hello-telemetry-2.png";
-import DownloadImage from "../overview/log-files/img/open-file-2.png";
-
 # 👋 Hello, Telemetry!
 
 Welcome to AdvantageScope! Telemetry and data logging are powerful capabilities that can improve your ability to understand robot code, diagnose problems, and implement solutions on and off the field. These tutorials are designed to get you started with telemetry so that you can take advantage of the full capabilities of AdvantageScope.
@@ -33,7 +30,7 @@ To get started, create a new WPILib Java project in VS Code:
 4. Choose a folder, name your project (e.g. `HelloTelemetry`), and enter your team number.
 5. Check **Enable Desktop Support** and click **Create Project**.
 
-![Creating a new WPILib Java project in VS Code using the WPILib Project Creator](./img/hello-telemetry-1.png)
+<img src="/img/tutorials/hello-telemetry-1.webp" alt="Creating a new WPILib Java project in VS Code using the WPILib Project Creator." />
 
 ## 2. Initialize Data Logging
 
@@ -91,7 +88,7 @@ public class ExampleTeleop implements OpMode {
 
 Deploy the code to your robot (or run `WPILib: Simulate Robot Code` from VS Code). In simulation, click `Teleoperated` > `ExampleTeleop` > `Enable`.
 
-<img src={Image2} alt="Enabling the ExampleTeleop OpMode in the simulator GUI." height="200" />
+<img src="/img/tutorials/hello-telemetry-2.webp" alt="Enabling the ExampleTeleop OpMode in the simulator GUI." height="200" />
 
 :::tip
 New telemetry data is only published when `Telemetry.log` is called. Periodic methods in the `Robot` class, OpModes, subsystems, and mechanisms may be active under different conditions; check the API documentation carefully when considering where to place logging calls.
@@ -105,7 +102,7 @@ Launch the AdvantageScope desktop application. In the top menu, select `File` > 
 Press `Ctrl+K` / `Cmd+K` to quickly connect to the robot, or `Ctrl+Shift+K` / `Cmd+Shift+K` to connect to the simulator.
 :::
 
-![AdvantageScope connected to the live robot stream with fields listed in the sidebar tree.](./img/hello-telemetry-3.png)
+<img src="/img/tutorials/hello-telemetry-3.webp" alt="AdvantageScope connected to the live robot stream with fields listed in the sidebar tree." />
 
 ## 5. Visualize Telemetry Data
 
@@ -127,7 +124,7 @@ You will see the sine wave and robot state update in real-time as data streams i
 - **Inspect Values:** Click anywhere on the graph to place a time cursor and see exact values in the legend.
   :::
 
-![Line graph plotting the sine wave signal.](./img/hello-telemetry-4.png)
+<img src="/img/tutorials/hello-telemetry-4.webp" alt="Line graph plotting the sine wave signal." />
 
 ### Table
 
@@ -142,7 +139,7 @@ The 🔢 [Table](/tab-reference/table) tab displays a chronological spreadsheet 
 Tabs can be rearranged and renamed using the tab bar. Click the window button in the title bar to open a tab in a pop-out window and view multiple tabs side-by-side.
 :::
 
-![Table tab displaying sine wave data.](./img/hello-telemetry-5.png)
+<img src="/img/tutorials/hello-telemetry-5.webp" alt="Table tab displaying sine wave data." />
 
 ### Statistics
 
@@ -154,7 +151,7 @@ The 📊 [Statistics](/tab-reference/statistics) tab displays a histogram of num
 4. View the data using the histogram and summary statistics.
 5. Scroll the timeline at the top to adjust the range of data to include.
 
-![Statistics tab displaying sine wave data.](./img/hello-telemetry-6.png)
+<img src="/img/tutorials/hello-telemetry-6.webp" alt="Statistics tab displaying sine wave data." />
 
 ## 6. Download and Open Log Files
 
@@ -165,7 +162,7 @@ After testing or running a match, you can download `.wpilog` files from the robo
 3. Select the log file(s) you wish to inspect, click the download (↓) icon, and choose a folder on your computer.
 4. Open the downloaded file using `File` > `Open Log(s)...` or by dragging the `.wpilog` file directly into AdvantageScope.
 
-<img src={DownloadImage} alt="The download dialog showing available WPILOG files on the robot storage." height="350" />
+<img src="/img/overview/log-files/open-file-2.webp" alt="The download dialog showing available WPILOG files on the robot storage." height="350" />
 
 ## What's Next?
 
