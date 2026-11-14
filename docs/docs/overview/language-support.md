@@ -24,6 +24,11 @@ AdvantageScope supports multiple languages to provide a localized experience for
 - Simplified Chinese
 - Traditional Chinese
 
+Thank you to the following teams for their support creating and/or reviewing AdvantageScope translations!
+
+- FRC Team 4400 Cerbotics
+- FRC Team 6907 The G.O.A.T.
+
 ## Configuration {#configuration}
 
 To change the display language in AdvantageScope, open the preferences window by clicking `App` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS). Under the "Language" setting, you can choose from the list of supported languages or select "System Default" to automatically match your operating system's language.
