@@ -66,7 +66,9 @@ The 2027 version of AdvantageScope is now available! Check the [installation doc
 - Potato energy
 - Power
 - Ratios
+- Kelvin
 - Added missing WPILib unit suffixes
+- British unit spellings
 
 ## 🧱 Stability Improvements {#stability-improvements}
 
@@ -75,3 +77,5 @@ The 2027 version of AdvantageScope is now available! Check the [installation doc
 - Language refinements to improve clarity
 - Fixed safe area handling for XR recording popup
 - Improved reliability of Phoenix diagnostics
+- Significantly improved log performance (especially Hoot)
+- Improved multi-log synchronization algorithm
