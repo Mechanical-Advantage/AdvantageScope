@@ -39,5 +39,5 @@ By default, each axis adjusts its range based on the visible data. To disable au
 Values can be automatically integrated or differentiated by AdvantageScope. Delta time is always measured in seconds. Click the three dots near the axis title and then select `Differentiate` or `Integrate`.
 
 :::info
-Derivates are calcaulated using the [finite difference](https://en.wikipedia.org/wiki/Finite_difference) of adjacent samples. Integrals are calculated using [trapezoidal integration](https://en.wikipedia.org/wiki/Trapezoidal_rule).
+Derivatives are calculated using the [finite difference](https://en.wikipedia.org/wiki/Finite_difference) of adjacent samples. Integrals are calculated using [trapezoidal integration](https://en.wikipedia.org/wiki/Trapezoidal_rule).
 :::

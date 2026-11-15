@@ -53,7 +53,7 @@ Joystick data is captured in **both logs**, as shown [below](#6-visualizing-joys
 AdvantageScope allows you to open and synchronize logs from multiple sources on a single timeline:
 
 1. Open your on-robot log file using `File` > `Open Log(s)...` (or drag the `.wpilog` file directly into AdvantageScope).
-2. In the menu bar, select `File` > `Add New Log(s)...` and select the corresponding Driver Station log (`.dslog`).
+2. In the menu bar, select `File` > `Add New Log(s)...` and select the corresponding Driver Station log.
 3. AdvantageScope will automatically align both logs to a synchronized timeline! The fields from each log are organized under distinct tables (e.g. `Log0` and `Log1`).
 4. You can now overlay on-robot telemetry (like motor current or pose estimates) directly against Driver Station signals (like packet loss or battery voltage) in the 📉 [Line Graph](/tab-reference/line-graph) to see if an unexpected robot behavior coincided with a radio drop or brownout.
 

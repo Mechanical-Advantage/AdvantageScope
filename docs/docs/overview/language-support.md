@@ -44,10 +44,26 @@ Here is an example of logging a string with a Simplified Chinese key:
 <!-- Note for translators: This example should be updated based on the target language for translation. The key and value should use non-ASCII characters and be written in the target language. Do not include this comment in the translated page. -->
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Telemetry.log("驱动/右电机速度", "快");
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::telemetry::Log("驱动/右电机速度", "快");
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+import telemetry
+
+telemetry.log("驱动/右电机速度", "快")
 ```
 
 </TabItem>

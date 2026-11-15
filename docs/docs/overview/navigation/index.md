@@ -25,22 +25,22 @@ Click and drag on the right edge to resize or hide the sidebar. Double-click to 
 
 ## Tab Bar {#tab-bar}
 
-Use the tab bar (blue) to switch between different views. This documentation is available at any time by clicking the 📖 icon to the left. To export the current tab layout (and associated settings), click `File` > `Export Layout...` To import a layout from a file, click `File` > `Import Layout...`
+Use the tab bar to switch between different views. This documentation is available at any time by clicking the 📖 icon to the left. To export the current tab layout (and associated settings), click `File` > `Export Layout...` To import a layout from a file, click `File` > `Import Layout...`
 
 :::info
-Tabs can be rearrange by clicking and dragging, or renamed by right-clicking and selecting `Rename...`
+Tabs can be rearranged by clicking and dragging, or renamed by right-clicking and selecting `Rename...`
 :::
 
-The navigation buttons (green) on the top manage the tabs and control playback.
+The navigation buttons on the top manage the tabs and control playback.
 
 - **Plus Button**: Opens a dropdown menu to create a new tab.
-- **Window Button:** Creates a new pop-out window with the tab tab. This feature can be used to view data from multiple tabs simultaneously.
+- **Window Button:** Creates a new pop-out window with the current tab. This feature can be used to view data from multiple tabs simultaneously.
 - **X Button:** Closes the current tab.
 - **Play Button:** Start and stop real-time playback. _Right-click to change playback speed or enable looping._
 
 ## Viewer Pane {#viewer-pane}
 
-The viewer pane is where data is presented for each tab type. Check the tab reference documentation for details on the viewer pane for tab. This view can be moved to a separate window by clicking the pop-out button in the tab bar.
+The viewer pane is where data is presented for each tab type. Check the tab reference documentation for details on the viewer pane for each tab. This view can be moved to a separate window by clicking the pop-out button in the tab bar.
 
 ## Control Pane {#control-pane}
 

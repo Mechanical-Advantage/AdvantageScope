@@ -57,7 +57,7 @@ public class ExampleTeleop implements OpMode {
     Telemetry.log("Field/RobotPose3d", robotPose3d);
 
     // Log an array of poses (e.g. trajectory or AprilTag poses)
-    Telemetry.log("Field/Trajectory", trajectory, Pose2d.struct);
+    Telemetry.log("Field/Trajectory", trajectory);
   }
 }
 ```

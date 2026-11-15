@@ -29,7 +29,7 @@ To stop publishing, click `File` > `Publish NT Data` > `Stop Publishing`.
 
 By default, AdvantageScope publishes all NetworkTables fields stored in the log file (except server-published meta topics). Some use cases, like mimicking a coprocessor, require only publishing a limited set of fields or subtables. To adjust the set of allowed field prefixes, open the preferences window by clicking `App` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS).
 
-The "NT Publish Prefixes" option sets the allowable prefixes for fields published to NetworkTables. If left blank, all fields will be included. Otherwise, a command-separated list of prefixes or fields can be provided. See examples below.
+The "NT Publish Prefixes" option sets the allowable prefixes for fields published to NetworkTables. If left blank, all fields will be included. Otherwise, a comma-separated list of prefixes or fields can be provided. See examples below.
 
 - "_Telemetry_": Include all fields in the "Telemetry" table.
 - "_Telemetry/Drive_": Include only the "Telemetry/Drive" table.

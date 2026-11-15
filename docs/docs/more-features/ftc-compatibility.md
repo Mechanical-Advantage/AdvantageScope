@@ -11,7 +11,7 @@ AdvantageScope includes features to provide a smooth experience on the existing 
 FTC fields and robot models are fully supported natively.
 
 - **Field & Robot Models:** Select FTC fields and robot models on the 🗺️ [2D Field](/tab-reference/2d-field) and 👀 [3D Field](/tab-reference/3d-field) tabs directly from the dropdown menus. All fields are compatible with [AdvantageScope XR](/tab-reference/3d-field/advantagescope-xr).
-- **Coordinate Systems:** Configure the [coordinate system](/more-features/coordinate-systems) for compatibility with [standard FTC coordinates](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html) on any field. This coordiante system is used by default on FTC fields.
+- **Coordinate Systems:** Configure the [coordinate system](/more-features/coordinate-systems) for compatibility with [standard FTC coordinates](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html) on any field. This coordinate system is used by default on FTC fields.
 
 <div className="image-gallery">
   <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />
