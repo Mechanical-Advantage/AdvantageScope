@@ -30,7 +30,6 @@
 		8CBFA6E02BF8663E009AA8CD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8CBFA6DF2BF8663E009AA8CD /* Assets.xcassets */; };
 		8CCB36702D0F8A0900F516D8 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CCB366F2D0F8A0600F516D8 /* RecordButton.swift */; };
 		8CDF923C305900BD008E48F8 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8CDF923B305900BD008E48F8 /* Settings.bundle */; };
-		8CDF923D305900BD008E48F8 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8CDF923B305900BD008E48F8 /* Settings.bundle */; };
 		8CF342672D14065200291788 /* AdvantageScopeXRClip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = 8CF342582D14065100291788 /* AdvantageScopeXRClip.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8CF3426E2D1406BF00291788 /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = 8CF3426D2D1406BF00291788 /* Starscream */; };
 		8CF342702D1408E200291788 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CCB366F2D0F8A0600F516D8 /* RecordButton.swift */; };
@@ -265,7 +264,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1620;
-				LastUpgradeCheck = 2600;
+				LastUpgradeCheck = 2720;
 				TargetAttributes = {
 					8CBFA6D72BF8663D009AA8CD = {
 						CreatedOnToolsVersion = 15.4;
@@ -328,7 +327,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8CBC9A742D14B355000EFB70 /* Assets.xcassets in Resources */,
-				8CDF923D305900BD008E48F8 /* Settings.bundle in Resources */,
 				8C6FB4002E41588B00167EFB /* AppIcon.icon in Resources */,
 				8C76ED5E302C316D00F7973C /* InfoPlist.xcstrings in Resources */,
 				8C87F0AE2FF1C40F00BB7081 /* Localizable.xcstrings in Resources */,
@@ -392,6 +390,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -458,6 +457,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -541,7 +541,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.littletonrobotics.advantagescopexr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -584,7 +584,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.littletonrobotics.advantagescopexr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -628,7 +628,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.littletonrobotics.advantagescopexr.Clip;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -672,7 +672,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.littletonrobotics.advantagescopexr.Clip;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
