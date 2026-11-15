@@ -79,7 +79,8 @@ echo "Creating control.tar.gz"
 tar -czf control.tar.gz -C "$PACKAGE_DIR/CONTROL" .
 
 echo "Creating IPK..."
-ar r "../${PACKAGE_NAME}_${PACKAGE_VERSION}.ipk" control.tar.gz data.tar.gz
+rm -f "../${PACKAGE_NAME}_${PACKAGE_VERSION}.ipk"
+ar -rcS "../${PACKAGE_NAME}_${PACKAGE_VERSION}.ipk" control.tar.gz data.tar.gz
 
 cd ..
 
