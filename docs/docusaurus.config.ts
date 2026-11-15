@@ -135,6 +135,10 @@ const config: Config = {
           {
             to: "/more-features/custom-assets/gltf-convert",
             from: "/more-features/gltf-convert"
+          },
+          {
+            to: "/more-features/universal-logging",
+            from: "/more-features/urcl"
           }
         ]
       }

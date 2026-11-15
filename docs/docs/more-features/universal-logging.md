@@ -55,7 +55,7 @@ public Robot() {
 </TabItem>
 <TabItem value="wpilib-cpp" label="C++">
 
-Download the [`VendorLogCapture.hpp`](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/snippets/VendorLogCapture.hpp) and [`VendorLogCapture.cpp`](https://github.com/Mechanical-Advantage/AdvantageScope/blob/docs/snippets/VendorLogCapture.cpp) files and place them in your robot project. This class automatically captures data from vendor logs into the active `DataLog` and should be configured in your `Robot` constructor as shown below. You must select an appropriate directory (such as `/U/logs/` on a USB drive or `/home/systemcore/logs/`) for temporarily staging vendor logs during capture. See the [How It Works](#how-it-works) section for details.
+Download the [`VendorLogCapture.hpp`](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/snippets/VendorLogCapture.hpp) and [`VendorLogCapture.cpp`](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/snippets/VendorLogCapture.cpp) files and place them in your robot project. This class automatically captures data from vendor logs into the active `DataLog` and should be configured in your `Robot` constructor as shown below. You must select an appropriate directory (such as `/U/logs/` on a USB drive or `/home/systemcore/logs/`) for temporarily staging vendor logs during capture. See the [How It Works](#how-it-works) section for details.
 
 ```cpp
 Robot::Robot() {
