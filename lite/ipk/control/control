@@ -3,7 +3,9 @@ Version: 1.0.0
 Description: Robot telemetry application
 Section: development
 Priority: optional
-Maintainer: Littleton Robotics
+Maintainer: Littleton Robotics <software@team6328.org>
+License: BSD-3-Clause
+Homepage: https://docs.advantagescope.org
 Architecture: all
 Source: local
 X-Display-Name: AdvantageScope Lite
