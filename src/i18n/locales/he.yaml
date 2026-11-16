@@ -238,6 +238,7 @@ sourceList:
   editConfig: "עריכת תצורת שדה"
   removeField: "הסרת שדה"
   noValues: "אין ערכים"
+  empty: "(ריק)"
   segments_one: "{{count}} מקטע"
   segments_two: "{{count}} מקטעים"
   segments_other: "{{count}} מקטעים"

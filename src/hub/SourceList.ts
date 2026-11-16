@@ -1250,7 +1250,7 @@ export default class SourceList {
             // match the table view, the exported CSV, and the source code they came from
             text = isolateAuto(countText) + " \u2014 " + isolateAuto(arrayText);
           } else {
-            text = getLogValueText(value, logType);
+            text = getLogValueText(value, logType, true);
           }
         }
       }

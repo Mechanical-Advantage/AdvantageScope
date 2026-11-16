@@ -237,6 +237,7 @@ sourceList:
   editConfig: "Alan yapılandırmasını düzenle"
   removeField: "Alanı kaldır"
   noValues: "Değer yok"
+  empty: "(boş)"
   segments: "{{count}} segment"
   errors: "{{count}} hata"
   warnings: "{{count}} uyarı"

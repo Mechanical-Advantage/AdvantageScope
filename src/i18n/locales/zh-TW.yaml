@@ -237,6 +237,7 @@ sourceList:
   editConfig: "編輯欄位設定"
   removeField: "移除欄位"
   noValues: "沒有值"
+  empty: "(空)"
   segments: "{{count}} 個區段"
   errors: "{{count}} 個錯誤"
   warnings: "{{count}} 個警告"

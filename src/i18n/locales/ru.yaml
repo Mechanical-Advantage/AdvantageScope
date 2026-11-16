@@ -239,6 +239,7 @@ sourceList:
   editConfig: "Изменить конфигурацию поля"
   removeField: "Удалить поле"
   noValues: "Нет значений"
+  empty: "(пусто)"
   segments_one: "{{count}} сегмент"
   segments_few: "{{count}} сегмента"
   segments_many: "{{count}} сегментов"

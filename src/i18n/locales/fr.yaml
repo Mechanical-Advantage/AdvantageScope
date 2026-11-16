@@ -237,6 +237,7 @@ sourceList:
   editConfig: "Modifier la configuration du champ"
   removeField: "Supprimer le champ"
   noValues: "Aucune valeur"
+  empty: "(vide)"
   segments_one: "{{count}} segment"
   segments_other: "{{count}} segments"
   errors_one: "{{count}} erreur"

@@ -237,6 +237,7 @@ sourceList:
   editConfig: "Veldconfiguratie bewerken"
   removeField: "Veld verwijderen"
   noValues: "Geen waarden"
+  empty: "(leeg)"
   segments_one: "{{count}} segment"
   segments_other: "{{count}} segmenten"
   errors_one: "{{count}} fout"

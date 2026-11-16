@@ -237,6 +237,7 @@ sourceList:
   editConfig: "Editar configuração do campo"
   removeField: "Remover campo"
   noValues: "Nenhum valor"
+  empty: "(vazio)"
   segments_one: "{{count}} segmento"
   segments_other: "{{count}} segmentos"
   errors_one: "{{count}} erro"

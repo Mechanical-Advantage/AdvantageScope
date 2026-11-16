@@ -238,6 +238,7 @@ sourceList:
   editConfig: "Өріс конфигурациясын өңдеу"
   removeField: "Өрісті жою"
   noValues: "Мәндер жоқ"
+  empty: "(бос)"
   segments_one: "{{count}} сегмент"
   segments_other: "{{count}} сегмент"
   errors_one: "{{count}} қате"

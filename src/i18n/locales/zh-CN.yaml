@@ -236,6 +236,7 @@ sourceList:
   editConfig: "编辑字段配置"
   removeField: "移除字段"
   noValues: "无数据"
+  empty: "（空）"
   segments: "{{count}} 段"
   errors: "{{count}} 个错误"
   warnings: "{{count}} 个警告"

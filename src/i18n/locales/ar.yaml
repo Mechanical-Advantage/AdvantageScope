@@ -241,6 +241,7 @@ sourceList:
   editConfig: "تعديل تكوين الحقل"
   removeField: "إزالة الحقل"
   noValues: "لا توجد قيم"
+  empty: "(فارغ)"
   segments_zero: "{{count}} مقطع"
   segments_one: "{{count}} مقطع"
   segments_two: "{{count}} مقطع"

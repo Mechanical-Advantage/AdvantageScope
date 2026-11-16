@@ -239,6 +239,7 @@ sourceList:
   editConfig: "Edit field configuration" # Tooltip for source list item configuration editor
   removeField: "Remove field" # Tooltip for source list item delete button
   noValues: "No values" # Fallback value description when no array values exist
+  empty: "(empty)" # Fallback value description when a raw binary value is empty
   segments_one: "{{count}} segment" # Singular description for mechanism segments
   segments_other: "{{count}} segments" # Plural description for mechanism segments
   errors_one: "{{count}} error" # Singular errors description

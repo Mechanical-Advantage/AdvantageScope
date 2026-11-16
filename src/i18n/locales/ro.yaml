@@ -238,6 +238,7 @@ sourceList:
   editConfig: "Editare configurație câmp"
   removeField: "Elimină câmp"
   noValues: "Fără valori"
+  empty: "(gol)"
   segments_one: "{{count}} segment"
   segments_few: "{{count}} segmente"
   segments_other: "{{count}} de segmente"

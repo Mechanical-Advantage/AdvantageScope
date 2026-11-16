@@ -237,6 +237,7 @@ sourceList:
   editConfig: "फील्ड कॉन्फ़िगरेशन संपादित करें"
   removeField: "फील्ड हटाएँ"
   noValues: "कोई मान नहीं"
+  empty: "(खाली)"
   segments_one: "{{count}} सेगमेंट"
   segments_other: "{{count}} सेगमेंट्स"
   errors_one: "{{count}} त्रुटि"
