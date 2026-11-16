@@ -5,13 +5,15 @@ sidebar_position: 2
 
 #
 
-<!-- TODO: Add 2027 banner images (/img/whats-new/banner-light.webp and /img/whats-new/banner-dark.webp) -->
-<img src="/img/whats-new/banner-light.webp" className="light-only" />
-<img src="/img/whats-new/banner-dark.webp" className="dark-only" />
+<img src="/img/whats-new/banner-2027-ltr-light.webp" className="light-only" />
+<img src="/img/whats-new/banner-2027-ltr-dark.webp" className="dark-only" />
 
 The 2027 version of AdvantageScope is now available! Check the [installation docs](/overview/installation) and [full changelog](https://github.com/Mechanical-Advantage/AdvantageScope/releases) for details. This release includes several major new features and numerous enhancements across the application. This is also the first version of AdvantageScope with full support for Systemcore.
 
 **We value your feedback! Feedback, feature requests, and bug reports are welcome on the [issues page](https://github.com/Mechanical-Advantage/AdvantageScope/issues).**
+
+<img src="/img/screenshot-light.webp" className="light-only" />
+<img src="/img/screenshot-dark.webp" className="dark-only" />
 
 ## 🍋‍🟩 Systemcore Compatibility {#systemcore-compatibility}
 
