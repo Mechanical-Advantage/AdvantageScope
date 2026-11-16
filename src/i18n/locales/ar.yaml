@@ -1027,6 +1027,10 @@ main:
     systemcoreFtcMessage: "نظام إحداثيات Systemcore"
     systemcoreFtcDetail: "يستخدم هذا الملعب نظام إحداثيات Systemcore بشكل افتراضي. إذا كان رمز الروبوت الخاص بك يستخدم نظام إحداثيات FTC التقليدي، فيمكنك تغيير خيار «نظام الإحداثيات» في تفضيلات AdvantageScope. راجع الوثائق لمزيد من التفاصيل."
 
+  lite:
+    tooSmall: "لا توجد مساحة كافية، يرجى تغيير تخطيط الشاشة."
+    mobileWarning: "يعمل AdvantageScope Lite بشكل أفضل على أجهزة سطح المكتب والأجهزة اللوحية."
+
 units:
   defaultLabel: "{{unit}} (الافتراضي)"
   deltaValue: "Δ {{value}}"

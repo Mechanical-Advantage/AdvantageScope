@@ -992,6 +992,10 @@ main:
     systemcoreFtcMessage: "מערכת צירים של Systemcore"
     systemcoreFtcDetail: 'מגרש זה משתמש כברירת מחדל במערכת הצירים של Systemcore. אם קוד הרובוט שלכם משתמש במערכת הצירים המסורתית של FTC, תוכלו לשנות את האפשרות "מערכת צירים" בהעדפות של AdvantageScope. ראו את התיעוד לפרטים נוספים.'
 
+  lite:
+    tooSmall: "אין מספיק מקום, אנא שנו את פריסת המסך."
+    mobileWarning: "AdvantageScope Lite פועל בצורה הטובה ביותר במחשבים שולחניים ובטאבלטים."
+
 units:
   defaultLabel: "{{unit}} (ברירת מחדל)"
   deltaValue: "Δ {{value}}"

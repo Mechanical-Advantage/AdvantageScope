@@ -980,6 +980,10 @@ main:
     systemcoreFtcMessage: "Système de coordonnées Systemcore"
     systemcoreFtcDetail: "Ce champ utilise par défaut le système de coordonnées Systemcore. Si le code de votre robot utilise le système de coordonnées traditionnel de la FTC, vous pouvez modifier l'option « Système de coordonnées » dans les préférences d'AdvantageScope. Consultez la documentation pour plus de détails."
 
+  lite:
+    tooSmall: "Espace insuffisant, veuillez modifier la disposition de l'écran."
+    mobileWarning: "AdvantageScope Lite fonctionne mieux sur les ordinateurs de bureau et les tablettes."
+
 units:
   defaultLabel: "{{unit}} (par défaut)"
   deltaValue: "Δ {{value}}"

@@ -980,6 +980,10 @@ main:
     systemcoreFtcMessage: "Systemcore-coördinatenstelsel"
     systemcoreFtcDetail: 'Dit veld gebruikt standaard het Systemcore-coördinatenstelsel. Als je robotcode het traditionele FTC-coördinatenstelsel gebruikt, kun je de optie "Coördinatenstelsel" wijzigen in de AdvantageScope-voorkeuren. Raadpleeg de documentatie voor meer informatie.'
 
+  lite:
+    tooSmall: "Onvoldoende ruimte, pas de schermindeling aan."
+    mobileWarning: "AdvantageScope Lite werkt het best op desktop- en tabletapparaten."
+
 units:
   defaultLabel: "{{unit}} (standaard)"
   deltaValue: "Δ {{value}}"

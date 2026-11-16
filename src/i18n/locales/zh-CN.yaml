@@ -975,6 +975,10 @@ main:
     systemcoreFtcMessage: "Systemcore 坐标系"
     systemcoreFtcDetail: "该场地默认使用 Systemcore 坐标系。如果你的机器人代码使用传统的 FTC 坐标系，可以在 AdvantageScope 首选项中更改“坐标系”选项。详情请参阅文档。"
 
+  lite:
+    tooSmall: "空间不足，请更改屏幕布局。"
+    mobileWarning: "AdvantageScope Lite 在桌面和平板设备上效果最佳。"
+
 units:
   defaultLabel: "{{unit}}（默认）"
   deltaValue: "Δ {{value}}"

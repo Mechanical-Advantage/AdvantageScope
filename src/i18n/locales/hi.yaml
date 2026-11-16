@@ -980,6 +980,10 @@ main:
     systemcoreFtcMessage: "Systemcore कोऑर्डिनेट सिस्टम"
     systemcoreFtcDetail: 'यह फ़ील्ड डिफ़ॉल्ट रूप से Systemcore कोऑर्डिनेट सिस्टम का उपयोग करता है। यदि आपका रोबोट कोड पारंपरिक FTC कोऑर्डिनेट सिस्टम का उपयोग करता है, तो आप AdvantageScope प्राथमिकताओं में "कोऑर्डिनेट सिस्टम" विकल्प बदल सकते हैं। विवरण के लिए डॉक्यूमेंटेशन देखें।'
 
+  lite:
+    tooSmall: "पर्याप्त स्थान नहीं है, कृपया स्क्रीन लेआउट बदलें।"
+    mobileWarning: "AdvantageScope लाइट डेस्कटॉप और टैबलेट डिवाइस पर सबसे अच्छा काम करता है।"
+
 units:
   defaultLabel: "{{unit}} (डिफ़ॉल्ट)"
   deltaValue: "Δ {{value}}"

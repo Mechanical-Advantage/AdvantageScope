@@ -979,6 +979,10 @@ main:
     systemcoreFtcMessage: "Sistema de coordenadas do Systemcore"
     systemcoreFtcDetail: 'Este campo usa o sistema de coordenadas do Systemcore por padrão. Se o código do seu robô usa o sistema de coordenadas tradicional da FTC, você pode alterar a opção "Sistema de coordenadas" nas preferências do AdvantageScope. Consulte a documentação para mais detalhes.'
 
+  lite:
+    tooSmall: "Não há espaço suficiente, por favor, altere o layout da tela."
+    mobileWarning: "O AdvantageScope Lite funciona melhor em desktops e tablets."
+
 units:
   defaultLabel: "{{unit}} (Padrão)"
   deltaValue: "Δ {{value}}"

@@ -992,6 +992,10 @@ main:
     systemcoreFtcMessage: "Sistem de coordonate Systemcore"
     systemcoreFtcDetail: "Acest teren folosește în mod implicit sistemul de coordonate Systemcore. Dacă codul robotului tău folosește sistemul de coordonate tradițional FTC, poți schimba opțiunea „Sistem de coordonate” din preferințele AdvantageScope. Consultă documentația pentru detalii."
 
+  lite:
+    tooSmall: "Nu este suficient spațiu, te rugăm să schimbi aranjamentul ecranului."
+    mobileWarning: "AdvantageScope Lite funcționează cel mai bine pe desktop și tablete."
+
 units:
   defaultLabel: "{{unit}} (Implicit)"
   deltaValue: "Δ {{value}}"

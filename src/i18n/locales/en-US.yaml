@@ -990,6 +990,10 @@ main:
     systemcoreFtcMessage: "Systemcore Coordinate System" # Message title for Systemcore FTC coordinate system warning
     systemcoreFtcDetail: 'This field uses the Systemcore coordinate system by default. If your robot code uses the traditional FTC coordinate system, you can change the "Coordinate System" option in the AdvantageScope preferences. See the documentation for details.' # Detail for Systemcore FTC coordinate system warning
 
+  lite:
+    tooSmall: "Not enough space, please change the screen layout." # Warning shown in AdvantageScope Lite when the browser window is too small
+    mobileWarning: "AdvantageScope Lite works best on desktop and tablet devices." # Additional warning shown in AdvantageScope Lite on mobile devices
+
 units:
   defaultLabel: "{{unit}} (Default)" # Label for the default unit in a list of units
   deltaValue: "Δ {{value}}" # Text indicating a change in value, with the delta symbol (Δ) and the value

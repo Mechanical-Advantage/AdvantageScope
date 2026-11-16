@@ -969,6 +969,10 @@ main:
     systemcoreFtcMessage: "Systemcore 座標系"
     systemcoreFtcDetail: "此場地預設使用 Systemcore 座標系。如果你的機器人程式碼使用傳統的 FTC 座標系，可以在 AdvantageScope 偏好設定中變更「座標系」選項。詳細資訊請參閱文件。"
 
+  lite:
+    tooSmall: "空間不足，請變更螢幕佈局。"
+    mobileWarning: "AdvantageScope Lite 在桌上型電腦和平板裝置上運作效果最佳。"
+
 units:
   defaultLabel: "{{unit}} (預設)"
   deltaValue: "Δ {{value}}"

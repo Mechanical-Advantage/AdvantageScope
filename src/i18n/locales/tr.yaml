@@ -971,6 +971,10 @@ main:
     systemcoreFtcMessage: "Systemcore koordinat sistemi"
     systemcoreFtcDetail: "Bu alan, varsayılan olarak Systemcore koordinat sistemini kullanır. Robot kodunuz geleneksel FTC koordinat sistemini kullanıyorsa AdvantageScope tercihlerindeki “Koordinat Sistemi” seçeneğini değiştirebilirsiniz. Ayrıntılar için belgelere bakın."
 
+  lite:
+    tooSmall: "Yeterli alan yok, lütfen ekran düzenini değiştirin."
+    mobileWarning: "AdvantageScope Lite en iyi masaüstü ve tablet cihazlarda çalışır."
+
 units:
   defaultLabel: "{{unit}} (Varsayılan)"
   deltaValue: "Δ {{value}}"
