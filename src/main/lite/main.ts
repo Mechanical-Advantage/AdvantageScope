@@ -107,6 +107,7 @@ try {
   }
 } catch (e) {}
 document.documentElement.dir = isRtl ? "rtl" : "ltr";
+localStorage.setItem(LocalStorageKeys.DIRECTION, document.documentElement.dir);
 
 /**
  * Open a new popup menu

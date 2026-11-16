@@ -241,6 +241,7 @@ sourceList:
   editConfig: "تعديل تكوين الحقل"
   removeField: "إزالة الحقل"
   noValues: "لا توجد قيم"
+  empty: "(فارغ)"
   segments_zero: "{{count}} مقطع"
   segments_one: "{{count}} مقطع"
   segments_two: "{{count}} مقطع"
@@ -1025,6 +1026,10 @@ main:
     legacyFrcDetail: "يستخدم هذا الملعب نظام إحداثيات قديمًا بشكل افتراضي للتوافق مع إصدارات WPILib السابقة لعام 2027. إذا كان رمز الروبوت الخاص بك يستخدم WPILib 2027، فيمكنك تغيير خيار «نظام الإحداثيات» في تفضيلات AdvantageScope. راجع الوثائق لمزيد من التفاصيل."
     systemcoreFtcMessage: "نظام إحداثيات Systemcore"
     systemcoreFtcDetail: "يستخدم هذا الملعب نظام إحداثيات Systemcore بشكل افتراضي. إذا كان رمز الروبوت الخاص بك يستخدم نظام إحداثيات FTC التقليدي، فيمكنك تغيير خيار «نظام الإحداثيات» في تفضيلات AdvantageScope. راجع الوثائق لمزيد من التفاصيل."
+
+  lite:
+    tooSmall: "لا توجد مساحة كافية، يرجى تغيير تخطيط الشاشة."
+    mobileWarning: "يعمل AdvantageScope Lite بشكل أفضل على أجهزة سطح المكتب والأجهزة اللوحية."
 
 units:
   defaultLabel: "{{unit}} (الافتراضي)"

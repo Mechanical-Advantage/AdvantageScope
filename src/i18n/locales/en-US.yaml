@@ -239,6 +239,7 @@ sourceList:
   editConfig: "Edit field configuration" # Tooltip for source list item configuration editor
   removeField: "Remove field" # Tooltip for source list item delete button
   noValues: "No values" # Fallback value description when no array values exist
+  empty: "(empty)" # Fallback value description when a raw binary value is empty
   segments_one: "{{count}} segment" # Singular description for mechanism segments
   segments_other: "{{count}} segments" # Plural description for mechanism segments
   errors_one: "{{count}} error" # Singular errors description
@@ -988,6 +989,10 @@ main:
     legacyFrcDetail: 'This field uses a legacy coordinate system by default for compatibility with pre-2027 WPILib. If your robot code uses 2027 WPILib, you can change the "Coordinate System" option in the AdvantageScope preferences. See the documentation for details.' # Detail for legacy FRC coordinate system warning
     systemcoreFtcMessage: "Systemcore Coordinate System" # Message title for Systemcore FTC coordinate system warning
     systemcoreFtcDetail: 'This field uses the Systemcore coordinate system by default. If your robot code uses the traditional FTC coordinate system, you can change the "Coordinate System" option in the AdvantageScope preferences. See the documentation for details.' # Detail for Systemcore FTC coordinate system warning
+
+  lite:
+    tooSmall: "Not enough space, please change the screen layout." # Warning shown in AdvantageScope Lite when the browser window is too small
+    mobileWarning: "AdvantageScope Lite works best on desktop and tablet devices." # Additional warning shown in AdvantageScope Lite on mobile devices
 
 units:
   defaultLabel: "{{unit}} (Default)" # Label for the default unit in a list of units

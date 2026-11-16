@@ -237,6 +237,7 @@ sourceList:
   editConfig: "Veldconfiguratie bewerken"
   removeField: "Veld verwijderen"
   noValues: "Geen waarden"
+  empty: "(leeg)"
   segments_one: "{{count}} segment"
   segments_other: "{{count}} segmenten"
   errors_one: "{{count}} fout"
@@ -978,6 +979,10 @@ main:
     legacyFrcDetail: 'Dit veld gebruikt standaard een verouderd coördinatenstelsel voor compatibiliteit met WPILib van vóór 2027. Als je robotcode WPILib 2027 gebruikt, kun je de optie "Coördinatenstelsel" wijzigen in de AdvantageScope-voorkeuren. Raadpleeg de documentatie voor meer informatie.'
     systemcoreFtcMessage: "Systemcore-coördinatenstelsel"
     systemcoreFtcDetail: 'Dit veld gebruikt standaard het Systemcore-coördinatenstelsel. Als je robotcode het traditionele FTC-coördinatenstelsel gebruikt, kun je de optie "Coördinatenstelsel" wijzigen in de AdvantageScope-voorkeuren. Raadpleeg de documentatie voor meer informatie.'
+
+  lite:
+    tooSmall: "Onvoldoende ruimte, pas de schermindeling aan."
+    mobileWarning: "AdvantageScope Lite werkt het best op desktop- en tabletapparaten."
 
 units:
   defaultLabel: "{{unit}} (standaard)"

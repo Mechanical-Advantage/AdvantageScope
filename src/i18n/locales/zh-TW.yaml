@@ -237,6 +237,7 @@ sourceList:
   editConfig: "編輯欄位設定"
   removeField: "移除欄位"
   noValues: "沒有值"
+  empty: "(空)"
   segments: "{{count}} 個區段"
   errors: "{{count}} 個錯誤"
   warnings: "{{count}} 個警告"
@@ -967,6 +968,10 @@ main:
     legacyFrcDetail: "為了與 2027 年之前的 WPILib 相容，此場地預設使用傳統座標系。如果你的機器人程式碼使用 2027 WPILib，可以在 AdvantageScope 偏好設定中變更「座標系」選項。詳細資訊請參閱文件。"
     systemcoreFtcMessage: "Systemcore 座標系"
     systemcoreFtcDetail: "此場地預設使用 Systemcore 座標系。如果你的機器人程式碼使用傳統的 FTC 座標系，可以在 AdvantageScope 偏好設定中變更「座標系」選項。詳細資訊請參閱文件。"
+
+  lite:
+    tooSmall: "空間不足，請變更螢幕佈局。"
+    mobileWarning: "AdvantageScope Lite 在桌上型電腦和平板裝置上運作效果最佳。"
 
 units:
   defaultLabel: "{{unit}} (預設)"

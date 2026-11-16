@@ -237,6 +237,7 @@ sourceList:
   editConfig: "Modifier la configuration du champ"
   removeField: "Supprimer le champ"
   noValues: "Aucune valeur"
+  empty: "(vide)"
   segments_one: "{{count}} segment"
   segments_other: "{{count}} segments"
   errors_one: "{{count}} erreur"
@@ -978,6 +979,10 @@ main:
     legacyFrcDetail: "Ce champ utilise par défaut un système de coordonnées hérité pour assurer la compatibilité avec WPILib avant 2027. Si le code de votre robot utilise WPILib 2027, vous pouvez modifier l'option « Système de coordonnées » dans les préférences d'AdvantageScope. Consultez la documentation pour plus de détails."
     systemcoreFtcMessage: "Système de coordonnées Systemcore"
     systemcoreFtcDetail: "Ce champ utilise par défaut le système de coordonnées Systemcore. Si le code de votre robot utilise le système de coordonnées traditionnel de la FTC, vous pouvez modifier l'option « Système de coordonnées » dans les préférences d'AdvantageScope. Consultez la documentation pour plus de détails."
+
+  lite:
+    tooSmall: "Espace insuffisant, veuillez modifier la disposition de l'écran."
+    mobileWarning: "AdvantageScope Lite fonctionne mieux sur les ordinateurs de bureau et les tablettes."
 
 units:
   defaultLabel: "{{unit}} (par défaut)"

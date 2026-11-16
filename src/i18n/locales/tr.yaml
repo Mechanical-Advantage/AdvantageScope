@@ -237,6 +237,7 @@ sourceList:
   editConfig: "Alan yapılandırmasını düzenle"
   removeField: "Alanı kaldır"
   noValues: "Değer yok"
+  empty: "(boş)"
   segments: "{{count}} segment"
   errors: "{{count}} hata"
   warnings: "{{count}} uyarı"
@@ -969,6 +970,10 @@ main:
     legacyFrcDetail: "Bu alan, 2027 öncesi WPILib ile uyumluluk için varsayılan olarak eski bir koordinat sistemi kullanır. Robot kodunuz 2027 WPILib kullanıyorsa AdvantageScope tercihlerindeki “Koordinat Sistemi” seçeneğini değiştirebilirsiniz. Ayrıntılar için belgelere bakın."
     systemcoreFtcMessage: "Systemcore koordinat sistemi"
     systemcoreFtcDetail: "Bu alan, varsayılan olarak Systemcore koordinat sistemini kullanır. Robot kodunuz geleneksel FTC koordinat sistemini kullanıyorsa AdvantageScope tercihlerindeki “Koordinat Sistemi” seçeneğini değiştirebilirsiniz. Ayrıntılar için belgelere bakın."
+
+  lite:
+    tooSmall: "Yeterli alan yok, lütfen ekran düzenini değiştirin."
+    mobileWarning: "AdvantageScope Lite en iyi masaüstü ve tablet cihazlarda çalışır."
 
 units:
   defaultLabel: "{{unit}} (Varsayılan)"

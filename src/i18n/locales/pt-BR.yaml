@@ -237,6 +237,7 @@ sourceList:
   editConfig: "Editar configuração do campo"
   removeField: "Remover campo"
   noValues: "Nenhum valor"
+  empty: "(vazio)"
   segments_one: "{{count}} segmento"
   segments_other: "{{count}} segmentos"
   errors_one: "{{count}} erro"
@@ -977,6 +978,10 @@ main:
     legacyFrcDetail: 'Este campo usa um sistema de coordenadas legado por padrão para compatibilidade com a WPILib pré-2027. Se o código do seu robô usa a WPILib 2027, você pode alterar a opção "Sistema de coordenadas" nas preferências do AdvantageScope. Consulte a documentação para mais detalhes.'
     systemcoreFtcMessage: "Sistema de coordenadas do Systemcore"
     systemcoreFtcDetail: 'Este campo usa o sistema de coordenadas do Systemcore por padrão. Se o código do seu robô usa o sistema de coordenadas tradicional da FTC, você pode alterar a opção "Sistema de coordenadas" nas preferências do AdvantageScope. Consulte a documentação para mais detalhes.'
+
+  lite:
+    tooSmall: "Não há espaço suficiente, por favor, altere o layout da tela."
+    mobileWarning: "O AdvantageScope Lite funciona melhor em desktops e tablets."
 
 units:
   defaultLabel: "{{unit}} (Padrão)"

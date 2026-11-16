@@ -238,6 +238,7 @@ sourceList:
   editConfig: "עריכת תצורת שדה"
   removeField: "הסרת שדה"
   noValues: "אין ערכים"
+  empty: "(ריק)"
   segments_one: "{{count}} מקטע"
   segments_two: "{{count}} מקטעים"
   segments_other: "{{count}} מקטעים"
@@ -990,6 +991,10 @@ main:
     legacyFrcDetail: 'מגרש זה משתמש כברירת מחדל במערכת צירים מדור קודם לצורך תאימות עם WPILib מלפני 2027. אם קוד הרובוט שלכם משתמש ב-WPILib 2027, תוכלו לשנות את האפשרות "מערכת צירים" בהעדפות של AdvantageScope. ראו את התיעוד לפרטים נוספים.'
     systemcoreFtcMessage: "מערכת צירים של Systemcore"
     systemcoreFtcDetail: 'מגרש זה משתמש כברירת מחדל במערכת הצירים של Systemcore. אם קוד הרובוט שלכם משתמש במערכת הצירים המסורתית של FTC, תוכלו לשנות את האפשרות "מערכת צירים" בהעדפות של AdvantageScope. ראו את התיעוד לפרטים נוספים.'
+
+  lite:
+    tooSmall: "אין מספיק מקום, אנא שנו את פריסת המסך."
+    mobileWarning: "AdvantageScope Lite פועל בצורה הטובה ביותר במחשבים שולחניים ובטאבלטים."
 
 units:
   defaultLabel: "{{unit}} (ברירת מחדל)"
