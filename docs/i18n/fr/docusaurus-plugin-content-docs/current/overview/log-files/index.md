@@ -3,7 +3,7 @@
 ## Formats pris en charge {#supported-formats}
 
 - **WPILOG (.wpilog)** : produit par l'[enregistreur de données intégré](https://docs.wpilib.org/fr/stable/docs/software/telemetry/datalog.html) de WPILib et par AdvantageKit. Vous pouvez aussi utiliser [URCL](/more-features/urcl) pour enregistrer les signaux des contrôleurs de moteur REV dans un fichier WPILOG.
-- **Hoot (.hoot)** : produit par le [*Signal Logger*](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) de Phoenix 6 (CTRE).
+- **Hoot (.hoot)** : produit par le [_Signal Logger_](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) de Phoenix 6 (CTRE).
 - **REVLOG (.revlog)** : produit par le [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) de REV Robotics.
 - **Road Runner (.log)** : produit par la bibliothèque [Road Runner](https://github.com/acmerobotics/road-runner) pour FTC.
 - **CSV (.csv)** : valeurs séparées par des virgules, au même format que celui [exporté](/overview/log-files/export) par AdvantageScope en mode « CSV (Tableau) » ou « CSV (Liste) ». Voir [ci-dessous](#csv-formatting) pour plus de détails.

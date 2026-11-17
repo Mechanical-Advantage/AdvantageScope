@@ -67,8 +67,8 @@ _ऊपर अंग्रेजी इंटरफ़ेस दिखाया 
 
 |                                                    | 2025 (SFTP) | 2026 (FTP) | गति में वृद्धि (Speedup)                         |
 | -------------------------------------------------- | ----------- | ---------- | ------------------------------------------------ |
-| उच्च CPU लोड<br /><sub>जटिल रोबोट कोड</sub>       | 25 Mb/s     | 80 Mb/s    | <span style={{fontSize: '24px'}}>**3.2x**</span> |
-| औसत CPU लोड<br /><sub>सामान्य रोबोट कोड</sub>     | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**2.3x**</span> |
+| उच्च CPU लोड<br /><sub>जटिल रोबोट कोड</sub>        | 25 Mb/s     | 80 Mb/s    | <span style={{fontSize: '24px'}}>**3.2x**</span> |
+| औसत CPU लोड<br /><sub>सामान्य रोबोट कोड</sub>      | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**2.3x**</span> |
 | न्यूनतम CPU लोड<br /><sub>कोई रोबोट कोड नहीं</sub> | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**1.1x**</span> |
 
 ## 📁 सबफोल्डर्स से लॉग्स डाउनलोड करें {#download-logs-from-subfolders}

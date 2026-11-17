@@ -13,7 +13,7 @@ Par défaut, toutes les valeurs affichées dans AdvantageScope sont en lecture s
 - Pour copier toutes les valeurs modifiées dans le presse-papiers, **faites un clic droit sur l'icône de curseurs** et choisissez **« Copier les valeurs réglées »**.
 
 :::warning
-Ce mode ne sert pas à piloter le robot sur le terrain. Les éléments interactifs de tableau de bord comme les sélecteurs (*choosers*) ou les boutons de déclenchement ne sont pas pris en charge.
+Ce mode ne sert pas à piloter le robot sur le terrain. Les éléments interactifs de tableau de bord comme les sélecteurs (_choosers_) ou les boutons de déclenchement ne sont pas pris en charge.
 :::
 
 ## Régler des valeurs avec AdvantageKit {#tuning-with-advantagekit}

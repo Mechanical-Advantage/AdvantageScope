@@ -8,7 +8,7 @@ AdvantageScope te permite tomar los datos de NetworkTables guardados en un archi
 
 - Reproducir partidos en simulación para depurar el código.
 - Simular los datos de un coprocesador en un robot real.
-- Probar paneles de control (*dashboards*) para conductores usando datos reales de partidos.
+- Probar paneles de control (_dashboards_) para conductores usando datos reales de partidos.
 
 Para usar esta función necesitas un archivo de registro que haya capturado por completo los datos de NetworkTables, algo que puedes generar con el [registrador de datos integrado](https://docs.wpilib.org/es/stable/docs/software/telemetry/datalog.html) de WPILib. Ten en cuenta que AdvantageKit no admite esta función porque ofrece una reproducción determinista mucho más completa en simulación.
 

@@ -42,7 +42,7 @@ Les options suivantes sont disponibles lors de l'exportation :
   - « */DriverStation/Joystick0* » : inclut tous les champs commençant par « /DriverStation/Joystick0 » (les données de la première manette).
   - « *Flywheels,DS:enabled* » : inclut tous les champs commençant par « /Flywheels » ou « DS:enabled » (toutes les données du lanceur ainsi que l'état d'activation du robot).
   - « *Drive/LeftPosition,Drive/RightPosition* » : inclut uniquement les champs « /Drive/LeftPosition » et « /Drive/RightPosition ».
-- **Ensemble de champs :** permet d'inclure ou non les champs générés par AdvantageScope (affichés en gris dans la barre latérale) qui décomposent les types complexes comme les tableaux, les structures (*structs*) et d'autres schémas.
+- **Ensemble de champs :** permet d'inclure ou non les champs générés par AdvantageScope (affichés en gris dans la barre latérale) qui décomposent les types complexes comme les tableaux, les structures (_structs_) et d'autres schémas.
   - _Inclure les champs générés :_ exporte tous les champs visibles, y compris les champs générés. C'est le meilleur choix si vous ouvrez le fichier dans un logiciel qui ne sait pas lire les types complexes.
   - _Originaux uniquement :_ exporte uniquement les champs présents dans le journal d'origine, sans les champs générés. Recommandé si vous comptez rouvrir le fichier dans AdvantageScope ou un autre outil gérant les types complexes.
 

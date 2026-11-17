@@ -20,7 +20,7 @@ Via de onderstaande links download je zipbestanden met verzamelingen van veelgeb
 - [**Standaard FRC-assets**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsDefaultFRC.zip): FRC-velden, FRC-voorbeeldrobots en alle joystickindelingen.
 - [**Standaard FTC-assets**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsDefaultFTC.zip): FTC-velden, FTC-voorbeeldrobots en alle joystickindelingen.
 - [**FRC 6328-assets**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsFRC6328.zip): Assets die exclusief bij de [Team 6328-distributie](/overview/installation#team-6328) van AdvantageScope horen.
-:::
+  :::
 
 :::tip
 Je hoeft niets te installeren om AdvantageScope Lite in het FIRST Driver Station te gebruiken. Ga in je browser naar http://localhost:6768/ascope om live verbinding te maken of logbestanden te bekijken.

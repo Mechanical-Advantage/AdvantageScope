@@ -11,8 +11,7 @@ export const offlineInfoAnnouncement: Record<string, string> = {
     "Puedes consultar esta documentación <b>sin conexión</b> haciendo clic en el icono 📖 en la barra de pestañas de AdvantageScope.",
   fr: "Vous pouvez consulter cette documentation <b>hors ligne</b> en cliquant sur l'icône 📖 dans la barre d'onglets d'AdvantageScope.",
   nl: "Je kunt deze documentatie ook <b>offline</b> bekijken door op het 📖-pictogram in de tabbladenbalk van AdvantageScope te klikken.",
-  "pt-BR":
-    "Esta documentação está disponível <b>offline</b> clicando no ícone 📖 na barra de guias do AdvantageScope.",
+  "pt-BR": "Esta documentação está disponível <b>offline</b> clicando no ícone 📖 na barra de guias do AdvantageScope.",
   ro: "Această documentație este disponibilă <b>offline</b> dacă dai clic pe pictograma 📖 din bara de file a AdvantageScope.",
   tr: "AdvantageScope'un sekme çubuğundaki 📖 simgesine tıklayarak bu dokümantasyona <b>çevrimdışı</b> erişebilirsiniz.",
   ru: "Эта документация доступна <b>офлайн</b> — нажмите на значок 📖 на панели вкладок AdvantageScope.",
@@ -40,9 +39,9 @@ export const localizationFeedbackAnnouncement: Record<string, string> = {
   he: "הגרסה העברית של תיעוד AdvantageScope נוצרת בתמיכת AI ועשויה לכלול אי-דיוקים. לחצו על הקישור בשורת הכותרת כדי לשלוח לנו משוב.",
   ar: "أُنشئت النسخة العربية من مستندات AdvantageScope بدعم من الذكاء الاصطناعي، وقد تحتوي على معلومات غير دقيقة. انقر على الرابط في شريط العنوان لإرسال ملاحظاتك إلينا.",
   hi: "AdvantageScope डॉक्यूमेंटेशन का हिंदी वर्ज़न AI की मदद से तैयार किया गया है और इसमें कुछ अशुद्धियाँ हो सकती हैं। हमें फ़ीडबैक देने के लिए टाइटल बार में दिए गए लिंक पर क्लिक करें।",
-  "zh-CN": "AdvantageScope 简体中文版文档在 AI 的辅助下翻译，可能存在不够准确的地方。欢迎点击标题栏中的链接向我们反馈。",
-  "zh-TW":
-    "AdvantageScope 繁體中文版說明文件由 AI 協助建立，內容可能有所誤差。點擊標題列中的連結即可向我們提供回饋。"
+  "zh-CN":
+    "AdvantageScope 简体中文版文档在 AI 的辅助下翻译，可能存在不够准确的地方。欢迎点击标题栏中的链接向我们反馈。",
+  "zh-TW": "AdvantageScope 繁體中文版說明文件由 AI 協助建立，內容可能有所誤差。點擊標題列中的連結即可向我們提供回饋。"
 };
 
 export const liteWarningAnnouncement: Record<string, string> = {

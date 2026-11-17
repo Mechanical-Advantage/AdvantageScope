@@ -54,7 +54,7 @@ _上图所示为英文界面。_
 
 ## CSV 格式化 {#csv-formatting}
 
-CSV 列名必须为“Timestamp, Key, Value”或“Timestamp, (Key), (Key), etc”，时间戳单位为秒。常见数据类型的格式要求如下。请注意，将日志数据导出为 CSV 再重新导入是_有损_操作，因为 CSV 无法表达复杂字段类型。
+CSV 列名必须为“Timestamp, Key, Value”或“Timestamp, (Key), (Key), etc”，时间戳单位为秒。常见数据类型的格式要求如下。请注意，将日志数据导出为 CSV 再重新导入是*有损*操作，因为 CSV 无法表达复杂字段类型。
 
 - **布尔值：** `true` 或 `false`
 - **字符串：** `"(value)"`

@@ -65,8 +65,8 @@ _Mai sus este prezentată interfața în limba engleză._
 
 Tabelul de mai jos arată viteza de transfer măsurată pe versiunile 2025 și 2026 ale AdvantageScope când este conectat prin Ethernet (lățime de bandă maximă de 100 Mb/s). Reține că performanța versiunii 2025 este puternic afectată de utilizarea CPU-ului pe roboRIO.
 
-|                                                     | 2025 (SFTP) | 2026 (FTP) | Accelerare                                       |
-| --------------------------------------------------- | ----------- | ---------- | ------------------------------------------------ |
+|                                                      | 2025 (SFTP) | 2026 (FTP) | Accelerare                                       |
+| ---------------------------------------------------- | ----------- | ---------- | ------------------------------------------------ |
 | Utilizare mare CPU<br /><sub>Cod robot complex</sub> | 25 Mb/s     | 80 Mb/s    | <span style={{fontSize: '24px'}}>**3,2x**</span> |
 | Utilizare medie CPU<br /><sub>Cod robot normal</sub> | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**2,3x**</span> |
 | Utilizare minimă CPU<br /><sub>Fără cod robot</sub>  | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**1,1x**</span> |

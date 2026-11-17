@@ -113,7 +113,7 @@ Bekijk de [REVLib-documentatie](https://docs.revrobotics.com/revlib/24-to-25#set
 
 ## SysId gebruiken {#sysid-usage}
 
-1. Nadat je URCL hebt ingesteld zoals hierboven beschreven, maak je de SysId-routine aan met `null` als logconsument (*log consumer*) voor het mechanisme. Hieronder zie je een voorbeeld in Java, dat je bijvoorbeeld in je subsystem-klasse kunt zetten.
+1. Nadat je URCL hebt ingesteld zoals hierboven beschreven, maak je de SysId-routine aan met `null` als logconsument (_log consumer_) voor het mechanisme. Hieronder zie je een voorbeeld in Java, dat je bijvoorbeeld in je subsystem-klasse kunt zetten.
 
 <Tabs groupId="library">
 <TabItem value="WPILib" label="WPILib" default>

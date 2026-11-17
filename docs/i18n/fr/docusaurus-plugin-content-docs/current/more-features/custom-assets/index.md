@@ -68,7 +68,7 @@ La méthode la plus simple pour trouver les bonnes valeurs de position et de rot
 :::info
 AdvantageScope simplifie automatiquement la géométrie des modèles pour améliorer les performances, avec un niveau de détail adapté au [mode de rendu](/tab-reference/3d-field#rendering-modes) choisi. Si cette simplification altère l'apparence d'une ressource personnalisée, deux options s'offrent à vous :
 
-- Pour empêcher la suppression automatique d'un maillage (*mesh*) précis, ajoutez `NOSIMPLIFY` dans son nom.
+- Pour empêcher la suppression automatique d'un maillage (_mesh_) précis, ajoutez `NOSIMPLIFY` dans son nom.
 - Pour désactiver la simplification sur l'ensemble du modèle de robot, définissez l'option `disableSimplification` sur `true` dans la configuration.
 
 :::
@@ -84,7 +84,7 @@ Les modèles de robots peuvent inclure des composants articulés pour animer les
 La configuration des composants se fait dans le fichier `config.json` du robot, sous la clé « components » sous forme de tableau. Si aucune pose de composant n'est fournie dans AdvantageScope, les composants sont placés avec les rotations et la position par défaut du robot (voir ci-dessus). Dès que vous fournissez des poses de composants, AdvantageScope applique plutôt les valeurs « zeroed » (`zeroedRotations` et `zeroedPosition`) pour ramener chaque composant à l'origine du robot, puis applique vos poses pour les placer au bon endroit.
 
 :::tip
-Lorsque vous positionnez des composants 3D par rapport au robot, l'origine du système de coordonnées correspond à la pose publiée du robot. Gardez en tête que cette pose a généralement une hauteur nulle, ce qui correspond au plan du sol et NON au dessous du châssis (*bellypan*) pour un déplacement 2D classique.
+Lorsque vous positionnez des composants 3D par rapport au robot, l'origine du système de coordonnées correspond à la pose publiée du robot. Gardez en tête que cette pose a généralement une hauteur nulle, ce qui correspond au plan du sol et NON au dessous du châssis (_bellypan_) pour un déplacement 2D classique.
 :::
 
 ```json

@@ -27,7 +27,7 @@ El modelo del campo de FTC 2026-2027 no trae AprilTags integrados porque se espe
 :::
 
 :::warning Campo de FRC 2026
-El modelo del campo de FRC 2026 coincide con la distribución de AprilTags del campo **soldado** (*welded*). Aunque las diferencias entre el campo soldado y el de AndyMark son mínimas, podrías notar pequeños desfases (~0.5 pulg.) al visualizar poses de AprilTags basadas en el diseño de AndyMark.
+El modelo del campo de FRC 2026 coincide con la distribución de AprilTags del campo **soldado** (_welded_). Aunque las diferencias entre el campo soldado y el de AndyMark son mínimas, podrías notar pequeños desfases (~0.5 pulg.) al visualizar poses de AprilTags basadas en el diseño de AndyMark.
 :::
 
 ## Agregar objetos {#adding-objects}
@@ -123,12 +123,12 @@ Cada cancha incluye tipos de objetos propios para sus elementos de juego, lo que
 - Indicar cuándo y dónde hay un elemento de juego dentro del robot
 - Visualizar trayectorias de disparo calculadas con física
 
-Otro uso súper práctico es reflejar el estado de los sensores del robot. Por ejemplo, en un robot de la temporada 2024, un sensor óptico (*beam break*) en el recorrido de la nota puede hacer que aparezca una nota dentro del robot en cuanto la detecta (como se ve en la imagen).
+Otro uso súper práctico es reflejar el estado de los sensores del robot. Por ejemplo, en un robot de la temporada 2024, un sensor óptico (_beam break_) en el recorrido de la nota puede hacer que aparezca una nota dentro del robot en cuanto la detecta (como se ve en la imagen).
 
 <details>
 <summary>Ejemplo de código</summary>
 
-El proyecto de ejemplo KitBot 2024 de AdvantageKit incluye un [comando](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) sencillo que anima una nota viajando desde el robot hacia el *speaker*. Ese comando se integra en la [secuencia de lanzamiento](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73) estándar y dispara la animación cada vez que se suelta una nota. En [este video](https://youtube.com/shorts/-HxfDo9f19U?feature=share) puedes ver cómo se usan estas animaciones para visualizar rutinas autónomas de varios juegos distintos.
+El proyecto de ejemplo KitBot 2024 de AdvantageKit incluye un [comando](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) sencillo que anima una nota viajando desde el robot hacia el _speaker_. Ese comando se integra en la [secuencia de lanzamiento](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73) estándar y dispara la animación cada vez que se suelta una nota. En [este video](https://youtube.com/shorts/-HxfDo9f19U?feature=share) puedes ver cómo se usan estas animaciones para visualizar rutinas autónomas de varios juegos distintos.
 
 </details>
 
@@ -176,7 +176,7 @@ Al igual que el resto de las poses, la pose de **Anulación de cámara** debe se
 
 ## Configuración {#configuration}
 
-Elige el modelo de campo desde el menú desplegable; están incluidos todos los juegos recientes de FRC y FTC. Si tu computadora tiene pocos recursos gráficos, te recomendamos usar los campos "Evergreen". Los campos "Ejes" (*Axes*) muestran únicamente los ejes XYZ en el origen junto con el contorno de la cancha para dar referencia de escala.
+Elige el modelo de campo desde el menú desplegable; están incluidos todos los juegos recientes de FRC y FTC. Si tu computadora tiene pocos recursos gráficos, te recomendamos usar los campos "Evergreen". Los campos "Ejes" (_Axes_) muestran únicamente los ejes XYZ en el origen junto con el contorno de la cancha para dar referencia de escala.
 
 :::info
 Puedes personalizar el sistema de coordenadas de esta pestaña. Consulta la página de [sistemas de coordenadas](/more-features/coordinate-systems) para ver los detalles.

@@ -29,7 +29,7 @@ Comme cette bibliothèque n'est pas un outil officiel de REV, veuillez adresser 
 
 ## Configuration {#setup}
 
-Installez la dépendance *vendordep* URCL en suivant la procédure d'installation des [bibliothèques tierces](https://docs.wpilib.org/fr/stable/docs/software/vscode-overview/3rd-party-libraries.html) depuis le gestionnaire de dépendances de VSCode. Vous pouvez aussi utiliser directement l'URL JSON suivante :
+Installez la dépendance _vendordep_ URCL en suivant la procédure d'installation des [bibliothèques tierces](https://docs.wpilib.org/fr/stable/docs/software/vscode-overview/3rd-party-libraries.html) depuis le gestionnaire de dépendances de VSCode. Vous pouvez aussi utiliser directement l'URL JSON suivante :
 
 ```
 https://raw.githubusercontent.com/Mechanical-Advantage/URCL/main/URCL.json
@@ -103,17 +103,17 @@ La compatibilité d'URCL avec AdvantageKit est fournie uniquement à titre prati
 </TabItem>
 </Tabs>
 
-Pour repérer plus facilement vos appareils dans le journal, vous pouvez associer des alias aux identifiants CAN en passant un dictionnaire (*map*) à la méthode `start()` ou `startExternal()`. Les clés correspondent aux identifiants CAN, et les valeurs aux noms à afficher dans le journal. Les appareils sans alias conserveront leur nom par défaut.
+Pour repérer plus facilement vos appareils dans le journal, vous pouvez associer des alias aux identifiants CAN en passant un dictionnaire (_map_) à la méthode `start()` ou `startExternal()`. Les clés correspondent aux identifiants CAN, et les valeurs aux noms à afficher dans le journal. Les appareils sans alias conserveront leur nom par défaut.
 
 :::warning
-Pour limiter la charge sur le bus CAN, la plupart des trames d'état des appareils Spark sont **désactivées par défaut** tant qu'une méthode *getter* associée n'est pas appelée. Les données des trames désactivées n'apparaîtront donc pas dans le journal URCL.
+Pour limiter la charge sur le bus CAN, la plupart des trames d'état des appareils Spark sont **désactivées par défaut** tant qu'une méthode _getter_ associée n'est pas appelée. Les données des trames désactivées n'apparaîtront donc pas dans le journal URCL.
 
 Pour en savoir plus, consultez la [documentation REVLib](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods). Nous vous recommandons d'utiliser [`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) lors de la configuration du Spark afin d'activer manuellement les signaux que vous souhaitez enregistrer.
 :::
 
 ## Utilisation de SysId {#sysid-usage}
 
-1. Après avoir configuré URCL comme décrit ci-dessus, configurez votre routine SysId en passant `null` comme consommateur de journal du mécanisme (*mechanism log consumer*). Voici un exemple en Java, à placer par exemple dans la classe du sous-système.
+1. Après avoir configuré URCL comme décrit ci-dessus, configurez votre routine SysId en passant `null` comme consommateur de journal du mécanisme (_mechanism log consumer_). Voici un exemple en Java, à placer par exemple dans la classe du sous-système.
 
 <Tabs groupId="library">
 <TabItem value="WPILib" label="WPILib" default>

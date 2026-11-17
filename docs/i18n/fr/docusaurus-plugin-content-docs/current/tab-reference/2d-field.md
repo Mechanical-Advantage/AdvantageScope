@@ -50,9 +50,9 @@ Cliquez sur l'icône `?` pour consulter la liste complète des types d'objets pr
 
 ## Format des données {#data-format}
 
-Publiez vos données géométriques sous forme de *struct* ou de *protobuf* encodés en octets. Plusieurs types géométriques 2D et 3D sont pris en charge, notamment `Pose2d`, `Pose3d`, `Translation2d` et `Translation3d`.
+Publiez vos données géométriques sous forme de _struct_ ou de _protobuf_ encodés en octets. Plusieurs types géométriques 2D et 3D sont pris en charge, notamment `Pose2d`, `Pose3d`, `Translation2d` et `Translation3d`.
 
-De nombreuses bibliothèques gèrent le format *struct*, dont WPILib et AdvantageKit. L'exemple ci-dessous montre comment enregistrer des poses 2D en Java.
+De nombreuses bibliothèques gèrent le format _struct_, dont WPILib et AdvantageKit. L'exemple ci-dessous montre comment enregistrer des poses 2D en Java.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>

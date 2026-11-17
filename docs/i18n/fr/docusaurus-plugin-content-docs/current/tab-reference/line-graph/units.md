@@ -14,7 +14,7 @@ _L'interface en anglais est illustrée ci-dessus._
 
 AdvantageScope propose plusieurs façons d'associer une unité à chaque champ. La grande majorité des unités courantes sont reconnues; pour voir la liste complète, ouvrez le menu déroulant lors de la configuration d'une [conversion manuelle](#manual-conversion).
 
-Pour les méthodes (2) et (3), AdvantageScope analyse des chaînes de caractères pour identifier l'unité. Plusieurs variantes sont acceptées pour chaque unité, y compris les abréviations usuelles (par ex. `ft` et `feet`) ainsi que les orthographes américaine et britannique (par ex. `meters` et `metres`). Attention : les noms d'unités doivent toujours être écrits avec des symboles SI ou en anglais, quelle que soit la langue choisie dans AdvantageScope. Si une unité n'est pas reconnue comme prévu, n'hésitez pas à [ouvrir un ticket (*issue*)](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
+Pour les méthodes (2) et (3), AdvantageScope analyse des chaînes de caractères pour identifier l'unité. Plusieurs variantes sont acceptées pour chaque unité, y compris les abréviations usuelles (par ex. `ft` et `feet`) ainsi que les orthographes américaine et britannique (par ex. `meters` et `metres`). Attention : les noms d'unités doivent toujours être écrits avec des symboles SI ou en anglais, quelle que soit la langue choisie dans AdvantageScope. Si une unité n'est pas reconnue comme prévu, n'hésitez pas à [ouvrir un ticket (_issue_)](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
 
 :::tip
 Vous voulez vérifier si vos unités sont bien reconnues? Regardez simplement si une unité s'affiche sur l'axe Y lorsque vous ajoutez le champ au graphique linéaire.
@@ -26,7 +26,7 @@ AdvantageScope applique automatiquement les unités natives des types de donnée
 
 ### 🥈 Métadonnées de champ {#field-metadata}
 
-Les formats WPILOG et NetworkTables permettent d'associer des « métadonnées » à chaque champ. AdvantageScope recherche un champ JSON nommé `unit` ou `units` contenant le nom de l'unité sous forme de chaîne (avec des espaces, en *camelCase*, *PascalCase* ou *snake_case*). Pour consulter les métadonnées d'un champ, survolez son nom dans la barre latérale.
+Les formats WPILOG et NetworkTables permettent d'associer des « métadonnées » à chaque champ. AdvantageScope recherche un champ JSON nommé `unit` ou `units` contenant le nom de l'unité sous forme de chaîne (avec des espaces, en _camelCase_, _PascalCase_ ou _snake_case_). Pour consulter les métadonnées d'un champ, survolez son nom dans la barre latérale.
 
 :::tip
 Dans WPILib, enregistrer des objets `Measure` avec `Telemetry.log()` ajoute automatiquement les métadonnées d'unité. Vous pouvez aussi les définir explicitement via `Telemetry.setProperty("fieldName", "unit", "\"volts\"")`.
@@ -42,7 +42,7 @@ AdvantageKit prend également en charge les métadonnées d'unité lors de l'enr
 - **Snake_case** : `position_meters`, `velocity_rad_per_sec`, `timestamp_s`
 - **Séparateurs par espaces** : `position meters`, `velocity rad per sec`, `timestamp s`
 
-La casse n'est _pas_ prise en compte avec le *snake_case* ni avec les séparateurs par espaces.
+La casse n'est _pas_ prise en compte avec le _snake_case_ ni avec les séparateurs par espaces.
 
 :::tip
 Si une unité est mal interprétée, cliquez sur `Unités manuelles` > `Désactiver les unités automatiques` pour l'ignorer. Vous pourrez ensuite utiliser la conversion manuelle pour choisir l'unité souhaitée.

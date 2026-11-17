@@ -27,7 +27,7 @@ Het FTC-veldmodel voor 2026-2027 heeft geen ingebouwde AprilTags, omdat de tags 
 :::
 
 :::warning FRC 2026-veld
-Het FRC-veldmodel voor 2026 volgt de AprilTag-indeling van het **gelaste** (*welded*) veld. De verschillen tussen het gelaste veld en het AndyMark-veld zijn heel klein, maar er kan een lichte afwijking (~0,5 inch) optreden als je AprilTag-poses bekijkt die op de AndyMark-indeling zijn gebaseerd.
+Het FRC-veldmodel voor 2026 volgt de AprilTag-indeling van het **gelaste** (_welded_) veld. De verschillen tussen het gelaste veld en het AndyMark-veld zijn heel klein, maar er kan een lichte afwijking (~0,5 inch) optreden als je AprilTag-poses bekijkt die op de AndyMark-indeling zijn gebaseerd.
 :::
 
 ## Objecten toevoegen {#adding-objects}
@@ -123,7 +123,7 @@ Elk veld heeft eigen objecttypen voor speelstukken, zodat je op basis van je rob
 - Laten zien waar een speelstuk zich in de robot bevindt
 - Schiettrajecten bekijken op basis van natuurkundige berekeningen
 
-Je kunt ook heel simpel op basis van sensordata laten zien of er een speelstuk in de robot zit. Een lichtsluis (*beam break sensor*) in het pad van een note bij een robot uit 2024 kan bijvoorbeeld een note laten verschijnen (zoals hieronder).
+Je kunt ook heel simpel op basis van sensordata laten zien of er een speelstuk in de robot zit. Een lichtsluis (_beam break sensor_) in het pad van een note bij een robot uit 2024 kan bijvoorbeeld een note laten verschijnen (zoals hieronder).
 
 <details>
 <summary>Codevoorbeeld</summary>
@@ -168,7 +168,7 @@ Elk robotmodel heeft een aantal vaste camera's, zoals vision- en bestuurderscame
 
 <img src="/img/tab-reference/3d-field/3d-field-5.webp" alt="Vaste camera" />
 
-Als je een pose voor "Camera-override" opgeeft, vervangt die de standaardpositie van alle vaste camera's, terwijl hun ingestelde FOV en beeldverhouding gelijk blijven. Zo kan je robotcode de positie van een bewegende camera doorgeven, bijvoorbeeld op een koepel (*turret*) of een verstelbare shooterkap.
+Als je een pose voor "Camera-override" opgeeft, vervangt die de standaardpositie van alle vaste camera's, terwijl hun ingestelde FOV en beeldverhouding gelijk blijven. Zo kan je robotcode de positie van een bewegende camera doorgeven, bijvoorbeeld op een koepel (_turret_) of een verstelbare shooterkap.
 
 :::info
 Net als andere posedata moet de pose voor "Camera-override" _veldrelatief_ zijn, en dus niet robotrelatief.

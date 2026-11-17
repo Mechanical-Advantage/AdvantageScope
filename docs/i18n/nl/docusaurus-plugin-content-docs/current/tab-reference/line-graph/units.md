@@ -42,7 +42,7 @@ Als er geen struct of metadata is, probeert AdvantageScope de eenheid uit de vel
 - **Snake_case**, zoals `position_meters`, `velocity_rad_per_sec` en `timestamp_s`
 - **Met spaties**, zoals `position meters`, `velocity rad per sec` en `timestamp s`
 
-Bij snake_case en spaties maakt het _niet_ uit of je hoofdletters of kleine letters gebruikt.
+Bij snake*case en spaties maakt het \_niet* uit of je hoofdletters of kleine letters gebruikt.
 
 :::tip
 Wordt een eenheid verkeerd herkend? Klik dan op `Handmatige eenheden` > `Automatische eenheden uitschakelen` om de automatische herkenning te negeren. Daarna kun je zelf een handmatige conversie instellen.

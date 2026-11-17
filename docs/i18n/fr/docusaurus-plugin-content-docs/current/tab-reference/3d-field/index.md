@@ -23,11 +23,11 @@ Pour zoomer, placez le curseur sur la chronologie et utilisez la molette vers le
 </details>
 
 :::warning Terrain FTC 2026-2027
-Le modèle du terrain FTC 2026-2027 n'inclut pas d'AprilTags fixes, car leur position sur la structure (*hive*) peut changer en cours de match. Vous pouvez publier un `Pose3d[]` et un `number[]` pour afficher dynamiquement des objets AprilTag sur le terrain. La taille d'AprilTag à utiliser pour ce terrain est de **3,25 po**.
+Le modèle du terrain FTC 2026-2027 n'inclut pas d'AprilTags fixes, car leur position sur la structure (_hive_) peut changer en cours de match. Vous pouvez publier un `Pose3d[]` et un `number[]` pour afficher dynamiquement des objets AprilTag sur le terrain. La taille d'AprilTag à utiliser pour ce terrain est de **3,25 po**.
 :::
 
 :::warning Terrain FRC 2026
-Le modèle du terrain FRC 2026 reprend la disposition des AprilTags du terrain **soudé** (*welded*). Les différences avec le terrain AndyMark sont minimes, mais vous remarquerez peut-être de légers décalages (environ 0,5 pouce) en visualisant des poses d'AprilTags basées sur la disposition AndyMark.
+Le modèle du terrain FRC 2026 reprend la disposition des AprilTags du terrain **soudé** (_welded_). Les différences avec le terrain AndyMark sont minimes, mais vous remarquerez peut-être de légers décalages (environ 0,5 pouce) en visualisant des poses d'AprilTags basées sur la disposition AndyMark.
 :::
 
 ## Ajout d'objets {#adding-objects}
@@ -46,9 +46,9 @@ AdvantageScope prend en charge plusieurs tailles d'AprilTags pour les terrains F
 
 ## Format des données {#data-format}
 
-Publiez vos données géométriques sous forme de *struct* ou de *protobuf* encodés en octets. Plusieurs types géométriques 2D et 3D sont pris en charge, notamment `Pose2d`, `Pose3d`, `Translation2d` et `Translation3d`.
+Publiez vos données géométriques sous forme de _struct_ ou de _protobuf_ encodés en octets. Plusieurs types géométriques 2D et 3D sont pris en charge, notamment `Pose2d`, `Pose3d`, `Translation2d` et `Translation3d`.
 
-De nombreuses bibliothèques gèrent le format *struct*, dont WPILib et AdvantageKit. L'exemple ci-dessous montre comment enregistrer des poses 3D en Java.
+De nombreuses bibliothèques gèrent le format _struct_, dont WPILib et AdvantageKit. L'exemple ci-dessous montre comment enregistrer des poses 3D en Java.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -123,7 +123,7 @@ Chaque terrain propose des objets d'éléments de jeu qui s'affichent à l'endro
 - indiquer où se trouve un élément de jeu à l'intérieur du robot;
 - tracer des trajectoires de tir calculées par la physique.
 
-Vous pouvez aussi afficher l'état d'un élément de jeu dans le robot à partir d'un capteur. Par exemple, sur un robot 2024, un capteur photoélectrique (*beam break*) dans le convoyeur peut déclencher l'affichage d'une note (comme ci-dessous).
+Vous pouvez aussi afficher l'état d'un élément de jeu dans le robot à partir d'un capteur. Par exemple, sur un robot 2024, un capteur photoélectrique (_beam break_) dans le convoyeur peut déclencher l'affichage d'une note (comme ci-dessous).
 
 <details>
 <summary>Exemple de code</summary>

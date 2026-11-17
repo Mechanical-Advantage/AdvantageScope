@@ -70,7 +70,7 @@ AdvantageScope vereenvoudigt de geometrie van 3D-modellen automatisch voor beter
 
 - Zet `NOSIMPLIFY` in de naam van een specifieke mesh om te voorkomen dat die automatisch wordt verwijderd.
 - Zet de optie `disableSimplification` in het configuratiebestand op `true` om vereenvoudiging voor het hele robotmodel uit te schakelen.
-:::
+  :::
 
 ### Scharnierende componenten {#articulated-components}
 

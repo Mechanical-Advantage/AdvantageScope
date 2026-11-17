@@ -44,7 +44,7 @@ Todas las funciones de AdvantageScope serán oficialmente compatibles con FTC tr
 
 ## 🧮 Gráficos con reconocimiento de unidades {#unit-aware-graphing}
 
-Rediseñamos la pestaña 📉 [Gráfico de líneas](/tab-reference/line-graph/) para que reconozca unidades automáticamente (*unit-aware*). Esto te da varias ventajas nuevas al graficar campos numéricos:
+Rediseñamos la pestaña 📉 [Gráfico de líneas](/tab-reference/line-graph/) para que reconozca unidades automáticamente (_unit-aware_). Esto te da varias ventajas nuevas al graficar campos numéricos:
 
 - Etiquetado preciso en los ejes Y y en las vistas de valores
 - Conversión rápida a unidades compatibles (sin ventanas emergentes)

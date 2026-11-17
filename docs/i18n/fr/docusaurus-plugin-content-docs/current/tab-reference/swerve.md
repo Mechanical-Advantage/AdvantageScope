@@ -32,7 +32,7 @@ Pour commencer, faites glisser un champ vers la section « Sources ». Vous po
 
 **Pour personnaliser une source, cliquez sur son icône colorée ou faites un clic droit sur son nom.** AdvantageScope prend en charge trois types de sources :
 
-- **Vitesses des modules :** un ensemble de quatre états de modules *swerve*, représentés par des vecteurs sur le schéma.
+- **Vitesses des modules :** un ensemble de quatre états de modules _swerve_, représentés par des vecteurs sur le schéma.
 - **Vitesses du robot :** les vitesses linéaire et angulaire affichées au centre du schéma.
 - **Rotation :** l'angle utilisé pour orienter le schéma.
 
@@ -40,7 +40,7 @@ Pour commencer, faites glisser un champ vers la section « Sources ». Vous po
 
 Les données doivent être publiées au format struct ou protobuf encodé en octets, à l'aide des types `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d` ou `Rotation3d`.
 
-De nombreuses bibliothèques prennent en charge le format struct, notamment WPILib et AdvantageKit. L'exemple ci-dessous montre comment enregistrer les états des modules *swerve* en Java.
+De nombreuses bibliothèques prennent en charge le format struct, notamment WPILib et AdvantageKit. L'exemple ci-dessous montre comment enregistrer les états des modules _swerve_ en Java.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>

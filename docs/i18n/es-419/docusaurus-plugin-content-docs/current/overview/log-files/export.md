@@ -42,7 +42,7 @@ Al exportar dispones de las siguientes opciones:
   - "_/DriverStation/Joystick0_": Incluye todos los campos que empiezan con "/DriverStation/Joystick0" (los datos del primer joystick).
   - "_Flywheels,DS:enabled_": Incluye todos los campos que empiezan con "/Flywheels" o "DS:enabled" (todos los datos de los volantes, más el estado de habilitación del robot).
   - "_Drive/LeftPosition,Drive/RightPosition_": Incluye únicamente los campos "/Drive/LeftPosition" y "/Drive/RightPosition".
-- **Conjunto de campos:** Los campos generados son creados por AdvantageScope para desglosar tipos de datos complejos y aparecen en gris en la barra lateral (por ejemplo, los elementos individuales de arreglos, *structs* y otros esquemas).
+- **Conjunto de campos:** Los campos generados son creados por AdvantageScope para desglosar tipos de datos complejos y aparecen en gris en la barra lateral (por ejemplo, los elementos individuales de arreglos, _structs_ y otros esquemas).
   - _Incluir generados:_ Exporta todos los campos visibles, incluidos los generados. Es la mejor opción si vas a abrir el archivo en un programa que no sabe interpretar tipos complejos.
   - _Solo originales:_ Exporta únicamente los campos que venían en el registro original, excluyendo los generados. Es lo recomendable si vas a abrir el archivo en AdvantageScope o en otra herramienta que sí interprete tipos complejos.
 

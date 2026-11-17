@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 📍 Points {#points}
 
-L'onglet Points affiche une visualisation 2D de points arbitraires. C'est un outil très polyvalent qui permet de créer des visualisations sur mesure pour vos données ou *pipelines* de vision, l'état de vos mécanismes, et bien plus.
+L'onglet Points affiche une visualisation 2D de points arbitraires. C'est un outil très polyvalent qui permet de créer des visualisations sur mesure pour vos données ou _pipelines_ de vision, l'état de vos mécanismes, et bien plus.
 
 <img src="/img/tab-reference/points-1.webp" alt="Exemple d'onglet Points" />
 
