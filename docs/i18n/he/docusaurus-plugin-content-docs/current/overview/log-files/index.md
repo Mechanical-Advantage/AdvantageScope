@@ -2,59 +2,59 @@
 
 ## פורמטים נתמכים {#supported-formats}
 
-- **WPILOG (.wpilog)** - מופק על ידי [תיעוד הנתונים המובנה](https://docs.wpilib.org/he/stable/docs/software/telemetry/datalog.html) של WPILib ו-AdvantageKit. ניתן להשתמש ב-[URCL](/more-features/urcl) כדי ללכוד אותות מבקרי המנוע של REV לקובץ WPILOG.
-- **Hoot (.hoot)** - מופק על ידי [מקליט האותות](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) Phoenix 6 של CTRE.
-- **REVLOG (.revlog)** - מופק על ידי [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) של REV Robotics.
-- **Road Runner (.log)** - מופק על ידי ספריית [Road Runner](https://github.com/acmerobotics/road-runner) עבור FTC.
-- **CSV (.csv)** - ערכים מופרדים בפסיקים, התואמים לפורמט [שמיוצא](/overview/log-files/export) על ידי AdvantageScope במצבים "CSV (טבלה)" או "CSV (רשימה)". לעיון בפרטים, ראו [כאן](#csv-formatting).
-- **יומנים של NI Driver Station (.dslog ו-.dsevents)** - פורמט ישן, מופקים על ידי ה-[FRC Driver Station](https://docs.wpilib.org/he/stable/docs/software/driverstation/driver-station.html) של NI (2010-2026). AdvantageScope מחפשת באופן אוטומטי את קובץ היומן התואם בעת פתיחת כל אחד מסוגי היומנים.
-- **RLOG (.rlog)** - פורמט ישן, מופק על ידי AdvantageKit 2022.
+- **WPILOG (.wpilog)** - נוצר על ידי [מערכת תיעוד הנתונים המובנית](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) של WPILib ועל ידי AdvantageKit. אפשר להשתמש ב-[URCL](/more-features/urcl) כדי להקליט אותות מבקרי המנוע של REV לקובץ WPILOG.
+- **Hoot (.hoot)** - נוצר על ידי [מקליט האותות (Signal Logger)](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) ב-Phoenix 6 של CTRE.
+- **REVLOG (.revlog)** - נוצר על ידי [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) של REV Robotics.
+- **Road Runner (.log)** - נוצר על ידי ספריית [Road Runner](https://github.com/acmerobotics/road-runner) עבור FTC.
+- **CSV (.csv)** - ערכים מופרדים בפסיקים, בפורמט התואם לזה ש-AdvantageScope [מייצאת](/overview/log-files/export) במצבים "CSV (טבלה)" או "CSV (רשימה)". פרטים נוספים מופיעים [כאן](#csv-formatting).
+- **יומני NI Driver Station (.dslog ו-.dsevents)** - פורמט מדור קודם שנוצר על ידי ה-[FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html) של NI (2010–2026). כשפותחים אחד מהקבצים האלה, AdvantageScope מחפשת אוטומטית את הקובץ המשלים לו.
+- **RLOG (.rlog)** - פורמט מדור קודם שנוצר על ידי AdvantageKit 2022.
 
 :::info
-קובצי יומן של Hoot ניתנים לפתיחה רק לאחר הסכמה ל[הסכם הרישיון למשתמשי קצה (EULA)](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt) של CTRE. AdvantageScope מציגה הודעה לאישור התנאים הללו בעת פתיחת קובץ יומן של Hoot בפעם הראשונה.
+כדי לפתוח קובצי יומן של Hoot יש לאשר תחילה את [הסכם הרישיון למשתמשי קצה (EULA)](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt) של CTRE. בפעם הראשונה שתפתחו קובץ Hoot, AdvantageScope תקפיץ חלון לאישור התנאים.
 :::
 
 ## פתיחת יומנים {#opening-logs}
 
-בסרגל התפריטים, יש ללחוץ על `קובץ` > `פתיחת יומן(ים)...`, ולאחר מכן לבחור קובץ יומן אחד או יותר מהדיסק המקומי. גרירת קובץ יומן בדפדפן הקבצים של המערכת אל הסמל או החלון של AdvantageScope תגרום גם היא לפתיחתו.
+בשורת התפריטים, לחצו על `קובץ` > `פתיחת יומן(ים)...`, ובחרו קובץ יומן אחד או יותר מהמחשב. אפשר גם פשוט לגרור קובץ יומן מסייר הקבצים ישירות אל הסמל או החלון של AdvantageScope.
 
 :::info
-אם מספר קבצים נפתחים בו-זמנית, חותמות הזמן ייושרו באופן אוטומטי. דבר זה מאפשר השוואה קלה של קובצי יומן ממקורות מרובים. ראו את הדף [חותמות זמן](/more-features/timestamps) לפרטים על אפשרויות תצוגת חותמות זמן.
+אם פותחים כמה קבצים במקביל, חותמות הזמן שלהם מתיישרות אוטומטית — מה שמאפשר להשוות בקלות בין יומנים ממקורות שונים. בדף [חותמות זמן](/more-features/timestamps) תמצאו פרטים על אפשרויות התצוגה השונות.
 :::
 
 <img src="/img/overview/log-files/open-file-1.webp" alt="פתיחת קובץ יומן שמור" />
 
-_ממשק באנגלית מוצג למעלה._
+_הממשק בתמונה מוצג באנגלית._
 
 ## הוספת יומנים חדשים {#adding-new-logs}
 
-לאחר פתיחת קובץ יומן, ניתן להוסיף בקלות יומנים נוספים לוויזואליזציה. חותמות הזמן ייושרו מחדש באופן אוטומטי לסנכרון עם הנתונים הקיימים.
+לאחר שכבר פתחתם קובץ יומן, אפשר להוסיף לתצוגה קובצי יומן נוספים בקלות. חותמות הזמן יתיישרו אוטומטית כדי להסתנכרן עם הנתונים שכבר טעונים.
 
-בסרגל התפריטים, יש ללחוץ על `קובץ` > `הוספת יומן(ים) חדשים...`, ולאחר מכן לבחור קובץ יומן אחד או יותר להוספה לוויזואליזציה הנוכחית. השדות מכל יומן יוקלטו תחת טבלאות בשם `Log0`, `Log1`, וכו'.
+לחצו בשורת התפריטים על `קובץ` > `הוספת יומן(ים) חדשים...`, ובחרו קובץ אחד או יותר להוספה. השדות של כל יומן יופיעו תחת טבלאות בשם `Log0`, `Log1` וכן הלאה.
 
 ## הורדה מהרובוט {#downloading-from-the-robot}
 
 <details>
 <summary>תצורה</summary>
 
-יש לפתוח את חלון ההעדפות על ידי לחיצה על `אפליקציה` > `הצגת העדפות...` (Windows/Linux) או `AdvantageScope` > `הגדרות...` (macOS). יש לעדכן את כתובת הרובוט ותיקיית היומנים.
+פתחו את חלון ההעדפות דרך `אפליקציה` > `הצגת העדפות...` (Windows/Linux) או `AdvantageScope` > `הגדרות...` (macOS), ועדכנו את כתובת הרובוט ואת תיקיית היומנים.
 
 <img src="/img/prefs_he.webp" alt="תרשים העדפות" height="450" />
 </details>
 
-יש ללחוץ על `קובץ` > `הורדת יומנים...` כדי לפתוח את חלון ההורדה. הורדת יומנים נתמכת ב-Systemcore וב-roboRIO. לאחר התחברות לרובוט, היומנים הזמינים מוצגים כאשר החדש ביותר בחלק העליון. יש לבחור קובץ או תיקיית יומן אחת או יותר להורדה (shift-click לבחירת טווח או **cmd/ctrl + A** לבחירת הכול). לאחר מכן יש ללחוץ על הסמל ↓ ולבחור מיקום שמירה.
+לחצו על `קובץ` > `הורדת יומנים...` כדי לפתוח את חלון ההורדה. הורדת יומנים נתמכת ב-Systemcore וב-roboRIO. אחרי החיבור לרובוט, היומנים הזמינים יופיעו כשהחדש ביותר בראש הרשימה. בחרו קובץ או תיקיית יומן אחת או יותר (אפשר להחזיק Shift וללחוץ לבחירת טווח, או **cmd/ctrl + A** לבחירת הכול), לחצו על סמל החץ ↓ ובחרו איפה לשמור.
 
 :::tip
-בעת הורדת קבצים מרובים, AdvantageScope מדלגת על קבצים שכבר קיימים בתיקיית היעד.
+כשמורידים כמה קבצים יחד, AdvantageScope מדלגת אוטומטית על קבצים שכבר קיימים בתיקיית היעד.
 :::
 
 <img src="/img/overview/log-files/open-file-2.webp" alt="הורדת קובצי יומן" height="350" />
 
-_ממשק באנגלית מוצג למעלה._
+_הממשק בתמונה מוצג באנגלית._
 
 ## פורמט CSV {#csv-formatting}
 
-שמות העמודות בקובץ CSV חייבים להיות "Timestamp, Key, Value" או "Timestamp, (Key), (Key), וכו'". ערכי חותמות הזמן מבוטאים בשניות. הרשימה למטה מציגה את הפורמט הצפוי של סוגי ערכים נפוצים. שימו לב כי ייצוא וייבוא מחדש של נתוני יומן כ-CSV הוא _בעל אובדן נתונים (lossy)_, מכיוון ש-CSV אינו תומך בסוגי שדות מורכבים.
+שמות העמודות בקובץ CSV חייבים להיות בפורמט "Timestamp, Key, Value" או "Timestamp, (Key), (Key), וכו'". ערכי חותמות הזמן נמדדים בשניות. הרשימה למטה מציגה את הפורמט הצפוי לסוגי הערכים הנפוצים. שימו לב שייצוא של נתוני יומן ל-CSV וייבוא שלהם מחדש הוא תהליך _שמאבד מידע (Lossy)_, כי פורמט CSV אינו תומך בסוגי שדות מורכבים.
 
 - **ערכים בוליאניים:** `true` או `false`
 - **מחרוזות:** `"(value)"`

@@ -1,43 +1,43 @@
 # המרת קובצי Onshape ו-STEP ל-glTF {#converting-onshape-and-step-files-to-gltf}
 
-תצוגת ה-3D של AdvantageScope מקבלת מודלים מותאמים אישית עבור מגרשים ורובוטים, אותם ניתן להתקין תוך שימוש בתהליך המתואר [כאן](/more-features/custom-assets). כל המודלים חייבים להשתמש בפורמט הקבצים [glTF](https://www.khronos.org/gltf/), שנבחר בשל יעילותו בעת אחסון וטעינת מודלים. שימו לב כי AdvantageScope משתמשת בגרסה הבינארית (.glb), הכוללת את כל המשאבים בקובץ יחיד, ולא בפורמט ה-JSON הטהור (.gltf).
+תצוגת ה-3D ב-AdvantageScope תומכת במודלים מותאמים אישית למגרשים ולרובוטים, שאותם ניתן להתקין לפי ההוראות [כאן](/more-features/custom-assets). כל המודלים חייבים להיות בפורמט [glTF](https://www.khronos.org/gltf/), שנבחר בזכות היעילות שלו באחסון ובטעינה. שימו לב ש-AdvantageScope משתמשת בגרסה הבינארית של הפורמט (`.glb`), האורזת את כל המשאבים בקובץ אחד, ולא בקובץ ה-JSON הנפרד (`.gltf`).
 
 ## המרת Onshape ל-STEP {#converting-onshape-to-step}
 
-בעוד Onshape כוללת אפשרות ייצוא ל-glTF, נתון זה מייצר לעיתים מזומנות קבצים גדולים מאוד שקשה לנהלם. במקום זאת, מומלץ לייצא מ-Onshape ל-STEP, ולאחר מכן לעקוב אחר ההוראות בקטע הבא להמרה ל-glTF.
+למרות ש-Onshape מאפשרת לייצא ישירות ל-glTF, פעולה זו יוצרת לרוב קבצים כבדים מאוד שקשה לעבוד איתם. לכן, מומלץ לייצא מ-Onshape לקובץ STEP, ובהמשך להמיר אותו ל-glTF לפי השלבים הבאים:
 
-1. לאחר פתיחת קובץ ה-Onshape, יש ללחוץ בלחיצה ימנית על המכלול הראשי (assembly) ולבחור "Export...":
+1. פתחו את הקובץ ב-Onshape, לחצו לחיצה ימנית על המכלול הראשי (assembly) ובחרו "Export...":
 
 <img src="/img/more-features/custom-assets/gltf-convert-1.webp" alt="בחירת האפשרות &quot;Export...&quot;" />
 
-2. בחלון הקופץ של האפשרויות, ודאו כי פורמט הייצוא הוא "STEP" ולחצו על "Export":
+2. בחלון האפשרויות שנפתח, ודאו שפורמט הייצוא מוגדר כ-"STEP" ולחצו על "Export":
 
-<img src="/img/more-features/custom-assets/gltf-convert-2.webp" alt="חלון קופץ של אפשרויות ייצוא" />
+<img src="/img/more-features/custom-assets/gltf-convert-2.webp" alt="חלון אפשרויות הייצוא" />
 
-3. המתינו להמרת הקובץ ולהורדתו. נתון זה עשוי לקחת מספר דקות.
+3. המתינו שהקובץ יומר ויירד למחשב. התהליך עשוי להימשך כמה דקות.
 
 ## המרת STEP ל-glTF {#converting-step-to-gltf}
 
-1. הורידו את [CAD Assistant](https://www.opencascade.com/products/cad-assistant/). אפליקציה חינמית זו מסוגלת להמיר בין פורמטי 3D רבים, כולל STEP ו-glTF.
+1. הורידו את [CAD Assistant](https://www.opencascade.com/products/cad-assistant/) — תוכנה חינמית שממירה בין מגוון רחב של פורמטים תלת-ממדיים, כולל STEP ו-glTF.
 
-2. פתחו את CAD Assistant ובחרו את קובץ ה-STEP להמרה:
+2. פתחו את CAD Assistant ובחרו את קובץ ה-STEP שברצונכם להמיר:
 
 <img src="/img/more-features/custom-assets/gltf-convert-3.webp" alt="פתיחת קובץ STEP ב-CAD Assistant" />
 
-3. המתינו לייבוא קובץ ה-STEP. נתון זה עשוי לקחת מספר דקות.
+3. המתינו לטעינת קובץ ה-STEP. גם שלב זה עשוי להימשך כמה דקות.
 
 4. לחצו על סמל ה-"Save":
 
-<img src="/img/more-features/custom-assets/gltf-convert-4.webp" alt="לחיצה על סמל &quot;שמירה&quot;" />
+<img src="/img/more-features/custom-assets/gltf-convert-4.webp" alt="לחיצה על סמל &quot;Save&quot;" />
 
-5. בחרו מיקום שמירה, ולאחר מכן השתמשו בתפריט הנפתח כדי להחליף את פורמט הייצוא ל-"glb":
+5. בחרו היכן לשמור את הקובץ, ולאחר מכן שנו בתפריט הנפתח את פורמט הייצוא ל-"glb":
 
-<img src="/img/more-features/custom-assets/gltf-convert-5.webp" alt="החלפת פורמט הייצוא" />
+<img src="/img/more-features/custom-assets/gltf-convert-5.webp" alt="שינוי פורמט הייצוא" />
 
-6. לחצו על סמל גלגל השיניים, ולאחר מכן הפעילו את "Merge faces within the same part":
+6. לחצו על סמל גלגל השיניים וסמנו את האפשרות "Merge faces within the same part":
 
-<img src="/img/more-features/custom-assets/gltf-convert-6.webp" alt="הפעלת &quot;Merge faces within the same part&quot;" />
+<img src="/img/more-features/custom-assets/gltf-convert-6.webp" alt="סימון האפשרות &quot;Merge faces within the same part&quot;" />
 
-7. לחצו על סמל ה-"Save" והמתינו לסיום הייצוא:
+7. לחצו שוב על סמל ה-"Save" והמתינו לסיום הייצוא:
 
-<img src="/img/more-features/custom-assets/gltf-convert-7.webp" alt="לחיצה על סמל &quot;שמירה&quot;" />
+<img src="/img/more-features/custom-assets/gltf-convert-7.webp" alt="לחיצה על סמל &quot;Save&quot;" />

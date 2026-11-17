@@ -7,30 +7,33 @@ import TabItem from '@theme/TabItem';
 
 # 🔍 מטא-דאטה {#metadata}
 
-כרטיסיית המטא-דאטה מציגה ערכים שפורסמו לטבלה המוסתרת "/Metadata" או דרך AdvantageKit. מפתחות המטא-דאטה מוצגים משמאל, והעמודות מפרידות נתונים ממקורות שונים (למשל אמיתי ושחזור בעת שימוש ב-AdvantageKit).
+כרטיסיית המטא-דאטה מציגה ערכים שפורסמו לטבלה המוסתרת "/Metadata" או דרך AdvantageKit. מפתחות המטא-דאטה מופיעים משמאל, והעמודות מפרידות בין מקורות שונים (למשל `אמיתי` ו`שחזור` כשמשתמשים ב-AdvantageKit).
 
 <img src="/img/tab-reference/metadata-1.webp" alt="סקירה כללית של כרטיסיית מטא-דאטה" />
 
 _ממשק באנגלית מוצג למעלה._
 
-קוד הדוגמה למטה מציג כיצד לתעד מטא-דאטה ב-Java.
+דוגמת הקוד למטה מראה איך לרשום מטא-דאטה ב-Java.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-ב-WPILib, ערכים חייבים להיות מפורסמים בטבלה "Metadata".
+ב-WPILib, רושמים ערכים לטבלה "/Metadata" כמחרוזות באמצעות המחלקה `Telemetry`.
 
 ```java
-Telemetry.getTable("Metadata").putString("Darwin", "macOS");
+TelemetryTable metadata = Telemetry.getTable("Metadata");
+metadata.log("RobotName", "Darwin");
+metadata.log("Platform", "macOS");
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-ב-AdvantageKit, יש לקרוא למתודה למטה לפני הפעלת מקליט היומנים (logger). מטא-דאטה מאוחסן בנפרד בעת הפעלה באמיתי ובשחזור להשוואה קלה.
+ב-AdvantageKit, קוראים למתודה שלמטה לפני שמפעילים את ה-logger. המטא-דאטה נשמר בנפרד בהרצה אמיתית ובשחזור, כדי שאפשר יהיה להשוות ביניהם בקלות.
 
 ```java
-Logger.recordMetadata("Darwin", "macOS");
+Logger.recordMetadata("RobotName", "Darwin");
+Logger.recordMetadata("Platform", "macOS");
 ```
 
 </TabItem>

@@ -8,45 +8,45 @@ import TabItem from '@theme/TabItem';
 # 📝 Unofficial REV-Compatible Logger {#unofficial-rev-compatible-logger}
 
 :::info
-חדש ב-2026, REVLib כוללת פתרון תיעוד רשמי לשמירת נתונים מ-Spark Max ו-Spark Flex ליומן REV CAN (`.revlog`). ראו [כאן](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) לפרטים. קבצים אלה ניתנים לפתיחה ישירות ב-AdvantageScope, אך אינם ניתנים לסנכרון מדויק למקורות נתונים אחרים.
+חדש ב-2026: ספריית REVLib כוללת פתרון רשמי לשמירת נתונים מבקרי Spark Max ו-Spark Flex לקובץ יומן REV CAN (`.revlog`). לפרטים נוספים ראו [כאן](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger). אפשר לפתוח קבצים אלה ישירות ב-AdvantageScope, אך לא ניתן לסנכרן אותם במדויק מול מקורות נתונים אחרים.
 
-ה-**U**nofficial **R**EV-**C**ompatible **L**ogger (URCL) של AdvantageScope יישאר זמין גם הוא לקבוצות ב-2026 כדי להבטיח מעבר חלק ולספק תאימות תכונות לעונות קודמות. יהיו לנו פרטים נוספים לשתף על אפשרויות תיעוד ב-2027 ואילך במועד מאוחר יותר.
+כלי ה-**U**nofficial **R**EV-**C**ompatible **L**ogger (URCL) של AdvantageScope יישאר זמין לקבוצות גם ב-2026 כדי לאפשר מעבר חלק ולשמור על תאימות לעונות קודמות. פרטים נוספים על אפשרויות התיעוד ב-2027 ואילך יפורסמו בהמשך.
 :::
 
-URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) היא ספריית תיעוד הזמינה עבור Java, C++, ו-Python אשר מקליטה באופן אוטומטי נתונים מ-Spark Max ו-Spark Flex. דבר זה מאפשר שרטוט ותיעוד חי של כל המכשירים בדומה ל[תכונת השרטוט ב-Tuner X](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) ו[מקליט האותות Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) מבית CTRE.
+URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) היא ספריית רישום יומנים עבור Java, C++ ו-Python, שמקליטה אוטומטית נתונים מבקרי Spark Max ו-Spark Flex. כך אפשר לשרטט ולתעד בזמן אמת את כל הבקרים, בדומה ל[כלי השרטוט ב-Tuner X](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) ול[מקליט האותות של Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) מבית CTRE.
 
-לאחר ההגדרה, פריימי CAN מחזוריים מכל מכשירי Spark Max ו-Spark Flex מפורסמים ל-NetworkTables או ל-DataLog. בעת שימוש ב-NetworkTables, ניתן להשתמש ב-[DataLogManager](https://docs.wpilib.org/he/stable/docs/software/telemetry/datalog.html) של WPILib ללכידת הנתונים לקובץ יומן. פריימים אלה ניתנים לצפייה ב-AdvantageScope (ראו [ניהול קובצי יומן](/overview/log-files) ו-[התחברות למקורות חיים](/overview/live-sources)).
+לאחר ההגדרה, הודעות ה-CAN המחזוריות מכל בקרי ה-Spark Max וה-Spark Flex מפורסמות ל-NetworkTables או ל-DataLog. אם משתמשים ב-NetworkTables, אפשר להשתמש ב-[DataLogManager](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) של WPILib כדי לשמור את הנתונים לקובץ יומן. בנתונים הללו ניתן לצפות ב-AdvantageScope (ראו [ניהול קובצי יומן](/overview/log-files) ו[התחברות למקורות חיים](/overview/live-sources)).
 
-- **כל האותות** נלכדים באופן אוטומטי, **ללא הגדרה ידנית עבור מכשירים חדשים**.
-- **כל פריים נלכד**, גם כאשר פרק הזמן של פריים הסטטוס מהיר יותר ממחזור לולאת הרובוט.
-- פריימים מתועדים עם **חותמות זמן המבוססות על זמן ה-CAN RX**, מה שמאפשר אפיון תאוצה מדויק יותר עם [SysId](https://docs.wpilib.org/he/stable/docs/software/pathplanning/system-identification/introduction.html) בהשוואה לתיעוד מסורתי בקוד המשתמש (ראו "שימוש ב-SysId" למטה).
-- התיעוד הוא **יעיל ביותר**; הפעולות מבוצעות בתהליכונים (threaded) ופועלות מתחת ל-80 מיקרו-שניות לכל מחזור מחזורי של 20 מ"ש, גם בעת תיעוד מספר רב של מכשירים.
-- **כל הפונקציות של REVLib אינן מושפעות.**
+- **כל האותות** נקלטים אוטומטית, **ללא צורך בהגדרה ידנית עבור מכשירים חדשים**.
+- **כל הודעת CAN נשמרת**, גם כאשר קצב השידור שלה מהיר יותר מזמן המחזור של לולאת הרובוט.
+- ההודעות מתועדות עם **חותמות זמן המבוססות על זמן הקבלה ב-CAN (CAN RX)**, מה שמאפשר אפיון תאוצה מדויק יותר ב-[SysId](https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/introduction.html) לעומת רישום רגיל בקוד המשתמש (ראו "שימוש ב-SysId" בהמשך).
+- הרישום **יעיל במיוחד**: העיבוד רץ ברקע בתהליכונים נפרדים (threads) וצורך פחות מ-80 מיקרו-שניות בכל מחזור של 20 מ"ש, גם עם כמות גדולה של בקרים.
+- **כל הפונקציות של REVLib ממשיכות לפעול כרגיל ללא השפעה.**
 
 :::info
-מכיוון שספרייה זו אינה כלי רשמי של REV, פניות תמיכה צריכות להיות מופנות ל[דף ה-issues](https://github.com/Mechanical-Advantage/URCL/issues) של URCL או ל-software@team6328.org ולא לאנשי הקשר של תמיכת REV.
+מכיוון שזו אינה ספרייה רשמית של REV, שאלות ותמיכה יש להפנות ל[דף ה-issues של URCL](https://github.com/Mechanical-Advantage/URCL/issues) או לכתובת software@team6328.org, ולא לתמיכה של REV.
 :::
 
 ## הגדרה {#setup}
 
-יש להתקין את ה-vendordep של URCL בהתאם להוראות להתקנת [ספריות צד שלישי](https://docs.wpilib.org/he/stable/docs/software/vscode-overview/3rd-party-libraries.html) תוך שימוש במנהל התלויות ב-VSCode. כחלופה, ניתן להשתמש בכתובת ה-URL הבאה של vendor JSON:
+התקינו את ה-vendordep של URCL לפי ההוראות להתקנת [ספריות צד שלישי](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html) במנהל התלויות של VSCode, או הוסיפו ישירות את כתובת ה-JSON הבאה:
 
 ```
 https://raw.githubusercontent.com/Mechanical-Advantage/URCL/main/URCL.json
 ```
 
-URCL מפרסמת ל-NetworkTables כברירת מחדל, שבה ניתן לשמור נתונים לקובץ יומן על ידי הפעלת DataLogManager של WPILib. כחלופה, URCL יכולה לתעד ישירות ל-DataLog. יש להפעיל את מקליט היומנים ב-`robotInit`, כפי שמוצג למטה.
+כברירת מחדל, URCL מפרסמת ל-NetworkTables, ומשם ניתן לשמור את הנתונים לקובץ יומן באמצעות DataLogManager של WPILib. לחלופין, URCL יכולה לכתוב ישירות ל-DataLog. יש להפעיל את ההקלטה בתוך `robotInit`, כפי שמוצג בדוגמאות הבאות:
 
 <Tabs>
 <TabItem value="java" label="Java" default>
 
 ```java
 public Robot() {
-  // אם מפרסמים ל-NetworkTables ול-DataLog
+  // פרסום ל-NetworkTables ול-DataLog
   DataLogManager.start();
   URCL.start();
 
-  // אם מתעדים ל-DataLog בלבד
+  // רישום ל-DataLog בלבד
   URCL.start(DataLogManager.getLog());
 }
 ```
@@ -59,11 +59,11 @@ public Robot() {
 #include "URCL.h"
 
 Robot::Robot() {
-  // אם מפרסמים ל-NetworkTables ול-DataLog
+  // פרסום ל-NetworkTables ול-DataLog
   frc::DataLogManager::Start();
   URCL::Start();
 
-  // אם מתעדים ל-DataLog בלבד
+  // רישום ל-DataLog בלבד
   URCL::Start(frc::DataLogManager::GetLog());
 }
 ```
@@ -77,11 +77,11 @@ import wpilib
 
 class Robot(wpilib.TimedRobot):
     def robotInit(self):
-        # אם מפרסמים ל-NetworkTables ול-DataLog
+        # פרסום ל-NetworkTables ול-DataLog
         wpilib.DataLogManager.start()
         urcl.start()
 
-        # אם מתעדים ל-DataLog בלבד
+        # רישום ל-DataLog בלבד
         urcl.start(wpilib.DataLogManager.getLog())
 ```
 
@@ -97,23 +97,23 @@ public Robot() {
 ```
 
 :::warning
-תאימות URCL עם AdvantageKit מסופקת לצורכי נוחות בלבד; הנתונים שהוקלטו ליומו אינם זמינים בשחזור. **מנועי בקרת REV חייבים עדיין להיות חלק ממימוש IO עם קלטים מוגדרים לתמיכה בשחזור**.
+התאימות של URCL ל-AdvantageKit נועדה לנוחות בלבד; הנתונים שנשמרים ביומן אינם זמינים לשחזור (replay). **בקרי מנוע של REV חייבים עדיין להיות מוגדרים בתוך מימוש IO עם קלטים (inputs) מסודרים כדי לתמוך בשחזור.**
 :::
 
 </TabItem>
 </Tabs>
 
-לזיהוי קל יותר של מכשירים ביומן, ניתן לשייך מזהי CAN לכינויים (aliases) על ידי העברת אובייקט מפה (map) למתודה `start()` או `startExternal()`. המפתחות הם מזהי CAN והערכים הם מחרוזות עבור השמות לשימוש ביומן. כל מכשיר שלא שויך לו כינוי יתועד תוך שימוש בשמות ברירת המחדל שלו.
+כדי לזהות מכשירים בקלות רבה יותר ביומן, אפשר לתת כינויים (aliases) למזהי ה-CAN על ידי העברת מילון/מפה (map) למתודה `start()` או `startExternal()`. המפתחות הם מזהי ה-CAN, והערכים הם השמות שיופיעו ביומן. מכשיר שלא הוגדר לו כינוי יופיע תחת שם ברירת המחדל שלו.
 
 :::warning
-למזעור שימוש ב-CAN, רוב פריימי הסטטוס עבור מכשירי Spark **מושבתים כברירת מחדל** עד לקריאה למתודת getter קשורה. כל נתון הכלול בפריימי סטטוס מושבתים אלה לא יהיה זמין ביומן ה-URCL.
+כדי לצמצם עומס על אפיק ה-CAN, רוב הודעות הסטטוס (status frames) של בקרי Spark **מושבתות כברירת מחדל** עד שקוראים למתודת ה-getter המתאימה. נתונים שנמצאים בהודעות מושבתות לא יופיעו ביומן של URCL.
 
-לפרטים נוספים, עיינו ב[תיעוד REVLib](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods). אנו ממליצים להשתמש ב-[`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) בעת הגדרת ה-Spark להפעלה ידנית של אותות שתרצו לכלול בקובץ היומן.
+לפרטים נוספים, עיינו ב[תיעוד של REVLib](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods). מומלץ להשתמש ב-[`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) בעת הגדרת ה-Spark כדי להפעיל ידנית את כל האותות שתרצו לשמור ביומן.
 :::
 
 ## שימוש ב-SysId {#sysid-usage}
 
-1. לאחר הגדרת URCL כפי שמוצג לעיל, יש להגדיר את שגרת SysId תוך שימוש ב-`null` עבור צרכן יומן המנגנון. דוגמה מוצגת למטה עבור Java. הגדרה זו ניתנת לביצוע בתוך מחלקת תת-המערכת (subsystem).
+1. לאחר הגדרת URCL כמתואר למעלה, הגדירו את שגרת ה-SysId עם `null` במקום צרכן היומן (log consumer) של המנגנון. לדוגמה ב-Java, מתוך מחלקת תת-המערכת (subsystem):
 
 <Tabs groupId="library">
 <TabItem value="WPILib" label="WPILib" default>
@@ -124,12 +124,12 @@ var sysIdRoutine = new SysIdRoutine(
   new SysIdRoutine.Config(),
   new SysIdRoutine.Mechanism(
     (voltage) -> subsystem.runVolts(voltage.in(Volts)),
-    null, // ללא צרכן יומן, מכיוון שהנתונים מוקלטים על ידי URCL
+    null, // ללא צרכן יומן, כי הנתונים מוקלטים על ידי URCL
     subsystem
   )
 );
 
-// המתודות למטה מחזירות אובייקטי Command
+// המתודות הבאות מחזירות אובייקטי Command
 sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
 sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
 sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);
@@ -148,12 +148,12 @@ var sysIdRoutine = new SysIdRoutine(
   ),
   new SysIdRoutine.Mechanism(
     (voltage) -> subsystem.runVolts(voltage.in(Volts)),
-    null, // ללא צרכן יומן, מכיוון שהנתונים מוקלטים על ידי URCL
+    null, // ללא צרכן יומן, כי הנתונים מוקלטים על ידי URCL
     subsystem
   )
 );
 
-// המתודות למטה מחזירות אובייקטי Command
+// המתודות הבאות מחזירות אובייקטי Command
 sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
 sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
 sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);
@@ -163,22 +163,22 @@ sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
 </TabItem>
 </Tabs>
 
-2. הרץ את שגרת ה-SysId ברובוט. פקודות SysId ניתנות להגדרה כשגרות אוטונומיות או מחוברות ללחצן הפעלה.
+2. הריצו את שגרת ה-SysId על הרובוט. אפשר לשייך את פקודות ה-SysId למצב האוטונומי או להפעיל אותן בלחיצת כפתור.
 
-3. הורד את קובץ היומן ופתח אותו ב-AdvantageScope. בסרגל התפריטים, עבור ל-`קובץ` > `ייצוא נתונים...`. הגדר את הפורמט ל-"WPILOG" ואת סט השדות ל-"לכלול שדות מיוצרים". לחץ על סמל השמירה ובחר מיקום לשמירת היומן.
+3. הורידו את קובץ היומן מהרובוט ופתחו אותו ב-AdvantageScope. בתפריט העליון, בחרו ב-`קובץ` > `ייצוא נתונים...`. הגדירו את הפורמט ל-"WPILOG" ואת סט השדות ל-"לכלול שדות מיוצרים". לחצו על סמל השמירה ובחרו היכן לשמור את הקובץ.
 
 :::warning
-קובץ היומן מהרובוט חייב להיפתח ולהיות מיוצא על ידי AdvantageScope _לפני פתיחתו באמצעות מנתח ה-SysId_. דבר זה נדרש להמרת נתוני ה-CAN שהוקלטו על ידי URCL לפורמט התואם ל-SysId.
+חובה לפתוח את קובץ היומן ולייצא אותו מתוך AdvantageScope _לפני שפותחים אותו בכלי הניתוח של SysId_. שלב זה נחוץ כדי להמיר את נתוני ה-CAN שתיעדה URCL לפורמט ש-SysId יודע לקרוא.
 :::
 
-4. פתח את מנתח ה-SysId על ידי חיפוש "WPILib: Start Tool" בפלטת הפקודות ב-VSCode ובחירה ב-"SysId" (או שימוש במפעיל שולחן העבודה ב-Windows). פתח את קובץ היומן המיוצא על ידי לחיצה על "Open data log file..."
+4. פתחו את כלי הניתוח של SysId על ידי חיפוש "WPILib: Start Tool" בפלטת הפקודות ב-VSCode ובחירה ב-"SysId" (או דרך קיצור הדרך בשולחן העבודה ב-Windows). פתחו את הקובץ המיוצא בלחיצה על "Open data log file...".
 
-5. בחר את השדות הבאים למטה להרצת הניתוח תוך שימוש במקודד (encoder) ברירת המחדל. נתוני מיקום ומהירות ממקודדים משניים יכולים לשמש גם כן (חלופי, חיצוני, אנלוגי, מוחלט, וכו').
+5. בחרו בשדות הבאים כדי להריץ את הניתוח עם המקודד (encoder) הראשי. אפשר להשתמש גם בנתוני מיקום ומהירות ממקודדים משניים (חלופי, חיצוני, אנלוגי, מוחלט וכו'):
 
    - Position = "NT:/URCL/&lt;Device&gt;/MotorPositionRotations"
    - Velocity = "NT:/URCL/&lt;Device&gt;/MotorVelocityRPM"
    - Voltage = "NT:/URCL/&lt;Device&gt;/AppliedOutputVoltage"
 
 :::tip
-המקדמים שמופקים על ידי SysId ישתמשו ביחידות שה-Spark Max/Flex מוגדר לדווח (תוך שימוש ב-[`setPositionConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setPositionConversionFactor(double)>) וב-[`setVelocityConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setVelocityConversionFactor(double)>)). כברירת מחדל, אלו סיבובים ו-RPM ללא הפעלת תמסורת. אם היחידות המשמשות בעת הקלטת נתונים אינן תואמות ליחידות הרצויות, ניתן להתאים את קנה המידה ב-SysId במהלך הניתוח.
+המקדמים (gains) שיפיק SysId יתבססו על היחידות שה-Spark Max/Flex מוגדר לדווח (באמצעות [`setPositionConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setPositionConversionFactor(double)>) ו-[`setVelocityConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setVelocityConversionFactor(double)>)). כברירת מחדל מדובר בסיבובים ובסל"ד ללא יחס תמסורת. אם היחידות בהקלטה שונות מהיחידות הרצויות, אפשר לשנות את קנה המידה בתוך SysId בזמן הניתוח.
 :::

@@ -11,7 +11,7 @@ import DocCardList from "@theme/DocCardList";
 <img src="/img/banner-rtl-light.webp" className="light-only" />
 <img src="/img/banner-rtl-dark.webp" className="dark-only" />
 
-AdvantageScope היא אפליקציה לאבחון רובוטים, סקירה/ניתוח יומנים וויזואליזציית נתונים עבור קבוצות FIRST, שפותחה על ידי [Team 6328](https://littletonrobotics.org). האפליקציה קוראת יומנים בפורמטים WPILOG, Hoot (CTRE), REVLOG (REV Robotics), Road Runner, CSV, NI DS log ו-RLOG, ובנוסף מאפשרת צפייה בנתוני רובוט בזמן אמת באמצעות סטרימינג מ-NT4, Phoenix, RLOG או FTC Dashboard. ניתן להשתמש ב-AdvantageScope עם כל פרויקט WPILib, והיא גם מותאמת לשימוש עם מסגרת שחזור היומנים שלנו [AdvantageKit](https://docs.advantagekit.org). שימו לב כי **אין צורך ב-AdvantageKit כדי להשתמש ב-AdvantageScope**.
+AdvantageScope היא אפליקציה לאבחון רובוטים, ניתוח יומנים וויזואליזציית נתונים עבור קבוצות FIRST, שפותחה על ידי [Team 6328](https://littletonrobotics.org). היא קוראת קובצי יומן בפורמטים WPILOG, Hoot (CTRE), REVLOG (REV Robotics), Road Runner, CSV, NI DS log ו-RLOG, ובנוסף מאפשרת לצפות בנתוני רובוט בזמן אמת דרך NT4, Phoenix, RLOG או FTC Dashboard. AdvantageScope מתאימה לכל פרויקט WPILib, וגם מותאמת במיוחד לעבודה עם מערכת שחזור היומנים שלנו [AdvantageKit](https://docs.advantagekit.org). חשוב לציין: **אין צורך ב-AdvantageKit כדי להשתמש ב-AdvantageScope**.
 
 <DocCardList
 items={[
@@ -32,7 +32,7 @@ href: "/category/more-features"
 },
 {
 type: "link",
-label: "הרצאת באליפות",
+label: "הרצאה באליפות",
 href: "/overview/champs-conference"
 }
 ]}
@@ -40,14 +40,14 @@ href: "/overview/champs-conference"
 
 AdvantageScope כוללת את הכלים הבאים:
 
-- מבחר רחב של גרפים ותתרשימים גמישים
-- ויזואליזציות מגרש 2D ו-3D של נתוני תנוחות (poses), עם רובוטים מבוססי CAD ניתנים להתאמה אישית
-- ניגון וידאו מסונכרן מסרטון משחק שנטען בנפרד
-- ויזואליזציית ג'וייסטיקים (Joysticks), המציגה את פעולות הנהג על גבי ייצוגי ג'וייסטיקים ניתנים להתאמה אישית
-- תצוגות וקטורים של מודולי הנעת סווארב (Swerve)
-- סקירת הודעות מסוף (Console)
-- ניתוח סטטיסטיקת יומנים
-- אפשרויות ייצוא גמישות, עם תמיכה ב-CSV ו-WPILOG
+- מבחר רחב של גרפים ותרשימים גמישים
+- תצוגות מגרש 2D ו-3D של נתוני תנוחות (Poses), עם דגמי רובוט מבוססי CAD הניתנים להתאמה אישית
+- ניגון סרטון משחק שנטען בנפרד בסנכרון מלא עם ציר הזמן
+- תצוגת ג'ויסטיקים, המראה את פעולות הנהגים על גבי בקרים הניתנים להתאמה אישית
+- תצוגת וקטורים של מודולי סווארב (Swerve)
+- צפייה בהודעות המסוף (Console)
+- ניתוח סטטיסטי של נתוני היומן
+- אפשרויות ייצוא גמישות, כולל תמיכה ב-CSV ו-WPILOG
 
 <Button
 label="מעבר להורדות"
@@ -58,7 +58,7 @@ block
 style={{ marginBottom: "15px" }}
 />
 
-משוב, בקשות לתכונות ודיווחים על באגים יתקבלו בברכה ב[דף ה-issues](https://github.com/Mechanical-Advantage/AdvantageScope/issues). עיון ב[דף התרומה](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/CONTRIBUTING.md) יספק מידע נוסף על תרומה ל-AdvantageScope. לפניות שאינן ציבוריות, ניתן לשלוח הודעה לכתובת software@team6328.org.
+נשמח לקבל משוב, בקשות לתכונות חדשות ודיווחים על באגים ב[דף ה-issues](https://github.com/Mechanical-Advantage/AdvantageScope/issues). למידע נוסף על איך לתרום לפרויקט, עברו ל[דף התרומה](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/CONTRIBUTING.md). לפניות פרטיות, אפשר לשלוח מייל לכתובת software@team6328.org.
 
 <img src="/img/screenshot-light.webp" className="light-only" />
 <img src="/img/screenshot-dark.webp" className="dark-only" />

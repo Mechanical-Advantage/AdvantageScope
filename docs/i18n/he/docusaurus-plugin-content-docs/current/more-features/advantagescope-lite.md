@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # 💡 AdvantageScope Lite {#advantagescope-lite}
 
-AdvantageScope Lite היא גרסה מבוססת דפדפן של AdvantageScope הנגישה ממשק ה-Web של FIRST Driver Station ו-Systemcore. רוב התכונות הבסיסיות של אפליקציית שולחן העבודה של AdvantageScope כלולות ב-AdvantageScope Lite. עם זאת, מספר תכונות הושמטו בשל מגבלות תאימות (כולל סוגי כרטיסיות מסוימים, פורמטי יומנים ותכונות קשורות).
+AdvantageScope Lite היא גרסת דפדפן של AdvantageScope, הזמינה דרך ממשק ה-Web של ה-FIRST Driver Station ושל Systemcore. היא כוללת את רוב היכולות הבסיסיות של אפליקציית המחשב, אך חלק מהאפשרויות הושמטו עקב מגבלות תאימות (למשל סוגי כרטיסיות מסוימים, פורמטי יומנים ותכונות נלוות).
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="AdvantageScope Lite Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -12,19 +12,19 @@ _ממשק באנגלית מוצג למעלה._
 
 ## התקנה ונכסים {#installation-and-assets}
 
-AdvantageScope Lite עבור Systemcore ניתנת להתקנה ולעדכון על ידי הורדת גרסת "Systemcore" של AdvantageScope מדף ההפצות ב-GitHub. יש לבחור את כרטיס ה-"Add Package" בממשק ה-Web של Systemcore להעלאת החבילה לרובוט.
+כדי להתקין או לעדכן את AdvantageScope Lite על Systemcore, הורידו את גרסת ה-"Systemcore" של AdvantageScope מדף ההפצות (Releases) ב-GitHub. לאחר מכן, בחרו בכרטיס "Add Package" בממשק ה-Web של Systemcore כדי להעלות את החבילה לרובוט.
 
-קובצי נכסים (כגון מודלי מגרש/רובוט) ניתנים להעלאה על ידי בחירת `קובץ` > `העלאת נכס`. הקובץ שנבחר יכול להיות קובץ zip עבור נכס בודד, או קובץ zip המכיל קובצי zip של נכסים מרובים. ראו דף [נכסים מותאמים אישית](/more-features/custom-assets/) למידע נוסף על פורמטי נכסים.
+כדי להעלות קובצי נכסים (כגון מודלים של מגרשים או רובוטים), בחרו בתפריט `קובץ` > `העלאת נכס`. אפשר להעלות קובץ zip של נכס בודד, או קובץ zip שמרכז בתוכו כמה קובצי zip של נכסים שונים. לפרטים נוספים על פורמטי הנכסים, עיינו בעמוד [נכסים מותאמים אישית](/more-features/custom-assets/).
 
 :::info
-קובצי Zip המכילים אוספים של נכסים נפוצים ניתנים להורדה בלחיצה על הקישורים למטה:
+אפשר להוריד קובצי zip שמרכזים אוספים של נכסים נפוצים דרך הקישורים הבאים:
 
-- [**נכסי FRC ברירת מחדל**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsDefaultFRC.zip): מגרשי FRC, רובוטי דוגמה של FRC, וכל פריסות הבקרים.
-- [**נכסי FTC ברירת מחדל**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsDefaultFTC.zip): מגרשי FTC, רובוטי דוגמה של FTC, וכל פריסות הבקרים.
-- [**נכסי FRC 6328**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsFRC6328.zip): נכסים הבלעדיים ל[הפצת Team 6328](/overview/installation#team-6328) של AdvantageScope.
+- [**נכסי ברירת מחדל ל-FRC**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsDefaultFRC.zip): מגרשי FRC, רובוטים לדוגמה של FRC וכל פריסות הג'ויסטיקים.
+- [**נכסי ברירת מחדל ל-FTC**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsDefaultFTC.zip): מגרשי FTC, רובוטים לדוגמה של FTC וכל פריסות הג'ויסטיקים.
+- [**נכסי FRC 6328**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsFRC6328.zip): נכסים ייחודיים ל[גרסה של Team 6328](/overview/installation#team-6328) של AdvantageScope.
 
 :::
 
 :::tip
-אין צורך בהתקנה כלשהי לשימוש ב-AdvantageScope Lite ב-FIRST Driver Station. נווטו לכתובת http://localhost:6768/ascope להתחברות חיה או לצפייה בקובצי יומן.
+לשימוש ב-AdvantageScope Lite מתוך ה-FIRST Driver Station אין צורך בהתקנה מוקדמת. פשוט היכנסו לכתובת http://localhost:6768/ascope כדי להתחבר בשידור חי או לצפות בקובצי יומן.
 :::

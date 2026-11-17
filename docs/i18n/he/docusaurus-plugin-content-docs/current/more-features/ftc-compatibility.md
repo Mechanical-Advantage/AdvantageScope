@@ -4,14 +4,14 @@ sidebar_position: 1
 
 # ✴️ תאימות ל-FTC {#ftc-compatibility}
 
-AdvantageScope כוללת תכונות המספקות חוויה חלקה במערכת הבקרה הקיימת של FIRST Tech Challenge, תוך הכנת המעבר אל [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) בעונות הבאות. כל תכונות AdvantageScope ייתמכו באופן רשמי ב-FTC לאחר המעבר אל Systemcore החל מעונת 2027-2028.
+AdvantageScope כוללת כלים שנועדו לתת חוויית עבודה חלקה כבר במערכת הבקרה הקיימת של FIRST Tech Challenge, ובמקביל להכין את הקרקע למעבר ל-[Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) בעונות הבאות. החל מעונת 2027-2028, לאחר המעבר ל-Systemcore, כל התכונות של AdvantageScope ייתמכו באופן רשמי גם ב-FTC.
 
 ## מגרשים ורובוטים {#fields-and-robots}
 
-מגרשי FTC ודגמי רובוטים נתמכים באופן מלא ומובנה.
+מגרשי FTC ומודלי רובוטים נתמכים באופן מלא ומובנה.
 
-- **דגמי מגרש ורובוט:** בחרו מגרשי FTC ודגמי רובוטים בכרטיסיות 🗺️ [מגרש 2D](/tab-reference/2d-field) ו-👀 [מגרש 3D](/tab-reference/3d-field) ישירות מהתפריטים הנפתחים. כל המגרשים תואמים ל-[AdvantageScope XR](/tab-reference/3d-field/advantagescope-xr).
-- **מערכות צירים:** הגדירו את [מערכת הצירים](/more-features/coordinate-systems) לתאימות עם [קואורדינטות FTC סטנדרטיות](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html) בכל מגרש. מערכת צירים זו משמשת כברירת מחדל במגרשי FTC.
+- **מודלים של מגרשים ורובוטים:** בחרו מגרשי FTC ומודלי רובוטים ישירות מהתפריטים הנפתחים בכרטיסיות 🗺️ [מגרש 2D](/tab-reference/2d-field) ו-👀 [מגרש 3D](/tab-reference/3d-field). כל המגרשים תואמים גם ל-[AdvantageScope XR](/tab-reference/3d-field/advantagescope-xr).
+- **מערכות צירים:** ניתן להגדיר את [מערכת הצירים](/more-features/coordinate-systems) בכל מגרש כך שתתאים ל[קואורדינטות הסטנדרטיות של FTC](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html). מערכת זו מופעלת כברירת מחדל במגרשי FTC.
 
 <div className="image-gallery">
   <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />
@@ -23,24 +23,24 @@ AdvantageScope כוללת תכונות המספקות חוויה חלקה במע
 
 ## פורמטים נתמכים {#supported-formats}
 
-AdvantageScope כוללת תמיכה מובנית בפורמט הסטרימינג החי של **FTC Dashboard** ובקובצי `.log` של **Road Runner**, בנוסף לפורמטים התואמים ל-WPILib כגון WPILOG ו-NetworkTables.
+בנוסף לפורמטים תואמי WPILib כמו WPILOG ו-NetworkTables, AdvantageScope תומכת באופן מובנה בהזרמת נתונים חיה (Live Streaming) מ-**FTC Dashboard** ובקובצי `.log` של **Road Runner**.
 
-מספר ספריות טלמטריה ותיעוד יומנים של צד שלישי עבור FTC מפיקות נתונים בפורמטים התואמים ל-AdvantageScope. מפתחי AdvantageScope אינם ממליצים על פתרון רישום יומן מסוים עבור FTC, וייתכן שתיתקלו ביכולות מוגבלות בעת שימוש בחלק מפתרונות הרישום.
+קיימות כמה ספריות טלמטריה ורישום יומנים (Logging) של צד שלישי עבור FTC המפיקות נתונים בפורמטים שנתמכים ב-AdvantageScope. מפתחי AdvantageScope אינם ממליצים על פתרון מסוים על פני אחר, וייתכן שבחלק מהספריות יהיו מגבלות ביכולות הנתמכות.
 
-הרשימה להלן מספקת נקודת התחלה אך אינה ממצה:
+הרשימה הבאה היא נקודת פתיחה טובה, אך אינה מכסה את כל האפשרויות:
 
-- [**Road Runner**](https://rr.brott.dev/docs/v1-0/installation/): מפיקה קובצי יומן לניפוי שגיאות של לוגיקת תכנון מסלול.
-- [**FTC Dashboard**](https://acmerobotics.github.io/ftc-dashboard/): מזרימה טלמטריה חיה התואמת הן ללוח הבקרה שלה והן ל-AdvantageScope.
-- [**FateWeaver**](https://github.com/HermesFTC/FateWeaver): מאפשרת רישום נתונים מותאם אישית למספר פורמטים, כולל קובצי יומן וסטרימינג חי.
-- [**Koala Log**](https://github.com/Koala-Log/Koala-Log): שומרת נתונים בפורמט WPILOG באמצעות הערות (annotations).
-- **PsiKit**: מסגרת רישום יומנים ושחזור (replay) עבור FTC בהשראת AdvantageKit.
+- [**Road Runner**](https://rr.brott.dev/docs/v1-0/installation/): יוצרת קובצי יומן לדיבוג של תכנון המסלולים.
+- [**FTC Dashboard**](https://acmerobotics.github.io/ftc-dashboard/): משדרת טלמטריה חיה שתואמת גם לדשבורד שלה וגם ל-AdvantageScope.
+- [**FateWeaver**](https://github.com/HermesFTC/FateWeaver): מאפשרת רישום נתונים מותאם אישית בכמה פורמטים, כולל קובצי יומן ושידור חי.
+- [**Koala Log**](https://github.com/Koala-Log/Koala-Log): שומרת נתונים בפורמט WPILOG באמצעות הערות בקוד (annotations).
+- **PsiKit**: מסגרת לרישום יומנים ושחזור (replay) עבור FTC, בהשראת AdvantageKit.
 
 :::warning
-על הקבוצות להקפיד לפעול בהתאם לחוק R704 במהלך תחרויות. שירותי טלמטריה של צד שלישי כגון FTC Dashboard אסורים בחיבור אלחוטי (Wi-Fi) בתחרויות.
+בתחרויות, יש להקפיד על עמידה בחוק R704. שירותי טלמטריה של צד שלישי כמו FTC Dashboard אסורים לשימוש מעל רשת ה-Wi-Fi במהלך תחרויות.
 :::
 
 ### AdvantageScope Lite עבור FTC {#advantagescope-lite-for-ftc}
 
-הפצה לא רשמית של [AdvantageScope Lite](/more-features/advantagescope-lite) המותאמת ל-FTC זמינה: [**AdvantageScope Lite for REV Control System**](https://github.com/j5155/AdvantageScope-Lite-FTC). הפצה זו אינה רשמית ואינה נתמכת על ידי מפתחי AdvantageScope.
+קיימת הפצה לא רשמית של [AdvantageScope Lite](/more-features/advantagescope-lite) שהותאמה במיוחד ל-FTC: [**AdvantageScope Lite for REV Control System**](https://github.com/j5155/AdvantageScope-Lite-FTC). הפצה זו אינה רשמית ואינה נתמכת על ידי מפתחי AdvantageScope.
 
-בעוד ש-[AdvantageScope Lite](/more-features/advantagescope-lite) הסטנדרטית היא אפליקציית רשת המיועדת לשימוש ב-Systemcore וב-Driver Station של FIRST, ההפצה הלא רשמית ל-FTC מותאמת במיוחד לשימוש ישיר במערכת הבקרה הקיימת של FTC. היא תומכת באופן מובנה בצפייה בנתונים חיים באמצעות פרוטוקול FTC Dashboard ללא צורך בתוכנה נוספת.
+בעוד ש-[AdvantageScope Lite](/more-features/advantagescope-lite) הרגילה היא אפליקציית דפדפן שנועדה לפעול על Systemcore וב-FIRST Driver Station, ההפצה הלא רשמית ל-FTC הותאמה לעבודה ישירה על מערכת הבקרה הקיימת של FTC. היא תומכת מובנית בצפייה בנתונים חיים דרך פרוטוקול FTC Dashboard, ללא צורך בתוכנה נוספת.

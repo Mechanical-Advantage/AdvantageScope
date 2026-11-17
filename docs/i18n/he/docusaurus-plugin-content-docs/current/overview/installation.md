@@ -4,36 +4,36 @@ sidebar_position: 1
 
 # 📦 התקנה {#installation}
 
-הגרסה הנתמכת באופן רשמי של AdvantageScope זמינה ישירות מ-Team 6328 או דרך מתקין WPILib. מספר הפצות לא רשמיות זמינות גם כן.
+את הגרסה הרשמית והנתמכת של AdvantageScope אפשר להוריד ישירות מ-Team 6328 או דרך המתקין של WPILib. בנוסף, קיימות גם כמה הפצות לא רשמיות.
 
 ## Team 6328 {#team-6328}
 
 ### הורדות: [יציבה](https://github.com/Mechanical-Advantage/AdvantageScope/releases/latest), [גרסה מוקדמת](https://github.com/Mechanical-Advantage/AdvantageScope/releases) {#6328-downloads}
 
-הורדת AdvantageScope ישירות מ-Team 6328 מספקת:
+הורדה ישירה של AdvantageScope מ-Team 6328 נותנת לכם:
 
-- את התכונות ותיקוני הבאגים החדשים ביותר לפני שהם זמינים דרך ערוצים אחרים.
-- התראות בתוך האפליקציה כאשר גרסה חדשה זמינה להורדה.
-- אוסף מובנה של מודלי רובוטים עדכניים של 6328 לשימוש בכרטיסיית 👀 [מגרש 3D](/tab-reference/3d-field).
+- את היכולות החדשות ותיקוני הבאגים העדכניים ביותר, לפני שהם מגיעים לערוצים אחרים.
+- התראות בתוך האפליקציה כשיוצאת גרסה חדשה להורדה.
+- אוסף מובנה של דגמי הרובוטים האחרונים של 6328 לשימוש בכרטיסיית 👀 [מגרש 3D](/tab-reference/3d-field).
 
 :::note
-לפני הפעלת גרסאות AppImage ב-Ubuntu 23.10 או גרסאות מתקדמות יותר, יש להוריד את פרופיל AppArmor מדף ההפצות ולהעתיק אותו ל-/etc/apparmor.d.
+לפני הפעלת קובצי AppImage ב-Ubuntu 23.10 ומעלה, יש להוריד את פרופיל ה-AppArmor מדף ההפצות ולהעתיק אותו לתיקייה /etc/apparmor.d.
 :::
 
 :::info
-כל גרסה ראשית של AdvantageScope מופצת בינואר לפני אירוע ה-kickoff של FRC, כאשר מספר הגרסה תואם לשנה (למשל v26.0.0 הופצה בינואר 2026). גרסאות בטא ואלפא של AdvantageScope עשויות להיות זמינות בחודשים שלפני כל הפצה, עבור קבוצות המעוניינות להתנסות בתכונות חדשות ולספק משוב. **קבוצות המשתמשות בגרסאות מוקדמות אלו צריכות לצפות לראות בעיות ובאגים שאינם קיימים בהפצות יציבות.**
+כל גרסה ראשית של AdvantageScope יוצאת בינואר, לפני ה-Kickoff של FRC, ומספר הגרסה שלה תואם לשנה (למשל, v26.0.0 יצאה בינואר 2026). בחודשים שלפני השחרור הרשמי יוצאות לפעמים גרסאות אלפא ובטא עבור קבוצות שרוצות להתנסות ביכולות חדשות ולשלוח משוב. **קבוצות שבוחרות להשתמש בגרסאות המוקדמות האלה צריכות לקחת בחשבון שצפויים בהן באגים ובעיות שלא קיימים בגרסה היציבה.**
 :::
 
 ## WPILib {#wpilib}
 
-### התקנה: [תיעוד WPILib](https://docs.wpilib.org/he/stable/docs/zero-to-robot/step-2/wpilib-setup.html) {#wpilib-installation}
+### התקנה: [תיעוד WPILib](https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html) {#wpilib-installation}
 
-מתקין WPILib כולל גרסה עדכנית של AdvantageScope, אך עשוי לפגר אחרי הגרסה החדשה ביותר הזמינה להורדה ישירה. תיעוד להפעלת AdvantageScope מגרסת WPILib של VSCode ניתן למצוא [כאן](https://docs.wpilib.org/he/stable/docs/software/dashboards/advantagescope.html).
+המתקין של WPILib כולל גרסה עדכנית של AdvantageScope, אבל היא עלולה להיות מעט ישנה יותר מהגרסה האחרונה שזמינה להורדה ישירה. הסבר על פתיחת AdvantageScope מתוך גרסת ה-VSCode של WPILib תמצאו [כאן](https://docs.wpilib.org/en/stable/docs/software/dashboards/advantagescope.html).
 
 ## הפצות לא רשמיות {#unofficial-distributions}
 
-הפצות לא רשמיות של AdvantageScope זמינות מספר מקורות, אשר אינם נתמכים באופן רשמי על ידי מפתחי AdvantageScope/WPILib. הפצות אלו עשויות לפגר אחרי הגרסה החדשה ביותר של AdvantageScope הזמינה ממקורות רשמיים. יש ליצור קשר ישירות עם המתחזקים במקרה של בעיות.
+בנוסף קיימות הפצות לא רשמיות של AdvantageScope ממקורות שונים, שאינן נתמכות רשמית על ידי מפתחי AdvantageScope או WPILib. ההפצות האלו עלולות לפגר אחרי הגרסה הרשמית העדכנית ביותר — אם נתקלתם בבעיה, פנו ישירות למתחזקים שלהן.
 
-- [**AdvantageScope Lite עבור מערכת הבקרה של REV:**](https://github.com/j5155/AdvantageScope-Lite-FTC) התאמה של [AdvantageScope Lite](/more-features/advantagescope-lite) לשימוש במערכת הבקרה הקיימת (לפני Systemcore) ב-FTC.
-- [**מתקין Homebrew:**](https://formulae.brew.sh/cask/advantagescope) Homebrew cask להתקנת AdvantageScope משורת הפקודה ב-macOS.
-- [**מאגר משתמשי Arch:**](https://aur.archlinux.org/packages/advantagescope) שיטת הפצה חלופית לשימוש עם מנהל החבילות pacman (הפצת Arch רשמית של AdvantageScope זמינה [כאן](#6328-downloads)).
+- [**AdvantageScope Lite עבור מערכת הבקרה של REV:**](https://github.com/j5155/AdvantageScope-Lite-FTC) גרסה מותאמת של [AdvantageScope Lite](/more-features/advantagescope-lite) לעבודה עם מערכת הבקרה הקיימת (לפני Systemcore) ב-FTC.
+- [**מתקין Homebrew:**](https://formulae.brew.sh/cask/advantagescope) חבילת Homebrew cask להתקנת AdvantageScope משורת הפקודה ב-macOS.
+- [**מאגר המשתמשים של Arch (AUR):**](https://aur.archlinux.org/packages/advantagescope) דרך התקנה חלופית עבור מנהל החבילות pacman (הפצת Arch רשמית של AdvantageScope זמינה [כאן](#6328-downloads)).
