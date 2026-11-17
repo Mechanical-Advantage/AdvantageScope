@@ -2,10 +2,10 @@
 
 AdvantageScope में सभी विज़ुअलाइज़ेशन लॉग फ़ाइलों के साथ-साथ रोबोट या सिम्युलेटर से लाइव डेटा प्राप्त करने के लिए भी बनाए गए हैं। यह सेक्शन बताता है कि रीयल-टाइम डेटा स्रोतों से कैसे कनेक्ट करें। AdvantageScope लाइव डेटा के इन स्रोतों को सपोर्ट करता है:
 
-- **NetworkTables:** यह WPILib का मुख्य नेटवर्किंग प्रोटोकॉल है। अधिक जानकारी के लिए [WPILib दस्तावेज़](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html) देखें।
+- **NetworkTables:** यह WPILib का मुख्य नेटवर्किंग प्रोटोकॉल है। अधिक जानकारी के लिए [WPILib डॉक्यूमेंटेशन](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html) देखें।
 - **NetworkTables (AdvantageKit):** यह मोड AdvantageKit चलाने वाले रोबोट कोड के लिए बनाया गया है, जो NetworkTables में `AdvantageKit` टेबल में डेटा पब्लिश करता है।
 - **Systemcore डायग्नोस्टिक्स:** यह मोड Systemcore OS के बिल्ट-इन NetworkTables सर्वर से कनेक्ट होता है, जिसमें रोबोट की स्थिति और डिवाइस IO जैसा डायग्नोस्टिक डेटा होता है।
-- **Phoenix डायग्नोस्टिक्स:** यह मोड Phoenix [डायग्नोस्टिक सर्वर](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html) से कनेक्ट करने के लिए HTTP का उपयोग करता है, जिससे [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/) वाले CTRE CAN डिवाइस से डेटा स्ट्रीम किया जा सकता है। यह Phoenix Tuner में [प्लॉटिंग फीचर](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) जैसा ही है। अधिक जानकारी के लिए [यह पेज](/overview/live-sources/phoenix-diagnostics) देखें।
+- **Phoenix डायग्नोस्टिक्स:** यह मोड Phoenix [डायग्नोस्टिक सर्वर](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html) से कनेक्ट करने के लिए HTTP का उपयोग करता है, जिससे [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/) वाले CTRE CAN डिवाइस से डेटा स्ट्रीम किया जा सकता है। यह Phoenix Tuner में [प्लॉटिंग फ़ीचर](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) जैसा ही है। अधिक जानकारी के लिए [यह पेज](/overview/live-sources/phoenix-diagnostics) देखें।
 - **RLOG सर्वर:** यह प्रोटोकॉल NetworkTables के विकल्प के रूप में AdvantageKit द्वारा समर्थित है। कनेक्शन डिफ़ॉल्ट रूप से पोर्ट 5800 पर शुरू होता है।
 - **FTC डैशबोर्ड:** यह मोड [FTC डैशबोर्ड](https://acmerobotics.github.io/ftc-dashboard) पर डेटा पब्लिश करने वाले FTC रोबोट के साथ काम करता है।
 
@@ -41,7 +41,7 @@ AdvantageScope में सभी विज़ुअलाइज़ेशन �
 
 ### रोबोट का पता {#robot-address}
 
-[WPILib दस्तावेज़](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation) में बताए अनुसार होस्टनाम (जैसे `robot.local`) या IP पता (जैसे `10.TE.AM.2`) डालकर रोबोट का पता दर्ज करें। USB या बिल्ट-इन वाई-फाई एक्सेस प्वाइंट से Systemcore से कनेक्ट करते समय, अस्थायी रूप से सही स्टैटिक IP पता इस्तेमाल करने के लिए `फ़ाइल` > `Systemcore USB पते का उपयोग करें` / `Systemcore वाई-फाई पते का उपयोग करें` पर क्लिक करें।
+[WPILib डॉक्यूमेंटेशन](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation) में बताए अनुसार होस्टनाम (जैसे `robot.local`) या IP पता (जैसे `10.TE.AM.2`) डालकर रोबोट का पता दर्ज करें। USB या बिल्ट-इन वाई-फाई एक्सेस प्वाइंट से Systemcore से कनेक्ट करते समय, अस्थायी रूप से सही स्टैटिक IP पता इस्तेमाल करने के लिए `फ़ाइल` > `Systemcore USB पते का उपयोग करें` / `Systemcore वाई-फाई पते का उपयोग करें` पर क्लिक करें।
 
 ### लाइव मोड {#live-mode}
 

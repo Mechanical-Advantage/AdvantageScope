@@ -34,13 +34,13 @@ AdvantageScope XR yalnızca iOS ve iPadOS üzerinde desteklenir; yakın vadede b
 
 <img src="/img/tab-reference/3d-field/xr-1.webp" alt="XR düğmesi" height="450" />
 
-_Yukarıda İngilizce arayüz gösterilmektedir._
+_Yukarıda İngilizce arayüz gösteriliyor._
 
 2. QR kodunu ve AR deneyimini özelleştirebileceğiniz [seçenekleri](#options) içeren **XR kontrolleri penceresi** açılır. XR oturumunu iptal etmek ve tüm istemcilerin bağlantısını kesmek için bu pencereyi kapatmanız yeterlidir.
 
 <img src="/img/tab-reference/3d-field/xr-2.webp" alt="XR penceresi" height="350" />
 
-_Yukarıda İngilizce arayüz gösterilmektedir._
+_Yukarıda İngilizce arayüz gösteriliyor._
 
 3. İstemci cihazınızdaki **yerleşik kamera uygulamasıyla** QR kodunu okutun. Herhangi bir uygulama indirmeniz gerekmez.
 4. Deneyimi başlatıp ana bilgisayara bağlanmak için ekranda çıkan “AdvantageScope XR” bildirimine, ardından “Aç” seçeneğine dokunun. İstendiğinde AdvantageScope XR'ın **kamera ve yerel ağa** erişmesine izin verin.

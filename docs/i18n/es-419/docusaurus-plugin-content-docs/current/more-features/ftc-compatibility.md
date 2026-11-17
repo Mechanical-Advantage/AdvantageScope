@@ -23,7 +23,7 @@ Los campos y modelos de robots de FTC tienen soporte nativo completo.
 
 ## Formatos compatibles {#supported-formats}
 
-AdvantageScope soporta de forma nativa la transmisión en vivo de **FTC Dashboard** y los archivos `.log` de **Road Runner**, además de formatos de WPILib como WPILOG y NetworkTables.
+AdvantageScope admite de forma nativa la transmisión en vivo de **FTC Dashboard** y los archivos `.log` de **Road Runner**, además de formatos de WPILib como WPILOG y NetworkTables.
 
 Existen varias bibliotecas de telemetría y registro de terceros para FTC que generan datos compatibles con AdvantageScope. El equipo de desarrollo de AdvantageScope no avala ni recomienda ninguna solución en particular, y ten en cuenta que algunas pueden tener funciones limitadas.
 

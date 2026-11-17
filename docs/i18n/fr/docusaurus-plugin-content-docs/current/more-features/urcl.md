@@ -42,11 +42,11 @@ Par défaut, URCL publie les données sur NetworkTables, et vous pouvez les enre
 
 ```java
 public Robot() {
-  // If publishing to NetworkTables and DataLog
+  // En cas de publication sur NetworkTables et DataLog
   DataLogManager.start();
   URCL.start();
 
-  // If logging only to DataLog
+  // En cas d'enregistrement uniquement dans le DataLog
   URCL.start(DataLogManager.getLog());
 }
 ```
@@ -59,11 +59,11 @@ public Robot() {
 #include "URCL.h"
 
 Robot::Robot() {
-  // If publishing to NetworkTables and DataLog
+  // En cas de publication sur NetworkTables et DataLog
   frc::DataLogManager::Start();
   URCL::Start();
 
-  // If logging only to DataLog
+  // En cas d'enregistrement uniquement dans le DataLog
   URCL::Start(frc::DataLogManager::GetLog());
 }
 ```
@@ -77,11 +77,11 @@ import wpilib
 
 class Robot(wpilib.TimedRobot):
     def robotInit(self):
-        # If publishing to NetworkTables and DataLog
+        # En cas de publication sur NetworkTables et DataLog
         wpilib.DataLogManager.start()
         urcl.start()
 
-        # If logging only to DataLog
+        # En cas d'enregistrement uniquement dans le DataLog
         urcl.start(wpilib.DataLogManager.getLog())
 ```
 
@@ -119,17 +119,17 @@ Pour en savoir plus, consultez la [documentation REVLib](https://docs.revrobotic
 <TabItem value="WPILib" label="WPILib" default>
 
 ```java
-// Create the SysId routine
+// Créer la routine SysId
 var sysIdRoutine = new SysIdRoutine(
   new SysIdRoutine.Config(),
   new SysIdRoutine.Mechanism(
     (voltage) -> subsystem.runVolts(voltage.in(Volts)),
-    null, // No log consumer, since data is recorded by URCL
+    null, // Aucun consommateur de journal, car les données sont enregistrées par URCL
     subsystem
   )
 );
 
-// The methods below return Command objects
+// Les méthodes ci-dessous retournent des objets Command
 sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
 sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
 sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);
@@ -140,7 +140,7 @@ sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
 <TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
-// Create the SysId routine
+// Créer la routine SysId
 var sysIdRoutine = new SysIdRoutine(
   new SysIdRoutine.Config(
     null, null, null,
@@ -148,12 +148,12 @@ var sysIdRoutine = new SysIdRoutine(
   ),
   new SysIdRoutine.Mechanism(
     (voltage) -> subsystem.runVolts(voltage.in(Volts)),
-    null, // No log consumer, since data is recorded by URCL
+    null, // Aucun consommateur de journal, car les données sont enregistrées par URCL
     subsystem
   )
 );
 
-// The methods below return Command objects
+// Les méthodes ci-dessous retournent des objets Command
 sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
 sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
 sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);

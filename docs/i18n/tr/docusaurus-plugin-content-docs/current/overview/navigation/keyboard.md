@@ -82,7 +82,7 @@ AdvantageScope, uygulamada daha hızlı gezinmenizi sağlayan pek çok klavye k�
 
 ### Touch Bar {#touch-bar}
 
-Desteklenen MacBook modellerinde Touch Bar’ı kullanarak log dosyasında ileri geri gezinebilir ve yeni sekmeler ekleyebilirsiniz.
+Desteklenen MacBook modellerinde Touch Bar'ı kullanarak log dosyasında ileri geri gezinebilir ve yeni sekmeler ekleyebilirsiniz.
 
 <img src="/img/overview/navigation/keyboard-1.webp" alt="Touch Bar kaydırma arayüzü" />
 <img src="/img/overview/navigation/keyboard-2.webp" alt="Touch Bar yeni sekme arayüzü" />

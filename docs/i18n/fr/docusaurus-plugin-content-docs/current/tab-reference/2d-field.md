@@ -81,34 +81,34 @@ Logger.recordOutput("MyPoseArray", new Pose2d[] {poseA, poseB});
 <TabItem value="ftcdashboard" label="FTC Dashboard">
 
 ```java
-// This protocol does not support the modern struct format, but pose
-// values can be published using separate fields that include the
-// suffixes "x", "y", and "heading" (as shown below):
+// Ce protocole ne prend pas en charge le format struct moderne, mais les valeurs
+// de pose peuvent être publiées à l'aide de champs distincts portant les
+// suffixes "x", "y" et "heading" (comme ci-dessous) :
 TelemetryPacket packet = new TelemetryPacket();
-packet.put("Pose x", 6.3); // Inches
-packet.put("Pose y", 2.8); // Inches
+packet.put("Pose x", 6.3); // Pouces
+packet.put("Pose y", 2.8); // Pouces
 packet.put("Pose heading", 3.14); // Radians
 
-// Alternatively, headings can be published in degrees
-packet.put("Pose heading (deg)", 180.0); // Degrees
+// Sinon, les caps peuvent être publiés en degrés
+packet.put("Pose heading (deg)", 180.0); // Degrés
 
-// Add other telemetry values here...
+// Ajoutez d'autres valeurs de télémétrie ici...
 
 FtcDashboard.getInstance().sendTelemetryPacket(packet)
 
-// Alternately, use MultipleTelemetry and the standard SDK telemetry:
-// During OpMode Init:
+// Vous pouvez aussi utiliser MultipleTelemetry et la télémétrie standard du SDK :
+// Pendant l'initialisation de l'OpMode :
 telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
 
-// During Loop:
-telemetry.addData("Pose x", 6.3); // Inches
-telemetry.addData("Pose y", 2.8); // Inches
+// Pendant la boucle :
+telemetry.addData("Pose x", 6.3); // Pouces
+telemetry.addData("Pose y", 2.8); // Pouces
 telemetry.addData("Pose heading", 3.14); // Radians
 
-// or...
-telemetry.addData("Pose heading (deg)", 180.0); // Degrees
+// ou...
+telemetry.addData("Pose heading (deg)", 180.0); // Degrés
 
-// Add other telemetry values here...
+// Ajoutez d'autres valeurs de télémétrie ici...
 telemetry.update();
 ```
 
@@ -119,7 +119,7 @@ telemetry.update();
 
 - **Terrain :** l'image du terrain à afficher. Tous les jeux FRC et FTC récents sont inclus. Pour ajouter une image personnalisée, consultez la page [Ressources personnalisées](/more-features/custom-assets).
 - **Orientation :** l'orientation du terrain dans le volet de visualisation.
-- **Taille :** la longueur du côté du robot (30, 27 ou 24 pouces en FRC ; 18, 16 ou 14 pouces en FTC).
+- **Taille :** la longueur du côté du robot (30, 27 ou 24 pouces en FRC; 18, 16 ou 14 pouces en FTC).
 
 :::info
 Vous pouvez personnaliser le système de coordonnées utilisé dans cet onglet. Consultez la page [Systèmes de coordonnées](/more-features/coordinate-systems) pour en savoir plus.

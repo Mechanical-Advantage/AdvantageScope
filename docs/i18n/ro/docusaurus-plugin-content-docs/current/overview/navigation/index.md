@@ -4,7 +4,7 @@ Captura de ecran de mai jos prezintă elementele importante ale ferestrei princi
 
 <img src="/img/overview/navigation/navigation-1.webp" alt="Diagramă de navigare" />
 
-_Interfața în limba engleză este ilustrată mai sus._
+_Mai sus este prezentată interfața în limba engleză._
 
 - Secțiunea roșie este [bara laterală](#sidebar), care listează câmpurile disponibile.
 - Secțiunea maro este [bara de file](#tab-bar), care controlează aplicația și este utilizată pentru comutarea între vizualizări.

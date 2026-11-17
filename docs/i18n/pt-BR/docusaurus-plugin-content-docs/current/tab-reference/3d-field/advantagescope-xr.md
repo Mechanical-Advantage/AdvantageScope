@@ -6,8 +6,8 @@ O AdvantageScope XR leva a visualização do 👀 [Campo 3D](/tab-reference/3d-f
 
 ## Requisitos {#requirements}
 
-- **Computador (Host):** O aplicativo de desktop do AdvantageScope no Windows, macOS ou Linux (v4.1.0 ou mais recente). Os firewalls do computador precisam estar [desativados](https://docs.wpilib.org/pt/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
-- **Dispositivo móvel (Cliente):** Um iPhone ou iPad com iOS/iPadOS 16 ou mais recente. Você não precisa instalar nenhum aplicativo.
+- **Computador (host):** O aplicativo de desktop do AdvantageScope no Windows, macOS ou Linux (v4.1.0 ou mais recente). Os firewalls do computador precisam estar [desativados](https://docs.wpilib.org/pt/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
+- **Dispositivo móvel (cliente):** Um iPhone ou iPad com iOS/iPadOS 16 ou mais recente. Você não precisa instalar nenhum aplicativo.
 - **Rede:** Os dois aparelhos precisam estar na mesma rede (Wi-Fi, ancoragem USB, etc.). Fora o caso explicado no item abaixo, essa rede não precisa ter acesso à internet.
 - **Internet:** Se o AdvantageScope XR não tiver sido usado recentemente no celular ou tablet, ele precisará de conexão com a internet (por exemplo, dados móveis) na primeira abertura. Para evitar depender disso, veja a seção de [uso offline](#offline-usage) mais abaixo.
 
@@ -62,7 +62,7 @@ Na janela Controles de XR, você encontra várias opções para ajustar como o c
 
 - **Calibração:**
   - Escolha _Miniatura_ para ver uma versão reduzida da arena, ideal para colocar em cima de uma mesa.
-  - Escolha _Tamanho real_ para ver a arena em escala 1:1, alinhada a partir de uma barreira real do campo. Alternar entre _Aliança Azul_ e _Aliança Vermelha_ muda qual lado do campo você usa como referência na calibração, mas a arena inteira aparece nos dois casos.
+  - Escolha _Tamanho real_ para ver a arena em escala 1:1, alinhada a partir de uma barreira real do campo. Alternar entre _Aliança azul_ e _Aliança vermelha_ muda qual lado do campo você usa como referência na calibração, mas a arena inteira aparece nos dois casos.
 - **Transmissão:**
   - Escolha _Suave_ quando um pequeno atraso não atrapalhar e você quiser uma transmissão mais estável, como ao simular rotinas autônomas ou reproduzir logs.
   - Escolha _Baixa latência_ quando precisar de resposta imediata (mesmo com alguma oscilação visual), como ao sobrepor dados em um robô real ou pilotar um robô simulado no teleoperado.

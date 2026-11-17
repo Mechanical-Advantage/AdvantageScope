@@ -123,16 +123,16 @@ Elk veld heeft eigen objecttypen voor speelstukken, zodat je op basis van je rob
 - Laten zien waar een speelstuk zich in de robot bevindt
 - Schiettrajecten bekijken op basis van natuurkundige berekeningen
 
-Je kunt ook heel simpel op basis van sensordata laten zien of er een speelstuk in de robot zit. Een lichtsluis (*beam break sensor*) in het pad van een note bij een 2024-robot kan bijvoorbeeld een note laten verschijnen (zoals hieronder).
+Je kunt ook heel simpel op basis van sensordata laten zien of er een speelstuk in de robot zit. Een lichtsluis (*beam break sensor*) in het pad van een note bij een robot uit 2024 kan bijvoorbeeld een note laten verschijnen (zoals hieronder).
 
 <details>
 <summary>Codevoorbeeld</summary>
 
-Het AdvantageKit KitBot 2024-voorbeeldproject bevat een simpel voorbeeld van een [commando](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) dat een note van de robot naar de speaker animeert. Dit commando zit in de standaard [lanceervolgorde](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73) en start de animatie zodra een note wordt afgevuurd. In [deze video](https://youtube.com/shorts/-HxfDo9f19U?feature=share) zie je hoe je met speelstukanimaties autonome routines voor verschillende spellen in beeld brengt.
+Het KitBot 2024-voorbeeldproject van AdvantageKit bevat een simpel voorbeeld van een [commando](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) dat een note van de robot naar de speaker animeert. Dit commando zit in de standaard [lanceervolgorde](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73) en start de animatie zodra een note wordt afgevuurd. In [deze video](https://youtube.com/shorts/-HxfDo9f19U?feature=share) zie je hoe je met speelstukanimaties autonome routines voor verschillende spellen in beeld brengt.
 
 </details>
 
-<img src="/img/tab-reference/3d-field/3d-field-4.webp" alt="2024 KitBot note-visualisatie" />
+<img src="/img/tab-reference/3d-field/3d-field-4.webp" alt="Note-visualisatie van de KitBot 2024" />
 
 ## Camera-opties {#camera-options}
 
@@ -194,4 +194,4 @@ Het 3D-veld heeft drie weergavemodi:
 
 Om de weergavemodus te kiezen, open je de voorkeuren via `App` > `Voorkeuren tonen...` (Windows/Linux) of `AdvantageScope` > `Instellingen...` (macOS). Met de instelling "3D-modus (batterij)" kun je automatisch een andere modus gebruiken zodra je laptop op de accu draait. Ideaal om tijdens een wedstrijd batterij te sparen.
 
-<img src="/img/prefs_nl.webp" alt="Diagram van voorkeuren" height="450" />
+<img src="/img/prefs_nl.webp" alt="Overzicht van de voorkeuren" height="450" />

@@ -8,7 +8,7 @@ Fila statistici îți oferă o analiză statistică detaliată a câmpurilor num
 
 <img src="/img/tab-reference/statistics-1.webp" alt="Prezentare generală a filei statistici" />
 
-_Interfața în limba engleză este ilustrată mai sus._
+_Mai sus este prezentată interfața în limba engleză._
 
 ## Panoul de control {#control-pane}
 

@@ -11,7 +11,7 @@ Fila teren 2D îți arată o vizualizare 2D a robotului suprapusă pe o hartă a
 
 <img src="/img/tab-reference/2d-field-1.webp" alt="Prezentare generală a filei teren 2D" />
 
-_Interfața în limba engleză este ilustrată mai sus._
+_Mai sus este prezentată interfața în limba engleză._
 
 <details>
 <summary>Controale cronologie</summary>
@@ -40,10 +40,10 @@ Derulează în sus și în jos peste teren pentru a mări sau micșora. Fă clic
 
 Pentru a începe, trage un câmp în secțiunea „Pose-uri”. Șterge un obiect folosind butonul X sau ascunde-l temporar făcând clic pe pictograma ochi ori dublu clic pe numele câmpului. Pentru a elimina toate obiectele, fă clic pe coșul de gunoi de lângă titlul axei și apoi pe `Șterge tot`. Poți reorganiza obiectele în listă făcând clic și trăgând.
 
-**Pentru a personaliza fiecare obiect, fă clic pe pictograma colorată sau clic dreapta pe numele câmpului.** AdvantageScope suportă o mulțime de tipuri de obiecte, iar multe dintre ele pot fi personalizate (de exemplu, poți schimba culorile). Unele obiecte trebuie adăugate ca obiecte copil ale unui obiect existent.
+**Pentru a personaliza un element, fă clic pe pictograma colorată sau clic dreapta pe numele câmpului.** AdvantageScope suportă o gamă largă de tipuri de obiecte, iar multe dintre ele pot fi personalizate (de exemplu, poți schimba culorile). Unele trebuie adăugate ca elemente copil ale unui obiect existent.
 
 :::tip
-Pentru a vedea lista completă a tipurilor de obiecte suportate, fă clic pe pictograma `?`. Lista include și tipurile de date suportate, precum și dacă obiectele trebuie adăugate ca obiecte copil.
+Pentru a vedea lista completă a tipurilor suportate, fă clic pe pictograma `?`. Lista include și tipurile de date suportate, precum și dacă trebuie adăugate ca elemente copil.
 :::
 
 <img src="/img/tab-reference/2d-field-2.webp" alt="Teren 2D cu obiecte" />

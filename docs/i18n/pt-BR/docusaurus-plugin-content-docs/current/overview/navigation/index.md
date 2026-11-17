@@ -35,10 +35,10 @@ Você pode reorganizar as guias clicando e arrastando, ou renomeá-las clicando 
 
 Os botões de navegação (verdes) na parte superior gerenciam as guias e controlam a reprodução:
 
-- **Botão Mais:** Abre um menu suspenso para criar uma nova guia.
-- **Botão Janela:** Cria uma nova janela destacada com a guia atual, permitindo acompanhar várias guias ao mesmo tempo.
+- **Botão mais:** Abre um menu suspenso para criar uma nova guia.
+- **Botão janela:** Cria uma nova janela destacada com a guia atual, permitindo acompanhar várias guias ao mesmo tempo.
 - **Botão X:** Fecha a guia atual.
-- **Botão Reproduzir:** Inicia e pausa a reprodução em tempo real. _Clique com o botão direito para mudar a velocidade de reprodução ou ativar o loop._
+- **Botão reproduzir:** Inicia e pausa a reprodução em tempo real. _Clique com o botão direito para mudar a velocidade de reprodução ou ativar o loop._
 
 ## Painel de visualização {#viewer-pane}
 

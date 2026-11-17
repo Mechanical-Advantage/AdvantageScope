@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Modo de ajuste (Tuning) {#tuning-mode}
+# Modo de ajuste (tuning) {#tuning-mode}
 
 Algumas fontes ao vivo permitem ajustar valores numéricos e booleanos em tempo real. Você pode usar esse recurso, por exemplo, para [ajustar ganhos de controladores](https://docs.wpilib.org/pt/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) quando estiver conectado a uma fonte NetworkTables. Lembre-se de que o código do robô precisa estar preparado para receber esses ganhos via NetworkTables.
 

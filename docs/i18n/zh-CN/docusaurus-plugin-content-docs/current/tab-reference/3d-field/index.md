@@ -23,7 +23,7 @@ _上图所示为英文界面。_
 </details>
 
 :::warning 2026-2027 FTC 场地
-2026-2027 FTC 场地模型不包含内置 AprilTag，因为比赛过程中巢箱（hive）上的标签位置可能会发生变化。队伍可以发布 `Pose3d[]` 和 `number[]` 数据，在场地上添加动态 AprilTag 对象。该场地使用的 AprilTag 正确尺寸为 **3.25 英寸**。
+2026-2027 FTC 场地模型不包含内置 AprilTag，因为比赛过程中巢箱 (hive) 上的标签位置可能会发生变化。队伍可以发布 `Pose3d[]` 和 `number[]` 数据，在场地上添加动态 AprilTag 对象。该场地使用的 AprilTag 正确尺寸为 **3.25 英寸**。
 :::
 
 :::warning 2026 FRC 场地

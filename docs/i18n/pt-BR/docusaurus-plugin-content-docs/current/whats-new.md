@@ -13,7 +13,7 @@ A versão 2026 do AdvantageScope já está disponível! Confira a [documentaçã
 
 **Sua opinião faz toda a diferença! Sugestões, pedidos de recursos e relatos de bugs são sempre bem-vindos na [página de issues](https://github.com/Mechanical-Advantage/AdvantageScope/issues).**
 
-## ✴️ Experimental: Suporte ao FTC {#ftc-support}
+## ✴️ Experimental: suporte ao FTC {#ftc-support}
 
 Já se preparando para o suporte completo ao Systemcore na temporada 2027-2028, esta versão traz vários recursos para melhorar a compatibilidade com o sistema de controle atual do FIRST Tech Challenge:
 

@@ -1,16 +1,16 @@
 # 🛜 Canlı kaynaklar {#live-sources}
 
-AdvantageScope’taki tüm görselleştirmeler, log dosyalarının yanı sıra bir robottan veya simülatörden gelen canlı verileri de gösterecek şekilde tasarlanmıştır. Bu bölümde gerçek zamanlı veri kaynaklarına nasıl bağlanacağınızı bulabilirsiniz. AdvantageScope şu canlı veri kaynaklarını destekler:
+AdvantageScope'taki tüm görselleştirmeler, log dosyalarının yanı sıra bir robottan veya simülatörden gelen canlı verileri de gösterecek şekilde tasarlanmıştır. Bu bölümde gerçek zamanlı veri kaynaklarına nasıl bağlanacağınızı bulabilirsiniz. AdvantageScope şu canlı veri kaynaklarını destekler:
 
-- **NetworkTables:** WPILib’in temel ağ protokolüdür. Ayrıntılar için [WPILib belgelerine](https://docs.wpilib.org/tr/stable/docs/software/networktables/index.html) göz atabilirsiniz.
-- **NetworkTables (AdvantageKit):** NetworkTables’taki `AdvantageKit` tablosuna veri yayınlayan AdvantageKit tabanlı robot kodları için tasarlanmıştır.
+- **NetworkTables:** WPILib'in temel ağ protokolüdür. Ayrıntılar için [WPILib belgelerine](https://docs.wpilib.org/tr/stable/docs/software/networktables/index.html) göz atabilirsiniz.
+- **NetworkTables (AdvantageKit):** NetworkTables'taki `AdvantageKit` tablosuna veri yayınlayan AdvantageKit tabanlı robot kodları için tasarlanmıştır.
 - **Systemcore tanılama:** Robot durumu ve cihaz G/Ç gibi tanılama verilerini içeren, Systemcore işletim sisteminin yerleşik NetworkTables sunucusuna bağlanır.
-- **Phoenix tanılama:** [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/) kullanan CTRE CAN cihazlarından veri akışı almak için HTTP üzerinden bir Phoenix [tanılama sunucusuna](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html) bağlanır. Bu özellik, Phoenix Tuner’daki [grafik çizme özelliğine](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) benzer. Daha fazla bilgi için [ilgili sayfaya](/overview/live-sources/phoenix-diagnostics) göz atabilirsiniz.
-- **RLOG sunucusu:** AdvantageKit’in NetworkTables’a alternatif olarak desteklediği protokoldür. Bağlantı varsayılan olarak 5800 portu üzerinden kurulur.
+- **Phoenix tanılama:** [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/) kullanan CTRE CAN cihazlarından veri akışı almak için HTTP üzerinden bir Phoenix [tanılama sunucusuna](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html) bağlanır. Bu özellik, Phoenix Tuner'daki [grafik çizme özelliğine](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) benzer. Daha fazla bilgi için [ilgili sayfaya](/overview/live-sources/phoenix-diagnostics) göz atabilirsiniz.
+- **RLOG sunucusu:** AdvantageKit'in NetworkTables'a alternatif olarak desteklediği protokoldür. Bağlantı varsayılan olarak 5800 portu üzerinden kurulur.
 - **FTC Dashboard:** [FTC Dashboard](https://acmerobotics.github.io/ftc-dashboard) üzerine veri yayınlayan FTC robotlarıyla entegre çalışır.
 
 :::info
-AdvantageScope, Sürücü İstasyonu (DS) uygulamasıyla aynı bilgisayarda çalışırken tanılama verilerini görmek için FIRST Sürücü İstasyonu’na bağlanabilir. Bunun için herhangi bir ek ayar gerekmez (aşağıdaki adımları izlemeniz yeterlidir).
+AdvantageScope, Sürücü İstasyonu (DS) uygulamasıyla aynı bilgisayarda çalışırken tanılama verilerini görmek için FIRST Sürücü İstasyonu'na bağlanabilir. Bunun için herhangi bir ek ayar gerekmez (aşağıdaki adımları izlemeniz yeterlidir).
 :::
 
 ## Bağlantıyı başlatma {#starting-the-connection}
@@ -41,7 +41,7 @@ Canlı bir kaynağa bağlandığınızda AdvantageScope, varsayılan olarak tüm
 
 ### Robot adresi {#robot-address}
 
-[WPILib belgelerinde](https://docs.wpilib.org/tr/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation) anlatıldığı gibi robot adresini bir ana bilgisayar adı (örneğin `robot.local`) veya IP adresi (örneğin `10.TE.AM.2`) olarak girin. Systemcore’a USB veya yerleşik Wi-Fi erişim noktası üzerinden bağlanırken doğru statik IP adresini geçici olarak kullanmak için `Dosya` > `Systemcore USB adresini kullan` / `Systemcore Wi-Fi adresini kullan` seçeneğine tıklayın.
+[WPILib belgelerinde](https://docs.wpilib.org/tr/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation) anlatıldığı gibi robot adresini bir ana bilgisayar adı (örneğin `robot.local`) veya IP adresi (örneğin `10.TE.AM.2`) olarak girin. Systemcore'a USB veya yerleşik Wi-Fi erişim noktası üzerinden bağlanırken doğru statik IP adresini geçici olarak kullanmak için `Dosya` > `Systemcore USB adresini kullan` / `Systemcore Wi-Fi adresini kullan` seçeneğine tıklayın.
 
 ### Canlı mod {#live-mode}
 

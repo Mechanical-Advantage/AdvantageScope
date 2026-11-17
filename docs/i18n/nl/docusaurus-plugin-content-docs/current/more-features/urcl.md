@@ -5,7 +5,7 @@ sidebar_position: 3
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📝 Onofficiële REV-compatibele logger {#unofficial-rev-compatible-logger}
+# 📝 URCL (Onofficiële REV-compatibele logger) {#unofficial-rev-compatible-logger}
 
 :::info
 Nieuw in 2026: REVLib heeft nu een eigen officiële logger waarmee je data van de Spark Max en Spark Flex opslaat in een REV CAN-logbestand (`.revlog`). Meer informatie vind je [hier](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger). Je kunt deze bestanden direct openen in AdvantageScope, maar je kunt ze niet nauwkeurig synchroniseren met andere databronnen.
@@ -113,7 +113,7 @@ Bekijk de [REVLib-documentatie](https://docs.revrobotics.com/revlib/24-to-25#set
 
 ## SysId gebruiken {#sysid-usage}
 
-1. Nadat je URCL hebt ingesteld zoals hierboven beschreven, maak je de SysId-routine aan met `null` als logconsument voor het mechanisme. Hieronder zie je een voorbeeld in Java, dat je bijvoorbeeld in je subsystem-klasse kunt zetten.
+1. Nadat je URCL hebt ingesteld zoals hierboven beschreven, maak je de SysId-routine aan met `null` als logconsument (*log consumer*) voor het mechanisme. Hieronder zie je een voorbeeld in Java, dat je bijvoorbeeld in je subsystem-klasse kunt zetten.
 
 <Tabs groupId="library">
 <TabItem value="WPILib" label="WPILib" default>
@@ -163,7 +163,7 @@ sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
 </TabItem>
 </Tabs>
 
-2. Voer de SysId-routine uit op de robot. Je kunt de SysId-commando's als auto-routines instellen of aan een knop koppelen.
+2. Voer de SysId-routine uit op de robot. Je kunt de SysId-commando's als autonome routines instellen of aan een knop koppelen.
 
 3. Download het logbestand en open het in AdvantageScope. Ga in de menubalk naar `Bestand` > `Data exporteren...`. Zet het formaat op "WPILOG" en de veldset op "Gegenereerde opnemen". Klik op het opslagicoon en kies waar je het bestand wilt opslaan.
 

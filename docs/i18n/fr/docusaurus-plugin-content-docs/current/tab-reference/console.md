@@ -11,7 +11,7 @@ La vue Console sert à afficher un champ de type chaîne de caractères contenan
 - **/RealOutputs/Console** : enregistré automatiquement par AdvantageKit pendant le fonctionnement du robot (utilisez `System.out.println` comme d'habitude).
 - **/ReplayOutputs/Console** : enregistré automatiquement par AdvantageKit pendant la relecture d'un journal (utilisez `System.out.println` comme d'habitude).
 
-Pour commencer, faites glisser le champ souhaité dans la vue principale. Chaque ligne correspond à une mise à jour du champ : avec les journaux WPILib, une ligne apparaît pour chaque texte enregistré ; avec AdvantageKit, une ligne est créée à chaque cycle de boucle.
+Pour commencer, faites glisser le champ souhaité dans la vue principale. Chaque ligne correspond à une mise à jour du champ : avec les journaux WPILib, une ligne apparaît pour chaque texte enregistré; avec AdvantageKit, une ligne est créée à chaque cycle de boucle.
 
 <img src="/img/tab-reference/console-1.webp" alt="Vue de la console" />
 

@@ -61,9 +61,9 @@ _Hierboven zie je de Engelstalige interface._
 
 ## 🏁 Snellere logdownloads {#faster-log-downloads}
 
-[Logs downloaden vanaf de roboRIO](/overview/log-files/#downloading-from-the-robot) gaat nu **2-4x sneller** dan in eerdere versies. Dat komt door de overstap naar een nieuw protocol (FTP), waarmee de roboRIO logdata met minder CPU-belasting kan versturen.
+[Logs downloaden vanaf de roboRIO](/overview/log-files/#downloading-from-the-robot) gaat nu **2 tot 4 keer sneller** dan in eerdere versies. Dat komt door de overstap naar een nieuw protocol (FTP), waarmee de roboRIO logdata met minder CPU-belasting kan versturen.
 
-De tabel hieronder toont de gemeten overdrachtssnelheden in de 2025- en 2026-versie van AdvantageScope via een Ethernet-kabel (maximale bandbreedte van 100 Mb/s). Je ziet dat de snelheid van de 2025-versie flink inzakt zodra de CPU van de roboRIO zwaarder belast wordt.
+De tabel hieronder toont de gemeten overdrachtssnelheden in de 2025- en 2026-versie van AdvantageScope via een ethernetkabel (maximale bandbreedte van 100 Mb/s). Je ziet dat de snelheid van de 2025-versie flink inzakt zodra de CPU van de roboRIO zwaarder belast wordt.
 
 |                                                            | 2025 (SFTP) | 2026 (FTP) | Versnelling                                      |
 | ---------------------------------------------------------- | ----------- | ---------- | ------------------------------------------------ |
@@ -103,7 +103,7 @@ Wil je data bekijken die niet uit een robotloggingframework komt? AdvantageScope
 
 ## 🤩 Visuele verbeteringen {#aesthetic-improvements}
 
-Op Windows 11 heeft AdvantageScope nu een halfdoorzichtige zijbalk, een detail dat voorheen alleen op macOS beschikbaar was. Voor macOS Tahoe is er bovendien een nieuw app-pictogram ontworpen op basis van Apple's Liquid Glass-materiaal.
+Op Windows 11 heeft AdvantageScope nu een halfdoorzichtige zijbalk, een detail dat voorheen alleen op macOS beschikbaar was. Voor macOS Tahoe is er bovendien een nieuw pictogram van de app ontworpen op basis van Apple's Liquid Glass-materiaal.
 
 <img src="/img/whats-new/windows-ui.webp" alt="Windows-interface" />
 
@@ -113,7 +113,7 @@ We hebben de menubalk en bijbehorende bediening opgeschoond en opnieuw ingedeeld
 
 - Wissel sneller tussen live-bronnen (zoals NetworkTables en [Phoenix-diagnostiek](/overview/live-sources/phoenix-diagnostics)), zonder dat je het voorkeurenvenster hoeft te openen.
 - Klik met de rechtermuisknop in de zijbalk om snel de naam van een veld of de volledige veldsleutel te kopiëren.
-- Een opnieuw ingedeeld voorkeurenvenster waarin je instellingen sneller terugvindt.
+- Vind instellingen sneller terug in het opnieuw ingedeelde voorkeurenvenster.
 
 <div className="image-gallery">
   <img src="/img/whats-new/menus-1.webp" />
@@ -129,5 +129,5 @@ Deze release zit ook vol bugfixes en stabiliteitsverbeteringen door de hele appl
 - AdvantageScope gaat nu beter om met ongewone logdata, zoals hele grote logbestanden en omvangrijke veldwaarden.
 - Verschillende visuele haperingen bij het bladeren door logdata zijn opgelost, met name bij het gebruik van filters op het tabblad Lijngrafiek.
 - De sortering van AdvantageKit-logbestanden in het downloadvenster klopt weer: logs zonder tijdstempel staan nu onderaan de lijst, net als bij andere formaten.
-- Op het tabblad 3D-veld worden robotcamera's met een roll-rotatie ongelijk aan nul nu correct weergegeven.
+- Op het tabblad 3D-veld worden robotcamera's met een roll-rotatie die afwijkt van nul nu correct weergegeven.
 - AdvantageScope XR is stabieler geworden, vooral onder iOS/iPadOS 26. Gebruik je een offline installatie, controleer dan de App Store op updates.

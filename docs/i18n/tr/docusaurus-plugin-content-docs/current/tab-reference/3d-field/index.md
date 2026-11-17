@@ -110,7 +110,7 @@ Bir [`Mechanism2d`](https://docs.wpilib.org/tr/stable/docs/software/dashboards/g
 
 Her bileşenin robota göre konumunu temsil eden bir 3B poz dizisi loglayarak mekanizmaları eklemli bileşenlerle görselleştirebilirsiniz. Pozları mevcut bir robot veya hayalet nesnesinin altına ekleyin ve nesne türünü “Bileşen” olarak seçin.
 
-Her bileşen bağımsız olarak hareket edebilir (örneğin asansör taşıyıcısı, kol veya uç efektör (end effector)). AdvantageKit kullanıyorsanız bir Mechanism2d nesnesini Pose3d dizisine dönüştürmek için [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) metodunu kullanabilirsiniz. Robotları bileşenlerle yapılandırma hakkında daha fazla bilgi için [Özel Varlıklar](/more-features/custom-assets) bölümüne bakın.
+Her bileşen bağımsız olarak hareket edebilir (örneğin asansör taşıyıcısı, kol veya uç efektör (end effector)). AdvantageKit kullanıyorsanız bir `Mechanism2d` nesnesini `Pose3d` dizisine dönüştürmek için [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) metodunu kullanabilirsiniz. Robotları bileşenlerle yapılandırma hakkında daha fazla bilgi için [Özel varlıklar](/more-features/custom-assets) bölümüne bakın.
 
 <img src="/img/tab-reference/3d-field/3d-field-3.webp" alt="3B mekanizma" />
 
@@ -128,7 +128,7 @@ Bir diğer basit kullanım şekli ise sensör verilerine göre robotun içindeki
 <details>
 <summary>Kod Örneği</summary>
 
-AdvantageKit KitBot 2024 örnek projesi, robottan hoparlöre doğru giden bir notayı canlandıran basit bir [komut](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) örneği içerir. Bu komut standart [fırlatma sekansına](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73) dahil edilmiştir ve her nota fırlatıldığında animasyonu tetikler. [Bu video](https://youtube.com/shorts/-HxfDo9f19U?feature=share), farklı oyunlar için otonom rutinleri görselleştirmede oyun objesi animasyonlarının nasıl kullanılabileceğini gösterir.
+AdvantageKit KitBot 2024 örnek projesi, robottan Speaker'a doğru giden bir notayı canlandıran basit bir [komut](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) örneği içerir. Bu komut standart [fırlatma sekansına](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73) dahil edilmiştir ve her nota fırlatıldığında animasyonu tetikler. [Bu video](https://youtube.com/shorts/-HxfDo9f19U?feature=share), farklı oyunlar için otonom rutinleri görselleştirmede oyun objesi animasyonlarının nasıl kullanılabileceğini gösterir.
 
 </details>
 

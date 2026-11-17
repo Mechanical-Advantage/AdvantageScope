@@ -32,7 +32,7 @@ href: "/category/more-features"
 },
 {
 type: "link",
-label: "Conferência do Campeonato",
+label: "Conferência do campeonato",
 href: "/overview/champs-conference"
 }
 ]}
@@ -50,7 +50,7 @@ O AdvantageScope inclui as seguintes ferramentas:
 - Opções flexíveis de exportação, com suporte a CSV e WPILOG
 
 <Button
-label="Ir para Downloads"
+label="Ir para downloads"
 link="https://github.com/Mechanical-Advantage/AdvantageScope/releases/latest"
 variant="primary"
 size="lg"

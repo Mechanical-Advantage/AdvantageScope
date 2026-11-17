@@ -20,7 +20,7 @@ URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) 是一个适用于 Java�
 - **自动捕获所有信号**，添加 **新设备时无需手动配置**。
 - **捕获每一帧数据**，即便状态帧周期比机器人循环周期更快也不会遗漏。
 - 日志帧采用 **基于 CAN RX 时间的时间戳**；与在用户代码中进行传统日志记录相比，这能让你在使用 [SysId](https://docs.wpilib.org/zh-cn/stable/docs/software/pathplanning/system-identification/introduction.html) 时获得更准确的加速度表征（见下文“SysId 使用”）。
-- 日志记录 **非常高效**：操作采用多线程执行，即使同时记录大量设备，每个 20 毫秒周期的运行耗时也低于 80µs。
+- 日志记录 **非常高效**：操作采用多线程执行，即使同时记录大量设备，每个 20 毫秒周期的运行耗时也低于 80 微秒。
 - **不会影响 REVLib 的任何功能。**
 
 :::info
@@ -113,7 +113,7 @@ URCL 对 AdvantageKit 的兼容仅出于使用便利考虑，记录到日志中�
 
 ## SysId 使用 {#sysid-usage}
 
-1. 按照上文配置好 URCL 后，在创建 SysId 例程时将机构日志消费者（mechanism log consumer）设为 `null`。下方为 Java 示例，该配置可写在子系统类内部。
+1. 按照上文配置好 URCL 后，在创建 SysId 例程时将机构日志消费者 (mechanism log consumer) 设为 `null`。下方为 Java 示例，该配置可写在子系统类内部。
 
 <Tabs groupId="library">
 <TabItem value="WPILib" label="WPILib" default>
@@ -173,7 +173,7 @@ sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
 
 4. 在 VSCode 命令面板中搜索“WPILib: Start Tool”并选择“SysId”（或在 Windows 上使用桌面启动器）以打开 SysId 分析器，然后点击“Open data log file...”打开导出的日志文件。
 
-5. 选择以下字段即可使用默认编码器运行分析。你也可以改用来自辅助编码器（替代编码器、外部编码器、模拟编码器、绝对编码器等）的位置和速度数据。
+5. 选择以下字段即可使用默认编码器运行分析。你也可以改用来自辅助编码器（备用编码器、外部编码器、模拟编码器、绝对编码器等）的位置和速度数据。
 
    - Position = "NT:/URCL/&lt;Device&gt;/MotorPositionRotations"
    - Velocity = "NT:/URCL/&lt;Device&gt;/MotorVelocityRPM"

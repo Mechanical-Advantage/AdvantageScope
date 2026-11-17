@@ -8,7 +8,7 @@
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="Birim duyarlı grafikleme" />
 
-_Yukarıda İngilizce arayüz gösterilmektedir._
+_Yukarıda İngilizce arayüz gösteriliyor._
 
 ## Desteklenen formatlar {#supported-formats}
 
@@ -60,4 +60,4 @@ Birim dönüştürmeyi hızlıca açıp kapatmak için eksen başlığının yan
 
 <img src="/img/tab-reference/line-graph/units-2.webp" alt="Birim dönüşümünü düzenleme" height="250" />
 
-_Yukarıda İngilizce arayüz gösterilmektedir._
+_Yukarıda İngilizce arayüz gösteriliyor._

@@ -8,7 +8,7 @@ sidebar_position: 6
 
 <img src="/img/tab-reference/statistics-1.webp" alt="İstatistikler sekmesine genel bakış" />
 
-_Yukarıda İngilizce arayüz gösterilmektedir._
+_Yukarıda İngilizce arayüz gösteriliyor._
 
 ## Kontrol paneli {#control-pane}
 

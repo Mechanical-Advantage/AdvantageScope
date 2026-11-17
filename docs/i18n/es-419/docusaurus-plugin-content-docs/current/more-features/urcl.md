@@ -97,7 +97,7 @@ public Robot() {
 ```
 
 :::warning
-La compatibilidad de URCL con AdvantageKit es solo por comodidad; los datos guardados no están disponibles en la reproducción (replay). **Los controladores de motores REV deben seguir formando parte de una implementación IO con entradas definidas para soportar reproducción.**
+La compatibilidad de URCL con AdvantageKit es solo por comodidad; los datos guardados no están disponibles en la reproducción (replay). **Los controladores de motores REV deben seguir formando parte de una implementación IO con entradas definidas para admitir reproducción.**
 :::
 
 </TabItem>

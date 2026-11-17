@@ -27,7 +27,7 @@ _تظهر في الصورة أعلاه الواجهة باللغة الإنجل�
 :::
 
 :::warning ملعب FRC 2026
-يتوافق نموذج ملعب FRC لعام 2026 مع تخطيط AprilTag الخاص بالملعب **الملحوم** (welded). والفروق بين الملاعب الملحومة وملاعب AndyMark طفيفة جداً، لكن قد تظهر انحرافات بسيطة في المحاذاة (~0.5 بوصة) عند عرض وضعيات AprilTag استناداً إلى تخطيط ملعب AndyMark.
+يتوافق نموذج ملعب FRC لعام 2026 مع تخطيط AprilTag الخاص بالملعب **الملحوم** (welded). والفروق بين الملاعب الملحومة وملاعب AndyMark طفيفة جداً، لكن قد تظهر انحرافات بسيطة في المحاذاة (نحو 0.5 بوصة) عند عرض وضعيات AprilTag استناداً إلى تخطيط ملعب AndyMark.
 :::
 
 ## إضافة الكائنات {#adding-objects}
@@ -77,16 +77,16 @@ Logger.recordOutput("MyPoseArray", new Pose3d[] {poseA, poseB});
 <TabItem value="ftcdashboard" label="FTC Dashboard">
 
 ```java
-// This protocol does not support the modern struct format, but pose
-// values can be published using separate fields that include the
-// suffixes "x", "y", and "heading" (as shown below):
+// لا يدعم هذا البروتوكول تنسيق struct الحديث، ولكن يمكن نشر قيم
+// الوضعية باستخدام حقول منفصلة تتضمن اللواحق
+// "x" و"y" و"heading" (كما هو موضح أدناه):
 TelemetryPacket packet = new TelemetryPacket();
-packet.put("Pose x", 6.3); // Inches
-packet.put("Pose y", 2.8); // Inches
-packet.put("Pose heading", 3.14); // Radians
+packet.put("Pose x", 6.3); // بوصة
+packet.put("Pose y", 2.8); // بوصة
+packet.put("Pose heading", 3.14); // راديان
 
-// Alternatively, headings can be published in degrees
-packet.put("Pose heading (deg)", 180.0); // Degrees
+// بدلاً من ذلك، يمكن نشر الاتجاهات بالدرجات
+packet.put("Pose heading (deg)", 180.0); // درجات
 ```
 
 </TabItem>
@@ -123,12 +123,12 @@ packet.put("Pose heading (deg)", 180.0); // Degrees
 - توضيح أماكن وجود قطع اللعبة داخل الروبوت
 - استعراض مسارات الإطلاق استناداً إلى الحسابات الفيزيائية
 
-ومن حالات الاستخدام البسيطة الأخرى إظهار حالة قطع اللعبة داخل الروبوت بناءً على بيانات المستشعرات؛ فعلى سبيل المثال، يمكن لمستشعر قطع الشعاع (beam break) في مسار النوتة (note) لروبوت 2024 أن يُظهر نوتة (كما هو موضح أدناه).
+ومن حالات الاستخدام البسيطة الأخرى إظهار حالة قطع اللعبة داخل الروبوت بناءً على بيانات المستشعرات؛ فعلى سبيل المثال، يمكن لمستشعر قطع الشعاع (beam break) في مسار قطعة اللعب (Note) لروبوت 2024 أن يُظهر قطعة لعب (كما هو موضح أدناه).
 
 <details>
 <summary>مثال برمجي</summary>
 
-يتضمن المشروع النموذجي KitBot 2024 في AdvantageKit مثالاً بسيطاً لـ[أمر (command)](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) يحرّك نوتة تنتقل من الروبوت إلى مكبر الصوت (speaker). ويُدمَج هذا الأمر في [تسلسل الإطلاق القياسي](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73)، فيُطلق الحركة عند كل عملية إطلاق للنوتة. ويوضح [هذا الفيديو](https://youtube.com/shorts/-HxfDo9f19U?feature=share) كيف يمكن استخدام الرسوم المتحركة لقطع اللعبة لعرض مسارات التحكم الذاتي لعدة ألعاب مختلفة.
+يتضمن المشروع النموذجي KitBot 2024 في AdvantageKit مثالاً بسيطاً لـ[أمر (command)](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) يحرّك قطعة لعب (Note) تنتقل من الروبوت إلى منطقة التهديف (Speaker). ويُدمَج هذا الأمر في [تسلسل الإطلاق القياسي](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73)، فيُطلق الحركة عند كل عملية إطلاق لقطعة اللعب. ويوضح [هذا الفيديو](https://youtube.com/shorts/-HxfDo9f19U?feature=share) كيف يمكن استخدام الرسوم المتحركة لقطع اللعبة لعرض مسارات التحكم الذاتي لعدة ألعاب مختلفة.
 
 </details>
 
@@ -144,7 +144,7 @@ packet.put("Pose heading (deg)", 180.0); // Degrees
 
 ### دوران حول الملعب {#orbit-field}
 
-هذا هو وضع الكاميرا الافتراضي، حيث يمكنك تحريك الكاميرا بحرية بالنسبة للملعب. **النقر بالزر الأيسر + السحب** يدور الكاميرا، و**النقر بالزر الأيمن + السحب** يحرّك الكاميرا أفقياً وعمودياً. **مرّر** للتكبير والتصغير.
+هذا هو وضع الكاميرا الافتراضي، حيث يمكنك تحريك الكاميرا بحرية بالنسبة للملعب. **النقر بالزر الأيسر + السحب** يدور الكاميرا و**النقر بالزر الأيمن + السحب** يحرّك الكاميرا أفقياً وعمودياً. **مرّر** للتكبير والتصغير.
 
 :::tip
 يمكنك أيضاً التحكم في الكاميرا باستخدام لوحة المفاتيح: تُستخدم مفاتيح **WASD** للتحريك، ومفاتيح **IJKL** للدوران، ومفتاحا **E** و**Q** للتحريك الرأسي.

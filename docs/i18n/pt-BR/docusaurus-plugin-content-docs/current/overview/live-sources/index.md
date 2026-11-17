@@ -47,7 +47,7 @@ Informe o endereço do robô usando um nome de host (ex.: `robot.local`) ou um e
 
 Quando o NetworkTables for a fonte ao vivo, você pode escolher entre dois modos:
 
-- **Baixa largura de banda (Padrão):** O AdvantageScope pede ao servidor apenas os dados dos campos que estão sendo usados no momento. Dados publicados antes de você selecionar um campo não ficam disponíveis. Esse modo é **altamente recomendado** em redes com pouca largura de banda ou quando há muitos campos sendo publicados.
+- **Baixa largura de banda (padrão):** O AdvantageScope pede ao servidor apenas os dados dos campos que estão sendo usados no momento. Dados publicados antes de você selecionar um campo não ficam disponíveis. Esse modo é **altamente recomendado** em redes com pouca largura de banda ou quando há muitos campos sendo publicados.
 - **Logging:** O AdvantageScope pede os dados de todos os campos, estejam eles sendo usados ou não. Assim, você pode pausar a transmissão ao vivo e consultar outros campos retroativamente. Esse modo ajuda bastante durante o desenvolvimento, mas **NÃO deve ser usado quando a largura de banda for limitada**.
 
 ### Descartar dados ao vivo {#discard-live-data}

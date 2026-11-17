@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 🌐 دعم اللغات {#language-support}
 
-يدعم AdvantageScope لغات متعددة لتوفير تجربة محلية للفرق حول العالم. تتوفر اللغات التالية حاليًا وتدعمها وثائق AdvantageScope، وتطبيق سطح المكتب، وتطبيقات الأجهزة المحمولة (AdvantageScope XR و AdvantageTune)، و AdvantageScope Lite (على Systemcore وفي FIRST Driver Station):
+يدعم AdvantageScope لغات متعددة لتوفير تجربة محلية للفرق حول العالم. تتوفر اللغات التالية حاليًا وتدعمها وثائق AdvantageScope وتطبيق سطح المكتب وتطبيقات الأجهزة المحمولة (AdvantageScope XR وAdvantageTune) وAdvantageScope Lite (على Systemcore وفي FIRST Driver Station):
 
 - الإنجليزية (الولايات المتحدة)
 - الإسبانية (أمريكا اللاتينية)

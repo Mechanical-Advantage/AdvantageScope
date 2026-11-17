@@ -27,7 +27,7 @@ href: "/category/tab-reference"
 },
 {
 type: "category",
-label: "अन्य फीचर्स",
+label: "अन्य फ़ीचर्स",
 href: "/category/more-features"
 },
 {
@@ -40,10 +40,10 @@ href: "/overview/champs-conference"
 
 AdvantageScope में ये टूल्स शामिल हैं:
 
-- लचीले ग्राफ़ और चार्ट के कई विकल्प
+- ग्राफ़ और चार्ट के कई लचीले विकल्प
 - कस्टमाइज़ेबल CAD-आधारित रोबोट के साथ पोज़ डेटा का 2D और 3D फील्ड विज़ुअलाइज़ेशन
 - अलग से लोड किए गए मैच वीडियो के साथ सिंक्रनाइज़्ड वीडियो प्लेबैक
-- जॉयस्टिक विज़ुअलाइज़ेशन, जो कस्टमाइज़ेबल कंट्रोलर चित्रण पर ड्राइवर के एक्शन दिखाता है
+- जॉयस्टिक विज़ुअलाइज़ेशन, जो कस्टमाइज़ेबल कंट्रोलर डायग्राम पर ड्राइवर के एक्शन दिखाता है
 - स्वर्व ड्राइव मॉड्यूल वेक्टर डिस्प्ले
 - कंसोल संदेशों की समीक्षा
 - लॉग स्टैटिस्टिक्स विश्लेषण
@@ -58,7 +58,7 @@ block
 style={{ marginBottom: "15px" }}
 />
 
-[समस्या पृष्ठ (issues page)](https://github.com/Mechanical-Advantage/AdvantageScope/issues) पर फ़ीडबैक, फीचर अनुरोध और बग रिपोर्ट का स्वागत है। AdvantageScope में योगदान करने के बारे में अधिक जानकारी के लिए [योगदान पृष्ठ (contribution page)](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/CONTRIBUTING.md) देखें। गैर-सार्वजनिक पूछताछ के लिए कृपया software@team6328.org पर संदेश भेजें।
+[इश्यूज़ पेज](https://github.com/Mechanical-Advantage/AdvantageScope/issues) पर फ़ीडबैक, फ़ीचर अनुरोध और बग रिपोर्ट का स्वागत है। AdvantageScope में योगदान करने के बारे में अधिक जानकारी के लिए [योगदान पृष्ठ (contribution page)](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/CONTRIBUTING.md) देखें। निजी पूछताछ के लिए कृपया software@team6328.org पर संदेश भेजें।
 
 <img src="/img/screenshot-light.webp" className="light-only" />
 <img src="/img/screenshot-dark.webp" className="dark-only" />

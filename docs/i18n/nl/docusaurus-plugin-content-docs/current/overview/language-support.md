@@ -28,7 +28,7 @@ AdvantageScope ondersteunt meerdere talen zodat teams over de hele wereld de sof
 
 Om de taal in AdvantageScope aan te passen, open je het voorkeurenvenster via `App` > `Voorkeuren tonen...` (Windows/Linux) of `AdvantageScope` > `Instellingen...` (macOS). Bij "Taal 🌐" kies je een van de ondersteunde talen, of je kiest "Systeemstandaard" om automatisch de taal van je besturingssysteem te volgen.
 
-<img src="/img/prefs_nl.webp" alt="Diagram van voorkeuren" height="450" />
+<img src="/img/prefs_nl.webp" alt="Overzicht van de voorkeuren" height="450" />
 
 ## Logsleutels {#logging-keys}
 

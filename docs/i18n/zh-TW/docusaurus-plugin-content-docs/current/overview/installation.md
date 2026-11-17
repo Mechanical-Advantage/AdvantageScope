@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # 📦 安裝 {#installation}
 
-官方支援的 AdvantageScope 可直接向 6328 團隊下載，或透過 WPILib 安裝程式取得；另外也有數個非官方發行版。
+官方支援的 AdvantageScope 可直接從 6328 團隊下載，或透過 WPILib 安裝程式取得；另外也有數個非官方發行版。
 
 ## 6328 團隊 {#team-6328}
 
@@ -21,7 +21,7 @@ sidebar_position: 1
 :::
 
 :::info
-AdvantageScope 每年都會在 1 月 FRC 開賽 (kickoff) 前發布主要版本，版本號對應年份（例如 v26.0.0 於 2026 年 1 月發布）。在正式發布前的幾個月內，我們可能會提供 Beta 與 Alpha 版本，讓想搶先體驗新功能並提供回饋的隊伍試用。**使用這些預先發布版本時，預期會遇到穩定版中沒有的問題與 Bug。**
+AdvantageScope 每年都會在 1 月 FRC 開賽 (kickoff) 前發布主要版本，版本號對應年份（例如 v26.0.0 於 2026 年 1 月發布）。在正式發布前的幾個月內，我們可能會提供 Beta 與 Alpha 版本，讓想搶先體驗新功能並提供回饋的隊伍試用。**使用這些預先發布版本時，可能會遇到穩定版中沒有的問題與 Bug。**
 :::
 
 ## WPILib {#wpilib}

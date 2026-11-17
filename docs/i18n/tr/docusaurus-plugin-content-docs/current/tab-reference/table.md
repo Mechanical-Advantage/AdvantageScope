@@ -8,7 +8,7 @@ Tablo görünümü, seçtiğiniz alanlardaki değer değişikliklerini ayrıntı
 
 <img src="/img/tab-reference/table-1.webp" alt="Genel bakış" />
 
-_Yukarıda İngilizce arayüz gösterilmektedir._
+_Yukarıda İngilizce arayüz gösteriliyor._
 
 **Görüntülenen alanların herhangi birindeki her değişiklik için yeni bir satır oluşturulur.** Yinelenen satırlar gösterilmez. Örneğin, bir maç sırasında robot durumunu gösteren bir tablo şu şekilde görünür:
 

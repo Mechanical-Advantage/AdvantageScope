@@ -8,7 +8,7 @@ Fila grafic liniar recunoaște unitățile de măsură, așa că poți converti 
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="Grafice bazate pe unități" />
 
-_Interfața în limba engleză este ilustrată mai sus._
+_Mai sus este prezentată interfața în limba engleză._
 
 ## Formate suportate {#supported-formats}
 
@@ -60,4 +60,4 @@ Pentru a activa sau dezactiva rapid conversia unităților, dă clic pe cele tre
 
 <img src="/img/tab-reference/line-graph/units-2.webp" alt="Editarea conversiei unităților" height="250" />
 
-_Interfața în limba engleză este ilustrată mai sus._
+_Mai sus este prezentată interfața în limba engleză._

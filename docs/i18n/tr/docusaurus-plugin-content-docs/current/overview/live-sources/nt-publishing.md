@@ -10,7 +10,7 @@ AdvantageScope, bir log dosyasında saklanan NetworkTables verilerini bir simül
 - Gerçek bir robotta yardımcı işlemciden (coprocessor) gelen verileri taklit etmek
 - Gerçekçi maç verileriyle sürücü gösterge paneli uygulamalarını test etmek ve hata ayıklamak
 
-Bu özellik için NetworkTables verilerinin tam kaydını içeren bir log dosyası gerekir; bunu WPILib’in [yerleşik veri loglayıcısı](https://docs.wpilib.org/tr/stable/docs/software/telemetry/datalog.html) ile oluşturabilirsiniz. AdvantageKit bu özelliği desteklemez; çünkü onun yerine simülasyonda çok daha kapsamlı, deterministik yeniden oynatma imkânı sunar.
+Bu özellik için NetworkTables verilerinin tam kaydını içeren bir log dosyası gerekir; bunu WPILib'in [yerleşik veri loglayıcısı](https://docs.wpilib.org/tr/stable/docs/software/telemetry/datalog.html) ile oluşturabilirsiniz. AdvantageKit bu özelliği desteklemez; çünkü onun yerine simülasyonda çok daha kapsamlı, deterministik yeniden oynatma imkânı sunar.
 
 ## Başlarken {#getting-started}
 
@@ -29,7 +29,7 @@ Yayınlamayı durdurmak için `Dosya` > `NT verilerini yayınla` > `Yayınlamay�
 
 Varsayılan olarak AdvantageScope, log dosyasındaki tüm NetworkTables alanlarını yayınlar (sunucunun yayınladığı meta başlıklar hariç). Ancak yardımcı işlemciyi taklit etmek gibi bazı senaryolarda yalnızca belirli alanları veya alt tabloları yayınlamak isteyebilirsiniz. İzin verilen alan ön eklerini ayarlamak için `Uygulama` > `Tercihleri göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) yolunu izleyerek tercihler penceresini açın.
 
-“NT yayın ön ekleri” ayarı, NetworkTables’a yayınlanacak alanların ön eklerini belirler. Boş bırakırsanız tüm alanlar yayınlanır. İsterseniz virgülle ayrılmış bir ön ek veya alan listesi girebilirsiniz. Aşağıdaki örneklere göz atın:
+“NT yayın ön ekleri” ayarı, NetworkTables'a yayınlanacak alanların ön eklerini belirler. Boş bırakırsanız tüm alanlar yayınlanır. İsterseniz virgülle ayrılmış bir ön ek veya alan listesi girebilirsiniz. Aşağıdaki örneklere göz atın:
 
 - “_Telemetry_”: “Telemetry” tablosundaki tüm alanları dahil eder.
 - “_Telemetry/Drive_”: Yalnızca “Telemetry/Drive” tablosunu dahil eder.
@@ -39,6 +39,6 @@ Varsayılan olarak AdvantageScope, log dosyasındaki tüm NetworkTables alanlar�
 
 :::warning
 
-- Alanlar her 20 ms’de bir yayınlanır; dolayısıyla daha yüksek frekansta kaydedilmiş NetworkTables verilerinde bazı örnekler atlanır.
+- Alanlar her 20 ms'de bir yayınlanır; dolayısıyla daha yüksek frekansta kaydedilmiş NetworkTables verilerinde bazı örnekler atlanır.
 - Yayınlanan örneklerin zaman damgaları korunmaz. Zaman içinde ileri geri sararken veya farklı hızlarda oynatırken bu zaten mümkün değildir.
   :::

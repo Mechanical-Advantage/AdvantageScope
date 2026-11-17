@@ -5,12 +5,12 @@
 - **NetworkTables:** פרוטוקול הרשת המרכזי של WPILib. לפרטים נוספים עיינו ב[תיעוד של WPILib](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html).
 - **NetworkTables (AdvantageKit):** מצב המיועד לעבודה עם קוד רובוט שמריץ AdvantageKit, אשר מפרסמת לטבלה `AdvantageKit` ב-NetworkTables.
 - **דיאגנוסטיקה Systemcore:** מתחבר לשרת ה-NetworkTables המובנה של מערכת ההפעלה Systemcore, ומספק נתוני אבחון כמו מצב הרובוט וקלט/פלט (IO) של ההתקנים.
-- **דיאגנוסטיקה Phoenix:** משתמש ב-HTTP כדי להתחבר ל[שרת האבחון](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html) של Phoenix, ומאפשר להזרים נתונים מהתקני CTRE CAN עם [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/) — בדומה לתכונת ה-[plotting](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) ב-Phoenix Tuner. למידע נוסף ראו [בדף הזה](/overview/live-sources/phoenix-diagnostics).
+- **דיאגנוסטיקה Phoenix:** משתמש ב-HTTP כדי להתחבר ל[שרת האבחון](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html) של Phoenix, ומאפשר להזרים נתונים מהתקני CTRE CAN עם [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/), בדומה לתכונת ה-[plotting](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) ב-Phoenix Tuner. למידע נוסף ראו [בדף הזה](/overview/live-sources/phoenix-diagnostics).
 - **שרת RLOG:** פרוטוקול שנתמך על ידי AdvantageKit כחלופה ל-NetworkTables. כברירת מחדל, החיבור מתבצע בפורט 5800.
 - **FTC Dashboard:** מתחבר לרובוטי FTC שמפרסמים נתונים ל-[FTC Dashboard](https://acmerobotics.github.io/ftc-dashboard).
 
 :::info
-כשמריצים את AdvantageScope על אותו מחשב שבו פועלת אפליקציית ה-FIRST Driver Station, אפשר להתחבר אליה ישירות כדי לצפות בנתוני אבחון — בלי צורך בהגדרות מיוחדות (ראו הוראות למטה).
+כשמריצים את AdvantageScope על אותו מחשב שבו פועלת אפליקציית ה-FIRST Driver Station, אפשר להתחבר אליה ישירות כדי לצפות בנתוני אבחון, בלי צורך בהגדרות מיוחדות (ראו הוראות למטה).
 :::
 
 ## התחלת החיבור {#starting-the-connection}

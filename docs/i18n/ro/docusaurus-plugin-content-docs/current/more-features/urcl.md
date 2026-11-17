@@ -5,7 +5,7 @@ sidebar_position: 3
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📝 Înregistrator neoficial compatibil REV {#unofficial-rev-compatible-logger}
+# 📝 Înregistrator neoficial compatibil REV (URCL) {#unofficial-rev-compatible-logger}
 
 :::info
 Începând cu 2026, REVLib include o soluție oficială de logging pentru salvarea datelor de la Spark Max și Spark Flex într-un log CAN REV (`.revlog`). Consultă [documentația REVLib](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) pentru detalii. Aceste fișiere pot fi deschise direct în AdvantageScope, dar nu pot fi sincronizate precis cu alte surse de date.
@@ -35,7 +35,7 @@ Instalează dependența vendor URCL urmând instrucțiunile pentru instalarea [b
 https://raw.githubusercontent.com/Mechanical-Advantage/URCL/main/URCL.json
 ```
 
-URCL publică în NetworkTables în mod implicit, de unde datele pot fi salvate într-un fișier log prin activarea DataLogManager din WPILib. Alternativ, URCL poate înregistra direct într-un DataLog. Pornește loggerul în `robotInit`, ca în exemplele de mai jos.
+URCL publică în NetworkTables în mod implicit, de unde datele pot fi salvate într-un fișier log prin activarea DataLogManager din WPILib. Alternativ, URCL poate înregistra direct într-un DataLog. Pornește înregistratorul în `robotInit`, ca în exemplele de mai jos.
 
 <Tabs>
 <TabItem value="java" label="Java" default>

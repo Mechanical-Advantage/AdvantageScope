@@ -84,7 +84,7 @@ Je kunt de volgende opties instellen:
 
 - **Max snelheid:** De hoogst haalbare snelheid van de modules; hiermee schaalt de lengte van de pijlen.
 - **Framegrootte:** De afstanden tussen de swerve-modules links en rechts, en voor en achter. Dit past de beeldverhouding van het robotdiagram aan.
-- **Oriëntatie:** Draait de richting waarin het robotdiagram wijst. Handig om het diagram gelijk te zetten met pose-data of wedstrijdvideo's.
+- **Oriëntatie:** Draait de richting waarin het robotdiagram wijst. Handig om het diagram gelijk te zetten met posedata of wedstrijdvideo's.
 
 :::note
 [🦀 🦀 🦀 🦀 🦀 🦀 🦀 🦀 🦀](https://www.youtube.com/watch?v=IbbwtyM8Dxs)

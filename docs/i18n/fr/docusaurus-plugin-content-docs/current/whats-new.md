@@ -51,7 +51,7 @@ L'onglet 📉 [Graphique linéaire](/tab-reference/line-graph/) a été entière
 - Conversion automatique des unités compatibles sur un même axe
 - Affichage exact des unités après [intégration et dérivation](/tab-reference/line-graph/#integration-and-differentiation)
 
-La capture d'écran ci-dessous illustre toutes ces nouveautés. Remarquez que l'axe gauche regroupe des champs exprimés dans différentes unités de vitesse angulaire, tandis que l'axe droit affiche des valeurs dérivées dans une unité différente de l'unité d'origine (en degrés). Il est aussi plus simple que jamais de choisir vos unités grâce aux options intégrées directement dans le menu de contrôle de chaque axe.
+La capture d'écran ci-dessous illustre toutes ces nouveautés. Remarquez que l'axe gauche regroupe des champs exprimés dans diverses unités de vitesse angulaire, tandis que l'axe droit affiche des valeurs dérivées dans une autre unité que celle d'origine (en degrés). Il est aussi plus simple que jamais de choisir vos unités grâce aux options intégrées directement dans le menu de contrôle de chaque axe.
 
 _Pour en savoir plus sur la gestion des unités, consultez la [documentation](/tab-reference/line-graph/units)._
 
@@ -126,7 +126,7 @@ La barre de menus et les contrôles associés ont été simplifiés et réorgani
 Cette version apporte de nombreuses corrections de bogues et améliorations de stabilité dans toute l'application. Vous trouverez la liste complète dans le [journal des modifications](https://github.com/Mechanical-Advantage/AdvantageScope/releases), mais voici quelques correctifs importants :
 
 - Amélioration nette des performances lors de la diffusion de données en direct sur de longues périodes, en particulier dans l'onglet Graphique linéaire.
-- Meilleure tolérance aux données atypiques, notamment aux fichiers journaux très volumineux et aux champs contenant de grandes quantités de données.
+- Meilleure tolérance aux données inhabituelles, notamment aux fichiers journaux très volumineux et aux champs contenant de grandes quantités de données.
 - Correction de plusieurs anomalies d'affichage lors de la navigation dans les journaux, surtout avec les filtres de l'onglet Graphique linéaire.
 - Correction du tri des fichiers journaux AdvantageKit dans la fenêtre de téléchargement : les journaux sans horodatage apparaissent désormais en bas de la liste, comme pour les autres formats.
 - Dans l'onglet Terrain 3D, les caméras du robot présentant une rotation non nulle sur l'axe de roulis s'affichent maintenant correctement.

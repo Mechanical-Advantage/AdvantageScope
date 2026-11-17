@@ -15,7 +15,7 @@ Trage câmpul dorit în vizualizarea principală pentru a începe. Fiecare rând
 
 <img src="/img/tab-reference/console-1.webp" alt="Vizualizare consolă" />
 
-_Interfața în limba engleză este ilustrată mai sus._
+_Mai sus este prezentată interfața în limba engleză._
 
 :::info
 Fă clic pe pictograma paletă de culori pentru a activa sau dezactiva evidențierea mesajelor de avertisment și eroare. Pentru logurile WPILib și AdvantageKit, mesajele sunt evidențiate dacă conțin textul „warning” sau „error”.

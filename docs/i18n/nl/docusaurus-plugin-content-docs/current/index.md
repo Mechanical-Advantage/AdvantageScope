@@ -58,7 +58,7 @@ block
 style={{ marginBottom: "15px" }}
 />
 
-Feedback, verzoeken voor nieuwe functies en bugrapporten zijn welkom op de [issues-pagina](https://github.com/Mechanical-Advantage/AdvantageScope/issues). Kijk op de [bijdragepagina](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/CONTRIBUTING.md) voor meer informatie over hoe je kunt bijdragen aan AdvantageScope. Heb je een privé-vraag? Stuur dan een bericht naar software@team6328.org.
+Feedback, verzoeken voor nieuwe functies en bugrapporten zijn welkom op de [issues-pagina](https://github.com/Mechanical-Advantage/AdvantageScope/issues). Kijk op de [bijdragepagina](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/CONTRIBUTING.md) voor meer informatie over hoe je kunt bijdragen aan AdvantageScope. Heb je een privévraag? Stuur dan een bericht naar software@team6328.org.
 
 <img src="/img/screenshot-light.webp" className="light-only" />
 <img src="/img/screenshot-dark.webp" className="dark-only" />

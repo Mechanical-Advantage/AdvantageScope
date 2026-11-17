@@ -52,7 +52,7 @@ Haz clic en el ícono `?` para ver la lista completa de tipos de objetos disponi
 
 Los datos geométricos deben publicarse en formato `struct` o `protobuf` codificado en bytes. Se admiten varios tipos 2D y 3D, como `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, entre otros.
 
-Varias bibliotecas ya soportan `struct`, incluidas WPILib y AdvantageKit. En el ejemplo de abajo puedes ver cómo registrar una pose 2D en Java.
+Varias bibliotecas ya admiten `struct`, incluidas WPILib y AdvantageKit. En el ejemplo de abajo puedes ver cómo registrar una pose 2D en Java.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>

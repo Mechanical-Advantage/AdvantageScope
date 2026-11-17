@@ -9,11 +9,11 @@ import TabItem from '@theme/TabItem';
 
 AdvantageScope 支援多種語言，為世界各地的隊伍提供在地化體驗。目前以下語言已支援 AdvantageScope 文件、桌面應用程式、行動應用程式 (AdvantageScope XR 與 AdvantageTune)，以及 AdvantageScope Lite（包含 Systemcore 與 FIRST 駕駛站內的版本）：
 
-- 英語 (美國)
-- 西班牙語 (拉丁美洲)
+- 英語（美國）
+- 西班牙語（拉丁美洲）
 - 法語
 - 荷蘭語
-- 葡萄牙語 (巴西)
+- 葡萄牙語（巴西）
 - 羅馬尼亞語
 - 土耳其語
 - 俄語

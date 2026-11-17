@@ -130,7 +130,7 @@ Botões, joysticks e valores de eixos aceitam tanto mapeamentos [SDL](https://ww
 Para mapeamentos NI, o AdvantageScope mantém compatibilidade com as chaves antigas sem prefixo (como `sourceIndex`). **Todos os novos joysticks devem usar mapeamentos SDL explícitos (como `sdlSourceIndex`) para garantir compatibilidade com a atual FIRST Driver Station.**
 :::
 
-### Botão único / Valor POV {#single-button-pov-value}
+### Botão único / valor POV {#single-button-pov-value}
 
 ```json
 {

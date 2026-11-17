@@ -21,8 +21,8 @@ O AdvantageScope oferece suporte a vários idiomas para proporcionar uma experi�
 - Hebraico
 - Árabe
 - Hindi
-- Chinês Simplificado
-- Chinês Tradicional
+- Chinês simplificado
+- Chinês tradicional
 
 ## Configuração {#configuration}
 

@@ -4,7 +4,7 @@ sidebar_position: 5
 
 # ⏱️ الطوابع الزمنية {#timestamps}
 
-يدعم AdvantageScope خيارات قابلة للتخصيص لعرض الطوابع الزمنية عبر جميع طرق العرض، بما في ذلك المخطط الزمني، و📉 [الرسم البياني الخطي](/tab-reference/line-graph)، و🔢 [الجدول](/tab-reference/table)، و💬 [وحدة التحكم](/tab-reference/console).
+يدعم AdvantageScope خيارات قابلة للتخصيص لعرض الطوابع الزمنية عبر جميع طرق العرض، بما في ذلك المخطط الزمني و📉 [الرسم البياني الخطي](/tab-reference/line-graph) و🔢 [الجدول](/tab-reference/table) و💬 [وحدة التحكم](/tab-reference/console).
 
 ## أوضاع العرض {#display-modes}
 

@@ -8,7 +8,7 @@ Vizualizarea sub formă de tabel îți arată în detaliu modificările de valoa
 
 <img src="/img/tab-reference/table-1.webp" alt="Prezentare generală" />
 
-_Interfața în limba engleză este ilustrată mai sus._
+_Mai sus este prezentată interfața în limba engleză._
 
 **Se creează un rând nou pentru fiecare modificare a oricăruia dintre câmpurile afișate.** Rândurile duplicate nu sunt afișate. De exemplu, un tabel care arată starea robotului în timpul unui meci ar arăta astfel:
 

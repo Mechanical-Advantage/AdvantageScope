@@ -37,11 +37,11 @@ Scroll je in de lijngrafiek of tijdlijn naar links, dan laat je het huidige tijd
 
 Open het voorkeurenvenster via `App` > `Voorkeuren tonen...` (Windows/Linux) of `AdvantageScope` > `Instellingen...` (macOS).
 
-<img src="/img/prefs_nl.webp" alt="Diagram van voorkeuren" height="450" />
+<img src="/img/prefs_nl.webp" alt="Overzicht van de voorkeuren" height="450" />
 
 ### Robotadres {#robot-address}
 
-Vul het robotadres in als hostnaam (bijv. `robot.local`) of IP-adres (bijv. `10.TE.AM.2`), zoals beschreven in de [WPILib-documentatie](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). Maak je verbinding met Systemcore via USB of het ingebouwde wifi-toegangspunt? Klik dan op `Bestand` > `Systemcore USB-adres gebruiken`/`Systemcore wifiadres gebruiken` om tijdelijk het juiste statische IP-adres te gebruiken.
+Vul het robotadres in als hostnaam (bijv. `robot.local`) of IP-adres (bijv. `10.TE.AM.2`), zoals beschreven in de [WPILib-documentatie](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). Maak je verbinding met Systemcore via USB of het ingebouwde wifitoegangspunt? Klik dan op `Bestand` > `Systemcore USB-adres gebruiken`/`Systemcore wifiadres gebruiken` om tijdelijk het juiste statische IP-adres te gebruiken.
 
 ### Live-modus {#live-mode}
 

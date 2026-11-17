@@ -10,10 +10,10 @@ import TabItem from '@theme/TabItem';
 :::info
 2026 में नया: REVLib में अब Spark Max और Spark Flex से डेटा को REV CAN लॉग (`.revlog`) में सेव करने के लिए एक आधिकारिक लॉगिंग समाधान शामिल है। विवरण के लिए [यहाँ](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) देखें। इन फ़ाइलों को सीधे AdvantageScope में खोला जा सकता है, लेकिन इन्हें अन्य डेटा स्रोतों के साथ सटीक रूप से सिंक नहीं किया जा सकता।
 
-एक सहज ट्रांज़िशन और पिछले सीज़न के बराबर फीचर्स बनाए रखने के लिए AdvantageScope का _अनऑफिशियल_ REV-कम्पैटिबल लॉगर (URCL) भी 2026 में टीमों के लिए उपलब्ध रहेगा। 2027 और उसके बाद के लॉगिंग विकल्पों के बारे में हम बाद में अधिक जानकारी साझा करेंगे।
+एक सहज ट्रांज़िशन और पिछले सीज़न के बराबर फ़ीचर्स बनाए रखने के लिए AdvantageScope का _अनऑफिशियल_ REV-कम्पैटिबल लॉगर (URCL) भी 2026 में टीमों के लिए उपलब्ध रहेगा। 2027 और उसके बाद के लॉगिंग विकल्पों के बारे में हम बाद में अधिक जानकारी साझा करेंगे।
 :::
 
-URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) Java, C++ और Python के लिए उपलब्ध एक लॉगिंग लाइब्रेरी है जो Spark Max और Spark Flex से डेटा को अपने आप रिकॉर्ड करती है। इसकी मदद से CTRE के [Tuner X प्लॉटिंग फीचर](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) और [Phoenix 6 सिग्नल लॉगर](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) की तरह सभी उपकरणों की लाइव प्लॉटिंग और लॉगिंग की जा सकती है।
+URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) Java, C++ और Python के लिए उपलब्ध एक लॉगिंग लाइब्रेरी है जो Spark Max और Spark Flex से डेटा को अपने आप रिकॉर्ड करती है। इसकी मदद से CTRE के [Tuner X प्लॉटिंग फ़ीचर](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) और [Phoenix 6 सिग्नल लॉगर](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) की तरह सभी उपकरणों की लाइव प्लॉटिंग और लॉगिंग की जा सकती है।
 
 सेटअप के बाद, सभी Spark Max और Spark Flex उपकरणों से पीरियोडिक CAN फ्रेम NetworkTables या DataLog पर पब्लिश किए जाते हैं। NetworkTables का उपयोग करते समय, WPILib के [DataLogManager](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) का उपयोग डेटा को लॉग फ़ाइल में कैप्चर करने के लिए किया जा सकता है। ये फ्रेम AdvantageScope में देखे जा सकते हैं ([लॉग फ़ाइलें प्रबंधित करना](/overview/log-files) और [लाइव स्रोतों से कनेक्ट करना](/overview/live-sources) देखें)।
 

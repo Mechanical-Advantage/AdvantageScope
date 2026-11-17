@@ -20,7 +20,7 @@ URCL（**U**nofficial **R**EV-**C**ompatible **L**ogger，非官方 REV 相容�
 - **所有訊號**都會自動擷取，**新增裝置時也不需手動設定**。
 - **完整擷取每個訊框**，即使狀態訊框的週期比機器人迴圈週期還快也不會漏掉。
 - 訊框會以 **CAN RX 接收時間作為時間戳記**來記錄，相較於在使用者程式碼中進行傳統記錄，能讓 [SysId](https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/introduction.html) 做出更準確的加速度特性分析（請參閱下方的「SysId 使用方式」）。
-- 記錄過程**極具效率**：相關作業採用多執行緒處理，即使記錄大量裝置，每個 20 ms 週期內的執行時間也低於 80 µs。
+- 記錄過程**極具效率**：相關作業採用多執行緒處理，即使記錄大量裝置，每個 20 毫秒週期內的執行時間也低於 80 微秒。
 - **完全不影響 REVLib 的任何功能。**
 
 :::info
@@ -124,7 +124,7 @@ var sysIdRoutine = new SysIdRoutine(
   new SysIdRoutine.Config(),
   new SysIdRoutine.Mechanism(
     (voltage) -> subsystem.runVolts(voltage.in(Volts)),
-    null, // 無日誌消費者，因為資料由 URCL 記錄
+    null, // 不指定日誌接收端，因為資料由 URCL 記錄
     subsystem
   )
 );
@@ -148,7 +148,7 @@ var sysIdRoutine = new SysIdRoutine(
   ),
   new SysIdRoutine.Mechanism(
     (voltage) -> subsystem.runVolts(voltage.in(Volts)),
-    null, // 無日誌消費者，因為資料由 URCL 記錄
+    null, // 不指定日誌接收端，因為資料由 URCL 記錄
     subsystem
   )
 );
@@ -165,10 +165,10 @@ sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
 
 2. 在機器人上執行 SysId 常規程序。你可以將 SysId 指令設定為自動階段常規程序，或綁定到搖桿按鈕觸發。
 
-3. 下載日誌檔案並在 AdvantageScope 中開啟。從選單列選擇 `檔案` > `匯出資料...`，將格式設為「WPILOG」、欄位集設為「包含產生的」，然後點擊儲存圖示並選擇儲存位置。
+3. 下載日誌檔案並在 AdvantageScope 中開啟。從選單列選擇 `檔案` > `匯出資料...`，將格式設為「WPILOG」、欄位集設為「包含產生的欄位」，然後點擊儲存圖示並選擇儲存位置。
 
 :::warning
-從機器人下載的日誌檔案必須先由 AdvantageScope 開啟並匯出，**才能用 SysId 分析器開啟**。這是為了將 URCL 記錄的 CAN 資料轉換成與 SysId 相容的格式。
+從機器人下載的日誌檔案必須先透過 AdvantageScope 開啟並匯出，**才能用 SysId 分析器開啟**。這是為了將 URCL 記錄的 CAN 資料轉換成與 SysId 相容的格式。
 :::
 
 4. 在 VSCode 命令選擇區搜尋「WPILib: Start Tool」並選擇「SysId」（或在 Windows 上使用桌面啟動器）來開啟 SysId 分析器，接著點擊「Open data log file...」開啟剛匯出的日誌檔案。

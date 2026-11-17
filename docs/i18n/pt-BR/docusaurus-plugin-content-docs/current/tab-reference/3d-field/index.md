@@ -186,9 +186,9 @@ O sistema de coordenadas usado nesta guia pode ser personalizado. Confira a pág
 
 O Campo 3D oferece três modos de renderização:
 
-- **Cinematográfico (Esquerda):** Ativa sombras, iluminação avançada, reflexos e modelos 3D bem detalhados para um visual mais realista. Exige uma placa de vídeo (GPU) razoavelmente potente.
-- **Normal (Centro):** Modo padrão, com iluminação básica e modelos 3D simplificados. Roda bem na maioria dos computadores.
-- **Baixo consumo (Direita):** Reduz a taxa de quadros, a resolução e os detalhes dos modelos para economizar bateria e manter o desempenho estável em máquinas mais simples.
+- **Cinematográfico (esquerda):** Ativa sombras, iluminação avançada, reflexos e modelos 3D bem detalhados para um visual mais realista. Exige uma placa de vídeo (GPU) razoavelmente potente.
+- **Normal (centro):** Modo padrão, com iluminação básica e modelos 3D simplificados. Roda bem na maioria dos computadores.
+- **Baixo consumo (direita):** Reduz a taxa de quadros, a resolução e os detalhes dos modelos para economizar bateria e manter o desempenho estável em máquinas mais simples.
 
 <img src="/img/tab-reference/3d-field/3d-field-6.webp" alt="Comparação de modos de renderização" />
 

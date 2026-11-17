@@ -48,7 +48,7 @@ AdvantageScope admite varios tamaños de AprilTags para los campos de FTC. El ta
 
 Los datos geométricos deben publicarse en formato `struct` o `protobuf` codificado en bytes. Se admiten varios tipos 2D y 3D, como `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, entre otros.
 
-Varias bibliotecas ya soportan `struct`, incluidas WPILib y AdvantageKit. En el ejemplo de abajo puedes ver cómo registrar una pose 3D en Java.
+Varias bibliotecas ya admiten `struct`, incluidas WPILib y AdvantageKit. En el ejemplo de abajo puedes ver cómo registrar una pose 3D en Java.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -154,7 +154,7 @@ También puedes mover la cámara con el teclado: **WASD** para desplazarte horiz
 
 Tiene los mismos controles que **Orbitar campo**, pero la posición de la cámara queda fija respecto al robot. Es ideal para hacer tomas de seguimiento mientras se mueve.
 
-### Estación del conductor {#driver-station}
+### Driver Station {#driver-station}
 
 Este modo coloca la cámara detrás de una de las estaciones del conductor, a la altura aproximada de los ojos. En el menú **Driver Station**, puedes elegir una estación específica manualmente o dejarlo en **Automático** para que use la alianza y el número de estación guardados en el registro.
 

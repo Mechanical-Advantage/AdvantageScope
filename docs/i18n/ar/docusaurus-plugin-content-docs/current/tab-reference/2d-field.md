@@ -81,34 +81,34 @@ Logger.recordOutput("MyPoseArray", new Pose2d[] {poseA, poseB});
 <TabItem value="ftcdashboard" label="FTC Dashboard">
 
 ```java
-// This protocol does not support the modern struct format, but pose
-// values can be published using separate fields that include the
-// suffixes "x", "y", and "heading" (as shown below):
+// لا يدعم هذا البروتوكول تنسيق struct الحديث، ولكن يمكن نشر قيم
+// الوضعية باستخدام حقول منفصلة تتضمن اللواحق
+// "x" و"y" و"heading" (كما هو موضح أدناه):
 TelemetryPacket packet = new TelemetryPacket();
-packet.put("Pose x", 6.3); // Inches
-packet.put("Pose y", 2.8); // Inches
-packet.put("Pose heading", 3.14); // Radians
+packet.put("Pose x", 6.3); // بوصة
+packet.put("Pose y", 2.8); // بوصة
+packet.put("Pose heading", 3.14); // راديان
 
-// Alternatively, headings can be published in degrees
-packet.put("Pose heading (deg)", 180.0); // Degrees
+// بدلاً من ذلك، يمكن نشر الاتجاهات بالدرجات
+packet.put("Pose heading (deg)", 180.0); // درجات
 
-// Add other telemetry values here...
+// أضف قيم القياس عن بُعد الأخرى هنا...
 
 FtcDashboard.getInstance().sendTelemetryPacket(packet)
 
-// Alternately, use MultipleTelemetry and the standard SDK telemetry:
-// During OpMode Init:
+// بدلاً من ذلك، استخدم MultipleTelemetry والقياس عن بُعد القياسي لحزمة SDK:
+// أثناء تهيئة OpMode (Init):
 telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
 
-// During Loop:
-telemetry.addData("Pose x", 6.3); // Inches
-telemetry.addData("Pose y", 2.8); // Inches
-telemetry.addData("Pose heading", 3.14); // Radians
+// أثناء الحلقة (Loop):
+telemetry.addData("Pose x", 6.3); // بوصة
+telemetry.addData("Pose y", 2.8); // بوصة
+telemetry.addData("Pose heading", 3.14); // راديان
 
-// or...
-telemetry.addData("Pose heading (deg)", 180.0); // Degrees
+// أو...
+telemetry.addData("Pose heading (deg)", 180.0); // درجات
 
-// Add other telemetry values here...
+// أضف قيم القياس عن بُعد الأخرى هنا...
 telemetry.update();
 ```
 

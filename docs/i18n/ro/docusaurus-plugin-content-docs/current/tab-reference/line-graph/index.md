@@ -4,7 +4,7 @@ Graficul liniar este vizualizarea implicită în AdvantageScope și suportă at�
 
 <img src="/img/tab-reference/line-graph/line-graph-1.webp" alt="Demonstrație grafic liniar" />
 
-_Interfața în limba engleză este ilustrată mai sus._
+_Mai sus este prezentată interfața în limba engleză._
 
 ## Panoul de vizualizare {#viewer-pane}
 
@@ -29,7 +29,7 @@ Pentru a suprapune modul robotului (autonom, teleoperat sau utilitar), dă clic 
 
 <img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="Suprapunere mod robot" />
 
-_Interfața în limba engleză este ilustrată mai sus._
+_Mai sus este prezentată interfața în limba engleză._
 :::
 
 ### Ajustarea axelor {#adjusting-axes}
@@ -38,7 +38,7 @@ _Interfața în limba engleză este ilustrată mai sus._
 
 <img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="Editarea intervalului axei" height="250" />
 
-_Interfața în limba engleză este ilustrată mai sus._
+_Mai sus este prezentată interfața în limba engleză._
 
 ### Integrare și diferențiere {#integration-and-differentiation}
 

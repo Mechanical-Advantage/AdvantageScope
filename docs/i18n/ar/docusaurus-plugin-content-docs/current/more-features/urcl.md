@@ -42,11 +42,11 @@ https://raw.githubusercontent.com/Mechanical-Advantage/URCL/main/URCL.json
 
 ```java
 public Robot() {
-  // If publishing to NetworkTables and DataLog
+  // عند النشر إلى NetworkTables وDataLog
   DataLogManager.start();
   URCL.start();
 
-  // If logging only to DataLog
+  // عند التسجيل إلى DataLog فقط
   URCL.start(DataLogManager.getLog());
 }
 ```
@@ -59,11 +59,11 @@ public Robot() {
 #include "URCL.h"
 
 Robot::Robot() {
-  // If publishing to NetworkTables and DataLog
+  // عند النشر إلى NetworkTables وDataLog
   frc::DataLogManager::Start();
   URCL::Start();
 
-  // If logging only to DataLog
+  // عند التسجيل إلى DataLog فقط
   URCL::Start(frc::DataLogManager::GetLog());
 }
 ```
@@ -77,11 +77,11 @@ import wpilib
 
 class Robot(wpilib.TimedRobot):
     def robotInit(self):
-        # If publishing to NetworkTables and DataLog
+        # عند النشر إلى NetworkTables وDataLog
         wpilib.DataLogManager.start()
         urcl.start()
 
-        # If logging only to DataLog
+        # عند التسجيل إلى DataLog فقط
         urcl.start(wpilib.DataLogManager.getLog())
 ```
 
@@ -113,23 +113,23 @@ public Robot() {
 
 ## استخدام SysId {#sysid-usage}
 
-1. بعد إعداد URCL كما هو موضح أعلاه، هيّئ روتين SysId بتمرير `null` لمستهلك سجل الآلية. يوضح المثال التالي ذلك بلغة Java، ويمكن تنفيذ هذه التهيئة داخل فئة النظام الفرعي.
+1. بعد إعداد URCL كما هو موضح أعلاه، هيّئ روتين SysId بتمرير `null` لمُستقبِل سجل الآلية. يوضح المثال التالي ذلك بلغة Java، ويمكن تنفيذ هذه التهيئة داخل فئة النظام الفرعي.
 
 <Tabs groupId="library">
 <TabItem value="WPILib" label="WPILib" default>
 
 ```java
-// Create the SysId routine
+// إنشاء روتين SysId
 var sysIdRoutine = new SysIdRoutine(
   new SysIdRoutine.Config(),
   new SysIdRoutine.Mechanism(
     (voltage) -> subsystem.runVolts(voltage.in(Volts)),
-    null, // No log consumer, since data is recorded by URCL
+    null, // لا يوجد مُستقبِل سجل، لأن URCL يتولى تسجيل البيانات
     subsystem
   )
 );
 
-// The methods below return Command objects
+// تُعيد التوابع أدناه كائنات Command
 sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
 sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
 sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);
@@ -140,7 +140,7 @@ sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
 <TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
-// Create the SysId routine
+// إنشاء روتين SysId
 var sysIdRoutine = new SysIdRoutine(
   new SysIdRoutine.Config(
     null, null, null,
@@ -148,12 +148,12 @@ var sysIdRoutine = new SysIdRoutine(
   ),
   new SysIdRoutine.Mechanism(
     (voltage) -> subsystem.runVolts(voltage.in(Volts)),
-    null, // No log consumer, since data is recorded by URCL
+    null, // لا يوجد مُستقبِل سجل، لأن URCL يتولى تسجيل البيانات
     subsystem
   )
 );
 
-// The methods below return Command objects
+// تُعيد التوابع أدناه كائنات Command
 sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
 sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
 sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);

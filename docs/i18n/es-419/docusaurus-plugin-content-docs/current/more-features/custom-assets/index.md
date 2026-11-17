@@ -245,7 +245,7 @@ El archivo `config.json` debe seguir este formato:
   "heightInches": number // Alto real del campo (lado corto)
   "defaultOrigin": "auto" | "blue" | "red" // Origen predeterminado; "auto" si no se especifica
   "driverStations": [
-    [number, number] // Posiciones de la Driver Station (X e Y en metros respecto al centro del campo)
+    [number, number] // Posiciones de las estaciones del conductor (X e Y en metros respecto al centro del campo)
     ...              // En FRC, 6 elementos en orden [B1, B2, B3, R1, R2, R3]. En FTC, 4 elementos en orden [BL, BR, RL, RR].
   ]
   "gamePieces": [ // Lista de tipos de elementos de juego

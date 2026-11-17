@@ -36,4 +36,4 @@ Existen distribuciones no oficiales de AdvantageScope mantenidas por terceros, q
 
 - [**AdvantageScope Lite para el sistema de control de REV:**](https://github.com/j5155/AdvantageScope-Lite-FTC) Una adaptación de [AdvantageScope Lite](/more-features/advantagescope-lite) para el sistema de control actual de FTC (anterior a Systemcore).
 - [**Instalador de Homebrew:**](https://formulae.brew.sh/cask/advantagescope) Un *cask* de Homebrew para instalar AdvantageScope desde la línea de comandos en macOS.
-- [**Arch User Repository:**](https://aur.archlinux.org/packages/advantagescope) Un método alternativo para instalarla con el gestor de paquetes pacman (tienes una distribución oficial para Arch disponible [aquí](#6328-downloads)).
+- [**Arch User Repository:**](https://aur.archlinux.org/packages/advantagescope) Un método alternativo para instalar AdvantageScope con el gestor de paquetes pacman (tienes una distribución oficial para Arch disponible [aquí](#6328-downloads)).

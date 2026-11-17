@@ -11,7 +11,7 @@ Noktalar sekmesi, istediğiniz noktaların 2B görselleştirmesini sunar. Bu, g�
 
 <img src="/img/tab-reference/points-1.webp" alt="Noktalar sekmesi örneği" />
 
-_Yukarıda İngilizce arayüz gösterilmektedir._
+_Yukarıda İngilizce arayüz gösteriliyor._
 
 <details>
 <summary>Zaman çizelgesi kontrolleri</summary>

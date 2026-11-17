@@ -34,7 +34,7 @@ FTC 队伍在正式赛季期间使用实验性软件时请务必谨慎。Advanta
   <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
 </div>
 
-部分第三方 FTC 日志与遥测库支持 WPILOG、RLOG 等兼容 AdvantageScope 的格式，具体用法可查阅各自项目的文档；AdvantageScope 开发团队不对任何特定的 FTC 日志方案作背书或推荐。
+部分第三方 FTC 日志与遥测库支持 WPILOG、RLOG 等兼容 AdvantageScope 的格式，具体用法可查阅各自项目的文档；AdvantageScope 开发团队对任何特定的 FTC 日志方案不作任何背书或推荐。
 
 :::info
 搭配 WPILib 框架及相关日志工具使用时，AdvantageScope 能发挥出最佳效果。若采用非官方日志方案，可能会遇到兼容性问题或部分功能受限。

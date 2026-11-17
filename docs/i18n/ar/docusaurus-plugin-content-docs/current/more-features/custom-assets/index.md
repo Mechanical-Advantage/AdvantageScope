@@ -25,9 +25,9 @@
 
 ```json
 {
-  "name": string, // Unique default name, required for all asset types
-  "locales": { [locale: string]: string } // Optional localized names mapping language codes (e.g. "en-US", "fr") to translations
-  ... // Type-dependent configuration, described below
+  "name": string, // اسم افتراضي فريد، مطلوب لجميع أنواع الأصول
+  "locales": { [locale: string]: string } // أسماء مترجمة اختيارية تربط رموز اللغات (مثل "en-US" و"fr") بالترجمات
+  ... // إعدادات تعتمد على النوع، موضحة أدناه
 }
 ```
 
@@ -43,23 +43,23 @@
 
 ```json
 {
-  "name": string // Unique name, required for all asset types
-  "locales": { [locale: string]: string } // Optional translations for the asset name
-  "isFTC": boolean // Whether the model is intended for use on FTC fields instead of FRC fields (default "false")
-  "disableSimplification": boolean // Whether to disable model simplification, optional
-  "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
-  "position": [number, number, number] // Position offset in meters, applied after rotation
-  "cameras": [ // Fixed camera positions, can be empty
+  "name": string // اسم فريد، مطلوب لجميع أنواع الأصول
+  "locales": { [locale: string]: string } // ترجمات اختيارية لاسم الأصل
+  "isFTC": boolean // ما إذا كان النموذج مخصصًا لملاعب FTC بدلًا من ملاعب FRC (الافتراضي "false")
+  "disableSimplification": boolean // ما إذا كان يجب تعطيل تبسيط النموذج، اختياري
+  "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // تسلسل الدورات حول المحاور x وy وz
+  "position": [number, number, number] // إزاحة الموضع بالأمتار، تُطبَّق بعد الدوران
+  "cameras": [ // مواضع الكاميرا الثابتة، يمكن أن تكون فارغة
     {
-      "name": string // Camera name
-      "locales": { [locale: string]: string } // Optional translations for the camera name
-      "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
-      "position": [number, number, number] // Position offset in meters relative to the robot, applied after rotation
-      "resolution": [number, number] // Resolution in pixels, used to set the fixed aspect ratio
-      "fov": number // Horizontal field of view in degrees
+      "name": string // اسم الكاميرا
+      "locales": { [locale: string]: string } // ترجمات اختيارية لاسم الكاميرا
+      "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // تسلسل الدورات حول المحاور x وy وz
+      "position": [number, number, number] // إزاحة الموضع بالأمتار بالنسبة للروبوت، تُطبَّق بعد الدوران
+      "resolution": [number, number] // الدقة بالبكسل، تُستخدم لتعيين نسبة العرض إلى الارتفاع الثابتة
+      "fov": number // مجال الرؤية الأفقي بالدرجات
     }
   ],
-  "components": [...] // See "Articulated Components"
+  "components": [...] // راجع "المكونات المفصلية"
 }
 ```
 
@@ -90,8 +90,8 @@
 ```json
 "components": [
   {
-    "zeroedRotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
-    "zeroedPosition": [number, number, number] // Position offset in meters relative to the robot, applied after rotation
+    "zeroedRotations": { "axis": "x" | "y" | "z", "degrees": number }[] // تسلسل الدورات حول المحاور x وy وz
+    "zeroedPosition": [number, number, number] // إزاحة الموضع بالأمتار بالنسبة للروبوت، تُطبَّق بعد الدوران
   }
 ]
 ```
@@ -118,9 +118,9 @@
 
 ```json
 {
-  "name": string // Unique name, required for all asset types
-  "locales": { [locale: string]: string } // Optional translations for the asset name
-  "components": [...] // Array of component configurations, see below
+  "name": string // اسم فريد، مطلوب لجميع أنواع الأصول
+  "locales": { [locale: string]: string } // ترجمات اختيارية لاسم الأصل
+  "components": [...] // مصفوفة من تكوينات المكونات، راجع أدناه
 }
 ```
 
@@ -140,9 +140,9 @@
   "centerPx": [number, number]
   "sizePx": [number, number]
   "sdlSourceIndex": number
-  "sdlSourcePov": string // Optional, can be "up", "right", "down", or "left". If provided, the "sdlSourceIndex" will be the index of the POV to read.
+  "sdlSourcePov": string // اختياري، يمكن أن يكون "up" أو "right" أو "down" أو "left". إذا قُدِّم، فسيكون "sdlSourceIndex" هو فهرس POV المراد قراءته.
 
-  // Alternative bindings for the NI Driver Station (optional)
+  // تعيينات بديلة لـ NI Driver Station (اختياري)
   "niSourceIndex": number
   "niSourcePov": string
 }
@@ -152,17 +152,17 @@
 
 ```json
 {
-  "type": "joystick" // A joystick that moves in two dimensions
+  "type": "joystick" // ذراع تحكم يتحرك في بعدين
   "isYellow": boolean
   "centerPx": [number, number]
   "radiusPx": number
   "sdlXSourceIndex": number
-  "sdlXSourceInverted": boolean // Not inverted: right = positive
+  "sdlXSourceInverted": boolean // غير معكوس: اليمين = موجب
   "sdlYSourceIndex": number
-  "sdlYSourceInverted": boolean // Not inverted: up = positive
-  "sdlButtonSourceIndex": number // Optional
+  "sdlYSourceInverted": boolean // غير معكوس: الأعلى = موجب
+  "sdlButtonSourceIndex": number // اختياري
 
-  // Alternative bindings for the NI Driver Station (optional)
+  // تعيينات بديلة لـ NI Driver Station (اختياري)
   "niXSourceIndex": number
   "niXSourceInverted": boolean
   "niYSourceIndex": number
@@ -175,14 +175,14 @@
 
 ```json
 {
-  "type": "axis" // A single axis value
+  "type": "axis" // قيمة محور واحد
   "isYellow": boolean
   "centerPx": [number, number]
   "sizePx": [number, number]
   "sdlSourceIndex": number,
-  "sdlSourceRange": [number, number] // Min greater than max to invert
+  "sdlSourceRange": [number, number] // الحد الأدنى أكبر من الحد الأقصى للعكس
 
-  // Alternative bindings for the NI Driver Station (optional)
+  // تعيينات بديلة لـ NI Driver Station (اختياري)
   "niSourceIndex": number,
   "niSourceRange": [number, number]
 }
@@ -192,7 +192,7 @@
 
 ```json
 {
-  "type": "touchpad" // A touchpad
+  "type": "touchpad" // لوحة لمس
   "isYellow": boolean
   "centerPx": [number, number]
   "sizePx": [number, number]
@@ -206,20 +206,20 @@
 
 ```json
 {
-  "name": string // Unique name, required for all asset types
-  "locales": { [locale: string]: string } // Optional translations for the asset name
-  "isFTC": boolean // Whether this is an FTC field instead of an FRC field
-  "coordinateSystem": // The default coordinate system to use (see below)
+  "name": string // اسم فريد، مطلوب لجميع أنواع الأصول
+  "locales": { [locale: string]: string } // ترجمات اختيارية لاسم الأصل
+  "isFTC": boolean // ما إذا كان هذا ملعب FTC بدلًا من ملعب FRC
+  "coordinateSystem": // نظام الإحداثيات الافتراضي المستخدم (راجع أدناه)
       "wall-alliance" |  // FRC 2022
       "wall-blue" |      // FRC 2023-2026
-      "center-rotated" | // FTC traditional
+      "center-rotated" | // FTC التقليدي
       "center-red"       // Systemcore
-  "useGrid": boolean // Whether to render grid lines if this field is an FTC one (default "true")
-  "sourceUrl": string // Link to the original file, optional
-  "topLeft": [number, number] // Pixel coordinate (origin at upper left)
-  "bottomRight": [number, number] // Pixel coordinate (origin at upper left)
-  "widthInches": number // Real width of the field (long side)
-  "heightInches": number // Real height of the field (short side)
+  "useGrid": boolean // ما إذا كان يجب رسم خطوط الشبكة إذا كان هذا الملعب من نوع FTC (الافتراضي "true")
+  "sourceUrl": string // رابط إلى الملف الأصلي، اختياري
+  "topLeft": [number, number] // إحداثي البكسل (نقطة الأصل في الزاوية العلوية اليسرى)
+  "bottomRight": [number, number] // إحداثي البكسل (نقطة الأصل في الزاوية العلوية اليسرى)
+  "widthInches": number // العرض الحقيقي للملعب (الضلع الطويل)
+  "heightInches": number // الارتفاع الحقيقي للملعب (الضلع القصير)
 }
 ```
 
@@ -231,38 +231,38 @@
 
 ```json
 {
-  "name": string // Unique name, required for all asset types
-  "locales": { [locale: string]: string } // Optional translations for the asset name
-  "isFTC": boolean // Whether this is an FTC field instead of an FRC field
-  "coordinateSystem": // The default coordinate system to use (see below)
+  "name": string // اسم فريد، مطلوب لجميع أنواع الأصول
+  "locales": { [locale: string]: string } // ترجمات اختيارية لاسم الأصل
+  "isFTC": boolean // ما إذا كان هذا ملعب FTC بدلًا من ملعب FRC
+  "coordinateSystem": // نظام الإحداثيات الافتراضي المستخدم (راجع أدناه)
       "wall-alliance" |  // FRC 2022
       "wall-blue" |      // FRC 2023-2026
-      "center-rotated" | // FTC traditional
+      "center-rotated" | // FTC التقليدي
       "center-red"       // Systemcore
-  "useGrid": boolean // Whether to render grid lines if this field is an FTC one (default "true")
-  "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
-  "widthInches": number // Real width of the field (long side)
-  "heightInches": number // Real height of the field (short side)
-  "defaultOrigin": "auto" | "blue" | "red" // Default origin location, "auto" if unspecified
+  "useGrid": boolean // ما إذا كان يجب رسم خطوط الشبكة إذا كان هذا الملعب من نوع FTC (الافتراضي "true")
+  "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // تسلسل الدورات حول المحاور x وy وz
+  "widthInches": number // العرض الحقيقي للملعب (الضلع الطويل)
+  "heightInches": number // الارتفاع الحقيقي للملعب (الضلع القصير)
+  "defaultOrigin": "auto" | "blue" | "red" // موقع نقطة الأصل الافتراضية، "auto" إذا لم يُحدَّد
   "driverStations": [
-    [number, number] // Driver station positions (X & Y in meters relative to the center of the field)
-    ...              // For FRC, 6 elements ordered [B1, B2, B3, R1, R2, R3]. For FTC, 4 elements ordered [BL, BR, RL, RR].
+    [number, number] // مواضع محطات السائق (X وY بالأمتار بالنسبة لمركز الملعب)
+    ...              // لـ FRC، 6 عناصر بالترتيب [B1, B2, B3, R1, R2, R3]. لـ FTC، 4 عناصر بالترتيب [BL, BR, RL, RR].
   ]
-  "gamePieces": [ // List of game piece types
+  "gamePieces": [ // قائمة بأنواع قطع اللعبة
     {
-      "name": string // Game piece name
-      "locales": { [locale: string]: string } // Optional translations for the game piece name
-      "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
-      "position": [number, number, number] // Position offset in meters, applied after rotation
-      "stagedObjects": string[] // Names of staged game piece objects, to hide if user poses are supplied
+      "name": string // اسم قطعة اللعبة
+      "locales": { [locale: string]: string } // ترجمات اختيارية لاسم قطعة اللعبة
+      "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // تسلسل الدورات حول المحاور x وy وz
+      "position": [number, number, number] // إزاحة الموضع بالأمتار، تُطبَّق بعد الدوران
+      "stagedObjects": string[] // أسماء كائنات قطع اللعبة الموضوعة مسبقًا، لإخفائها عند توفير وضعيات المستخدم
     },
     ...
   ],
-  "aprilTags": [ // List of supplemental AprilTag models (if not part of field model)
-    "variant": string // Format as "FAMILY-SIZEin" where "FAMILY" is "36h11" or "16h5" and "SIZE" is the length of the black section
+  "aprilTags": [ // قائمة بنماذج AprilTag التكميلية (إذا لم تكن جزءًا من نموذج الملعب)
+    "variant": string // بالتنسيق "FAMILY-SIZEin" حيث "FAMILY" هي "36h11" أو "16h5" و"SIZE" هو طول الجزء الأسود
     "id": number
-    "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
-    "position": [number, number, number] // Position offset in meters, applied after rotation
+    "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // تسلسل الدورات حول المحاور x وy وz
+    "position": [number, number, number] // إزاحة الموضع بالأمتار، تُطبَّق بعد الدوران
   ]
 }
 ```

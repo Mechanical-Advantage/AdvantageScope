@@ -35,5 +35,5 @@ De consoleweergave ondersteunt opmaak- en kleurcodes via standaard ANSI-escapese
 - **Selectieve resets:** Specifieke stijlen of kleuren resetten terwijl de rest behouden blijft
 
 :::tip
-Klik op het opslaan-pictogram om de consolemeldingen als tekstbestand te exporteren.
+Klik op het opslagicoon om de consolemeldingen als tekstbestand te exporteren.
 :::

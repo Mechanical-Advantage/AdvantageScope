@@ -10,7 +10,7 @@ AdvantageScope किसी लॉग फ़ाइल में सेव कि
 - असली रोबोट पर किसी कोप्रोसेसर (coprocessor) के डेटा की नकल (mimic) करना।
 - वास्तविक मैच डेटा का उपयोग करके ड्राइवर डैशबोर्ड ऐप्स को डिबग करना।
 
-इस फीचर के लिए NetworkTables डेटा के पूरे कैप्चर वाली लॉग फ़ाइल की ज़रूरत होती है, जिसे WPILib के [बिल्ट-इन डेटा लॉगर](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) से बनाया जा सकता है। ध्यान दें कि AdvantageKit इस फीचर को सपोर्ट नहीं करता है क्योंकि यह सिमुलेशन में अधिक सटीक और पूर्ण (deterministic) रीप्ले की सुविधा देता है।
+इस फ़ीचर के लिए NetworkTables डेटा के पूरे कैप्चर वाली लॉग फ़ाइल की ज़रूरत होती है, जिसे WPILib के [बिल्ट-इन डेटा लॉगर](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) से बनाया जा सकता है। ध्यान दें कि AdvantageKit इस फ़ीचर को सपोर्ट नहीं करता है क्योंकि यह सिमुलेशन में अधिक सटीक और पूर्ण (deterministic) रीप्ले की सुविधा देता है।
 
 ## शुरुआत करना {#getting-started}
 

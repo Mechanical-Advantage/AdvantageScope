@@ -27,7 +27,7 @@ AdvantageScope жылдамырақ шарлауға мүмкіндік бере
 <table>
 <tr><td>`Ctrl+N`</td><td>Жаңа терезе жасау</td></tr>
 <tr><td>`Ctrl+Shift+N`</td><td>Ағымдағы терезені жабу</td></tr>
-<tr><td>`Ctrl+Comma`</td><td>Қалаулар терезесін ашу</td></tr>
+<tr><td>`Ctrl+Comma`</td><td>Баптаулар терезесін ашу</td></tr>
 <tr><td>`Ctrl+Period`</td><td>Бүйірлік тақтаны көрсету/жасыру</td></tr>
 <tr><td>`Ctrl+Slash`</td><td>Басқару тақтасын көрсету/жасыру</td></tr>
 </table>

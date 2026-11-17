@@ -24,7 +24,7 @@ Dacă sunt deschise mai multe fișiere simultan, marcajele de timp vor fi alinia
 
 <img src="/img/overview/log-files/open-file-1.webp" alt="Deschiderea unui log salvat" />
 
-_Interfața în limba engleză este ilustrată mai sus._
+_Mai sus este prezentată interfața în limba engleză._
 
 ## Adăugarea de loguri noi {#adding-new-logs}
 
@@ -50,7 +50,7 @@ La descărcarea mai multor fișiere, AdvantageScope omite fișierele care exist�
 
 <img src="/img/overview/log-files/open-file-2.webp" alt="Descărcarea fișierelor log" height="350" />
 
-_Interfața în limba engleză este ilustrată mai sus._
+_Mai sus este prezentată interfața în limba engleză._
 
 ## Formatarea CSV {#csv-formatting}
 

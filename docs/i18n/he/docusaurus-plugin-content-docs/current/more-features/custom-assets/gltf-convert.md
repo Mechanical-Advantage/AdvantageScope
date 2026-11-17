@@ -18,7 +18,7 @@
 
 ## המרת STEP ל-glTF {#converting-step-to-gltf}
 
-1. הורידו את [CAD Assistant](https://www.opencascade.com/products/cad-assistant/) — תוכנה חינמית שממירה בין מגוון רחב של פורמטים תלת-ממדיים, כולל STEP ו-glTF.
+1. הורידו את [CAD Assistant](https://www.opencascade.com/products/cad-assistant/), תוכנה חינמית שממירה בין מגוון רחב של פורמטים תלת-ממדיים, כולל STEP ו-glTF.
 
 2. פתחו את CAD Assistant ובחרו את קובץ ה-STEP שברצונכם להמיר:
 

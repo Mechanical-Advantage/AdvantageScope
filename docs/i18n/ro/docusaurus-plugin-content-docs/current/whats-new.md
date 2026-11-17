@@ -57,7 +57,7 @@ _Mai multe informații despre suportul pentru unități pot fi găsite în [docu
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="Grafice bazate pe unități" />
 
-_Interfața în limba engleză este ilustrată mai sus._
+_Mai sus este prezentată interfața în limba engleză._
 
 ## 🏁 Descărcări mai rapide de loguri {#faster-log-downloads}
 
@@ -73,7 +73,7 @@ Tabelul de mai jos arată viteza de transfer măsurată pe versiunile 2025 și 2
 
 ## 📁 Descărcare loguri din subfoldere {#download-logs-from-subfolders}
 
-Fereastra de descărcare permite acum salvarea logurilor care sunt stocate în subfoldere. Fiecare subfolder de loguri poate fi descărcat ca un grup, oferind o abordare simplificată pentru descărcarea logurilor generate de versiunea 2026 a [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) de la CTRE (care folosește subfoldere ca o soluție pentru imposibilitatea de a stoca datele într-un singur fișier log).
+Fereastra de descărcare permite acum salvarea logurilor stocate în subfoldere. Fiecare subfolder poate fi descărcat ca un grup, ceea ce ușurează descărcarea logurilor generate de versiunea 2026 a [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) de la CTRE (care folosește subfoldere deoarece nu poate salva toate datele într-un singur fișier log).
 
 <img src="/img/whats-new/subfolders.webp" alt="Descărcarea logurilor din subfoldere" height="450" />
 
@@ -91,7 +91,7 @@ Câteva opțiuni noi de vizualizare sunt suportate pe 🗺️ [Teren 2D](/tab-re
 
 Acum poți deschide fișiere `.revlog` produse de [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) de la REV Robotics direct în AdvantageScope. Aceste fișiere înregistrează semnale CAN de la dispozitivele Spark Max și Spark Flex, oferind o alternativă oficială la biblioteca [URCL](/more-features/urcl) din AdvantageScope.
 
-Atât URCL, cât și `StatusLogger`-ul oficial vor rămâne disponibile în timpul sezonului 2026 pentru a asigura o tranziție lină și paritate de funcționalități cu sezoanele anterioare. Vom reveni cu mai multe detalii despre opțiunile de logare pentru 2027 și după.
+Atât URCL, cât și `StatusLogger`-ul oficial vor rămâne disponibile în timpul sezonului 2026 pentru a asigura o tranziție lină și aceleași funcționalități ca în sezoanele anterioare. Vom reveni cu mai multe detalii despre opțiunile de logare pentru 2027 și după.
 
 <img src="/img/whats-new/revlog.webp" alt="Vizualizare REVLOG" />
 

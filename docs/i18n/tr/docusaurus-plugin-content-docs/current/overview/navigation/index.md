@@ -4,7 +4,7 @@ Aşağıdaki ekran görüntüsünde ana AdvantageScope penceresinin temel bölü
 
 <img src="/img/overview/navigation/navigation-1.webp" alt="Gezinme şeması" />
 
-_Yukarıda İngilizce arayüz gösterilmektedir._
+_Yukarıda İngilizce arayüz gösteriliyor._
 
 - Kırmızı bölüm, kullanılabilir alanları listeleyen [kenar çubuğudur](#sidebar).
 - Kahverengi bölüm, uygulamayı yönetmenizi ve görünümler arasında geçiş yapmanızı sağlayan [sekme çubuğudur](#tab-bar).
@@ -17,7 +17,7 @@ Birden fazla log dosyasını aynı anda incelemek için `Dosya` > `Yeni pencere`
 
 ## Kenar çubuğu {#sidebar}
 
-Sol tarafta kullanılabilir tabloları ve alanları gösteren kenar çubuğu yer alır. Seçilebilir alanlar _italik_ olarak, yerleşik tablolar (WPILib veya AdvantageKit’ten gelenler) ise <u>altı çizili</u> olarak gösterilir. İç içe tabloları açmak için ok simgesine tıklayın. **Tek bir alanı sürükleyerek** seçebilir ya da **cmd/ctrl tuşunu basılı tutup** birden fazla alana tıklayarak bir grup oluşturabilirsiniz. Seçimi tamamlamak için seçtiğiniz alan grubunu sürüklemeye başlayın.
+Sol tarafta kullanılabilir tabloları ve alanları gösteren kenar çubuğu yer alır. Seçilebilir alanlar _italik_ olarak, yerleşik tablolar (WPILib veya AdvantageKit'ten gelenler) ise <u>altı çizili</u> olarak gösterilir. İç içe tabloları açmak için ok simgesine tıklayın. **Tek bir alanı sürükleyerek** seçebilir ya da **cmd/ctrl tuşunu basılı tutup** birden fazla alana tıklayarak bir grup oluşturabilirsiniz. Seçimi tamamlamak için seçtiğiniz alan grubunu sürüklemeye başlayın.
 
 Bir alanı aramak için arama kutusuna yazmaya başlayın. Açılan listeden istediğiniz alanı seçtiğinizde, ilgili alan kenar çubuğunda vurgulanır ve otomatik olarak ekrana kaydırılır.
 

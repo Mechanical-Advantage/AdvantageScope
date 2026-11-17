@@ -4,7 +4,7 @@
 
 <img src="/img/tab-reference/line-graph/line-graph-1.webp" alt="Çizgi grafik gösterimi" />
 
-_Yukarıda İngilizce arayüz gösterilmektedir._
+_Yukarıda İngilizce arayüz gösteriliyor._
 
 ## Görüntüleyici paneli {#viewer-pane}
 
@@ -29,7 +29,7 @@ Robot modunu (otonom, teleop veya test) grafikte üst üste bindirmek için “A
 
 <img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="Robot modu katmanı" />
 
-_Yukarıda İngilizce arayüz gösterilmektedir._
+_Yukarıda İngilizce arayüz gösteriliyor._
 :::
 
 ### Eksenleri ayarlama {#adjusting-axes}
@@ -38,7 +38,7 @@ Varsayılan olarak her eksen, aralığını görünür verilere göre ayarlar. O
 
 <img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="Eksen aralığını düzenleme" height="250" />
 
-_Yukarıda İngilizce arayüz gösterilmektedir._
+_Yukarıda İngilizce arayüz gösteriliyor._
 
 ### İntegral ve türev {#integration-and-differentiation}
 

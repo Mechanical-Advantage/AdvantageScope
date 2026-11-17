@@ -77,16 +77,16 @@ Logger.recordOutput("MyPoseArray", new Pose3d[] {poseA, poseB});
 <TabItem value="ftcdashboard" label="FTC Dashboard">
 
 ```java
-// This protocol does not support the modern struct format, but pose
-// values can be published using separate fields that include the
-// suffixes "x", "y", and "heading" (as shown below):
+// Ce protocole ne prend pas en charge le format struct moderne, mais les valeurs
+// de pose peuvent être publiées à l'aide de champs distincts portant les
+// suffixes "x", "y" et "heading" (comme ci-dessous) :
 TelemetryPacket packet = new TelemetryPacket();
-packet.put("Pose x", 6.3); // Inches
-packet.put("Pose y", 2.8); // Inches
+packet.put("Pose x", 6.3); // Pouces
+packet.put("Pose y", 2.8); // Pouces
 packet.put("Pose heading", 3.14); // Radians
 
-// Alternatively, headings can be published in degrees
-packet.put("Pose heading (deg)", 180.0); // Degrees
+// Sinon, les caps peuvent être publiés en degrés
+packet.put("Pose heading (deg)", 180.0); // Degrés
 ```
 
 </TabItem>
@@ -118,9 +118,9 @@ Chaque composant bouge ainsi indépendamment (chariot d'élévateur, bras, pince
 
 Chaque terrain propose des objets d'éléments de jeu qui s'affichent à l'endroit exact indiqué par le code du robot. C'est très pratique pour :
 
-- animer simplement le déroulement de routines autonomes en simulation ;
-- visualiser les éléments de jeu détectés sur le terrain ;
-- indiquer où se trouve un élément de jeu à l'intérieur du robot ;
+- animer simplement le déroulement de routines autonomes en simulation;
+- visualiser les éléments de jeu détectés sur le terrain;
+- indiquer où se trouve un élément de jeu à l'intérieur du robot;
 - tracer des trajectoires de tir calculées par la physique.
 
 Vous pouvez aussi afficher l'état d'un élément de jeu dans le robot à partir d'un capteur. Par exemple, sur un robot 2024, un capteur photoélectrique (*beam break*) dans le convoyeur peut déclencher l'affichage d'une note (comme ci-dessous).
@@ -139,7 +139,7 @@ Le projet d'exemple KitBot 2024 d'AdvantageKit montre comment créer une [comman
 Faites un clic droit sur la vue 3D pour changer de mode de caméra. Chaque fenêtre détachée garde son propre mode et sa propre position de caméra, ce qui permet de créer facilement des vues multi-caméras.
 
 :::info
-Faites un clic droit sur la vue 3D et sélectionnez « Définir le champ de vision » pour ajuster l'angle de vue (FOV) des caméras d'orbite et du poste de pilotage.
+Faites un clic droit sur la vue 3D et sélectionnez « Définir le champ de vision » pour ajuster l'angle de vue (FOV) des caméras orbitales et du poste de pilotage.
 :::
 
 ### Orbiter le terrain {#orbit-field}

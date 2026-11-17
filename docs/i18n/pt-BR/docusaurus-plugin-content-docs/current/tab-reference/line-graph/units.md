@@ -20,7 +20,7 @@ Nos métodos (2) e (3), as unidades são identificadas a partir de textos (strin
 Não tem certeza se as unidades estão sendo reconhecidas? Adicione o campo ao gráfico de linha e confira se o tipo de unidade aparece no eixo Y.
 :::
 
-### 🥇 Unidades em Structs {#struct-units}
+### 🥇 Unidades em structs {#struct-units}
 
 O AdvantageScope usa automaticamente as unidades nativas para tipos de dados estruturados comuns, como `Rotation2d` e `Translation3d`. Sempre que possível, publicar valores nesses formatos é **a melhor escolha**, garantindo total compatibilidade ao visualizar dados de geometria.
 

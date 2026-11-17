@@ -57,7 +57,7 @@ _Birim desteği hakkında daha fazla bilgi için [ilgili dokümantasyona](/tab-r
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="Birim duyarlı grafikleme" />
 
-_Yukarıda İngilizce arayüz gösterilmektedir._
+_Yukarıda İngilizce arayüz gösteriliyor._
 
 ## 🏁 Daha hızlı log indirmeleri {#faster-log-downloads}
 
@@ -67,9 +67,9 @@ Aşağıdaki tabloda, AdvantageScope'un 2025 ve 2026 sürümlerinde Ethernet üz
 
 |                                                     | 2025 (SFTP) | 2026 (FTP) | Hızlanma                                         |
 | --------------------------------------------------- | ----------- | ---------- | ------------------------------------------------ |
-| Yüksek CPU yükü<br /><sub>Karmaşık robot kodu</sub> | 25 Mb/s     | 80 Mb/s    | <span style={{fontSize: '24px'}}>**3.2x**</span> |
-| Ortalama CPU yükü<br /><sub>Normal robot kodu</sub> | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**2.3x**</span> |
-| Minimum CPU yükü<br /><sub>Robot kodu yok</sub>     | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**1.1x**</span> |
+| Yüksek CPU yükü<br /><sub>Karmaşık robot kodu</sub> | 25 Mb/s     | 80 Mb/s    | <span style={{fontSize: '24px'}}>**3,2x**</span> |
+| Ortalama CPU yükü<br /><sub>Normal robot kodu</sub> | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**2,3x**</span> |
+| Minimum CPU yükü<br /><sub>Robot kodu yok</sub>     | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**1,1x**</span> |
 
 ## 📁 Alt klasörlerden log indirme {#download-logs-from-subfolders}
 
@@ -129,5 +129,5 @@ Bu sürüm, uygulama genelinde pek çok hata düzeltmesi ve kararlılık iyileş
 - AdvantageScope artık büyük log dosyaları ve alışılmadık derecede büyük alan değerleri dahil olmak üzere sıra dışı log verilerine karşı daha dayanıklı.
 - Log verileri incelenirken (özellikle çizgi grafik sekmesinde filtreler kullanılırken) ortaya çıkan çeşitli görsel hatalar giderildi.
 - İndirme penceresindeki AdvantageKit log dosyalarının sıralaması düzeltildi; zaman damgası olmayan loglar artık diğer formatlarda olduğu gibi listenin en altında yer alıyor.
-- 3B saha sekmesinde, yalpalama (roll) ekseninde sıfır olmayan açıya sahip robot kameraları artık doğru şekilde görüntüleniyor.
+- 3B saha sekmesinde, sıfırdan farklı bir yalpalama (roll) açısına sahip robot kameraları artık doğru şekilde görüntüleniyor.
 - AdvantageScope XR'ın kararlılığı özellikle iOS/iPadOS 26 üzerinde artırıldı. Çevrimdışı kurulumlar için App Store'daki güncellemeleri kontrol etmeyi unutmayın.

@@ -12,7 +12,7 @@ AdvantageScope XR מפיחה חיים בתצוגת 👀 [מגרש 3D](/tab-refer
 - **אינטרנט:** אם לא השתמשתם ב-AdvantageScope XR לאחרונה, המכשיר הנייד חייב להיות מחובר לאינטרנט (למשל גלישה סלולרית). כדי לוותר על הדרישה הזו, בדקו את סעיף [שימוש ללא חיבור לאינטרנט](#offline-usage) למטה.
 
 :::tip
-AdvantageScope XR נתמכת בדגמי iPhone ו-iPad רבים, אך היא יציבה יותר במכשירים עם **חיישן LiDAR** — כמו דגמי iPhone Pro (החל מ-iPhone 12 Pro) ו-iPad Pro (מאביב 2020 והלאה).
+AdvantageScope XR נתמכת בדגמי iPhone ו-iPad רבים, אך היא יציבה יותר במכשירים עם **חיישן LiDAR**, כמו דגמי iPhone Pro (החל מ-iPhone 12 Pro) ו-iPad Pro (מאביב 2020 והלאה).
 :::
 
 <details>

@@ -32,7 +32,7 @@ Para cambiar el idioma en AdvantageScope, abre la ventana de preferencias en `Ap
 
 ## Claves de registro {#logging-keys}
 
-Todos los formatos compatibles con AdvantageScope soportan Unicode por completo al definir claves de registro. Esto significa que puedes guardar datos usando tu propio idioma —con tildes, eñes, caracteres especiales o alfabetos no latinos— y AdvantageScope los registrará y mostrará sin problemas.
+Todos los formatos compatibles con AdvantageScope admiten Unicode por completo al definir claves de registro. Esto significa que puedes guardar datos usando tu propio idioma —con tildes, eñes, caracteres especiales o alfabetos no latinos— y AdvantageScope los registrará y mostrará sin problemas.
 
 Aquí tienes un ejemplo de cómo registrar una cadena de texto con una clave en español:
 

@@ -11,7 +11,7 @@ Fila puncte afișează o vizualizare 2D a unor puncte arbitrare. Este un instrum
 
 <img src="/img/tab-reference/points-1.webp" alt="Exemplu de filă puncte" />
 
-_Interfața în limba engleză este ilustrată mai sus._
+_Mai sus este prezentată interfața în limba engleză._
 
 <details>
 <summary>Controale cronologie</summary>

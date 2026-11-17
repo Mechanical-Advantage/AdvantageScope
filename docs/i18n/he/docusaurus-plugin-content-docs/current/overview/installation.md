@@ -17,7 +17,7 @@ sidebar_position: 1
 - אוסף מובנה של דגמי הרובוטים האחרונים של 6328 לשימוש בכרטיסיית 👀 [מגרש 3D](/tab-reference/3d-field).
 
 :::note
-לפני הפעלת קובצי AppImage ב-Ubuntu 23.10 ומעלה, יש להוריד את פרופיל ה-AppArmor מדף ההפצות ולהעתיק אותו לתיקייה /etc/apparmor.d.
+לפני הפעלת קובצי AppImage ב-Ubuntu 23.10 ומעלה, יש להוריד את פרופיל ה-AppArmor מדף ההפצות ולהעתיק אותו לתיקייה `/etc/apparmor.d`.
 :::
 
 :::info
@@ -32,7 +32,7 @@ sidebar_position: 1
 
 ## הפצות לא רשמיות {#unofficial-distributions}
 
-בנוסף קיימות הפצות לא רשמיות של AdvantageScope ממקורות שונים, שאינן נתמכות רשמית על ידי מפתחי AdvantageScope או WPILib. ההפצות האלו עלולות לפגר אחרי הגרסה הרשמית העדכנית ביותר — אם נתקלתם בבעיה, פנו ישירות למתחזקים שלהן.
+בנוסף קיימות הפצות לא רשמיות של AdvantageScope ממקורות שונים, שאינן נתמכות רשמית על ידי מפתחי AdvantageScope או WPILib. ההפצות האלו עלולות לפגר אחרי הגרסה הרשמית העדכנית ביותר, ואם נתקלתם בבעיה יש לפנות ישירות למתחזקים שלהן.
 
 - [**AdvantageScope Lite עבור מערכת הבקרה של REV:**](https://github.com/j5155/AdvantageScope-Lite-FTC) גרסה מותאמת של [AdvantageScope Lite](/more-features/advantagescope-lite) לעבודה עם מערכת הבקרה הקיימת (לפני Systemcore) ב-FTC.
 - [**מתקין Homebrew:**](https://formulae.brew.sh/cask/advantagescope) חבילת Homebrew cask להתקנת AdvantageScope משורת הפקודה ב-macOS.

@@ -7,7 +7,7 @@ Fila teren 3D îți arată o vizualizare 3D a robotului și a terenului. O poți
 
 <img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="Exemplu de filă teren 3D" />
 
-_Interfața în limba engleză este ilustrată mai sus._
+_Mai sus este prezentată interfața în limba engleză._
 
 <details>
 <summary>Controale cronologie</summary>
@@ -34,10 +34,10 @@ Modelul terenului FRC 2026 respectă layout-ul AprilTag pentru terenul **sudat**
 
 Pentru a începe, trage un câmp în secțiunea „Pose-uri”. Șterge un obiect folosind butonul X sau ascunde-l temporar făcând clic pe pictograma ochi ori dublu clic pe numele câmpului. Pentru a elimina toate obiectele, fă clic pe coșul de gunoi de lângă titlul axei și apoi pe `Șterge tot`. Poți reorganiza obiectele în listă făcând clic și trăgând.
 
-**Pentru a personaliza fiecare obiect, fă clic pe pictograma colorată sau clic dreapta pe numele câmpului.** AdvantageScope suportă o mulțime de tipuri de obiecte, iar multe dintre ele pot fi personalizate (de exemplu, poți schimba culorile și modelele de robot). Unele obiecte trebuie adăugate ca obiecte copil ale unui obiect existent.
+**Pentru a personaliza un element, fă clic pe pictograma colorată sau clic dreapta pe numele câmpului.** AdvantageScope suportă o gamă largă de tipuri de obiecte, iar multe dintre ele pot fi personalizate (de exemplu, poți schimba culorile și modelele de robot). Unele trebuie adăugate ca elemente copil ale unui obiect existent.
 
 :::tip
-Pentru a vedea lista completă a tipurilor de obiecte suportate, fă clic pe pictograma `?`. Lista include și tipurile de date suportate, precum și dacă obiectele trebuie adăugate ca obiecte copil.
+Pentru a vedea lista completă a tipurilor suportate, fă clic pe pictograma `?`. Lista include și tipurile de date suportate, precum și dacă trebuie adăugate ca elemente copil.
 :::
 
 :::info
@@ -136,10 +136,10 @@ Proiectul exemplu KitBot 2024 din AdvantageKit include o [comandă](https://gith
 
 ## Opțiuni cameră {#camera-options}
 
-Pentru a schimba modul camerei, fă clic dreapta pe vizualizarea terenului randat. Modul și poziția camerei sunt controlate independent pentru fiecare fereastră pop-up, așa că poți crea ușor vizualizări din mai multe unghiuri.
+Pentru a schimba modul camerei, fă clic dreapta pe vizualizarea 3D a terenului. Modul și poziția camerei sunt controlate independent pentru fiecare fereastră pop-up, așa că poți crea ușor vizualizări din mai multe unghiuri.
 
 :::info
-Fă clic dreapta pe vizualizarea terenului randat și alege „Setează FOV” pentru a ajusta FOV-ul camerelor de orbitare și Driver Station.
+Fă clic dreapta pe vizualizarea 3D a terenului și alege „Setează FOV” pentru a ajusta FOV-ul camerelor de orbitare și Driver Station.
 :::
 
 ### Orbitare teren {#orbit-field}

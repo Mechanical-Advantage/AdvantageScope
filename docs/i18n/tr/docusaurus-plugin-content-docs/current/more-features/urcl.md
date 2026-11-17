@@ -97,7 +97,7 @@ public Robot() {
 ```
 
 :::warning
-URCL'nin AdvantageKit ile uyumluluğu yalnızca kolaylık sağlamak içindir; loga kaydedilen veriler yeniden oynatmada (replay) KULLANILAMAZ. **REV motor kontrolcüleri, yeniden oynatmayı desteklemek için yine tanımlanmış girdilere sahip bir IO sınıfının parçası olmalıdır.**
+URCL'nin AdvantageKit ile uyumluluğu yalnızca kolaylık sağlamak içindir; loga kaydedilen veriler yeniden oynatmada (replay) KULLANILAMAZ. **REV motor kontrolcüleri, yeniden oynatmayı desteklemek için hâlâ tanımlı girdilere sahip bir IO sınıfının parçası olmalıdır.**
 :::
 
 </TabItem>
@@ -129,7 +129,7 @@ var sysIdRoutine = new SysIdRoutine(
   )
 );
 
-// Aşağıdaki yöntemler Command nesneleri döndürür
+// Aşağıdaki metotlar Command nesneleri döndürür
 sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
 sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
 sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);
@@ -153,7 +153,7 @@ var sysIdRoutine = new SysIdRoutine(
   )
 );
 
-// Aşağıdaki yöntemler Command nesneleri döndürür
+// Aşağıdaki metotlar Command nesneleri döndürür
 sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
 sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
 sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);
@@ -175,9 +175,9 @@ Robottan aldığınız log dosyasını, _SysId analizöründe açmadan önce_ Ad
 
 5. Varsayılan enkoderi kullanarak analizi çalıştırmak için aşağıdaki alanları seçin. İkincil enkoderlerden gelen konum ve hız verileri de kullanılabilir (alternatif, harici, analog, mutlak vb.).
 
-   - Position = “NT:/URCL/&lt;Device&gt;/MotorPositionRotations”
-   - Velocity = “NT:/URCL/&lt;Device&gt;/MotorVelocityRPM”
-   - Voltage = “NT:/URCL/&lt;Device&gt;/AppliedOutputVoltage”
+   - Position = `NT:/URCL/<Device>/MotorPositionRotations`
+   - Velocity = `NT:/URCL/<Device>/MotorVelocityRPM`
+   - Voltage = `NT:/URCL/<Device>/AppliedOutputVoltage`
 
 :::tip
 SysId'nin ürettiği kazanç değerleri, Spark Max/Flex'in raporlamak üzere ayarlandığı birimleri kullanır ([`setPositionConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setPositionConversionFactor(double)>) ve [`setVelocityConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setVelocityConversionFactor(double)>) metotlarıyla). Varsayılan olarak bunlar herhangi bir dişli oranı uygulanmamış tur ve RPM değerleridir. Veriler kaydedilirken kullanılan birimler istediğiniz birimlerle eşleşmiyorsa, analiz sırasında SysId içinden ölçeklendirme ayarı yapabilirsiniz.

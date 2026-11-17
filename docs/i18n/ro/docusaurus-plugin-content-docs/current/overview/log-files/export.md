@@ -10,7 +10,7 @@ Pentru a vedea opțiunile de export, dă clic pe `Fișier` > `Exportă datele...
 
 <img src="/img/overview/log-files/export-1.webp" alt="Opțiuni de export" />
 
-_Interfața în limba engleză este ilustrată mai sus._
+_Mai sus este prezentată interfața în limba engleză._
 
 :::tip
 Pe lângă exportul complet de log descris aici, fila 💬 [Consolă](/tab-reference/console) permite exportul datelor din consolă într-un fișier text.

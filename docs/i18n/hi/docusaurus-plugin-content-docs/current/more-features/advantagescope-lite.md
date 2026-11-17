@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # 💡 AdvantageScope लाइट {#advantagescope-lite}
 
-AdvantageScope लाइट, AdvantageScope का एक ब्राउज़र-आधारित संस्करण है जिसे FIRST ड्राइवर स्टेशन और Systemcore वेब इंटरफ़ेस से एक्सेस किया जा सकता है। AdvantageScope डेस्कटॉप ऐप के ज़्यादातर बुनियादी फीचर्स AdvantageScope लाइट में शामिल हैं। हालाँकि, कम्पैटिबिलिटी सीमाओं (जैसे कुछ टैब प्रकार, लॉगिंग फ़ॉर्मेट और उनसे जुड़े फीचर्स) के कारण कुछ फीचर्स इसमें नहीं दिए गए हैं।
+AdvantageScope लाइट, AdvantageScope का एक ब्राउज़र-आधारित संस्करण है जिसे FIRST ड्राइवर स्टेशन और Systemcore वेब इंटरफ़ेस से एक्सेस किया जा सकता है। AdvantageScope डेस्कटॉप ऐप के ज़्यादातर बुनियादी फ़ीचर्स AdvantageScope लाइट में शामिल हैं। हालाँकि, कम्पैटिबिलिटी सीमाओं (जैसे कुछ टैब प्रकार, लॉगिंग फ़ॉर्मेट और उनसे जुड़े फ़ीचर्स) के कारण कुछ फ़ीचर्स इसमें नहीं दिए गए हैं।
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="AdvantageScope Lite Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 

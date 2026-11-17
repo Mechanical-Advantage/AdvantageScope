@@ -39,7 +39,7 @@ Klik in de menubalk op `Bestand` > `Nieuw(e) logbestand(en) toevoegen...` en sel
 
 Open het voorkeurenvenster via `App` > `Voorkeuren tonen...` (Windows/Linux) of `AdvantageScope` > `Instellingen...` (macOS) en vul het robotadres en het logpad op de robot in.
 
-<img src="/img/prefs_nl.webp" alt="Diagram van voorkeuren" height="450" />
+<img src="/img/prefs_nl.webp" alt="Overzicht van de voorkeuren" height="450" />
 </details>
 
 Klik op `Bestand` > `Logs downloaden...` om het downloadvenster te openen. Logs downloaden wordt ondersteund op Systemcore en de roboRIO. Zodra er verbinding is met de robot, verschijnen de beschikbare logs met de nieuwste bovenaan. Selecteer een of meer logbestanden of mappen (houd Shift ingedrukt voor een reeks of druk op **cmd/ctrl + A** om alles te selecteren). Klik daarna op het ↓-symbool en kies een opslaglocatie.

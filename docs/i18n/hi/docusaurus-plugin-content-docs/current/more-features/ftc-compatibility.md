@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # ✴️ FTC संगतता {#ftc-compatibility}
 
-AdvantageScope में मौजूदा FIRST Tech Challenge नियंत्रण प्रणाली (control system) पर सहज अनुभव देने के लिए कई फीचर्स शामिल हैं, और साथ ही भविष्य के सीज़न में [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) पर शिफ्ट होने की तैयारी भी की गई है। 2027-2028 सीज़न से Systemcore पर ट्रांज़िशन के बाद AdvantageScope के सभी फीचर्स आधिकारिक रूप से FTC में सपोर्ट किए जाएँगे।
+AdvantageScope में मौजूदा FIRST Tech Challenge नियंत्रण प्रणाली (control system) पर सहज अनुभव देने के लिए कई फ़ीचर्स शामिल हैं, और साथ ही भविष्य के सीज़न में [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) पर शिफ्ट होने की तैयारी भी की गई है। 2027-2028 सीज़न से Systemcore पर ट्रांज़िशन के बाद AdvantageScope के सभी फ़ीचर्स आधिकारिक रूप से FTC में सपोर्ट किए जाएँगे।
 
 ## फील्ड्स और रोबोट्स {#fields-and-robots}
 
