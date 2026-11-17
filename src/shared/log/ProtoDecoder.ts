@@ -8,8 +8,18 @@
 import protobuf from "protobufjs";
 import descriptor from "protobufjs/ext/descriptor";
 
+type ProtoPostProcessor = (
+  data: Record<string, unknown>,
+  schemaTypes: { [key: string]: string },
+  prefix: string
+) => void;
+
 /** Class to manage decoding protobufs. */
 export default class ProtoDecoder {
+  private static readonly postProcessors = new Map<string, ProtoPostProcessor>([
+    ["mrc.proto.ProtobufControlData", ProtoDecoder.postProcessControlData]
+  ]);
+
   private root = new protobuf.Root();
   private rawDescriptors: Uint8Array[] = [];
 
@@ -79,10 +89,73 @@ export default class ProtoDecoder {
     Object.keys(decodedData).forEach((key) => {
       findSchemaTypes(decodedData[key], key);
     });
+    let objectData = type.toObject(decodedData, { defaults: true }) as Record<string, unknown>;
+    ProtoDecoder.applyPostProcessors(type, objectData, schemaTypes);
     return {
-      data: type.toObject(decodedData, { defaults: true }),
+      data: objectData,
       schemaTypes: schemaTypes
     };
+  }
+
+  /** Runs any registered post-processors for the given message type and nested message fields. */
+  private static applyPostProcessors(
+    type: protobuf.Type,
+    data: Record<string, unknown>,
+    schemaTypes: { [key: string]: string },
+    prefix = ""
+  ): void {
+    let fullName = type.fullName.startsWith(".") ? type.fullName.slice(1) : type.fullName;
+    ProtoDecoder.postProcessors.get(fullName)?.(data, schemaTypes, prefix);
+
+    for (let field of type.fieldsArray) {
+      if (!(field.resolvedType instanceof protobuf.Type)) continue;
+      let value = data[field.name];
+      if (value === null || typeof value !== "object") continue;
+      let childPrefix = prefix ? `${prefix}/${field.name}` : field.name;
+      if (Array.isArray(value)) {
+        value.forEach((item, index) => {
+          if (item !== null && typeof item === "object") {
+            ProtoDecoder.applyPostProcessors(
+              field.resolvedType as protobuf.Type,
+              item as Record<string, unknown>,
+              schemaTypes,
+              `${childPrefix}/${index}`
+            );
+          }
+        });
+      } else {
+        ProtoDecoder.applyPostProcessors(
+          field.resolvedType,
+          value as Record<string, unknown>,
+          schemaTypes,
+          childPrefix
+        );
+      }
+    }
+  }
+
+  private static CONTROL_WORD_ROBOT_MODES = ["Unknown", "Autonomous", "Teleoperated", "Utility"] as const;
+  private static CONTROL_WORD_ALLIANCE_STATIONS = ["Red 1", "Red 2", "Red 3", "Blue 1", "Blue 2", "Blue 3"] as const;
+
+  /** Expands the packed control word integer in mrc.proto.ProtobufControlData into structured fields. */
+  private static postProcessControlData(
+    data: Record<string, unknown>,
+    schemaTypes: { [key: string]: string },
+    prefix: string
+  ): void {
+    let fieldKey = "ControlWord" in data ? "ControlWord" : null;
+    if (fieldKey === null || typeof data[fieldKey] !== "number") return;
+    let word = data[fieldKey] as number;
+    data[fieldKey] = {
+      enabled: (word & 1) !== 0,
+      robotMode: ProtoDecoder.CONTROL_WORD_ROBOT_MODES[(word >> 1) & 3],
+      eStop: ((word >> 3) & 1) !== 0,
+      fmsConnected: ((word >> 4) & 1) !== 0,
+      dsConnected: ((word >> 5) & 1) !== 0,
+      allianceStation: ProtoDecoder.CONTROL_WORD_ALLIANCE_STATIONS[(word >> 8) & 15] ?? "Unknown",
+      timedMatch: ((word >> 13) & 1) !== 0
+    };
+    schemaTypes[prefix ? `${prefix}/${fieldKey}` : fieldKey] = "ControlWord";
   }
 
   /** Converts a schema type with full package name to a friendly version. */

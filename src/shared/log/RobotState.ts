@@ -17,7 +17,7 @@ export const ENABLED_KEYS = [
   "NT:/AdvantageKit/DriverStation/Enabled", // AdvantageKit
   "DS:controlWord/enabled", // DataLog/Phoenix, post-2027
   "DS:enabled", // DataLog, pre-2027
-  "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
+  "DS:/Dscomm/Control/Robot/ControlData/ControlWord/enabled", // FIRST DS
   "/DSLog/Status/DSDisabled", // NI DS
   "RobotEnable", // Phoenix
   "NT:/DriverStation/ControlWord/enabled", // NT, post-2027
@@ -31,7 +31,7 @@ export const AUTONOMOUS_KEYS = [
   "NT:/AdvantageKit/DriverStation/Autonomous", // AdvantageKit, pre-2027
   "DS:controlWord/robotMode", // DataLog/Phoenix, post-2027
   "DS:autonomous", // DataLog, pre-2027
-  "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
+  "DS:/Dscomm/Control/Robot/ControlData/ControlWord/robotMode", // FIRST DS
   "/DSLog/Status/DSTeleop", // NI DS
   "RobotMode", // Phoenix
   "NT:/DriverStation/ControlWord/robotMode", // NT, post-2027
@@ -44,7 +44,7 @@ export const UTILITY_KEYS = [
   "NT:/AdvantageKit/DriverStation/Test", // AdvantageKit, pre-2027
   "DS:controlWord/robotMode", // DataLog/Phoenix, post-2027
   "DS:test", // DataLog, pre-2027
-  "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
+  "DS:/Dscomm/Control/Robot/ControlData/ControlWord/robotMode", // FIRST DS
   "RobotMode", // Phoenix
   "NT:/DriverStation/ControlWord/robotMode", // NT, post-2027
   "NT:/FMSInfo/FMSControlData" // NT, pre-2027
@@ -52,7 +52,7 @@ export const UTILITY_KEYS = [
 export const ALLIANCE_KEYS = [
   "/DriverStation/AllianceStation", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/AllianceStation", // AdvantageKit
-  "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
+  "DS:/Dscomm/Control/Robot/ControlData/ControlWord/allianceStation", // FIRST DS
   "NT:/DriverStation/IsRedAlliance", // NT, post-2027
   "NT:/FMSInfo/IsRedAlliance", // NT, pre-2027
   "DS:allianceStation", // Phoenix
@@ -61,7 +61,7 @@ export const ALLIANCE_KEYS = [
 export const DRIVER_STATION_KEYS = [
   "/DriverStation/AllianceStation", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/AllianceStation", // AdvantageKit
-  "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
+  "DS:/Dscomm/Control/Robot/ControlData/ControlWord/allianceStation", // FIRST DS
   "NT:/DriverStation/StationNumber", // NT, post-2027
   "NT:/FMSInfo/StationNumber", // NT, pre-2027
   "DS:allianceStation", // Phoenix
@@ -113,7 +113,7 @@ export const MATCH_NUMBER_KEYS = [
 export const PROGRAM_START_TIME_KEYS = [
   "NT:/Robot/ProgramStartTime", // DataLog/NT
   "/Robot/ProgramStartTime", // DataLog/NT
-  "DS:/Dscomm/Control/Robot/ControlData/ControlWord" // FIRST DS
+  "DS:/Dscomm/Control/Robot/ControlData" // FIRST DS
 ];
 
 export type RobotMode = "disabled" | "auto" | "teleop" | "utility";
@@ -128,14 +128,15 @@ export function getEnabledKey(log: Log): string | undefined {
 export function getProgramStartTime(log: Log): number | null {
   let key = findKey(log, PROGRAM_START_TIME_KEYS);
   if (!key) return null;
-  let data = log.getNumber(key, -Infinity, Infinity);
-  if (!data || data.timestamps.length === 0) return null;
   if (key.endsWith("ProgramStartTime")) {
+    let data = log.getNumber(key, -Infinity, Infinity);
+    if (!data || data.timestamps.length === 0) return null;
     return data.values[data.values.length - 1] / 1e9;
-  } else if (key.endsWith("ControlWord")) {
+  } else {
+    let data = log.getRange(key, -Infinity, Infinity);
+    if (!data || data.timestamps.length === 0) return null;
     return data.timestamps[0];
   }
-  return null;
 }
 
 /** Retrieves the boolean values representing the robot's enabled state over time. */
@@ -143,7 +144,7 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
   let enabledKey = getEnabledKey(log);
   if (!enabledKey) return null;
   let enabledData: LogValueSetBoolean | null = null;
-  if (enabledKey.endsWith("FMSControlData") || enabledKey.endsWith("ControlWord")) {
+  if (enabledKey.endsWith("FMSControlData")) {
     let tempEnabledData = log.getNumber(enabledKey, -Infinity, Infinity);
     if (tempEnabledData && tempEnabledData.timestamps.length > 0) {
       enabledData = {
@@ -181,14 +182,6 @@ export function getAutonomousData(log: Log): LogValueSetBoolean | null {
       autonomousData = {
         timestamps: tempAutoData.timestamps,
         values: tempAutoData.values.map((controlWord) => ((controlWord >> 1) & 1) !== 0)
-      };
-    }
-  } else if (autonomousKey.endsWith("ControlWord")) {
-    let tempAutoData = log.getNumber(autonomousKey, -Infinity, Infinity);
-    if (tempAutoData && tempAutoData.timestamps.length > 0) {
-      autonomousData = {
-        timestamps: tempAutoData.timestamps,
-        values: tempAutoData.values.map((controlWord) => ((controlWord >> 1) & 3) === 1)
       };
     }
   } else if (autonomousKey.toLowerCase().endsWith("robotmode")) {
@@ -229,14 +222,6 @@ export function getUtilityData(log: Log): LogValueSetBoolean | null {
       utilityData = {
         timestamps: tempUtilityData.timestamps,
         values: tempUtilityData.values.map((controlWord) => ((controlWord >> 2) & 1) !== 0)
-      };
-    }
-  } else if (utilityKey.endsWith("ControlWord")) {
-    let tempUtilityData = log.getNumber(utilityKey, -Infinity, Infinity);
-    if (tempUtilityData && tempUtilityData.timestamps.length > 0) {
-      utilityData = {
-        timestamps: tempUtilityData.timestamps,
-        values: tempUtilityData.values.map((controlWord) => ((controlWord >> 1) & 3) === 3)
       };
     }
   } else if (utilityKey.toLowerCase().endsWith("robotmode")) {
@@ -333,14 +318,7 @@ export function getIsRedAlliance(log: Log, time: number): boolean {
   let allianceKey = findKey(log, ALLIANCE_KEYS);
   if (!allianceKey) return false;
 
-  if (allianceKey.endsWith("ControlWord")) {
-    // Integer value (station) from control word
-    let tempAllianceData = log.getNumber(allianceKey, time, time);
-    if (tempAllianceData && tempAllianceData.values.length > 0) {
-      let value = tempAllianceData.values[tempAllianceData.values.length - 1];
-      return ((value >> 8) & 15) <= 2;
-    }
-  } else if (allianceKey.endsWith("DriverStation/AllianceStation")) {
+  if (allianceKey.endsWith("DriverStation/AllianceStation")) {
     // Integer value (station) from AdvantageKit
     let tempAllianceData = log.getNumber(allianceKey, time, time);
     if (tempAllianceData && tempAllianceData.values.length > 0) {
@@ -370,28 +348,7 @@ export function getIsRedAlliance(log: Log, time: number): boolean {
 export function getDriverStation(log: Log, time: number): number {
   let dsKey = findKey(log, DRIVER_STATION_KEYS);
   if (!dsKey) return -1;
-  if (dsKey.endsWith("ControlWord")) {
-    // Integer value (station) from control word
-    let tempDSData = log.getNumber(dsKey, time, time);
-    if (tempDSData && tempDSData.values.length > 0) {
-      let value = tempDSData.values[tempDSData.values.length - 1];
-      value = (value >> 8) & 15;
-      switch (value) {
-        case 0:
-          return 3; // Red 1
-        case 1:
-          return 4; // Red 2
-        case 2:
-          return 5; // Red 3
-        case 3:
-          return 0; // Blue 1
-        case 4:
-          return 1; // Blue 2
-        case 5:
-          return 2; // Blue 3
-      }
-    }
-  } else if (dsKey.endsWith("DriverStation/AllianceStation")) {
+  if (dsKey.endsWith("DriverStation/AllianceStation")) {
     // AdvantageKit, alliance station ID
     let tempDSData = log.getNumber(dsKey, time, time);
     if (tempDSData && tempDSData.values.length > 0) {
@@ -437,7 +394,7 @@ export function getDriverStation(log: Log, time: number): number {
       }
     }
   } else if (dsKey.endsWith("AllianceStation") || dsKey.endsWith("allianceStation")) {
-    // Phoenix, string value
+    // Phoenix/FIRST DS, string value
     let tempDSData = log.getString(dsKey, time, time);
     if (tempDSData && tempDSData.values.length > 0) {
       let value = tempDSData.values[tempDSData.values.length - 1];
