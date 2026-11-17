@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 🌐 Suporte a idiomas {#language-support}
 
-O AdvantageScope suporta múltiplos idiomas para fornecer uma experiência localizada para equipes do mundo todo. Os seguintes idiomas estão disponíveis no momento e são suportados pela documentação do AdvantageScope, pelo aplicativo para desktop, pelos aplicativos móveis (AdvantageScope XR e AdvantageTune) e pelo AdvantageScope Lite (no Systemcore e no FIRST Driver Station):
+O AdvantageScope oferece suporte a vários idiomas para proporcionar uma experiência localizada a equipes do mundo inteiro. Os seguintes idiomas estão disponíveis atualmente na documentação, no aplicativo para desktop, nos aplicativos móveis (AdvantageScope XR e AdvantageTune) e no AdvantageScope Lite (no Systemcore e na FIRST Driver Station):
 
 - Inglês (EUA)
 - Espanhol (América Latina)
@@ -26,15 +26,15 @@ O AdvantageScope suporta múltiplos idiomas para fornecer uma experiência local
 
 ## Configuração {#configuration}
 
-Para alterar o idioma de exibição no AdvantageScope, abra a janela de preferências clicando em `App` > `Mostrar Preferências...` (Windows/Linux) ou `AdvantageScope` > `Configurações...` (macOS). Sob a configuração "Idioma", você pode escolher na lista de idiomas suportados ou selecionar "Padrão do Sistema" para corresponder automaticamente ao idioma do seu sistema operacional.
+Para mudar o idioma do AdvantageScope, abra a janela de preferências clicando em `App` > `Mostrar preferências...` (Windows/Linux) ou `AdvantageScope` > `Configurações...` (macOS). Na opção "Idioma", escolha um dos idiomas disponíveis ou selecione "Padrão do sistema" para acompanhar automaticamente o idioma do seu sistema operacional.
 
 <img src="/img/prefs_pt-BR.webp" alt="Diagrama de preferências" height="450" />
 
 ## Chaves de log {#logging-keys}
 
-Todos os formatos suportados pelo AdvantageScope possuem compatibilidade total com Unicode ao definir chaves de log. Isso significa que você pode registrar dados usando seu idioma preferido (incluindo acentos, caracteres especiais e alfabetos não latinos) e eles serão devidamente gravados e exibidos no AdvantageScope.
+Todos os formatos compatíveis com o AdvantageScope têm suporte completo a Unicode na definição de chaves de log. Isso significa que você pode registrar dados no seu idioma (incluindo acentos, caracteres especiais e alfabetos não latinos) e tudo será gravado e exibido normalmente no AdvantageScope.
 
-Aqui está um exemplo de gravação de uma string com uma chave em português:
+Veja um exemplo de registro de texto usando uma chave em português:
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -54,11 +54,11 @@ Logger.recordOutput("Tração/Velocidade do motor direito", "Rápido");
 </Tabs>
 
 :::tip Suporte a unidades
-Consulte a página sobre [suporte a unidades](/tab-reference/line-graph/units) para mais detalhes sobre a comunicação de metadados de unidade. Os nomes das unidades devem ser fornecidos usando símbolos SI ou em inglês (ortografia americana ou britânica), independentemente do idioma selecionado no AdvantageScope.
+Consulte a página sobre [suporte a unidades](/tab-reference/line-graph/units) para ver mais detalhes sobre como informar metadados de unidade. Os nomes das unidades precisam ser escritos usando símbolos do SI ou em inglês (ortografia americana ou britânica), independentemente do idioma escolhido no AdvantageScope.
 :::
 
 ## Desenvolvimento {#development}
 
-A localização do AdvantageScope é criada com uma combinação de inteligência artificial e colaboração comunitária. Como o AdvantageScope é um projeto em rápida evolução, a utilização de IA é essencial para manter o aplicativo traduzido e a documentação sincronizados em todos os idiomas. Isso significa que novos recursos e atualizações estão sempre disponíveis simultaneamente, independentemente do idioma selecionado.
+A localização do AdvantageScope é feita combinando inteligência artificial e colaboração da comunidade. Como o projeto evolui muito rápido, o uso de IA é essencial para manter o aplicativo e a documentação sincronizados em todos os idiomas — assim, novos recursos e atualizações chegam ao mesmo tempo, qualquer que seja o idioma escolhido.
 
-Nosso processo é projetado para corresponder ao vocabulário específico, termos estrangeiros e transliterações com os quais as equipes locais estão familiarizadas. No entanto, as traduções por IA frequentemente incluem frases pouco naturais ou outras imprecisões. Agradecemos seus comentários; você pode fornecer feedback sobre as traduções clicando no ícone roxo no aplicativo (quando configurado para qualquer idioma além do inglês).
+Nosso processo busca respeitar o vocabulário, os termos em inglês adotados no dia a dia e as expressões que as equipes locais já usam. Ainda assim, traduções geradas por IA às vezes trazem frases pouco naturais ou pequenas imprecisões. Se você notar algo estranho, seu feedback é muito bem-vindo: basta clicar no ícone roxo dentro do aplicativo (quando ele estiver em qualquer idioma diferente do inglês).

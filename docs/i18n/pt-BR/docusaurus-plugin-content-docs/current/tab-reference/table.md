@@ -4,16 +4,16 @@ sidebar_position: 4
 
 # 🔢 Tabela {#table}
 
-A visualização em tabela foi projetada para mostrar as alterações de valores específicos de um conjunto de campos em detalhes. Para adicionar um campo, arraste-o para a visualização principal. Para excluir um campo, clique no botão "X" ao lado de seu nome. Os campos podem ser reorganizados clicando e arrastando.
+A guia Tabela foi feita para mostrar em detalhes cada mudança de valor de um conjunto de campos. Para adicionar um campo, arraste-o para a visualização principal. Para removê-lo, clique no botão "X" ao lado do nome. Você também pode reorganizar as colunas clicando e arrastando.
 
 <img src="/img/tab-reference/table-1.webp" alt="Visão geral" />
 
 _A interface em inglês é exibida acima._
 
-**Uma nova linha é criada para cada alteração em qualquer um dos campos exibidos.** Linhas duplicadas não são exibidas. Por exemplo, uma tabela mostrando o estado do robô durante uma partida seria parecida com esta:
+**Cada alteração em qualquer um dos campos exibidos cria uma nova linha**, sem repetir linhas duplicadas. Por exemplo, uma tabela mostrando o estado do robô durante uma partida fica assim:
 
 <img src="/img/tab-reference/table-2.webp" alt="Tabela de estado do robô" />
 
-O tempo selecionado na tabela é sincronizado em todas as guias. Clique em uma linha para selecioná-la ou passe o mouse sobre uma linha para pré-visualizá-la em quaisquer janelas pop-up visíveis. Clicar no botão ↓ pula para o tempo selecionado (ou o tempo inserido na caixa). Os timestamps e as entradas de salto são formatados de acordo com a preferência de [Timestamps](/more-features/timestamps).
+O instante selecionado na tabela fica sincronizado em todas as guias. Clique em uma linha para selecioná-la ou passe o mouse sobre ela para pré-visualizar aquele momento nas janelas pop-up abertas. Clicar no botão ↓ leva diretamente para o tempo selecionado (ou para o tempo digitado na caixa). Os timestamps e o campo de busca seguem o formato configurado na preferência [Timestamps](/more-features/timestamps).
 
 <img src="/img/tab-reference/table-3.webp" alt="Saltando para um tempo" />

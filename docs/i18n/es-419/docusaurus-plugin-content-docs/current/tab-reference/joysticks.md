@@ -4,20 +4,20 @@ sidebar_position: 8
 
 # 🎮 Joysticks {#joysticks}
 
-La pestaña de joysticks muestra el estado de hasta seis controladores conectados. La siguiente imagen muestra un diseño de ejemplo, con dos controladores de Xbox y un joystick genérico. Cada botón se resalta cuando se presiona, y se muestran los estados de los joysticks y otros ejes.
+La pestaña **Joysticks** muestra el estado de hasta seis controles conectados. En la imagen de abajo ves un ejemplo con dos controles de Xbox y un joystick genérico: cada botón se ilumina al presionarlo y también puedes ver la posición de las palancas y demás ejes.
 
-<img src="/img/tab-reference/joysticks-1.webp" alt="Descripción general de la pestaña de joysticks" />
+<img src="/img/tab-reference/joysticks-1.webp" alt="Descripción general de la pestaña Joysticks" />
 
 _En la imagen de arriba se muestra la interfaz en inglés._
 
 <details>
 <summary>Controles de la línea de tiempo</summary>
 
-La línea de tiempo se utiliza para controlar la reproducción y la visualización. Al hacer clic en la línea de tiempo se selecciona un tiempo, y al hacer clic con el botón derecho se anula la selección. El tiempo seleccionado se sincroniza en todas las pestañas, lo que facilita la búsqueda rápida de esta ubicación en otras vistas.
+La línea de tiempo controla la reproducción y te ayuda a explorar el registro. Haz clic en cualquier punto para seleccionar un instante y clic derecho para quitar la selección. Ese instante se sincroniza en todas las pestañas, así que puedes ubicar el mismo momento al instante en otras vistas.
 
-Las secciones amarillas indican cuando el robot es autónomo, las secciones azules indican cuando el robot es teledirigido (teleop), y las secciones grises indican cuando el robot está en modo de utilidad.
+Las franjas amarillas marcan cuándo el robot está en modo autónomo; las azules, en teledirigido (teleop); y las grises, en modo de utilidad.
 
-Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia arriba o hacia abajo. También se puede seleccionar un rango haciendo clic y arrastrando mientras se mantiene presionada la tecla `Shift`. Muévete hacia la izquierda y hacia la derecha desplazándote horizontalmente (en dispositivos compatibles) o haciendo clic y arrastrando en la línea de tiempo. Cuando estás conectado en vivo, desplazarte hacia la izquierda desbloquea del tiempo actual, y desplazarte hasta la derecha vuelve a bloquear al tiempo actual. Presiona `Ctrl+\` para hacer zoom al período en el que el robot está habilitado.
+Para hacer zoom, coloca el cursor sobre la línea de tiempo y mueve la rueda del ratón (o desliza) hacia arriba o hacia abajo. También puedes seleccionar un tramo específico haciendo clic y arrastrando mientras mantienes presionada la tecla `Shift`. Para moverte a izquierda o derecha, desplázate horizontalmente (si tu dispositivo lo permite) o haz clic y arrastra sobre la línea de tiempo. Cuando estés conectado en vivo, moverte hacia la izquierda desbloquea la vista del tiempo actual, y llegar hasta el extremo derecho la vuelve a fijar en tiempo real. Presiona `Ctrl+\` para hacer zoom automáticamente al período en que el robot está habilitado.
 
 <img src="/img/tab-reference/timeline.webp" alt="Línea de tiempo" />
 
@@ -25,10 +25,10 @@ Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia 
 
 ## Panel de control {#control-pane}
 
-Selecciona los tipos de joysticks en la tabla en la parte inferior de la pestaña. Los ID de los joysticks varían de 0 a 5, y coinciden con los ID en la Driver Station y WPILib. Puedes encontrar más información sobre joysticks en la [documentación de WPILib](https://docs.wpilib.org/es/stable/docs/software/basic-programming/joystick.html).
+Elige el tipo de cada control en la tabla de la parte inferior de la pestaña. Los ID van del 0 al 5 y coinciden con los de la Driver Station y WPILib. Si quieres profundizar en cómo funcionan, consulta la [documentación de WPILib](https://docs.wpilib.org/en/stable/docs/software/basic-programming/joystick.html).
 
-AdvantageScope incluye un conjunto de joysticks comunes, que incluye un "Joystick genérico" con todos los botones, ejes y POV en formato de cuadrícula (como se ve arriba). Para agregar un joystick personalizado, consulta [Recursos personalizados](/more-features/custom-assets).
+AdvantageScope ya trae varios modelos comunes, incluido un **Joystick genérico** que muestra todos los botones, ejes y crucetas (POV) en forma de cuadrícula, como en la imagen de arriba. Si quieres agregar tu propio diseño de control, revisa [Recursos personalizados](/more-features/custom-assets).
 
 :::warning
-**Los datos de los joysticks NO están disponibles a través de una conexión NetworkTables con WPILib estándar.** Se admiten los archivos de registro de WPILib (con el [registro de joysticks habilitado](https://docs.wpilib.org/es/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), los registros de AdvantageKit y la transmisión de AdvantageKit.
+**Los datos de joysticks NO están disponibles por NetworkTables con WPILib estándar.** Sí puedes verlos desde archivos de registro de WPILib (con el [registro de joysticks habilitado](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), archivos de registro de AdvantageKit y transmisión en vivo de AdvantageKit.
 :::

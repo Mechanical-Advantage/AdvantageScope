@@ -7,20 +7,20 @@ import TabItem from '@theme/TabItem';
 
 # ⚙️ Mécanisme {#mechanism}
 
-L'onglet mécanisme affiche un mécanisme articulé créé avec un ou plusieurs objets [Mechanism2d](https://docs.wpilib.org/fr/stable/docs/software/dashboards/glass/mech2d-widget.html).
+L'onglet Mécanisme affiche un mécanisme articulé créé à partir d'un ou plusieurs objets [Mechanism2d](https://docs.wpilib.org/fr/stable/docs/software/dashboards/glass/mech2d-widget.html).
 
-<img src="/img/tab-reference/mechanism-1.webp" alt="Aperçu de l'onglet mécanisme" />
+<img src="/img/tab-reference/mechanism-1.webp" alt="Aperçu de l'onglet Mécanisme" />
 
 _L'interface en anglais est illustrée ci-dessus._
 
 <details>
 <summary>Contrôles de la chronologie</summary>
 
-La chronologie est utilisée pour contrôler la lecture et la visualisation. Cliquer sur la chronologie sélectionne un moment, et faire un clic droit le désélectionne. L'heure sélectionnée est synchronisée sur tous les onglets, ce qui permet de trouver rapidement cet emplacement dans d'autres vues.
+La chronologie sert à piloter la lecture et la visualisation. Cliquez dessus pour sélectionner un instant précis, et faites un clic droit pour le désélectionner. L'instant choisi est synchronisé dans tous les onglets, ce qui vous permet de retrouver facilement ce moment dans d'autres vues.
 
-Les sections jaunes indiquent quand le robot est en mode autonome, les sections bleues indiquent quand le robot est en mode téléopéré et les sections grises indiquent quand le robot est en mode utilitaire.
+Les zones jaunes correspondent au mode autonome, les zones bleues au mode téléopéré et les zones grises au mode utilitaire.
 
-Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le haut ou vers le bas. Une plage peut également être sélectionnée en cliquant et en faisant glisser tout en maintenant la touche `Shift` enfoncée. Déplacez-vous vers la gauche et la droite en faisant défiler horizontalement (sur les appareils pris en charge), ou en cliquant et en faisant glisser sur la chronologie. Lors d'une connexion en direct, le défilement vers la gauche déverrouille à partir de l'heure actuelle, et le défilement tout à fait vers la droite verrouille à nouveau à l'heure actuelle. Appuyez sur `Ctrl+\` pour zoomer sur la période où le robot est activé.
+Pour zoomer, placez le curseur sur la chronologie et utilisez la molette vers le haut ou vers le bas. Vous pouvez aussi sélectionner une plage en cliquant et en faisant glisser tout en maintenant la touche `Shift` enfoncée. Déplacez-vous vers la gauche ou la droite par défilement horizontal (sur les appareils compatibles) ou en cliquant-glissant sur la chronologie. Lors d'une connexion en direct, faire défiler vers la gauche déverrouille le suivi de l'instant actuel, et revenir complètement à droite le verrouille à nouveau. Appuyez sur `Ctrl+\` pour zoomer sur la période où le robot est activé.
 
 <img src="/img/tab-reference/timeline.webp" alt="Chronologie" />
 
@@ -28,14 +28,14 @@ Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le hau
 
 ## Ajout de mécanismes {#adding-mechanisms}
 
-Pour commencer, faites glisser un `Mechanism2d` vers le panneau de contrôle. Supprimez un mécanisme à l'aide du bouton X, ou masquez-le temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer tous les mécanismes, cliquez sur la corbeille près du titre de l'axe, puis sur `Tout effacer`. Les mécanismes peuvent être réorganisés dans la liste en les faisant glisser.
+Pour commencer, faites glisser un champ `Mechanism2d` dans le panneau de contrôle. Vous pouvez supprimer un mécanisme avec le bouton `X`, ou le masquer temporairement en cliquant sur l'icône d'œil ou en double-cliquant sur son nom. Pour tout effacer d'un coup, cliquez sur la corbeille à côté du titre de la section, puis sur `Tout effacer`. Vous pouvez aussi réorganiser les mécanismes dans la liste par glisser-déposer.
 
 ## Publication de données {#publishing-data}
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-Pour publier des données de mécanisme à l'aide de WPILib, enregistrez un objet `Mechanism2d` périodiquement à l'aide de `Telemetry` (illustré ci-dessous). Notez que cet appel enregistre uniquement l'état actuel du `Mechanism2d`, il doit donc être appelé à chaque cycle de boucle après la mise à jour de l'objet.
+Avec WPILib, enregistrez périodiquement votre objet `Mechanism2d` à l'aide de `Telemetry` (voir ci-dessous). Attention : cet appel n'enregistre que l'état actuel du `Mechanism2d`, il faut donc l'exécuter à chaque cycle de boucle après avoir mis à jour le mécanisme.
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
@@ -48,7 +48,7 @@ periodic() {
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-Pour publier des données de mécanisme à l'aide d'AdvantageKit, enregistrez un `Mechanism2d` périodiquement en tant que champ de sortie (illustré ci-dessous). Notez que cet appel enregistre uniquement l'état actuel du `Mechanism2d`, il doit donc être appelé à chaque cycle de boucle après la mise à jour de l'objet.
+Avec AdvantageKit, enregistrez périodiquement votre objet `Mechanism2d` comme champ de sortie (voir ci-dessous). Attention : cet appel n'enregistre que l'état actuel du `Mechanism2d`, il faut donc l'exécuter à chaque cycle de boucle après avoir mis à jour le mécanisme.
 
 ```java
 LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);
@@ -59,7 +59,7 @@ periodic() {
 ```
 
 :::tip
-L'annotation [@AutoLogOutput](https://docs.advantagekit.org/data-flow/recording-outputs/annotation-logging) d'AdvantageKit peut être utilisée pour enregistrer automatiquement l'état du mécanisme à chaque cycle de boucle sans appeler `Logger.recordOutput`.
+Avec AdvantageKit, l'annotation [@AutoLogOutput](https://docs.advantagekit.org/data-flow/recording-outputs/annotation-logging) permet d'enregistrer automatiquement l'état du mécanisme à chaque cycle sans avoir à appeler `Logger.recordOutput`.
 :::
 
 </TabItem>

@@ -8,45 +8,45 @@ import TabItem from '@theme/TabItem';
 # 📝 Onofficiële REV-compatibele logger {#unofficial-rev-compatible-logger}
 
 :::info
-Nieuw in 2026: REVLib bevat een officiële loggingoplossing voor het opslaan van data van de Spark Max en Spark Flex naar een REV CAN-logbestand (`.revlog`). Zie [hier](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) voor details. Deze bestanden kunnen rechtstreeks in AdvantageScope worden geopend, maar kunnen niet nauwkeurig worden gesynchroniseerd met andere databronnen.
+Nieuw in 2026: REVLib heeft nu een eigen officiële logger waarmee je data van de Spark Max en Spark Flex opslaat in een REV CAN-logbestand (`.revlog`). Meer informatie vind je [hier](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger). Je kunt deze bestanden direct openen in AdvantageScope, maar je kunt ze niet nauwkeurig synchroniseren met andere databronnen.
 
-De _onofficiële_ REV-compatibele logger (URCL) van AdvantageScope blijft in 2026 ook beschikbaar voor teams om een soepele overgang te garanderen en functiepariteit met voorgaande seizoenen te bieden. We zullen op een later moment meer details delen over loggingopties in 2027 en daarna.
+De _onofficiële_ REV-compatibele logger (URCL) van AdvantageScope blijft in 2026 gewoon beschikbaar voor een soepele overgang en om dezelfde functies te blijven bieden als in eerdere seizoenen. Later delen we meer informatie over de loggingopties voor 2027 en verder.
 :::
 
-URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) is een loggingbibliotheek die beschikbaar is voor Java, C++ en Python en die automatisch data registreert van de Spark Max en Spark Flex. Dit maakt live plotten en loggen van alle apparaten mogelijk, vergelijkbaar met CTRE's [Tuner X-plotfunctie](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) en [Phoenix 6-signaallogger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html).
+URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) is een loggingbibliotheek voor Java, C++ en Python die automatisch data van de Spark Max en Spark Flex vastlegt. Zo kun je alle apparaten live plotten en loggen, vergelijkbaar met de [plotfunctie van Tuner X](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) en de [Phoenix 6-signaallogger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) van CTRE.
 
-Na de installatie worden periodieke CAN-frames van alle Spark Max- en Spark Flex-apparaten gepubliceerd naar NetworkTables of DataLog. Bij gebruik van NetworkTables kan WPILib's [DataLogManager](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) worden gebruikt om de data vast te leggen in een logbestand. Deze frames kunnen worden bekeken in AdvantageScope (zie [Logbestanden beheren](/overview/log-files) en [Verbinden met live-bronnen](/overview/live-sources)).
+Na het instellen stuurt URCL automatisch de periodieke CAN-frames van alle Spark Max- en Spark Flex-apparaten door naar NetworkTables of DataLog. Gebruik je NetworkTables, dan kun je de data met WPILib's [DataLogManager](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) opslaan in een logbestand. Die frames bekijk je daarna in AdvantageScope (zie [Logbestanden beheren](/overview/log-files) en [Verbinden met live-bronnen](/overview/live-sources)).
 
-- **Alle signalen** worden automatisch vastgelegd, **zonder handmatige installatie voor nieuwe apparaten**.
-- **Elk frame wordt vastgelegd**, zelfs wanneer de periode van het statusframe sneller is dan de loop-cyclus van de robot.
-- Frames worden gelogd met **tijdstempels gebaseerd op de CAN RX-tijd**, wat een nauwkeurigere versnellingskarakterisering met [SysId](https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/introduction.html) mogelijk maakt in vergelijking met traditionele logging in gebruikerscode (zie "SysId-gebruik" hieronder).
-- Logging is **zeer efficiënt**; bewerkingen zijn 'threaded' en duren minder dan 80 µs per periodieke cyclus van 20 ms, zelfs bij het loggen van een groot aantal apparaten.
-- **Alle functies van REVLib blijven onaangetast.**
+- **Alle signalen** worden automatisch vastgelegd, **zonder dat je nieuwe apparaten apart hoeft in te stellen**.
+- **Elk frame wordt opgeslagen**, zelfs als de statusframes sneller binnenkomen dan de loop-cyclus van de robot.
+- Frames krijgen een **tijdstempel op basis van de CAN RX-tijd**, wat een veel nauwkeurigere versnellingskarakterisering in [SysId](https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/introduction.html) oplevert dan gewoon loggen in gebruikerscode (zie "SysId gebruiken" hieronder).
+- Loggen is **erg efficiënt**: het draait in een aparte thread en kost minder dan 80 µs per cyclus van 20 ms, zelfs met veel apparaten.
+- **Alle functies van REVLib blijven gewoon werken.**
 
 :::info
-Aangezien deze bibliotheek geen officiële REV-tool is, moeten ondersteuningsvragen worden gericht aan de URCL [issues-pagina](https://github.com/Mechanical-Advantage/URCL/issues) of software@team6328.org in plaats van aan het ondersteuningscontact van REV.
+Omdat dit geen officiële tool van REV is, kun je vragen of problemen het beste melden op de [issues-pagina van URCL](https://github.com/Mechanical-Advantage/URCL/issues) of mailen naar software@team6328.org in plaats van contact op te nemen met REV.
 :::
 
 ## Installatie {#setup}
 
-Installeer de URCL-vendordep door de instructies te volgen voor het installeren van [externe bibliotheken](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html) met behulp van het afhankelijkheidsbeheer in VSCode. Als alternatief kun je de volgende vendor-JSON-URL gebruiken:
+Installeer de URCL-vendordep in VSCode volgens de instructies voor [externe bibliotheken](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html), of gebruik direct deze vendor-JSON-URL:
 
 ```
 https://raw.githubusercontent.com/Mechanical-Advantage/URCL/main/URCL.json
 ```
 
-URCL publiceert standaard naar NetworkTables, waar data kan worden opgeslagen in een logbestand door WPILib's DataLogManager in te schakelen. Als alternatief kan URCL rechtstreeks naar een DataLog loggen. De logger moet worden gestart in `robotInit`, zoals hieronder weergegeven.
+Standaard stuurt URCL data naar NetworkTables, waarna je het met WPILib's DataLogManager in een logbestand kunt opslaan. Je kunt URCL ook rechtstreeks naar een DataLog laten schrijven. Start de logger in `robotInit`, zoals hieronder:
 
 <Tabs>
 <TabItem value="java" label="Java" default>
 
 ```java
 public Robot() {
-  // Bij publiceren naar NetworkTables en DataLog
+  // Als je naar NetworkTables én DataLog wilt publiceren
   DataLogManager.start();
   URCL.start();
 
-  // Bij alleen loggen naar DataLog
+  // Als je alleen naar DataLog wilt loggen
   URCL.start(DataLogManager.getLog());
 }
 ```
@@ -59,11 +59,11 @@ public Robot() {
 #include "URCL.h"
 
 Robot::Robot() {
-  // Bij publiceren naar NetworkTables en DataLog
+  // Als je naar NetworkTables én DataLog wilt publiceren
   frc::DataLogManager::Start();
   URCL::Start();
 
-  // Bij alleen loggen naar DataLog
+  // Als je alleen naar DataLog wilt loggen
   URCL::Start(frc::DataLogManager::GetLog());
 }
 ```
@@ -77,11 +77,11 @@ import wpilib
 
 class Robot(wpilib.TimedRobot):
     def robotInit(self):
-        # Bij publiceren naar NetworkTables en DataLog
+        # Als je naar NetworkTables én DataLog wilt publiceren
         wpilib.DataLogManager.start()
         urcl.start()
 
-        # Bij alleen loggen naar DataLog
+        # Als je alleen naar DataLog wilt loggen
         urcl.start(wpilib.DataLogManager.getLog())
 ```
 
@@ -97,23 +97,23 @@ public Robot() {
 ```
 
 :::warning
-URCL-compatibiliteit met AdvantageKit wordt alleen voor het gemak geboden; de data die in het logbestand is vastgelegd, is NIET beschikbaar bij herhaling. **REV-motorcontrollers moeten nog steeds deel uitmaken van een IO-implementatie met gedefinieerde inputs om herhaling te ondersteunen**.
+URCL-compatibiliteit met AdvantageKit is er puur voor het gemak; de gelogde data is NIET beschikbaar tijdens replay. **REV-motorcontrollers moeten nog steeds in een IO-implementatie met gedefinieerde inputs zitten als je replay wilt gebruiken.**
 :::
 
 </TabItem>
 </Tabs>
 
-Om apparaten gemakkelijker te identificeren in het logbestand, kunnen CAN-ID's worden toegewezen aan aliassen door een map-object door te geven aan de methode `start()` of `startExternal()`. De sleutels zijn CAN-ID's en de waarden zijn strings voor de namen die in het logbestand moeten worden gebruikt. Alle apparaten waaraan geen alias is toegewezen, worden gelogd met hun standaardnamen.
+Om apparaten makkelijker te herkennen in het logbestand, kun je aliassen koppelen aan CAN-ID's door een map-object mee te geven aan `start()` of `startExternal()`. De keys zijn de CAN-ID's en de values zijn de namen (strings) die je in het logbestand wilt zien. Apparaten zonder alias krijgen gewoon hun standaardnaam.
 
 :::warning
-Om het CAN-gebruik te minimaliseren, zijn de meeste statusframes voor Spark-apparaten **standaard uitgeschakeld** totdat een bijbehorende getter-methode wordt aangeroepen. Alle data in deze uitgeschakelde statusframes zal niet beschikbaar zijn in het URCL-logbestand.
+Om de CAN-bus niet te overbelasten staan de meeste statusframes van Spark-apparaten **standaard uit** totdat je de bijbehorende getter-methode aanroept. Data uit uitgeschakelde statusframes komt niet in het URCL-logbestand terecht.
 
-Raadpleeg de [REVLib-documentatie](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods) voor meer details. We raden aan de [`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) te gebruiken bij het configureren van de Spark om handmatig alle signalen in te schakelen die je in het logbestand wilt opnemen.
+Bekijk de [REVLib-documentatie](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods) voor meer uitleg. We raden aan om bij het configureren van je Spark [`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) te gebruiken om handmatig alle signalen aan te zetten die je wilt loggen.
 :::
 
-## SysId-gebruik {#sysid-usage}
+## SysId gebruiken {#sysid-usage}
 
-1. Na het instellen van URCL zoals hierboven getoond, configureer je de SysId-routine met `null` voor de mechanismelog-consument. Hieronder wordt een voorbeeld voor Java getoond. Deze configuratie kan worden uitgevoerd binnen de subsystem-klasse.
+1. Nadat je URCL hebt ingesteld zoals hierboven beschreven, maak je de SysId-routine aan met `null` als logconsument voor het mechanisme. Hieronder zie je een voorbeeld in Java, dat je bijvoorbeeld in je subsystem-klasse kunt zetten.
 
 <Tabs groupId="library">
 <TabItem value="WPILib" label="WPILib" default>
@@ -124,12 +124,12 @@ var sysIdRoutine = new SysIdRoutine(
   new SysIdRoutine.Config(),
   new SysIdRoutine.Mechanism(
     (voltage) -> subsystem.runVolts(voltage.in(Volts)),
-    null, // Geen logconsument, aangezien data wordt vastgelegd door URCL
+    null, // Geen logconsument, omdat URCL de data al vastlegt
     subsystem
   )
 );
 
-// De onderstaande methoden retourneren Command-objecten
+// De methoden hieronder geven Command-objecten terug
 sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
 sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
 sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);
@@ -148,12 +148,12 @@ var sysIdRoutine = new SysIdRoutine(
   ),
   new SysIdRoutine.Mechanism(
     (voltage) -> subsystem.runVolts(voltage.in(Volts)),
-    null, // Geen logconsument, aangezien data wordt vastgelegd door URCL
+    null, // Geen logconsument, omdat URCL de data al vastlegt
     subsystem
   )
 );
 
-// De onderstaande methoden retourneren Command-objecten
+// De methoden hieronder geven Command-objecten terug
 sysIdRoutine.quasistatic(SysIdRoutine.Direction.kForward);
 sysIdRoutine.quasistatic(SysIdRoutine.Direction.kReverse);
 sysIdRoutine.dynamic(SysIdRoutine.Direction.kForward);
@@ -163,22 +163,22 @@ sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
 </TabItem>
 </Tabs>
 
-2. Voer de SysId-routine uit op de robot. De SysId-commando's kunnen worden geconfigureerd als automatische routines of worden gekoppeld aan een knoptrigger.
+2. Voer de SysId-routine uit op de robot. Je kunt de SysId-commando's als auto-routines instellen of aan een knop koppelen.
 
-3. Download het logbestand en open het in AdvantageScope. Ga in de menubalk naar `Bestand` > `Data exporteren...`. Stel het formaat in op "WPILOG" en de veldset op "Gegenereerde opnemen". Klik op het pictogram voor opslaan en kies een locatie om het logbestand op te slaan.
+3. Download het logbestand en open het in AdvantageScope. Ga in de menubalk naar `Bestand` > `Data exporteren...`. Zet het formaat op "WPILOG" en de veldset op "Gegenereerde opnemen". Klik op het opslagicoon en kies waar je het bestand wilt opslaan.
 
 :::warning
-Het logbestand van de robot moet worden geopend en geëxporteerd door AdvantageScope _voordat het wordt geopend met de SysId-analyzer_. Dit is vereist om de door URCL geregistreerde CAN-data te converteren naar een formaat dat compatibel is met SysId.
+Open en exporteer het logbestand eerst via AdvantageScope _voordat je het opent in de SysId-analyzer_. Anders worden de CAN-gegevens van URCL niet omgezet naar een formaat dat SysId kan lezen.
 :::
 
-4. Open de SysId-analyzer door te zoeken naar "WPILib: Start Tool" in het VSCode-opdrachtpalet en "SysId" te kiezen (of gebruik het opstartprogramma op het bureaublad in Windows). Open het geëxporteerde logbestand door op "Open data log file..." te klikken.
+4. Open de SysId-analyzer door in het opdrachtpalet van VSCode te zoeken naar "WPILib: Start Tool" en "SysId" te kiezen (of via het bureaubladpictogram op Windows). Open je geëxporteerde logbestand via "Open data log file...".
 
-5. Kies de onderstaande velden om de analyse uit te voeren met de standaard encoder. Positie- en snelheidsdata van secundaire encoders kunnen ook worden gebruikt (alternatief, extern, analoog, absoluut, enz.).
+5. Kies de volgende velden om de analyse met de standaardencoder uit te voeren. Je kunt ook positie- en snelheidsdata van een secundaire encoder gebruiken (alternate, external, analog, absolute, enzovoort).
 
    - Position = "NT:/URCL/&lt;Device&gt;/MotorPositionRotations"
    - Velocity = "NT:/URCL/&lt;Device&gt;/MotorVelocityRPM"
    - Voltage = "NT:/URCL/&lt;Device&gt;/AppliedOutputVoltage"
 
 :::tip
-De versterkingen die door SysId worden geproduceerd, gebruiken de eenheden die de Spark Max/Flex is geconfigureerd om te rapporteren (met behulp van [`setPositionConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setPositionConversionFactor(double)>) en [`setVelocityConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setVelocityConversionFactor(double)>)). Dit zijn standaard rotaties en RPM zonder overbrenging. Als de eenheden die zijn gebruikt bij het registreren van data niet overeenkomen met de gewenste eenheden, kan de schaal tijdens de analyse worden aangepast in SysId.
+De gains die SysId berekent gebruiken dezelfde eenheden als de Spark Max/Flex rapporteert (ingesteld met [`setPositionConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setPositionConversionFactor(double)>) en [`setVelocityConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setVelocityConversionFactor(double)>)). Standaard zijn dat rotaties en RPM zonder overbrenging. Komen de gelogde eenheden niet overeen met wat je wilt, dan kun je de schaal tijdens de analyse in SysId aanpassen.
 :::

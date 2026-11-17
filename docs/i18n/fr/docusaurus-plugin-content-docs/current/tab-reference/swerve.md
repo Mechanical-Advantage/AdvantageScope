@@ -7,20 +7,20 @@ import TabItem from '@theme/TabItem';
 
 # 🦀 Swerve {#swerve}
 
-L'onglet Swerve montre l'état de quatre modules Swerve, y compris les vecteurs de vitesse, les positions au repos, la rotation du robot et les vitesses du châssis.
+L'onglet Swerve affiche l'état des quatre modules *swerve* : vecteurs de vitesse, positions au repos, rotation du robot et vitesses du châssis.
 
-<img src="/img/tab-reference/swerve-1.webp" alt="Aperçu de l'onglet swerve" />
+<img src="/img/tab-reference/swerve-1.webp" alt="Aperçu de l'onglet Swerve" />
 
 _L'interface en anglais est illustrée ci-dessus._
 
 <details>
 <summary>Contrôles de la chronologie</summary>
 
-La chronologie est utilisée pour contrôler la lecture et la visualisation. Cliquer sur la chronologie sélectionne un moment, et faire un clic droit le désélectionne. L'heure sélectionnée est synchronisée sur tous les onglets, ce qui permet de trouver rapidement cet emplacement dans d'autres vues.
+La chronologie sert à piloter la lecture et la visualisation. Cliquer dessus sélectionne un instant précis, et un clic droit le désélectionne. Comme l'heure sélectionnée est synchronisée entre tous les onglets, vous pouvez retrouver ce même moment en un coup d'œil dans les autres vues.
 
-Les sections jaunes indiquent quand le robot est en mode autonome, les sections bleues indiquent quand le robot est en mode téléopéré et les sections grises indiquent quand le robot est en mode utilitaire.
+Les zones jaunes indiquent les phases en mode autonome, les zones bleues le mode téléopéré, et les zones grises le mode utilitaire.
 
-Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le haut ou vers le bas. Une plage peut également être sélectionnée en cliquant et en faisant glisser tout en maintenant la touche `Shift` enfoncée. Déplacez-vous vers la gauche et la droite en faisant défiler horizontalement (sur les appareils pris en charge), ou en cliquant et en faisant glisser sur la chronologie. Lors d'une connexion en direct, le défilement vers la gauche déverrouille à partir de l'heure actuelle, et le défilement tout à fait vers la droite verrouille à nouveau à l'heure actuelle. Appuyez sur `Ctrl+\` pour zoomer sur la période où le robot est activé.
+Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le haut ou vers le bas. Vous pouvez aussi sélectionner une plage en cliquant et en faisant glisser tout en maintenant la touche `Shift` enfoncée. Pour vous déplacer vers la gauche ou la droite, faites défiler horizontalement (sur les appareils compatibles) ou cliquez et faites glisser sur la chronologie. En mode en direct, faire défiler vers la gauche déverrouille la vue de l'heure actuelle, tandis que faire défiler complètement vers la droite la verrouille à nouveau. Appuyez sur `Ctrl+\` pour zoomer sur la période où le robot est activé.
 
 <img src="/img/tab-reference/timeline.webp" alt="Chronologie" />
 
@@ -28,19 +28,19 @@ Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le hau
 
 ## Ajout de sources {#adding-sources}
 
-Pour commencer, faites glisser un champ vers la section « Sources ». Supprimez une source à l'aide du bouton X, ou masquez-la temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer toutes les sources, cliquez sur la corbeille près du titre de l'axe, puis sur `Tout effacer`. Les sources peuvent être réorganisées dans la liste en les faisant glisser.
+Pour commencer, faites glisser un champ vers la section « Sources ». Vous pouvez supprimer une source avec le bouton X, ou la masquer temporairement en cliquant sur l'icône d'œil ou en double-cliquant sur son nom. Pour tout retirer, cliquez sur la corbeille à côté du titre de la section, puis sur `Tout effacer`. Vous pouvez également réorganiser les sources dans la liste par glisser-déposer.
 
-**Pour personnaliser chaque source, cliquez sur l'icône colorée ou faites un clic droit sur le nom du champ.** AdvantageScope prend en charge trois types de sources :
+**Pour personnaliser une source, cliquez sur son icône colorée ou faites un clic droit sur son nom.** AdvantageScope prend en charge trois types de sources :
 
-- **Vitesses des modules :** Un ensemble de quatre états de modules Swerve, affichés sous forme de vecteurs sur le schéma.
-- **Vitesses du robot :** Les vitesses linéaires et angulaires affichées au centre du schéma.
-- **Rotation :** La position angulaire utilisée pour faire pivoter le schéma.
+- **Vitesses des modules :** un ensemble de quatre états de modules *swerve*, représentés par des vecteurs sur le schéma.
+- **Vitesses du robot :** les vitesses linéaire et angulaire affichées au centre du schéma.
+- **Rotation :** l'angle utilisé pour orienter le schéma.
 
 ## Format des données {#data-format}
 
-Les données doivent être publiées sous forme de struct ou protobuf codé en octets, en utilisant les types `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d` ou `Rotation3d`.
+Les données doivent être publiées au format struct ou protobuf encodé en octets, à l'aide des types `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d` ou `Rotation3d`.
 
-De nombreuses bibliothèques prennent en charge le format struct, notamment WPILib et AdvantageKit. L'exemple de code ci-dessous montre comment enregistrer les états des modules Swerve en Java.
+De nombreuses bibliothèques prennent en charge le format struct, notamment WPILib et AdvantageKit. L'exemple ci-dessous montre comment enregistrer les états des modules *swerve* en Java.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -75,16 +75,16 @@ Logger.recordOutput("MyStates", states);
 
 :::note
 En 2027, cette structure de données a été renommée de `SwerveModuleState` en `SwerveModuleVelocity`.
-Pour les fichiers journaux créés avant WPILib 2027 et Systemcore, les types hérités `SwerveModuleState` sont toujours pris en charge pour la visualisation.
+Pour les fichiers journaux créés avant WPILib 2027 et Systemcore, l'ancien type `SwerveModuleState` reste pris en charge pour la visualisation.
 :::
 
 ## Configuration {#configuration}
 
-Les options de configuration suivantes sont disponibles :
+Les options suivantes sont disponibles :
 
-- **Vitesse max :** La vitesse maximale atteignable par les modules, utilisée pour ajuster la taille des vecteurs.
-- **Taille du châssis :** Les distances entre les modules Swerve gauche-droite et avant-arrière. Modifie le rapport d'aspect du schéma du robot.
-- **Orientation :** Ajuste la direction dans laquelle le schéma du robot est pointé. Cette option est souvent utile pour s'aligner avec les données de pose ou les vidéos de match.
+- **Vitesse max :** la vitesse maximale que peuvent atteindre les modules, utilisée pour mettre à l'échelle la longueur des vecteurs.
+- **Taille du châssis :** la distance entre les modules gauche/droite et avant/arrière, qui ajuste les proportions du schéma du robot.
+- **Orientation :** modifie la direction vers laquelle pointe le schéma du robot, pratique pour l'aligner avec vos données de pose ou la vidéo d'un match.
 
 :::note
 [🦀 🦀 🦀 🦀 🦀 🦀 🦀 🦀 🦀](https://www.youtube.com/watch?v=IbbwtyM8Dxs)

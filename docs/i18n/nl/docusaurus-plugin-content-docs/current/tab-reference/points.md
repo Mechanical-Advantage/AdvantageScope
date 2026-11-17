@@ -7,20 +7,20 @@ import TabItem from '@theme/TabItem';
 
 # 📍 Punten {#points}
 
-Het tabblad punten toont een 2D-visualisatie van willekeurige punten. Dit is een zeer flexibele tool, die aangepaste visualisaties mogelijk maakt van vision-data/-pipelines, mechanismetoestanden, enz.
+Het tabblad Punten geeft willekeurige punten weer in 2D. Het is een heel flexibel hulpmiddel om bijvoorbeeld vision-data en -pipelines of de status van een mechanisme overzichtelijk in beeld te brengen.
 
-<img src="/img/tab-reference/points-1.webp" alt="Voorbeeld van tabblad punten" />
+<img src="/img/tab-reference/points-1.webp" alt="Voorbeeld van tabblad Punten" />
 
 _De Engelstalige interface wordt hierboven weergegeven._
 
 <details>
 <summary>Tijdlijnbesturing</summary>
 
-De tijdlijn wordt gebruikt om het afspelen en de visualisatie te regelen. Als je op de tijdlijn klikt, selecteer je een tijdstip, en als je met de rechtermuisknop klikt, deselecteer je dit weer. Het geselecteerde tijdstip wordt gesynchroniseerd over alle tabbladen, waardoor het eenvoudig is om deze positie snel terug te vinden in andere weergaven.
+Met de tijdlijn stuur je het afspelen en de weergave aan. Klik op de tijdlijn om een tijdstip te selecteren, en klik met de rechtermuisknop om de selectie weer op te heffen. Het geselecteerde tijdstip wordt gesynchroniseerd over alle tabbladen, zodat je hetzelfde moment makkelijk terugvindt in andere weergaven.
 
-Gele gedeelten geven aan wanneer de robot autonoom is, blauwe gedeelten geven aan wanneer de robot tele-operated is en grijze gedeelten geven aan wanneer de robot in de utility-modus staat.
+Gele stukken geven aan wanneer de robot autonoom rijdt, blauwe stukken staan voor tele-operated en grijze stukken voor de utility-modus.
 
-Om te zoomen, plaats je de cursor op de tijdlijn en scrol je omhoog of omlaag. Er kan ook een bereik worden geselecteerd door te klikken en te slepen terwijl je `Shift` ingedrukt houdt. Beweeg naar links en rechts door horizontaal te scrollen (op ondersteunde apparaten), of door op de tijdlijn te klikken en te slepen. Wanneer er live verbinding is, ontgrendelt naar links scrollen van de huidige tijd, en helemaal naar rechts scrollen vergrendelt weer op de huidige tijd. Druk op `Ctrl+\` om in te zoomen op de periode waarin de robot is ingeschakeld.
+Zet je cursor op de tijdlijn en scrol omhoog of omlaag om in en uit te zoomen. Je kunt ook een bereik selecteren door te klikken en te slepen terwijl je `Shift` ingedrukt houdt. Naar links en rechts bewegen doe je door horizontaal te scrollen (als je apparaat dat ondersteunt) of door op de tijdlijn te klikken en te slepen. Ben je live verbonden? Zodra je naar links scrolt, laat de weergave de huidige tijd los; scrol je weer helemaal naar rechts, dan klikt de weergave vanzelf weer vast op de huidige tijd. Druk op `Ctrl+\` om in te zoomen op de periode waarin de robot is ingeschakeld.
 
 <img src="/img/tab-reference/timeline.webp" alt="Tijdlijn" />
 
@@ -28,17 +28,17 @@ Om te zoomen, plaats je de cursor op de tijdlijn en scrol je omhoog of omlaag. E
 
 ## Bronnen toevoegen {#adding-sources}
 
-Om te beginnen sleep je een veld naar de sectie "Bronnen". Verwijder een bron met de X-knop, of verberg deze tijdelijk door op het oogpictogram te klikken of te dubbelklikken op de veldnaam. Om alle objecten te verwijderen, klik je op de prullenbak naast de astitel en vervolgens op `Alles wissen`. Bronnen kunnen in de lijst opnieuw worden gerangschikt door te klikken en te slepen.
+Sleep een veld naar de sectie "Bronnen" om te beginnen. Met het kruisje verwijder je een bron, en met het oogpictogram (of door te dubbelklikken op de veldnaam) verberg je de bron tijdelijk. Wil je alles in één keer weghalen? Klik dan op de prullenbak naast de titel en kies `Alles wissen`. De volgorde van de bronnen pas je aan door ze te verslepen.
 
-**Om elke bron aan te passen, klik je op het gekleurde pictogram of klik je met de rechtermuisknop op de veldnaam.** Het symbool, de kleur en de grootte van elke bron kunnen worden aangepast.
+**Klik op het gekleurde pictogram of klik met de rechtermuisknop op de veldnaam om een bron aan te passen.** Je kunt voor elke bron het symbool, de kleur en de grootte instellen.
 
 :::tip
-Klik op het `?`-pictogram om een volledige lijst van ondersteunde brontypen te zien. Deze lijst bevat ook de ondersteunde datatypen.
+Klik op het `?`-pictogram voor een volledig overzicht van alle ondersteunde brontypen en datatypen.
 :::
 
 ## Dataformaat {#data-format}
 
-Puntendata moet worden gepubliceerd als een byte-gecodeerde struct of protobuf, met behulp van het type `Translation2d[]`. Veel bibliotheken ondersteunen dit formaat, waaronder WPILib en AdvantageKit. De onderstaande voorbeeldcode laat zien hoe je puntendata logt in Java.
+Log puntendata als een byte-gecodeerde struct of protobuf van het type `Translation2d[]`. Veel bibliotheken ondersteunen dit formaat, waaronder WPILib en AdvantageKit. Hieronder zie je hoe je puntendata logt in Java.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -71,8 +71,8 @@ Logger.recordOutput("MyTranslations",
 
 ## Configuratie {#configuration}
 
-De volgende configuratieopties zijn beschikbaar:
+Je kunt de volgende opties instellen:
 
-- **Dimensies:** De grootte van het weergavegebied. Dit kan elke eenheid gebruiken die overeenkomt met de gepubliceerde punten. Bij het weergeven van vision-data is dit de resolutie van de camera.
-- **Oriëntatie:** Het te gebruiken coördinatenstelsel (oriëntatie van de X- en Y-as).
-- **Oorsprong:** De positie van de oorsprong in het coördinatenstelsel.
+- **Dimensies:** De grootte van het weergavegebied, in dezelfde eenheid als je gelogde punten. Gebruik je vision-data, vul dan de resolutie van de camera in.
+- **Oriëntatie:** Het coördinatenstelsel dat wordt gebruikt (de richting van de X- en Y-as).
+- **Oorsprong:** De plek van de oorsprong binnen het coördinatenstelsel.

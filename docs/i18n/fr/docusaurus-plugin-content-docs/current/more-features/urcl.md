@@ -5,37 +5,37 @@ sidebar_position: 3
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📝 Unofficial REV-Compatible Logger {#unofficial-rev-compatible-logger}
+# 📝 URCL (Enregistreur non officiel compatible REV) {#unofficial-rev-compatible-logger}
 
 :::info
-Nouveauté 2026, REVLib inclut une solution de journalisation officielle pour enregistrer des données du Spark Max et du Spark Flex dans un journal REV CAN (`.revlog`). Voir [ici](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) pour plus de détails. Ces fichiers peuvent être ouverts directement dans AdvantageScope, mais ne peuvent pas être synchronisés avec précision avec d'autres sources de données.
+Nouveauté 2026 : REVLib inclut désormais une solution de journalisation officielle pour enregistrer les données des contrôleurs Spark Max et Spark Flex dans un journal REV CAN (`.revlog`). Consultez [cette documentation](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) pour en savoir plus. Vous pouvez ouvrir ces fichiers directement dans AdvantageScope, mais il n'est pas possible de les synchroniser avec précision avec d'autres sources de données.
 
-L'enrégistreur non officiel compatible REV (_Unofficial_ REV-Compatible Logger ou URCL) d'AdvantageScope restera également disponible pour les équipes en 2026 afin d'assurer une transition en douceur et d'offrir une parité de fonctionnalités avec les saisons précédentes. Nous aurons plus de détails à partager sur les options de journalisation en 2027 et au-delà à une date ultérieure.
+L'enregistreur non officiel compatible REV d'AdvantageScope (URCL, pour _Unofficial REV-Compatible Logger_) reste également disponible en 2026 afin d'assurer une transition en douceur et de conserver les mêmes fonctionnalités que les saisons précédentes. Nous communiquerons ultérieurement plus de détails sur les options de journalisation pour 2027 et les années suivantes.
 :::
 
-URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) est une bibliothèque de journalisation disponible pour Java, C++ et Python qui enregistre automatiquement les données du Spark Max et du Spark Flex. Cela permet le tracé en direct et la journalisation de tous les appareils de manière similaire à la [fonctionnalité de tracé Tuner X](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) et au [signal logger Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) de CTRE.
+URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) est une bibliothèque de journalisation pour Java, C++ et Python qui enregistre automatiquement les données des contrôleurs Spark Max et Spark Flex. Elle permet ainsi de tracer des graphiques en direct et d'enregistrer les données de tous vos contrôleurs, à l'image de l'[outil de tracé Tuner X](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) et de l'[enregistreur de signaux Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) de CTRE.
 
-Après la configuration, les trames CAN périodiques de tous les appareils Spark Max et Spark Flex sont publiées sur NetworkTables ou DataLog. Lors de l'utilisation de NetworkTables, le [DataLogManager](https://docs.wpilib.org/fr/stable/docs/software/telemetry/datalog.html) de WPILib peut être utilisé pour capturer les données dans un fichier journal. Ces trames sont visualisables dans AdvantageScope (voir [Gestion des fichiers journaux](/overview/log-files) et [Connexion à des sources en direct](/overview/live-sources)).
+Une fois configuré, URCL publie les trames CAN périodiques de tous vos Spark Max et Spark Flex vers NetworkTables ou DataLog. Si vous passez par NetworkTables, vous pouvez utiliser le [DataLogManager](https://docs.wpilib.org/fr/stable/docs/software/telemetry/datalog.html) de WPILib pour sauvegarder ces données dans un fichier journal. Vous pourrez ensuite visualiser ces trames dans AdvantageScope (voir [Gestion des fichiers journaux](/overview/log-files) et [Connexion à des sources en direct](/overview/live-sources)).
 
-- **Tous les signaux** sont capturés automatiquement, avec **aucune configuration manuelle pour les nouveaux appareils**.
-- **Chaque trame est capturée**, même lorsque la période de trame d'état est plus rapide que le cycle de boucle du robot.
-- Les trames sont enregistrées avec des **horodatages basés sur l'heure de réception CAN RX**, ce qui permet une caractérisation de l'accélération plus précise avec [SysId](https://docs.wpilib.org/fr/stable/docs/software/pathplanning/system-identification/introduction.html) par rapport à la journalisation traditionnelle dans le code utilisateur (voir « Utilisation de SysId » ci-dessous).
-- La journalisation est **hautement efficace**; les opérations sont exécutées sur des threads séparés pour moins de 80 µs par cycle périodique de 20 ms, même lors de la journalisation d'un grand nombre d'appareils.
-- **Toutes les fonctions de REVLib ne sont pas affectées.**
+- **Tous les signaux** sont capturés automatiquement, **sans aucune configuration manuelle lors de l'ajout de nouveaux appareils**.
+- **Chaque trame est enregistrée**, même lorsque sa période d'envoi est plus rapide que le cycle de la boucle du robot.
+- Les trames sont horodatées **à partir de l'heure de réception CAN (RX)**, ce qui offre une caractérisation de l'accélération plus précise avec [SysId](https://docs.wpilib.org/fr/stable/docs/software/pathplanning/system-identification/introduction.html) qu'une journalisation classique dans le code utilisateur (voir « Utilisation de SysId » ci-dessous).
+- La journalisation est **très performante** : les opérations s'exécutent dans un thread séparé et consomment moins de 80 µs par cycle périodique de 20 ms, même avec un grand nombre d'appareils.
+- **Aucune fonction de REVLib n'est affectée.**
 
 :::info
-Comme cette bibliothèque n'est pas un outil officiel de REV, les demandes d'assistance doivent être adressées à la [page des problèmes](https://github.com/Mechanical-Advantage/URCL/issues) d'URCL ou à software@team6328.org plutôt qu'au contact d'assistance de REV.
+Comme cette bibliothèque n'est pas un outil officiel de REV, veuillez adresser vos demandes d'assistance sur la [page des problèmes GitHub](https://github.com/Mechanical-Advantage/URCL/issues) d'URCL ou par courriel à software@team6328.org plutôt qu'au support technique de REV.
 :::
 
 ## Configuration {#setup}
 
-Installez la dépendance vendordep URCL en suivant les instructions d'installation des [bibliothèques tierces](https://docs.wpilib.org/fr/stable/docs/software/vscode-overview/3rd-party-libraries.html) à l'aide du gestionnaire de dépendances dans VSCode. Alternativement, vous pouvez utiliser l'URL JSON du fournisseur suivante :
+Installez la dépendance *vendordep* URCL en suivant la procédure d'installation des [bibliothèques tierces](https://docs.wpilib.org/fr/stable/docs/software/vscode-overview/3rd-party-libraries.html) depuis le gestionnaire de dépendances de VSCode. Vous pouvez aussi utiliser directement l'URL JSON suivante :
 
 ```
 https://raw.githubusercontent.com/Mechanical-Advantage/URCL/main/URCL.json
 ```
 
-URCL publie sur NetworkTables par défaut, où les données peuvent être enregistrées dans un fichier journal en activant DataLogManager de WPILib. Alternativement, URCL peut enregistrer directement dans un DataLog. L'enregistreur doit être démarré dans `robotInit`, comme illustré ci-dessous.
+Par défaut, URCL publie les données sur NetworkTables, et vous pouvez les enregistrer dans un fichier journal en activant le `DataLogManager` de WPILib. URCL peut également écrire directement dans un `DataLog`. Dans tous les cas, démarrez l'enregistreur dans `robotInit`, comme indiqué ci-dessous.
 
 <Tabs>
 <TabItem value="java" label="Java" default>
@@ -97,23 +97,23 @@ public Robot() {
 ```
 
 :::warning
-La compatibilité d'URCL avec AdvantageKit est fournie uniquement par commodité; les données enregistrées dans le journal ne sont PAS disponibles en relecture. **Les contrôleurs de moteur REV doivent toujours faire partie d'une implémentation d'E/S avec des entrées définies pour prendre en charge la relecture**.
+La compatibilité d'URCL avec AdvantageKit est fournie uniquement à titre pratique; les données enregistrées dans le journal ne sont PAS disponibles en relecture. **Pour prendre en charge la relecture, vos contrôleurs de moteur REV doivent impérativement être intégrés dans une implémentation d'E/S avec des entrées définies.**
 :::
 
 </TabItem>
 </Tabs>
 
-Pour identifier plus facilement les appareils dans le journal, les identifiants CAN peuvent être attribués à des alias en passant un objet map à la méthode `start()` ou `startExternal()`. Les clés sont des identifiants CAN et les valeurs sont des chaînes de caractères pour les noms à utiliser dans le journal. Tous les appareils auxquels aucun alias n'est attribué seront enregistrés sous leurs noms par défaut.
+Pour repérer plus facilement vos appareils dans le journal, vous pouvez associer des alias aux identifiants CAN en passant un dictionnaire (*map*) à la méthode `start()` ou `startExternal()`. Les clés correspondent aux identifiants CAN, et les valeurs aux noms à afficher dans le journal. Les appareils sans alias conserveront leur nom par défaut.
 
 :::warning
-Pour minimiser l'utilisation du bus CAN, la plupart des trames d'état pour les appareils Spark sont **désactivées par défaut** jusqu'à ce qu'une méthode getter associée soit appelée. Toutes les données incluses dans ces trames d'état désactivées ne seront pas disponibles dans le journal URCL.
+Pour limiter la charge sur le bus CAN, la plupart des trames d'état des appareils Spark sont **désactivées par défaut** tant qu'une méthode *getter* associée n'est pas appelée. Les données des trames désactivées n'apparaîtront donc pas dans le journal URCL.
 
-Pour plus de détails, consultez la [documentation REVLib](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods). Nous recommandons d'utiliser la [`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) lors de la configuration du Spark pour activer manuellement les signaux que vous souhaitez inclure dans le fichier journal.
+Pour en savoir plus, consultez la [documentation REVLib](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods). Nous vous recommandons d'utiliser [`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) lors de la configuration du Spark afin d'activer manuellement les signaux que vous souhaitez enregistrer.
 :::
 
 ## Utilisation de SysId {#sysid-usage}
 
-1. Après avoir configuré URCL comme illustré ci-dessus, configurez la routine SysId en utilisant `null` pour le consommateur de journal de mécanisme. Un exemple est illustré ci-dessous pour Java. Cette configuration peut être effectuée dans la classe de sous-système.
+1. Après avoir configuré URCL comme décrit ci-dessus, configurez votre routine SysId en passant `null` comme consommateur de journal du mécanisme (*mechanism log consumer*). Voici un exemple en Java, à placer par exemple dans la classe du sous-système.
 
 <Tabs groupId="library">
 <TabItem value="WPILib" label="WPILib" default>
@@ -163,22 +163,22 @@ sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
 </TabItem>
 </Tabs>
 
-2. Exécutez la routine SysId sur le robot. Les commandes SysId peuvent être configurées comme des routines autonomes ou connectées à un déclencheur de bouton.
+2. Exécutez la routine SysId sur le robot. Vous pouvez configurer les commandes SysId comme routines autonomes ou les associer à des boutons de manette.
 
-3. Téléchargez le fichier journal et ouvrez-le dans AdvantageScope. Dans la barre de menu, allez dans `Fichier` > `Exporter les données...`. Définissez le format sur « WPILOG » et l'ensemble de champs sur « Inclure les champs générés ». Cliquez sur l'icône d'enregistrement et choisissez un emplacement pour enregistrer le journal.
+3. Téléchargez le fichier journal et ouvrez-le dans AdvantageScope. Dans la barre de menus, sélectionnez `Fichier` > `Exporter les données...`. Choisissez le format « WPILOG » et sélectionnez « Inclure les champs générés » pour l'ensemble de champs. Cliquez ensuite sur l'icône d'enregistrement et choisissez où sauvegarder le fichier.
 
 :::warning
-Le fichier journal du robot doit être ouvert et exporté par AdvantageScope _avant de l'ouvrir à l'aide de l'analyseur SysId_. Cela est nécessaire pour convertir les données CAN enregistrées par URCL dans un format compatible avec SysId.
+Vous devez impérativement ouvrir puis exporter le fichier journal avec AdvantageScope _avant de le charger dans l'analyseur SysId_. Cette étape convertit les données CAN enregistrées par URCL dans un format compréhensible par SysId.
 :::
 
-4. Ouvrez l'analyseur SysId en recherchant « WPILib: Start Tool » dans la palette de commandes VSCode et en choisissant « SysId » (ou en utilisant le lanceur de bureau sur Windows). Ouvrez le fichier journal exporté en cliquant sur « Open data log file... »
+4. Ouvrez l'analyseur SysId en recherchant « WPILib: Start Tool » dans la palette de commandes de VSCode puis en choisissant « SysId » (ou via le raccourci sur le bureau sous Windows). Ouvrez le fichier journal exporté en cliquant sur « Open data log file... ».
 
-5. Choisissez les champs suivants ci-dessous pour exécuter l'analyse à l'aide de l'encodeur par défaut. Les données de position et de vitesse des encodeurs secondaires peuvent également être utilisées (alternatif, externe, analogique, absolu, etc.).
+5. Sélectionnez les champs suivants pour lancer l'analyse avec l'encodeur par défaut. Vous pouvez aussi utiliser les données de position et de vitesse d'encodeurs secondaires (alternatif, externe, analogique, absolu, etc.).
 
-   - Position = "NT:/URCL/&lt;Device&gt;/MotorPositionRotations"
-   - Velocity = "NT:/URCL/&lt;Device&gt;/MotorVelocityRPM"
-   - Voltage = "NT:/URCL/&lt;Device&gt;/AppliedOutputVoltage"
+   - Position = « NT:/URCL/&lt;Device&gt;/MotorPositionRotations »
+   - Velocity = « NT:/URCL/&lt;Device&gt;/MotorVelocityRPM »
+   - Voltage = « NT:/URCL/&lt;Device&gt;/AppliedOutputVoltage »
 
 :::tip
-Les gains produits par SysId utiliseront les unités que le Spark Max/Flex est configuré pour rapporter (en utilisant [`setPositionConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setPositionConversionFactor(double)>) et [`setVelocityConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setVelocityConversionFactor(double)>)). Par défaut, il s'agit de rotations et de tr/min sans démultiplication appliquée. Si les unités utilisées lors de l'enregistrement des données ne correspondent pas aux unités souhaitées, l'échelle peut être ajustée dans SysId pendant l'analyse.
+Les gains calculés par SysId utilisent les unités configurées sur le Spark Max/Flex (via [`setPositionConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setPositionConversionFactor(double)>) et [`setVelocityConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setVelocityConversionFactor(double)>)). Par défaut, il s'agit des rotations et des tr/min, sans rapport de réduction appliqué. Si les unités enregistrées ne correspondent pas à celles souhaitées, vous pouvez ajuster l'échelle directement dans SysId lors de l'analyse.
 :::

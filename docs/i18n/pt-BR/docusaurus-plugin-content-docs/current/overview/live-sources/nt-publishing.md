@@ -2,36 +2,36 @@
 sidebar_position: 3
 ---
 
-# Publicando dados NetworkTables {#publishing-networktables-data}
+# Publicando dados do NetworkTables {#publishing-networktables-data}
 
-O AdvantageScope suporta a publicação de dados NetworkTables armazenados em um arquivo de log de volta para um servidor NetworkTables, como um simulador ou robô. Os casos de uso possíveis incluem:
+O AdvantageScope permite publicar dados do NetworkTables salvos em um arquivo de log de volta para um servidor NetworkTables, como um simulador ou um robô. Isso é útil para:
 
-- Reproduzir partidas em simulação para depuração.
+- Reproduzir partidas no simulador para depuração.
 - Simular dados de um coprocessador em um robô real.
-- Depurar aplicativos de dashboard do piloto usando dados de partidas reais.
+- Depurar dashboards do piloto usando dados de partidas reais.
 
-Este recurso requer um arquivo de log com uma captura completa dos dados do NetworkTables, que pode ser gerado usando o [logger de dados integrado](https://docs.wpilib.org/pt/stable/docs/software/telemetry/datalog.html) da WPILib. Observe que o AdvantageKit não suporta este recurso, pois ele habilita uma reprodução determinística mais completa em simulação.
+Para usar esse recurso, você precisa de um arquivo de log com a captura completa dos dados do NetworkTables — algo que pode ser gerado com o [logger de dados integrado](https://docs.wpilib.org/pt/stable/docs/software/telemetry/datalog.html) da WPILib. Vale notar que o AdvantageKit não oferece suporte a esse recurso, já que ele próprio permite um replay determinístico mais completo em simulação.
 
 ## Primeiros passos {#getting-started}
 
-Para iniciar a publicação, um arquivo de log contendo dados do NetworkTables deve estar aberto. Em seguida, siga estas etapas:
+Para começar a publicar, abra um arquivo de log que contenha dados do NetworkTables. Em seguida, faça o seguinte:
 
 - **Publicar no robô:** Clique em `Arquivo` > `Publicar dados NT` > `Conectar ao robô`.
 - **Publicar no simulador:** Clique em `Arquivo` > `Publicar dados NT` > `Conectar ao simulador`.
 
-A parte superior da janela exibe o texto "Buscando" ou "Publicando" para indicar o status da publicação de dados. O AdvantageScope tenta reconectar automaticamente usando as mesmas configurações após uma desconexão.
+A parte superior da janela mostra "Buscando" ou "Publicando" para indicar o status da publicação. Se a conexão cair, o AdvantageScope tenta reconectar automaticamente com as mesmas configurações.
 
-Todos os campos serão publicados usando seus valores armazenados no _timestamp selecionado_ usado por muitas guias do AdvantageScope. Isso permite a reprodução em rede em tempo real através do mesmo mecanismo de reprodução no AdvantageScope. Consulte [Navegação do aplicativo](/overview/navigation) para mais detalhes. Se nenhum timestamp for selecionado, os campos serão publicados usando seus valores armazenados no _timestamp sob o ponteiro_.
+Todos os campos serão publicados com os valores gravados no _timestamp selecionado_, o mesmo usado por várias guias do AdvantageScope. Isso permite reproduzir os dados pela rede em tempo real usando o próprio controle de reprodução do AdvantageScope. Veja [Navegação no aplicativo](/overview/navigation) para mais detalhes. Se nenhum timestamp estiver selecionado, os campos serão publicados com os valores do _timestamp sob o ponteiro_.
 
-Para parar de publicar, clique em `Arquivo` > `Publicar dados NT` > `Parar de publicar`.
+Para interromper a publicação, clique em `Arquivo` > `Publicar dados NT` > `Parar de publicar`.
 
 ## Filtrando campos {#filtering-fields}
 
-Por padrão, o AdvantageScope publica todos os campos do NetworkTables armazenados no arquivo de log (exceto tópicos meta publicados pelo servidor). Alguns casos de uso, como simular um coprocessador, exigem a publicação de apenas um conjunto limitado de campos ou subtabelas. Para ajustar o conjunto de prefixos de campos permitidos, abra a janela de preferências clicando em `App` > `Mostrar preferências...` (Windows/Linux) ou `AdvantageScope` > `Configurações...` (macOS).
+Por padrão, o AdvantageScope publica todos os campos do NetworkTables salvos no arquivo de log (exceto meta tópicos publicados pelo servidor). Em alguns casos, como ao simular um coprocessador, você pode querer publicar apenas um conjunto específico de campos ou subtabelas. Para definir os prefixos permitidos, abra a janela de preferências em `App` > `Mostrar preferências...` (Windows/Linux) ou `AdvantageScope` > `Configurações...` (macOS).
 
-A opção "Prefixos de publicação NT" define os prefixos permitidos para campos publicados no NetworkTables. Se deixada em branco, todos os campos serão incluídos. Caso contrário, uma lista de prefixos ou campos separados por vírgulas pode ser fornecida. Veja os exemplos abaixo.
+A opção "Prefixos de publicação NT" define quais prefixos podem ser publicados no NetworkTables. Se ficar em branco, todos os campos serão incluídos; caso contrário, informe uma lista de prefixos ou campos separados por vírgulas. Veja os exemplos abaixo:
 
-- "_Telemetry_": Inclui todos os campos na tabela "Telemetry".
+- "_Telemetry_": Inclui todos os campos da tabela "Telemetry".
 - "_Telemetry/Drive_": Inclui apenas a tabela "Telemetry/Drive".
 - "_limelight/tx,limelight/ty_": Inclui apenas os campos "limelight/tx" e "limelight/ty".
 
@@ -39,6 +39,6 @@ A opção "Prefixos de publicação NT" define os prefixos permitidos para campo
 
 :::warning
 
-- Os campos são publicados a cada 20 ms, portanto, dados do NetworkTables originalmente publicados com uma frequência mais alta ignorarão amostras.
-- Os timestamps das amostras publicadas não são preservados. Isso seria impossível ao avançar e retroceder no tempo ou reproduzir em diferentes velocidades.
+- Os campos são publicados a cada 20 ms; portanto, dados do NetworkTables originalmente publicados em uma frequência maior terão amostras ignoradas.
+- Os timestamps das amostras publicadas não são preservados — isso seria impossível ao avançar, retroceder ou reproduzir o log em velocidades diferentes.
   :::

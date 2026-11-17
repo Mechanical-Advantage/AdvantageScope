@@ -4,33 +4,33 @@ sidebar_position: 7
 
 # 🎬 Vídeo {#video}
 
-A guia de vídeo permite que os dados de log sejam comparados lado a lado com um vídeo da partida gravado separadamente. As etapas abaixo mostram como carregar um vídeo e sincronizá-lo com o log.
+A guia Vídeo permite comparar os dados do log lado a lado com a gravação da partida. Veja abaixo como carregar um vídeo e sincronizá-lo com o log.
 
 ## Carregando o vídeo {#loading-the-video}
 
-O AdvantageScope oferece três opções para carregar um vídeo:
+O AdvantageScope oferece três formas de carregar um vídeo:
 
-1. **Arquivo local:** Clique no ícone de arquivo cinza, depois escolha o arquivo de vídeo a ser carregado. A maioria dos formatos de vídeo comuns é suportada.
-2. **YouTube:** Copie um link do YouTube para a área de transferência, depois clique no ícone de prancheta vermelho. Após alguns segundos, o vídeo começará a ser baixado.
-3. **The Blue Alliance:** Clique no ícone azul do TBA para carregar automaticamente o vídeo da partida com base no arquivo de log. Se múltiplos vídeos estiverem disponíveis, escolha o vídeo a ser baixado no menu pop-up. Este recurso requer uma chave de API para o TBA, que deve ser obtida em [thebluealliance.com/account](https://www.thebluealliance.com/account) e copiada para a página de preferências do AdvantageScope sob "Chave de API do TBA".
+1. **Arquivo local:** Clique no ícone cinza de arquivo e escolha o vídeo no seu computador. A maioria dos formatos comuns funciona sem problemas.
+2. **YouTube:** Copie o link do YouTube para a área de transferência e clique no ícone vermelho de prancheta. Depois de alguns segundos, o vídeo começa a ser baixado.
+3. **The Blue Alliance:** Clique no ícone azul do TBA para buscar automaticamente o vídeo da partida com base no arquivo de log. Se houver mais de um vídeo disponível, escolha qual deseja baixar no menu suspenso. Esse recurso exige uma chave de API do TBA, que você pode gerar em [thebluealliance.com/account](https://www.thebluealliance.com/account) e colar nas preferências do AdvantageScope, no campo "Chave de API do TBA".
 
 <img src="/img/tab-reference/video-1.webp" alt="Seletor de fonte" />
 
-Após escolher um vídeo, a linha do tempo no canto inferior direito começa a ficar azul para indicar os quadros que foram armazenados em cache (esta etapa é necessária para uma reprodução suave). Este recurso destina-se apenas a vídeos de duração de partida devido à conversão de quadros necessária.
+Depois de escolher o vídeo, a linha do tempo no canto inferior direito começa a ficar azul para indicar os quadros que já foram carregados em cache (isso garante uma reprodução fluida). Como todos os quadros precisam ser convertidos, esse recurso foi pensado apenas para vídeos com duração de partida.
 
 :::warning
-O download de vídeos do YouTube e do TBA pode falhar inesperadamente devido a alterações nos servidores do YouTube. Em caso de problemas, tente atualizar o AdvantageScope ou usar um arquivo de vídeo local.
+O download de vídeos do YouTube e do TBA pode falhar inesperadamente por causa de mudanças nos servidores do YouTube. Se isso acontecer, tente atualizar o AdvantageScope ou usar um arquivo de vídeo local.
 :::
 
 :::info
-O AdvantageScope requer o [FFmpeg](https://ffmpeg.org) para processar arquivos de vídeo. Se uma cópia válida do FFmpeg não for encontrada no PATH do seu sistema, o AdvantageScope solicitará o download do FFmpeg da internet ao carregar um vídeo pela primeira vez. A instalação automática do FFmpeg é suportada apenas no Windows e macOS; usuários de Linux podem precisar instalar o FFmpeg manualmente e adicioná-lo ao PATH do sistema.
+O AdvantageScope precisa do [FFmpeg](https://ffmpeg.org) para processar arquivos de vídeo. Se não encontrar uma cópia válida do FFmpeg no PATH do sistema, ele perguntará se você quer baixar o FFmpeg da internet na primeira vez que carregar um vídeo. A instalação automática só funciona no Windows e no macOS; no Linux, pode ser necessário instalar o FFmpeg manualmente e adicioná-lo ao PATH do sistema.
 :::
 
 ## Navegando pelo vídeo {#navigating-the-video}
 
-Quando um vídeo é carregado inicialmente e ainda não foi sincronizado com os dados do log, os controles de reprodução do vídeo e do log continuam independentes. Use a linha do tempo e os botões no canto inferior direito para controlar a reprodução do vídeo. Os seguintes atalhos de teclado também são suportados:
+Logo depois de carregar um vídeo, antes de sincronizá-lo com o log, os controles de reprodução do vídeo e do log funcionam de forma independente. Use a linha do tempo e os botões no canto inferior direito para controlar o vídeo, ou use os atalhos de teclado abaixo:
 
-- / = alternar reprodução
+- / = reproduzir/pausar
 - → = avançar um quadro
 - ← = voltar um quadro
 - \> = avançar cinco segundos
@@ -40,43 +40,43 @@ Quando um vídeo é carregado inicialmente e ainda não foi sincronizado com os 
 
 ## Sincronização automática {#automatic-synchronization}
 
-A maioria dos vídeos de partidas será sincronizada automaticamente com o log logo após os quadros para o período autônomo da partida serem carregados. Nenhuma ação é necessária; se a sincronização for bem-sucedida, os controles do vídeo serão bloqueados automaticamente (veja "Reprodução" abaixo).
+A maioria dos vídeos de partidas sincroniza sozinha com o log logo após carregar os quadros do período autônomo. Você não precisa fazer nada: se a sincronização der certo, os controles do vídeo travam automaticamente (veja "Reprodução" abaixo).
 
 :::warning
-A sincronização automática funciona apenas em vídeos de partidas que incluem overlays de pontuação e pode não ser bem-sucedida em todos os casos. Se os controles do vídeo não forem bloqueados automaticamente assim que todos os quadros forem carregados, a sincronização manual será necessária.
+A sincronização automática só funciona em vídeos de partidas que tenham o placar (overlay de pontuação) na tela e pode falhar em alguns casos. Se os controles do vídeo não travarem sozinhos depois que todos os quadros carregarem, você precisará fazer a sincronização manual.
 :::
 
 ## Sincronização manual {#manual-synchronization}
 
-Primeiro, use os controles do vídeo para navegar até um local conhecido na partida, como o início do autônomo. Em seguida, selecione o tempo no arquivo de log que se alinha com o quadro atual do vídeo.
+Primeiro, use os controles do vídeo para ir até um ponto conhecido da partida, como o início do autônomo. Em seguida, selecione no arquivo de log o instante correspondente àquele quadro do vídeo.
 
 :::tip
-O cursor na linha do tempo se encaixa no início e no fim dos períodos da partida, tornando mais fácil selecionar com precisão o início da partida.
+O cursor na linha do tempo gruda automaticamente no início e no fim dos períodos da partida, facilitando marcar com precisão o começo do jogo.
 :::
 
-Assim que o vídeo e o log estiverem alinhados, clique no ícone de cadeado ao lado da linha do tempo do vídeo (ou pressione **↑ ou ↓**). Os controles do vídeo agora estão desativados. Clique no ícone de cadeado novamente para desbloquear a reprodução do vídeo.
+Quando o vídeo e o log estiverem alinhados, clique no ícone de cadeado ao lado da linha do tempo do vídeo (ou pressione **↑ ou ↓**). Os controles do vídeo ficarão desativados. Clique no cadeado novamente se quiser destravar a reprodução do vídeo.
 
 <img src="/img/tab-reference/video-3.webp" alt="Botão de bloqueio" />
 
 ## Reprodução {#playback}
 
-Uma vez bloqueada, a reprodução do vídeo permanece alinhada com o tempo selecionado no log. Observe que a reprodução de som não é suportada, pois o vídeo original é convertido em uma representação quadro a quadro para suportar a sincronização de logs.
+Com o vídeo travado, a reprodução acompanha o instante selecionado no log. Vale lembrar que o vídeo fica sem áudio, pois o arquivo original é convertido quadro a quadro para permitir a sincronização com o log.
 
 <details>
 <summary>Controles da linha do tempo</summary>
 
-A linha do tempo é usada para controlar a reprodução e a visualização. Clicar na linha do tempo seleciona um tempo, e clicar com o botão direito desmarca. O tempo selecionado é sincronizado em todas as guias, tornando fácil encontrar rapidamente esse local em outras visualizações.
+A linha do tempo controla a reprodução e a visualização. Clique na linha do tempo para selecionar um instante e clique com o botão direito para desmarcar. O instante selecionado fica sincronizado em todas as guias, facilitando encontrar o mesmo ponto em outras visualizações.
 
-Seções amarelas indicam quando o robô está em autônomo, seções azuis indicam quando o robô está teleoperado e seções cinzas indicam quando o robô está no modo utility.
+Faixas amarelas indicam o período autônomo; faixas azuis, o teleoperado; e faixas cinzas, o modo utility.
 
-Para dar zoom, posicione o cursor sobre a linha do tempo e role para cima ou para baixo. Um intervalo também pode ser selecionado clicando e arrastando enquanto mantém `Shift` pressionado. Mova para a esquerda e para a direita rolando horizontalmente (em dispositivos suportados) ou clicando e arrastando na linha do tempo. Quando conectado ao vivo, rolar para a esquerda desbloqueia do tempo atual, e rolar totalmente para a direita bloqueia no tempo atual novamente. Pressione `Ctrl+\` para dar zoom no período em que o robô está habilitado.
+Para dar zoom, posicione o cursor sobre a linha do tempo e role para cima ou para baixo. Você também pode selecionar um intervalo clicando e arrastando com a tecla `Shift` pressionada. Para navegar para a esquerda e para a direita, role horizontalmente (em dispositivos compatíveis) ou clique e arraste a linha do tempo. Quando estiver conectado ao vivo, rolar para a esquerda destrava o acompanhamento do tempo atual, e rolar tudo para a direita trava novamente no tempo atual. Pressione `Ctrl+\` para dar zoom no trecho em que o robô está habilitado.
 
 <img src="/img/tab-reference/timeline.webp" alt="Linha do tempo" />
 
 </details>
 
 :::tip
-Se desejado, o FOV da câmera pode ser ajustado na visualização de campo 3D para corresponder à aparência do vídeo. Para mais detalhes, consulte "Opções de câmera" na página do 👀 [Campo 3D](/tab-reference/3d-field).
+Se quiser, você pode ajustar o FOV da câmera na visualização Campo 3D para combinar com o ângulo do vídeo. Veja mais detalhes em "Opções de câmera" na página 👀 [Campo 3D](/tab-reference/3d-field).
 :::
 
 <img src="/img/tab-reference/video-4.webp" alt="Captura de vídeo com odometria" />

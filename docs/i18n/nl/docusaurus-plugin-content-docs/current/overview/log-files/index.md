@@ -2,59 +2,59 @@
 
 ## Ondersteunde formaten {#supported-formats}
 
-- **WPILOG (.wpilog)** - Geproduceerd door WPILib's [ingebouwde datalogging](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) en AdvantageKit. [URCL](/more-features/urcl) kan worden gebruikt om signalen van REV-motorcontrollers vast te leggen in een WPILOG-bestand.
-- **Hoot (.hoot)** - Geproduceerd door CTRE's Phoenix 6 [signaallogger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html).
-- **REVLOG (.revlog)** - Geproduceerd door REV Robotics' [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger).
-- **Road Runner (.log)** - Geproduceerd door de [Road Runner](https://github.com/acmerobotics/road-runner)-bibliotheek voor FTC.
-- **CSV (.csv)** - Kommagescheiden waarden, overeenkomend met het formaat dat door AdvantageScope wordt [geëxporteerd](/overview/log-files/export) in de modi "CSV (tabel)" of "CSV (lijst)". Zie [hier](#csv-formatting) voor details.
-- **NI Driver Station-logbestanden (.dslog en .dsevents)** - Verouderd, geproduceerd door het NI [FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html) (2010-2026). AdvantageScope zoekt automatisch naar het bijbehorende logbestand bij het openen van een van beide logtypen.
-- **RLOG (.rlog)** - Verouderd, geproduceerd door AdvantageKit 2022.
+- **WPILOG (.wpilog)** - Aangemaakt door WPILib's [ingebouwde datalogging](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) en AdvantageKit. Met [URCL](/more-features/urcl) kun je signalen van REV-motorcontrollers vastleggen in een WPILOG-bestand.
+- **Hoot (.hoot)** - Aangemaakt door CTRE's Phoenix 6 [Signal Logger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html).
+- **REVLOG (.revlog)** - Aangemaakt door REV Robotics' [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger).
+- **Road Runner (.log)** - Aangemaakt door de [Road Runner](https://github.com/acmerobotics/road-runner)-bibliotheek voor FTC.
+- **CSV (.csv)** - Kommagescheiden waarden in het formaat dat AdvantageScope [exporteert](/overview/log-files/export) via de modi "CSV (tabel)" of "CSV (lijst)". Zie [hier](#csv-formatting) voor de opmaakregels.
+- **NI Driver Station-logbestanden (.dslog en .dsevents)** - Verouderd formaat van het NI [FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html) (2010-2026). Open je een van beide bestanden, dan zoekt AdvantageScope automatisch het bijbehorende logbestand erbij.
+- **RLOG (.rlog)** - Verouderd formaat van AdvantageKit 2022.
 
 :::info
-Hoot-logbestanden kunnen alleen worden geopend nadat je akkoord bent gegaan met de [gebruiksrechtovereenkomst (EULA)](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt) van CTRE. AdvantageScope toont een melding om de akkoordverklaring met deze voorwaarden te bevestigen wanneer een Hoot-logbestand voor het eerst wordt geopend.
+Hoot-logbestanden kun je pas openen nadat je akkoord bent gegaan met de [gebruiksrechtovereenkomst (EULA)](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt) van CTRE. De eerste keer dat je een Hoot-logbestand opent, vraagt AdvantageScope je om deze voorwaarden te accepteren.
 :::
 
 ## Logs openen {#opening-logs}
 
-Klik in de menubalk op `Bestand` > `Logbestand(en) openen...` en kies vervolgens een of meer logbestanden van de lokale schijf. Het slepen van een logbestand vanuit de systeembestandsbrowser naar het pictogram of venster van AdvantageScope zorgt er ook voor dat het wordt geopend.
+Klik in de menubalk op `Bestand` > `Logbestand(en) openen...` en kies een of meer logbestanden op je computer. Je kunt een logbestand ook vanuit je bestandsverkenner rechtstreeks naar het pictogram of het venster van AdvantageScope slepen om het te openen.
 
 :::info
-Als er meerdere bestanden tegelijk worden geopend, worden de tijdstempels automatisch uitgelijnd. Dit maakt het eenvoudig om logbestanden van meerdere bronnen te vergelijken. Zie de pagina [Tijdstempels](/more-features/timestamps) voor details over weergaveopties voor tijdstempels.
+Open je meerdere bestanden tegelijk, dan lijnt AdvantageScope de tijdstempels automatisch uit. Zo vergelijk je makkelijk logbestanden uit verschillende bronnen. Kijk op de pagina [Tijdstempels](/more-features/timestamps) voor de weergaveopties.
 :::
 
 <img src="/img/overview/log-files/open-file-1.webp" alt="Een opgeslagen logbestand openen" />
 
-_De Engelstalige interface wordt hierboven weergegeven._
+_Hierboven zie je de Engelstalige interface._
 
 ## Nieuwe logs toevoegen {#adding-new-logs}
 
-Na het openen van een logbestand kunnen eenvoudig extra logs aan de visualisatie worden toegevoegd. Tijdstempels worden automatisch opnieuw uitgelijnd om te synchroniseren met bestaande data.
+Heb je al een logbestand openstaan, dan kun je daar makkelijk extra logs aan toevoegen. De tijdstempels worden automatisch opnieuw uitgelijnd zodat ze gelijklopen met de data die al is geladen.
 
-Klik in de menubalk op `Bestand` > `Nieuw(e) logbestand(en) toevoegen...` en kies vervolgens een of meer logbestanden om toe te voegen aan de huidige visualisatie. De velden uit elk logbestand worden geregistreerd onder tabellen met de naam `Log0`, `Log1`, enz.
+Klik in de menubalk op `Bestand` > `Nieuw(e) logbestand(en) toevoegen...` en selecteer een of meer logbestanden. De velden uit elk nieuw bestand worden ondergebracht in tabellen met de naam `Log0`, `Log1`, enz.
 
 ## Downloaden vanaf de robot {#downloading-from-the-robot}
 
 <details>
 <summary>Configuratie</summary>
 
-Open het voorkeurenvenster door te klikken op `App` > `Voorkeuren tonen...` (Windows/Linux) of `AdvantageScope` > `Instellingen...` (macOS). Werk het robotadres en het logpad bij.
+Open het voorkeurenvenster via `App` > `Voorkeuren tonen...` (Windows/Linux) of `AdvantageScope` > `Instellingen...` (macOS) en vul het robotadres en het logpad op de robot in.
 
 <img src="/img/prefs_nl.webp" alt="Diagram van voorkeuren" height="450" />
 </details>
 
-Klik op `Bestand` > `Logs downloaden...` om het downloadvenster te openen. Het downloaden van logs wordt ondersteund op Systemcore en de roboRIO. Zodra er verbinding is met de robot, worden de beschikbare logs getoond met de nieuwste bovenaan. Selecteer een of meer logbestanden of mappen om te downloaden (shift-klik om een bereik te selecteren of **cmd/ctrl + A** om alles te selecteren). Klik vervolgens op het ↓-symbool en selecteer een opslaglocatie.
+Klik op `Bestand` > `Logs downloaden...` om het downloadvenster te openen. Logs downloaden wordt ondersteund op Systemcore en de roboRIO. Zodra er verbinding is met de robot, verschijnen de beschikbare logs met de nieuwste bovenaan. Selecteer een of meer logbestanden of mappen (houd Shift ingedrukt voor een reeks of druk op **cmd/ctrl + A** om alles te selecteren). Klik daarna op het ↓-symbool en kies een opslaglocatie.
 
 :::tip
-Bij het downloaden van meerdere bestanden slaat AdvantageScope bestanden over die al in de doelmap bestaan.
+Download je meerdere bestanden tegelijk, dan slaat AdvantageScope bestanden over die al in de doelmap staan.
 :::
 
 <img src="/img/overview/log-files/open-file-2.webp" alt="Logbestanden downloaden" height="350" />
 
-_De Engelstalige interface wordt hierboven weergegeven._
+_Hierboven zie je de Engelstalige interface._
 
 ## CSV-opmaak {#csv-formatting}
 
-CSV-kolomnamen moeten "Timestamp, Key, Value" of "Timestamp, (Key), (Key), etc" zijn. Tijdstempelwaarden zijn in seconden. De onderstaande lijst toont het verwachte formaat van veelvoorkomende waardetypen. Merk op dat het exporteren en opnieuw importeren van logdata als CSV _met verlies_ (lossy) is, aangezien CSV geen complexe veldtypen ondersteunt.
+De kolomnamen in een CSV-bestand moeten "Timestamp, Key, Value" of "Timestamp, (Key), (Key), etc" zijn, met tijdstempels in seconden. Hieronder zie je hoe veelvoorkomende waardetypen eruit moeten zien. Houd er rekening mee dat het exporteren en opnieuw importeren via CSV _verliesgevend_ (lossy) is, omdat CSV geen complexe veldtypen ondersteunt.
 
 - **Booleans:** `true` of `false`
 - **Strings:** `"(waarde)"`

@@ -3,50 +3,52 @@ import TabItem from '@theme/TabItem';
 
 # 👀 Campo 3D {#3d-field}
 
-El campo 3D muestra una visualización 3D del robot y del campo. Se puede utilizar con poses 2D regulares, pero es especialmente útil cuando se trabaja con cálculos 3D (como localizar con AprilTags). Hay varias vistas de cámara disponibles, relativas al campo, relativas al robot y fijas. [AdvantageScope XR](advantagescope-xr) permite visualizar esta pestaña mediante realidad aumentada. La línea de tiempo muestra cuándo el robot está habilitado y se puede utilizar para navegar a través de los datos del registro.
+La pestaña **Campo 3D** te muestra una visualización tridimensional del robot y de la cancha. Funciona muy bien con poses 2D normales, pero brilla especialmente cuando trabajas con cálculos 3D (como localización con AprilTags). Puedes elegir entre varias vistas de cámara —relativas al campo, relativas al robot o fijas— e incluso llevar la vista a realidad aumentada con [AdvantageScope XR](advantagescope-xr). La línea de tiempo te indica cuándo estuvo habilitado el robot y te permite recorrer los datos del registro.
 
-<img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="Ejemplo de pestaña de campo 3D" />
+<img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="Ejemplo de pestaña Campo 3D" />
 
 _En la imagen de arriba se muestra la interfaz en inglés._
 
 <details>
 <summary>Controles de la línea de tiempo</summary>
 
-La línea de tiempo se utiliza para controlar la reproducción y la visualización. Al hacer clic en la línea de tiempo se selecciona un tiempo, y al hacer clic con el botón derecho se anula la selección. El tiempo seleccionado se sincroniza en todas las pestañas, lo que facilita la búsqueda rápida de esta ubicación en otras vistas.
+La línea de tiempo controla la reproducción y te ayuda a explorar el registro. Haz clic en cualquier punto para seleccionar un instante y clic derecho para quitar la selección. Ese instante se sincroniza en todas las pestañas, así que puedes ubicar el mismo momento al instante en otras vistas.
 
-Las secciones amarillas indican cuando el robot es autónomo, las secciones azules indican cuando el robot es teledirigido (teleop), y las secciones grises indican cuando el robot está en modo de utilidad.
+Las franjas amarillas marcan cuándo el robot está en modo autónomo; las azules, en teledirigido (teleop); y las grises, en modo de utilidad.
 
-Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia arriba o hacia abajo. También se puede seleccionar un rango haciendo clic y arrastrando mientras se mantiene presionada la tecla `Shift`. Muévete hacia la izquierda y hacia la derecha desplazándose horizontalmente (en dispositivos compatibles) o haciendo clic y arrastrando en la línea de tiempo. Cuando estás conectado en vivo, desplazarte hacia la izquierda desbloquea del tiempo actual, y desplazarte hasta la derecha vuelve a bloquear al tiempo actual. Presiona `Ctrl+\` para hacer zoom al período en el que el robot está habilitado.
+Para hacer zoom, coloca el cursor sobre la línea de tiempo y mueve la rueda del ratón (o desliza) hacia arriba o hacia abajo. También puedes seleccionar un tramo específico haciendo clic y arrastrando mientras mantienes presionada la tecla `Shift`. Para moverte a izquierda o derecha, desplázate horizontalmente (si tu dispositivo lo permite) o haz clic y arrastra sobre la línea de tiempo. Cuando estés conectado en vivo, moverte hacia la izquierda desbloquea la vista del tiempo actual, y llegar hasta el extremo derecho la vuelve a fijar en tiempo real. Presiona `Ctrl+\` para hacer zoom automáticamente al período en que el robot está habilitado.
 
 <img src="/img/tab-reference/timeline.webp" alt="Línea de tiempo" />
 
 </details>
 
 :::warning Campo de FTC 2026-2027
-El modelo de campo de FTC 2026-2027 no incluye AprilTags integrados, ya que se espera que las ubicaciones de las etiquetas en la colmena cambien durante el partido. Los equipos pueden publicar un `Pose3d[]` y `number[]` para agregar objetos AprilTag dinámicos al campo. El tamaño de AprilTag correcto para este campo es de **3.25 pulg.**
+El modelo del campo de FTC 2026-2027 no trae AprilTags integrados porque se espera que la ubicación de las etiquetas en la colmena cambie durante el partido. Los equipos pueden publicar un `Pose3d[]` y un `number[]` para agregar objetos AprilTag dinámicos en el campo. El tamaño correcto del AprilTag para esta cancha es de **3.25 pulg.**
 :::
 
 :::warning Campo de FRC 2026
-El modelo de campo de FRC 2026 es consistente con el diseño de AprilTag para el campo **soldado**. Las diferencias entre los campos soldados y los campos de AndyMark son muy menores, pero puede haber pequeñas desalineaciones (~0.5 pulgadas) al visualizar poses de AprilTag basadas en el diseño del campo de AndyMark.
+El modelo del campo de FRC 2026 coincide con la distribución de AprilTags del campo **soldado** (*welded*). Aunque las diferencias entre el campo soldado y el de AndyMark son mínimas, podrías notar pequeños desfases (~0.5 pulg.) al visualizar poses de AprilTags basadas en el diseño de AndyMark.
 :::
 
 ## Agregar objetos {#adding-objects}
 
-Para comenzar, arrastra un campo a la sección "Poses". Elimina un objeto con el botón X, u ocúltalo temporalmente haciendo clic en el ícono del ojo o haciendo doble clic en el nombre del campo. Para eliminar todos los objetos, haz clic en la papelera cerca del título del eje y luego en `Borrar todo`.
+Para empezar, arrastra un campo a la sección **Poses**. Puedes quitar un objeto con el botón X, u ocultarlo temporalmente haciendo clic en el ícono del ojo o dando doble clic en su nombre. Si quieres limpiar todo de una vez, haz clic en el ícono de la papelera junto al título del eje y elige `Borrar todo`. También puedes reordenar los objetos de la lista arrastrándolos.
 
-Los objetos se pueden reorganizar en la lista haciendo clic y arrastrando. **Para personalizar cada objeto, haz clic en el ícono de color o haz clic con el botón derecho en el nombre del campo.** AdvantageScope admite una gran cantidad de tipos de objetos, muchos de los cuales se pueden personalizar (como cambiar colores y modelos de robot). Algunos objetos deben agregarse como elementos secundarios a un objeto existente.
+**Para personalizar un objeto, haz clic en su ícono de color o haz clic derecho sobre su nombre.** AdvantageScope ofrece muchos tipos de objetos, y varios se pueden ajustar (por ejemplo, cambiarles el color o el modelo del robot). Ten en cuenta que algunos objetos deben agregarse como elementos secundarios (hijos) dentro de otro objeto existente.
 
 :::tip
-Para ver una lista completa de tipos de objetos compatibles, haz clic en el ícono `?`. Esta lista también incluye los tipos de datos compatibles y si los objetos deben agregarse como elementos secundarios.
+Haz clic en el ícono `?` para ver la lista completa de tipos de objetos disponibles. Ahí también verás qué tipos de datos acepta cada uno y si necesita ir dentro de otro objeto.
 :::
 
 :::info
-AdvantageScope admite varios tamaños de AprilTags para campos de FTC. Los tamaños se miden como la **longitud del lado de la sección negra del AprilTag**, sin incluir el borde blanco requerido.
+AdvantageScope admite varios tamaños de AprilTags para los campos de FTC. El tamaño se mide tomando el **largo del lado de la parte negra del AprilTag**, sin contar el borde blanco exterior.
 :::
 
 ## Formato de datos {#data-format}
 
-Los datos de geometría deben publicarse como un struct o protobuf codificado en bytes. Se admiten varios tipos de geometría 2D y 3D, incluidos `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` y más. Muchas bibliotecas admiten el formato struct, incluidas WPILib y AdvantageKit. El código de ejemplo a continuación muestra cómo registrar datos de pose 3D en Java.
+Los datos geométricos deben publicarse en formato `struct` o `protobuf` codificado en bytes. Se admiten varios tipos 2D y 3D, como `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, entre otros.
+
+Varias bibliotecas ya soportan `struct`, incluidas WPILib y AdvantageKit. En el ejemplo de abajo puedes ver cómo registrar una pose 3D en Java.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -75,15 +77,15 @@ Logger.recordOutput("MyPoseArray", new Pose3d[] {poseA, poseB});
 <TabItem value="ftcdashboard" label="FTC Dashboard">
 
 ```java
-// Este protocolo no admite el formato struct moderno, pero los valores
-// de pose se pueden publicar utilizando campos separados que incluyen
-// los sufijos "x", "y", y "heading" (como se muestra a continuación):
+// Este protocolo no admite el formato struct moderno, pero puedes publicar
+// los valores de pose usando campos separados con los sufijos
+// "x", "y" y "heading" (como se muestra abajo):
 TelemetryPacket packet = new TelemetryPacket();
 packet.put("Pose x", 6.3); // Pulgadas
 packet.put("Pose y", 2.8); // Pulgadas
 packet.put("Pose heading", 3.14); // Radianes
 
-// Alternativamente, la orientación (heading) se puede publicar en grados
+// También puedes publicar la orientación (heading) en grados
 packet.put("Pose heading (deg)", 180.0); // Grados
 ```
 
@@ -92,41 +94,41 @@ packet.put("Pose heading (deg)", 180.0); // Grados
 
 ## Mecanismos y componentes {#mechanisms-and-components}
 
-Los datos de los mecanismos se pueden visualizar utilizando mecanismos 2D o componentes 3D articulados.
+Puedes visualizar mecanismos en 3D usando mecanismos 2D proyectados o componentes 3D articulados.
 
 ### Mecanismos 2D {#2d-mechanisms}
 
-Para visualizar los datos del mecanismo registrados utilizando un [`Mechanism2d`](https://docs.wpilib.org/es/stable/docs/software/dashboards/glass/mech2d-widget.html), agrega el campo del mecanismo a un objeto de robot o fantasma existente. El mecanismo se proyecta en el plano XZ o YZ del robot utilizando cuadros simples, como se muestra a continuación. Haz clic en el icono de engranaje o haz clic derecho en el nombre del campo para cambiar entre los planos XZ e YZ. El origen del robot está centrado en el borde inferior del mecanismo.
+Para ver los datos registrados con un [`Mechanism2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html), arrastra el campo del mecanismo sobre un objeto Robot o Fantasma que ya tengas en la lista. El mecanismo se proyecta sobre el plano XZ o YZ del robot usando rectángulos simples, como se ve abajo. Haz clic en el ícono de engranaje o haz clic derecho en el nombre del campo para cambiar entre los planos XZ y YZ. El origen del robot queda centrado en el borde inferior del mecanismo.
 
 <img src="/img/tab-reference/3d-field/3d-field-2.webp" alt="Mecanismo 2D" />
 
 ### Componentes 3D {#3d-components}
 
 :::warning
-Configurar componentes 3D puede ser complejo y llevar mucho tiempo. Considera utilizar el soporte `Mechanism2d` de AdvantageScope como se describe anteriormente, que ofrece un enfoque más simplificado para visualizar mecanismos en el campo 3D.
+Configurar componentes 3D puede ser complejo y llevar bastante tiempo. Si prefieres algo más rápido y directo, te conviene usar el soporte de `Mechanism2d` que explicamos arriba para ver tus mecanismos en el campo 3D.
 :::
 
-Los mecanismos se pueden visualizar con componentes articulados registrando un conjunto de poses 3D que representan las ubicaciones relativas al robot de cada componente. Agrega las poses a un objeto de robot o fantasma existente y establece el tipo de objeto en "Componente".
+Si quieres visualizar mecanismos con piezas articuladas en 3D, registra un arreglo de poses 3D que representen la posición de cada componente respecto al robot. Agrega ese campo a un objeto Robot o Fantasma y selecciona el tipo de objeto **Componente**.
 
-Cada componente se puede mover de forma independiente (como un carro elevador, un brazo o un actuador final). Los usuarios de AdvantageKit deben considerar el uso del método [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) para convertir un Mechanism2d en una matriz de objetos Pose3d. Para obtener más información sobre la configuración de robots con componentes, consulta [Recursos personalizados](/more-features/custom-assets).
+Cada pieza puede moverse por separado (como el carro de un elevador, un brazo o una garra). Si usas AdvantageKit, puedes aprovechar el método [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) para convertir un `Mechanism2d` en un arreglo de objetos `Pose3d`. Para aprender a configurar robots con componentes articulados, consulta [Recursos personalizados](/more-features/custom-assets).
 
 <img src="/img/tab-reference/3d-field/3d-field-3.webp" alt="Mecanismo 3D" />
 
 ## Objetos de elementos de juego {#game-piece-objects}
 
-Cada campo incluye un conjunto de tipos de objetos de elementos de juego, lo que permite renderizar los elementos de juego en cualquier posición del campo utilizando datos publicados por el código del robot. Esto tiene una variedad de aplicaciones, que incluyen:
+Cada cancha incluye tipos de objetos propios para sus elementos de juego, lo que te permite dibujarlos en cualquier parte del campo según los datos que publique tu código. Esto resulta muy útil para:
 
-- Visualización de las acciones de rutinas autónomas simuladas utilizando animaciones simples
-- Mostrar las ubicaciones detectadas de los elementos de juego en el campo
-- Indicar dónde se encuentran los elementos de juego dentro de un robot
-- Ver las trayectorias de los disparos basadas en cálculos físicos
+- Ver en acción tus rutinas autónomas simuladas con animaciones sencillas
+- Mostrar dónde detectó la cámara los elementos de juego en la cancha
+- Indicar cuándo y dónde hay un elemento de juego dentro del robot
+- Visualizar trayectorias de disparo calculadas con física
 
-Otro caso de uso simple es mostrar el estado de los elementos de juego dentro del robot en función de los datos del sensor. Por ejemplo, un sensor de haz (beam break sensor) dentro de la ruta de la nota para un robot 2024 podría hacer que aparezca una nota (como se muestra a continuación).
+Otro uso súper práctico es reflejar el estado de los sensores del robot. Por ejemplo, en un robot de la temporada 2024, un sensor óptico (*beam break*) en el recorrido de la nota puede hacer que aparezca una nota dentro del robot en cuanto la detecta (como se ve en la imagen).
 
 <details>
 <summary>Ejemplo de código</summary>
 
-El proyecto de ejemplo KitBot 2024 de AdvantageKit incluye un ejemplo simple de un [comando](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) que anima una nota viajando desde el robot hasta el altavoz. Este comando se incorpora a la [secuencia de lanzamiento](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73) estándar, activando la animación cada vez que se suelta una nota. [Este video](https://youtube.com/shorts/-HxfDo9f19U?feature=share) muestra cómo las animaciones de elementos de juego se pueden utilizar para visualizar rutinas autónomas para varios juegos diferentes.
+El proyecto de ejemplo KitBot 2024 de AdvantageKit incluye un [comando](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) sencillo que anima una nota viajando desde el robot hacia el *speaker*. Ese comando se integra en la [secuencia de lanzamiento](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73) estándar y dispara la animación cada vez que se suelta una nota. En [este video](https://youtube.com/shorts/-HxfDo9f19U?feature=share) puedes ver cómo se usan estas animaciones para visualizar rutinas autónomas de varios juegos distintos.
 
 </details>
 
@@ -134,62 +136,62 @@ El proyecto de ejemplo KitBot 2024 de AdvantageKit incluye un ejemplo simple de 
 
 ## Opciones de cámara {#camera-options}
 
-Para cambiar el modo de cámara seleccionado, haz clic derecho en la vista del campo renderizado. El modo de cámara y la posición se controlan de forma independiente para cada ventana emergente, lo que permite la fácil creación de vistas multicámara.
+Para cambiar el modo de cámara, haz clic derecho sobre la vista del campo. Cada ventana separada controla su propia cámara y posición de forma independiente, así que puedes armar fácilmente vistas multicámara.
 
 :::info
-Haz clic derecho en la vista de campo renderizada y haz clic en "Establecer FOV..." para ajustar el campo de visión de las cámaras en órbita y de la Driver Station.
+Haz clic derecho en la vista del campo y selecciona "Establecer FOV..." para ajustar el campo de visión de las cámaras orbitales y de la Driver Station.
 :::
 
 ### Orbitar campo {#orbit-field}
 
-Este es el modo de cámara predeterminado, donde la cámara se puede mover libremente en relación con el campo. **Hacer clic izquierdo + arrastrar** gira la cámara, y **hacer clic derecho + arrastrar** mueve la cámara (paneo). **Desplázate (scroll)** para acercar y alejar.
+Es el modo predeterminado: la cámara se mueve libremente respecto al campo. **Clic izquierdo + arrastrar** gira la cámara, **clic derecho + arrastrar** la desplaza (paneo) y la **rueda del ratón** acerca o aleja la vista.
 
 :::tip
-La cámara también se puede controlar utilizando el teclado. Las teclas **WASD** se utilizan para trasladar, las teclas **IJKL** se utilizan para rotar y las teclas **E** y **Q** se utilizan para la traslación vertical.
+También puedes mover la cámara con el teclado: **WASD** para desplazarte horizontalmente, **IJKL** para rotar y **E** / **Q** para subir o bajar.
 :::
 
 ### Orbitar robot {#orbit-robot}
 
-Este modo tiene los mismos controles que el modo "Orbitar campo", pero la posición de la cámara está bloqueada en relación con el robot. Esto permite tomas de "seguimiento" del movimiento del robot.
+Tiene los mismos controles que **Orbitar campo**, pero la posición de la cámara queda fija respecto al robot. Es ideal para hacer tomas de seguimiento mientras se mueve.
 
 ### Estación del conductor {#driver-station}
 
-Este modo bloquea la cámara detrás de una de las estaciones de control a la altura típica de los ojos. Elige manualmente la estación a visualizar o elige "Automático" para usar la alianza y el número de estación almacenados en los datos de registro.
+Este modo coloca la cámara detrás de una de las estaciones del conductor, a la altura aproximada de los ojos. En el menú **Driver Station**, puedes elegir una estación específica manualmente o dejarlo en **Automático** para que use la alianza y el número de estación guardados en el registro.
 
 :::warning
-La selección automática del número de estación puede ser inexacta cuando se visualizan datos de registro producidos por AdvantageKit 2023 o anterior.
+La selección automática del número de estación puede fallar al abrir registros generados con AdvantageKit 2023 o versiones anteriores.
 :::
 
 ### Cámara fija {#fixed-camera}
 
-Cada modelo de robot está configurado con un conjunto de cámaras fijas, como cámaras de visión y de conductor. Estas cámaras tienen posiciones, relaciones de aspecto y FOV fijos. Estas vistas suelen ser útiles para comprobar los datos de visión o para simular la vista de cámara del conductor. En el siguiente ejemplo, se muestra una cámara de conductor.
+Cada modelo de robot incluye cámaras fijas preconfiguradas, como cámaras de visión o de conducción, con su propia posición, relación de aspecto y FOV. Son muy útiles para revisar qué ve la cámara de visión o simular la vista del conductor. Abajo tienes un ejemplo de una cámara de conductor.
 
 <img src="/img/tab-reference/3d-field/3d-field-5.webp" alt="Cámara fija" />
 
-Si se proporciona una pose de "Anulación de cámara", reemplaza las poses predeterminadas de todas las cámaras fijas y conserva sus FOV y relaciones de aspecto configurados. Esto permite que el código del robot proporcione la posición de una cámara en movimiento, como una montada en una torreta o capota del disparador.
+Si agregas una pose con el tipo **Anulación de cámara**, esta reemplazará la posición predeterminada de todas las cámaras fijas, manteniendo sus FOV y relaciones de aspecto. Así tu código puede enviar la ubicación de una cámara móvil, como una montada en una torreta o en la capucha de un disparador.
 
 :::info
-De acuerdo con otros datos de poses, la pose "Anulación de cámara" debe ser _relativa al campo_, no relativa al robot.
+Al igual que el resto de las poses, la pose de **Anulación de cámara** debe ser _relativa al campo_, no relativa al robot.
 :::
 
 ## Configuración {#configuration}
 
-El modelo de campo se puede configurar utilizando el menú desplegable. Se admiten todos los juegos recientes de FRC y FTC. Recomendamos usar los campos "Perenne" (Evergreen) para dispositivos con rendimiento gráfico limitado. Los campos "Ejes" muestran solo los ejes XYZ en el origen con un contorno de campo para la escala.
+Elige el modelo de campo desde el menú desplegable; están incluidos todos los juegos recientes de FRC y FTC. Si tu computadora tiene pocos recursos gráficos, te recomendamos usar los campos "Perenne" (*Evergreen*). Los campos "Ejes" (*Axes*) muestran únicamente los ejes XYZ en el origen junto con el contorno de la cancha para dar referencia de escala.
 
 :::info
-El sistema de coordenadas utilizado en esta pestaña es personalizable. Consulta la página de [sistemas de coordenadas](/more-features/coordinate-systems) para obtener detalles.
+Puedes personalizar el sistema de coordenadas de esta pestaña. Consulta la página de [sistemas de coordenadas](/more-features/coordinate-systems) para ver los detalles.
 :::
 
 ### Modos de renderizado {#rendering-modes}
 
-El campo 3D admite tres modos de renderizado:
+El campo 3D ofrece tres modos de renderizado:
 
-- **Cinemático (Izquierda):** Renderiza usando sombras, iluminación, reflejos y modelos 3D de gran detalle para un aspecto más realista. Requiere una GPU decentemente potente.
-- **Estándar (Centro):** Predeterminado, renderiza con iluminación mínima y modelos 3D simplificados. Funciona bien en la mayoría de los dispositivos.
-- **Baja potencia (Derecha):** Reduce la velocidad de fotogramas, la resolución y el detalle del modelo para reducir el consumo de la batería y proporcionar un rendimiento más consistente en dispositivos de gama baja.
+- **Cinemático (izquierda):** Incluye sombras, iluminación, reflejos y modelos 3D muy detallados para lograr un aspecto realista. Requiere una GPU con buena potencia.
+- **Estándar (centro):** Es el modo predeterminado; usa iluminación mínima y modelos 3D simplificados. Funciona bien en la mayoría de las computadoras.
+- **Baja potencia (derecha):** Reduce la tasa de fotogramas, la resolución y el nivel de detalle para ahorrar batería y ofrecer un rendimiento más fluido en equipos modestos.
 
 <img src="/img/tab-reference/3d-field/3d-field-6.webp" alt="Comparación de modos de renderizado" />
 
-Para configurar el modo de renderizado, abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS). La configuración "Modo 3D (batería)" se puede cambiar desde la predeterminada para anular el modo de renderizado utilizado en una computadora portátil cuando no se está cargando. Por ejemplo, esto se puede usar para preservar la batería durante la competencia.
+Para cambiar el modo de renderizado, abre las preferencias desde `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS). La opción **Modo 3D (batería)** te permite elegir un modo distinto cuando la laptop no está conectada a la corriente, algo muy útil para cuidar la batería durante la competencia.
 
 <img src="/img/prefs_es-419.webp" alt="Diagrama de preferencias" height="450" />

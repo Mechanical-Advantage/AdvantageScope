@@ -7,20 +7,20 @@ import TabItem from '@theme/TabItem';
 
 # 🗺 Terrain 2D {#2d-field}
 
-L'onglet terrain 2D montre une visualisation 2D du robot superposée sur une carte du terrain. Il peut également afficher des données supplémentaires telles que l'état de ciblage de vision et les poses de référence.
+L'onglet Terrain 2D affiche votre robot en vue de dessus, directement sur le plan du terrain. Vous pouvez aussi y superposer d'autres données, comme l'état du suivi par vision ou des poses de référence.
 
-<img src="/img/tab-reference/2d-field-1.webp" alt="Aperçu de l'onglet terrain 2D" />
+<img src="/img/tab-reference/2d-field-1.webp" alt="Aperçu de l'onglet Terrain 2D" />
 
 _L'interface en anglais est illustrée ci-dessus._
 
 <details>
 <summary>Contrôles de la chronologie</summary>
 
-La chronologie est utilisée pour contrôler la lecture et la visualisation. Cliquer sur la chronologie sélectionne un moment, et faire un clic droit le désélectionne. L'heure sélectionnée est synchronisée sur tous les onglets, ce qui permet de trouver rapidement cet emplacement dans d'autres vues.
+La chronologie sert à piloter la lecture et la visualisation. Cliquez dessus pour sélectionner un instant précis, et faites un clic droit pour le désélectionner. L'instant choisi est synchronisé dans tous les onglets, ce qui vous permet de retrouver facilement ce moment dans d'autres vues.
 
-Les sections jaunes indiquent quand le robot est en mode autonome, les sections bleues indiquent quand le robot est en mode téléopéré et les sections grises indiquent quand le robot est en mode utilitaire.
+Les zones jaunes correspondent au mode autonome, les zones bleues au mode téléopéré et les zones grises au mode utilitaire.
 
-Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le haut ou vers le bas. Une plage peut également être sélectionnée en cliquant et en faisant glisser tout en maintenant la touche `Shift` enfoncée. Déplacez-vous vers la gauche et la droite en faisant défiler horizontalement (sur les appareils pris en charge), ou en cliquant et en faisant glisser sur la chronologie. Lors d'une connexion en direct, le défilement vers la gauche déverrouille à partir de l'heure actuelle, et le défilement tout à fait vers la droite verrouille à nouveau à l'heure actuelle. Appuyez sur `Ctrl+\` pour zoomer sur la période où le robot est activé.
+Pour zoomer, placez le curseur sur la chronologie et utilisez la molette vers le haut ou vers le bas. Vous pouvez aussi sélectionner une plage en cliquant et en faisant glisser tout en maintenant la touche `Shift` enfoncée. Déplacez-vous vers la gauche ou la droite par défilement horizontal (sur les appareils compatibles) ou en cliquant-glissant sur la chronologie. Lors d'une connexion en direct, faire défiler vers la gauche déverrouille le suivi de l'instant actuel, et revenir complètement à droite le verrouille à nouveau. Appuyez sur `Ctrl+\` pour zoomer sur la période où le robot est activé.
 
 <img src="/img/tab-reference/timeline.webp" alt="Chronologie" />
 
@@ -28,31 +28,31 @@ Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le hau
 
 ## Contrôles de la caméra {#camera-controls}
 
-Faites défiler vers le haut et le bas sur le terrain pour zoomer et dézoomer. Cliquez et faites glisser pour vous déplacer sur le terrain. Faites un clic droit n'importe où sur le terrain pour ouvrir le menu de la caméra avec les options suivantes :
+Utilisez la molette sur le terrain pour zoomer ou dézoomer, et cliquez-glissez pour vous déplacer sur la vue. Faites un clic droit n'importe où sur le terrain pour ouvrir le menu de la caméra :
 
-- **Déverrouillé** : Le panoramique et le zoom sont manuels.
-- **Verrouillé sur le robot** : La caméra se déplace automatiquement pour suivre le robot.
-- **Verrouillé sur le robot et la rotation** : La caméra se déplace et pivote automatiquement pour suivre le robot et sa rotation.
+- **Déverrouillé** : vous contrôlez manuellement le déplacement et le zoom.
+- **Verrouillé sur le robot** : la caméra suit automatiquement les déplacements du robot.
+- **Verrouillé sur le robot et la rotation** : la caméra suit automatiquement la position et l'orientation du robot.
 
-Dans l'un ou l'autre des modes verrouillés, la caméra peut être déplacée librement à l'écart du robot. Les boutons d'orientation dans le panneau de contrôle peuvent être utilisés pour faire pivoter la caméra dans n'importe quel mode.
+Même dans les modes verrouillés, vous pouvez toujours déplacer librement la caméra pour vous éloigner du robot. Les boutons d'orientation du panneau de contrôle permettent de faire pivoter le terrain dans n'importe quel mode.
 
 ## Ajout d'objets {#adding-objects}
 
-Pour commencer, faites glisser un champ vers la section « Poses ». Supprimez un objet à l'aide du bouton X, ou masquez-le temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer tous les objets, cliquez sur la corbeille près du titre de l'axe, puis sur `Tout effacer`. Les objets peuvent être réorganisés dans la liste en les faisant glisser.
+Pour commencer, faites glisser un champ dans la section « Poses ». Vous pouvez supprimer un objet avec le bouton `X`, ou le masquer temporairement en cliquant sur l'icône d'œil ou en double-cliquant sur son nom. Pour tout effacer d'un coup, cliquez sur la corbeille à côté du titre de la section, puis sur `Tout effacer`. Vous pouvez aussi réorganiser les objets dans la liste par glisser-déposer.
 
-**Pour personnaliser chaque objet, cliquez sur l'icône colorée ou faites un clic droit sur le nom du champ.** AdvantageScope prend en charge un grand nombre de types d'objets, dont beaucoup peuvent être personnalisés (comme la modification des couleurs). Certains objets doivent être ajoutés en tant qu'enfants à un objet existant.
+**Pour personnaliser un objet, cliquez sur son icône colorée ou faites un clic droit sur le nom du champ.** AdvantageScope propose de nombreux types d'objets, souvent personnalisables (par exemple pour changer leur couleur). Certains objets doivent obligatoirement être ajoutés comme enfants d'un objet existant.
 
 :::tip
-Pour voir une liste complète des types d'objets pris en charge, cliquez sur l'icône `?`. Cette liste comprend également les types de données pris en charge et indique si les objets doivent être ajoutés en tant qu'enfants.
+Cliquez sur l'icône `?` pour consulter la liste complète des types d'objets pris en charge, les types de données compatibles et savoir lesquels doivent être ajoutés en tant qu'enfants.
 :::
 
 <img src="/img/tab-reference/2d-field-2.webp" alt="Terrain 2D avec objets" />
 
 ## Format des données {#data-format}
 
-Les données de géométrie doivent être publiées sous forme de struct ou protobuf codé en octets. Divers types de géométrie 2D et 3D sont pris en charge, notamment `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, et plus encore.
+Publiez vos données géométriques sous forme de *struct* ou de *protobuf* encodés en octets. Plusieurs types géométriques 2D et 3D sont pris en charge, notamment `Pose2d`, `Pose3d`, `Translation2d` et `Translation3d`.
 
-De nombreuses bibliothèques prennent en charge le format struct, notamment WPILib et AdvantageKit. L'exemple de code ci-dessous montre comment enregistrer des données de pose 2D en Java.
+De nombreuses bibliothèques gèrent le format *struct*, dont WPILib et AdvantageKit. L'exemple ci-dessous montre comment enregistrer des poses 2D en Java.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -117,10 +117,10 @@ telemetry.update();
 
 ## Configuration {#configuration}
 
-- **Terrain :** L'image du terrain à utiliser. Tous les jeux FRC et FTC récents sont pris en charge. Pour ajouter une image de terrain personnalisée, voir [Ressources personnalisées](/more-features/custom-assets).
-- **Orientation :** L'orientation de l'image du terrain dans le volet de visualisation.
-- **Taille :** La longueur de côté du robot (30/27/24 pouces pour la FRC, 18/16/14 pouces pour le FTC).
+- **Terrain :** l'image du terrain à afficher. Tous les jeux FRC et FTC récents sont inclus. Pour ajouter une image personnalisée, consultez la page [Ressources personnalisées](/more-features/custom-assets).
+- **Orientation :** l'orientation du terrain dans le volet de visualisation.
+- **Taille :** la longueur du côté du robot (30, 27 ou 24 pouces en FRC ; 18, 16 ou 14 pouces en FTC).
 
 :::info
-Le système de coordonnées utilisé sur cet onglet est personnalisable. Consultez la page [système de coordonnées](/more-features/coordinate-systems) pour plus de détails.
+Vous pouvez personnaliser le système de coordonnées utilisé dans cet onglet. Consultez la page [Systèmes de coordonnées](/more-features/coordinate-systems) pour en savoir plus.
 :::

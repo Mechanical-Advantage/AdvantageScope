@@ -1,6 +1,6 @@
 # Sneltoetsen {#keyboard-shortcuts}
 
-AdvantageScope bevat talrijke sneltoetsen die snellere navigatie mogelijk maken. Sneltoetsen die de `ctrl`-toets gebruiken, worden op macOS vervangen door de ⌘-toets.
+AdvantageScope heeft allerlei sneltoetsen waarmee je sneller door de app navigeert. Op macOS gebruik je de ⌘-toets in plaats van `Ctrl`.
 
 ### Databronnen {#data-sources}
 
@@ -19,30 +19,30 @@ AdvantageScope bevat talrijke sneltoetsen die snellere navigatie mogelijk maken.
 <tr><td>`Ctrl+E`</td><td>Logdata exporteren</td></tr>
 <tr><td>`Ctrl+P`</td><td>Logdata publiceren naar een NetworkTables-server op de robot</td></tr>
 <tr><td>`Ctrl+Shift+P`</td><td>Logdata publiceren naar een NetworkTables-server in simulatie</td></tr>
-<tr><td>`Option+Ctrl+P`</td><td>Publiceren naar NetworkTables stoppen</td></tr>
+<tr><td>`Option+Ctrl+P`</td><td>Stoppen met publiceren naar NetworkTables</td></tr>
 </table>
 
 ### Vensterbediening {#window-controls}
 
 <table>
-<tr><td>`Ctrl+N`</td><td>Een nieuw venster openen</td></tr>
-<tr><td>`Ctrl+Shift+N`</td><td>Het huidige venster sluiten</td></tr>
+<tr><td>`Ctrl+N`</td><td>Nieuw venster openen</td></tr>
+<tr><td>`Ctrl+Shift+N`</td><td>Huidig venster sluiten</td></tr>
 <tr><td>`Ctrl+Comma`</td><td>Voorkeurenvenster openen</td></tr>
-<tr><td>`Ctrl+Period`</td><td>Zichtbaarheid van de zijbalk in-/uitschakelen</td></tr>
-<tr><td>`Ctrl+Slash`</td><td>Zichtbaarheid van het bedieningspaneel in-/uitschakelen</td></tr>
+<tr><td>`Ctrl+Period`</td><td>Zijbalk tonen/verbergen</td></tr>
+<tr><td>`Ctrl+Slash`</td><td>Bedieningspaneel tonen/verbergen</td></tr>
 </table>
 
 ### Tabbladbediening {#tab-controls}
 
 <table>
-<tr><td>`Ctrl+T`</td><td>Vervolgkeuzemenu openen om een nieuw tabblad toe te voegen</td></tr>
-<tr><td>`Ctrl+Shift+T`</td><td>Een nieuw pop-outvenster maken voor het huidige tabblad</td></tr>
+<tr><td>`Ctrl+T`</td><td>Keuzemenu openen om een nieuw tabblad toe te voegen</td></tr>
+<tr><td>`Ctrl+Shift+T`</td><td>Nieuw pop-outvenster openen voor het huidige tabblad</td></tr>
 <tr><td>`Ctrl+Left` en `Ctrl+Right`</td><td>Wisselen van tabblad</td></tr>
-<tr><td>`Ctrl+[` en `Ctrl+]`</td><td>Tabbladen opnieuw rangschikken</td></tr>
+<tr><td>`Ctrl+[` en `Ctrl+]`</td><td>Tabbladen verplaatsen</td></tr>
 <tr><td>`Ctrl+W`</td><td>Huidig tabblad sluiten</td></tr>
 </table>
 
-**De onderstaande sneltoetsen kunnen worden gebruikt om snel nieuwe tabbladen aan te maken:**
+**Met deze sneltoetsen maak je snel nieuwe tabbladen aan:**
 
 <table>
 <tr>
@@ -74,15 +74,15 @@ AdvantageScope bevat talrijke sneltoetsen die snellere navigatie mogelijk maken.
 ### Afspelen {#playback}
 
 <table>
-<tr><td>`Spatie`</td><td>Afspelen in-/uitschakelen</td></tr>
-<tr><td>`Links` en `Rechts`</td><td>Stapsgewijs door logbestand bladeren</td></tr>
-<tr><td>`L` of `Ctrl+L`</td><td>Vergrendeling in-/uitschakelen bij het bekijken van live-data</td></tr>
-<tr><td>`Ctrl+\`</td><td>Tijdlijn zoomen naar ingeschakeld bereik</td></tr>
+<tr><td>`Spatie`</td><td>Afspelen starten/pauzeren</td></tr>
+<tr><td>`Links` en `Rechts`</td><td>Stap voor stap door het logbestand gaan</td></tr>
+<tr><td>`L` of `Ctrl+L`</td><td>Live-vergrendeling aan/uitzetten bij live-data</td></tr>
+<tr><td>`Ctrl+\`</td><td>Tijdlijn zoomen naar het ingeschakelde bereik</td></tr>
 </table>
 
 ### Touch Bar {#touch-bar}
 
-Op ondersteunde MacBook-modellen kan de Touch Bar worden gebruikt om door het logbestand te scrubben en nieuwe tabbladen toe te voegen.
+Op ondersteunde MacBook-modellen kun je de Touch Bar gebruiken om door het logbestand te spoelen en nieuwe tabbladen toe te voegen.
 
-<img src="/img/overview/navigation/keyboard-1.webp" alt="Touch Bar scrubbing-interface" />
-<img src="/img/overview/navigation/keyboard-2.webp" alt="Touch Bar nieuw tabblad-interface" />
+<img src="/img/overview/navigation/keyboard-1.webp" alt="Touch Bar-interface voor spoelen" />
+<img src="/img/overview/navigation/keyboard-2.webp" alt="Touch Bar-interface voor nieuw tabblad" />

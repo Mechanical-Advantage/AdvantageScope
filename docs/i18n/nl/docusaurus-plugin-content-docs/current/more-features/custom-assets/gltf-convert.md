@@ -1,43 +1,43 @@
 # Onshape- en STEP-bestanden converteren naar glTF {#converting-onshape-and-step-files-to-gltf}
 
-De 3D-weergave van AdvantageScope accepteert aangepaste modellen voor velden en robots, die kunnen worden geïnstalleerd met behulp van het proces dat [hier](/more-features/custom-assets) wordt beschreven. Alle modellen moeten het bestandsformaat [glTF](https://www.khronos.org/gltf/) gebruiken, gekozen vanwege de efficiëntie bij het opslaan en laden van modellen. Merk op dat AdvantageScope de binaire vorm (.glb) gebruikt, die alle bronnen in één bestand bevat, in plaats van de pure JSON-vorm (.gltf).
+In de 3D-weergave van AdvantageScope kun je eigen modellen gebruiken voor velden en robots; hoe je die installeert lees je [hier](/more-features/custom-assets). Alle modellen moeten het bestandsformaat [glTF](https://www.khronos.org/gltf/) hebben, omdat dat formaat bestanden compact opslaat en snel laadt. Let op: AdvantageScope gebruikt de binaire variant (.glb), waarin alles in één bestand zit, en niet de losse JSON-variant (.gltf).
 
 ## Onshape converteren naar STEP {#converting-onshape-to-step}
 
-Hoewel Onshape een exportoptie voor glTF bevat, levert dit vaak zeer grote bestanden op die moeilijk te beheren zijn. In plaats daarvan wordt aanbevolen om vanuit Onshape naar STEP te exporteren en vervolgens de instructies in de volgende sectie te volgen om naar glTF te converteren.
+Onshape heeft wel een exportoptie voor glTF, maar die levert vaak enorme bestanden op die lastig te gebruiken zijn. Daarom kun je beter vanuit Onshape eerst naar STEP exporteren en dat bestand daarna omzetten naar glTF met de stappen hieronder.
 
-1. Na het openen van het Onshape-bestand klik je met de rechtermuisknop op de hoofdsamenstelling en kies je "Export...":
+1. Open je bestand in Onshape, klik met de rechtermuisknop op de hoofdsamenstelling (main assembly) en kies "Export...":
 
 <img src="/img/more-features/custom-assets/gltf-convert-1.webp" alt="De optie &quot;Export...&quot; selecteren" />
 
-2. Zorg er in het pop-upvenster met opties voor dat het exportformaat "STEP" is en klik op "Export":
+2. Controleer in het pop-upvenster of het formaat op "STEP" staat en klik op "Export":
 
 <img src="/img/more-features/custom-assets/gltf-convert-2.webp" alt="Pop-upvenster met exportopties" />
 
-3. Wacht tot het bestand is geconverteerd en gedownload. Dit kan enkele minuten duren.
+3. Wacht tot het bestand is omgezet en gedownload. Dit kan een paar minuten duren.
 
 ## STEP converteren naar glTF {#converting-step-to-gltf}
 
-1. Download [CAD Assistant](https://www.opencascade.com/products/cad-assistant/). Deze gratis applicatie kan converteren tussen vele 3D-formaten, waaronder STEP en glTF.
+1. Download [CAD Assistant](https://www.opencascade.com/products/cad-assistant/). Met dit gratis programma zet je allerlei 3D-formaten om, waaronder STEP naar glTF.
 
-2. Open CAD Assistant en selecteer het STEP-bestand dat je wilt converteren:
+2. Open CAD Assistant en kies het STEP-bestand dat je wilt omzetten:
 
 <img src="/img/more-features/custom-assets/gltf-convert-3.webp" alt="STEP-bestand openen in CAD Assistant" />
 
-3. Wacht tot het STEP-bestand is geïmporteerd. Dit kan enkele minuten duren.
+3. Wacht tot het STEP-bestand is geladen. Dit kan een paar minuten duren.
 
 4. Klik op het pictogram "Save":
 
 <img src="/img/more-features/custom-assets/gltf-convert-4.webp" alt="Op het pictogram &quot;Save&quot; klikken" />
 
-5. Kies een opslaglocatie en gebruik vervolgens het vervolgkeuzemenu om het exportformaat te wijzigen naar "glb":
+5. Kies waar je het bestand wilt opslaan en verander het exportformaat in het dropdownmenu naar "glb":
 
 <img src="/img/more-features/custom-assets/gltf-convert-5.webp" alt="Het exportformaat wijzigen" />
 
-6. Klik op het tandwielpictogram en schakel vervolgens "Merge faces within the same part" in:
+6. Klik op het tandwielpictogram en vink "Merge faces within the same part" aan:
 
 <img src="/img/more-features/custom-assets/gltf-convert-6.webp" alt="&quot;Merge faces within the same part&quot; inschakelen" />
 
-7. Klik op het pictogram "Save" en wacht tot de export is voltooid:
+7. Klik op het pictogram "Save" en wacht tot de export klaar is:
 
 <img src="/img/more-features/custom-assets/gltf-convert-7.webp" alt="Op het pictogram &quot;Save&quot; klikken" />

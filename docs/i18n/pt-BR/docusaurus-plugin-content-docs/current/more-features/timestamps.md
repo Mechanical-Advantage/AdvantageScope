@@ -4,25 +4,25 @@ sidebar_position: 5
 
 # ⏱️ Timestamps {#timestamps}
 
-O AdvantageScope suporta opções personalizáveis de exibição de timestamps (carimbos de data/hora) em todas as visualizações, incluindo a linha do tempo, o 📉 [Gráfico de linha](/tab-reference/line-graph), a 🔢 [Tabela](/tab-reference/table) e o 💬 [Console](/tab-reference/console).
+O AdvantageScope permite personalizar como os timestamps (marcas de tempo) aparecem em todas as visualizações, incluindo a linha do tempo, o 📉 [Gráfico de linha](/tab-reference/line-graph), a 🔢 [Tabela](/tab-reference/table) e o 💬 [Console](/tab-reference/console).
 
 ## Modos de exibição {#display-modes}
 
-O modo de exibição de timestamps pode ser configurado na janela de preferências:
+Você pode escolher o modo de exibição dos timestamps na janela de preferências:
 
-- **Iniciar no zero (Padrão):** Desloca todos os timestamps para que os dados mais antigos do log comecem no zero (`+0.0s`). Os timestamps exibidos neste modo são prefixados com um símbolo `+` para indicar o tempo decorrido desde o início dos dados.
-- **Original:** Exibe os timestamps usando seus valores numéricos originais conforme registrados no arquivo de log, correspondendo aos valores exatos usados pelo código do robô.
+- **Iniciar no zero (padrão):** Desloca todos os timestamps para que o primeiro registro do log comece em zero (`+0,0s`). Nesse modo, os valores vêm com um sinal `+` na frente para mostrar o tempo decorrido desde o início dos dados.
+- **Original:** Mostra os timestamps exatamente com os valores numéricos gravados no arquivo de log, iguais aos usados pelo código do robô.
 
 :::info
-A partir do WPILib 2027, os timestamps são medidos usando o tempo desde a inicialização do dispositivo no Systemcore e na simulação. Como os timestamps brutos podem começar em números arbitrariamente grandes, a opção **Iniciar no zero** é fornecida como uma alternativa de visualização mais intuitiva.
+A partir da WPILib 2027, os timestamps passam a ser medidos pelo tempo desde a inicialização do Systemcore e da simulação. Como os timestamps brutos podem começar em números muito altos e difíceis de acompanhar, o modo **Iniciar no zero** torna a visualização bem mais intuitiva.
 :::
 
 ## Sincronização de múltiplos logs {#multi-log-synchronization}
 
-Quando [vários arquivos de log são abertos simultaneamente](/overview/log-files/#opening-logs), o AdvantageScope sincroniza e alinha seus timestamps. No modo **Iniciar no zero**, o ponto zero é definido para o timestamp mais antigo entre todos os arquivos carregados. No modo **Original**, os timestamps são exibidos usando a base de tempo do primeiro log aberto, com quaisquer logs adicionais deslocados para se alinharem a ele.
+Quando você [abre vários arquivos de log ao mesmo tempo](/overview/log-files/#opening-logs), o AdvantageScope sincroniza e alinha os timestamps automaticamente. No modo **Iniciar no zero**, o ponto zero é definido pelo registro mais antigo entre todos os arquivos carregados. Já no modo **Original**, os timestamps seguem a base de tempo do primeiro log aberto, e os demais arquivos são deslocados para se alinharem a ele.
 
 ## Personalização {#customization}
 
-Para alterar o modo de exibição de timestamps, abra a janela de preferências clicando em `App` > `Mostrar Preferências...` (Windows/Linux) ou `AdvantageScope` > `Configurações...` (macOS), ou pressionando `Ctrl+,` / `Cmd+,`. Atualize a configuração **Timestamps** para a opção desejada.
+Para mudar o modo de exibição dos timestamps, abra a janela de preferências em `App` > `Mostrar preferências...` (Windows/Linux) ou `AdvantageScope` > `Configurações...` (macOS), ou use o atalho `Ctrl+,` / `Cmd+,`. Depois, altere a opção **Timestamps** para o modo que preferir.
 
 <img src="/img/prefs_pt-BR.webp" alt="Diagrama de preferências" height="450" />

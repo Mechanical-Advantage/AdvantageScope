@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # 💡 AdvantageScope Lite {#advantagescope-lite}
 
-O AdvantageScope Lite é uma versão baseada em navegador do AdvantageScope acessível a partir da Driver Station da FIRST e da interface web do Systemcore. A maioria dos recursos básicos do aplicativo de desktop do AdvantageScope está incluída no AdvantageScope Lite. No entanto, alguns recursos são omitidos devido a restrições de compatibilidade (incluindo alguns tipos de guias, formatos de log e recursos relacionados).
+O AdvantageScope Lite é a versão para navegador do AdvantageScope, acessível diretamente pela Driver Station da FIRST e pela interface web do Systemcore. Ele traz a maioria das funções básicas do aplicativo para computador, mas deixa de fora alguns recursos por limitações de compatibilidade (como certos tipos de guias, formatos de log e ferramentas relacionadas).
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="AdvantageScope Lite Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -12,19 +12,19 @@ _A interface em inglês é exibida acima._
 
 ## Instalação e recursos {#installation-and-assets}
 
-O AdvantageScope Lite para Systemcore pode ser instalado e atualizado baixando a versão "Systemcore" do AdvantageScope da página de lançamentos do GitHub. Selecione o cartão "Adicionar pacote" na interface web do Systemcore para enviar o pacote para o robô.
+Para instalar ou atualizar o AdvantageScope Lite no Systemcore, baixe a versão "Systemcore" do AdvantageScope na página de releases do GitHub. Em seguida, abra a interface web do Systemcore e selecione o cartão "Add Package" (Adicionar pacote) para enviar o pacote ao robô.
 
-Arquivos de recursos (por exemplo, modelos de campo/robô) podem ser enviados escolhendo `Arquivo` > `Enviar recurso`. O arquivo selecionado pode ser um arquivo zip para um recurso individual ou um arquivo zip contendo múltiplos arquivos zip de recursos. Consulte a página de [recursos personalizados](/more-features/custom-assets/) para mais informações sobre os formatos de recursos.
+Você pode enviar arquivos de recursos (como modelos de campo e de robô) acessando `Arquivo` > `Enviar recurso`. Dá para escolher tanto um arquivo `.zip` de um único recurso quanto um `.zip` que reúna vários pacotes `.zip` de recursos. Para saber mais sobre os formatos aceitos, confira a página de [recursos personalizados](/more-features/custom-assets/).
 
 :::info
-Arquivos zip contendo coleções de recursos comuns podem ser baixados clicando nos links abaixo:
+Você pode baixar arquivos `.zip` com coleções dos recursos mais usados nos links abaixo:
 
 - [**Recursos padrão da FRC**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsDefaultFRC.zip): Campos da FRC, robôs de exemplo da FRC e todos os layouts de joysticks.
-- [**Recursos padrão do FTC**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsDefaultFTC.zip): Campos do FTC, robôs de exemplo do FTC e todos os layouts de joysticks.
+- [**Recursos padrão da FTC**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsDefaultFTC.zip): Campos da FTC, robôs de exemplo da FTC e todos os layouts de joysticks.
 - [**Recursos da FRC 6328**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsFRC6328.zip): Recursos exclusivos da [distribuição da Equipe 6328](/overview/installation#team-6328) do AdvantageScope.
 
 :::
 
 :::tip
-Nenhuma instalação é necessária para usar o AdvantageScope Lite na Driver Station da FIRST. Navegue para http://localhost:6768/ascope para se conectar ao vivo ou visualizar arquivos de log.
+Você não precisa instalar nada para usar o AdvantageScope Lite na Driver Station da FIRST. Basta acessar http://localhost:6768/ascope no navegador para se conectar ao vivo ou visualizar arquivos de log.
 :::

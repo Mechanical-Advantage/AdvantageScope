@@ -7,20 +7,20 @@ import TabItem from '@theme/TabItem';
 
 # ⚙️ Mecanismo {#mechanism}
 
-La pestaña del mecanismo muestra un mecanismo articulado creado con uno o más objetos [Mechanism2d](https://docs.wpilib.org/es/stable/docs/software/dashboards/glass/mech2d-widget.html).
+La pestaña **Mecanismo** te permite visualizar un mecanismo articulado creado con uno o más objetos [`Mechanism2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html).
 
-<img src="/img/tab-reference/mechanism-1.webp" alt="Descripción general de la pestaña de mecanismo" />
+<img src="/img/tab-reference/mechanism-1.webp" alt="Descripción general de la pestaña Mecanismo" />
 
 _En la imagen de arriba se muestra la interfaz en inglés._
 
 <details>
 <summary>Controles de la línea de tiempo</summary>
 
-La línea de tiempo se utiliza para controlar la reproducción y la visualización. Al hacer clic en la línea de tiempo se selecciona un tiempo, y al hacer clic con el botón derecho se anula la selección. El tiempo seleccionado se sincroniza en todas las pestañas, lo que facilita la búsqueda rápida de esta ubicación en otras vistas.
+La línea de tiempo controla la reproducción y te ayuda a explorar el registro. Haz clic en cualquier punto para seleccionar un instante y clic derecho para quitar la selección. Ese instante se sincroniza en todas las pestañas, así que puedes ubicar el mismo momento al instante en otras vistas.
 
-Las secciones amarillas indican cuando el robot es autónomo, las secciones azules indican cuando el robot es teledirigido (teleop), y las secciones grises indican cuando el robot está en modo de utilidad.
+Las franjas amarillas marcan cuándo el robot está en modo autónomo; las azules, en teledirigido (teleop); y las grises, en modo de utilidad.
 
-Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia arriba o hacia abajo. También se puede seleccionar un rango haciendo clic y arrastrando mientras se mantiene presionada la tecla `Shift`. Muévete hacia la izquierda y hacia la derecha desplazándose horizontalmente (en dispositivos compatibles) o haciendo clic y arrastrando en la línea de tiempo. Cuando estás conectado en vivo, desplazarte hacia la izquierda desbloquea del tiempo actual, y desplazarte hasta la derecha vuelve a bloquear al tiempo actual. Presiona `Ctrl+\` para hacer zoom al período en el que el robot está habilitado.
+Para hacer zoom, coloca el cursor sobre la línea de tiempo y mueve la rueda del ratón (o desliza) hacia arriba o hacia abajo. También puedes seleccionar un tramo específico haciendo clic y arrastrando mientras mantienes presionada la tecla `Shift`. Para moverte a izquierda o derecha, desplázate horizontalmente (si tu dispositivo lo permite) o haz clic y arrastra sobre la línea de tiempo. Cuando estés conectado en vivo, moverte hacia la izquierda desbloquea la vista del tiempo actual, y llegar hasta el extremo derecho la vuelve a fijar en tiempo real. Presiona `Ctrl+\` para hacer zoom automáticamente al período en que el robot está habilitado.
 
 <img src="/img/tab-reference/timeline.webp" alt="Línea de tiempo" />
 
@@ -28,14 +28,14 @@ Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia 
 
 ## Agregar mecanismos {#adding-mechanisms}
 
-Para comenzar, arrastra un `Mechanism2d` al panel de control. Elimina un mecanismo usando el botón X, u ocúltalo temporalmente haciendo clic en el ícono del ojo o haciendo doble clic en el nombre del campo. Para eliminar todos los mecanismos, haz clic en la papelera cerca del título del eje y luego en `Borrar todo`. Los mecanismos se pueden reorganizar en la lista haciendo clic y arrastrando.
+Para empezar, arrastra un `Mechanism2d` hacia el panel de control. Puedes quitar un mecanismo con el botón X, u ocultarlo temporalmente haciendo clic en el ícono del ojo o dando doble clic en su nombre. Si quieres limpiar todo de una vez, haz clic en el ícono de la papelera junto al título del eje y elige `Borrar todo`. También puedes reordenar los mecanismos en la lista arrastrándolos.
 
 ## Publicación de datos {#publishing-data}
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-Para publicar datos del mecanismo utilizando WPILib, registra un objeto `Mechanism2d` periódicamente usando `Telemetry` (como se muestra a continuación). Ten en cuenta que esta llamada solo registra el estado actual del `Mechanism2d`, por lo que se debe llamar en cada ciclo del bucle después de actualizar el objeto.
+Para publicar datos de un mecanismo con WPILib, registra tu objeto `Mechanism2d` de forma periódica usando `Telemetry` (como en el ejemplo). Ten en cuenta que esta llamada guarda una foto del estado actual del `Mechanism2d`, así que debes llamarla en cada ciclo después de actualizar el objeto.
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
@@ -48,7 +48,7 @@ periodic() {
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-Para publicar datos de mecanismos utilizando AdvantageKit, registra un `Mechanism2d` periódicamente como un campo de salida (como se muestra a continuación). Ten en cuenta que esta llamada solo registra el estado actual del `Mechanism2d`, por lo que se debe llamar en cada ciclo del bucle después de actualizar el objeto.
+Para publicar datos de un mecanismo con AdvantageKit, registra tu `Mechanism2d` de forma periódica como un campo de salida (como en el ejemplo). Ten en cuenta que esta llamada guarda una foto del estado actual del `Mechanism2d`, así que debes llamarla en cada ciclo después de actualizar el objeto.
 
 ```java
 LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);
@@ -59,7 +59,7 @@ periodic() {
 ```
 
 :::tip
-La anotación [@AutoLogOutput](https://docs.advantagekit.org/data-flow/recording-outputs/annotation-logging) de AdvantageKit se puede utilizar para registrar automáticamente el estado del mecanismo en cada ciclo del bucle sin llamar a `Logger.recordOutput`.
+Puedes usar la anotación [@AutoLogOutput](https://docs.advantagekit.org/data-flow/recording-outputs/annotation-logging) de AdvantageKit para registrar automáticamente el estado del mecanismo en cada ciclo sin tener que llamar a `Logger.recordOutput`.
 :::
 
 </TabItem>

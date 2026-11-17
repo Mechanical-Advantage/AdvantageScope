@@ -1,57 +1,53 @@
 # 🧭 Navegación en la aplicación {#app-navigation}
 
-La captura de pantalla a continuación muestra los elementos importantes de la ventana principal de AdvantageScope. La apariencia exacta difiere entre sistemas operativos.
+La siguiente captura muestra las partes principales de la ventana de AdvantageScope. Su aspecto exacto puede variar según tu sistema operativo.
 
 <img src="/img/overview/navigation/navigation-1.webp" alt="Diagrama de navegación" />
 
-_En la imagen de arriba se muestra la interfaz en inglés._
+_La imagen de arriba muestra la interfaz en inglés._
 
-- La sección roja es la [barra lateral](#sidebar), que enumera los campos disponibles.
-- La sección marrón es la [barra de pestañas](#tab-bar), que controla la aplicación y se utiliza para cambiar entre vistas.
-- La sección azul es el [panel del visor](#viewer-pane), que muestra los datos.
-- La sección verde es el [panel de control](#control-pane), que se utiliza para ajustar la visualización.
+- La sección roja es la [barra lateral](#sidebar), donde aparecen los campos disponibles.
+- La sección marrón es la [barra de pestañas](#tab-bar), que te permite controlar la aplicación y cambiar entre vistas.
+- La sección azul es el [panel del visor](#viewer-pane), donde se muestran los datos.
+- La sección verde es el [panel de control](#control-pane), donde ajustas cada visualización.
 
 :::tip
-Para ver varios archivos de registro simultáneamente, haz clic en `Archivo` > `Nueva ventana`.
+Para ver varios archivos de registro al mismo tiempo, haz clic en `Archivo` > `Nueva ventana`.
 :::
 
 ## Barra lateral {#sidebar}
 
-A la izquierda está la barra lateral con la lista de tablas y campos disponibles. Los campos seleccionables se muestran en _cursiva_ y las tablas integradas (de WPILib o AdvantageKit) están <u>subrayadas</u>.
+A la izquierda verás la barra lateral con la lista de tablas y campos disponibles. Los campos seleccionables aparecen en _cursiva_ y las tablas integradas (de WPILib o AdvantageKit) están <u>subrayadas</u>. Haz clic en la flecha para desplegar las tablas anidadas. Puedes **arrastrar un campo individual** para seleccionarlo, o **mantener presionada la tecla cmd/ctrl** mientras haces clic en varios campos y luego arrastrar todo el grupo.
 
-Haz clic en la flecha para expandir las tablas anidadas. **Arrastra un solo campo** para seleccionarlo o **mantén presionada la tecla cmd/ctrl** para seleccionar una colección de campos haciendo clic en cada uno. Comienza a arrastrar la colección de campos para finalizar la selección.
-
-Para buscar un campo, comienza a escribir en el cuadro de búsqueda. Se mostrará un menú desplegable de campos, luego el campo seleccionado se resaltará en la barra lateral y se desplazará a la vista.
+Para buscar un campo, empieza a escribir en el cuadro de búsqueda. Aparecerá una lista desplegable; al elegir un campo, se resaltará en la barra lateral y la vista se desplazará hasta él.
 
 :::info
-Haz clic y arrastra en el borde derecho para cambiar el tamaño u ocultar la barra lateral. Haz doble clic para alternar la visibilidad de la barra lateral.
+Haz clic y arrastra el borde derecho para cambiar el tamaño de la barra lateral u ocultarla. También puedes hacer doble clic en ese borde para mostrarla u ocultarla rápido.
 :::
 
 ## Barra de pestañas {#tab-bar}
 
-Usa la barra de pestañas (azul) para cambiar entre diferentes vistas. Esta documentación está disponible en cualquier momento haciendo clic en el icono 📖 de la izquierda.
-
-Para exportar la disposición de la pestaña actual (y las configuraciones asociadas), haz clic en `Archivo` > `Exportar disposición...` Para importar una disposición desde un archivo, haz clic en `Archivo` > `Importar disposición...`
+Usa la barra de pestañas (azul) para cambiar de vista. Puedes abrir esta documentación en cualquier momento haciendo clic en el ícono 📖 a la izquierda. Para guardar la disposición actual de tus pestañas y su configuración, haz clic en `Archivo` > `Exportar disposición...`; para cargarla desde un archivo, haz clic en `Archivo` > `Importar disposición...`.
 
 :::info
-Las pestañas se pueden reorganizar haciendo clic y arrastrando, o se les puede cambiar el nombre haciendo clic derecho y seleccionando `Renombrar pestaña`.
+Puedes reordenar las pestañas arrastrándolas, o cambiarles el nombre haciendo clic derecho y eligiendo `Renombrar pestaña`.
 :::
 
-Los botones de navegación (verde) en la parte superior gestionan las pestañas y controlan la reproducción.
+Los botones de navegación (verde) en la parte superior sirven para administrar las pestañas y controlar la reproducción:
 
-- **Botón Más (+):** Abre un menú desplegable para crear una nueva pestaña.
-- **Botón Ventana:** Separa la pestaña actual en una nueva ventana. Esta función se puede utilizar para ver datos de múltiples pestañas simultáneamente.
+- **Botón Más (+):** Abre un menú desplegable para crear una pestaña nueva.
+- **Botón de ventana:** Separa la pestaña actual en una ventana independiente para que puedas ver varias pestañas a la vez.
 - **Botón X:** Cierra la pestaña actual.
-- **Botón de reproducción:** Inicia y detiene la reproducción en tiempo real. _Haz clic derecho para cambiar la velocidad de reproducción o habilitar la repetición (loop)._
+- **Botón de reproducción:** Inicia y pausa la reproducción en tiempo real. _Haz clic derecho para cambiar la velocidad de reproducción o activar la repetición en bucle._
 
 ## Panel del visor {#viewer-pane}
 
-El panel del visor es donde se presentan los datos para cada tipo de pestaña. Consulta la documentación de referencia de la pestaña para obtener detalles sobre el panel del visor para cada pestaña. Esta vista se puede mover a una ventana separada haciendo clic en el botón de separar en la barra de pestañas.
+En el panel del visor se muestran los datos según el tipo de pestaña. Consulta la documentación de cada pestaña para ver cómo funciona su visor. Si quieres mover esta vista a una ventana aparte, haz clic en el botón de separar en la barra de pestañas.
 
 ## Panel de control {#control-pane}
 
-El panel de control se usa para seleccionar campos para su visualización y gestionar otras opciones. Consulta la documentación de referencia de la pestaña para obtener detalles sobre las opciones disponibles para cada pestaña.
+En el panel de control eliges qué campos visualizar y ajustas las opciones de la pestaña. Revisa la documentación de cada pestaña para conocer todas las configuraciones disponibles.
 
 :::info
-Haz clic y arrastra en el borde superior para cambiar el tamaño u ocultar el panel de control. Haz doble clic para alternar la visibilidad del panel de control.
+Haz clic y arrastra el borde superior para cambiar el tamaño del panel de control u ocultarlo, o haz doble clic para mostrarlo y ocultarlo rápido.
 :::

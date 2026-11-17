@@ -1,10 +1,10 @@
 # Soporte de unidades {#unit-support}
 
-La pestaña de gráfico de líneas tiene reconocimiento de unidades, lo que significa que los valores numéricos se pueden convertir fácilmente entre tipos de unidades compatibles. Cuando la información de la unidad está disponible, todos los valores numéricos también se etiquetan con precisión cuando se muestran en los ejes o leyendas. Consulta [aquí](#supported-formats) para obtener más información sobre la publicación de información sobre unidades. AdvantageScope proporciona varias herramientas para convertir rápidamente entre unidades:
+La pestaña de gráfico de líneas reconoce unidades, lo que te permite convertir valores numéricos fácilmente entre unidades compatibles. Cuando un campo incluye información de unidad, sus valores también aparecen correctamente etiquetados en los ejes y en la leyenda. Consulta [Formatos compatibles](#supported-formats) para ver cómo publicar esta información. AdvantageScope te ofrece varias formas rápidas de trabajar con unidades:
 
-- Al agregar **campos en el mismo eje con tipos de unidades compatibles**, AdvantageScope convierte automáticamente ambos campos a la misma unidad. Esto se refleja en el etiquetado del eje Y y la leyenda.
-- Haz clic en los tres puntos cerca del título del eje para **cambiar rápidamente a unidades alternativas**. Esta lista incluye las unidades más comunes que son compatibles con los campos seleccionados.
-- Habilita **la integración o diferenciación** ([documentación](/tab-reference/line-graph/#integration-and-differentiation)) para ver las unidades precisas de la integral o derivada. La unidad base se puede ajustar utilizando el menú para admitir el filtrado en unidades no nativas.
+- Si agregas **campos con unidades compatibles en el mismo eje**, AdvantageScope convierte ambos automáticamente a la misma unidad, y lo refleja en las etiquetas del eje Y y la leyenda.
+- Haz clic en los tres puntos junto al título del eje para **cambiar rápidamente a otra unidad**. La lista muestra las unidades más comunes compatibles con los campos seleccionados.
+- Activa **la integración o diferenciación** ([documentación](/tab-reference/line-graph/#integration-and-differentiation)) para ver las unidades resultantes de la integral o derivada. También puedes cambiar la unidad base desde el menú si necesitas filtrar usando unidades distintas a las originales.
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="Gráficos con reconocimiento de unidades" />
 
@@ -12,50 +12,50 @@ _En la imagen de arriba se muestra la interfaz en inglés._
 
 ## Formatos compatibles {#supported-formats}
 
-AdvantageScope admite varios métodos para proporcionar información sobre la unidad para cada campo. Se admiten las unidades más comunes; para obtener una lista completa, consulta el menú emergente al configurar la [conversión manual](#manual-conversion).
+AdvantageScope ofrece varios métodos para indicar la unidad de cada campo. La mayoría de las unidades comunes están incluidas; para ver la lista completa, abre el menú emergente al configurar la [conversión manual](#manual-conversion).
 
-Para (2) y (3), los tipos de unidades se analizan mediante cadenas de texto. AdvantageScope admite múltiples nombres para cada unidad, incluyendo abreviaturas comunes (por ejemplo, `ft` y `feet` están bien) y variantes ortográficas en inglés estadounidense y británico (por ejemplo, `meters` y `metres`). Ten en cuenta que los nombres de las unidades se deben proporcionar utilizando símbolos SI o inglés, independientemente del idioma seleccionado en AdvantageScope. Si un nombre de unidad no se analiza como se esperaba, por favor [abre un issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
+En los métodos (2) y (3), las unidades se interpretan a partir de texto. AdvantageScope reconoce distintos nombres para cada unidad, incluidas abreviaturas comunes (por ejemplo, tanto `ft` como `feet` funcionan) y variantes de inglés estadounidense o británico (como `meters` y `metres`). Ten en cuenta que los nombres deben escribirse usando símbolos del SI o en inglés, sin importar el idioma que tengas configurado en AdvantageScope. Si algún nombre de unidad no se reconoce como esperabas, [abre un issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues) en GitHub.
 
 :::tip
-¿No estás seguro de si las unidades se están analizando correctamente? Comprueba si se muestra un tipo de unidad en el eje Y al agregar un campo al gráfico de líneas.
+¿No estás seguro de si AdvantageScope está reconociendo bien las unidades? Al agregar el campo al gráfico, revisa si aparece la unidad junto al eje Y.
 :::
 
-### 🥇 Unidades struct {#struct-units}
+### 🥇 Unidades de struct {#struct-units}
 
-AdvantageScope utiliza automáticamente las unidades nativas para los tipos de datos estructurados comunes como `Rotation2d` y `Translation3d`. La publicación de valores aplicables utilizando estos formatos es **siempre la mejor manera de publicar datos** y garantiza la máxima compatibilidad al visualizar datos de geometría.
+AdvantageScope usa automáticamente las unidades nativas de los tipos de datos estructurados comunes, como `Rotation2d` y `Translation3d`. Publicar tus datos con estos formatos es **siempre la mejor opción** y garantiza la máxima compatibilidad al visualizar geometría.
 
-### 🥈 Metadatos de campo {#field-metadata}
+### 🥈 Metadatos del campo {#field-metadata}
 
-Los formatos WPILOG y NetworkTables admiten la publicación de "metadatos" adicionales para cada campo. AdvantageScope busca campos JSON con el nombre "unit" o "units" que contengan un nombre de cadena de texto para el tipo de unidad (usando espacios, camel-case, pascal-case o snake-case). Para comprobar los metadatos de cada campo, pasa el cursor sobre el nombre del campo en la barra lateral.
+Tanto WPILOG como NetworkTables permiten adjuntar "metadatos" a cada campo. AdvantageScope busca campos JSON llamados `"unit"` o `"units"` que contengan el nombre de la unidad en texto (con espacios, camel-case, pascal-case o snake-case). Para revisar los metadatos de un campo, pasa el cursor sobre su nombre en la barra lateral.
 
 :::tip
-En WPILib, registrar objetos `Measure` usando `Telemetry.log()` adjunta automáticamente metadatos de unidades. Los metadatos de unidades también se pueden configurar explícitamente usando `Telemetry.setProperty("fieldName", "unit", "\"volts\"")`.
+En WPILib, al registrar objetos `Measure` con `Telemetry.log()`, los metadatos de unidad se adjuntan automáticamente. También puedes configurarlos de forma explícita con `Telemetry.setProperty("fieldName", "unit", "\"volts\"")`.
 
-AdvantageKit también incluye soporte para metadatos de unidades al registrar entradas y salidas (consulta [aquí](https://docs.advantagekit.org/data-flow/supported-types#units) para obtener detalles).
+AdvantageKit también admite metadatos de unidades al registrar entradas y salidas (consulta [la documentación de AdvantageKit](https://docs.advantagekit.org/data-flow/supported-types#units) para más detalles).
 :::
 
-### 🥉 Denominación de campos {#field-naming}
+### 🥉 Nombre del campo {#field-naming}
 
-Como respaldo, AdvantageScope intenta determinar el tipo de unidad correcto analizando el nombre de cada campo. **El tipo de unidad debe incluirse como sufijo.** AdvantageScope admite una variedad de esquemas de nombres. Algunas opciones válidas se enumeran a continuación:
+Si no hay metadatos ni struct, AdvantageScope intenta deducir la unidad analizando el nombre del campo. **La unidad debe ir al final, como sufijo.** Se admiten varios estilos de escritura, por ejemplo:
 
-- **Camel/pascal-case**, como `PositionMeters`, `velocityRadPerSec`, y `TimestampS`
-- **Snake-case**, como `position_meters`, `velocity_rad_per_sec`, y `timestamp_s`
-- **Separadores de espacio**, como `position meters`, `velocity rad per sec`, y `timestamp s`
+- **Camel/pascal-case**: `PositionMeters`, `velocityRadPerSec`, `TimestampS`
+- **Snake-case**: `position_meters`, `velocity_rad_per_sec`, `timestamp_s`
+- **Separado por espacios**: `position meters`, `velocity rad per sec`, `timestamp s`
 
-La denominación _no_ distingue entre mayúsculas y minúsculas cuando se usa snake-case o separadores de espacio.
+Cuando usas snake-case o espacios, no importa si escribes en mayúsculas o minúsculas.
 
 :::tip
-Si las unidades se analizan incorrectamente, haz clic en `Unidades manuales` > `Deshabilitar unidades automáticas` para ignorar la información de la unidad. La conversión manual se puede utilizar luego para cambiar a unidades alternativas.
+Si una unidad se interpreta mal, haz clic en `Unidades manuales` > `Deshabilitar unidades automáticas` para ignorar la detección automática. Luego podrás usar la conversión manual para elegir la unidad correcta.
 :::
 
 ## Conversión manual {#manual-conversion}
 
-Cuando los metadatos de las unidades no están disponibles o son inexactos, los ejes también se pueden configurar manualmente para convertir entre unidades (o ignorar los metadatos de las unidades por completo).
+Cuando no tienes metadatos de unidades o estos son incorrectos, puedes configurar un eje manualmente para convertir entre unidades (o ignorar los metadatos por completo).
 
-Para configurar la conversión manual, haz clic en los tres puntos cerca del título del eje y luego en `Unidades manuales` > `Editar conversión...`. Selecciona el tipo de unidad, la unidad de origen y la unidad de destino. Cada valor también se multiplica por el "Factor adicional", lo que permite conversiones personalizadas (como relaciones de transmisión, conversiones angulares a lineales u otras unidades no proporcionadas por AdvantageScope). El factor también se puede ingresar usando una expresión matemática como `1.5*pi`.
+Para hacerlo, haz clic en los tres puntos junto al título del eje y selecciona `Unidades manuales` > `Editar conversión...`. Elige el tipo de unidad, la unidad de origen y la unidad de destino. Cada valor también se multiplica por el "Factor adicional", lo que resulta útil para conversiones personalizadas (como relaciones de transmisión, pasar de angular a lineal u otras unidades que no vengan en AdvantageScope). Incluso puedes escribir el factor como una expresión matemática, por ejemplo `1.5*pi`.
 
 :::tip
-Para habilitar o deshabilitar rápidamente la conversión de unidades, haz clic en los tres puntos cerca del título del eje y elige `Ajustes preestablecidos recientes` o `Restablecer unidades`.
+Para activar o desactivar rápidamente una conversión de unidades, haz clic en los tres puntos junto al título del eje y elige `Ajustes preestablecidos recientes` o `Restablecer unidades`.
 :::
 
 <img src="/img/tab-reference/line-graph/units-2.webp" alt="Edición de conversión de unidades" height="250" />

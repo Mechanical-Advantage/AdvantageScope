@@ -1,10 +1,10 @@
 # Ondersteuning voor eenheden {#unit-support}
 
-Het tabblad lijngrafiek is eenheidsbewust, wat betekent dat numerieke waarden eenvoudig kunnen worden geconverteerd tussen compatibele eenheidstypen. Wanneer eenheidsinformatie beschikbaar is, worden alle numerieke waarden ook nauwkeurig gelabeld wanneer ze worden weergegeven op de assen of in legenda's. Zie [hier](#supported-formats) voor meer informatie over het publiceren van eenheidsinformatie. AdvantageScope biedt verschillende tools om snel tussen eenheden te converteren:
+Het tabblad Lijngrafiek is eenheidsbewust: numerieke waarden worden automatisch herkend en je kunt ze moeiteloos omrekenen tussen compatibele eenheden. Als eenheidsinformatie beschikbaar is, verschijnen de juiste eenheden direct op de assen en in de legenda. Kijk [hier](#supported-formats) om te zien hoe je eenheden meestuurt in je logs. AdvantageScope biedt een aantal handige manieren om met eenheden te werken:
 
-- Bij het toevoegen van **velden op dezelfde as met compatibele eenheidstypen**, converteert AdvantageScope automatisch beide velden naar dezelfde eenheid. Dit wordt weerspiegeld in de labeling van de Y-as en de legenda.
-- Klik op de drie stippen naast de astitel om **snel over te schakelen naar alternatieve eenheden**. Deze lijst bevat de meest voorkomende eenheden die compatibel zijn met de geselecteerde velden.
-- Schakel **integratie of differentiatie** in ([documentatie](/tab-reference/line-graph/#integration-and-differentiation)) om de nauwkeurige integraal- of afgeleide-eenheden te zien. De basiseenheid kan worden aangepast via het menu om filteren in niet-native eenheden te ondersteunen.
+- Zet je **velden met compatibele eenheden op dezelfde as**, dan rekent AdvantageScope ze automatisch om naar dezelfde eenheid. Je ziet dat meteen terug op de Y-as en in de legenda.
+- Klik op de drie stippen naast de astitel om **snel naar een andere eenheid te schakelen**. Je krijgt daar een lijst met de meest gebruikte compatibele eenheden.
+- Zet **integratie of differentiatie** aan ([documentatie](/tab-reference/line-graph/#integration-and-differentiation)) om meteen de bijbehorende integraal- of afgeleide-eenheden te zien. Via het menu kun je de basiseenheid aanpassen, zodat je ook in niet-standaard eenheden kunt filteren.
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="Eenheidsbewuste grafieken" />
 
@@ -12,50 +12,50 @@ _De Engelstalige interface wordt hierboven weergegeven._
 
 ## Ondersteunde formaten {#supported-formats}
 
-AdvantageScope ondersteunt verschillende methoden om eenheidsinformatie over elk veld te verstrekken. De meeste gangbare eenheden worden ondersteund; raadpleeg voor een volledige lijst het pop-upmenu bij het configureren van [handmatige conversie](#manual-conversion).
+Je kunt op verschillende manieren eenheidsinformatie meegeven aan een veld. De meeste gangbare eenheden worden ondersteund; de volledige lijst vind je in het pop-upmenu bij [handmatige conversie](#manual-conversion).
 
-Voor (2) en (3) worden eenheidstypen geparseerd met behulp van strings. AdvantageScope ondersteunt meerdere namen voor elke eenheid, inclusief gangbare afkortingen (bijv. `ft` en `feet` zijn beide goed) en zowel Amerikaanse als Britse spellingen (bijv. `meters` en `metres`). Merk op dat eenheidsnamen moeten worden opgegeven met behulp van SI-symbolen of in het Engels, ongeacht de in AdvantageScope geselecteerde taal. Als een eenheidsnaam niet zoals verwacht wordt geparseerd, [open dan een issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
+Bij optie (2) en (3) leest AdvantageScope de eenheid uit een tekststring. Voor elke eenheid worden meerdere schrijfwijzen ondersteund, zoals gangbare afkortingen (`ft` en `feet` werken allebei) en zowel Amerikaanse als Britse spelling (`meters` en `metres`). Let op: eenheidsnamen moet je altijd opgeven met SI-symbolen of in het Engels, ook als AdvantageScope op Nederlands staat ingesteld. Wordt een eenheidsnaam niet herkend? [Open dan een issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
 
 :::tip
-Twijfel je of eenheden correct worden geparseerd? Controleer of er een eenheidstype wordt weergegeven op de Y-as wanneer je een veld toevoegt aan de lijngrafiek.
+Twijfel je of een eenheid goed wordt herkend? Sleep het veld naar de lijngrafiek en kijk of het eenheidstype op de Y-as verschijnt.
 :::
 
 ### 🥇 Struct-eenheden {#struct-units}
 
-AdvantageScope gebruikt automatisch de native eenheden voor veelvoorkomende gestructureerde datatypen zoals `Rotation2d` en `Translation3d`. Het publiceren van toepasselijke waarden met behulp van deze formaten is **altijd de beste manier om data te publiceren** en zorgt voor maximale compatibiliteit bij het visualiseren van geometriedata.
+Voor veelgebruikte gestructureerde datatypen zoals `Rotation2d` en `Translation3d` gebruikt AdvantageScope automatisch de ingebouwde eenheden. Dit is **altijd de beste manier om data te loggen**, omdat je geometriedata dan overal zonder extra instellingen goed wordt weergegeven.
 
 ### 🥈 Veldmetadata {#field-metadata}
 
-De WPILOG- en NetworkTables-formaten ondersteunen het publiceren van aanvullende "metadata" voor elk veld. AdvantageScope zoekt naar JSON-velden met de naam "unit" of "units" die een stringnaam voor het eenheidstype bevatten (met spaties, camel-case, pascal-case of snake-case). Om de metadata voor elk veld te controleren, houd je de muisaanwijzer boven de veldnaam in de zijbalk.
+In WPILOG- en NetworkTables-bestanden kun je extra metadata per veld meesturen. AdvantageScope zoekt naar JSON-velden met de naam "unit" of "units" en leest daar de naam van de eenheid uit (met spaties, camelCase, PascalCase of snake_case). Beweeg je muis over een veldnaam in de zijbalk om de metadata van dat veld te bekijken.
 
 :::tip
-In WPILib koppelt het loggen van `Measure`-objecten met behulp van `Telemetry.log()` automatisch eenheidsmetadata. Eenheidsmetadata kan ook expliciet worden geconfigureerd met behulp van `Telemetry.setProperty("fieldName", "unit", "\"volts\"")`.
+Log je in WPILib een `Measure`-object met `Telemetry.log()`, dan wordt de eenheidsmetadata automatisch toegevoegd. Je kunt de metadata ook zelf instellen via `Telemetry.setProperty("fieldName", "unit", "\"volts\"")`.
 
-AdvantageKit bevat ook ondersteuning voor eenheidsmetadata bij het loggen van inputs en outputs (zie [hier](https://docs.advantagekit.org/data-flow/supported-types#units) voor details).
+Ook AdvantageKit ondersteunt eenheidsmetadata bij het loggen van inputs en outputs (zie [deze pagina](https://docs.advantagekit.org/data-flow/supported-types#units) voor meer details).
 :::
 
 ### 🥉 Veldnaamgeving {#field-naming}
 
-Als fallback probeert AdvantageScope het juiste eenheidstype te bepalen door de naam van elk veld te parseren. **Het eenheidstype moet als achtervoegsel worden opgenomen.** AdvantageScope ondersteunt verschillende naamgevingsschema's. Enkele geldige opties worden hieronder vermeld:
+Als er geen struct of metadata is, probeert AdvantageScope de eenheid uit de veldnaam zelf te halen. **De eenheid moet dan als achtervoegsel aan het einde van de naam staan.** Verschillende schrijfwijzen worden herkend:
 
-- **Camel/pascal-case**, zoals `PositionMeters`, `velocityRadPerSec` en `TimestampS`
-- **Snake-case**, zoals `position_meters`, `velocity_rad_per_sec` en `timestamp_s`
-- **Spatiescheidingen**, zoals `position meters`, `velocity rad per sec` en `timestamp s`
+- **Camel/PascalCase**, zoals `PositionMeters`, `velocityRadPerSec` en `TimestampS`
+- **Snake_case**, zoals `position_meters`, `velocity_rad_per_sec` en `timestamp_s`
+- **Met spaties**, zoals `position meters`, `velocity rad per sec` en `timestamp s`
 
-Naamgeving is _niet_ hoofdlettergevoelig bij gebruik van snake-case of spatiescheidingen.
+Bij snake_case en spaties maakt het _niet_ uit of je hoofdletters of kleine letters gebruikt.
 
 :::tip
-Als eenheden onjuist worden geparseerd, klik je op `Handmatige eenheden` > `Automatische eenheden uitschakelen` om eenheidsinformatie te negeren. Handmatige conversie kan vervolgens worden gebruikt om naar alternatieve eenheden over te schakelen.
+Wordt een eenheid verkeerd herkend? Klik dan op `Handmatige eenheden` > `Automatische eenheden uitschakelen` om de automatische herkenning te negeren. Daarna kun je zelf een handmatige conversie instellen.
 :::
 
 ## Handmatige conversie {#manual-conversion}
 
-Wanneer eenheidsmetadata niet beschikbaar of onnauwkeurig is, kunnen assen ook handmatig worden geconfigureerd om tussen eenheden te converteren (of eenheidsmetadata volledig te negeren).
+Ontbreekt de eenheidsmetadata of klopt deze niet, dan kun je een as handmatig instellen om waarden om te rekenen (of de metadata helemaal te negeren).
 
-Om handmatige conversie te configureren, klik je op de drie stippen naast de astitel en vervolgens op `Handmatige eenheden` > `Conversie bewerken`. Selecteer het type eenheid, de broneenheid en de doeleenheid. Elke waarde wordt ook vermenigvuldigd met de "Extra factor", wat aangepaste conversies mogelijk maakt (zoals overbrengingsverhoudingen, omzettingen van hoek naar lineair, of andere eenheden die niet door AdvantageScope worden geleverd). De factor kan ook worden ingevoerd met behulp van een wiskundige uitdrukking zoals `1.5*pi`.
+Klik hiervoor op de drie stippen naast de astitel en kies `Handmatige eenheden` > `Conversie bewerken`. Kies het eenheidstype, de broneenheid en de doeleenheid. Elke waarde wordt daarnaast vermenigvuldigd met de "Extra factor". Daarmee maak je eigen omrekeningen, bijvoorbeeld voor overbrengingsverhoudingen, van hoek naar afstand of naar eenheden die niet in de lijst staan. Je mag bij de factor ook een wiskundige uitdrukking invullen, zoals `1.5*pi`.
 
 :::tip
-Om eenheidsconversie snel in of uit te schakelen, klik je op de drie stippen naast de astitel en kies je `Recente voorinstellingen` of `Eenheden resetten`.
+Wil je snel wisselen of de conversie uitzetten? Klik op de drie stippen naast de astitel en kies `Recente voorinstellingen` of `Eenheden resetten`.
 :::
 
 <img src="/img/tab-reference/line-graph/units-2.webp" alt="Eenheidsconversie bewerken" height="250" />

@@ -1,51 +1,51 @@
 # Exportación de datos de registro {#exporting-log-data}
 
-AdvantageScope incluye un sistema flexible para exportar datos de registro como un archivo CSV, WPILOG o MCAP. Las funciones de exportación funcionan cuando se visualiza un archivo de registro o cuando se conecta a una fuente de datos en vivo. Los posibles casos de uso incluyen:
+AdvantageScope cuenta con un sistema flexible para exportar los datos de un registro en formato CSV, WPILOG o MCAP. La exportación funciona tanto cuando tienes abierto un archivo de registro como cuando estás conectado a una fuente en vivo. Algunos usos comunes son:
 
-- Conversión de un archivo WPILOG a CSV o MCAP para su análisis en otras aplicaciones.
-- Exportación de un archivo WPILOG basado en datos de NetworkTables, para su posterior acceso.
-- Guardar un WPILOG con un número limitado de campos (y valores duplicados eliminados) para reducir el tamaño del archivo.
+- Convertir un archivo WPILOG a CSV o MCAP para analizarlo en otras aplicaciones.
+- Exportar un archivo WPILOG a partir de datos de NetworkTables para revisarlo más tarde.
+- Guardar un WPILOG con solo ciertos campos (y sin valores duplicados) para reducir el tamaño del archivo.
 
-Para ver opciones de exportación, haz clic en `Archivo` > `Exportar datos...`.
+Para ver las opciones de exportación, haz clic en `Archivo` > `Exportar datos...`.
 
 <img src="/img/overview/log-files/export-1.webp" alt="Opciones de exportación" />
 
-_En la imagen de arriba se muestra la interfaz en inglés._
+_La imagen de arriba muestra la interfaz en inglés._
 
 :::tip
-Además de la exportación del registro completo que se describe aquí, la pestaña 💬 [Consola](/tab-reference/console) permite que los datos de la consola se exporten a un archivo de texto.
+Además de exportar el registro completo como se explica aquí, en la pestaña 💬 [Consola](/tab-reference/console) puedes exportar los mensajes de la consola a un archivo de texto.
 :::
 
 :::warning
 **Exportación de datos para SysId**
 
-No recomendamos el uso de esta función para exportar datos de registro **generados en simulación** para su uso en [SysId](https://docs.wpilib.org/es/stable/docs/software/advanced-controls/system-identification/introduction.html), ya que SysId requiere datos de marcas de tiempo adicionales incompatibles con las opciones de exportación predeterminadas de AdvantageScope. Ten en cuenta que los datos de registro **generados _fuera_ de la simulación** se pueden exportar para su uso en SysId con una pérdida mínima de datos (aunque la máxima precisión se puede lograr utilizando el registro de datos _original_ directamente en SysId).
+No recomendamos usar esta herramienta para exportar datos **generados en simulación** con el fin de usarlos en [SysId](https://docs.wpilib.org/es/stable/docs/software/advanced-controls/system-identification/introduction.html), ya que SysId necesita información adicional de marcas de tiempo que no coincide con las opciones de exportación predeterminadas de AdvantageScope. En cambio, los datos **generados _fuera_ de la simulación** sí pueden exportarse para SysId con una pérdida mínima de datos (aunque siempre obtendrás la máxima precisión usando el archivo de registro _original_ directamente en SysId).
 
-_Esta advertencia **no se aplica** a los registros producidos por AdvantageKit, que se pueden exportar sin pérdida de datos seleccionando la opción "Ciclos de AdvantageKit". Consulta [esta página](https://docs.advantagekit.org/data-flow/sysid-compatibility) para obtener detalles._
+_Esta advertencia **no aplica** a los registros creados por AdvantageKit, que pueden exportarse sin pérdida de datos seleccionando la opción "Ciclos de AdvantageKit". Consulta [esta página](https://docs.advantagekit.org/data-flow/sysid-compatibility) para ver los detalles._
 :::
 
 ## Opciones {#options}
 
-Se proporcionan las siguientes opciones al exportar:
+Al exportar dispones de las siguientes opciones:
 
-- **Formato:** Establece el formato general del archivo exportado. Consulta las opciones a continuación.
-  - _CSV (Tabla):_ Valores separados por comas, donde cada fila representa una marca de tiempo distinta y cada columna representa un campo (más una columna para el valor de la marca de tiempo). Cada fila puede representar un valor en múltiples campos.
-  - _CSV (Lista):_ Valores separados por comas, donde cada fila representa un valor en un solo campo con columnas para marca de tiempo, clave y valor.
-  - _WPILOG:_ Archivo WPILOG estándar que se puede volver a abrir en AdvantageScope.
-  - _MCAP:_ Archivo [MCAP](https://mcap.dev) estándar que se puede abrir en [Foxglove](https://foxglove.dev).
-- **Marcas de tiempo:** Solo para "CSV (Tabla)". Establece el método para crear nuevas filas. Consulta las opciones a continuación.
-  - _Todos los cambios:_ Crea nuevas filas/entradas solo cuando se actualizan los valores de los campos. Minimiza el tamaño del archivo de la exportación.
-  - _Período fijo:_ Crea nuevas filas/entradas en un intervalo fijo, útil para registros sin sincronización de marcas de tiempo (cuando muchos campos se registran con marcas de tiempo similares, pero no idénticas). Ten en cuenta que se incluyen todos los valores, independientemente de si hubo un cambio entre los puntos de muestra.
-  - _Ciclos de AdvantageKit:_ Crea una nueva fila/entrada para cada ciclo de bucle sincronizado de AdvantageKit. Ten en cuenta que se incluyen todos los valores, independientemente de si hubo un cambio entre los ciclos de bucle.
-- **Período:** Solo cuando se selecciona "Período fijo". Establece el período en milisegundos entre cada muestra. Normalmente, esto debería coincidir con el período del ciclo de bucle del código del robot.
-- **Prefijos:** Si está en blanco, incluye todos los campos. De lo contrario, solo incluye los campos que coincidan con los prefijos proporcionados (separados por comas). Consulta los ejemplos a continuación.
-  - "_/DriverStation/Joystick0_": Incluye todos los campos que comiencen con "/DriverStation/Joystick0" (datos del primer joystick).
-  - "_Flywheels,DS:enabled_": Incluye todos los campos que comiencen con "/Flywheels" o "DS:enabled" (todos los datos del volante, más el estado habilitado del robot).
-  - "_Drive/LeftPosition,Drive/RightPosition_": Solo incluye los campos "/Drive/LeftPosition" y "/Drive/RightPosition".
-- **Conjunto de campos:** Consulta las opciones a continuación. Los campos generados son creados por AdvantageScope para desglosar tipos complejos y se muestran con texto gris en la barra lateral. Esto incluye los componentes individuales de arreglos, estructuras (structs) y otros esquemas.
-  - _Incluir generados:_ Exporta todos los campos visualizables, lo que incluye los campos generados. Recomendado si los datos exportados se abrirán en una aplicación que no es capaz de analizar tipos complejos.
-  - _Solo originales:_ Solo exporta campos que estaban presentes en el archivo de registro original, lo que excluye los campos generados. Recomendado si los datos exportados se abrirán en AdvantageScope u otra aplicación capaz de analizar tipos complejos.
+- **Formato:** Define el formato del archivo exportado. Tienes estas opciones:
+  - _CSV (Tabla):_ Valores separados por comas, donde cada fila corresponde a una marca de tiempo distinta y cada columna a un campo (más una columna para la marca de tiempo). Así, una sola fila puede incluir valores de varios campos.
+  - _CSV (Lista):_ Valores separados por comas, donde cada fila representa un único valor de un campo, con columnas para la marca de tiempo, la clave y el valor.
+  - _WPILOG:_ Archivo WPILOG estándar que puedes volver a abrir en AdvantageScope.
+  - _MCAP:_ Archivo [MCAP](https://mcap.dev) estándar compatible con [Foxglove](https://foxglove.dev).
+- **Marcas de tiempo:** Disponible solo para "CSV (Tabla)". Define cómo se crean las filas nuevas:
+  - _Todos los cambios:_ Agrega una nueva fila únicamente cuando cambia el valor de algún campo, lo que reduce al mínimo el tamaño del archivo.
+  - _Período fijo:_ Agrega una fila a intervalos regulares, útil para registros sin marcas de tiempo sincronizadas (cuando muchos campos se guardan con marcas de tiempo parecidas, pero no idénticas). Ten en cuenta que se incluyen todos los valores en cada intervalo, hayan cambiado o no.
+  - _Ciclos de AdvantageKit:_ Agrega una fila por cada ciclo sincronizado de AdvantageKit. Al igual que en el modo anterior, se incluyen todos los valores en cada ciclo, hayan cambiado o no.
+- **Período:** Disponible solo al elegir "Período fijo". Define el intervalo en milisegundos entre cada muestra. Por lo general, conviene que coincida con el período del ciclo principal del código del robot.
+- **Prefijos:** Si lo dejas en blanco, se incluyen todos los campos. Si escribes prefijos (separados por comas), solo se exportarán los campos que coincidan con ellos. Por ejemplo:
+  - "_/DriverStation/Joystick0_": Incluye todos los campos que empiezan con "/DriverStation/Joystick0" (los datos del primer joystick).
+  - "_Flywheels,DS:enabled_": Incluye todos los campos que empiezan con "/Flywheels" o "DS:enabled" (todos los datos de los volantes, más el estado de habilitación del robot).
+  - "_Drive/LeftPosition,Drive/RightPosition_": Incluye únicamente los campos "/Drive/LeftPosition" y "/Drive/RightPosition".
+- **Conjunto de campos:** Los campos generados son creados por AdvantageScope para desglosar tipos de datos complejos y aparecen en gris en la barra lateral (por ejemplo, los elementos individuales de arreglos, *structs* y otros esquemas).
+  - _Incluir generados:_ Exporta todos los campos visibles, incluidos los generados. Es la mejor opción si vas a abrir el archivo en un programa que no sabe interpretar tipos complejos.
+  - _Solo originales:_ Exporta únicamente los campos que venían en el registro original, excluyendo los generados. Es lo recomendable si vas a abrir el archivo en AdvantageScope o en otra herramienta que sí interprete tipos complejos.
 
-A continuación se muestra un archivo CSV de ejemplo exportado desde AdvantageScope, en el formato "CSV (Tabla)" con marcas de tiempo configuradas en "Todos los cambios":
+Abajo puedes ver un ejemplo de archivo CSV exportado desde AdvantageScope en formato "CSV (Tabla)" con las marcas de tiempo configuradas en "Todos los cambios":
 
 <img src="/img/overview/log-files/export-2.webp" alt="Tabla CSV" />

@@ -4,14 +4,14 @@ sidebar_position: 1
 
 # ✴️ FTC-compatibiliteit {#ftc-compatibility}
 
-AdvantageScope bevat functies om een soepele ervaring te bieden op het bestaande besturingssysteem van FIRST Tech Challenge, terwijl een overgang naar [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) in toekomstige seizoenen wordt voorbereid. Alle functies van AdvantageScope worden officieel ondersteund in FTC na de overgang naar Systemcore vanaf het seizoen 2027-2028.
+AdvantageScope werkt nu al soepel samen met het huidige besturingssysteem van de FIRST Tech Challenge en bereidt je tegelijk voor op de overstap naar [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) in de komende seizoenen. Vanaf seizoen 2027-2028, na de overgang naar Systemcore, worden alle functies van AdvantageScope officieel voor FTC ondersteund.
 
 ## Velden en robots {#fields-and-robots}
 
-FTC-velden en -robotmodellen worden standaard volledig ondersteund.
+FTC-velden en robotmodellen zijn standaard ingebouwd.
 
-- **Veld- en robotmodellen:** Selecteer FTC-velden en -robotmodellen op de tabbladen 🗺️ [2D-veld](/tab-reference/2d-field) en 👀 [3D-veld](/tab-reference/3d-field) rechtstreeks vanuit de vervolgkeuzemenu's. Alle velden zijn compatibel met [AdvantageScope XR](/tab-reference/3d-field/advantagescope-xr).
-- **Coördinatenstelsels:** Configureer het [coördinatenstelsel](/more-features/coordinate-systems) voor compatibiliteit met [standaard FTC-coördinaten](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html) op elk veld. Dit coördinatenstelsel wordt standaard gebruikt op FTC-velden.
+- **Veld- en robotmodellen:** Selecteer FTC-velden en robotmodellen direct via de dropdownmenu's op de tabbladen 🗺️ [2D-veld](/tab-reference/2d-field) en 👀 [3D-veld](/tab-reference/3d-field). Alle velden werken ook met [AdvantageScope XR](/tab-reference/3d-field/advantagescope-xr).
+- **Coördinatenstelsels:** Stel het [coördinatenstelsel](/more-features/coordinate-systems) zo in dat het aansluit op de [standaard FTC-coördinaten](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html). Op FTC-velden staat dit stelsel standaard al goed ingesteld.
 
 <div className="image-gallery">
   <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />
@@ -23,24 +23,24 @@ FTC-velden en -robotmodellen worden standaard volledig ondersteund.
 
 ## Ondersteunde formaten {#supported-formats}
 
-AdvantageScope biedt native ondersteuning voor het live-streamingformaat van **FTC Dashboard** en `.log`-bestanden van **Road Runner**, naast met WPILib compatibele formaten zoals WPILOG en NetworkTables.
+AdvantageScope ondersteunt standaard het live-streamingformaat van **FTC Dashboard** en `.log`-bestanden van **Road Runner**, naast WPILib-formaten zoals WPILOG en NetworkTables.
 
-Verschillende externe FTC-logging- en telemetriebibliotheken produceren data in formaten die compatibel zijn met AdvantageScope. De AdvantageScope-ontwikkelaars bevelen geen specifieke FTC-loggingoplossing aan, en je kunt beperkte mogelijkheden tegenkomen bij het gebruik van sommige loggingoplossingen.
+Er zijn verschillende externe logging- en telemetriebibliotheken voor FTC die data in een compatibel formaat opslaan. De ontwikkelaars van AdvantageScope raden geen specifieke FTC-bibliotheek aan; houd er wel rekening mee dat sommige oplossingen beperktere mogelijkheden bieden.
 
-De onderstaande lijst biedt een uitgangspunt, maar is niet uitputtend:
+De lijst hieronder geeft een overzicht om mee te beginnen, maar is niet compleet:
 
-- [**Road Runner**](https://rr.brott.dev/docs/v1-0/installation/): Genereert logbestanden om padplanningslogica te debuggen.
-- [**FTC Dashboard**](https://acmerobotics.github.io/ftc-dashboard/): Streamt live-telemetrie die compatibel is met zowel het eigen dashboard als AdvantageScope.
-- [**FateWeaver**](https://github.com/HermesFTC/FateWeaver): Maakt aangepaste datalogging mogelijk naar meerdere formaten, waaronder logbestanden en live-streaming.
+- [**Road Runner**](https://rr.brott.dev/docs/v1-0/installation/): Genereert logbestanden om padplanning te debuggen.
+- [**FTC Dashboard**](https://acmerobotics.github.io/ftc-dashboard/): Streamt live-telemetrie die zowel met het eigen dashboard als met AdvantageScope werkt.
+- [**FateWeaver**](https://github.com/HermesFTC/FateWeaver): Laat je eigen data loggen naar verschillende formaten, zowel in logbestanden als via live-streaming.
 - [**Koala Log**](https://github.com/Koala-Log/Koala-Log): Slaat data op in het WPILOG-formaat met behulp van annotaties.
-- **PsiKit**: Een logging- en herhalingsframework voor FTC geïnspireerd op AdvantageKit.
+- **PsiKit**: Een logging- en replayframework voor FTC, geïnspireerd op AdvantageKit.
 
 :::warning
-Teams moeten ervoor zorgen dat ze tijdens wedstrijden aan regel R704 voldoen. Externe telemetriediensten zoals FTC Dashboard zijn verboden wanneer er tijdens wedstrijden verbinding wordt gemaakt via wifi.
+Let erop dat je tijdens wedstrijden voldoet aan regel R704. Externe telemetriediensten zoals FTC Dashboard zijn tijdens wedstrijden verboden als je via wifi verbonden bent.
 :::
 
 ### AdvantageScope Lite voor FTC {#advantagescope-lite-for-ftc}
 
-Er is een onofficiële distributie van [AdvantageScope Lite](/more-features/advantagescope-lite) beschikbaar die is geoptimaliseerd voor FTC: [**AdvantageScope Lite voor REV Control System**](https://github.com/j5155/AdvantageScope-Lite-FTC). Deze distributie is onofficieel en wordt niet ondersteund door de ontwikkelaars van AdvantageScope.
+Er is ook een onofficiële versie van [AdvantageScope Lite](/more-features/advantagescope-lite) die speciaal voor FTC is aangepast: [**AdvantageScope Lite voor REV Control System**](https://github.com/j5155/AdvantageScope-Lite-FTC). Deze versie is onofficieel en wordt niet door de ontwikkelaars van AdvantageScope ondersteund.
 
-Terwijl de standaard [AdvantageScope Lite](/more-features/advantagescope-lite) een web-app is die is ontworpen voor gebruik op Systemcore en het FIRST Driver Station, is de onofficiële FTC-distributie specifiek aangepast voor direct gebruik op het bestaande FTC-besturingssysteem. Het biedt native ondersteuning voor het live bekijken van data via het FTC Dashboard-protocol zonder dat er aanvullende software nodig is.
+De gewone [AdvantageScope Lite](/more-features/advantagescope-lite) is een webapp voor Systemcore en het FIRST Driver Station, terwijl deze onofficiële FTC-versie speciaal is aangepast om direct op het huidige FTC-besturingssysteem te draaien. Je kunt er zonder extra software live data mee bekijken via het FTC Dashboard-protocol.

@@ -2,59 +2,59 @@
 
 ## Formatos compatibles {#supported-formats}
 
-- **WPILOG (.wpilog)** - Producido por el [registro de datos integrado](https://docs.wpilib.org/es/stable/docs/software/telemetry/datalog.html) de WPILib y AdvantageKit. [URCL](/more-features/urcl) se puede utilizar para capturar señales de los controladores de motores REV a un archivo WPILOG.
-- **Hoot (.hoot)** - Producido por el [registrador de señales](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) Phoenix 6 de CTRE.
-- **REVLOG (.revlog)** - Producido por el [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) de REV Robotics.
-- **Road Runner (.log)** - Producido por la biblioteca [Road Runner](https://github.com/acmerobotics/road-runner) para FTC.
-- **CSV (.csv)** - Valores separados por comas, que coinciden con el formato [exportado](/overview/log-files/export) por AdvantageScope en los modos "CSV (Tabla)" o "CSV (Lista)". Consulta [aquí](#csv-formatting) para obtener más detalles.
-- **Registros de Driver Station de NI (.dslog y .dsevents)** - Heredado, producido por la [Driver Station de FRC](https://docs.wpilib.org/es/stable/docs/software/driverstation/driver-station.html) de NI (2010-2026). AdvantageScope busca automáticamente el archivo de registro correspondiente al abrir cualquier tipo de registro.
-- **RLOG (.rlog)** - Heredado, producido por AdvantageKit 2022.
+- **WPILOG (.wpilog)** - Generado por el [registro de datos integrado](https://docs.wpilib.org/es/stable/docs/software/telemetry/datalog.html) de WPILib y por AdvantageKit. También puedes usar [URCL](/more-features/urcl) para guardar señales de controladores de motores REV en un archivo WPILOG.
+- **Hoot (.hoot)** - Generado por el [Signal Logger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) de Phoenix 6 de CTRE.
+- **REVLOG (.revlog)** - Generado por [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) de REV Robotics.
+- **Road Runner (.log)** - Generado por la biblioteca [Road Runner](https://github.com/acmerobotics/road-runner) para FTC.
+- **CSV (.csv)** - Valores separados por comas que siguen el mismo formato [exportado](/overview/log-files/export) por AdvantageScope en los modos "CSV (Tabla)" o "CSV (Lista)". Consulta [esta sección](#csv-formatting) para ver los detalles.
+- **Registros de NI Driver Station (.dslog y .dsevents)** - Formato heredado generado por la [Driver Station de FRC](https://docs.wpilib.org/es/stable/docs/software/driverstation/driver-station.html) de NI (2010-2026). Al abrir cualquiera de los dos archivos, AdvantageScope busca automáticamente su archivo compañero.
+- **RLOG (.rlog)** - Formato heredado generado por AdvantageKit 2022.
 
 :::info
-Los archivos de registro de Hoot solo se pueden abrir después de aceptar el [acuerdo de licencia de usuario final](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt) de CTRE. AdvantageScope muestra un mensaje para confirmar la aceptación de estos términos al abrir un archivo de registro de Hoot por primera vez.
+Para poder abrir archivos Hoot primero debes aceptar el [acuerdo de licencia de usuario final](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt) de CTRE. La primera vez que abras un archivo Hoot, AdvantageScope te mostrará un aviso para confirmar que aceptas los términos.
 :::
 
 ## Apertura de registros {#opening-logs}
 
-En la barra de menú, haz clic en `Archivo` > `Abrir registro(s)...` (File > Open Log(s)...), luego elige uno o más archivos de registro del disco local. Arrastrar un archivo de registro desde el explorador de archivos del sistema al ícono o a la ventana de AdvantageScope también hace que se abra.
+En la barra de menú, haz clic en `Archivo` > `Abrir registro(s)...` y elige uno o más archivos de registro en tu computadora. También puedes arrastrar un archivo desde el explorador de archivos directamente sobre el ícono o la ventana de AdvantageScope.
 
 :::info
-Si se abren varios archivos simultáneamente, las marcas de tiempo se alinearán automáticamente. Esto permite una fácil comparación de archivos de registro de múltiples fuentes. Consulta la página de [Marcas de tiempo](/more-features/timestamps) para obtener detalles sobre las opciones de visualización de marcas de tiempo.
+Si abres varios archivos a la vez, sus marcas de tiempo se alinearán automáticamente para que puedas comparar registros de distintas fuentes sin esfuerzo. Revisa la página de [Marcas de tiempo](/more-features/timestamps) para ver las opciones de visualización.
 :::
 
 <img src="/img/overview/log-files/open-file-1.webp" alt="Apertura de un registro guardado" />
 
-_En la imagen de arriba se muestra la interfaz en inglés._
+_La imagen de arriba muestra la interfaz en inglés._
 
 ## Agregar nuevos registros {#adding-new-logs}
 
-Después de abrir un archivo de registro, se pueden agregar fácilmente registros adicionales a la visualización. Las marcas de tiempo se realinearán automáticamente para sincronizarse con los datos existentes.
+Una vez que ya tienes un registro abierto, puedes sumar otros archivos a la misma visualización; sus marcas de tiempo se ajustarán automáticamente para sincronizarse con los datos actuales.
 
-En la barra de menú, haz clic en `Archivo` > `Agregar nuevo(s) registro(s)...`, luego elige uno o más archivos de registro para agregar a la visualización actual. Los campos de cada registro se registrarán en tablas denominadas `Log0`, `Log1`, etc.
+Haz clic en `Archivo` > `Agregar nuevo(s) registro(s)...` en la barra de menú y selecciona los archivos que quieras incorporar. Los campos de cada archivo nuevo aparecerán agrupados en tablas llamadas `Log0`, `Log1`, etc.
 
 ## Descarga desde el robot {#downloading-from-the-robot}
 
 <details>
 <summary>Configuración</summary>
 
-Abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS). Actualiza la dirección del robot y la carpeta de registro.
+Abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS), y actualiza la dirección del robot y la ruta de registros del robot.
 
 <img src="/img/prefs_es-419.webp" alt="Diagrama de preferencias" height="450" />
 </details>
 
-Haz clic en `Archivo` > `Descargar registros...` para abrir la ventana de descarga. La descarga de registros es compatible con Systemcore y el roboRIO. Una vez conectado al robot, los registros disponibles se muestran con el más reciente en la parte superior. Selecciona uno o más archivos o carpetas de registro para descargar (haz clic y presiona shift para seleccionar un rango o **cmd/ctrl + A** para seleccionar todos). Luego haz clic en el símbolo ↓ y selecciona una ubicación de guardado.
+Haz clic en `Archivo` > `Descargar registros...` para abrir la ventana de descarga. La descarga de registros funciona tanto con Systemcore como con el roboRIO. Al conectarse al robot, verás los registros disponibles ordenados del más reciente al más antiguo. Selecciona los archivos o carpetas que quieras bajar (usa Shift + clic para elegir un rango o **cmd/ctrl + A** para seleccionarlos todos), haz clic en el ícono ↓ y elige dónde guardarlos.
 
 :::tip
-Al descargar varios archivos, AdvantageScope omite cualquiera que ya exista en la carpeta de destino.
+Cuando descargas varios archivos, AdvantageScope omite automáticamente los que ya existen en la carpeta de destino.
 :::
 
 <img src="/img/overview/log-files/open-file-2.webp" alt="Descarga de archivos de registro" height="350" />
 
-_En la imagen de arriba se muestra la interfaz en inglés._
+_La imagen de arriba muestra la interfaz en inglés._
 
 ## Formato CSV {#csv-formatting}
 
-Los nombres de las columnas CSV deben ser "Timestamp, Key, Value" o "Timestamp, (Key), (Key), etc". Los valores de las marcas de tiempo están en segundos. La lista a continuación muestra el formato esperado de los tipos de valores comunes. Ten en cuenta que exportar y volver a importar datos de registro como CSV es _con pérdida_, ya que CSV no admite tipos de campos complejos.
+Los encabezados de las columnas CSV deben ser "Timestamp, Key, Value" o "Timestamp, (Key), (Key), etc", con los valores de tiempo expresados en segundos. A continuación tienes el formato esperado para los tipos de datos más comunes. Ten en cuenta que exportar y volver a importar un registro en CSV implica _pérdida de información_, ya que CSV no admite tipos de campos complejos.
 
 - **Booleanos:** `true` o `false`
 - **Cadenas de texto (Strings):** `"(valor)"`

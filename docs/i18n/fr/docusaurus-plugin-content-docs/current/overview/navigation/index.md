@@ -1,53 +1,53 @@
 # 🧭 Navigation dans l'application {#app-navigation}
 
-La capture d'écran ci-dessous montre les éléments importants de la fenêtre principale d'AdvantageScope. L'apparence exacte diffère selon les systèmes d'exploitation.
+La capture d'écran ci-dessous présente les principaux éléments de la fenêtre d'AdvantageScope. Son apparence exacte varie selon votre système d'exploitation.
 
 <img src="/img/overview/navigation/navigation-1.webp" alt="Schéma de navigation" />
 
 _L'interface en anglais est illustrée ci-dessus._
 
-- La section rouge est la [barre latérale](#sidebar), qui liste les champs disponibles.
-- La section marron est la [barre d'onglets](#tab-bar), qui contrôle l'application et sert à basculer entre les vues.
-- La section bleue est le [volet de visualisation](#viewer-pane), qui affiche les données.
-- La section verte est le [panneau de contrôle](#control-pane), qui est utilisé pour ajuster la visualisation.
+- En rouge, la [barre latérale](#sidebar) liste les champs disponibles.
+- En marron, la [barre d'onglets](#tab-bar) regroupe les commandes de l'application et permet de passer d'une vue à l'autre.
+- En bleu, le [volet de visualisation](#viewer-pane) affiche vos données.
+- En vert, le [panneau de contrôle](#control-pane) permet de configurer la visualisation.
 
 :::tip
-Pour visualiser plusieurs fichiers journaux simultanément, cliquez sur `Fichier` > `Nouvelle fenêtre`.
+Pour consulter plusieurs fichiers journaux en même temps, cliquez sur `Fichier` > `Nouvelle fenêtre`.
 :::
 
 ## Barre latérale {#sidebar}
 
-À gauche se trouve la barre latérale avec la liste des tables et des champs disponibles. Les champs sélectionnables sont affichés en _italique_ et les tables intégrées (provenant de WPILib ou d'AdvantageKit) sont <u>soulignées</u>. Cliquez sur la flèche pour développer les tables imbriquées. **Faites glisser un champ unique** pour le sélectionner ou **maintenez la touche cmd/ctrl** enfoncée pour sélectionner une collection de champs en cliquant sur chacun d'eux. Commencez à faire glisser la collection de champs pour terminer la sélection.
+À gauche, la barre latérale affiche les tables et les champs disponibles. Les champs sélectionnables apparaissent en _italique_ et les tables intégrées (issues de WPILib ou d'AdvantageKit) sont <u>soulignées</u>. Cliquez sur la flèche pour déplier une table. **Faites glisser un champ** pour l'ajouter à une vue, ou **maintenez cmd/ctrl** tout en cliquant sur plusieurs champs avant de les faire glisser ensemble.
 
-Pour rechercher un champ, commencez à taper dans la zone de recherche. Une liste déroulante de champs s'affichera, puis le champ sélectionné sera mis en surbrillance dans la barre latérale et amené dans la vue.
+Pour trouver un champ rapidement, tapez son nom dans la zone de recherche. Une liste déroulante s'affiche : cliquez sur un résultat pour le mettre en surbrillance et y accéder directement dans la barre latérale.
 
 :::info
-Cliquez et faites glisser sur le bord droit pour redimensionner ou masquer la barre latérale. Double-cliquez pour activer ou désactiver la visibilité de la barre latérale.
+Faites glisser le bord droit pour redimensionner ou masquer la barre latérale, ou double-cliquez dessus pour l'afficher ou la masquer.
 :::
 
 ## Barre d'onglets {#tab-bar}
 
-Utilisez la barre d'onglets (bleue) pour basculer entre les différentes vues. Cette documentation est disponible à tout moment en cliquant sur l'icône 📖 à gauche. Pour exporter la disposition actuelle de l'onglet (et les paramètres associés), cliquez sur `Fichier` > `Exporter la disposition...` Pour importer une disposition à partir d'un fichier, cliquez sur `Fichier` > `Importer la disposition...`
+La barre d'onglets (en bleu) permet de naviguer entre vos différentes vues. Vous pouvez ouvrir cette documentation à tout moment en cliquant sur l'icône 📖 tout à gauche. Pour enregistrer la disposition actuelle de vos onglets et leurs réglages, cliquez sur `Fichier` > `Exporter la disposition...`. Pour en charger une depuis un fichier, cliquez sur `Fichier` > `Importer la disposition...`.
 
 :::info
-Les onglets peuvent être réorganisés en les faisant glisser, ou renommés en faisant un clic droit et en sélectionnant `Renommer...`
+Vous pouvez réorganiser les onglets par glisser-déposer, ou les renommer via un clic droit puis `Renommer l'onglet`.
 :::
 
-Les boutons de navigation (verts) en haut gèrent les onglets et contrôlent la lecture.
+Les boutons de navigation en haut (en vert) gèrent les onglets et la lecture :
 
-- **Bouton Plus :** Ouvre un menu déroulant pour créer un nouvel onglet.
-- **Bouton Fenêtre :** Crée une nouvelle fenêtre détachée avec l'onglet. Cette fonctionnalité peut être utilisée pour visualiser simultanément des données provenant de plusieurs onglets.
-- **Bouton X :** Ferme l'onglet actuel.
-- **Bouton Lecture :** Démarre et arrête la lecture en temps réel. _Faites un clic droit pour modifier la vitesse de lecture ou activer la lecture en boucle._
+- **Bouton Plus :** ouvre un menu pour ajouter un nouvel onglet.
+- **Bouton Fenêtre :** détache l'onglet dans une nouvelle fenêtre, pratique pour afficher plusieurs vues côte à côte.
+- **Bouton X :** ferme l'onglet actif.
+- **Bouton Lecture :** lance et met en pause la lecture en temps réel. _Faites un clic droit pour changer la vitesse de lecture ou activer la boucle._
 
 ## Volet de visualisation {#viewer-pane}
 
-Le volet de visualisation est l'endroit où les données sont présentées pour chaque type d'onglet. Consultez la documentation de référence des onglets pour plus de détails sur le volet de visualisation de chaque onglet. Cette vue peut être déplacée vers une fenêtre distincte en cliquant sur le bouton de détachement dans la barre d'onglets.
+Le volet de visualisation est la zone principale où s'affichent les données de chaque onglet. Consultez la référence des onglets pour découvrir le fonctionnement propre à chaque vue. Vous pouvez détacher ce volet dans une fenêtre séparée en cliquant sur le bouton de détachement dans la barre d'onglets.
 
 ## Panneau de contrôle {#control-pane}
 
-Le panneau de contrôle est utilisé pour sélectionner des champs à visualiser et gérer d'autres options. Consultez la documentation de référence des onglets pour plus de détails sur les options disponibles pour chaque onglet.
+Le panneau de contrôle sert à choisir les champs à afficher et à régler les options de la vue. Consultez la référence des onglets pour connaître les réglages propres à chaque type d'onglet.
 
 :::info
-Cliquez et faites glisser sur le bord supérieur pour redimensionner ou masquer le panneau de contrôle. Double-cliquez pour activer ou désactiver la visibilité du panneau de contrôle.
+Faites glisser le bord supérieur pour redimensionner ou masquer le panneau de contrôle, ou double-cliquez dessus pour l'afficher ou la masquer.
 :::

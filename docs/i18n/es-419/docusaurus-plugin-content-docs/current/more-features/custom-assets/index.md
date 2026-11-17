@@ -1,14 +1,16 @@
 # ⚙️ Recursos personalizados {#custom-assets}
 
-AdvantageScope usa un conjunto predeterminado de imágenes planas de campo, modelos de campo, modelos de robot y configuraciones de joysticks. Los recursos simples (por ejemplo, los campos "Perenne") se incluyen en la instalación inicial. Los recursos detallados (por ejemplo, campos específicos de la temporada) se descargan automáticamente en segundo plano cuando AdvantageScope está conectado a Internet. Para verificar el estado de estas descargas, haz clic en `App`/`AdvantageScope` > `Estado de descarga de recursos...`. El conjunto de recursos se puede personalizar para agregar más opciones si se desea. Para abrir la carpeta de recursos del usuario, haz clic en `App`/`AdvantageScope` > `Mostrar carpeta de recursos`. Los formatos esperados para los recursos se definen a continuación. Consulta el conjunto predeterminado de [recursos detallados](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases) y [recursos agrupados](https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/bundledAssets) como referencia.
+AdvantageScope viene con un paquete predeterminado de imágenes planas de campos, modelos 3D de campos y robots, y diseños de joysticks. Los recursos básicos (como los campos "Perenne") ya vienen incluidos en la instalación, mientras que los más detallados (como los campos de cada temporada) se descargan automáticamente en segundo plano cuando tienes conexión a Internet. Puedes revisar cómo va esa descarga en `App`/`AdvantageScope` > `Estado de descarga de recursos...`.
+
+Si quieres agregar tus propios recursos, puedes personalizar el paquete. Para abrir la carpeta de recursos del usuario, ve a `App`/`AdvantageScope` > `Mostrar carpeta de recursos`. Más abajo encontrarás el formato que espera AdvantageScope. También puedes tomar como referencia los [recursos detallados](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases) y los [recursos incluidos](https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/bundledAssets) predeterminados.
 
 :::tip
-Para cargar recursos desde una ubicación alternativa, haz clic en `App`/`AdvantageScope` > `Usar carpeta de recursos personalizada`. La carpeta seleccionada debe ser la _carpeta principal_ donde se podrían colocar múltiples recursos en subcarpetas separadas. Esta función permite almacenar recursos personalizados bajo control de versiones junto con el código del robot.
+Si prefieres cargar recursos desde otra ubicación, ve a `App`/`AdvantageScope` > `Usar carpeta de recursos personalizada` y selecciona la _carpeta raíz_ donde tengas las subcarpetas de cada recurso. Esto es muy útil para guardar tus recursos personalizados bajo control de versiones junto con el código del robot.
 :::
 
 ## Formato general {#general-format}
 
-Todos los recursos se almacenan en carpetas con la convención de nomenclatura "TIPO_NOMBRE". El NOMBRE utilizado para la carpeta no es mostrado por AdvantageScope. Los posibles tipos de recursos son:
+Todos los recursos van dentro de carpetas nombradas con el formato `"TIPO_NOMBRE"`. AdvantageScope no muestra el `NOMBRE` de la carpeta en la interfaz. Los tipos válidos son:
 
 - "Field2d"
 - "Field3d"
@@ -16,16 +18,16 @@ Todos los recursos se almacenan en carpetas con la convención de nomenclatura "
 - "Joystick"
 
 :::info
-Ejemplos de nombres de carpetas serían "Field2d_2023Field", "Joystick_OperatorButtons" o "Robot_Dozer".
+Algunos ejemplos de nombres de carpeta son "Field2d_2023Field", "Joystick_OperatorButtons" o "Robot_Dozer".
 :::
 
-Esta carpeta debe contener un archivo llamado "config.json" y uno o más archivos de recursos, como se describe a continuación. El archivo de configuración siempre incluye el nombre del recurso que AdvantageScope mostrará. Este nombre debe ser único para cada tipo de recurso. Los recursos también pueden incluir opcionalmente un objeto "locales" que asigna claves de idioma (p. ej., "en-US", "fr", "zh-CN") a nombres traducidos. El "name" a nivel raíz se trata como el nombre predeterminado si no se proporciona el idioma seleccionado o si se omite "locales".
+Cada carpeta debe incluir un archivo `config.json` y uno o más archivos de recursos, según el tipo. El archivo de configuración siempre define el nombre que mostrará AdvantageScope, y ese nombre debe ser único dentro de su tipo. De forma opcional, puedes agregar un objeto `"locales"` que asocie códigos de idioma (como `"es-419"`, `"fr"` o `"zh-CN"`) con nombres traducidos. Si no se encuentra el idioma activo o se omite `"locales"`, se usará el `"name"` principal como nombre predeterminado.
 
 ```json
 {
   "name": string, // Nombre predeterminado único, obligatorio para todos los tipos de recursos
-  "locales": { [locale: string]: string } // Nombres localizados opcionales que asignan códigos de idioma (p. ej., "en-US", "fr") a traducciones
-  ... // Configuración dependiente del tipo, descrita a continuación
+  "locales": { [locale: string]: string } // Nombres localizados opcionales que asocian códigos de idioma (p. ej., "es-419", "fr") con traducciones
+  ... // Configuración según el tipo de recurso, explicada abajo
 }
 ```
 
@@ -37,23 +39,23 @@ Esta carpeta debe contener un archivo llamado "config.json" y uno o más archivo
 
 ### Descripción general {#overview}
 
-Se debe incluir un modelo en la carpeta con el nombre "model.glb". Los archivos CAD deben convertirse a glTF; consulta [esta página](gltf-convert) para obtener más detalles. El archivo de configuración debe tener el siguiente formato:
+La carpeta debe contener el modelo con el nombre `"model.glb"`. Si partes de un archivo CAD, primero debes convertirlo a glTF; revisa [esta página](gltf-convert) para ver cómo hacerlo. El archivo `config.json` debe seguir este formato:
 
 ```json
 {
-  "name": string // Nombre único, requerido para todos los tipos de recursos
+  "name": string // Nombre único, obligatorio para todos los tipos de recursos
   "locales": { [locale: string]: string } // Traducciones opcionales para el nombre del recurso
-  "isFTC": boolean // Si el modelo está destinado a usarse en campos de FTC en lugar de campos de FRC (predeterminado "false")
-  "disableSimplification": boolean // Si se debe deshabilitar la simplificación del modelo, opcional
-  "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Secuencia de rotaciones a lo largo de los ejes x, y, y z
+  "isFTC": boolean // Indica si el modelo es para campos de FTC en lugar de FRC (predeterminado "false")
+  "disableSimplification": boolean // Desactiva la simplificación del modelo (opcional)
+  "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Secuencia de rotaciones en los ejes X, Y y Z
   "position": [number, number, number] // Desplazamiento de posición en metros, aplicado después de la rotación
-  "cameras": [ // Posiciones fijas de la cámara, puede estar vacío
+  "cameras": [ // Posiciones fijas de cámaras (puede quedar vacío)
     {
       "name": string // Nombre de la cámara
       "locales": { [locale: string]: string } // Traducciones opcionales para el nombre de la cámara
-      "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Secuencia de rotaciones a lo largo de los ejes x, y, y z
-      "position": [number, number, number] // Desplazamiento de posición en metros relativo al robot, aplicado después de la rotación
-      "resolution": [number, number] // Resolución en píxeles, utilizada para establecer la relación de aspecto fija
+      "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Secuencia de rotaciones en los ejes X, Y y Z
+      "position": [number, number, number] // Desplazamiento de posición en metros respecto al robot, aplicado después de la rotación
+      "resolution": [number, number] // Resolución en píxeles, usada para definir la relación de aspecto fija
       "fov": number // Campo de visión horizontal en grados
     }
   ],
@@ -61,67 +63,74 @@ Se debe incluir un modelo en la carpeta con el nombre "model.glb". Los archivos 
 }
 ```
 
-La forma más sencilla de determinar los valores de posición y rotación adecuados es por ensayo y error. Recomendamos ajustar la rotación antes que la posición, ya que las transformaciones se aplican en este orden.
+Para encontrar los valores correctos de posición y rotación, lo más práctico es probar y ajustar. Te recomendamos ajustar primero las rotaciones y luego la posición, ya que las transformaciones se aplican en ese orden.
 
 :::info
-AdvantageScope simplifica la geometría del modelo automáticamente para mejorar el rendimiento, donde el nivel de detalle depende del [modo de renderizado](/tab-reference/3d-field#rendering-modes) seleccionado. En los casos en que la simplificación del modelo produce efectos no deseados con recursos personalizados, se pueden usar dos soluciones:
+AdvantageScope simplifica automáticamente la geometría de los modelos para mejorar el rendimiento, ajustando el nivel de detalle según el [modo de renderizado](/tab-reference/3d-field#rendering-modes) elegido. Si esta simplificación causa problemas visuales en un recurso personalizado, tienes dos opciones:
 
-- Para deshabilitar la eliminación automática de una malla en particular, incluye la cadena `NOSIMPLIFY` en el nombre de la malla.
-- Para deshabilitar la simplificación del modelo para todo un modelo de robot, establece la opción `disableSimplification` en la configuración a `true`.
+- Para evitar que se elimine una malla específica, incluye el texto `NOSIMPLIFY` en el nombre de esa malla.
+- Para desactivar la simplificación en todo el modelo del robot, pon `disableSimplification` en `true` dentro de la configuración.
 
 :::
 
 ### Componentes articulados {#articulated-components}
 
 :::warning
-Configurar componentes articulados puede ser complejo y llevar mucho tiempo. Considera utilizar el soporte 3D [`Mechanism2d`](/tab-reference/3d-field#2d-mechanisms) de AdvantageScope, que ofrece un enfoque más simplificado para **visualizar mecanismos en el campo 3D**.
+Configurar componentes articulados puede ser complejo y llevar bastante tiempo. Antes de hacerlo, evalúa usar el soporte 3D de [`Mechanism2d`](/tab-reference/3d-field#2d-mechanisms) de AdvantageScope, que ofrece una forma mucho más directa de **visualizar mecanismos en el campo 3D**.
 :::
 
-Los modelos de robots pueden contener componentes articulados para visualizar datos de mecanismos (consulta [aquí](/tab-reference/3d-field) para obtener detalles). El modelo glTF base no debe incluir componentes, y luego cada componente debe exportarse como un modelo glTF separado. Los modelos de componentes siguen la convención de nomenclatura "model_INDEX.glb", por lo que el primer componente articulado sería "model_0.glb"
+Los modelos de robots pueden incluir componentes articulados para animar mecanismos (consulta [aquí](/tab-reference/3d-field) para más detalles). El modelo glTF base no debe incluir estos componentes; cada parte móvil se exporta por separado siguiendo el nombre `"model_INDICE.glb"` (por ejemplo, el primer componente sería `"model_0.glb"`).
 
-La configuración del componente se proporciona en el archivo de configuración del robot. Se debe proporcionar un arreglo de componentes bajo la clave "components". Cuando el usuario no proporciona poses de componentes en AdvantageScope, los modelos de componentes se posicionarán utilizando las rotaciones y la posición predeterminadas del robot (ver arriba). Cuando el usuario proporciona poses de componentes, se aplican las rotaciones y la posición "puestas a cero" para llevar cada componente al origen del robot. Luego, se aplican las poses del usuario para mover cada componente a la ubicación correcta en el robot.
+La configuración de cada componente va en el `config.json` del robot, dentro de un arreglo bajo la clave `"components"`. Si no proporcionas poses de componentes en AdvantageScope, cada pieza se ubicará usando las rotaciones y la posición predeterminadas del robot. En cambio, cuando sí envías poses de componentes, AdvantageScope aplica primero las rotaciones y la posición "en cero" (`zeroedRotations` y `zeroedPosition`) para llevar cada pieza al origen del robot, y luego aplica tus poses para moverla a su lugar real.
 
 :::tip
-Al colocar componentes 3D relativos al robot, el origen del sistema de coordenadas coincide con la pose publicada del robot. Ten en cuenta que esta pose generalmente usa una altura de cero, que es el plano del piso y NO la placa base del robot (para el movimiento típico del robot 2D).
+Al ubicar componentes 3D relativos al robot, el origen del sistema de coordenadas coincide con la pose publicada del robot. Recuerda que, en movimientos 2D típicos, esa pose suele tener altura cero en el plano del piso, NO en la base del chasis (bellypan).
 :::
 
 ```json
 "components": [
   {
-    "zeroedRotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Secuencia de rotaciones a lo largo de los ejes x, y, y z
-    "zeroedPosition": [number, number, number] // Desplazamiento de posición en metros relativo al robot, aplicado después de la rotación
+    "zeroedRotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Secuencia de rotaciones en los ejes X, Y y Z
+    "zeroedPosition": [number, number, number] // Desplazamiento de posición en metros respecto al robot, aplicado después de la rotación
   }
 ]
 ```
 
 #### Proceso de configuración {#setup-process}
 
-Para calibrar las posiciones de los componentes articulados, recomendamos el siguiente proceso:
+Para calibrar las posiciones de los componentes articulados, te recomendamos seguir estos pasos:
 
-1. Exporta el modelo base y los componentes en sus posiciones "predeterminadas" correctas. Así es como deben renderizarse si no se proporcionan poses de componentes en AdvantageScope.
-2. Publica una pose 2D puesta a cero desde el código del robot, luego selecciónala como la pose del robot en AdvantageScope. Cambia al campo 3D "Ejes", que muestra el origen del campo.
-3. Ajusta las rotaciones generales del robot (no de los componentes) hasta que el robot completo esté orientado correctamente. Luego, ajusta la posición general para llevar el robot completo al origen. Los componentes deben renderizarse en las mismas posiciones predeterminadas durante todo este proceso.
-4. Publica un arreglo de poses 3D puestas a cero desde el código del robot que coincida con la cantidad de componentes en el modelo, luego selecciónalo como el conjunto de poses de componentes en AdvantageScope.
-5. Ajusta las rotaciones, seguidas de las posiciones, para cada componente hasta que estén alineados con el origen. Por ejemplo, un segmento de brazo se alinearía con el pivote en el origen mientras apunta hacia adelante a lo largo del eje X.
-6. Publica las poses de los componentes reales desde el código del robot, que se basarán en los orígenes recién definidos para cada componente. Por ejemplo, la pose para un segmento de brazo se colocaría en la articulación del brazo apuntando en la dirección del segmento.
+1. Exporta el modelo base y todos los componentes en sus posiciones "predeterminadas" correctas (así es como se verán cuando no envíes poses de componentes en AdvantageScope).
+
+2. Publica una pose 2D en cero desde el código del robot y selecciónala como pose del robot en AdvantageScope. Cambia al campo 3D "Ejes" para ver claramente el origen del campo.
+
+3. Ajusta las rotaciones generales del robot (no las de los componentes) hasta que quede bien orientado, y luego ajusta su posición general para centrarlo en el origen. Durante este paso, los componentes deben mantenerse en sus posiciones predeterminadas.
+
+4. Publica desde el código del robot un arreglo de poses 3D en cero con la misma cantidad de elementos que componentes tenga tu modelo, y selecciónalo como conjunto de poses de componentes en AdvantageScope.
+
+5. Ajusta primero las rotaciones y luego la posición de cada componente hasta alinearlo con el origen. Por ejemplo, el pivote de un brazo debe quedar en el origen con el brazo apuntando hacia adelante sobre el eje X.
+
+6. Por último, publica las poses reales de los componentes desde el código del robot, tomando como referencia el origen que acabas de definir para cada uno. Siguiendo el ejemplo, la pose del brazo iría en su articulación apuntando en la dirección del segmento.
 
 ## Joysticks {#joysticks}
 
-Se debe incluir una imagen en la carpeta con el nombre "image.png". El archivo de configuración debe tener el siguiente formato:
+La carpeta debe incluir una imagen llamada `"image.png"`. El archivo `config.json` debe tener este formato:
 
 ```json
 {
-  "name": string // Nombre único, requerido para todos los tipos de recursos
+  "name": string // Nombre único, obligatorio para todos los tipos de recursos
   "locales": { [locale: string]: string } // Traducciones opcionales para el nombre del recurso
-  "components": [...] // Arreglo de configuraciones de componentes, ver a continuación
+  "components": [...] // Arreglo con la configuración de cada componente (ver abajo)
 }
 ```
 
 :::info
-Los botones, joysticks y valores de los ejes son compatibles tanto con las vinculaciones de [SDL](https://www.libsdl.org) (usadas por la FIRST Driver Station actual) como con las vinculaciones de NI (usadas por la antigua NI FRC Driver Station). Se debe proporcionar al menos un conjunto de vinculaciones para cada componente. Para las vinculaciones de NI, AdvantageScope es compatible con versiones anteriores de las claves de configuración antiguas sin prefijo (por ejemplo, `sourceIndex`). **Todos los nuevos joysticks deben usar vinculaciones SDL explícitas (por ejemplo, `sdlSourceIndex`) para compatibilidad con la FIRST Driver Station actual.**
+Los botones, joysticks y ejes son compatibles tanto con las asignaciones de [SDL](https://www.libsdl.org) (que usa la FIRST Driver Station actual) como con las de NI (de la antigua NI FRC Driver Station). Cada componente debe tener al menos un conjunto de asignaciones.
+
+Para las asignaciones de NI, AdvantageScope mantiene compatibilidad con las claves antiguas sin prefijo (como `sourceIndex`). **Todo joystick nuevo debe usar asignaciones SDL explícitas (como `sdlSourceIndex`) para funcionar bien con la FIRST Driver Station actual.**
 :::
 
-### Un solo botón / valor de POV {#single-button-pov-value}
+### Botón individual / valor de POV {#single-button-pov-value}
 
 ```json
 {
@@ -131,9 +140,9 @@ Los botones, joysticks y valores de los ejes son compatibles tanto con las vincu
   "centerPx": [number, number]
   "sizePx": [number, number]
   "sdlSourceIndex": number
-  "sdlSourcePov": string // Opcional, puede ser "up", "right", "down", o "left". Si se proporciona, "sdlSourceIndex" será el índice del POV a leer.
+  "sdlSourcePov": string // Opcional, puede ser "up", "right", "down" o "left". Si se indica, "sdlSourceIndex" será el índice del POV que se leerá.
 
-  // Vinculaciones alternativas para la NI Driver Station (opcional)
+  // Asignaciones alternativas para la NI Driver Station (opcional)
   "niSourceIndex": number
   "niSourcePov": string
 }
@@ -143,17 +152,17 @@ Los botones, joysticks y valores de los ejes son compatibles tanto con las vincu
 
 ```json
 {
-  "type": "joystick" // Un joystick que se mueve en dos dimensiones
+  "type": "joystick" // Joystick con movimiento en dos dimensiones
   "isYellow": boolean
   "centerPx": [number, number]
   "radiusPx": number
   "sdlXSourceIndex": number
-  "sdlXSourceInverted": boolean // No invertido: derecha = positivo
+  "sdlXSourceInverted": boolean // Sin invertir: derecha = positivo
   "sdlYSourceIndex": number
-  "sdlYSourceInverted": boolean // No invertido: arriba = positivo
+  "sdlYSourceInverted": boolean // Sin invertir: arriba = positivo
   "sdlButtonSourceIndex": number // Opcional
 
-  // Vinculaciones alternativas para la NI Driver Station (opcional)
+  // Asignaciones alternativas para la NI Driver Station (opcional)
   "niXSourceIndex": number
   "niXSourceInverted": boolean
   "niYSourceIndex": number
@@ -162,18 +171,18 @@ Los botones, joysticks y valores de los ejes son compatibles tanto con las vincu
 }
 ```
 
-### Un solo eje {#single-axis}
+### Eje individual {#single-axis}
 
 ```json
 {
-  "type": "axis" // Un valor de un solo eje
+  "type": "axis" // Valor de un solo eje
   "isYellow": boolean
   "centerPx": [number, number]
   "sizePx": [number, number]
   "sdlSourceIndex": number,
-  "sdlSourceRange": [number, number] // Mínimo mayor que máximo para invertir
+  "sdlSourceRange": [number, number] // Pon el mínimo mayor que el máximo para invertir
 
-  // Vinculaciones alternativas para la NI Driver Station (opcional)
+  // Asignaciones alternativas para la NI Driver Station (opcional)
   "niSourceIndex": number,
   "niSourceRange": [number, number]
 }
@@ -183,7 +192,7 @@ Los botones, joysticks y valores de los ejes son compatibles tanto con las vincu
 
 ```json
 {
-  "type": "touchpad" // Un panel táctil
+  "type": "touchpad" // Panel táctil
   "isYellow": boolean
   "centerPx": [number, number]
   "sizePx": [number, number]
@@ -193,64 +202,66 @@ Los botones, joysticks y valores de los ejes son compatibles tanto con las vincu
 
 ## Imágenes planas del campo {#flat-field-images}
 
-Se debe incluir una imagen en la carpeta con el nombre "image.png". Debe orientarse con la alianza roja a la izquierda. El archivo de configuración debe tener el siguiente formato:
+La carpeta debe incluir una imagen llamada `"image.png"`, orientada con la alianza roja a la izquierda. El archivo `config.json` debe tener este formato:
 
 ```json
 {
-  "name": string // Nombre único, requerido para todos los tipos de recursos
+  "name": string // Nombre único, obligatorio para todos los tipos de recursos
   "locales": { [locale: string]: string } // Traducciones opcionales para el nombre del recurso
-  "isFTC": boolean // Si este es un campo de FTC en lugar de un campo de FRC
-  "coordinateSystem": // El sistema de coordenadas predeterminado a utilizar (ver a continuación)
+  "isFTC": boolean // Indica si es un campo de FTC en lugar de FRC
+  "coordinateSystem": // Sistema de coordenadas predeterminado (ver abajo)
       "wall-alliance" |  // FRC 2022
       "wall-blue" |      // FRC 2023-2026
       "center-rotated" | // FTC tradicional
       "center-red"       // Systemcore
-  "useGrid": boolean // Si se deben renderizar líneas de cuadrícula si este campo es uno de FTC (predeterminado "true")
-  "sourceUrl": string // Enlace al archivo original, opcional
-  "topLeft": [number, number] // Coordenada de píxel (origen en la parte superior izquierda)
-  "bottomRight": [number, number] // Coordenada de píxel (origen en la parte superior izquierda)
+  "useGrid": boolean // Dibuja líneas de cuadrícula si el campo es de FTC (predeterminado "true")
+  "sourceUrl": string // Enlace al archivo original (opcional)
+  "topLeft": [number, number] // Coordenada en píxeles (origen arriba a la izquierda)
+  "bottomRight": [number, number] // Coordenada en píxeles (origen arriba a la izquierda)
   "widthInches": number // Ancho real del campo (lado largo)
-  "heightInches": number // Altura real del campo (lado corto)
+  "heightInches": number // Alto real del campo (lado corto)
 }
 ```
 
 ## Modelos de campos 3D {#3d-field-models}
 
-Se debe incluir un modelo en la carpeta con el nombre "model.glb". Después de aplicar todas las rotaciones, el campo debe orientarse con la alianza roja a la izquierda. Los archivos CAD deben convertirse a glTF; consulta [esta página](gltf-convert) para obtener más detalles. Los modelos de elementos de juego siguen la convención de nomenclatura "model_INDEX.glb" según el orden en que aparecen en el arreglo "gamePieces". Las AprilTags declaradas aquí siempre se colocan utilizando un sistema de coordenadas [centro/rojo](/more-features/coordinate-systems#center-red), independientemente de cualquier otra opción de configuración. El archivo de configuración debe tener el siguiente formato:
+La carpeta debe incluir el modelo con el nombre `"model.glb"`. Una vez aplicadas todas las rotaciones, el campo debe quedar orientado con la alianza roja a la izquierda. Si partes de un archivo CAD, primero conviértelo a glTF como se explica [aquí](gltf-convert). Los modelos de elementos de juego se nombran `"model_INDICE.glb"` según el orden en que aparecen en el arreglo `"gamePieces"`. Los AprilTags definidos aquí siempre se ubican con el sistema de coordenadas [centro/rojo](/more-features/coordinate-systems#center-red), sin importar otras opciones de configuración.
+
+El archivo `config.json` debe seguir este formato:
 
 ```json
 {
-  "name": string // Nombre único, requerido para todos los tipos de recursos
+  "name": string // Nombre único, obligatorio para todos los tipos de recursos
   "locales": { [locale: string]: string } // Traducciones opcionales para el nombre del recurso
-  "isFTC": boolean // Si este es un campo de FTC en lugar de un campo de FRC
-  "coordinateSystem": // El sistema de coordenadas predeterminado a utilizar (ver a continuación)
+  "isFTC": boolean // Indica si es un campo de FTC en lugar de FRC
+  "coordinateSystem": // Sistema de coordenadas predeterminado (ver abajo)
       "wall-alliance" |  // FRC 2022
       "wall-blue" |      // FRC 2023-2026
       "center-rotated" | // FTC tradicional
       "center-red"       // Systemcore
-  "useGrid": boolean // Si se deben renderizar líneas de cuadrícula si este campo es uno de FTC (predeterminado "true")
-  "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Secuencia de rotaciones a lo largo de los ejes x, y, y z
+  "useGrid": boolean // Dibuja líneas de cuadrícula si el campo es de FTC (predeterminado "true")
+  "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Secuencia de rotaciones en los ejes X, Y y Z
   "widthInches": number // Ancho real del campo (lado largo)
-  "heightInches": number // Altura real del campo (lado corto)
-  "defaultOrigin": "auto" | "blue" | "red" // Ubicación de origen predeterminada, "auto" si no se especifica
+  "heightInches": number // Alto real del campo (lado corto)
+  "defaultOrigin": "auto" | "blue" | "red" // Origen predeterminado; "auto" si no se especifica
   "driverStations": [
-    [number, number] // Posiciones de la estación del conductor (X e Y en metros relativos al centro del campo)
-    ...              // Para FRC, 6 elementos ordenados [B1, B2, B3, R1, R2, R3]. Para FTC, 4 elementos ordenados [BL, BR, RL, RR].
+    [number, number] // Posiciones de la Driver Station (X e Y en metros respecto al centro del campo)
+    ...              // En FRC, 6 elementos en orden [B1, B2, B3, R1, R2, R3]. En FTC, 4 elementos en orden [BL, BR, RL, RR].
   ]
   "gamePieces": [ // Lista de tipos de elementos de juego
     {
       "name": string // Nombre del elemento de juego
       "locales": { [locale: string]: string } // Traducciones opcionales para el nombre del elemento de juego
-      "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Secuencia de rotaciones a lo largo de los ejes x, y, y z
+      "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Secuencia de rotaciones en los ejes X, Y y Z
       "position": [number, number, number] // Desplazamiento de posición en metros, aplicado después de la rotación
-      "stagedObjects": string[] // Nombres de los objetos de elementos de juego posicionados en el campo, para ocultar si se suministran poses de usuario
+      "stagedObjects": string[] // Nombres de los objetos colocados en el campo que se ocultarán si envías poses desde el código
     },
     ...
   ],
-  "aprilTags": [ // Lista de modelos suplementarios de AprilTag (si no forman parte del modelo de campo)
-    "variant": string // Formato como "FAMILY-SIZEin" donde "FAMILY" es "36h11" o "16h5" y "SIZE" es la longitud de la sección negra
+  "aprilTags": [ // Lista de modelos adicionales de AprilTag (si no vienen incluidos en el modelo del campo)
+    "variant": string // Formato "FAMILIA-TAMAÑOin", donde "FAMILIA" es "36h11" o "16h5" y "TAMAÑO" es el lado del cuadro negro
     "id": number
-    "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Secuencia de rotaciones a lo largo de los ejes x, y, y z
+    "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Secuencia de rotaciones en los ejes X, Y y Z
     "position": [number, number, number] // Desplazamiento de posición en metros, aplicado después de la rotación
   ]
 }

@@ -7,20 +7,20 @@ import TabItem from '@theme/TabItem';
 
 # 🦀 Swerve {#swerve}
 
-A guia Swerve mostra o estado de quatro módulos Swerve, incluindo os vetores de velocidade, posições de repouso, rotação do robô e velocidades do chassi.
+A guia Swerve mostra o estado dos quatro módulos swerve, incluindo vetores de velocidade, posições de repouso, rotação do robô e velocidades do chassi.
 
-<img src="/img/tab-reference/swerve-1.webp" alt="Visão geral da aba de swerve" />
+<img src="/img/tab-reference/swerve-1.webp" alt="Visão geral da guia de swerve" />
 
 _A interface em inglês é exibida acima._
 
 <details>
 <summary>Controles da linha do tempo</summary>
 
-A linha do tempo é usada para controlar a reprodução e a visualização. Clicar na linha do tempo seleciona um tempo, e clicar com o botão direito desmarca. O tempo selecionado é sincronizado em todas as guias, tornando fácil encontrar rapidamente esse local em outras visualizações.
+A linha do tempo controla a reprodução e a visualização. Clique na linha do tempo para selecionar um instante e clique com o botão direito para desmarcar. O instante selecionado fica sincronizado em todas as guias, facilitando encontrar o mesmo ponto em outras visualizações.
 
-Seções amarelas indicam quando o robô está em autônomo, seções azuis indicam quando o robô está teleoperado e seções cinzas indicam quando o robô está no modo utility.
+Faixas amarelas indicam o período autônomo; faixas azuis, o teleoperado; e faixas cinzas, o modo utility.
 
-Para dar zoom, posicione o cursor sobre a linha do tempo e role para cima ou para baixo. Um intervalo também pode ser selecionado clicando e arrastando enquanto mantém `Shift` pressionado. Mova para a esquerda e para a direita rolando horizontalmente (em dispositivos suportados) ou clicando e arrastando na linha do tempo. Quando conectado ao vivo, rolar para a esquerda desbloqueia do tempo atual, e rolar totalmente para a direita bloqueia no tempo atual novamente. Pressione `Ctrl+\` para dar zoom no período em que o robô está habilitado.
+Para dar zoom, posicione o cursor sobre a linha do tempo e role para cima ou para baixo. Você também pode selecionar um intervalo clicando e arrastando com a tecla `Shift` pressionada. Para navegar para a esquerda e para a direita, role horizontalmente (em dispositivos compatíveis) ou clique e arraste a linha do tempo. Quando estiver conectado ao vivo, rolar para a esquerda destrava o acompanhamento do tempo atual, e rolar tudo para a direita trava novamente no tempo atual. Pressione `Ctrl+\` para dar zoom no trecho em que o robô está habilitado.
 
 <img src="/img/tab-reference/timeline.webp" alt="Linha do tempo" />
 
@@ -28,19 +28,19 @@ Para dar zoom, posicione o cursor sobre a linha do tempo e role para cima ou par
 
 ## Adicionando fontes {#adding-sources}
 
-Para começar, arraste um campo para a seção "Fontes". Exclua uma fonte usando o botão X ou oculte-a temporariamente clicando no ícone de olho ou dando um duplo clique no nome do campo. Para remover todas as fontes, clique na lixeira perto do título do eixo e depois em `Limpar tudo`. As fontes podem ser reorganizadas na lista clicando e arrastando.
+Para começar, arraste um campo para a seção "Fontes". Para excluir uma fonte, clique no botão X; se quiser apenas ocultá-la temporariamente, clique no ícone de olho ou dê um duplo clique no nome dela. Para remover todas as fontes de uma vez, clique na lixeira ao lado do título do eixo e selecione `Limpar tudo`. Você também pode reorganizar a lista clicando e arrastando as fontes.
 
-**Para personalizar cada fonte, clique no ícone colorido ou clique com o botão direito no nome do campo.** O AdvantageScope suporta três tipos de fontes:
+**Para personalizar cada fonte, clique no ícone colorido ou clique com o botão direito no nome do campo.** O AdvantageScope suporta três tipos de fonte:
 
-- **Velocidades dos módulos:** Um conjunto de quatro estados de módulos Swerve, exibidos como vetores no diagrama.
+- **Velocidades dos módulos:** Um conjunto de quatro estados de módulos swerve, exibidos como vetores no diagrama.
 - **Velocidades do robô:** Velocidades lineares e angulares exibidas no centro do diagrama.
-- **Rotação:** Posição angular usada para rotacionar o diagrama.
+- **Rotação:** Posição angular usada para girar o diagrama.
 
 ## Formato dos dados {#data-format}
 
-Os dados devem ser publicados como um struct ou protobuf codificado em bytes, usando os tipos `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d` ou `Rotation3d`.
+Os dados devem ser publicados como struct ou protobuf codificado em bytes, usando os tipos `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d` ou `Rotation3d`.
 
-Muitas bibliotecas suportam o formato struct, incluindo WPILib e AdvantageKit. O código de exemplo abaixo mostra como registrar estados de módulos Swerve em Java.
+Várias bibliotecas suportam o formato struct, incluindo WPILib e AdvantageKit. O exemplo abaixo mostra como registrar estados de módulos swerve em Java.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -74,17 +74,17 @@ Logger.recordOutput("MyStates", states);
 </Tabs>
 
 :::note
-Em 2027, esta estrutura de dados foi renomeada de `SwerveModuleState` para `SwerveModuleVelocity`.
-Para arquivos de log criados antes do WPILib 2027 e do Systemcore, os tipos legados `SwerveModuleState` ainda são suportados para visualização.
+Em 2027, essa estrutura de dados foi renomeada de `SwerveModuleState` para `SwerveModuleVelocity`.
+Para arquivos de log criados antes da WPILib 2027 e do Systemcore, o tipo legado `SwerveModuleState` continua funcionando normalmente na visualização.
 :::
 
 ## Configuração {#configuration}
 
 As seguintes opções de configuração estão disponíveis:
 
-- **Velocidade máxima:** A velocidade máxima atingível dos módulos, usada para ajustar o tamanho dos vetores.
-- **Tamanho do chassi:** As distâncias entre os módulos Swerve esquerdo-direito e frente-trás. Altera a proporção da imagem (aspect ratio) do diagrama do robô.
-- **Orientação:** Ajusta a direção para a qual o diagrama do robô está apontado. Esta opção é frequentemente útil para se alinhar com dados de pose ou vídeos de partidas.
+- **Velocidade máxima:** A velocidade máxima que os módulos atingem, usada para dimensionar o tamanho dos vetores.
+- **Tamanho do chassi:** As distâncias entre os módulos swerve da esquerda para a direita e da frente para trás, ajustando a proporção do diagrama do robô.
+- **Orientação:** Ajusta para que lado o diagrama do robô aponta — bem útil para alinhar o desenho com dados de pose ou vídeos da partida.
 
 :::note
 [🦀 🦀 🦀 🦀 🦀 🦀 🦀 🦀 🦀](https://www.youtube.com/watch?v=IbbwtyM8Dxs)

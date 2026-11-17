@@ -1,81 +1,79 @@
 # AdvantageScope XR {#advantagescope-xr}
 
-AdvantageScope XR donne vie à la vue 👀 [Terrain 3D](/tab-reference/3d-field) en réalité augmentée, vous permettant de visualiser les données de toutes nouvelles manières. Voyez un mode autonome simulé en taille réelle, révisez la stratégie de match avec un modèle de terrain sur table, superposez des informations de diagnostic sur un vrai robot, et bien plus encore! La vidéo ci-dessous démontre plusieurs cas d'utilisation pour cette fonctionnalité :
+AdvantageScope XR donne vie à l'onglet 👀 [Terrain 3D](/tab-reference/3d-field) en réalité augmentée et ouvre de nouvelles façons d'analyser vos données. Observez une routine autonome simulée à taille réelle, préparez votre stratégie de match avec un terrain miniature sur une table, ou superposez des données de diagnostic directement sur votre vrai robot! La vidéo ci-dessous présente plusieurs cas d'utilisation :
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/gWPhQyB66DQ" title="AdvantageScope XR: Feature Overview" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## Exigences {#requirements}
+## Prérequis {#requirements}
 
-- **Hôte :** L'application de bureau AdvantageScope sur Windows, macOS ou Linux (v4.1.0 ou version ultérieure). Tous les pare-feu sur l'appareil doivent être [désactivés](https://docs.wpilib.org/fr/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
-- **Client :** Un iPhone ou iPad exécutant iOS/iPadOS 16 ou version ultérieure. Aucune installation d'application n'est requise.
-- **Réseau :** Les deux appareils doivent être connectés au même réseau (Wi-Fi, partage de connexion USB, etc.). Sous réserve de la condition ci-dessous, ce réseau n'a pas besoin d'être connecté à Internet.
-- **Internet :** Si AdvantageScope XR n'a pas été utilisée récemment, l'appareil mobile doit disposer d'une connexion Internet (par ex., données cellulaires). Pour éliminer cette exigence, consultez la section [utilisation hors ligne](#offline-usage) ci-dessous.
+- **Hôte :** l'application de bureau AdvantageScope sur Windows, macOS ou Linux (v4.1.0 ou plus récent). Les pare-feu de l'ordinateur doivent être [désactivés](https://docs.wpilib.org/fr/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
+- **Client :** un iPhone ou un iPad sous iOS/iPadOS 16 ou plus récent. Aucune application n'est requise au préalable.
+- **Réseau :** les deux appareils doivent être sur le même réseau (Wi-Fi, partage de connexion USB, etc.). Sous réserve du point suivant, ce réseau n'a pas besoin d'accès à Internet.
+- **Internet :** si vous n'avez pas utilisé AdvantageScope XR récemment, l'appareil mobile doit disposer d'une connexion Internet (données cellulaires, par exemple). Pour vous affranchir de cette contrainte, consultez la section [Utilisation hors ligne](#offline-usage) ci-dessous.
 
 :::tip
-AdvantageScope XR est prise en charge sur de nombreux modèles d'iPhone et d'iPad, mais est plus stable pour les appareils équipés d'un **capteur LiDAR**. Cela comprend l'iPhone Pro (à partir de l'iPhone 12 Pro) et l'iPad Pro (printemps 2020 ou version ultérieure).
+AdvantageScope XR fonctionne sur de nombreux modèles d'iPhone et d'iPad, mais le suivi est plus stable sur les appareils dotés d'un **capteur LiDAR**, comme les iPhone Pro (à partir de l'iPhone 12 Pro) et les iPad Pro (printemps 2020 ou plus récents).
 :::
 
 <details>
 <summary>Qu'en est-il des autres plateformes?</summary>
 
-AdvantageScope XR n'est prise en charge que sur iOS et iPadOS. Il n'y a pas de projet immédiat de prise en charge d'autres plateformes. L'application cliente nécessite une intégration étroite avec les API natives pour la réalité augmentée, l'enregistrement vidéo, le rendu web, et plus encore. iOS et iPadOS reçoivent la priorité pour le développement et la prise en charge pour plusieurs raisons :
+AdvantageScope XR est uniquement pris en charge sur iOS et iPadOS, et nous n'avons pas prévu dans l'immédiat de supporter d'autres plateformes. L'application cliente repose sur une intégration poussée avec les API natives pour la réalité augmentée, l'enregistrement vidéo, le rendu web, etc. iOS et iPadOS sont prioritaires pour plusieurs raisons :
 
-- **Cohérence :** AdvantageScope XR est une application exigeante. Bien que les appareils Android varient considérablement en termes de puissance de traitement et de fonctionnalités, l'iPhone et l'iPad offrent une expérience de développement cohérente à travers les générations. Tous les appareils iOS et iPadOS récents sont suffisamment puissants pour exécuter AdvantageScope XR, et les appareils plus récents prennent en charge des fonctionnalités supplémentaires qu'AdvantageScope peut utiliser (comme le LiDAR).
-
-- **Disponibilité :** L'iPhone reste le smartphone le plus courant que les étudiants aux États-Unis sont susceptibles de posséder ou d'avoir facilement accessible auprès de leurs pairs, et est plus largement disponible que n'importe quel modèle de casque de RV ou de réalité mixte. La prise en charge d'iOS maximise le nombre d'utilisateurs qui ont un accès facile à AdvantageScope XR.
-
-- **Prise en charge des tablettes :** Les utilisateurs peuvent profiter de l'exécution d'AdvantageScope XR sur une tablette, car les tablettes offrent un écran plus grand qui est plus facile à voir pour plusieurs personnes à la fois. L'iPad est la tablette la plus utilisée dans le monde, donc la prise en charge d'iPadOS rend l'expérience sur tablette aussi accessible que possible.
+- **Homogénéité :** AdvantageScope XR est très exigeante en ressources. Contrairement aux appareils Android dont la puissance et les capacités varient énormément, les iPhone et iPad offrent un environnement matériel et logiciel cohérent d'une génération à l'autre. Tous les appareils iOS et iPadOS récents ont la puissance nécessaire pour faire tourner AdvantageScope XR, et les modèles les plus récents apportent des atouts supplémentaires comme le LiDAR.
+- **Accessibilité :** l'iPhone reste le téléphone le plus répandu chez les élèves aux États-Unis ou le plus facile à emprunter dans une équipe, et il est bien plus accessible qu'un casque de réalité virtuelle ou mixte. Privilégier iOS permet donc au plus grand nombre d'utiliser AdvantageScope XR facilement.
+- **Prise en charge des tablettes :** sur une tablette, l'écran plus grand permet à plusieurs personnes de suivre la scène en même temps. L'iPad étant la tablette la plus répandue dans le monde, supporter iPadOS rend cette expérience collective aussi accessible que possible.
 
 </details>
 
 ## Configuration {#setup}
 
-1. Sur le système hôte, **cliquez sur le bouton « XR »** sur n'importe quel onglet terrain 3D. Une seule session hôte XR peut être active à la fois, donc cliquer sur ce bouton interrompra toute autre session active.
+1. Sur l'ordinateur hôte, **cliquez sur le bouton « XR »** dans n'importe quel onglet Terrain 3D. Une seule session hôte XR peut être active à la fois : cliquer sur ce bouton mettra fin à toute autre session en cours.
 
 <img src="/img/tab-reference/3d-field/xr-1.webp" alt="Bouton XR" height="450" />
 
 _L'interface en anglais est illustrée ci-dessus._
 
-2. La **fenêtre de contrôles XR** s'ouvrira, avec un code QR et des [options](#options) pour personnaliser l'expérience RA. Pour annuler la session XR et déconnecter tous les clients, fermez la fenêtre de contrôles.
+2. La **fenêtre des contrôles XR** s'ouvre avec un code QR et des [options](#options) pour personnaliser l'expérience en réalité augmentée. Pour arrêter la session XR et déconnecter les appareils clients, fermez simplement cette fenêtre.
 
 <img src="/img/tab-reference/3d-field/xr-2.webp" alt="Fenêtre XR" height="350" />
 
 _L'interface en anglais est illustrée ci-dessus._
 
-3. Scannez le code QR à l'aide de l'**application appareil photo intégrée** sur l'appareil client. Aucune installation d'application n'est requise.
-4. Appuyez sur « AdvantageScope XR » puis sur « Ouvrir » pour **démarrer l'expérience** et vous connecter à l'hôte. Si vous y êtes invité, autorisez AdvantageScope XR à accéder à l'**appareil photo et au réseau local**.
-5. Suivez les instructions sur l'appareil pour **étalonner et positionner le modèle de terrain**.
-6. Contrôlez le modèle de terrain comme d'habitude en utilisant l'appareil hôte, y compris la **lecture des journaux et la diffusion en direct**. L'état du modèle de terrain est affiché en direct sur l'appareil client.
-7. Pour **enregistrer rapidement une vidéo**, appuyez sur l'icône « Enregistrer » en haut de l'écran. Appuyez à nouveau pour arrêter l'enregistrement, puis modifiez et enregistrez le clip.
+3. Scannez le code QR avec l'**application Appareil photo** intégrée de votre iPhone ou iPad. Aucune installation d'application n'est nécessaire.
+4. Touchez « AdvantageScope XR », puis « Ouvrir » pour **lancer l'expérience** et vous connecter à l'hôte. Si l'appareil vous le demande, autorisez l'accès à l'**appareil photo et au réseau local**.
+5. Suivez les instructions à l'écran pour **étalonner et positionner le modèle du terrain**.
+6. Pilotez ensuite la scène comme d'habitude depuis l'ordinateur hôte, que ce soit pour **lire un journal ou diffuser des données en direct**. L'état du terrain s'actualise en temps réel sur l'appareil mobile.
+7. Pour **enregistrer une vidéo** rapidement, touchez l'icône d'enregistrement en haut de l'écran. Touchez-la de nouveau pour arrêter, puis modifiez et enregistrez votre séquence.
 
 :::warning
 Les cartes thermiques et les vitesses des modules Swerve ne sont pas encore disponibles dans XR. Tous les autres types d'objets sont pris en charge.
 :::
 
 :::tip
-AdvantageScope XR est une application exigeante et peut rencontrer des problèmes de performances en fonction de la complexité de la scène 3D. Envisagez d'utiliser des modèles de robots plus simples ou moins d'objets si nécessaire.
+AdvantageScope XR demande beaucoup de ressources et peut ralentir selon la complexité de la scène 3D. N'hésitez pas à utiliser des modèles de robot plus simples ou à limiter le nombre d'objets affichés.
 :::
 
 ## Options {#options}
 
-La fenêtre de contrôles XR présente plusieurs options qui contrôlent la façon dont le modèle est affiché en réalité augmentée :
+La fenêtre des contrôles XR propose plusieurs réglages pour adapter l'affichage en réalité augmentée :
 
 - **Étalonnage :**
-  - Choisissez _Miniature_ pour visualiser une version à échelle réduite du terrain, adaptée à une utilisation sur table.
-  - Choisissez _Taille réelle_ pour visualiser le terrain avec un dimensionnement précis, positionné en fonction d'une vraie balustrade de terrain. Le basculement entre _Alliance bleue_ et _Alliance rouge_ contrôle quel côté du terrain est utilisé pour l'étalonnage, mais le terrain complet est visualisé dans tous les cas.
+  - Choisissez _Miniature_ pour afficher le terrain à échelle réduite, idéal sur une table.
+  - Choisissez _Taille réelle_ pour afficher le terrain à l'échelle 1:1, calé sur une vraie balustrade du terrain. Le choix entre _Alliance bleue_ et _Alliance rouge_ détermine le côté utilisé pour l'étalonnage, mais le terrain complet reste affiché dans les deux cas.
 - **Diffusion en continu :**
-  - Choisissez _Fluide_ pour les applications où une certaine latence est acceptable en échange d'une diffusion plus fiable, comme la simulation de routines autonomes ou la lecture de fichiers journaux.
-  - Choisissez _Faible latence_ pour les applications en temps réel où une certaine gigue est acceptable, comme la superposition de données sur un vrai robot ou le pilotage d'un robot simulé en téléopéré.
-- **Afficher le sol :** Affiche le modèle de tapis/sol plat sous le terrain au lieu de le superposer sur une vraie surface.
-- **Afficher le terrain :** Affiche le modèle de terrain, y compris la balustrade du terrain et les éléments spécifiques au jeu. Les [objets d'éléments de jeu](/tab-reference/3d-field#game-piece-objects) personnalisés sont toujours affichés.
-- **Afficher les robots :** Affiche les modèles de robot, peut être désactivé lors de la superposition de données sur un vrai robot (comme des cibles de vision ou des mécanismes 2D).
+  - Choisissez _Fluide_ lorsque vous pouvez accepter un léger délai en échange d'un flux plus régulier, par exemple pour simuler des routines autonomes ou relire un journal.
+  - Choisissez _Faible latence_ pour les usages en temps réel où une légère gigue est acceptable, comme superposer des données sur un vrai robot ou piloter un robot simulé en téléopéré.
+- **Afficher le sol :** affiche le tapis ou les dalles de sol sous le terrain au lieu de le superposer sur une surface réelle.
+- **Afficher le terrain :** affiche le modèle du terrain, y compris la balustrade et les éléments propres au jeu. Les [objets d'éléments de jeu](/tab-reference/3d-field#game-piece-objects) personnalisés restent toujours visibles.
+- **Afficher les robots :** affiche les modèles de robots. Vous pouvez désactiver cette option lorsque vous superposez des données (comme des cibles de vision ou des mécanismes 2D) sur un vrai robot.
 
 ## Utilisation hors ligne {#offline-usage}
 
-AdvantageScope XR ne nécessite pas de connexion Internet. Pour vous assurer que l'application est disponible hors ligne, téléchargez AdvantageScope XR depuis l'App Store en utilisant le lien ci-dessous. Pour vous connecter à l'application de bureau AdvantageScope, scannez le code QR à l'aide de l'application appareil photo iOS ou appuyez sur le bouton « Scanner » dans l'application AdvantageScope XR.
+AdvantageScope XR n'a pas besoin d'Internet pour fonctionner. Pour garantir son accès hors ligne, téléchargez l'application AdvantageScope XR sur l'App Store via le lien ci-dessous. Pour vous connecter ensuite à l'application de bureau, scannez le code QR avec l'appareil photo iOS ou touchez le bouton « Scanner » directement dans l'application AdvantageScope XR.
 
-<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />
+[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
 
 :::note
-Même lors d'une exécution sans connexion Internet, les appareils hôte et client **doivent être connectés au même réseau** (comme un robot, un réseau Wi-Fi personnalisé ou via le partage de connexion USB).
+Même sans connexion Internet, l'ordinateur hôte et l'appareil client **doivent être connectés au même réseau** (réseau du robot, routeur Wi-Fi dédié ou partage de connexion USB).
 :::

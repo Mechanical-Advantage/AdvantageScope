@@ -4,73 +4,73 @@ sidebar_position: 6
 
 # 📊 Statistieken {#statistics}
 
-Het tabblad statistieken maakt diepgaande statistische analyse van numerieke velden mogelijk, waarbij algemene trends worden geanalyseerd in plaats van veranderingen in de loop van de tijd. De geselecteerde velden worden geanalyseerd met behulp van een histogram en een verscheidenheid aan standaard statistische meetwaarden.
+Met het tabblad Statistieken duik je dieper in je numerieke velden: je kijkt naar algemene trends in plaats van veranderingen over de tijd. Je gekozen velden worden geanalyseerd met een histogram en allerlei standaard statistische meetwaarden.
 
-<img src="/img/tab-reference/statistics-1.webp" alt="Overzicht van tabblad statistieken" />
+<img src="/img/tab-reference/statistics-1.webp" alt="Overzicht van tabblad Statistieken" />
 
 _De Engelstalige interface wordt hierboven weergegeven._
 
 ## Bedieningspaneel {#control-pane}
 
-Om te beginnen sleep je een veld naar de sectie "Metingen". Verwijder een veld met de X-knop, of verberg het tijdelijk door op het oogpictogram te klikken of te dubbelklikken op de veldnaam. Om alle velden te verwijderen, klik je op de prullenbak naast de astitel en vervolgens op `Alles wissen`. Velden kunnen in de lijst opnieuw worden gerangschikt door te klikken en te slepen.
+Sleep een veld naar de sectie "Metingen" om te beginnen. Met het kruisje verwijder je een veld, en met het oogpictogram (of door te dubbelklikken op de veldnaam) verberg je het tijdelijk. Wil je alle velden tegelijk weghalen? Klik dan op de prullenbak naast de titel en kies `Alles wissen`. De volgorde van de velden pas je aan door ze te verslepen.
 
-Om het verschil tussen velden te analyseren, zet je een veld in de "Referentie"-modus en voeg je andere velden toe als onderliggende elementen. Onderliggende elementen kunnen worden geschakeld tussen de modi "Relatieve fout" en "Absolute fout".
+Wil je twee velden met elkaar vergelijken? Zet dan één veld in de modus "Referentie" en sleep andere velden eronder als subvelden. Die subvelden kun je vervolgens schakelen tussen "Relatieve fout" en "Absolute fout".
 
 :::info
-De kleur van elk veld kan worden aangepast door op het gekleurde pictogram te klikken of met de rechtermuisknop op de veldnaam te klikken.
+Je past de kleur van elk veld aan door op het gekleurde pictogram te klikken of met de rechtermuisknop op de veldnaam te klikken.
 :::
 
 ### Configuratie {#configuration}
 
-De optie **Tijdsbereik** selecteert welke delen van het logbestand worden gebruikt voor analyse:
+Met **Tijdsbereik** kies je welk deel van het logbestand wordt geanalyseerd:
 
-- _Zichtbaar bereik:_ Analyseert het tijdsbereik dat zichtbaar is op de tijdlijn.
-- _Volledig logbestand:_ Analyseert het volledige bereik van het logbestand.
-- _Ingeschakeld:_ Analyseert tijdsbereiken waarin de robot is ingeschakeld.
-- _Auto:_ Analyseert tijdsbereiken waarin de robot autonoom is.
-- _Teleop:_ Analyseert tijdsbereiken waarin de robot tele-operated is.
-- _Live: 30 seconden:_ Analyseert de meest recente 30 seconden (bij verbinding met een live-bron).
-- _Live: 10 seconden:_ Analyseert de meest recente 10 seconden (bij verbinding met een live-bron).
+- _Zichtbaar bereik:_ Analyseert het stuk dat op dat moment zichtbaar is op de tijdlijn.
+- _Volledig logbestand:_ Analyseert het hele logbestand.
+- _Ingeschakeld:_ Analyseert alleen de momenten waarop de robot is ingeschakeld.
+- _Auto:_ Analyseert alleen de autonome periode.
+- _Teleop:_ Analyseert alleen de teleop-periode.
+- _Live: 30 seconden:_ Analyseert de laatste 30 seconden (bij een live-verbinding).
+- _Live: 10 seconden:_ Analyseert de laatste 10 seconden (bij een live-verbinding).
 
-De optie **Databereik** selecteert de minimum- en maximumwaarden die op het histogram moeten worden weergegeven. Data buiten dit bereik wordt niet getoond, maar blijft wel meegenomen worden in de statistische meetwaarden.
+Met **Databereik** stel je de minimum- en maximumwaarde voor het histogram in. Waarden buiten dit bereik zie je niet in de grafiek, maar ze tellen nog wel gewoon mee voor de statistische meetwaarden.
 
-De optie **Stapgrootte** selecteert de grootte van elke histogram-klasse. Kleinere waarden leveren gedetailleerdere grafieken op, maar tonen ook meer ruis.
+Met **Stapgrootte** bepaal je hoe breed elke klasse (staaf) van het histogram is. Een kleinere stapgrootte geeft een gedetailleerder beeld, maar laat ook meer ruis zien.
 
 ## Weergavepaneel {#viewer-pane}
 
 ### Histogram {#histogram}
 
-Het histogram toont het aantal meetpunten dat binnen elke klasse valt, binnen het opgegeven bereik. Merk op dat data buiten het opgegeven bereik wordt genegeerd (in plaats van te worden gegroepeerd in een aparte klasse).
+Het histogram laat zien hoeveel meetpunten er binnen het opgegeven bereik in elke klasse vallen. Let op: data buiten dat bereik wordt weggelaten (en dus niet in een aparte restklasse gezet).
 
 ### Statistische meetwaarden {#statistical-measures}
 
-De tabel met statistische meetwaarden toont de berekende waarden van elke meetwaarde voor de opgegeven velden. Meer informatie over elke meetwaarde wordt hieronder gegeven.
+In de tabel zie je per veld alle berekende statistische meetwaarden. Hieronder staat wat elke waarde betekent.
 
 #### Samenvatting {#summary}
 
-- **Aantal:** Het aantal gegenereerde discrete meetpunten.
-- **Min:** De kleinste waarde in de data.
-- **Max:** De grootste waarde in de data.
+- **Aantal:** Het totaal aantal discrete meetpunten.
+- **Min:** De laagste waarde in de data.
+- **Max:** De hoogste waarde in de data.
 
 #### Midden {#center}
 
-- [**Gemiddelde:**](https://nl.wikipedia.org/wiki/Rekenkundig_gemiddelde) Het rekenkundig gemiddelde (eenvoudig gemiddelde) van de data.
-- [**Mediaan:**](<https://nl.wikipedia.org/wiki/Mediaan_(statistiek)>) De "middelste" waarde van de data, ofwel het 50e percentiel.
-- [**Modus:**](<https://nl.wikipedia.org/wiki/Modus_(statistiek)>) De meest voorkomende waarde in de data.
-- [**Meetkundig gemiddelde:**](https://nl.wikipedia.org/wiki/Meetkundig_gemiddelde) Een centrummaat berekend met behulp van het product van de waarden in plaats van de som. Van toepassing bij het meten van _exponentiële groeicijfers_ (zoals procentuele verandering tussen cycli).
-- [**Harmonisch gemiddelde:**](https://nl.wikipedia.org/wiki/Harmonisch_gemiddelde) Een centrummaat berekend met behulp van de som van de reciproken van de waarden. Van toepassing bij het meten van _snelheden of verhoudingen_.
-- [**Kwadratisch gemiddelde:**](https://nl.wikipedia.org/wiki/Effectieve_waarde) Een centrummaat berekend met behulp van de kwadraten van de waarden. Van toepassing bij het meten van data met zowel _positieve als negatieve waarden_, zoals periodieke beweging.
+- [**Gemiddelde:**](https://nl.wikipedia.org/wiki/Rekenkundig_gemiddelde) Het gewone rekenkundig gemiddelde van de data.
+- [**Mediaan:**](<https://nl.wikipedia.org/wiki/Mediaan_(statistiek)>) De middelste waarde als je alle data op volgorde zet (het 50e percentiel).
+- [**Modus:**](<https://nl.wikipedia.org/wiki/Modus_(statistiek)>) De waarde die het vaakst voorkomt.
+- [**Meetkundig gemiddelde:**](https://nl.wikipedia.org/wiki/Meetkundig_gemiddelde) Een centrummaat die wordt berekend met het product van de waarden in plaats van de som. Handig bij _exponentiële groei_, zoals procentuele veranderingen tussen cycli.
+- [**Harmonisch gemiddelde:**](https://nl.wikipedia.org/wiki/Harmonisch_gemiddelde) Een centrummaat op basis van het omgekeerde van de waarden. Handig bij het meten van _snelheden of verhoudingen_.
+- [**Kwadratisch gemiddelde:**](https://nl.wikipedia.org/wiki/Effectieve_waarde) Een centrummaat op basis van de kwadraten van de waarden. Handig bij data met zowel _positieve als negatieve waarden_, zoals een heen-en-weergaande beweging.
 
 #### Spreiding {#spread}
 
-- [**Standaardafwijking:**](https://nl.wikipedia.org/wiki/Standaardafwijking) De meest gangbare statistische maat voor variatie, waarbij een lagere waarde duidt op minder variatie. Voor normaal verdeelde data valt ongeveer 68% van de data binnen één standaardafwijking van het gemiddelde.
-- [**Mediane absolute afwijking:**](https://en.wikipedia.org/wiki/Median_absolute_deviation) De mediaan van de absolute afwijkingen van de mediaan van de data. Dit is een spreidingsmaat die beter bestand is tegen uitschieters dan de standaardafwijking.
-- [**Interkwartielafstand:**](https://nl.wikipedia.org/wiki/Interkwartielafstand) Het verschil tussen het derde en eerste kwartiel (75e percentiel en 25e percentiel), minder beïnvloed door uitschieters dan de standaardafwijking.
-- [**Scheefheid:**](https://en.wikipedia.org/wiki/Skewness) Een maat voor de asymmetrie van de data. Een negatieve waarde duidt op een staart naar links, een positieve waarde op een staart naar rechts, en een nulwaarde suggereert een symmetrische verdeling.
+- [**Standaardafwijking:**](https://nl.wikipedia.org/wiki/Standaardafwijking) De meest gebruikte maat voor spreiding; hoe lager dit getal, hoe dichter de waarden bij elkaar liggen. Bij normaal verdeelde data valt ongeveer 68% binnen één standaardafwijking van het gemiddelde.
+- [**Mediane absolute afwijking:**](https://en.wikipedia.org/wiki/Median_absolute_deviation) De mediaan van de absolute afwijkingen ten opzichte van de mediaan. Deze maat is minder gevoelig voor uitschieters dan de standaardafwijking.
+- [**Interkwartielafstand:**](https://nl.wikipedia.org/wiki/Interkwartielafstand) Het verschil tussen het derde en het eerste kwartiel (het 75e en 25e percentiel). Ook deze maat heeft minder last van uitschieters dan de standaardafwijking.
+- [**Scheefheid:**](https://en.wikipedia.org/wiki/Skewness) Geeft aan hoe asymmetrisch de verdeling is. Een negatieve waarde betekent een uitloper naar links, een positieve waarde een uitloper naar rechts, en nul wijst op een symmetrische verdeling.
 
 #### Percentielen {#percentiles}
 
-De [percentielen](https://nl.wikipedia.org/wiki/Percentiel) meten waarden waaronder het gegeven percentage van andere waarden valt. 10% van de waarden valt bijvoorbeeld onder het 10e percentiel. De volgende percentielen staan ook bekend als:
+[Percentielen](https://nl.wikipedia.org/wiki/Percentiel) geven de waarde aan waaronder een bepaald percentage van alle meetpunten ligt. Zo valt 10% van de waarden onder het 10e percentiel. Een paar bekende percentielen hebben ook een eigen naam:
 
 - 25e percentiel = 1e kwartiel (Q1)
 - 50e percentiel = 2e kwartiel (Q2) = mediaan

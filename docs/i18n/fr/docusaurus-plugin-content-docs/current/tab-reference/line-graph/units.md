@@ -1,10 +1,10 @@
 # Prise en charge des unités {#unit-support}
 
-L'onglet graphique linéaire prend en compte les unités, ce qui signifie que les valeurs numériques peuvent être facilement converties entre des types d'unités compatibles. Lorsque les informations d'unité sont disponibles, toutes les valeurs numériques sont également étiquetées avec précision lorsqu'elles sont affichées dans les axes ou les légendes. Voir [ici](#supported-formats) pour plus d'informations sur la publication des informations d'unité. AdvantageScope fournit plusieurs outils pour convertir rapidement entre les unités :
+L'onglet Graphique linéaire gère nativement les unités, ce qui vous permet de convertir facilement des valeurs numériques entre des unités compatibles. Dès que les informations d'unité sont disponibles, toutes les valeurs numériques sont étiquetées avec précision sur les axes et dans les légendes (consultez [cette section](#supported-formats) pour savoir comment les publier). AdvantageScope propose plusieurs outils pour passer rapidement d'une unité à l'autre :
 
-- Lors de l'ajout de **champs sur le même axe avec des types d'unités compatibles**, AdvantageScope convertit automatiquement les deux champs dans la même unité. Cela se reflète dans l'étiquetage de l'axe Y et de la légende.
-- Cliquez sur les trois points près du titre de l'axe pour **passer rapidement à d'autres unités**. Cette liste comprend les unités les plus courantes qui sont compatibles avec les champs sélectionnés.
-- Activez l'**intégration ou la différenciation** ([docs](/tab-reference/line-graph/#integration-and-differentiation)) pour voir les unités intégrales ou dérivées précises. L'unité de base peut être ajustée à l'aide du menu pour prendre en charge le filtrage dans des unités non natives.
+- Lorsque vous placez sur le même axe des **champs dont les unités sont compatibles**, AdvantageScope les convertit automatiquement vers une unité commune, et met à jour l'axe Y ainsi que la légende.
+- Cliquez sur les trois points à côté du titre de l'axe pour **basculer rapidement vers d'autres unités**. Ce menu propose les unités les plus courantes compatibles avec les champs affichés.
+- Activez l'**intégration ou la différenciation** ([documentation](/tab-reference/line-graph/#integration-and-differentiation)) pour obtenir directement les unités de l'intégrale ou de la dérivée correspondantes. Vous pouvez également ajuster l'unité de base dans le menu afin d'appliquer ces filtres dans l'unité de votre choix.
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="Graphiques avec unités" />
 
@@ -12,50 +12,50 @@ _L'interface en anglais est illustrée ci-dessus._
 
 ## Formats pris en charge {#supported-formats}
 
-AdvantageScope prend en charge plusieurs méthodes pour fournir des informations d'unité sur chaque champ. La plupart des unités courantes sont prises en charge; pour une liste complète, consultez le menu surgissant lors de la configuration de la [conversion manuelle](#manual-conversion).
+AdvantageScope propose plusieurs façons d'associer une unité à chaque champ. La grande majorité des unités courantes sont reconnues; pour voir la liste complète, ouvrez le menu déroulant lors de la configuration d'une [conversion manuelle](#manual-conversion).
 
-Pour (2) et (3), les types d'unités sont analysés à l'aide de chaînes. AdvantageScope prend en charge plusieurs noms pour chaque unité, y compris les abréviations courantes (par ex. `ft` et `feet` sont tous deux acceptés) ainsi que les orthographes américaine et britannique (par ex. `meters` et `metres`). Notez que les noms d'unités doivent être fournis à l'aide de symboles SI ou de l'anglais, quelle que soit la langue sélectionnée dans AdvantageScope. Si un nom d'unité n'est pas analysé comme prévu, veuillez [ouvrir un problème](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
+Pour les méthodes (2) et (3), AdvantageScope analyse des chaînes de caractères pour identifier l'unité. Plusieurs variantes sont acceptées pour chaque unité, y compris les abréviations usuelles (par ex. `ft` et `feet`) ainsi que les orthographes américaine et britannique (par ex. `meters` et `metres`). Attention : les noms d'unités doivent toujours être écrits avec des symboles SI ou en anglais, quelle que soit la langue choisie dans AdvantageScope. Si une unité n'est pas reconnue comme prévu, n'hésitez pas à [ouvrir un ticket (*issue*)](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
 
 :::tip
-Vous ne savez pas si les unités sont correctement analysées? Vérifiez si un type d'unité est affiché sur l'axe Y lors de l'ajout d'un champ au graphique linéaire.
+Vous voulez vérifier si vos unités sont bien reconnues? Regardez simplement si une unité s'affiche sur l'axe Y lorsque vous ajoutez le champ au graphique linéaire.
 :::
 
 ### 🥇 Unités de structure {#struct-units}
 
-AdvantageScope utilise automatiquement les unités natives pour les types de données structurées courants comme `Rotation2d` et `Translation3d`. La publication de valeurs applicables à l'aide de ces formats est **toujours le meilleur moyen de publier des données** et garantit une compatibilité maximale lors de la visualisation des données géométriques.
+AdvantageScope applique automatiquement les unités natives des types de données structurés courants comme `Rotation2d` et `Translation3d`. Publier vos données sous ces formats reste **toujours la meilleure approche**, car cela garantit une compatibilité optimale pour visualiser des grandeurs géométriques.
 
 ### 🥈 Métadonnées de champ {#field-metadata}
 
-Les formats WPILOG et NetworkTables prennent en charge la publication de « métadonnées » supplémentaires pour chaque champ. AdvantageScope recherche les champs JSON nommés « unit » ou « units » contenant un nom de chaîne pour le type d'unité (en utilisant des espaces, camel-case, pascal-case ou snake-case). Pour vérifier les métadonnées de chaque champ, survolez le nom du champ dans la barre latérale.
+Les formats WPILOG et NetworkTables permettent d'associer des « métadonnées » à chaque champ. AdvantageScope recherche un champ JSON nommé `unit` ou `units` contenant le nom de l'unité sous forme de chaîne (avec des espaces, en *camelCase*, *PascalCase* ou *snake_case*). Pour consulter les métadonnées d'un champ, survolez son nom dans la barre latérale.
 
 :::tip
-Dans WPILib, l'enregistrement d'objets `Measure` à l'aide de `Telemetry.log()` associe automatiquement des métadonnées d'unité. Les métadonnées d'unité peuvent également être configurées explicitement à l'aide de `Telemetry.setProperty("fieldName", "unit", "\"volts\"")`.
+Dans WPILib, enregistrer des objets `Measure` avec `Telemetry.log()` ajoute automatiquement les métadonnées d'unité. Vous pouvez aussi les définir explicitement via `Telemetry.setProperty("fieldName", "unit", "\"volts\"")`.
 
-AdvantageKit inclut également la prise en charge des métadonnées d'unité lors de l'enregistrement des entrées et des sorties (voir [ici](https://docs.advantagekit.org/data-flow/supported-types#units) pour plus de détails).
+AdvantageKit prend également en charge les métadonnées d'unité lors de l'enregistrement des entrées et des sorties (voir [la documentation AdvantageKit](https://docs.advantagekit.org/data-flow/supported-types#units) pour plus de détails).
 :::
 
 ### 🥉 Nommage des champs {#field-naming}
 
-En cas de repli, AdvantageScope tente de déterminer le type d'unité correct en analysant le nom de chaque champ. **Le type d'unité doit être inclus en tant que suffixe.** AdvantageScope prend en charge une variété de schémas de nommage. Certaines options valides sont énumérées ci-dessous :
+À défaut, AdvantageScope tente de déduire l'unité en analysant le nom du champ. **Le nom de l'unité doit apparaître en suffixe.** Plusieurs conventions de nommage sont acceptées, notamment :
 
-- **Camel/pascal-case**, comme `PositionMeters`, `velocityRadPerSec` et `TimestampS`
-- **Snake-case**, comme `position_meters`, `velocity_rad_per_sec` et `timestamp_s`
-- **Séparateurs d'espaces**, comme `position meters`, `velocity rad per sec` et `timestamp s`
+- **CamelCase / PascalCase** : `PositionMeters`, `velocityRadPerSec`, `TimestampS`
+- **Snake_case** : `position_meters`, `velocity_rad_per_sec`, `timestamp_s`
+- **Séparateurs par espaces** : `position meters`, `velocity rad per sec`, `timestamp s`
 
-Le nommage n'est _pas_ sensible à la casse lors de l'utilisation du snake-case ou des séparateurs d'espaces.
+La casse n'est _pas_ prise en compte avec le *snake_case* ni avec les séparateurs par espaces.
 
 :::tip
-Si les unités sont mal analysées, cliquez sur `Unités manuelles` > `Désactiver les unités automatiques` pour ignorer les informations d'unité. La conversion manuelle peut ensuite être utilisée pour passer à d'autres unités.
+Si une unité est mal interprétée, cliquez sur `Unités manuelles` > `Désactiver les unités automatiques` pour l'ignorer. Vous pourrez ensuite utiliser la conversion manuelle pour choisir l'unité souhaitée.
 :::
 
 ## Conversion manuelle {#manual-conversion}
 
-Lorsque les métadonnées d'unité ne sont pas disponibles ou sont inexactes, les axes peuvent également être configurés manuellement pour convertir entre les unités (ou ignorer complètement les métadonnées d'unité).
+Lorsque les métadonnées d'unité sont absentes ou erronées, vous pouvez configurer manuellement la conversion d'un axe (ou ignorer complètement les métadonnées).
 
-Pour configurer la conversion manuelle, cliquez sur les trois points près du titre de l'axe, puis sur `Unités manuelles` > `Modifier la conversion...`. Sélectionnez le type d'unité, l'unité source et l'unité de destination. Chaque valeur est également multipliée par le « Facteur supplémentaire », permettant des conversions personnalisées (comme les rapports de démultiplication, les conversions angulaires en linéaires, ou d'autres unités non fournies par AdvantageScope). Le facteur peut également être saisi à l'aide d'une expression mathématique telle que `1.5*pi`.
+Pour cela, cliquez sur les trois points à côté du titre de l'axe, puis sur `Unités manuelles` > `Modifier la conversion`. Choisissez le type d'unité, l'unité source et l'unité de destination. Chaque valeur est également multipliée par le « Facteur supplémentaire », ce qui permet des conversions sur mesure (rapports de réduction, passage d'un angle à une distance linéaire ou unités absentes d'AdvantageScope). Ce facteur accepte aussi des expressions mathématiques comme `1.5*pi`.
 
 :::tip
-Pour activer ou désactiver rapidement la conversion d'unités, cliquez sur les trois points près du titre de l'axe et choisissez `Préréglages récents` ou `Réinitialiser les unités`.
+Pour activer ou désactiver rapidement une conversion d'unités, cliquez sur les trois points à côté du titre de l'axe et choisissez `Préréglages récents` ou `Réinitialiser les unités`.
 :::
 
 <img src="/img/tab-reference/line-graph/units-2.webp" alt="Édition de la conversion d'unités" height="250" />

@@ -4,33 +4,33 @@ sidebar_position: 7
 
 # 🎬 Vidéo {#video}
 
-L'onglet vidéo permet de comparer côte à côte les données de journal avec une vidéo de match qui a été enregistrée séparément. Les étapes ci-dessous montrent comment charger une vidéo et la synchroniser avec le journal.
+L'onglet Vidéo permet de comparer côte à côte les données du journal et une vidéo de match enregistrée séparément. Les étapes ci-dessous expliquent comment charger une vidéo et la synchroniser avec votre journal.
 
 ## Chargement de la vidéo {#loading-the-video}
 
-AdvantageScope propose trois options pour charger une vidéo :
+AdvantageScope propose trois façons de charger une vidéo :
 
-1. **Fichier local :** Cliquez sur l'icône de fichier grise, puis choisissez le fichier vidéo à charger. La plupart des formats vidéo courants sont pris en charge.
-2. **YouTube :** Copiez un lien YouTube dans le presse-papiers, puis cliquez sur l'icône de presse-papiers rouge. Après quelques secondes, le téléchargement de la vidéo commencera.
-3. **The Blue Alliance :** Cliquez sur l'icône bleue TBA pour charger automatiquement la vidéo du match sur la base du fichier journal. Si plusieurs vidéos sont disponibles, choisissez la vidéo à télécharger dans le menu surgissant. Cette fonctionnalité nécessite une clé API pour TBA, qui doit être obtenue sur [thebluealliance.com/account](https://www.thebluealliance.com/account) et copiée dans la page des préférences d'AdvantageScope sous « Clé API TBA ».
+1. **Fichier local :** cliquez sur l'icône de fichier grise, puis sélectionnez votre fichier vidéo. La plupart des formats courants sont pris en charge.
+2. **YouTube :** copiez un lien YouTube dans le presse-papiers, puis cliquez sur l'icône rouge du presse-papiers. Après quelques secondes, le téléchargement démarre.
+3. **The Blue Alliance :** cliquez sur l'icône bleue TBA pour charger automatiquement la vidéo du match correspondant au fichier journal. Si plusieurs vidéos sont disponibles, choisissez celle à télécharger dans le menu qui s'affiche. Cette option nécessite une clé API TBA, à récupérer sur [thebluealliance.com/account](https://www.thebluealliance.com/account) puis à coller dans les préférences d'AdvantageScope sous « Clé API TBA ».
 
 <img src="/img/tab-reference/video-1.webp" alt="Sélecteur de source" />
 
-Après avoir choisi une vidéo, la chronologie en bas à droite commence à devenir bleue pour indiquer les images qui ont été mises en cache (cette étape est nécessaire pour une lecture fluide). Cette fonctionnalité est destinée uniquement aux vidéos de la durée d'un match en raison de la conversion d'images requise.
+Une fois la vidéo choisie, la chronologie en bas à droite devient progressivement bleue pour indiquer les images mises en cache (cette étape garantit une lecture fluide). En raison de cette conversion image par image, cette fonctionnalité est pensée uniquement pour des vidéos de la durée d'un match.
 
 :::warning
-Le téléchargement de vidéos YouTube et TBA peut échouer de manière inattendue en raison de modifications sur les serveurs de YouTube. En cas de problème, essayez de mettre à jour AdvantageScope ou d'utiliser un fichier vidéo local à la place.
+Le téléchargement depuis YouTube et TBA peut échouer de manière imprévue suite à des modifications sur les serveurs de YouTube. En cas de souci, essayez de mettre à jour AdvantageScope ou utilisez plutôt un fichier vidéo local.
 :::
 
 :::info
-AdvantageScope nécessite [FFmpeg](https://ffmpeg.org) pour traiter les fichiers vidéo. Si une copie valide de FFmpeg n'est pas trouvée sur le PATH de votre système, AdvantageScope vous invitera à télécharger FFmpeg depuis Internet lors du premier chargement d'une vidéo. L'installation automatique de FFmpeg est uniquement prise en charge sur Windows et macOS; les utilisateurs de Linux devront peut-être installer manuellement FFmpeg et l'ajouter au PATH du système.
+AdvantageScope s'appuie sur [FFmpeg](https://ffmpeg.org) pour traiter les fichiers vidéo. Si aucune installation valide de FFmpeg n'est détectée dans le PATH de votre système, AdvantageScope vous proposera de le télécharger lors du premier chargement d'une vidéo. L'installation automatique n'est prise en charge que sous Windows et macOS; sous Linux, vous devrez peut-être installer FFmpeg manuellement et l'ajouter au PATH.
 :::
 
 ## Navigation dans la vidéo {#navigating-the-video}
 
-Lorsqu'une vidéo est initialement chargée et n'a pas encore été synchronisée avec les données du journal, les contrôles de lecture pour la vidéo et le journal sont encore indépendants. Utilisez la chronologie et les boutons en bas à droite pour contrôler la lecture de la vidéo. Les raccourcis clavier suivants sont également pris en charge :
+Lorsqu'une vidéo vient d'être chargée et n'est pas encore synchronisée avec le journal, ses commandes de lecture restent indépendantes. Utilisez la chronologie et les boutons en bas à droite pour contrôler la lecture, ou les raccourcis clavier suivants :
 
-- / = activer ou désactiver la lecture
+- / = lancer ou mettre en pause la lecture
 - → = avancer d'une image
 - ← = reculer d'une image
 - \> = avancer de cinq secondes
@@ -40,43 +40,43 @@ Lorsqu'une vidéo est initialement chargée et n'a pas encore été synchronisé
 
 ## Synchronisation automatique {#automatic-synchronization}
 
-La plupart des vidéos de match seront synchronisées automatiquement avec le journal peu de temps après le chargement des images de la période autonome du match. Aucune action n'est requise; si la synchronisation réussit, les contrôles vidéo seront verrouillés automatiquement (voir « Lecture » ci-dessous).
+La plupart des vidéos de match se synchronisent automatiquement avec le journal peu après le chargement des images de la période autonome. Vous n'avez rien à faire : si la synchronisation réussit, les commandes vidéo sont verrouillées automatiquement (voir « Lecture » ci-dessous).
 
 :::warning
-La synchronisation automatique fonctionne uniquement sur les vidéos de match qui incluent des superpositions de scores et peut ne pas réussir dans tous les cas. Si les contrôles vidéo ne sont pas verrouillés automatiquement une fois toutes les images chargées, une synchronisation manuelle est requise.
+La synchronisation automatique ne fonctionne que sur les vidéos de match affichant les scores en surimpression et peut parfois échouer. Si les commandes vidéo ne se verrouillent pas automatiquement une fois toutes les images chargées, vous devrez synchroniser la vidéo manuellement.
 :::
 
 ## Synchronisation manuelle {#manual-synchronization}
 
-Tout d'abord, utilisez les contrôles vidéo pour naviguer vers un emplacement connu du match comme le début de l'auto. Ensuite, sélectionnez l'heure dans le fichier journal qui s'aligne avec l'image actuelle de la vidéo.
+Commencez par utiliser les commandes vidéo pour vous placer à un repère connu du match, comme le début de la période autonome. Sélectionnez ensuite dans le fichier journal l'instant qui correspond exactement à cette image.
 
 :::tip
-Le curseur sur la chronologie s'aimante au début et à la fin des périodes de match, ce qui permet de sélectionner plus facilement et plus précisément le début du match.
+Le curseur sur la chronologie s'aimante au début et à la fin de chaque phase du match, ce qui facilite grandement la sélection précise du coup d'envoi.
 :::
 
-Une fois la vidéo et le journal alignés, cliquez sur l'icône de cadenas à côté de la chronologie vidéo (ou appuyez sur **↑ ou ↓**). Les contrôles vidéo sont maintenant désactivés. Cliquez à nouveau sur l'icône de cadenas pour déverrouiller la lecture vidéo.
+Une fois la vidéo et le journal alignés, cliquez sur l'icône de cadenas à côté de la chronologie vidéo (ou appuyez sur **↑** ou **↓**). Les commandes vidéo sont alors désactivées. Cliquez à nouveau sur le cadenas pour déverrouiller la lecture vidéo.
 
 <img src="/img/tab-reference/video-3.webp" alt="Bouton de verrouillage" />
 
 ## Lecture {#playback}
 
-Une fois verrouillée, la lecture vidéo reste alignée avec l'heure sélectionnée dans le journal. Notez que la lecture du son n'est pas prise en charge car la vidéo d'origine est convertie en une représentation image par image pour prendre en charge la synchronisation du journal.
+Une fois verrouillée, la lecture vidéo reste calée sur l'instant sélectionné dans le journal. Notez que le son n'est pas pris en charge, car la vidéo d'origine est convertie image par image pour permettre cette synchronisation précise.
 
 <details>
 <summary>Contrôles de la chronologie</summary>
 
-La chronologie est utilisée pour contrôler la lecture et la visualisation. Cliquer sur la chronologie sélectionne un moment, et faire un clic droit le désélectionne. L'heure sélectionnée est synchronisée sur tous les onglets, ce qui permet de trouver rapidement cet emplacement dans d'autres vues.
+La chronologie sert à piloter la lecture et la visualisation. Cliquer dessus sélectionne un instant précis, et un clic droit le désélectionne. Comme l'heure sélectionnée est synchronisée entre tous les onglets, vous pouvez retrouver ce même moment en un coup d'œil dans les autres vues.
 
-Les sections jaunes indiquent quand le robot est en mode autonome, les sections bleues indiquent quand le robot est en mode téléopéré et les sections grises indiquent quand le robot est en mode utilitaire.
+Les zones jaunes indiquent les phases en mode autonome, les zones bleues le mode téléopéré, et les zones grises le mode utilitaire.
 
-Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le haut ou vers le bas. Une plage peut également être sélectionnée en cliquant et en faisant glisser tout en maintenant la touche `Shift` enfoncée. Déplacez-vous vers la gauche et la droite en faisant défiler horizontalement (sur les appareils pris en charge), ou en cliquant et en faisant glisser sur la chronologie. Lors d'une connexion en direct, le défilement vers la gauche déverrouille à partir de l'heure actuelle, et le défilement tout à fait vers la droite verrouille à nouveau à l'heure actuelle. Appuyez sur `Ctrl+\` pour zoomer sur la période où le robot est activé.
+Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le haut ou vers le bas. Vous pouvez aussi sélectionner une plage en cliquant et en faisant glisser tout en maintenant la touche `Shift` enfoncée. Pour vous déplacer vers la gauche ou la droite, faites défiler horizontalement (sur les appareils compatibles) ou cliquez et faites glisser sur la chronologie. En mode en direct, faire défiler vers la gauche déverrouille la vue de l'heure actuelle, tandis que faire défiler complètement vers la droite la verrouille à nouveau. Appuyez sur `Ctrl+\` pour zoomer sur la période où le robot est activé.
 
 <img src="/img/tab-reference/timeline.webp" alt="Chronologie" />
 
 </details>
 
 :::tip
-Si vous le souhaitez, le champ de vision de la caméra peut être ajusté dans la vue du terrain 3D pour correspondre à l'apparence de la vidéo. Pour plus de détails, consultez « Options de caméra » sur la page 👀 [Terrain 3D](/tab-reference/3d-field).
+Si vous le souhaitez, vous pouvez ajuster le champ de vision de la caméra dans la vue Terrain 3D pour qu'il corresponde à l'angle de la vidéo. Consultez la section « Options de caméra » sur la page 👀 [Terrain 3D](/tab-reference/3d-field) pour en savoir plus.
 :::
 
 <img src="/img/tab-reference/video-4.webp" alt="Instantané vidéo avec odométrie" />

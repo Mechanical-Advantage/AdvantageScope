@@ -7,20 +7,20 @@ import TabItem from '@theme/TabItem';
 
 # 🗺 Campo 2D {#2d-field}
 
-La pestaña de campo 2D muestra una visualización 2D del robot superpuesta en un mapa del campo. También puede mostrar datos adicionales, como el estado de puntería de visión y poses de referencia.
+La pestaña **Campo 2D** te muestra una vista superior del robot sobre el mapa de la cancha. También sirve para ver datos extra, como el estado de los objetivos de visión y poses de referencia.
 
-<img src="/img/tab-reference/2d-field-1.webp" alt="Descripción general de la pestaña de campo 2D" />
+<img src="/img/tab-reference/2d-field-1.webp" alt="Descripción general de la pestaña Campo 2D" />
 
 _En la imagen de arriba se muestra la interfaz en inglés._
 
 <details>
 <summary>Controles de la línea de tiempo</summary>
 
-La línea de tiempo se utiliza para controlar la reproducción y la visualización. Al hacer clic en la línea de tiempo se selecciona un tiempo, y al hacer clic con el botón derecho se anula la selección. El tiempo seleccionado se sincroniza en todas las pestañas, lo que facilita la búsqueda rápida de esta ubicación en otras vistas.
+La línea de tiempo controla la reproducción y te ayuda a explorar el registro. Haz clic en cualquier punto para seleccionar un instante y clic derecho para quitar la selección. Ese instante se sincroniza en todas las pestañas, así que puedes ubicar el mismo momento al instante en otras vistas.
 
-Las secciones amarillas indican cuando el robot es autónomo, las secciones azules indican cuando el robot es teledirigido (teleop), y las secciones grises indican cuando el robot está en modo de utilidad.
+Las franjas amarillas marcan cuándo el robot está en modo autónomo; las azules, en teledirigido (teleop); y las grises, en modo de utilidad.
 
-Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia arriba o hacia abajo. También se puede seleccionar un rango haciendo clic y arrastrando mientras se mantiene presionada la tecla `Shift`. Muévete hacia la izquierda y hacia la derecha desplazándote horizontalmente (en dispositivos compatibles) o haciendo clic y arrastrando en la línea de tiempo. Cuando estás conectado en vivo, desplazarte hacia la izquierda desbloquea del tiempo actual, y desplazarte hasta la derecha vuelve a bloquear al tiempo actual. Presiona `Ctrl+\` para hacer zoom al período en el que el robot está habilitado.
+Para hacer zoom, coloca el cursor sobre la línea de tiempo y mueve la rueda del ratón (o desliza) hacia arriba o hacia abajo. También puedes seleccionar un tramo específico haciendo clic y arrastrando mientras mantienes presionada la tecla `Shift`. Para moverte a izquierda o derecha, desplázate horizontalmente (si tu dispositivo lo permite) o haz clic y arrastra sobre la línea de tiempo. Cuando estés conectado en vivo, moverte hacia la izquierda desbloquea la vista del tiempo actual, y llegar hasta el extremo derecho la vuelve a fijar en tiempo real. Presiona `Ctrl+\` para hacer zoom automáticamente al período en que el robot está habilitado.
 
 <img src="/img/tab-reference/timeline.webp" alt="Línea de tiempo" />
 
@@ -28,31 +28,31 @@ Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia 
 
 ## Controles de la cámara {#camera-controls}
 
-Desplázate hacia arriba y hacia abajo sobre el campo para acercar y alejar. Haz clic y arrastra para desplazarte por el campo. Haz clic derecho en cualquier lugar del campo para abrir el menú de la cámara con las siguientes opciones:
+Usa la rueda del ratón sobre el campo para acercar o alejar la vista, y haz clic y arrastra para moverte por el mapa. Si haces clic derecho en cualquier parte del campo, abrirás el menú de la cámara con estas opciones:
 
-- **Desbloqueado**: El desplazamiento y el zoom son manuales.
-- **Bloqueado al robot**: La cámara se desplaza automáticamente para seguir al robot.
-- **Bloqueado al robot y rotación**: La cámara se desplaza y rota automáticamente para seguir al robot y su rotación.
+- **Desbloqueado**: Tú controlas el desplazamiento y el zoom manualmente.
+- **Bloqueado al robot**: La cámara sigue al robot automáticamente mientras se mueve.
+- **Bloqueado al robot y rotación**: La cámara sigue al robot y además gira con él.
 
-En cualquiera de los modos bloqueados, la cámara se puede desplazar libremente lejos del robot. Los botones de orientación en el panel de control se pueden utilizar para rotar la cámara en cualquier modo.
+Incluso en los modos bloqueados, puedes arrastrar la vista para alejarte del robot cuando quieras. También puedes usar los botones de orientación en el panel de control para rotar el campo en cualquier modo.
 
 ## Agregar objetos {#adding-objects}
 
-Para comenzar, arrastra un campo a la sección "Poses". Elimina un objeto con el botón X, u ocúltalo temporalmente haciendo clic en el ícono del ojo o haciendo doble clic en el nombre del campo. Para eliminar todos los objetos, haz clic en la papelera cerca del título del eje y luego en `Borrar todo`.
+Para empezar, arrastra un campo a la sección **Poses**. Puedes quitar un objeto con el botón X, u ocultarlo temporalmente haciendo clic en el ícono del ojo o dando doble clic en su nombre. Si quieres limpiar todo de una vez, haz clic en el ícono de la papelera junto al título del eje y elige `Borrar todo`. También puedes reordenar los objetos de la lista arrastrándolos.
 
-Los objetos se pueden reorganizar en la lista haciendo clic y arrastrando. **Para personalizar cada objeto, haz clic en el ícono de color o haz clic con el botón derecho en el nombre del campo.** AdvantageScope admite una gran cantidad de tipos de objetos, muchos de los cuales se pueden personalizar (como cambiar de color). Algunos objetos deben agregarse como elementos secundarios (children) a un objeto existente.
+**Para personalizar un objeto, haz clic en su ícono de color o haz clic derecho sobre su nombre.** AdvantageScope ofrece muchos tipos de objetos, y varios se pueden ajustar (por ejemplo, cambiarles el color). Ten en cuenta que algunos objetos deben agregarse como elementos secundarios (hijos) dentro de otro objeto existente.
 
 :::tip
-Para ver una lista completa de tipos de objetos compatibles, haz clic en el ícono `?`. Esta lista también incluye los tipos de datos compatibles y si los objetos deben agregarse como elementos secundarios.
+Haz clic en el ícono `?` para ver la lista completa de tipos de objetos disponibles. Ahí también verás qué tipos de datos acepta cada uno y si necesita ir dentro de otro objeto.
 :::
 
 <img src="/img/tab-reference/2d-field-2.webp" alt="Campo 2D con objetos" />
 
 ## Formato de datos {#data-format}
 
-Los datos de geometría deben publicarse como un struct o protobuf codificado en bytes. Se admiten varios tipos de geometría 2D y 3D, incluidos `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` y más.
+Los datos geométricos deben publicarse en formato `struct` o `protobuf` codificado en bytes. Se admiten varios tipos 2D y 3D, como `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, entre otros.
 
-Muchas bibliotecas admiten el formato struct, incluidas WPILib y AdvantageKit. El código de ejemplo a continuación muestra cómo registrar datos de pose 2D en Java.
+Varias bibliotecas ya soportan `struct`, incluidas WPILib y AdvantageKit. En el ejemplo de abajo puedes ver cómo registrar una pose 2D en Java.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -81,22 +81,22 @@ Logger.recordOutput("MyPoseArray", new Pose2d[] {poseA, poseB});
 <TabItem value="ftcdashboard" label="FTC Dashboard">
 
 ```java
-// Este protocolo no admite el formato struct moderno, pero los valores
-// de pose se pueden publicar utilizando campos separados que incluyen
-// los sufijos "x", "y", y "heading" (como se muestra a continuación):
+// Este protocolo no admite el formato struct moderno, pero puedes publicar
+// los valores de pose usando campos separados con los sufijos
+// "x", "y" y "heading" (como se muestra abajo):
 TelemetryPacket packet = new TelemetryPacket();
 packet.put("Pose x", 6.3); // Pulgadas
 packet.put("Pose y", 2.8); // Pulgadas
 packet.put("Pose heading", 3.14); // Radianes
 
-// Alternativamente, la orientación (heading) se puede publicar en grados
+// También puedes publicar la orientación (heading) en grados
 packet.put("Pose heading (deg)", 180.0); // Grados
 
-// Agrega otros valores de telemetría aquí...
+// Agrega aquí otros valores de telemetría...
 
 FtcDashboard.getInstance().sendTelemetryPacket(packet)
 
-// Alternativamente, usa MultipleTelemetry y la telemetría del SDK estándar:
+// O usa MultipleTelemetry junto con la telemetría estándar del SDK:
 // Durante OpMode Init:
 telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
 
@@ -108,7 +108,7 @@ telemetry.addData("Pose heading", 3.14); // Radianes
 // o...
 telemetry.addData("Pose heading (deg)", 180.0); // Grados
 
-// Agrega otros valores de telemetría aquí...
+// Agrega aquí otros valores de telemetría...
 telemetry.update();
 ```
 
@@ -117,10 +117,10 @@ telemetry.update();
 
 ## Configuración {#configuration}
 
-- **Campo:** La imagen del campo a usar. Se admiten todos los juegos recientes de FRC y FTC. Para agregar una imagen de campo personalizada, consulta [Recursos personalizados](/more-features/custom-assets).
-- **Orientación:** La orientación de la imagen del campo en el panel del visor.
-- **Tamaño:** La longitud del lado del robot (30/27/24 pulgadas para FRC, 18/16/14 pulgadas para FTC).
+- **Campo:** La imagen de la cancha que quieres usar. Están incluidos todos los juegos recientes de FRC y FTC. Si quieres subir una imagen propia, revisa [Recursos personalizados](/more-features/custom-assets).
+- **Orientación:** Cómo se orienta la imagen del campo dentro del panel del visor.
+- **Tamaño:** El largo del lado del robot (30, 27 o 24 pulg. para FRC; 18, 16 o 14 pulg. para FTC).
 
 :::info
-El sistema de coordenadas utilizado en esta pestaña es personalizable. Consulta la página de [sistemas de coordenadas](/more-features/coordinate-systems) para obtener detalles.
+Puedes cambiar el sistema de coordenadas que usa esta pestaña. Consulta la página de [sistemas de coordenadas](/more-features/coordinate-systems) para ver cómo hacerlo.
 :::

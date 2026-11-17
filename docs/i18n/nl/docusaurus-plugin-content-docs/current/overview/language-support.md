@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 🌐 Taalondersteuning {#language-support}
 
-AdvantageScope ondersteunt meerdere talen om een gelokaliseerde ervaring te bieden voor teams over de hele wereld. De volgende talen zijn momenteel beschikbaar en worden ondersteund door de AdvantageScope-documentatie, desktop-app, mobiele apps (AdvantageScope XR en AdvantageTune) en AdvantageScope Lite (op Systemcore en in het FIRST Driver Station):
+AdvantageScope ondersteunt meerdere talen zodat teams over de hele wereld de software in hun eigen taal kunnen gebruiken. De volgende talen zijn beschikbaar in de documentatie, de desktopapp, de mobiele apps (AdvantageScope XR en AdvantageTune) en AdvantageScope Lite (op Systemcore en in het FIRST Driver Station):
 
 - Engels (VS)
 - Spaans (Latijns-Amerika)
@@ -26,15 +26,15 @@ AdvantageScope ondersteunt meerdere talen om een gelokaliseerde ervaring te bied
 
 ## Configuratie {#configuration}
 
-Om de weergavetaal in AdvantageScope te wijzigen, open je het voorkeurenvenster door te klikken op `App` > `Voorkeuren tonen...` (Windows/Linux) of `AdvantageScope` > `Instellingen...` (macOS). Onder de instelling "Taal" kun je kiezen uit de lijst met ondersteunde talen of "Systeemstandaard" selecteren om automatisch de taal van je besturingssysteem over te nemen.
+Om de taal in AdvantageScope aan te passen, open je het voorkeurenvenster via `App` > `Voorkeuren tonen...` (Windows/Linux) of `AdvantageScope` > `Instellingen...` (macOS). Bij "Taal 🌐" kies je een van de ondersteunde talen, of je kiest "Systeemstandaard" om automatisch de taal van je besturingssysteem te volgen.
 
 <img src="/img/prefs_nl.webp" alt="Diagram van voorkeuren" height="450" />
 
 ## Logsleutels {#logging-keys}
 
-Alle door AdvantageScope ondersteunde formaten bieden volledige Unicode-compatibiliteit bij het definiëren van logsleutels. Dit betekent dat je data kunt loggen in je voorkeurstaal (inclusief accenten, speciale tekens en niet-Latijnse alfabetten) en dat dit correct wordt geregistreerd en weergegeven in AdvantageScope.
+Alle formaten die AdvantageScope ondersteunt, bieden volledige Unicode-ondersteuning voor logsleutels. Je kunt je data dus gewoon loggen in je eigen taal — inclusief accenten, speciale tekens en niet-Latijnse schriften — en AdvantageScope legt alles netjes vast en toont het zoals bedoeld.
 
-Hier is een voorbeeld van het loggen van een string met een Nederlandstalige sleutel:
+Hier zie je een voorbeeld van het loggen van een string met een Nederlandstalige sleutel:
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -54,11 +54,11 @@ Logger.recordOutput("Aandrijving/Geïntegreerde snelheid vóór", "Efficiënt");
 </Tabs>
 
 :::tip Ondersteuning voor eenheden
-Zie de pagina over [ondersteuning voor eenheden](/tab-reference/line-graph/units) voor meer details over het doorgeven van eenheidsmetadata. Eenheidsnamen moeten worden opgegeven met behulp van SI-symbolen of in het Engels (Amerikaanse of Britse spelling), ongeacht de geselecteerde taal in AdvantageScope.
+Bekijk de pagina over [ondersteuning voor eenheden](/tab-reference/line-graph/units) voor meer informatie over het meesturen van eenheidsmetadata. Eenheidsnamen moet je wel altijd opgeven met SI-symbolen of in het Engels (Amerikaanse of Britse spelling), welke taal je ook hebt geselecteerd in AdvantageScope.
 :::
 
 ## Ontwikkeling {#development}
 
-De lokalisatie van AdvantageScope is gemaakt met een combinatie van kunstmatige intelligentie en samenwerking met de community. Omdat AdvantageScope een snel evoluerend project is, is het gebruik van AI essentieel om de vertaalde app en documentatie in alle talen synchroon te houden. Dit betekent dat nieuwe functies en updates altijd gelijktijdig beschikbaar zijn, ongeacht de taal die je selecteert.
+De vertalingen van AdvantageScope ontstaan door een combinatie van kunstmatige intelligentie en hulp vanuit de community. Omdat AdvantageScope volop in ontwikkeling is, hebben we AI nodig om de app en de documentatie in alle talen synchroon te houden. Zo komen nieuwe functies en updates altijd tegelijk uit, ongeacht welke taal je kiest.
 
-Ons proces is ontworpen om aan te sluiten bij de specifieke woordenschat, leenwoorden en transliteraties waarmee lokale teams vertrouwd zijn. AI-vertalingen bevatten echter vaak onnatuurlijke bewoordingen of andere onnauwkeurigheden. We stellen je feedback zeer op prijs; je kunt feedback geven over vertalingen door op het paarse pictogram in de app te klikken (wanneer deze is geconfigureerd voor een andere taal dan het Engels).
+We stemmen het proces zo goed mogelijk af op het jargon en de Engelse termen die teams zelf gebruiken. Toch klinken AI-vertalingen soms onnatuurlijk of sluipen er foutjes in. Daarom stellen we jouw feedback enorm op prijs: klik op het paarse pictogram in de app (als je een andere taal dan Engels gebruikt) om opmerkingen door te geven.

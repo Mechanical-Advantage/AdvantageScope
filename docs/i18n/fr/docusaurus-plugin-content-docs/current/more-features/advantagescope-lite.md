@@ -4,27 +4,27 @@ sidebar_position: 2
 
 # 💡 AdvantageScope Lite {#advantagescope-lite}
 
-AdvantageScope Lite est une version basée sur le navigateur d'AdvantageScope accessible depuis la console de pilotage FIRST et l'interface web Systemcore. La plupart des fonctionnalités de base de l'application de bureau AdvantageScope sont incluses dans AdvantageScope Lite. Cependant, plusieurs fonctionnalités sont omises en raison de restrictions de compatibilité (y compris certains types d'onglets, formats de journalisation et fonctionnalités associées).
+AdvantageScope Lite est la version navigateur d'AdvantageScope, accessible directement depuis la console de pilotage FIRST et l'interface web de Systemcore. Elle reprend la plupart des fonctionnalités de base de l'application de bureau, mais certaines options (comme certains types d'onglets ou formats de journaux) ne sont pas disponibles pour des raisons de compatibilité.
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="AdvantageScope Lite Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 _L'interface en anglais est illustrée ci-dessus._
 
-## Installation et actifs {#installation-and-assets}
+## Installation et ressources {#installation-and-assets}
 
-AdvantageScope Lite pour Systemcore peut être installée et mise à jour en téléchargeant la version « Systemcore » d'AdvantageScope depuis la page des versions de GitHub. Sélectionnez la carte « Add Package » sur l'interface web Systemcore pour téléverser le paquet sur le robot.
+Pour installer ou mettre à jour AdvantageScope Lite sur Systemcore, téléchargez la version « Systemcore » d'AdvantageScope depuis la page des versions sur GitHub. Dans l'interface web de Systemcore, sélectionnez ensuite la carte « Add Package » pour téléverser le paquet sur le robot.
 
-Les fichiers de ressources (par ex. les modèles de terrain/robot) peuvent être téléversés en choisissant `Fichier` > `Téléverser une ressource`. Le fichier sélectionné peut être soit un fichier zip pour une ressource individuelle, soit un fichier zip contenant plusieurs fichiers zip de ressources. Consultez la page [ressources personnalisées](/more-features/custom-assets/) pour plus d'informations sur les formats de ressources.
+Vous pouvez ajouter vos fichiers de ressources (modèles de terrain ou de robot, par exemple) via `Fichier` > `Téléverser une ressource`. Le fichier sélectionné peut être une archive zip contenant une seule ressource, ou une archive zip regroupant plusieurs archives de ressources. Consultez la page [Ressources personnalisées](/more-features/custom-assets/) pour connaître les formats pris en charge.
 
 :::info
-Les fichiers zip contenant des collections d'actifs courants peuvent être téléchargés en cliquant sur les liens ci-dessous :
+Vous pouvez télécharger des archives zip contenant des ensembles de ressources courantes grâce aux liens ci-dessous :
 
-- [**Actifs FRC par défaut**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsDefaultFRC.zip) : Terrains FRC, exemples de robots FRC et toutes les dispositions de manettes.
-- [**Actifs FTC par défaut**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsDefaultFTC.zip) : Terrains FTC, exemples de robots FTC et toutes les dispositions de manettes.
-- [**Actifs FRC 6328**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsFRC6328.zip) : Actifs exclusifs à la distribution [Équipe 6328](/overview/installation#team-6328) d'AdvantageScope.
+- [**Ressources FRC par défaut**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsDefaultFRC.zip) : terrains FRC, exemples de robots FRC et toutes les dispositions de manettes.
+- [**Ressources FTC par défaut**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsDefaultFTC.zip) : terrains FTC, exemples de robots FTC et toutes les dispositions de manettes.
+- [**Ressources FRC 6328**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsFRC6328.zip) : ressources exclusives à la distribution [Équipe 6328](/overview/installation#team-6328) d'AdvantageScope.
 
 :::
 
 :::tip
-Aucune installation n'est requise pour utiliser AdvantageScope Lite dans la console de pilotage FIRST. Naviguez vers http://localhost:6768/ascope pour vous connecter en direct ou visualiser des fichiers journaux.
+Aucune installation n'est nécessaire pour utiliser AdvantageScope Lite dans la console de pilotage FIRST. Rendez-vous simplement à l'adresse http://localhost:6768/ascope pour vous connecter en direct ou consulter des fichiers journaux.
 :::

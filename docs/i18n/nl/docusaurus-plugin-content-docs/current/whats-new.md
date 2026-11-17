@@ -9,21 +9,21 @@ draft: true
 <img src="/img/whats-new/banner-light.webp" className="light-only" />
 <img src="/img/whats-new/banner-dark.webp" className="dark-only" />
 
-De 2026-versie van AdvantageScope is nu beschikbaar! Bekijk de [installatiedocumentatie](/overview/installation) en de [volledige changelog](https://github.com/Mechanical-Advantage/AdvantageScope/releases) voor details. Deze release bevat diverse grote nieuwe functies en talrijke verbeteringen in de hele applicatie. Veel van de functies in deze release zijn ontworpen om de ervaring op bestaande besturingssystemen te verbeteren, terwijl een soepele overgang naar [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) in toekomstige seizoenen wordt voorbereid.
+De 2026-versie van AdvantageScope is nu uit! Bekijk de [installatiedocumentatie](/overview/installation) en de [volledige changelog](https://github.com/Mechanical-Advantage/AdvantageScope/releases) voor alle details. Deze release brengt een aantal grote nieuwe functies en flinke verbeteringen door de hele applicatie heen. Veel van deze vernieuwingen maken het werken met de huidige besturingssystemen prettiger en bereiden tegelijk een soepele overstap naar [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) in komende seizoenen voor.
 
-**We waarderen je feedback! Feedback, functieverzoeken en foutmeldingen zijn welkom op de [issues-pagina](https://github.com/Mechanical-Advantage/AdvantageScope/issues).**
+**We horen graag wat je ervan vindt! Feedback, functieverzoeken en bugrapporten zijn welkom op de [issues-pagina](https://github.com/Mechanical-Advantage/AdvantageScope/issues).**
 
 ## ✴️ Experimenteel: FTC-ondersteuning {#ftc-support}
 
-Ter voorbereiding op volledige ondersteuning met Systemcore in het seizoen 2027-2028 voegt deze release verschillende functies toe om de compatibiliteit met het bestaande besturingssysteem van FIRST Tech Challenge te verbeteren:
+Als opstap naar volledige ondersteuning voor Systemcore in het seizoen 2027-2028 voegt deze release een aantal functies toe die de samenwerking met het huidige besturingssysteem van FIRST Tech Challenge verbeteren:
 
 - FTC-velden en -robotmodellen op het 🗺️ [2D-veld](/tab-reference/2d-field) en 👀 [3D-veld](/tab-reference/3d-field)
-- Nieuwe opties voor het [coördinatenstelsel](/more-features/coordinate-systems) voor compatibiliteit met [standaard FTC-coördinaten](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html)
-- Ondersteuning voor [Road Runner](https://rr.brott.dev/docs/v1-0/installation/)-logbestanden
+- Nieuwe opties voor het [coördinatenstelsel](/more-features/coordinate-systems) die aansluiten op de [standaard FTC-coördinaten](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html)
+- Ondersteuning voor logbestanden van [Road Runner](https://rr.brott.dev/docs/v1-0/installation/)
 - Ondersteuning voor het live-streamingformaat van [FTC Dashboard](https://github.com/acmerobotics/ftc-dashboard)
 
 :::tip
-FTC-teams moeten voorzichtig zijn bij het gebruik van experimentele software tijdens het officiële seizoen. FTC-ondersteuning voor AdvantageScope is nog in actieve ontwikkeling.
+Wees als FTC-team voorzichtig met experimentele software tijdens het officiële seizoen. De FTC-ondersteuning voor AdvantageScope is nog volop in ontwikkeling.
 :::
 
 <div className="image-gallery">
@@ -34,36 +34,36 @@ FTC-teams moeten voorzichtig zijn bij het gebruik van experimentele software tij
   <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
 </div>
 
-Verschillende externe FTC-logging-/telemetriebibliotheken ondersteunen andere formaten die compatibel zijn met AdvantageScope, zoals WPILOG en RLOG. Documentatie van deze bibliotheken is te vinden in de respectievelijke projecten; de AdvantageScope-ontwikkelaars bevelen geen specifieke FTC-loggingoplossing aan voor gebruik met AdvantageScope.
+Meerdere externe FTC-bibliotheken voor logging en telemetrie ondersteunen ook andere formaten waar AdvantageScope mee overweg kan, zoals WPILOG en RLOG. De documentatie van die bibliotheken vind je bij de projecten zelf; de ontwikkelaars van AdvantageScope raden geen specifieke FTC-loggingoplossing aan.
 
 :::info
-AdvantageScope is ontworpen om de beste ervaring te bieden wanneer het wordt gebruikt naast het WPILib-framework en bijbehorende loggingtools. Je kunt compatibiliteitsproblemen of beperkte mogelijkheden tegenkomen bij het gebruik van onofficiële loggingoplossingen.
+AdvantageScope werkt het best samen met het WPILib-framework en de bijbehorende loggingtools. Gebruik je een onofficiële loggingoplossing, dan kun je tegen compatibiliteitsproblemen of beperkingen aanlopen.
 
-Alle functies van AdvantageScope worden officieel ondersteund in FTC na de overgang naar Systemcore voor het seizoen 2027-2028.
+Vanaf de overstap naar Systemcore in het seizoen 2027-2028 worden alle functies van AdvantageScope officieel ondersteund in FTC.
 :::
 
 ## 🧮 Eenheidsbewuste grafieken {#unit-aware-graphing}
 
-Het tabblad 📉 [Lijngrafiek](/tab-reference/line-graph/) is opnieuw ontworpen om volledig eenheidsbewust te zijn. Dit maakt verschillende nieuwe mogelijkheden mogelijk bij het plotten van numerieke velden:
+Het tabblad 📉 [Lijngrafiek](/tab-reference/line-graph/) is helemaal opnieuw ontworpen zodat het volledig eenheidsbewust is. Dat geeft je allerlei nieuwe mogelijkheden bij het plotten van numerieke velden:
 
-- Precieze labeling van Y-assen en waardeweergaven
-- Snelle conversie naar compatibele eenheden (geen pop-upvensters)
-- Impliciete conversie van compatibele eenheidstypen binnen één as
-- Nauwkeurige weergave van [geïntegreerde en gedifferentieerde](/tab-reference/line-graph/#integration-and-differentiation) eenheden
+- Nauwkeurige labels bij de Y-assen en waardeweergaven
+- Snel omrekenen naar compatibele eenheden zonder pop-upvensters
+- Automatische conversie van compatibele eenheidstypen op dezelfde as
+- Correcte weergave van [geïntegreerde en gedifferentieerde](/tab-reference/line-graph/#integration-and-differentiation) eenheden
 
-De onderstaande schermafbeelding toont al deze functies in actie. Merk op dat de linkeras velden met verschillende hoeksnelheidseenheden bevat, en de rechteras waarden bevat die zijn gedifferentieerd en worden weergegeven in een niet-native eenheid (graden). Het selecteren van eenheden is ook eenvoudiger dan ooit tevoren, met compatibele eenheidsopties die direct zijn geïntegreerd in het bedieningsmenu voor elke as.
+In de schermafbeelding hieronder zie je al deze functies in actie. De linkeras bevat velden met verschillende eenheden voor hoeksnelheid, en op de rechteras staan gedifferentieerde waarden die in een andere eenheid (graden) worden weergegeven. Eenheden kiezen is nu ook makkelijker dan ooit: de compatibele opties staan direct in het bedieningsmenu van elke as.
 
-_Meer informatie over eenheidsondersteuning is te vinden in de [documentatie](/tab-reference/line-graph/units)._
+_Meer informatie over eenheidsondersteuning vind je in de [documentatie](/tab-reference/line-graph/units)._
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="Eenheidsbewuste grafieken" />
 
-_De Engelstalige interface wordt hierboven weergegeven._
+_Hierboven zie je de Engelstalige interface._
 
 ## 🏁 Snellere logdownloads {#faster-log-downloads}
 
-[Het downloaden van logs vanaf de roboRIO](/overview/log-files/#downloading-from-the-robot) is nu **2-4x sneller** dan in eerdere releases. Dit wordt bereikt door over te schakelen naar een nieuw protocol (FTP) waarmee de roboRIO logdata kan overdragen met minder CPU-overhead.
+[Logs downloaden vanaf de roboRIO](/overview/log-files/#downloading-from-the-robot) gaat nu **2-4x sneller** dan in eerdere versies. Dat komt door de overstap naar een nieuw protocol (FTP), waarmee de roboRIO logdata met minder CPU-belasting kan versturen.
 
-De onderstaande tabel toont de gemeten overdrachtssnelheid op de releases 2025 en 2026 van AdvantageScope bij verbinding via Ethernet (maximale bandbreedte van 100 Mb/s). Merk op dat de prestaties van de 2025-release ernstig worden beïnvloed door de CPU-belasting op de roboRIO.
+De tabel hieronder toont de gemeten overdrachtssnelheden in de 2025- en 2026-versie van AdvantageScope via een Ethernet-kabel (maximale bandbreedte van 100 Mb/s). Je ziet dat de snelheid van de 2025-versie flink inzakt zodra de CPU van de roboRIO zwaarder belast wordt.
 
 |                                                            | 2025 (SFTP) | 2026 (FTP) | Versnelling                                      |
 | ---------------------------------------------------------- | ----------- | ---------- | ------------------------------------------------ |
@@ -73,47 +73,47 @@ De onderstaande tabel toont de gemeten overdrachtssnelheid op de releases 2025 e
 
 ## 📁 Logs downloaden uit submappen {#download-logs-from-subfolders}
 
-Het downloadvenster ondersteunt nu het opslaan van logs die zijn opgeslagen in submappen. Elke submap met logs kan als groep worden gedownload, wat een gestroomlijnde aanpak biedt voor het downloaden van logs die zijn gegenereerd door de 2026-release van CTRE's [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) (die submappen gebruikt als tijdelijke oplossing voor het niet kunnen opslaan van data in één enkel logbestand).
+In het downloadvenster kun je nu ook logs opslaan die in submappen staan. Elke submap wordt als één geheel gedownload. Dat maakt het een stuk handiger om logs binnen te halen van de 2026-versie van CTRE's [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html), die submappen gebruikt omdat data niet in één enkel logbestand kan worden opgeslagen.
 
 <img src="/img/whats-new/subfolders.webp" alt="Logsubmappen downloaden" height="450" />
 
 ## 🌈 Nieuwe visualisatieopties {#new-visualization-options}
 
-Verschillende nieuwe visualisatieopties worden ondersteund op het 🗺️ [2D-veld](/tab-reference/2d-field) en 👀 [3D-veld](/tab-reference/3d-field):
+Het 🗺️ [2D-veld](/tab-reference/2d-field) en 👀 [3D-veld](/tab-reference/3d-field) hebben er een aantal nieuwe visualisatieopties bij gekregen:
 
-- Een bredere variëteit aan bumperkleuren voor robots is nu beschikbaar op het 2D-veld, en elk object kan worden geconfigureerd met zijn eigen kleur. Dit biedt meer flexibiliteit bij het combineren van ghosts met meerdere robotobjecten.
-- Bij het [visualiseren van 2D-mechanismen op het 3D-veld](/tab-reference/3d-field/#2d-mechanisms) kunnen mechanismen nu naast het XZ-vlak ook op het YZ-vlak worden geplaatst. Dit maakt eenvoudige visualisatie mogelijk van complexe mechanismen met beweging in meerdere assen.
-- Het 3D-veld ondersteunt nu optionele antialiasing om de kwaliteit van gerenderde randen te verbeteren.
+- Op het 2D-veld heb je nu keuze uit meer bumperkleuren, en elk object kan een eigen kleur krijgen. Dat geeft meer vrijheid wanneer je ghosts combineert met meerdere robotobjecten.
+- Als je [2D-mechanismen op het 3D-veld visualiseert](/tab-reference/3d-field/#2d-mechanisms), kun je ze naast het XZ-vlak nu ook op het YZ-vlak plaatsen. Zo breng je complexe mechanismen die over meerdere assen bewegen makkelijker in beeld.
+- Het 3D-veld ondersteunt nu optionele antialiasing voor strakkere, minder kartelige randen.
 
 <img src="/img/whats-new/field-viz.jpg" alt="Nieuwe veldvisualisaties" />
 
 ## 🪵 Ondersteuning voor REV Robotics CAN-logbestanden {#rev-robotics-can-log-support}
 
-Je kunt nu `.revlog`-bestanden die zijn geproduceerd door REV Robotics' [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) rechtstreeks openen in AdvantageScope. Deze bestanden registreren CAN-signalen van Spark Max- en Spark Flex-apparaten en bieden een officieel alternatief voor de [URCL](/more-features/urcl)-bibliotheek van AdvantageScope.
+Je kunt `.revlog`-bestanden van REV Robotics' [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) nu rechtstreeks openen in AdvantageScope. Deze bestanden leggen CAN-signalen van Spark Max- en Spark Flex-controllers vast en vormen een officieel alternatief voor de [URCL](/more-features/urcl)-bibliotheek van AdvantageScope.
 
-Zowel URCL als de officiële `StatusLogger` blijven beschikbaar tijdens het seizoen 2026 om een soepele overgang te garanderen en functiepariteit met voorgaande seizoenen te bieden. We zullen op een later tijdstip meer details delen over loggingopties in 2027 en daarna.
+Zowel URCL als de officiële `StatusLogger` blijven tijdens het seizoen 2026 beschikbaar voor een soepele overgang en behoud van alle bekende functies. Over de loggingopties voor 2027 en daarna delen we later meer details.
 
 <img src="/img/whats-new/revlog.webp" alt="REVLOG-visualisatie" />
 
-## 💿 CSV-bestandsimport {#csv-file-imports}
+## 💿 CSV-bestanden importeren {#csv-file-imports}
 
-Voor flexibelere visualisatie van data die buiten robotloggingframeworks is geproduceerd, bevat AdvantageScope nu basisfunctionaliteit voor het importeren van CSV-bestanden. Bekijk de [documentatie](/overview/log-files/#csv-formatting) voor meer details over ondersteunde formaten en andere beperkingen.
+Wil je data bekijken die niet uit een robotloggingframework komt? AdvantageScope biedt nu basisondersteuning voor het importeren van CSV-bestanden. Kijk in de [documentatie](/overview/log-files/#csv-formatting) voor de ondersteunde formaten en beperkingen.
 
 <img src="/img/overview/log-files/export-2.webp" alt="CSV-data" />
 
-## 🤩 Esthetische verbeteringen {#aesthetic-improvements}
+## 🤩 Visuele verbeteringen {#aesthetic-improvements}
 
-De gebruikersinterface van AdvantageScope op Windows 11 is bijgewerkt om een doorzichtige zijbalk te ondersteunen, wat voorheen exclusief was voor macOS-releases. Er is ook een bijgewerkt app-pictogram beschikbaar voor macOS Tahoe op basis van Apple's Liquid Glass-materiaal.
+Op Windows 11 heeft AdvantageScope nu een halfdoorzichtige zijbalk, een detail dat voorheen alleen op macOS beschikbaar was. Voor macOS Tahoe is er bovendien een nieuw app-pictogram ontworpen op basis van Apple's Liquid Glass-materiaal.
 
-<img src="/img/whats-new/windows-ui.webp" alt="Windows UI" />
+<img src="/img/whats-new/windows-ui.webp" alt="Windows-interface" />
 
 ## 📋 Gestroomlijnde menu's {#streamlined-menus}
 
-De menubalk en bijbehorende bedieningselementen zijn gestroomlijnd en gereorganiseerd om de bediening toegankelijker en consistenter te maken op alle platforms. Opvallende functies zijn onder meer:
+We hebben de menubalk en bijbehorende bediening opgeschoond en opnieuw ingedeeld, zodat alles op elk platform logischer en makkelijker te bereiken is:
 
-- Sneller wisselen tussen live-bronnen (bijv. NetworkTables en [Phoenix-diagnostiek](/overview/live-sources/phoenix-diagnostics)), zonder het voorkeurenvenster te hoeven openen.
-- Klik met de rechtermuisknop op de zijbalk om snel de naam van een veld (of de volledige veldsleutel) te kopiëren.
-- Reorganisatie van het voorkeurenvenster, waardoor opties sneller te vinden zijn.
+- Wissel sneller tussen live-bronnen (zoals NetworkTables en [Phoenix-diagnostiek](/overview/live-sources/phoenix-diagnostics)), zonder dat je het voorkeurenvenster hoeft te openen.
+- Klik met de rechtermuisknop in de zijbalk om snel de naam van een veld of de volledige veldsleutel te kopiëren.
+- Een opnieuw ingedeeld voorkeurenvenster waarin je instellingen sneller terugvindt.
 
 <div className="image-gallery">
   <img src="/img/whats-new/menus-1.webp" />
@@ -123,11 +123,11 @@ De menubalk en bijbehorende bedieningselementen zijn gestroomlijnd en gereorgani
 
 ## 🐛 Stabiliteitsverbeteringen {#stability-improvements}
 
-Deze release bevat een verscheidenheid aan bugfixes en stabiliteitsverbeteringen in de hele applicatie. De volledige lijst is te vinden in de release-[changelog](https://github.com/Mechanical-Advantage/AdvantageScope/releases), maar enkele opmerkelijke fixes worden hieronder vermeld:
+Deze release zit ook vol bugfixes en stabiliteitsverbeteringen door de hele applicatie heen. De complete lijst staat in de [changelog](https://github.com/Mechanical-Advantage/AdvantageScope/releases); hieronder een paar opvallende verbeteringen:
 
-- De prestaties van AdvantageScope bij het streamen van data gedurende lange perioden zijn aanzienlijk verbeterd, vooral bij het gebruik van het tabblad Lijngrafiek.
-- AdvantageScope is nu toleranter voor ongebruikelijke logdata, waaronder grote logbestanden en grote veldwaarden.
-- Verschillende visuele glitches zijn verholpen bij het bladeren door logdata, vooral bij het gebruik van filters op het tabblad Lijngrafiek.
-- De volgorde van AdvantageKit-logbestanden in het downloadvenster is gecorrigeerd; logs zonder tijdstempels staan nu onderaan de lijst, vergelijkbaar met andere formaten.
-- Op het tabblad 3D-veld worden robotcamera's met een niet-nul-rotatie in de rol-as nu correct gevisualiseerd.
-- De stabiliteit van AdvantageScope XR is verbeterd, vooral bij gebruik op iOS/iPadOS 26. Controleer voor offline-installaties de App Store op beschikbare updates.
+- De prestaties bij langdurig streamen van data zijn flink verbeterd, vooral op het tabblad Lijngrafiek.
+- AdvantageScope gaat nu beter om met ongewone logdata, zoals hele grote logbestanden en omvangrijke veldwaarden.
+- Verschillende visuele haperingen bij het bladeren door logdata zijn opgelost, met name bij het gebruik van filters op het tabblad Lijngrafiek.
+- De sortering van AdvantageKit-logbestanden in het downloadvenster klopt weer: logs zonder tijdstempel staan nu onderaan de lijst, net als bij andere formaten.
+- Op het tabblad 3D-veld worden robotcamera's met een roll-rotatie ongelijk aan nul nu correct weergegeven.
+- AdvantageScope XR is stabieler geworden, vooral onder iOS/iPadOS 26. Gebruik je een offline installatie, controleer dan de App Store op updates.

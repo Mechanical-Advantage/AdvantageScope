@@ -1,36 +1,36 @@
 # 🛜 Fontes ao vivo {#live-sources}
 
-Todas as visualizações no AdvantageScope foram projetadas para receber dados ao vivo de um robô ou simulador, além de arquivos de log. Esta seção descreve como se conectar a fontes de dados em tempo real. As seguintes fontes de dados ao vivo são suportadas pelo AdvantageScope:
+Todas as visualizações do AdvantageScope foram feitas para receber dados ao vivo de um robô ou simulador, além de abrir arquivos de log. Esta seção explica como se conectar a fontes de dados em tempo real. O AdvantageScope oferece suporte às seguintes fontes ao vivo:
 
-- **NetworkTables:** Este é o protocolo de rede principal da WPILib. Consulte a [documentação da WPILib](https://docs.wpilib.org/pt/stable/docs/software/networktables/index.html) para mais detalhes.
-- **NetworkTables (AdvantageKit):** Este modo é projetado para uso com código de robô executando o AdvantageKit, que publica na tabela `AdvantageKit` no NetworkTables.
-- **Diagnósticos do Systemcore:** Este modo conecta-se ao servidor NetworkTables integrado usado pelo Systemcore OS, que inclui dados de diagnóstico como o estado do robô e E/S de dispositivos.
-- **Diagnósticos do Phoenix:** Este modo usa HTTP para se conectar a um [servidor de diagnósticos](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html) do Phoenix, o que permite a transmissão de dados de dispositivos CAN da CTRE com o [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/). Isso é semelhante ao [recurso de plotagem](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) no Phoenix Tuner. Consulte [esta página](/overview/live-sources/phoenix-diagnostics) para mais informações.
-- **Servidor RLOG:** Este protocolo é suportado pelo AdvantageKit como uma alternativa ao NetworkTables. A conexão é iniciada na porta 5800 por padrão.
-- **FTC Dashboard:** Este modo integra-se com robôs do FTC que publicam dados no [FTC Dashboard](https://acmerobotics.github.io/ftc-dashboard).
+- **NetworkTables:** É o protocolo de rede principal da WPILib. Veja mais detalhes na [documentação da WPILib](https://docs.wpilib.org/pt/stable/docs/software/networktables/index.html).
+- **NetworkTables (AdvantageKit):** Modo voltado para códigos de robô que usam o AdvantageKit, publicando na tabela `AdvantageKit` do NetworkTables.
+- **Diagnósticos do Systemcore:** Conecta-se ao servidor NetworkTables integrado do Systemcore OS, trazendo dados de diagnóstico como o estado do robô e I/O dos dispositivos.
+- **Diagnósticos do Phoenix:** Usa HTTP para se conectar a um [servidor de diagnósticos](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html) do Phoenix, permitindo transmitir dados de dispositivos CAN da CTRE com [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/). É parecido com o [recurso de plotagem](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) do Phoenix Tuner. Veja [esta página](/overview/live-sources/phoenix-diagnostics) para saber mais.
+- **Servidor RLOG:** Protocolo suportado pelo AdvantageKit como alternativa ao NetworkTables. Por padrão, a conexão usa a porta 5800.
+- **FTC Dashboard:** Integra-se a robôs de FTC que publicam dados no [FTC Dashboard](https://acmerobotics.github.io/ftc-dashboard).
 
 :::info
-O AdvantageScope pode se conectar à Driver Station da FIRST para visualizar dados de diagnóstico ao ser executado no mesmo dispositivo que o aplicativo da DS. Nenhuma configuração é necessária (consulte as instruções abaixo).
+O AdvantageScope também pode se conectar à FIRST Driver Station para exibir dados de diagnóstico quando estiver rodando no mesmo computador que o aplicativo da DS. Nenhuma configuração extra é necessária (veja as instruções abaixo).
 :::
 
 ## Iniciando a conexão {#starting-the-connection}
 
-Para iniciar a conexão ao vivo, siga estas etapas:
+Para iniciar a conexão ao vivo, escolha uma das opções abaixo:
 
-- **Robô:** Clique em `Arquivo` > `Conectar ao robô` > `Padrão` ou uma fonte ao vivo específica
-- **Simulador:** Clique em `Arquivo` > `Conectar ao simulador` > `Padrão` ou uma fonte ao vivo específica
+- **Robô:** Clique em `Arquivo` > `Conectar ao robô` > `Padrão` ou selecione uma fonte ao vivo específica
+- **Simulador:** Clique em `Arquivo` > `Conectar ao simulador` > `Padrão` ou selecione uma fonte ao vivo específica
 - **Driver Station:** Clique em `Arquivo` > `Conectar à Driver Station`
 
-O título da janela exibe o endereço IP e o texto "Buscando" até que o alvo esteja conectado. O AdvantageScope tenta reconectar automaticamente usando as mesmas configurações após uma desconexão.
+O título da janela mostra o endereço IP e o texto "Buscando" até a conexão ser estabelecida. Se a conexão cair, o AdvantageScope tenta reconectar automaticamente usando as mesmas configurações.
 
 ## Visualizando dados ao vivo {#viewing-live-data}
 
-Quando conectado a uma fonte ao vivo, o AdvantageScope bloqueia todas as guias no horário atual por padrão. Visualizações como o 📉 [Gráfico de linha](/tab-reference/line-graph) e a 🔢 [Tabela](/tab-reference/table) rolam automaticamente, e visualizações como campo e joysticks exibem os valores atuais de cada campo. Clicar no botão de seta vermelha na barra de navegação alterna este bloqueio, permitindo a visualização e reprodução de dados passados.
+Quando você se conecta a uma fonte ao vivo, o AdvantageScope trava todas as guias no instante atual por padrão. Visualizações como o 📉 [Gráfico de linha](/tab-reference/line-graph) e a 🔢 [Tabela](/tab-reference/table) rolam automaticamente, enquanto outras, como o campo e os joysticks, exibem os valores atuais de cada campo. Clicar no botão da seta vermelha na barra de navegação ativa ou desativa essa trava, permitindo voltar no tempo e rever dados passados.
 
 <img src="/img/overview/live-sources/open-live-1.webp" alt="Botão de bloquear/desbloquear ao vivo" />
 
 :::tip
-Rolar para a esquerda no gráfico de linha ou na linha do tempo desbloqueia do horário atual, e rolar totalmente para a direita bloqueia no horário atual novamente.
+Rolar para a esquerda no gráfico de linha ou na linha do tempo destrava a visualização do instante atual, e rolar tudo para a direita trava novamente.
 :::
 
 ## Configuração {#configuration}
@@ -41,15 +41,15 @@ Abra a janela de preferências clicando em `App` > `Mostrar preferências...` (W
 
 ### Endereço do robô {#robot-address}
 
-Insira o endereço do robô usando um nome de host (por exemplo, `robot.local`) ou endereço IP (por exemplo, `10.TE.AM.2`) conforme descrito na [documentação da WPILib](https://docs.wpilib.org/pt/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). Ao se conectar ao Systemcore via USB ou pelo ponto de acesso Wi-Fi integrado, clique em `Arquivo` > `Usar endereço USB do Systemcore`/`Usar endereço Wi-Fi do Systemcore` para usar temporariamente o endereço IP estático correto.
+Informe o endereço do robô usando um nome de host (ex.: `robot.local`) ou um endereço IP (ex.: `10.TE.AM.2`), conforme descrito na [documentação da WPILib](https://docs.wpilib.org/pt/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). Ao se conectar ao Systemcore via USB ou pelo ponto de acesso Wi-Fi integrado, clique em `Arquivo` > `Usar endereço USB do Systemcore`/`Usar endereço Wi-Fi do Systemcore` para usar temporariamente o endereço IP estático correto.
 
 ### Modo ao vivo {#live-mode}
 
-Quando o NetworkTables é usado como fonte ao vivo, os seguintes modos ao vivo podem ser selecionados:
+Quando o NetworkTables for a fonte ao vivo, você pode escolher entre dois modos:
 
-- **Baixa largura de banda (Padrão):** O AdvantageScope solicita dados do servidor apenas para campos que estão sendo ativamente usados. Dados publicados antes de um campo ser selecionado não estarão disponíveis. Este modo é **altamente recomendado** ao ser executado em um ambiente com largura de banda de rede limitada, ou quando um grande número de campos está sendo publicado.
-- **Logging:** O AdvantageScope solicita dados para todos os campos, independentemente de estarem sendo ativamente usados ou não. Isso significa que os campos podem ser visualizados retroativamente pausando a transmissão de dados ao vivo (veja abaixo). Este modo é frequentemente útil durante o desenvolvimento, mas **NÃO deve ser usado quando a largura de banda for limitada**.
+- **Baixa largura de banda (Padrão):** O AdvantageScope pede ao servidor apenas os dados dos campos que estão sendo usados no momento. Dados publicados antes de você selecionar um campo não ficam disponíveis. Esse modo é **altamente recomendado** em redes com pouca largura de banda ou quando há muitos campos sendo publicados.
+- **Logging:** O AdvantageScope pede os dados de todos os campos, estejam eles sendo usados ou não. Assim, você pode pausar a transmissão ao vivo e consultar outros campos retroativamente. Esse modo ajuda bastante durante o desenvolvimento, mas **NÃO deve ser usado quando a largura de banda for limitada**.
 
 ### Descartar dados ao vivo {#discard-live-data}
 
-Durante uma conexão ao vivo, os dados são armazenados localmente para permitir a reprodução de dados passados (veja "Visualizando dados ao vivo" abaixo). Para evitar um uso de memória muito alto, os dados são descartados após 20 minutos por padrão. Um período mais curto pode ser selecionado para reduzir o uso de memória, ou "Nunca" pode ser selecionado para armazenar dados ao vivo indefinidamente.
+Durante uma conexão ao vivo, os dados ficam salvos localmente para que você possa rever instantes anteriores (veja "Visualizando dados ao vivo" acima). Para evitar consumo excessivo de memória, esses dados são descartados após 20 minutos por padrão. Você pode escolher um intervalo menor para economizar memória ou selecionar "Nunca" para guardar os dados ao vivo por tempo indeterminado.

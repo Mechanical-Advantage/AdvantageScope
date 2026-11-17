@@ -7,20 +7,20 @@ import TabItem from '@theme/TabItem';
 
 # 📍 Points {#points}
 
-L'onglet points montre une visualisation 2D de points arbitraires. Il s'agit d'un outil très flexible, permettant des visualisations personnalisées de données/pipelines de vision, d'états de mécanismes, etc.
+L'onglet Points affiche une visualisation 2D de points arbitraires. C'est un outil très polyvalent qui permet de créer des visualisations sur mesure pour vos données ou *pipelines* de vision, l'état de vos mécanismes, et bien plus.
 
-<img src="/img/tab-reference/points-1.webp" alt="Exemple d'onglet points" />
+<img src="/img/tab-reference/points-1.webp" alt="Exemple d'onglet Points" />
 
 _L'interface en anglais est illustrée ci-dessus._
 
 <details>
 <summary>Contrôles de la chronologie</summary>
 
-La chronologie est utilisée pour contrôler la lecture et la visualisation. Cliquer sur la chronologie sélectionne un moment, et faire un clic droit le désélectionne. L'heure sélectionnée est synchronisée sur tous les onglets, ce qui permet de trouver rapidement cet emplacement dans d'autres vues.
+La chronologie sert à piloter la lecture et la visualisation. Cliquer dessus sélectionne un instant précis, et un clic droit le désélectionne. Comme l'heure sélectionnée est synchronisée entre tous les onglets, vous pouvez retrouver ce même moment en un coup d'œil dans les autres vues.
 
-Les sections jaunes indiquent quand le robot est en mode autonome, les sections bleues indiquent quand le robot est en mode téléopéré et les sections grises indiquent quand le robot est en mode utilitaire.
+Les zones jaunes indiquent les phases en mode autonome, les zones bleues le mode téléopéré, et les zones grises le mode utilitaire.
 
-Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le haut ou vers le bas. Une plage peut également être sélectionnée en cliquant et en faisant glisser tout en maintenant la touche `Shift` enfoncée. Déplacez-vous vers la gauche et la droite en faisant défiler horizontalement (sur les appareils pris en charge), ou en cliquant et en faisant glisser sur la chronologie. Lors d'une connexion en direct, le défilement vers la gauche déverrouille à partir de l'heure actuelle, et le défilement tout à fait vers la droite verrouille à nouveau à l'heure actuelle. Appuyez sur `Ctrl+\` pour zoomer sur la période où le robot est activé.
+Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le haut ou vers le bas. Vous pouvez aussi sélectionner une plage en cliquant et en faisant glisser tout en maintenant la touche `Shift` enfoncée. Pour vous déplacer vers la gauche ou la droite, faites défiler horizontalement (sur les appareils compatibles) ou cliquez et faites glisser sur la chronologie. En mode en direct, faire défiler vers la gauche déverrouille la vue de l'heure actuelle, tandis que faire défiler complètement vers la droite la verrouille à nouveau. Appuyez sur `Ctrl+\` pour zoomer sur la période où le robot est activé.
 
 <img src="/img/tab-reference/timeline.webp" alt="Chronologie" />
 
@@ -28,17 +28,17 @@ Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le hau
 
 ## Ajout de sources {#adding-sources}
 
-Pour commencer, faites glisser un champ vers la section « Sources ». Supprimez une source à l'aide du bouton X, ou masquez-la temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer tous les objets, cliquez sur la corbeille près du titre de l'axe, puis sur `Tout effacer`. Les sources peuvent être réorganisées dans la liste en les faisant glisser.
+Pour commencer, faites glisser un champ vers la section « Sources ». Vous pouvez supprimer une source avec le bouton X, ou la masquer temporairement en cliquant sur l'icône d'œil ou en double-cliquant sur son nom. Pour tout retirer, cliquez sur la corbeille à côté du titre de la section, puis sur `Tout effacer`. Vous pouvez également réorganiser les sources dans la liste par glisser-déposer.
 
-**Pour personnaliser chaque source, cliquez sur l'icône colorée ou faites un clic droit sur le nom du champ.** Le symbole, la couleur et la taille de chaque source peuvent être ajustés.
+**Pour personnaliser une source, cliquez sur son icône colorée ou faites un clic droit sur son nom.** Vous pourrez ainsi modifier son symbole, sa couleur et sa taille.
 
 :::tip
-Pour voir une liste complète des types de sources pris en charge, cliquez sur l'icône `?`. Cette liste comprend également les types de données pris en charge.
+Pour consulter la liste complète des types de sources et des formats de données pris en charge, cliquez sur l'icône `?`.
 :::
 
 ## Format des données {#data-format}
 
-Les données de points doivent être publiées sous forme de struct ou protobuf codé en octets, en utilisant le type `Translation2d[]`. De nombreuses bibliothèques prennent en charge ce format, notamment WPILib et AdvantageKit. L'exemple de code ci-dessous montre comment enregistrer des données de points en Java.
+Les coordonnées des points doivent être publiées au format struct ou protobuf encodé en octets, avec le type `Translation2d[]`. De nombreuses bibliothèques prennent ce format en charge, notamment WPILib et AdvantageKit. L'exemple ci-dessous montre comment enregistrer des points en Java.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -71,8 +71,8 @@ Logger.recordOutput("MyTranslations",
 
 ## Configuration {#configuration}
 
-Les options de configuration suivantes sont disponibles :
+Les options suivantes sont disponibles :
 
-- **Dimensions :** La taille de la zone d'affichage. Cela peut utiliser n'importe quelle unité correspondant aux points publiés. Lors de l'affichage des données de vision, il s'agit de la résolution de la caméra.
-- **Orientation :** Le système de coordonnées à utiliser (orientation des axes X et Y).
-- **Origine :** La position de l'origine dans le système de coordonnées.
+- **Dimensions :** la taille de la zone d'affichage, exprimée dans la même unité que les points publiés. Pour des données de vision, il s'agit de la résolution de la caméra.
+- **Orientation :** le système de coordonnées à utiliser (sens des axes X et Y).
+- **Origine :** la position de l'origine dans le système de coordonnées.

@@ -4,32 +4,32 @@ sidebar_position: 3
 
 # NetworkTables-data publiceren {#publishing-networktables-data}
 
-AdvantageScope ondersteunt het opnieuw publiceren van NetworkTables-data die is opgeslagen in een logbestand naar een NetworkTables-server, zoals een simulator of robot. Mogelijke gebruiksscenario's zijn:
+AdvantageScope kan NetworkTables-data uit een logbestand opnieuw publiceren naar een NetworkTables-server, zoals een simulator of een echte robot. Dat is bijvoorbeeld handig om:
 
-- Het herhalen van wedstrijden in simulatie voor foutopsporing.
-- Het nabootsen van data van een coprocessor op een echte robot.
-- Het debuggen van driver dashboard-applicaties met behulp van realistische wedstrijddata.
+- Wedstrijden na te spelen in een simulator om bugs op te sporen.
+- Data van een coprocessor na te bootsen op een echte robot.
+- Dashboard-applicaties voor bestuurders te testen met realistische wedstrijddata.
 
-Deze functie vereist een logbestand met een volledige registratie van NetworkTables-data, die kan worden gegenereerd met de [ingebouwde datalogger](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) van WPILib. Merk op dat AdvantageKit deze functie niet ondersteunt, omdat het in plaats daarvan een completere deterministische herhaling in simulatie mogelijk maakt.
+Hiervoor heb je een logbestand nodig waarin alle NetworkTables-data is vastgelegd, bijvoorbeeld met de [ingebouwde datalogger](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) van WPILib. Let op: AdvantageKit ondersteunt deze functie niet, omdat het in plaats daarvan volledige deterministische replay in simulatie mogelijk maakt.
 
 ## Aan de slag {#getting-started}
 
-Om te beginnen met publiceren, moet een logbestand met NetworkTables-data geopend zijn. Volg daarna deze stappen:
+Om te kunnen publiceren moet er een logbestand met NetworkTables-data geopend zijn. Volg daarna deze stappen:
 
 - **Publiceren naar robot:** Klik op `Bestand` > `NT-data publiceren` > `Verbinden met robot`.
 - **Publiceren naar simulator:** Klik op `Bestand` > `NT-data publiceren` > `Verbinden met simulator`.
 
-Bovenaan het venster wordt de tekst "Zoeken" of "Publiceren" weergegeven om de status van het publiceren van data aan te geven. AdvantageScope probeert na een verbroken verbinding automatisch opnieuw verbinding te maken met dezelfde instellingen.
+Bovenaan het venster staat "Zoeken" of "Publiceren" om de status aan te geven. Valt de verbinding weg, dan probeert AdvantageScope automatisch opnieuw te verbinden met dezelfde instellingen.
 
-Alle velden worden gepubliceerd met hun opgeslagen waarden op het _geselecteerde tijdstempel_ dat door veel AdvantageScope-tabbladen wordt gebruikt. Dit maakt realtime netwerkafspelen mogelijk via hetzelfde mechanisme als afspelen binnen AdvantageScope. Zie [App-navigatie](/overview/navigation) voor meer details. Als er geen tijdstempel is geselecteerd, worden velden gepubliceerd met hun opgeslagen waarden op het _aangewezen tijdstempel_.
+Alle velden worden gepubliceerd met hun opgeslagen waarde op het _geselecteerde tijdstempel_ dat veel tabbladen in AdvantageScope gebruiken. Zo kun je data realtime over het netwerk afspelen op precies dezelfde manier als in AdvantageScope zelf (zie [App-navigatie](/overview/navigation) voor meer uitleg). Is er geen tijdstempel geselecteerd, dan gebruikt AdvantageScope de opgeslagen waarden op het _aangewezen tijdstempel_.
 
-Om het publiceren te stoppen, klik je op `Bestand` > `NT-data publiceren` > `Publiceren stoppen`.
+Wil je stoppen met publiceren? Klik dan op `Bestand` > `NT-data publiceren` > `Publiceren stoppen`.
 
 ## Velden filteren {#filtering-fields}
 
-Standaard publiceert AdvantageScope alle NetworkTables-velden die in het logbestand zijn opgeslagen (met uitzondering van door de server gepubliceerde meta-topics). Sommige use cases, zoals het nabootsen van een coprocessor, vereisen het publiceren van slechts een beperkte set velden of subtabellen. Om de set toegestane veldprefixes aan te passen, open je het voorkeurenvenster door te klikken op `App` > `Voorkeuren tonen...` (Windows/Linux) of `AdvantageScope` > `Instellingen...` (macOS).
+Standaard publiceert AdvantageScope alle NetworkTables-velden uit het logbestand (behalve meta-topics die door de server zijn gepubliceerd). Soms wil je maar een beperkte set velden of subtabellen doorsturen, bijvoorbeeld wanneer je een coprocessor nabootst. Open hiervoor het voorkeurenvenster via `App` > `Voorkeuren tonen...` (Windows/Linux) of `AdvantageScope` > `Instellingen...` (macOS).
 
-De optie "NT-publicatieprefixes" stelt de toegestane prefixes in voor velden die naar NetworkTables worden gepubliceerd. Als dit veld leeg wordt gelaten, worden alle velden opgenomen. Anders kan een door komma's gescheiden lijst van prefixes of velden worden opgegeven. Zie de onderstaande voorbeelden:
+Met de optie "NT-publicatieprefixes" stel je in welke prefixes naar NetworkTables mogen worden gepubliceerd. Laat je dit veld leeg, dan wordt alles meegenomen. Anders vul je een door komma's gescheiden lijst met prefixes of velden in, zoals in deze voorbeelden:
 
 - "_Telemetry_": Alle velden in de tabel "Telemetry" opnemen.
 - "_Telemetry/Drive_": Alleen de tabel "Telemetry/Drive" opnemen.
@@ -39,6 +39,6 @@ De optie "NT-publicatieprefixes" stelt de toegestane prefixes in voor velden die
 
 :::warning
 
-- Velden worden elke 20 ms gepubliceerd, dus NetworkTables-data die oorspronkelijk met een hogere frequentie werd gepubliceerd, zal samples overslaan.
-- De tijdstempels van gepubliceerde samples blijven niet behouden. Dit zou onmogelijk zijn bij het heen en weer scrubben in de tijd of bij het afspelen op verschillende snelheden.
+- Velden worden elke 20 ms gepubliceerd. NetworkTables-data die oorspronkelijk vaker werd verstuurd, slaat dus samples over.
+- De tijdstempels van gepubliceerde samples blijven niet behouden. Dat is ook niet mogelijk wanneer je heen en weer spoelt in de tijd of op een andere snelheid afspeelt.
   :::

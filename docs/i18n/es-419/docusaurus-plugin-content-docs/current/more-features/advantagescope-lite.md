@@ -4,20 +4,20 @@ sidebar_position: 2
 
 # 💡 AdvantageScope Lite {#advantagescope-lite}
 
-AdvantageScope Lite es una versión de AdvantageScope basada en navegador, accesible desde la Driver Station de FIRST y la interfaz web de Systemcore. La mayoría de las funciones básicas de la aplicación de escritorio AdvantageScope están incluidas en AdvantageScope Lite. Sin embargo, se omiten varias funciones debido a restricciones de compatibilidad (incluidos algunos tipos de pestañas, formatos de registros y funciones relacionadas).
+AdvantageScope Lite es una versión web de AdvantageScope que funciona directo en el navegador desde la Driver Station de FIRST y la interfaz web de Systemcore. Incluye la mayoría de las funciones básicas de la aplicación de escritorio, aunque deja fuera algunas herramientas por límites de compatibilidad (como ciertos tipos de pestañas, formatos de registro y funciones relacionadas).
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="AdvantageScope Lite Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-_En la imagen de arriba se muestra la interfaz en inglés._
+_En el video de arriba se muestra la interfaz en inglés._
 
 ## Instalación y recursos {#installation-and-assets}
 
-AdvantageScope Lite para Systemcore se puede instalar y actualizar descargando la versión "Systemcore" de AdvantageScope desde la página de lanzamientos de GitHub. Selecciona la tarjeta "Add Package" en la interfaz web de Systemcore para cargar el paquete en el robot.
+Para instalar o actualizar AdvantageScope Lite en Systemcore, descarga la versión "Systemcore" de AdvantageScope desde la página de lanzamientos (releases) en GitHub. Luego, en la interfaz web de Systemcore, selecciona la tarjeta "Add Package" para subir el paquete al robot.
 
-Los archivos de recursos (por ejemplo, modelos de campos/robots) se pueden cargar eligiendo `Archivo` > `Subir recurso`. El archivo seleccionado puede ser un archivo zip para un recurso individual o un archivo zip que contenga múltiples archivos zip de recursos. Consulta la página de [recursos personalizados](/more-features/custom-assets/) para obtener más información sobre los formatos de recursos.
+Si quieres cargar archivos de recursos (como modelos de campos o robots), ve a `Archivo` > `Subir recurso`. Puedes elegir un archivo zip de un solo recurso o un zip que agrupe varios archivos zip de recursos. Consulta la página de [recursos personalizados](/more-features/custom-assets/) para conocer los formatos compatibles.
 
 :::info
-Los archivos zip que contienen colecciones de recursos comunes se pueden descargar haciendo clic en los enlaces a continuación:
+Puedes descargar paquetes zip con colecciones de recursos comunes desde estos enlaces:
 
 - [**Recursos predeterminados de FRC**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsDefaultFRC.zip): Campos de FRC, robots de ejemplo de FRC y todos los diseños de joysticks.
 - [**Recursos predeterminados de FTC**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsDefaultFTC.zip): Campos de FTC, robots de ejemplo de FTC y todos los diseños de joysticks.
@@ -26,5 +26,5 @@ Los archivos zip que contienen colecciones de recursos comunes se pueden descarg
 :::
 
 :::tip
-No se requiere instalación para usar AdvantageScope Lite en la FIRST Driver Station. Navega a http://localhost:6768/ascope para conectarte en vivo o ver archivos de registro.
+No necesitas instalar nada para usar AdvantageScope Lite en la Driver Station de FIRST. Solo abre http://localhost:6768/ascope en tu navegador para conectarte en vivo o revisar archivos de registro.
 :::

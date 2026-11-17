@@ -4,36 +4,36 @@ sidebar_position: 1
 
 # 📦 Installatie {#installation}
 
-De officieel ondersteunde versie van AdvantageScope is rechtstreeks verkrijgbaar via Team 6328 of via het WPILib-installatieprogramma. Er zijn ook verschillende onofficiële distributies beschikbaar.
+De officieel ondersteunde versie van AdvantageScope haal je rechtstreeks bij Team 6328 of via het WPILib-installatieprogramma. Daarnaast bestaan er een aantal onofficiële distributies.
 
 ## Team 6328 {#team-6328}
 
 ### Downloads: [Stabiel](https://github.com/Mechanical-Advantage/AdvantageScope/releases/latest), [Prerelease](https://github.com/Mechanical-Advantage/AdvantageScope/releases) {#6328-downloads}
 
-Het rechtstreeks downloaden van AdvantageScope via Team 6328 biedt:
+Als je AdvantageScope rechtstreeks bij Team 6328 downloadt, profiteer je van:
 
-- De nieuwste functies en bugfixes voordat ze via andere kanalen beschikbaar zijn.
-- Meldingen in de app wanneer er een nieuwe versie beschikbaar is om te downloaden.
-- Een ingebouwde verzameling recente robotmodellen van 6328 voor gebruik op het tabblad 👀 [3D-veld](/tab-reference/3d-field).
+- De nieuwste functies en bugfixes, nog voordat ze via andere kanalen beschikbaar zijn.
+- Een melding in de app zodra er een nieuwe versie klaarstaat om te downloaden.
+- Een ingebouwde verzameling recente robotmodellen van Team 6328 voor het tabblad 👀 [3D-veld](/tab-reference/3d-field).
 
 :::note
-Voordat je AppImage-builds uitvoert op Ubuntu 23.10 of nieuwer, moet je het AppArmor-profiel downloaden van de releases-pagina en dit kopiëren naar /etc/apparmor.d.
+Als je op Ubuntu 23.10 of nieuwer een AppImage wilt draaien, download dan eerst het AppArmor-profiel van de releasepagina en kopieer dat naar /etc/apparmor.d.
 :::
 
 :::info
-Elke hoofdversie van AdvantageScope wordt uitgebracht in januari vóór de FRC-kickoff, met een versienummer dat overeenkomt met het jaar (bijv. v26.0.0 werd uitgebracht in januari 2026). Bèta- en alfaversies van AdvantageScope kunnen beschikbaar zijn in de maanden voorafgaand aan elke release, voor teams die willen experimenteren met nieuwe functies en feedback willen geven. **Teams die deze prerelease-versies gebruiken, moeten rekening houden met problemen en bugs die niet aanwezig zijn in stabiele versies.**
+Elke hoofdversie van AdvantageScope komt in januari uit, nog vóór de FRC-kickoff, met het jaartal als versienummer (v26.0.0 verscheen bijvoorbeeld in januari 2026). In de maanden daarvoor zijn er soms al bèta- en alfaversies beschikbaar voor teams die nieuwe functies willen uitproberen en feedback willen geven. **Gebruik je zo'n prerelease, houd er dan rekening mee dat je problemen en bugs kunt tegenkomen die niet in stabiele releases zitten.**
 :::
 
 ## WPILib {#wpilib}
 
 ### Installatie: [WPILib-documentatie](https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html) {#wpilib-installation}
 
-Het WPILib-installatieprogramma bevat een recente release van AdvantageScope, maar kan achterlopen op de nieuwste versie die beschikbaar is voor directe download. Documentatie voor het starten van AdvantageScope vanuit de WPILib-versie van VSCode is [hier](https://docs.wpilib.org/en/stable/docs/software/dashboards/advantagescope.html) te vinden.
+In het WPILib-installatieprogramma zit een recente release van AdvantageScope, al kan die iets achterlopen op de nieuwste versie die je direct kunt downloaden. Hoe je AdvantageScope start vanuit de WPILib-versie van VS Code lees je [hier](https://docs.wpilib.org/en/stable/docs/software/dashboards/advantagescope.html).
 
 ## Onofficiële distributies {#unofficial-distributions}
 
-Onofficiële distributies van AdvantageScope zijn verkrijgbaar via verschillende bronnen, die niet officieel worden ondersteund door de ontwikkelaars van AdvantageScope/WPILib. Deze distributies kunnen achterlopen op de nieuwste versie van AdvantageScope die beschikbaar is via officiële bronnen. Neem bij problemen rechtstreeks contact op met de beheerders.
+Via verschillende andere bronnen zijn ook onofficiële versies van AdvantageScope te vinden. Die worden niet officieel ondersteund door de ontwikkelaars van AdvantageScope of WPILib en kunnen achterlopen op de officiële releases. Loop je ergens tegenaan, neem dan rechtstreeks contact op met de beheerders.
 
-- [**AdvantageScope Lite voor REV Control System:**](https://github.com/j5155/AdvantageScope-Lite-FTC) Een aanpassing van [AdvantageScope Lite](/more-features/advantagescope-lite) voor gebruik op het bestaande (pre-Systemcore) FTC-besturingssysteem.
-- [**Homebrew-installatieprogramma:**](https://formulae.brew.sh/cask/advantagescope) Een Homebrew-cask voor het installeren van AdvantageScope via de opdrachtregel op macOS.
-- [**Arch User Repository:**](https://aur.archlinux.org/packages/advantagescope) Een alternatieve distributiemethode voor gebruik met de pakketbeheerder pacman (een officiële Arch-distributie van AdvantageScope is [hier](#6328-downloads) beschikbaar).
+- [**AdvantageScope Lite voor REV Control System:**](https://github.com/j5155/AdvantageScope-Lite-FTC) Een aanpassing van [AdvantageScope Lite](/more-features/advantagescope-lite) voor het bestaande (pre-Systemcore) FTC-besturingssysteem.
+- [**Homebrew-installatieprogramma:**](https://formulae.brew.sh/cask/advantagescope) Een Homebrew-cask om AdvantageScope op macOS via de opdrachtregel te installeren.
+- [**Arch User Repository:**](https://aur.archlinux.org/packages/advantagescope) Een alternatieve installatiemethode voor de pakketbeheerder pacman (een officiële Arch-distributie van AdvantageScope vind je [hier](#6328-downloads)).

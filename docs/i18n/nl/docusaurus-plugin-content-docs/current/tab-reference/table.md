@@ -4,16 +4,16 @@ sidebar_position: 4
 
 # 🔢 Tabel {#table}
 
-De tabelweergave is ontworpen om de specifieke waardewijzigingen voor een set velden in detail te tonen. Sleep een veld naar de hoofdweergave om het toe te voegen. Klik op de knop "X" naast de naam van een veld om het te verwijderen. Velden kunnen opnieuw worden gerangschikt door te klikken en te slepen.
+In de tabelweergave bekijk je precies hoe de waarden van een paar gekozen velden veranderen. Sleep een veld naar het hoofdscherm om het toe te voegen, en klik op de knop "X" naast de veldnaam om het weer weg te halen. De volgorde van de kolommen pas je aan door ze te verslepen.
 
 <img src="/img/tab-reference/table-1.webp" alt="Overzicht" />
 
 _De Engelstalige interface wordt hierboven weergegeven._
 
-**Er wordt een nieuwe rij aangemaakt voor elke wijziging in een van de weergegeven velden.** Dubbele rijen worden niet weergegeven. Een tabel die bijvoorbeeld de robotstatus tijdens een wedstrijd toont, zou er als volgt uitzien:
+**Elke keer dat een van de gekozen velden verandert, verschijnt er een nieuwe rij.** Dubbele rijen worden weggelaten. Een tabel met de robotstatus tijdens een wedstrijd ziet er bijvoorbeeld zo uit:
 
 <img src="/img/tab-reference/table-2.webp" alt="Tabel met robotstatus" />
 
-Het geselecteerde tijdstip in de tabel wordt gesynchroniseerd over alle tabbladen. Klik op een rij om deze te selecteren, of beweeg de muis over een rij voor een voorvertoning in eventuele zichtbare pop-upvensters. Als je op de knop ↓ klikt, spring je naar het geselecteerde tijdstip (of het tijdstip dat in het vak is ingevoerd). Tijdstempels en invoervelden voor verspringen zijn opgemaakt volgens de voorkeur voor [Tijdstempels](/more-features/timestamps).
+Het geselecteerde tijdstip in de tabel wordt gesynchroniseerd over alle tabbladen. Klik op een rij om dat moment te selecteren, of beweeg je muis over een rij om een voorvertoning te zien in eventuele losse pop-upvensters. Met de knop ↓ spring je direct naar het geselecteerde tijdstip (of naar de tijd die je in het invulvak hebt getypt). Zowel de tijdstempels als dat invoerveld volgen je instelling voor [Tijdstempels](/more-features/timestamps).
 
 <img src="/img/tab-reference/table-3.webp" alt="Naar een tijdstip springen" />

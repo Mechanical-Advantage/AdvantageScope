@@ -4,27 +4,27 @@ sidebar_position: 2
 
 # Diagnostics Phoenix {#phoenix-diagnostics}
 
-AdvantageScope prend en charge la diffusion en direct de signaux depuis des appareils Phoenix 6 **sans aucune configuration dans le code utilisateur**. Cela permet un débogage et un réglage faciles des appareils Phoenix à l'aide de l'interface familière et de toute la puissance d'AdvantageScope :
+AdvantageScope peut diffuser en direct les signaux des appareils Phoenix 6 **sans rien ajouter dans le code de votre robot**. Vous profitez ainsi de toute l'interface et des outils d'AdvantageScope pour déboguer et régler vos appareils Phoenix :
 
-- Des options de visualisation flexibles, y compris la prise en charge des tableaux et de l'analyse statistique
-- La prise en charge complète des graphiques avec unités, y compris la conversion d'unités implicite et en un clic ([docs](/tab-reference/line-graph/units))
-- Le décodage des valeurs d'énumération sous forme de chaînes lisibles par l'homme (modes de contrôle, état du pont, état de l'aimant CANcoder, etc.)
-- Des info-bulles de barre latérale intégrées avec des descriptions et des unités pour chaque signal
-- Une organisation hiérarchique des signaux, regroupés par bus CAN, appareil et type de signal
-- Une analyse de données avancée avec des options d'intégration et de différenciation intégrées ([docs](/tab-reference/line-graph/#adjusting-axes))
+- Visualisations variées, incluant les tableaux de données et l'analyse statistique
+- Prise en charge complète des graphiques avec unités, avec conversion automatique ou en un clic ([documentation](/tab-reference/line-graph/units))
+- Décodage des valeurs d'énumération en texte lisible (modes de contrôle, état du pont, état de l'aimant CANcoder, etc.)
+- Info-bulles intégrées dans la barre latérale avec la description et l'unité de chaque signal
+- Classement hiérarchique des signaux par bus CAN, appareil et type de signal
+- Analyse avancée avec intégration et dérivation intégrées ([documentation](/tab-reference/line-graph/#adjusting-axes))
 
 :::tip
-Pour vous connecter, sélectionnez « Diagnostics Phoenix » lors de la connexion au robot ou au simulateur depuis la barre de menu.
+Pour vous connecter, choisissez « Diagnostics Phoenix » lorsque vous lancez la connexion au robot ou au simulateur depuis la barre de menus.
 :::
 
 <img src="/img/overview/live-sources/phoenix-1.webp" alt="Capture d'écran du graphique linéaire" />
 
-L'onglet 📊 [Statistiques](/tab-reference/statistics) d'AdvantageScope permet également une analyse avancée des signaux Phoenix, avec la prise en charge des histogrammes, des plages personnalisées et des champs dérivés pour les mesures d'erreur relative et absolue :
+L'onglet 📊 [Statistiques](/tab-reference/statistics) permet également d'analyser en détail les signaux Phoenix grâce aux histogrammes, aux plages personnalisées et aux champs dérivés pour mesurer l'erreur relative ou absolue :
 
 <img src="/img/overview/live-sources/phoenix-2.webp" alt="Capture d'écran des statistiques" />
 
 _L'interface en anglais est illustrée ci-dessus._
 
 :::note
-Cette fonctionnalité peut occasionnellement rencontrer des problèmes en raison des mises à jour de Phoenix. Nous vous recommandons d'utiliser la dernière version d'AdvantageScope pour minimiser les problèmes. Sinon, veuillez [ouvrir un problème](https://github.com/Mechanical-Advantage/AdvantageScope/issues) pour nous informer de tout problème.
+Des mises à jour de Phoenix peuvent parfois perturber cette fonctionnalité. Pensez à utiliser la dernière version d'AdvantageScope pour limiter ces problèmes. Si vous rencontrez malgré tout un souci, [signalez-le sur GitHub](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
 :::

@@ -3,52 +3,52 @@ import TabItem from '@theme/TabItem';
 
 # 👀 Terrain 3D {#3d-field}
 
-Le terrain 3D montre une visualisation 3D du robot et du terrain. Il peut être utilisé avec des poses 2D régulières, mais il est particulièrement utile lors du travail avec des calculs 3D (comme la localisation avec AprilTags). Plusieurs vues de caméra sont disponibles, y compris relatives au terrain, relatives au robot et fixes. [AdvantageScope XR](advantagescope-xr) permet de visualiser cet onglet à l'aide de la réalité augmentée. La chronologie indique quand le robot est activé et peut être utilisée pour naviguer dans les données du journal.
+L'onglet Terrain 3D affiche votre robot et le terrain en trois dimensions. Il fonctionne avec des poses 2D classiques, mais il prend tout son sens pour les calculs en 3D, comme la localisation par AprilTags. Vous disposez de plusieurs modes de caméra (relatif au terrain, relatif au robot ou fixe), et [AdvantageScope XR](advantagescope-xr) vous permet même d'afficher la scène en réalité augmentée. La chronologie indique quand le robot est activé et sert à naviguer dans le journal.
 
-<img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="Exemple d'onglet terrain 3D" />
+<img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="Exemple d'onglet Terrain 3D" />
 
 _L'interface en anglais est illustrée ci-dessus._
 
 <details>
 <summary>Contrôles de la chronologie</summary>
 
-La chronologie est utilisée pour contrôler la lecture et la visualisation. Cliquer sur la chronologie sélectionne un moment, et faire un clic droit le désélectionne. L'heure sélectionnée est synchronisée sur tous les onglets, ce qui permet de trouver rapidement cet emplacement dans d'autres vues.
+La chronologie sert à piloter la lecture et la visualisation. Cliquez dessus pour sélectionner un instant précis, et faites un clic droit pour le désélectionner. L'instant choisi est synchronisé dans tous les onglets, ce qui vous permet de retrouver facilement ce moment dans d'autres vues.
 
-Les sections jaunes indiquent quand le robot est en mode autonome, les sections bleues indiquent quand le robot est en mode téléopéré et les sections grises indiquent quand le robot est en mode utilitaire.
+Les zones jaunes correspondent au mode autonome, les zones bleues au mode téléopéré et les zones grises au mode utilitaire.
 
-Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le haut ou vers le bas. Une plage peut également être sélectionnée en cliquant et en faisant glisser tout en maintenant la touche `Shift` enfoncée. Déplacez-vous vers la gauche et la droite en faisant défiler horizontalement (sur les appareils pris en charge), ou en cliquant et en faisant glisser sur la chronologie. Lors d'une connexion en direct, le défilement vers la gauche déverrouille à partir de l'heure actuelle, et le défilement tout à fait vers la droite verrouille à nouveau à l'heure actuelle. Appuyez sur `Ctrl+\` pour zoomer sur la période où le robot est activé.
+Pour zoomer, placez le curseur sur la chronologie et utilisez la molette vers le haut ou vers le bas. Vous pouvez aussi sélectionner une plage en cliquant et en faisant glisser tout en maintenant la touche `Shift` enfoncée. Déplacez-vous vers la gauche ou la droite par défilement horizontal (sur les appareils compatibles) ou en cliquant-glissant sur la chronologie. Lors d'une connexion en direct, faire défiler vers la gauche déverrouille le suivi de l'instant actuel, et revenir complètement à droite le verrouille à nouveau. Appuyez sur `Ctrl+\` pour zoomer sur la période où le robot est activé.
 
 <img src="/img/tab-reference/timeline.webp" alt="Chronologie" />
 
 </details>
 
 :::warning Terrain FTC 2026-2027
-Le modèle de terrain FTC 2026-2027 n'inclut pas d'AprilTags intégrés, car l'emplacement des balises sur la structure (hive) est susceptible de changer pendant le match. Les équipes peuvent publier un `Pose3d[]` et un `number[]` pour ajouter des objets AprilTag dynamiques au terrain. La taille correcte d'AprilTag pour ce terrain est de **3,25 po**.
+Le modèle du terrain FTC 2026-2027 n'inclut pas d'AprilTags fixes, car leur position sur la structure (*hive*) peut changer en cours de match. Vous pouvez publier un `Pose3d[]` et un `number[]` pour afficher dynamiquement des objets AprilTag sur le terrain. La taille d'AprilTag à utiliser pour ce terrain est de **3,25 po**.
 :::
 
 :::warning Terrain FRC 2026
-Le modèle de terrain FRC 2026 est cohérent avec la disposition d'AprilTag pour le terrain **soudé**. Les différences entre les terrains soudés et AndyMark sont très mineures, mais il peut y avoir de légers désalignements (~0,5 pouce) lors de la visualisation des poses d'AprilTag basées sur la disposition du terrain AndyMark.
+Le modèle du terrain FRC 2026 reprend la disposition des AprilTags du terrain **soudé** (*welded*). Les différences avec le terrain AndyMark sont minimes, mais vous remarquerez peut-être de légers décalages (environ 0,5 pouce) en visualisant des poses d'AprilTags basées sur la disposition AndyMark.
 :::
 
 ## Ajout d'objets {#adding-objects}
 
-Pour commencer, faites glisser un champ vers la section « Poses ». Supprimez un objet à l'aide du bouton X, ou masquez-le temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer tous les objets, cliquez sur la corbeille près du titre de l'axe, puis sur `Tout effacer`. Les objets peuvent être réorganisés dans la liste en les faisant glisser.
+Pour commencer, faites glisser un champ dans la section « Poses ». Vous pouvez supprimer un objet avec le bouton `X`, ou le masquer temporairement en cliquant sur l'icône d'œil ou en double-cliquant sur son nom. Pour tout effacer d'un coup, cliquez sur la corbeille à côté du titre de la section, puis sur `Tout effacer`. Vous pouvez aussi réorganiser les objets dans la liste par glisser-déposer.
 
-**Pour personnaliser chaque objet, cliquez sur l'icône colorée ou faites un clic droit sur le nom du champ.** AdvantageScope prend en charge un grand nombre de types d'objets, dont beaucoup peuvent être personnalisés (comme la modification des couleurs et des modèles de robots). Certains objets doivent être ajoutés en tant qu'enfants à un objet existant.
+**Pour personnaliser un objet, cliquez sur son icône colorée ou faites un clic droit sur le nom du champ.** AdvantageScope propose de nombreux types d'objets, souvent personnalisables (par exemple pour changer leur couleur ou le modèle du robot). Certains objets doivent obligatoirement être ajoutés comme enfants d'un objet existant.
 
 :::tip
-Pour voir une liste complète des types d'objets pris en charge, cliquez sur l'icône `?`. Cette liste comprend également les types de données pris en charge et indique si les objets doivent être ajoutés en tant qu'enfants.
+Cliquez sur l'icône `?` pour consulter la liste complète des types d'objets pris en charge, les types de données compatibles et savoir lesquels doivent être ajoutés en tant qu'enfants.
 :::
 
 :::info
-AdvantageScope prend en charge plusieurs tailles d'AprilTags pour les terrains FTC. Les tailles sont mesurées en tant que **longueur de côté de la section noire de l'AprilTag**, sans inclure la bordure blanche requise.
+AdvantageScope prend en charge plusieurs tailles d'AprilTags pour les terrains FTC. Cette taille correspond à la **longueur du côté du carré noir de l'AprilTag**, sans compter la bordure blanche obligatoire.
 :::
 
 ## Format des données {#data-format}
 
-Les données de géométrie doivent être publiées sous forme de struct ou protobuf codé en octets. Divers types de géométrie 2D et 3D sont pris en charge, notamment `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, et plus encore.
+Publiez vos données géométriques sous forme de *struct* ou de *protobuf* encodés en octets. Plusieurs types géométriques 2D et 3D sont pris en charge, notamment `Pose2d`, `Pose3d`, `Translation2d` et `Translation3d`.
 
-De nombreuses bibliothèques prennent en charge le format struct, notamment WPILib et AdvantageKit. L'exemple de code ci-dessous montre comment enregistrer des données de pose 3D en Java.
+De nombreuses bibliothèques gèrent le format *struct*, dont WPILib et AdvantageKit. L'exemple ci-dessous montre comment enregistrer des poses 3D en Java.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -94,41 +94,41 @@ packet.put("Pose heading (deg)", 180.0); // Degrees
 
 ## Mécanismes et composants {#mechanisms-and-components}
 
-Les données de mécanisme peuvent être visualisées à l'aide de mécanismes 2D ou de composants 3D articulés.
+Vous pouvez visualiser vos mécanismes à l'aide de mécanismes 2D ou de composants 3D articulés.
 
 ### Mécanismes 2D {#2d-mechanisms}
 
-Pour visualiser des données de mécanisme enregistrées à l'aide d'un [`Mechanism2d`](https://docs.wpilib.org/fr/stable/docs/software/dashboards/glass/mech2d-widget.html), ajoutez le champ de mécanisme à un objet robot ou fantôme existant. Le mécanisme est projeté sur le plan XZ ou YZ du robot à l'aide de simples boîtes, comme illustré ci-dessous. Cliquez sur l'icône d'engrenage ou faites un clic droit sur le nom du champ pour basculer entre les plans XZ et YZ. L'origine du robot est centrée sur le bord inférieur du mécanisme.
+Pour afficher un mécanisme enregistré avec [`Mechanism2d`](https://docs.wpilib.org/fr/stable/docs/software/dashboards/glass/mech2d-widget.html), glissez le champ du mécanisme sur un objet robot ou fantôme existant. Le mécanisme est alors projeté sous forme de boîtes simples sur le plan XZ ou YZ du robot, comme ci-dessous. Cliquez sur l'icône d'engrenage ou faites un clic droit sur le nom du champ pour passer du plan XZ au plan YZ. L'origine du robot est centrée sur le bord inférieur du mécanisme.
 
 <img src="/img/tab-reference/3d-field/3d-field-2.webp" alt="Mécanisme 2D" />
 
 ### Composants 3D {#3d-components}
 
 :::warning
-La configuration des composants 3D peut être complexe et prendre du temps. Envisagez d'utiliser la prise en charge de `Mechanism2d` d'AdvantageScope comme décrit ci-dessus, qui offre une approche plus simple pour visualiser les mécanismes sur le terrain 3D.
+Configurer des composants 3D peut être long et complexe. Si vous cherchez une solution plus rapide pour afficher vos mécanismes sur le terrain 3D, pensez plutôt à utiliser `Mechanism2d` comme expliqué ci-dessus.
 :::
 
-Les mécanismes peuvent être visualisés avec des composants articulés en enregistrant un ensemble de poses 3D qui représentent les emplacements relatifs au robot de chaque composant. Ajoutez les poses à un objet robot ou fantôme existant et définissez le type d'objet sur « Composant ».
+Pour animer des composants articulés, enregistrez une série de poses 3D représentant la position de chaque pièce par rapport au robot. Ajoutez ces poses à un objet robot ou fantôme existant, puis réglez le type d'objet sur « Composant ».
 
-Chaque composant peut être déplacé indépendamment (comme un chariot d'élévateur, un bras ou un effecteur terminal). Les utilisateurs d'AdvantageKit doivent envisager d'utiliser la méthode [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) pour convertir un Mechanism2d en un tableau d'objets Pose3d. Pour plus d'informations sur la configuration des robots avec des composants, voir [Ressources personnalisées](/more-features/custom-assets).
+Chaque composant bouge ainsi indépendamment (chariot d'élévateur, bras, pince, etc.). Si vous utilisez AdvantageKit, la méthode [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) convertit directement un `Mechanism2d` en un tableau de `Pose3d`. Pour savoir comment configurer les modèles de robot avec composants, consultez [Ressources personnalisées](/more-features/custom-assets).
 
 <img src="/img/tab-reference/3d-field/3d-field-3.webp" alt="Mécanisme 3D" />
 
 ## Objets d'éléments de jeu {#game-piece-objects}
 
-Chaque terrain comprend un ensemble de types d'objets d'éléments de jeu, permettant de rendre des éléments de jeu à n'importe quelle position sur le terrain à l'aide de données publiées par le code robot. Cela présente une variété d'applications, notamment :
+Chaque terrain propose des objets d'éléments de jeu qui s'affichent à l'endroit exact indiqué par le code du robot. C'est très pratique pour :
 
-- La visualisation des actions des routines autonomes simulées à l'aide d'animations simples
-- L'affichage des emplacements détectés des éléments de jeu sur le terrain
-- L'indication de l'emplacement des éléments de jeu dans un robot
-- La visualisation des trajectoires de tir basées sur des calculs physiques
+- animer simplement le déroulement de routines autonomes en simulation ;
+- visualiser les éléments de jeu détectés sur le terrain ;
+- indiquer où se trouve un élément de jeu à l'intérieur du robot ;
+- tracer des trajectoires de tir calculées par la physique.
 
-Un autre cas d'utilisation simple consiste à afficher l'état des éléments de jeu dans le robot en fonction des données de capteur. Par exemple, un capteur de coupure de faisceau dans le chemin des notes pour un robot 2024 pourrait faire apparaître une note (comme illustré ci-dessous).
+Vous pouvez aussi afficher l'état d'un élément de jeu dans le robot à partir d'un capteur. Par exemple, sur un robot 2024, un capteur photoélectrique (*beam break*) dans le convoyeur peut déclencher l'affichage d'une note (comme ci-dessous).
 
 <details>
 <summary>Exemple de code</summary>
 
-Le projet d'exemple KitBot 2024 d'AdvantageKit comprend un exemple simple d'une [commande](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) qui anime une note se déplaçant du robot vers le haut-parleur. Cette commande est intégrée dans la [séquence de lancement](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73) standard, déclenchant l'animation chaque fois qu'une note est relâchée. [Cette vidéo](https://youtube.com/shorts/-HxfDo9f19U?feature=share) montre comment les animations d'éléments de jeu peuvent être utilisées pour visualiser des routines autonomes pour plusieurs jeux différents.
+Le projet d'exemple KitBot 2024 d'AdvantageKit montre comment créer une [commande](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) qui anime le trajet d'une note du robot jusqu'au haut-parleur. Cette commande est appelée dans la [séquence de tir](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73) standard pour lancer l'animation à chaque tir. [Cette vidéo](https://youtube.com/shorts/-HxfDo9f19U?feature=share) illustre comment ces animations permettent de visualiser des routines autonomes sur plusieurs jeux.
 
 </details>
 
@@ -136,62 +136,62 @@ Le projet d'exemple KitBot 2024 d'AdvantageKit comprend un exemple simple d'une 
 
 ## Options de caméra {#camera-options}
 
-Pour changer le mode de caméra sélectionné, faites un clic droit sur la vue du terrain rendu. Le mode et la position de la caméra sont contrôlés indépendamment pour chaque fenêtre détachée, permettant la création facile de vues multi-caméras.
+Faites un clic droit sur la vue 3D pour changer de mode de caméra. Chaque fenêtre détachée garde son propre mode et sa propre position de caméra, ce qui permet de créer facilement des vues multi-caméras.
 
 :::info
-Faites un clic droit sur la vue du terrain rendu et cliquez sur « Définir le champ de vision... » pour ajuster le champ de vision des caméras d'orbite et du poste de pilotage.
+Faites un clic droit sur la vue 3D et sélectionnez « Définir le champ de vision » pour ajuster l'angle de vue (FOV) des caméras d'orbite et du poste de pilotage.
 :::
 
 ### Orbiter le terrain {#orbit-field}
 
-Il s'agit du mode de caméra par défaut, où la caméra peut être déplacée librement par rapport au terrain. **Clic gauche + glisser** fait pivoter la caméra, et **clic droit + glisser** déplace la caméra. **Faites défiler** pour zoomer avant et arrière.
+C'est le mode par défaut : vous déplacez la caméra librement autour du terrain. Maintenez **clic gauche + glisser** pour pivoter, **clic droit + glisser** pour vous déplacer latéralement, et utilisez la **molette** pour zoomer ou dézoomer.
 
 :::tip
-La caméra peut également être contrôlée à l'aide du clavier. Les touches **WASD** sont utilisées pour les déplacements horizontaux, les touches **IJKL** sont utilisées pour pivoter, et les touches **E** et **Q** sont utilisées pour les déplacements verticaux.
+Vous pouvez aussi piloter la caméra au clavier : **WASD** pour vous déplacer horizontalement, **IJKL** pour pivoter, et **E** / **Q** pour monter ou descendre.
 :::
 
 ### Orbiter le robot {#orbit-robot}
 
-Ce mode possède les mêmes contrôles que le mode « Orbiter le terrain », mais la position de la caméra est verrouillée par rapport au robot. Cela permet des prises de vue de « suivi » du mouvement du robot.
+Ce mode reprend les mêmes commandes que « Orbiter le terrain », mais la caméra reste verrouillée sur le robot afin de suivre ses déplacements en continu.
 
 ### Poste de pilotage {#driver-station}
 
-Ce mode verrouille la caméra derrière l'un des postes de pilotage à hauteur d'yeux typique. Choisissez manuellement le poste à visualiser ou choisissez « Auto » pour utiliser l'alliance et le numéro de poste stockés dans les données du journal.
+Ce mode place la caméra derrière l'un des postes de pilotage, à hauteur d'yeux. Choisissez manuellement un poste ou sélectionnez « Auto » pour utiliser l'alliance et le numéro de poste enregistrés dans le journal.
 
 :::warning
-La sélection automatique du numéro de poste peut être inexacte lors de la visualisation de données de journal produites par AdvantageKit 2023 ou version antérieure.
+La sélection automatique du numéro de poste peut être inexacte avec les journaux produits par AdvantageKit 2023 ou une version antérieure.
 :::
 
 ### Caméra fixe {#fixed-camera}
 
-Chaque modèle de robot est configuré avec un ensemble de caméras fixes, comme les caméras de vision et les caméras de pilotage. Ces caméras ont des positions, des rapports d'aspect et des champs de vision fixes. Ces vues sont souvent utiles pour vérifier les données de vision ou pour simuler une vue de caméra de pilotage. Dans l'exemple ci-dessous, une caméra de pilotage est illustrée.
+Chaque modèle de robot intègre des caméras fixes (caméras de vision ou de pilotage) avec leur propre position, format d'image et champ de vision. Ces vues sont très utiles pour vérifier la détection par vision ou simuler le point de vue du pilote, comme ci-dessous.
 
 <img src="/img/tab-reference/3d-field/3d-field-5.webp" alt="Caméra fixe" />
 
-Si une pose de « Remplacement de la caméra » est fournie, elle remplace les poses par défaut de toutes les caméras fixes tout en conservant leurs champs de vision et rapports d'aspect configurés. Cela permet au code robot de fournir la position d'une caméra mobile, comme une caméra montée sur une tourelle ou un capot de lanceur.
+Si vous fournissez une pose « Remplacement de la caméra », elle remplace la position par défaut de toutes les caméras fixes tout en conservant leur champ de vision et leur format d'image. Votre code peut ainsi animer une caméra mobile, par exemple montée sur une tourelle ou un capot de lanceur.
 
 :::info
-En cohérence avec d'autres données de pose, la pose de « Remplacement de la caméra » doit être _relative au terrain_, et non relative au robot.
+Comme pour les autres données de pose, la pose « Remplacement de la caméra » doit être _relative au terrain_, et non relative au robot.
 :::
 
 ## Configuration {#configuration}
 
-Le modèle de terrain peut être configuré à l'aide du menu déroulant. Tous les jeux FRC et FTC récents sont pris en charge. Nous recommandons d'utiliser les terrains « Evergreen » pour les appareils ayant des performances graphiques limitées. Les terrains « Axes » affichent uniquement les axes XYZ à l'origine avec un contour de terrain pour l'échelle.
+Choisissez le modèle du terrain dans le menu déroulant. Tous les jeux FRC et FTC récents sont disponibles. Sur un appareil aux performances graphiques modestes, nous vous conseillons d'utiliser les terrains « Evergreen ». Les terrains « Axes » n'affichent que les axes XYZ à l'origine avec un simple contour du terrain pour garder l'échelle.
 
 :::info
-Le système de coordonnées utilisé sur cet onglet est personnalisable. Consultez la page [système de coordonnées](/more-features/coordinate-systems) pour plus de détails.
+Vous pouvez personnaliser le système de coordonnées utilisé dans cet onglet. Consultez la page [Systèmes de coordonnées](/more-features/coordinate-systems) pour en savoir plus.
 :::
 
 ### Modes de rendu {#rendering-modes}
 
-Le terrain 3D prend en charge trois modes de rendu :
+Le terrain 3D propose trois modes de rendu :
 
-- **Cinématique (Gauche) :** Rendu avec ombres, éclairage, réflexions et modèles 3D hautement détaillés pour un aspect plus réaliste. Nécessite un GPU assez puissant.
-- **Standard (Centre) :** Par défaut, rendu avec un éclairage minimal et des modèles 3D simplifiés. S'exécute bien sur la plupart des appareils.
-- **Basse consommation (Droite) :** Diminue la fréquence d'images, la résolution et les détails du modèle pour réduire la consommation de la batterie et offrir des performances plus cohérentes sur les appareils bas de gamme.
+- **Cinématique (à gauche) :** affiche les ombres, l'éclairage avancé, les reflets et des modèles 3D très détaillés pour un rendu réaliste. Demande une carte graphique assez puissante.
+- **Standard (au centre) :** le mode par défaut, avec un éclairage minimal et des modèles 3D simplifiés. Fonctionne sans problème sur la plupart des ordinateurs.
+- **Basse consommation (à droite) :** réduit la fréquence d'images, la résolution et le niveau de détail afin d'économiser la batterie et d'offrir un affichage plus fluide sur les machines peu puissantes.
 
 <img src="/img/tab-reference/3d-field/3d-field-6.webp" alt="Comparaison des modes de rendu" />
 
-Pour configurer le mode de rendu, ouvrez la fenêtre des préférences en appuyant sur `Application` > `Afficher les préférences...` (Windows/Linux) ou `AdvantageScope` > `Paramètres...` (macOS). Le paramètre « Mode 3D (batterie) » peut être remplacé de la valeur par défaut pour ignorer le mode de rendu utilisé sur un ordinateur portable lorsqu'il n'est pas en charge. Par exemple, cela peut être utilisé pour préserver la batterie lors d'une compétition.
+Pour changer le mode de rendu, ouvrez les préférences via `App` > `Afficher les préférences...` (Windows/Linux) ou `AdvantageScope` > `Paramètres...` (macOS). L'option « Mode 3D (batterie) » permet d'imposer un autre mode lorsque votre ordinateur portable n'est pas branché sur secteur, par exemple pour économiser la batterie en compétition.
 
 <img src="/img/prefs_fr.webp" alt="Schéma des préférences" height="450" />

@@ -4,41 +4,41 @@ sidebar_position: 3
 
 # Publicación de datos de NetworkTables {#publishing-networktables-data}
 
-AdvantageScope admite la publicación de datos de NetworkTables almacenados en un archivo de registro de vuelta a un servidor NetworkTables como un simulador o un robot. Los posibles casos de uso incluyen:
+AdvantageScope te permite tomar los datos de NetworkTables guardados en un archivo de registro y volver a publicarlos en un servidor NetworkTables, como un simulador o un robot. Esto resulta muy útil para:
 
-- Repetición de partidos en simulación para depuración.
-- Imitación de datos de un coprocesador en un robot real.
-- Depuración de aplicaciones de panel de control (dashboard) de conductores utilizando datos de partidos realistas.
+- Reproducir partidos en simulación para depurar el código.
+- Simular los datos de un coprocesador en un robot real.
+- Probar paneles de control (*dashboards*) para conductores usando datos reales de partidos.
 
-Esta función requiere un archivo de registro con una captura completa de datos de NetworkTables, que se puede generar utilizando el [registrador de datos incorporado](https://docs.wpilib.org/es/stable/docs/software/telemetry/datalog.html) de WPILib. Ten en cuenta que AdvantageKit no admite esta función, ya que permite una reproducción determinista más completa en la simulación.
+Para usar esta función necesitas un archivo de registro que haya capturado por completo los datos de NetworkTables, algo que puedes generar con el [registrador de datos integrado](https://docs.wpilib.org/es/stable/docs/software/telemetry/datalog.html) de WPILib. Ten en cuenta que AdvantageKit no admite esta función porque ofrece una reproducción determinista mucho más completa en simulación.
 
-## Empezando {#getting-started}
+## Primeros pasos {#getting-started}
 
-Para comenzar a publicar, debe haber un archivo de registro abierto que contenga datos de NetworkTables. Luego, sigue estos pasos:
+Para empezar a publicar, primero abre un archivo de registro que contenga datos de NetworkTables y luego sigue estos pasos:
 
-- **Publicar en robot:** Haz clic en `Archivo` > `Publicar datos de NT` > `Conectar con el robot`.
-- **Publicar en simulador:** Haz clic en `Archivo` > `Publicar datos de NT` > `Conectar con el simulador`.
+- **Publicar en el robot:** Haz clic en `Archivo` > `Publicar datos de NT` > `Conectar con el robot`.
+- **Publicar en el simulador:** Haz clic en `Archivo` > `Publicar datos de NT` > `Conectar con el simulador`.
 
-La parte superior de la ventana muestra el texto "Buscando" (Searching) o "Publicando" (Publishing) para indicar el estado de publicación de los datos. AdvantageScope intenta volver a conectarse automáticamente usando la misma configuración después de una desconexión.
+En la parte superior de la ventana verás el texto "Buscando" o "Publicando" para indicar el estado de la publicación. Si la conexión se corta, AdvantageScope intentará reconectarse automáticamente usando la misma configuración.
 
-Todos los campos se publicarán utilizando sus valores almacenados en la _marca de tiempo seleccionada_ utilizada por muchas pestañas de AdvantageScope. Esto permite la reproducción de red en tiempo real a través del mismo mecanismo que la reproducción dentro de AdvantageScope. Consulta [Navegación en la aplicación](/overview/navigation) para obtener más detalles. Si no se selecciona ninguna marca de tiempo, los campos se publican utilizando sus valores almacenados en la _marca de tiempo sobre la que se pasa el cursor_ (hovered timestamp).
+Todos los campos se publican con los valores correspondientes a la _marca de tiempo seleccionada_ que usan varias pestañas de AdvantageScope. Así puedes reproducir los datos por la red en tiempo real con los mismos controles que usas dentro de la aplicación (consulta [Navegación en la aplicación](/overview/navigation) para más detalles). Si no hay ninguna marca de tiempo seleccionada, se publican los valores del punto donde tengas el cursor.
 
-Para dejar de publicar, haz clic en `Archivo` > `Publicar datos de NT` > `Detener publicación`.
+Para detener la publicación, haz clic en `Archivo` > `Publicar datos de NT` > `Detener publicación`.
 
 ## Filtrado de campos {#filtering-fields}
 
-Por defecto, AdvantageScope publica todos los campos de NetworkTables almacenados en el archivo de registro (excepto los temas meta publicados por el servidor). Algunos casos de uso, como imitar un coprocesador, requieren solo publicar un conjunto limitado de campos o subtablas.
+Por defecto, AdvantageScope publica todos los campos de NetworkTables guardados en el archivo de registro (excepto los metatemas propios del servidor). Sin embargo, en casos como simular un coprocesador, quizá solo quieras publicar un grupo específico de campos o subtablas.
 
-Para ajustar el conjunto de prefijos de campos permitidos, abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS). La opción "Prefijos de publicación de NT" establece los prefijos permitidos para los campos publicados en NetworkTables. Si se deja en blanco, se incluirán todos los campos. De lo contrario, se puede proporcionar una lista de prefijos o campos separados por comas. A continuación se muestran algunos ejemplos.
+Para definir qué prefijos están permitidos, abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS). La opción "Prefijos de publicación de NT" controla qué campos se envían a NetworkTables: si la dejas en blanco, se incluirán todos; si prefieres filtrarlos, escribe una lista de prefijos o campos separados por comas, como en estos ejemplos:
 
-- "_Telemetry_": Incluye todos los campos en la tabla "Telemetry".
-- "_Telemetry/Drive_": Incluye solo la tabla "Telemetry/Drive".
+- "_Telemetry_": Incluye todos los campos dentro de la tabla "Telemetry".
+- "_Telemetry/Drive_": Incluye únicamente la tabla "Telemetry/Drive".
 - "_limelight/tx,limelight/ty_": Incluye solo los campos "limelight/tx" y "limelight/ty".
 
 ## Limitaciones {#limitations}
 
 :::warning
 
-- Los campos se publican cada 20 ms, por lo que los datos de NetworkTables originalmente publicados a una frecuencia más alta omitirán muestras.
-- Las marcas de tiempo de las muestras publicadas no se conservan. Esto sería imposible al desplazarse hacia adelante y hacia atrás en el tiempo o al reproducir a diferentes velocidades.
+- Los campos se publican cada 20 ms, así que si los datos originales de NetworkTables se enviaron a mayor frecuencia, se omitirán muestras intermedias.
+- No se conservan las marcas de tiempo originales de cada muestra, ya que sería imposible mantenerlas al adelantar, retroceder o cambiar la velocidad de reproducción.
   :::

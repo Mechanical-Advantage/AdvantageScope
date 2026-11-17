@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Suporte {#support}
 
-Para receber suporte para o AdvantageScope ou AdvantageScope XR, por favor use um dos métodos de contato abaixo.
+Para pedir suporte do AdvantageScope ou do AdvantageScope XR, use um dos canais abaixo.
 
-- Para solicitações de recursos e relatórios de problemas, [abra um problema](https://github.com/Mechanical-Advantage/AdvantageScope/issues) no GitHub.
-- Para todas as outras consultas, entre em contato através de software@team6328.org.
+- Para sugerir novos recursos ou relatar problemas, [abra uma issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues) no GitHub.
+- Para qualquer outro assunto, entre em contato pelo e-mail software@team6328.org.

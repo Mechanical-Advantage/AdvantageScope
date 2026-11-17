@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 📍 Puntos {#points}
 
-La pestaña de puntos muestra una visualización 2D de puntos arbitrarios. Esta es una herramienta muy flexible, que permite visualizaciones personalizadas de datos/pipelines de visión, estados de mecanismos, etc.
+La pestaña de puntos te muestra una visualización en 2D de puntos arbitrarios. Es una herramienta muy versátil para crear visualizaciones personalizadas de datos o pipelines de visión, estados de mecanismos y más.
 
 <img src="/img/tab-reference/points-1.webp" alt="Ejemplo de pestaña de puntos" />
 
@@ -16,29 +16,29 @@ _En la imagen de arriba se muestra la interfaz en inglés._
 <details>
 <summary>Controles de la línea de tiempo</summary>
 
-La línea de tiempo se utiliza para controlar la reproducción y la visualización. Al hacer clic en la línea de tiempo se selecciona un tiempo, y al hacer clic con el botón derecho se anula la selección. El tiempo seleccionado se sincroniza en todas las pestañas, lo que facilita la búsqueda rápida de esta ubicación en otras vistas.
+La línea de tiempo controla la reproducción y la visualización. Haz clic sobre ella para seleccionar un instante de tiempo, y haz clic derecho para quitar la selección. El tiempo seleccionado se sincroniza en todas las pestañas, así que podrás ubicar ese mismo instante rápidamente en otras vistas.
 
-Las secciones amarillas indican cuando el robot es autónomo, las secciones azules indican cuando el robot es teledirigido (teleop), y las secciones grises indican cuando el robot está en modo de utilidad.
+Las franjas amarillas indican cuándo el robot está en modo autónomo, las azules cuándo está en modo teleoperado y las grises cuándo está en modo de utilidad.
 
-Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia arriba o hacia abajo. También se puede seleccionar un rango haciendo clic y arrastrando mientras se mantiene presionada la tecla `Shift`. Muévete hacia la izquierda y hacia la derecha desplazándote horizontalmente (en dispositivos compatibles) o haciendo clic y arrastrando en la línea de tiempo. Cuando estás conectado en vivo, desplazarte hacia la izquierda desbloquea del tiempo actual, y desplazarte hasta la derecha vuelve a bloquear al tiempo actual. Presiona `Ctrl+\` para hacer zoom al período en el que el robot está habilitado.
+Para hacer zoom, coloca el cursor sobre la línea de tiempo y usa la rueda del mouse hacia arriba o hacia abajo. También puedes seleccionar un rango haciendo clic y arrastrando mientras mantienes presionada la tecla `Shift`. Para moverte a izquierda o derecha, desplázate horizontalmente (si tu dispositivo lo permite) o haz clic y arrastra sobre la línea de tiempo. Cuando estés conectado en vivo, desplazarte hacia la izquierda desbloquea la vista del tiempo actual, y desplazarte hasta el extremo derecho la vuelve a bloquear al tiempo actual. Presiona `Ctrl+\` para hacer zoom directamente al período en que el robot está habilitado.
 
 <img src="/img/tab-reference/timeline.webp" alt="Línea de tiempo" />
 
 </details>
 
-## Agregar fuentes {#adding-sources}
+## Cómo agregar fuentes {#adding-sources}
 
-Para comenzar, arrastra un campo a la sección "Fuentes" (Sources). Elimina una fuente usando el botón X, u ocúltala temporalmente haciendo clic en el ícono del ojo o haciendo doble clic en el nombre del campo. Para eliminar todos los objetos, haz clic en la papelera cerca del título del eje y luego en `Borrar todo`.
+Para empezar, arrastra un campo a la sección "Fuentes". Puedes quitar una fuente con el botón X, u ocultarla temporalmente haciendo clic en el ícono del ojo o doble clic en su nombre. Si quieres quitar todos los elementos, haz clic en el ícono de papelera junto al título del eje y elige `Borrar todo`.
 
-Las fuentes se pueden reorganizar en la lista haciendo clic y arrastrando. **Para personalizar cada fuente, haz clic en el ícono de color o haz clic derecho en el nombre del campo.** El símbolo, el color y el tamaño de cada fuente se pueden ajustar.
+Puedes reordenar las fuentes en la lista arrastrándolas. **Para personalizar una fuente, haz clic en su ícono de color o haz clic derecho sobre su nombre**; allí podrás cambiar su símbolo, color y tamaño.
 
 :::tip
-Para ver una lista completa de tipos de fuentes admitidas, haz clic en el ícono `?`. Esta lista también incluye los tipos de datos compatibles.
+Para ver la lista completa de tipos de fuentes y datos compatibles, haz clic en el ícono `?`.
 :::
 
 ## Formato de datos {#data-format}
 
-Los datos de puntos deben publicarse como un struct o protobuf codificado en bytes, utilizando el tipo `Translation2d[]`. Muchas bibliotecas admiten este formato, incluidas WPILib y AdvantageKit. El código de ejemplo a continuación muestra cómo registrar datos de puntos en Java.
+Debes publicar los datos de puntos como un struct o protobuf codificado en bytes usando el tipo `Translation2d[]`. Muchas bibliotecas admiten este formato, incluidas WPILib y AdvantageKit. El siguiente ejemplo muestra cómo registrar datos de puntos en Java.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -71,8 +71,8 @@ Logger.recordOutput("MyTranslations",
 
 ## Configuración {#configuration}
 
-Las siguientes opciones de configuración están disponibles:
+Tienes disponibles las siguientes opciones de configuración:
 
-- **Dimensiones:** El tamaño del área de visualización. Puede usar cualquier unidad que coincida con los puntos publicados. Cuando se muestran datos de visión, esta es la resolución de la cámara.
-- **Orientación:** El sistema de coordenadas a utilizar (orientación de los ejes X e Y).
-- **Origen:** La posición del origen en el sistema de coordenadas.
+- **Dimensiones:** El tamaño del área de visualización, en cualquier unidad que coincida con los puntos publicados. Al mostrar datos de visión, corresponde a la resolución de la cámara.
+- **Orientación:** El sistema de coordenadas que se usará (orientación de los ejes X e Y).
+- **Origen:** La ubicación del origen dentro del sistema de coordenadas.

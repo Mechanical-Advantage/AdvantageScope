@@ -4,16 +4,16 @@ sidebar_position: 4
 
 # 🔢 Tableau {#table}
 
-La vue en tableau est conçue pour afficher en détail les changements de valeur spécifiques pour un ensemble de champs. Pour ajouter un champ, faites-le glisser vers la vue principale. Pour supprimer un champ, cliquez sur le bouton « X » à côté de son nom. Les champs peuvent être réorganisés en les faisant glisser.
+La vue Tableau est conçue pour afficher en détail chaque changement de valeur d'un ensemble de champs. Pour ajouter un champ, faites-le glisser vers la zone principale. Pour le retirer, cliquez sur le bouton « X » à côté de son nom. Vous pouvez aussi réorganiser les colonnes par glisser-déposer.
 
 <img src="/img/tab-reference/table-1.webp" alt="Aperçu" />
 
 _L'interface en anglais est illustrée ci-dessus._
 
-**Une nouvelle ligne est créée pour chaque changement dans l'un des champs affichés.** Les lignes en double ne sont pas affichées. Par exemple, un tableau montrant l'état du robot pendant un match ressemblerait à ceci :
+**Une nouvelle ligne est créée dès qu'un des champs affichés change de valeur.** Les lignes identiques consécutives sont ignorées. Par exemple, un tableau suivant l'état du robot pendant un match ressemble à ceci :
 
 <img src="/img/tab-reference/table-2.webp" alt="Tableau d'état du robot" />
 
-L'heure sélectionnée dans le tableau est synchronisée sur tous les onglets. Cliquez sur une ligne pour la sélectionner, ou survolez une ligne pour prévisualiser ce moment dans n'importe quelle fenêtre détachée visible. Cliquer sur le bouton ↓ permet d'aller à l'heure sélectionnée (ou à l'heure saisie dans la zone). Les horodatages et les saisies de saut sont formatés selon la préférence [Horodatages](/more-features/timestamps).
+L'instant sélectionné dans le tableau est synchronisé entre tous les onglets. Cliquez sur une ligne pour la sélectionner, ou survolez-la pour prévisualiser ce moment dans toute fenêtre détachée ouverte. Cliquer sur le bouton ↓ permet d'atteindre directement l'instant sélectionné (ou celui saisi dans le champ). Le format des horodatages et des saisies de saut suit la préférence [Horodatages](/more-features/timestamps).
 
 <img src="/img/tab-reference/table-3.webp" alt="Sauter à un moment" />

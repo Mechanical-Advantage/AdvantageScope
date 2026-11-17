@@ -4,36 +4,36 @@ sidebar_position: 5
 
 # 💬 Console {#console}
 
-A visualização do console é projetada para visualizar um único campo de texto com dados do console. Alguns campos sugeridos estão listados abaixo.
+A guia Console serve para acompanhar um único campo de texto com as mensagens do console do robô. Estes são os campos mais comuns para arrastar para cá:
 
-- **DS:/Dscomm/Console** - Salvo pela Driver Station da FIRST.
-- **messages** - Salvo pelo logging integrado da WPILib com base em chamadas ao método [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>).
-- **/RealOutputs/Console** - Salvo pelo AdvantageKit automaticamente durante a operação do robô (use `System.out.println` normalmente).
-- **/ReplayOutputs/Console** - Salvo pelo AdvantageKit automaticamente durante a reprodução do log (use `System.out.println` normalmente).
+- **DS:/Dscomm/Console** - Gravado pela Driver Station da FIRST.
+- **messages** - Gravado pelo sistema de log integrado da WPILib quando você chama [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>).
+- **/RealOutputs/Console** - Gravado automaticamente pelo AdvantageKit durante a execução no robô (basta usar `System.out.println` normalmente).
+- **/ReplayOutputs/Console** - Gravado automaticamente pelo AdvantageKit durante a reprodução (replay) de um log (basta usar `System.out.println` normalmente).
 
-Arraste o campo desejado para a visualização principal para começar. Cada linha representa uma atualização do campo. Para logs da WPILib, uma nova linha é criada para cada linha salva. Para logs do AdvantageKit, uma nova linha é criada para cada ciclo de loop.
+Para começar, arraste o campo desejado para a área principal. Cada linha da lista representa uma atualização daquele campo: em logs da WPILib, aparece uma linha para cada texto salvo; em logs do AdvantageKit, aparece uma linha para cada ciclo de loop.
 
 <img src="/img/tab-reference/console-1.webp" alt="Visualização do console" />
 
 _A interface em inglês é exibida acima._
 
 :::info
-Clique no ícone de paleta de cores para alternar o destaque de mensagens de aviso e erro. Para logs da WPILib e do AdvantageKit, as mensagens são destacadas se contiverem o texto "warning" ou "error".
+Clique no ícone de paleta de cores para ligar ou desligar o destaque de avisos e erros. Em logs da WPILib e do AdvantageKit, qualquer mensagem que contenha as palavras "warning" ou "error" ganha destaque automático.
 :::
 
-Os controles são semelhantes aos da guia 🔢 [Tabela](../tab-reference/table). O tempo selecionado é sincronizado em todas as guias. Clique em uma linha para selecioná-la ou passe o mouse sobre uma linha para pré-visualizá-la em quaisquer janelas pop-up visíveis. Clicar no botão ↓ pula para o tempo selecionado (ou o tempo inserido na caixa). Os timestamps e as entradas de salto são formatados de acordo com a preferência de [Timestamps](/more-features/timestamps).
+Os controles funcionam de forma parecida com os da guia 🔢 [Tabela](../tab-reference/table), e o instante selecionado fica sincronizado em todas as guias. Clique em uma linha para selecioná-la ou passe o mouse sobre ela para pré-visualizar aquele momento nas janelas destacadas que estiverem abertas. Clicar no botão ↓ leva a lista direto para o instante selecionado (ou para o tempo que você digitou na caixa). Tanto os timestamps quanto o campo de busca por tempo seguem o formato configurado na preferência [Timestamps](/more-features/timestamps).
 
-Insira o texto na entrada "Filtrar" para exibir apenas as linhas que contêm o texto do filtro. Pressione `Ctrl+F` para selecionar rapidamente a entrada "Filtrar". Adicione um "!" no início do texto do filtro para _excluir_ mensagens correspondentes da visualização principal.
+Digite qualquer texto no campo "Filtrar" para mostrar apenas as linhas que contêm aquele trecho (aperte `Ctrl+F` para pular direto para a caixa de filtro). Se colocar um "!" no começo do texto, o filtro faz o oposto e _oculta_ todas as mensagens que combinarem com ele.
 
 ## Formatação ANSI {#ansi-formatting}
 
-O renderizador do console suporta formatação e códigos de cor usando sequências de escape ANSI padrão:
+O console também entende códigos de cor e formatação usando sequências de escape ANSI padrão:
 
 - **Estilos de texto:** Negrito, esmaecido, itálico e sublinhado
-- **Cores de primeiro plano e fundo:** 16 cores padrão (padrão e alta intensidade)
-- **Cores de 8 bits e 24 bits:** Paleta de consulta de 256 cores e RGB de 24 bits
-- **Redefinições seletivas:** Redefinir estilos ou cores específicos mantendo outros
+- **Cores de texto e fundo:** As 16 cores padrão (normais e de alta intensidade)
+- **Cores de 8 e 24 bits:** Paleta de 256 cores e RGB de 24 bits
+- **Redefinições seletivas:** Limpa apenas estilos ou cores específicos sem afetar o restante da linha
 
 :::tip
-Clique no ícone de salvar para exportar os dados do console para um arquivo de texto.
+Clique no ícone de salvar para exportar todo o conteúdo do console para um arquivo de texto.
 :::

@@ -4,28 +4,28 @@ sidebar_position: 1
 
 # Tuning-modus {#tuning-mode}
 
-Sommige live-bronnen ondersteunen live tunen van numerieke en booleaanse waarden. Deze functie kan bijvoorbeeld worden gebruikt om [regelaarversterkingen te tunen](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) wanneer verbinding is gemaakt met een NetworkTables-bron. Merk op dat de robotcode het ontvangen van versterkingen via NetworkTables moet ondersteunen.
+Bij sommige live-bronnen kun je numerieke en booleaanse waarden live aanpassen (tunen). Dat is bijvoorbeeld handig om [regelaarversterkingen te tunen](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) wanneer je verbonden bent met NetworkTables. Je robotcode moet dan wel ondersteunen dat die waarden via NetworkTables binnenkomen.
 
-Standaard zijn alle waarden in AdvantageScope alleen-lezen. Om de tuning-modus in of uit te schakelen, **klik je op het schuifregelaarpictogram** rechts van de zoekbalk wanneer er verbinding is met een ondersteunde live-bron. Wanneer het pictogram paars is, is de tuning-modus actief en kunnen velden worden bewerkt.
+Standaard zijn alle waarden in AdvantageScope alleen-lezen. Om de tuning-modus aan of uit te zetten, **klik je op het schuifregelaarpictogram** rechts van de zoekbalk terwijl je verbonden bent met een ondersteunde live-bron. Zodra het pictogram paars is, staat de tuning-modus aan en kun je velden aanpassen.
 
-- Om een **numeriek veld** te bewerken, voer je een nieuwe waarde in via het tekstvak rechts van het veld in de zijbalk. De waarde wordt gepubliceerd nadat de invoer is gedeselecteerd of op de "Enter"-toets wordt gedrukt. Laat het tekstvak leeg om de door de robot gepubliceerde waarde te gebruiken.
-- Om een **booleaans veld** om te schakelen, klik je op het rode of groene cirkeltje rechts van het veld in de zijbalk.
-- Om alle gepubliceerde waarden naar het klembord te kopiëren, **klik je met de rechtermuisknop op het schuifregelaarpictogram** en selecteer je **"Getunede waarden kopiëren"**.
+- Een **numeriek veld** pas je aan door een nieuwe waarde in te vullen in het tekstvak rechts van het veld in de zijbalk. De waarde wordt verstuurd zodra je ergens anders klikt of op Enter drukt. Laat je het tekstvak leeg, dan gebruikt de app weer de waarde die de robot zelf publiceert.
+- Een **booleaans veld** schakel je om door op het rode of groene bolletje rechts van het veld in de zijbalk te klikken.
+- Wil je alle aangepaste waarden naar het klembord kopiëren? **Klik dan met de rechtermuisknop op het schuifregelaarpictogram** en kies **"Getunede waarden kopiëren"**.
 
 :::warning
-Deze functie is niet bedoeld voor het besturen van de robot op het veld. Dashboard-achtige invoerelementen zoals keuzemenu's, triggerknoppen, enz. worden niet ondersteund.
+Deze functie is niet bedoeld om de robot op het veld te besturen. Dashboard-elementen zoals keuzemenu's en triggerknoppen worden niet ondersteund.
 :::
 
 ## Tunen met AdvantageKit {#tuning-with-advantagekit}
 
-Velden die door AdvantageKit worden gepubliceerd naar de subtabel `AdvantageKit` zijn alleen-uitvoer en kunnen niet worden bewerkt. Gebruikers kunnen echter velden publiceren vanuit gebruikerscode die vanuit AdvantageScope kunnen worden getuned. **Alle velden die worden gepubliceerd naar de tabel "/Tuning" op NetworkTables verschijnen onder de tabel "Tuning" wanneer de live-bron "NetworkTables (AdvantageKit)" wordt gebruikt.**
+Velden die AdvantageKit naar de subtabel `AdvantageKit` publiceert, zijn alleen-uitvoer en kun je niet aanpassen. Je kunt vanuit je eigen robotcode wel velden publiceren die je in AdvantageScope kunt tunen. **Alle velden die je naar de tabel "/Tuning" in NetworkTables stuurt, verschijnen onder de tabel "Tuning" zodra je de live-bron "NetworkTables (AdvantageKit)" gebruikt.**
 
-Een instelbaar getal kan bijvoorbeeld worden gepubliceerd met behulp van de klasse [`LoggedNetworkNumber`](https://docs.advantagekit.org/data-flow/recording-inputs/dashboard-inputs):
+Zo publiceer je bijvoorbeeld een instelbaar getal met de klasse [`LoggedNetworkNumber`](https://docs.advantagekit.org/data-flow/recording-inputs/dashboard-inputs):
 
 ```java
 LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNumber", 0.0);
 ```
 
 :::warning
-De subtabel `NetworkInputs` **kan niet worden bewerkt**, aangezien deze door AdvantageKit wordt gebruikt om netwerkwaarden vast te leggen voor logging en herhaling. Gebruik de tabel `Tuning` om in realtime met netwerkinvoer te communiceren.
+De subtabel `NetworkInputs` **kun je niet bewerken**, omdat AdvantageKit die gebruikt om netwerkwaarden vast te leggen voor logging en replay. Gebruik daarom de tabel `Tuning` als je live netwerkinvoer wilt aanpassen.
 :::

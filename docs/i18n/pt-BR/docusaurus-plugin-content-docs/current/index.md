@@ -11,7 +11,7 @@ import DocCardList from "@theme/DocCardList";
 <img src="/img/banner-ltr-light.webp" className="light-only" />
 <img src="/img/banner-ltr-dark.webp" className="dark-only" />
 
-O AdvantageScope é um aplicativo de diagnóstico de robô, revisão/análise de logs e visualização de dados para equipes da FIRST desenvolvido pela [Equipe 6328](https://littletonrobotics.org). Ele lê logs nos formatos de arquivo WPILOG, Hoot (CTRE), REVLOG (REV Robotics), Road Runner, CSV, log da NI DS e RLOG, além de visualização de dados do robô ao vivo usando transmissão NT4, Phoenix, RLOG ou FTC Dashboard. O AdvantageScope pode ser usado com qualquer projeto WPILib, mas também é otimizado para uso com nossa estrutura de reprodução de logs [AdvantageKit](https://docs.advantagekit.org). Observe que **o AdvantageKit não é necessário para usar o AdvantageScope**.
+O AdvantageScope é um aplicativo desenvolvido pela [Equipe 6328](https://littletonrobotics.org) para equipes da FIRST fazerem diagnóstico de robôs, análise de logs e visualização de dados. Ele abre arquivos de log nos formatos WPILOG, Hoot (CTRE), REVLOG (REV Robotics), Road Runner, CSV, log da NI DS e RLOG, além de exibir dados do robô ao vivo via NT4, Phoenix, RLOG ou FTC Dashboard. Você pode usar o AdvantageScope com qualquer projeto WPILib, embora ele também seja otimizado para o nosso framework de log replay [AdvantageKit](https://docs.advantagekit.org). Vale lembrar que **você não precisa do AdvantageKit para usar o AdvantageScope**.
 
 <DocCardList
 items={[
@@ -40,14 +40,14 @@ href: "/overview/champs-conference"
 
 O AdvantageScope inclui as seguintes ferramentas:
 
-- Uma ampla seleção de gráficos flexíveis
-- Visualizações de campo 2D e 3D de dados de pose, com robôs baseados em CAD personalizáveis
-- Reprodução de vídeo sincronizada a partir de um vídeo de partida carregado separadamente
-- Visualização de joystick, mostrando as ações do piloto em representações de controles personalizáveis
-- Exibições de vetores de módulos Swerve
-- Revisão de mensagens do console
-- Análise de estatísticas de log
-- Opções de exportação flexíveis, com suporte para CSV e WPILOG
+- Uma grande variedade de gráficos flexíveis
+- Visualizações de campo em 2D e 3D para dados de pose, com modelos de robôs em CAD personalizáveis
+- Reprodução de vídeo sincronizada com o vídeo da partida carregado separadamente
+- Visualização de joysticks, mostrando as ações do piloto em controles personalizáveis
+- Exibição dos vetores dos módulos Swerve
+- Análise das mensagens do console
+- Análise estatística dos dados do log
+- Opções flexíveis de exportação, com suporte a CSV e WPILOG
 
 <Button
 label="Ir para Downloads"
@@ -58,7 +58,7 @@ block
 style={{ marginBottom: "15px" }}
 />
 
-Feedback, solicitações de recursos e relatórios de problemas são bem-vindos na [página de problemas](https://github.com/Mechanical-Advantage/AdvantageScope/issues). Consulte a [página de contribuição](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/CONTRIBUTING.md) para obter mais informações sobre como contribuir para o AdvantageScope. Para consultas não públicas, envie uma mensagem para software@team6328.org.
+Sugestões, pedidos de novos recursos e relatos de bugs são sempre bem-vindos na [página de issues](https://github.com/Mechanical-Advantage/AdvantageScope/issues). Para saber como contribuir com o projeto, confira a [página de contribuição](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/CONTRIBUTING.md). Para assuntos que não possam ser públicos, envie uma mensagem para software@team6328.org.
 
 <img src="/img/screenshot-light.webp" className="light-only" />
 <img src="/img/screenshot-dark.webp" className="dark-only" />

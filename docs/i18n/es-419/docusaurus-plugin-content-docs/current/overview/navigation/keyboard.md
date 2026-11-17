@@ -1,15 +1,15 @@
 # Atajos de teclado {#keyboard-shortcuts}
 
-AdvantageScope incluye numerosos atajos de teclado que permiten una navegación más rápida. Los atajos que utilizan la tecla `Ctrl` se reemplazan por la tecla ⌘ en macOS.
+AdvantageScope incluye varios atajos de teclado para que puedas moverte más rápido por la aplicación. En macOS, la tecla `Ctrl` se reemplaza por la tecla ⌘.
 
 ### Fuentes de datos {#data-sources}
 
 <table>
 <tr><td>`Ctrl+O`</td><td>Abrir uno o más archivos de registro</td></tr>
 <tr><td>`Ctrl+Shift+O`</td><td>Agregar uno o más archivos de registro a la visualización actual</td></tr>
-<tr><td>`Ctrl+K`</td><td>Conectar al robot como una fuente en vivo</td></tr>
-<tr><td>`Ctrl+Shift+K`</td><td>Conectar al simulador como una fuente en vivo</td></tr>
-<tr><td>`Ctrl+Option+Shift+K`</td><td>Conectar a la Driver Station como una fuente en vivo</td></tr>
+<tr><td>`Ctrl+K`</td><td>Conectar con el robot como fuente en vivo</td></tr>
+<tr><td>`Ctrl+Shift+K`</td><td>Conectar con el simulador como fuente en vivo</td></tr>
+<tr><td>`Ctrl+Option+Shift+K`</td><td>Conectar a la Driver Station como fuente en vivo</td></tr>
 <tr><td>`Ctrl+D`</td><td>Descargar archivos de registro desde el robot</td></tr>
 </table>
 
@@ -17,15 +17,15 @@ AdvantageScope incluye numerosos atajos de teclado que permiten una navegación 
 
 <table>
 <tr><td>`Ctrl+E`</td><td>Exportar datos de registro</td></tr>
-<tr><td>`Ctrl+P`</td><td>Publicar datos de registro en un servidor de NetworkTables en el robot</td></tr>
-<tr><td>`Ctrl+Shift+P`</td><td>Publicar datos de registro en un servidor de NetworkTables en simulación</td></tr>
+<tr><td>`Ctrl+P`</td><td>Publicar datos del registro en un servidor NetworkTables en el robot</td></tr>
+<tr><td>`Ctrl+Shift+P`</td><td>Publicar datos del registro en un servidor NetworkTables en simulación</td></tr>
 <tr><td>`Option+Ctrl+P`</td><td>Detener la publicación en NetworkTables</td></tr>
 </table>
 
 ### Controles de ventana {#window-controls}
 
 <table>
-<tr><td>`Ctrl+N`</td><td>Crear una nueva ventana</td></tr>
+<tr><td>`Ctrl+N`</td><td>Crear una ventana nueva</td></tr>
 <tr><td>`Ctrl+Shift+N`</td><td>Cerrar la ventana actual</td></tr>
 <tr><td>`Ctrl+Comma`</td><td>Abrir la ventana de preferencias</td></tr>
 <tr><td>`Ctrl+Period`</td><td>Alternar la visibilidad de la barra lateral</td></tr>
@@ -35,14 +35,14 @@ AdvantageScope incluye numerosos atajos de teclado que permiten una navegación 
 ### Controles de pestañas {#tab-controls}
 
 <table>
-<tr><td>`Ctrl+T`</td><td>Abrir el menú desplegable para agregar una nueva pestaña</td></tr>
-<tr><td>`Ctrl+Shift+T`</td><td>Separar la pestaña actual</td></tr>
+<tr><td>`Ctrl+T`</td><td>Abrir el menú desplegable para agregar una pestaña nueva</td></tr>
+<tr><td>`Ctrl+Shift+T`</td><td>Separar la pestaña actual en una ventana nueva</td></tr>
 <tr><td>`Ctrl+Left` y `Ctrl+Right`</td><td>Cambiar de pestaña</td></tr>
 <tr><td>`Ctrl+[` y `Ctrl+]`</td><td>Reordenar pestañas</td></tr>
 <tr><td>`Ctrl+W`</td><td>Cerrar la pestaña actual</td></tr>
 </table>
 
-**Los atajos a continuación se pueden utilizar para crear rápidamente nuevas pestañas:**
+**Usa estos atajos para crear pestañas nuevas rápidamente:**
 
 <table>
 <tr>
@@ -75,14 +75,14 @@ AdvantageScope incluye numerosos atajos de teclado que permiten una navegación 
 
 <table>
 <tr><td>`Space`</td><td>Alternar reproducción</td></tr>
-<tr><td>`Left` y `Right`</td><td>Avanzar paso a paso por el archivo de registro</td></tr>
-<tr><td>`L` o `Ctrl+L`</td><td>Alternar bloqueo al ver datos en vivo</td></tr>
+<tr><td>`Left` y `Right`</td><td>Avanzar o retroceder paso a paso en el archivo de registro</td></tr>
+<tr><td>`L` o `Ctrl+L`</td><td>Alternar el bloqueo al ver datos en vivo</td></tr>
 <tr><td>`Ctrl+\`</td><td>Ajustar el zoom de la línea de tiempo al rango habilitado</td></tr>
 </table>
 
 ### Touch Bar {#touch-bar}
 
-En los modelos MacBook compatibles, el Touch Bar se puede utilizar para desplazarse por el registro y agregar nuevas pestañas.
+En los modelos de MacBook compatibles, puedes usar la Touch Bar para recorrer el registro y agregar pestañas nuevas.
 
-<img src="/img/overview/navigation/keyboard-1.webp" alt="Interfaz de desplazamiento de Touch Bar" />
-<img src="/img/overview/navigation/keyboard-2.webp" alt="Interfaz de nueva pestaña de Touch Bar" />
+<img src="/img/overview/navigation/keyboard-1.webp" alt="Interfaz de desplazamiento en la Touch Bar" />
+<img src="/img/overview/navigation/keyboard-2.webp" alt="Interfaz de nueva pestaña en la Touch Bar" />

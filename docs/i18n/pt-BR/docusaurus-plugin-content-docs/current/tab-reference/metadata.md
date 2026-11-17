@@ -7,18 +7,18 @@ import TabItem from '@theme/TabItem';
 
 # 🔍 Metadados {#metadata}
 
-A guia de metadados mostra valores publicados na tabela oculta "/Metadata" ou através do AdvantageKit. As chaves de metadados são exibidas à esquerda, e as colunas separam dados de diferentes fontes (por exemplo, real e repetição ao usar o AdvantageKit).
+A guia Metadados mostra os valores publicados na tabela oculta "/Metadata" ou pelo AdvantageKit. As chaves de metadados ficam à esquerda, e as colunas separam os dados de diferentes fontes (como execução real e repetição no AdvantageKit).
 
-<img src="/img/tab-reference/metadata-1.webp" alt="Visão geral da aba de metadados" />
+<img src="/img/tab-reference/metadata-1.webp" alt="Visão geral da guia de metadados" />
 
 _A interface em inglês é exibida acima._
 
-O código de exemplo abaixo mostra como registrar metadados usando Java.
+O exemplo abaixo mostra como registrar metadados em Java.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-Na WPILib, registre valores na tabela "/Metadata" como strings usando a classe `Telemetry`.
+Na WPILib, use a classe `Telemetry` para registrar valores em string na tabela "/Metadata".
 
 ```java
 TelemetryTable metadata = Telemetry.getTable("Metadata");
@@ -29,7 +29,7 @@ metadata.log("Platform", "macOS");
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-No AdvantageKit, chame o método abaixo antes de iniciar o logger. Os metadados são armazenados separadamente ao executar em modo real e repetição para fácil comparação.
+No AdvantageKit, chame o método abaixo antes de iniciar o logger. Os metadados são salvos separadamente no modo real e na repetição para facilitar a comparação.
 
 ```java
 Logger.recordMetadata("RobotName", "Darwin");

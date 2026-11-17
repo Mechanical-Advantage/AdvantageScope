@@ -4,73 +4,73 @@ sidebar_position: 6
 
 # 📊 Statistiques {#statistics}
 
-L'onglet statistiques permet une analyse statistique approfondie des champs numériques, en analysant les tendances globales plutôt que les changements au fil du temps. Les champs sélectionnés sont analysés à l'aide d'un histogramme et d'une variété de mesures statistiques standard.
+L'onglet Statistiques propose une analyse statistique approfondie des champs numériques, en étudiant les tendances globales plutôt que l'évolution au fil du temps. Les champs sélectionnés sont analysés à l'aide d'un histogramme et de plusieurs indicateurs statistiques courants.
 
-<img src="/img/tab-reference/statistics-1.webp" alt="Aperçu de l'onglet statistiques" />
+<img src="/img/tab-reference/statistics-1.webp" alt="Aperçu de l'onglet Statistiques" />
 
 _L'interface en anglais est illustrée ci-dessus._
 
 ## Panneau de contrôle {#control-pane}
 
-Pour commencer, faites glisser un champ vers la section « Mesures ». Supprimez un champ à l'aide du bouton X, ou masquez-le temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer tous les champs, cliquez sur la corbeille près du titre de l'axe, puis sur `Tout effacer`. Les champs peuvent être réorganisés dans la liste en les faisant glisser.
+Pour commencer, faites glisser un champ vers la section « Mesures ». Vous pouvez supprimer un champ avec le bouton X, ou le masquer temporairement en cliquant sur l'icône d'œil ou en double-cliquant sur son nom. Pour tout retirer, cliquez sur la corbeille à côté du titre de la section, puis sur `Tout effacer`. Vous pouvez également réorganiser les champs dans la liste par glisser-déposer.
 
-Pour analyser la différence entre les champs, basculez un champ en mode « Référence » et ajoutez d'autres champs supplémentaires en tant qu'enfants. Les enfants peuvent être basculés entre les modes « Erreur relative » et « Erreur absolue ».
+Pour comparer des champs entre eux, passez l'un d'eux en mode « Référence » et ajoutez d'autres champs comme enfants. Chaque enfant peut ensuite basculer entre les modes « Erreur relative » et « Erreur absolue ».
 
 :::info
-La couleur de chaque champ peut être personnalisée en cliquant sur l'icône colorée ou en faisant un clic droit sur le nom du champ.
+Vous pouvez personnaliser la couleur de chaque champ en cliquant sur son icône colorée ou en faisant un clic droit sur son nom.
 :::
 
 ### Configuration {#configuration}
 
-L'option **Plage de temps** sélectionne les parties du journal utilisées pour l'analyse :
+L'option **Plage de temps** détermine quelles portions du journal sont prises en compte dans l'analyse :
 
-- _Plage visible :_ Analyse la plage de temps visible sur la chronologie.
-- _Journal complet :_ Analyse la plage complète du fichier journal.
-- _Activé :_ Analyse les plages de temps où le robot est activé.
-- _Auto :_ Analyse les plages de temps où le robot est en mode autonome.
-- _Téléopéré :_ Analyse les plages de temps où le robot est en mode téléopéré.
-- _En direct : 30 secondes :_ Analyse les 30 secondes les plus récentes (lors d'une connexion à une source en direct).
-- _En direct : 10 secondes :_ Analyse les 10 secondes les plus récentes (lors d'une connexion à une source en direct).
+- _Plage visible :_ analyse uniquement la plage de temps affichée sur la chronologie.
+- _Journal complet :_ analyse l'intégralité du fichier journal.
+- _Activé :_ analyse les intervalles où le robot est activé.
+- _Auto :_ analyse les intervalles où le robot est en mode autonome.
+- _Téléopéré :_ analyse les intervalles où le robot est en mode téléopéré.
+- _En direct : 30 secondes :_ analyse les 30 dernières secondes (en connexion en direct).
+- _En direct : 10 secondes :_ analyse les 10 dernières secondes (en connexion en direct).
 
-L'option **Plage de données** sélectionne les valeurs minimale et maximale à afficher sur l'histogramme. Les données en dehors de cette plage ne sont pas affichées, mais elles continuent d'être utilisées pour les mesures statistiques.
+L'option **Plage de données** définit les bornes minimale et maximale affichées sur l'histogramme. Les valeurs hors de cette plage ne sont pas tracées, mais restent incluses dans le calcul des indicateurs statistiques.
 
-L'option **Taille du pas** sélectionne la taille de chaque intervalle de l'histogramme. Des valeurs plus petites produisent des graphiques plus détaillés, mais révèlent également plus de bruit.
+L'option **Taille du pas** règle la largeur de chaque barre de l'histogramme. Un pas plus petit donne un graphique plus fin, mais fait aussi ressortir davantage le bruit.
 
 ## Volet de visualisation {#viewer-pane}
 
 ### Histogramme {#histogram}
 
-L'histogramme montre le nombre d'échantillons qui tombent dans chaque intervalle, dans la plage spécifique. Notez que les données en dehors de la plage spécifiée sont ignorées (plutôt que d'être regroupées dans un intervalle séparé).
+L'histogramme indique le nombre d'échantillons contenus dans chaque intervalle à l'intérieur de la plage choisie. Notez que les données situées hors de cette plage sont ignorées (plutôt que regroupées dans une barre séparée).
 
 ### Mesures statistiques {#statistical-measures}
 
-Le tableau des mesures statistiques montre les valeurs calculées de chaque mesure pour les champs fournis. Plus d'informations sur chaque mesure sont fournies ci-dessous.
+Le tableau des mesures statistiques présente les valeurs calculées pour chacun des champs sélectionnés. Voici le détail de chaque indicateur.
 
 #### Résumé {#summary}
 
-- **Nombre :** Le nombre d'échantillons discrets générés.
-- **Min :** La plus petite valeur dans les données.
-- **Max :** La plus grande valeur dans les données.
+- **Nombre :** le nombre total d'échantillons discrets enregistrés.
+- **Min :** la plus petite valeur observée.
+- **Max :** la plus grande valeur observée.
 
 #### Centre {#center}
 
-- [**Moyenne :**](https://fr.wikipedia.org/wiki/Moyenne_arithm%C3%A9tique) La moyenne arithmétique (moyenne simple) des données.
-- [**Médiane :**](<https://fr.wikipedia.org/wiki/M%C3%A9diane_(statistiques)>) La valeur « du milieu » des données, ou le 50e centile.
-- [**Mode :**](<https://fr.wikipedia.org/wiki/Mode_(statistiques)>) La valeur la plus courante dans les données.
-- [**Moyenne géométrique :**](https://fr.wikipedia.org/wiki/Moyenne_g%C3%A9om%C3%A9trique) Une mesure du centre calculée en utilisant le produit des valeurs plutôt que la somme. Applicable lors de la mesure des _taux de croissance exponentiels_ (comme le pourcentage de changement entre les cycles).
-- [**Moyenne harmonique :**](https://fr.wikipedia.org/wiki/Moyenne_harmonique) Une mesure du centre calculée en utilisant la somme des inverses des valeurs. Applicable lors de la mesure de _taux ou de vitesses_.
-- [**Moyenne quadratique :**](https://fr.wikipedia.org/wiki/Moyenne_quadratique) Une mesure du centre calculée en utilisant les carrés des valeurs. Applicable lors de la mesure de données avec des _valeurs positives et négatives_, comme un mouvement périodique.
+- [**Moyenne :**](https://fr.wikipedia.org/wiki/Moyenne_arithm%C3%A9tique) la moyenne arithmétique (moyenne classique) des données.
+- [**Médiane :**](<https://fr.wikipedia.org/wiki/M%C3%A9diane_(statistiques)>) la valeur « du milieu », soit le 50e centile.
+- [**Mode :**](<https://fr.wikipedia.org/wiki/Mode_(statistiques)>) la valeur la plus fréquente dans les données.
+- [**Moyenne géométrique :**](https://fr.wikipedia.org/wiki/Moyenne_g%C3%A9om%C3%A9trique) un indicateur calculé à partir du produit des valeurs plutôt que de leur somme, utile pour les _taux de croissance exponentiels_ (comme une variation en pourcentage d'un cycle à l'autre).
+- [**Moyenne harmonique :**](https://fr.wikipedia.org/wiki/Moyenne_harmonique) un indicateur calculé à partir de la somme des inverses des valeurs, adapté aux _taux et aux vitesses_.
+- [**Moyenne quadratique :**](https://fr.wikipedia.org/wiki/Moyenne_quadratique) un indicateur calculé à partir des carrés des valeurs, utile pour des grandeurs comportant des _valeurs positives et négatives_, comme un mouvement oscillant.
 
 #### Écart {#spread}
 
-- [**Écart-type :**](https://fr.wikipedia.org/wiki/%C3%89cart_type) La mesure statistique de variation la plus courante, où une valeur plus faible indique moins de variation. Pour des données normalement distribuées, environ 68 % des données se situent à moins d'un écart-type de la moyenne.
-- [**Écart absolu médian :**](https://fr.wikipedia.org/wiki/%C3%89cart_absolu_m%C3%A9dian) La médiane des écarts absolus par rapport à la médiane. Il s'agit d'une alternative robuste à l'écart-type.
-- [**Écart interquartile :**](https://fr.wikipedia.org/wiki/%C3%89cart_interquartile) La différence entre le troisième et le premier quartile (75e centile et 25e centile), moins affectée par les valeurs aberrantes que l'écart-type.
-- [**Asymétrie :**](<https://fr.wikipedia.org/wiki/Asym%C3%A9trie_(statistiques)>) Une mesure de l'asymétrie des données. Une valeur négative indique une queue vers la gauche, une valeur positive indique une queue vers la droite, et une valeur nulle suggère une distribution symétrique.
+- [**Écart-type :**](https://fr.wikipedia.org/wiki/%C3%89cart_type) la mesure de dispersion la plus répandue (plus elle est faible, moins les valeurs varient). Pour une loi normale, environ 68 % des données se trouvent à moins d'un écart-type de la moyenne.
+- [**Écart absolu médian :**](https://fr.wikipedia.org/wiki/%C3%89cart_absolu_m%C3%A9dian) la médiane des écarts absolus par rapport à la médiane, moins sensible aux valeurs aberrantes que l'écart-type.
+- [**Écart interquartile :**](https://fr.wikipedia.org/wiki/%C3%89cart_interquartile) la différence entre le troisième et le premier quartile (75e et 25e centiles), également plus robuste face aux valeurs aberrantes que l'écart-type.
+- [**Asymétrie :**](<https://fr.wikipedia.org/wiki/Asym%C3%A9trie_(statistiques)>) une mesure du décalage de la distribution. Une valeur négative indique une queue vers la gauche, une valeur positive une queue vers la droite, et une valeur proche de zéro une distribution symétrique.
 
 #### Centiles {#percentiles}
 
-Les [centiles](https://fr.wikipedia.org/wiki/Centile) mesurent les valeurs en dessous desquelles se situent le pourcentage donné d'autres valeurs. Par exemple, 10 % des valeurs se situent en dessous du 10e centile. Les centiles suivants sont également connus sous le nom de :
+Les [centiles](https://fr.wikipedia.org/wiki/Centile) indiquent le seuil sous lequel se situe un certain pourcentage des données. Par exemple, 10 % des valeurs sont inférieures au 10e centile. Certains centiles portent un nom particulier :
 
 - 25e centile = 1er quartile (Q1)
 - 50e centile = 2e quartile (Q2) = médiane

@@ -1,25 +1,25 @@
 # Raccourcis clavier {#keyboard-shortcuts}
 
-AdvantageScope comprend de nombreux raccourcis clavier qui permettent une navigation plus rapide. Les raccourcis qui utilisent la touche `ctrl` sont remplacés par la touche ⌘ sur macOS.
+AdvantageScope propose de nombreux raccourcis clavier pour naviguer plus rapidement. Sur macOS, remplacez la touche `ctrl` par `⌘`.
 
 ### Sources de données {#data-sources}
 
 <table>
 <tr><td>`Ctrl+O`</td><td>Ouvrir un ou plusieurs fichiers journaux</td></tr>
 <tr><td>`Ctrl+Maj+O`</td><td>Ajouter un ou plusieurs fichiers journaux à la visualisation actuelle</td></tr>
-<tr><td>`Ctrl+K`</td><td>Se connecter au robot comme source en direct</td></tr>
-<tr><td>`Ctrl+Maj+K`</td><td>Se connecter au simulateur comme source en direct</td></tr>
-<tr><td>`Ctrl+Option+Maj+K`</td><td>Se connecter à la console de pilotage comme source en direct</td></tr>
+<tr><td>`Ctrl+K`</td><td>Se connecter au robot en direct</td></tr>
+<tr><td>`Ctrl+Maj+K`</td><td>Se connecter au simulateur en direct</td></tr>
+<tr><td>`Ctrl+Option+Maj+K`</td><td>Se connecter à la console de pilotage en direct</td></tr>
 <tr><td>`Ctrl+D`</td><td>Télécharger les fichiers journaux depuis le robot</td></tr>
 </table>
 
 ### Exportation de données {#data-export}
 
 <table>
-<tr><td>`Ctrl+E`</td><td>Exporter les données de journal</td></tr>
-<tr><td>`Ctrl+P`</td><td>Publier les données de journal sur un serveur NetworkTables sur le robot</td></tr>
-<tr><td>`Ctrl+Maj+P`</td><td>Publier les données de journal sur un serveur NetworkTables en simulation</td></tr>
-<tr><td>`Option+Ctrl+P`</td><td>Arrêter la publication sur NetworkTables</td></tr>
+<tr><td>`Ctrl+E`</td><td>Exporter les données du journal</td></tr>
+<tr><td>`Ctrl+P`</td><td>Publier les données du journal vers un serveur NetworkTables sur le robot</td></tr>
+<tr><td>`Ctrl+Maj+P`</td><td>Publier les données du journal vers un serveur NetworkTables en simulation</td></tr>
+<tr><td>`Option+Ctrl+P`</td><td>Arrêter la publication vers NetworkTables</td></tr>
 </table>
 
 ### Contrôles de fenêtre {#window-controls}
@@ -35,14 +35,14 @@ AdvantageScope comprend de nombreux raccourcis clavier qui permettent une naviga
 ### Contrôles d'onglets {#tab-controls}
 
 <table>
-<tr><td>`Ctrl+T`</td><td>Ouvrir le menu déroulant pour ajouter un nouvel onglet</td></tr>
-<tr><td>`Ctrl+Maj+T`</td><td>Créer une nouvelle fenêtre détachée pour l'onglet actuel</td></tr>
+<tr><td>`Ctrl+T`</td><td>Ouvrir le menu pour ajouter un nouvel onglet</td></tr>
+<tr><td>`Ctrl+Maj+T`</td><td>Détacher l'onglet actif dans une nouvelle fenêtre</td></tr>
 <tr><td>`Ctrl+Gauche` et `Ctrl+Droite`</td><td>Changer d'onglet</td></tr>
 <tr><td>`Ctrl+[` et `Ctrl+]`</td><td>Réorganiser les onglets</td></tr>
-<tr><td>`Ctrl+W`</td><td>Fermer l'onglet actuel</td></tr>
+<tr><td>`Ctrl+W`</td><td>Fermer l'onglet actif</td></tr>
 </table>
 
-**Les raccourcis ci-dessous peuvent être utilisés pour créer rapidement de nouveaux onglets :**
+**Les raccourcis suivants permettent de créer rapidement de nouveaux onglets :**
 
 <table>
 <tr>
@@ -74,15 +74,15 @@ AdvantageScope comprend de nombreux raccourcis clavier qui permettent une naviga
 ### Lecture {#playback}
 
 <table>
-<tr><td>`Espace`</td><td>Activer ou désactiver la lecture</td></tr>
-<tr><td>`Gauche` et `Droite`</td><td>Parcourir le fichier journal pas à pas</td></tr>
-<tr><td>`L` ou `Ctrl+L`</td><td>Activer ou désactiver le verrouillage lors de la visualisation de données en direct</td></tr>
+<tr><td>`Espace`</td><td>Lancer ou mettre en pause la lecture</td></tr>
+<tr><td>`Gauche` et `Droite`</td><td>Avancer ou reculer pas à pas dans le journal</td></tr>
+<tr><td>`L` ou `Ctrl+L`</td><td>Verrouiller ou déverrouiller la vue en direct</td></tr>
 <tr><td>`Ctrl+\`</td><td>Zoomer la chronologie sur la plage activée</td></tr>
 </table>
 
 ### Touch Bar {#touch-bar}
 
-Sur les modèles MacBook pris en charge, la Touch Bar peut être utilisée pour défiler dans le journal et ajouter de nouveaux onglets.
+Sur les MacBook compatibles, la Touch Bar permet de parcourir le journal et d'ajouter de nouveaux onglets.
 
 <img src="/img/overview/navigation/keyboard-1.webp" alt="Interface de défilement Touch Bar" />
 <img src="/img/overview/navigation/keyboard-2.webp" alt="Interface de nouvel onglet Touch Bar" />

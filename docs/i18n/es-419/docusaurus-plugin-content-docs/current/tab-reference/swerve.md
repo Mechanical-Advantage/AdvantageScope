@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 🦀 Swerve {#swerve}
 
-La pestaña swerve muestra el estado de cuatro módulos swerve, incluidos los vectores de velocidad, las posiciones de inactividad, la rotación del robot y las velocidades del chasis.
+La pestaña swerve muestra el estado de los cuatro módulos swerve: sus vectores de velocidad, posiciones en reposo, la rotación del robot y las velocidades del chasis.
 
 <img src="/img/tab-reference/swerve-1.webp" alt="Descripción general de la pestaña de swerve" />
 
@@ -16,31 +16,31 @@ _En la imagen de arriba se muestra la interfaz en inglés._
 <details>
 <summary>Controles de la línea de tiempo</summary>
 
-La línea de tiempo se utiliza para controlar la reproducción y la visualización. Al hacer clic en la línea de tiempo se selecciona un tiempo, y al hacer clic con el botón derecho se anula la selección. El tiempo seleccionado se sincroniza en todas las pestañas, lo que facilita la búsqueda rápida de esta ubicación en otras vistas.
+La línea de tiempo controla la reproducción y la visualización. Haz clic sobre ella para seleccionar un instante de tiempo, y haz clic derecho para quitar la selección. El tiempo seleccionado se sincroniza en todas las pestañas, así que podrás ubicar ese mismo instante rápidamente en otras vistas.
 
-Las secciones amarillas indican cuando el robot es autónomo, las secciones azules indican cuando el robot es teledirigido (teleop), y las secciones grises indican cuando el robot está en modo de utilidad.
+Las franjas amarillas indican cuándo el robot está en modo autónomo, las azules cuándo está en modo teleoperado y las grises cuándo está en modo de utilidad.
 
-Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia arriba o hacia abajo. También se puede seleccionar un rango haciendo clic y arrastrando mientras se mantiene presionada la tecla `Shift`. Muévete hacia la izquierda y hacia la derecha desplazándote horizontalmente (en dispositivos compatibles) o haciendo clic y arrastrando en la línea de tiempo. Cuando estás conectado en vivo, desplazarte hacia la izquierda desbloquea del tiempo actual, y desplazarte hasta la derecha vuelve a bloquear al tiempo actual. Presiona `Ctrl+\` para hacer zoom al período en el que el robot está habilitado.
+Para hacer zoom, coloca el cursor sobre la línea de tiempo y usa la rueda del mouse hacia arriba o hacia abajo. También puedes seleccionar un rango haciendo clic y arrastrando mientras mantienes presionada la tecla `Shift`. Para moverte a izquierda o derecha, desplázate horizontalmente (si tu dispositivo lo permite) o haz clic y arrastra sobre la línea de tiempo. Cuando estés conectado en vivo, desplazarte hacia la izquierda desbloquea la vista del tiempo actual, y desplazarte hasta el extremo derecho la vuelve a bloquear al tiempo actual. Presiona `Ctrl+\` para hacer zoom directamente al período en que el robot está habilitado.
 
 <img src="/img/tab-reference/timeline.webp" alt="Línea de tiempo" />
 
 </details>
 
-## Agregar fuentes {#adding-sources}
+## Cómo agregar fuentes {#adding-sources}
 
-Para comenzar, arrastra un campo a la sección "Fuentes" (Sources). Elimina una fuente usando el botón X, u ocúltala temporalmente haciendo clic en el ícono del ojo o haciendo doble clic en el nombre del campo. Para eliminar todas las fuentes, haz clic en la papelera cerca del título del eje y luego en `Borrar todo`.
+Para empezar, arrastra un campo a la sección "Fuentes". Puedes quitar una fuente con el botón X, u ocultarla temporalmente haciendo clic en el ícono del ojo o doble clic en su nombre. Si quieres quitar todas las fuentes, haz clic en el ícono de papelera junto al título del eje y elige `Borrar todo`.
 
-Las fuentes se pueden reorganizar en la lista haciendo clic y arrastrando. **Para personalizar cada fuente, haz clic en el ícono de color o haz clic derecho en el nombre del campo.** AdvantageScope admite tres tipos de fuentes:
+Puedes reordenar las fuentes en la lista arrastrándolas. **Para personalizar una fuente, haz clic en su ícono de color o haz clic derecho sobre su nombre.** AdvantageScope admite tres tipos de fuentes:
 
-- **Velocidades del módulo:** Un conjunto de cuatro estados de módulo swerve, mostrados como vectores en el diagrama.
-- **Velocidades del robot:** Velocidades lineales y angulares mostradas en el centro del diagrama.
-- **Rotación:** Posición angular utilizada para rotar el diagrama.
+- **Velocidades del módulo:** Un conjunto de cuatro estados de módulo swerve, que se muestran como vectores en el diagrama.
+- **Velocidades del robot:** Velocidades lineales y angular mostradas en el centro del diagrama.
+- **Rotación:** Posición angular usada para rotar el diagrama.
 
 ## Formato de datos {#data-format}
 
-Los datos deben publicarse como un struct o protobuf codificado en bytes, utilizando los tipos `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d` o `Rotation3d`.
+Debes publicar los datos como un struct o protobuf codificado en bytes usando los tipos `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d` o `Rotation3d`.
 
-Muchas bibliotecas admiten el formato struct, incluidas WPILib y AdvantageKit. El código de ejemplo a continuación muestra cómo registrar estados de módulos swerve en Java.
+Muchas bibliotecas admiten el formato struct, incluidas WPILib y AdvantageKit. El siguiente ejemplo muestra cómo registrar los estados de los módulos swerve en Java.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -74,17 +74,17 @@ Logger.recordOutput("MyStates", states);
 </Tabs>
 
 :::note
-En 2027, esta estructura de datos pasó a llamarse de `SwerveModuleState` a `SwerveModuleVelocity`.
-Para los archivos de registro creados antes de WPILib 2027 y Systemcore, los tipos heredados `SwerveModuleState` todavía son compatibles para la visualización.
+En 2027, esta estructura de datos cambió de nombre de `SwerveModuleState` a `SwerveModuleVelocity`.
+Si trabajas con archivos de registro anteriores a WPILib 2027 y Systemcore, el tipo anterior `SwerveModuleState` sigue siendo compatible para visualizarse.
 :::
 
 ## Configuración {#configuration}
 
-Las siguientes opciones de configuración están disponibles:
+Tienes disponibles las siguientes opciones de configuración:
 
-- **Velocidad máxima:** La velocidad máxima alcanzable de los módulos, utilizada para ajustar el tamaño de los vectores.
-- **Tamaño del chasis:** Las distancias entre los módulos swerve de izquierda a derecha y de adelante hacia atrás. Cambia la relación de aspecto del diagrama del robot.
-- **Orientación:** Ajusta la dirección hacia la que apunta el diagrama del robot. Esta opción suele ser útil para alinearse con los datos de pose o los videos de partidos.
+- **Velocidad máxima:** La velocidad máxima que alcanzan los módulos; se usa para escalar el tamaño de los vectores.
+- **Tamaño del chasis:** La distancia entre los módulos de izquierda a derecha y de adelante hacia atrás. Cambia la proporción del diagrama del robot.
+- **Orientación:** Ajusta hacia dónde apunta el diagrama del robot, algo muy útil para alinearlo con los datos de pose o con los videos de partidos.
 
 :::note
 [🦀 🦀 🦀 🦀 🦀 🦀 🦀 🦀 🦀](https://www.youtube.com/watch?v=IbbwtyM8Dxs)

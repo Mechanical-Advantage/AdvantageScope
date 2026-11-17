@@ -9,21 +9,21 @@ draft: true
 <img src="/img/whats-new/banner-light.webp" className="light-only" />
 <img src="/img/whats-new/banner-dark.webp" className="dark-only" />
 
-¡La versión 2026 de AdvantageScope ya está disponible! Consulta los [documentos de instalación](/overview/installation) y el [registro de cambios completo](https://github.com/Mechanical-Advantage/AdvantageScope/releases) para obtener detalles. Esta versión incluye varias funciones nuevas e importantes, además de numerosas mejoras en toda la aplicación. Muchas de las funciones de esta versión están diseñadas para mejorar la experiencia en los sistemas de control existentes y, al mismo tiempo, establecer una transición fluida a [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) en temporadas futuras.
+¡Ya está disponible la versión 2026 de AdvantageScope! Revisa la [guía de instalación](/overview/installation) y el [registro de cambios completo](https://github.com/Mechanical-Advantage/AdvantageScope/releases) para ver todos los detalles. Esta versión trae varias funciones importantes y muchas mejoras en toda la aplicación. Gran parte de estas novedades buscan mejorar tu experiencia en los sistemas de control actuales y, al mismo tiempo, preparar una transición fluida hacia [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) en las próximas temporadas.
 
-**¡Valoramos tus comentarios! Los comentarios, las solicitudes de funciones y los informes de errores son bienvenidos en la [página de issues](https://github.com/Mechanical-Advantage/AdvantageScope/issues).**
+**¡Tu opinión nos importa! Si tienes comentarios, sugerencias de funciones o reportes de errores, compártelos en la [página de issues](https://github.com/Mechanical-Advantage/AdvantageScope/issues).**
 
 ## ✴️ Experimental: Soporte de FTC {#ftc-support}
 
-En preparación para el soporte completo con Systemcore en la temporada 2027-2028, este lanzamiento agrega varias características para mejorar la compatibilidad con el sistema de control existente de Reto Tecnológico FIRST (FTC):
+Como preparación para el soporte completo con Systemcore en la temporada 2027-2028, esta versión suma varias funciones para mejorar la compatibilidad con el sistema de control actual de Reto Tecnológico FIRST (FTC):
 
-- Campos de FTC y modelos de robots en el 🗺️ [Campo 2D](/tab-reference/2d-field) y 👀 [Campo 3D](/tab-reference/3d-field)
-- Nuevas opciones de [sistemas de coordenadas](/more-features/coordinate-systems) para compatibilidad con [coordenadas estándar de FTC](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html)
+- Campos de FTC y modelos de robots en el 🗺️ [Campo 2D](/tab-reference/2d-field) y el 👀 [Campo 3D](/tab-reference/3d-field)
+- Nuevas opciones de [sistemas de coordenadas](/more-features/coordinate-systems) compatibles con las [coordenadas estándar de FTC](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html)
 - Soporte para archivos de registro de [Road Runner](https://rr.brott.dev/docs/v1-0/installation/)
 - Soporte para el formato de transmisión en vivo de [FTC Dashboard](https://github.com/acmerobotics/ftc-dashboard)
 
 :::tip
-Los equipos de FTC deben tener precaución al utilizar software experimental durante la temporada oficial. El soporte de FTC para AdvantageScope todavía está en desarrollo activo.
+Si eres parte de un equipo de FTC, ten cuidado al usar software experimental durante la temporada oficial. El soporte de FTC en AdvantageScope sigue en desarrollo activo.
 :::
 
 <div className="image-gallery">
@@ -34,86 +34,86 @@ Los equipos de FTC deben tener precaución al utilizar software experimental dur
   <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
 </div>
 
-Varias bibliotecas de telemetría/registro de FTC de terceros admiten otros formatos compatibles con AdvantageScope, como WPILOG y RLOG. La documentación de estas bibliotecas se puede encontrar en los proyectos respectivos; los desarrolladores de AdvantageScope no avalan/recomiendan ninguna solución de registro particular de FTC para su uso con AdvantageScope.
+Varias bibliotecas de telemetría y registro de terceros para FTC también generan formatos compatibles con AdvantageScope, como WPILOG y RLOG. Puedes consultar su documentación en cada proyecto; los desarrolladores de AdvantageScope no avalan ni recomiendan ninguna solución de registro de FTC en particular.
 
 :::info
-AdvantageScope está diseñado para proporcionar la mejor experiencia cuando se usa junto con el marco de trabajo WPILib y las herramientas de registro asociadas. Puedes encontrar problemas de compatibilidad o capacidades limitadas al utilizar soluciones de registro no oficiales.
+AdvantageScope ofrece la mejor experiencia cuando se usa junto con el framework WPILib y sus herramientas de registro. Si usas soluciones no oficiales, podrías encontrar problemas de compatibilidad o funciones limitadas.
 
-Todas las funciones de AdvantageScope serán oficialmente compatibles con FTC después de la transición a Systemcore para la temporada 2027-2028.
+Todas las funciones de AdvantageScope serán oficialmente compatibles con FTC tras la transición a Systemcore en la temporada 2027-2028.
 :::
 
 ## 🧮 Gráficos con reconocimiento de unidades {#unit-aware-graphing}
 
-La pestaña del 📉 [Gráfico de líneas](/tab-reference/line-graph/) ha sido rediseñada para contar con reconocimiento de unidades (unit-aware). Esto permite varias funciones nuevas al graficar campos numéricos:
+Rediseñamos la pestaña 📉 [Gráfico de líneas](/tab-reference/line-graph/) para que reconozca unidades automáticamente (*unit-aware*). Esto te da varias ventajas nuevas al graficar campos numéricos:
 
-- Etiquetado preciso de los ejes Y y pantallas de valores
+- Etiquetado preciso en los ejes Y y en las vistas de valores
 - Conversión rápida a unidades compatibles (sin ventanas emergentes)
-- Conversión implícita de tipos de unidades compatibles dentro de un solo eje
+- Conversión implícita de unidades compatibles dentro de un mismo eje
 - Visualización precisa de unidades [integradas y diferenciadas](/tab-reference/line-graph/#integration-and-differentiation)
 
-La siguiente captura de pantalla muestra todas estas características en acción. Ten en cuenta que el eje izquierdo incluye campos con diferentes unidades de velocidad angular, y el eje derecho incluye valores que están diferenciados y se muestran en una unidad no nativa (grados). Seleccionar unidades también es más fácil que nunca, con opciones de unidades compatibles integradas directamente en el menú de control para cada eje.
+La captura de abajo muestra todas estas funciones en acción. Fíjate en que el eje izquierdo combina campos con distintas unidades de velocidad angular, mientras que el eje derecho muestra valores diferenciados en una unidad no nativa (grados). Elegir unidades también es más fácil que nunca, con opciones compatibles integradas directamente en el menú de control de cada eje.
 
-_Se puede encontrar más información sobre el soporte de unidades en la [documentación](/tab-reference/line-graph/units)._
+_Puedes encontrar más información sobre el manejo de unidades en la [documentación](/tab-reference/line-graph/units)._
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="Gráficos con reconocimiento de unidades" />
 
-_En la imagen de arriba se muestra la interfaz en inglés._
+_La imagen de arriba muestra la interfaz en inglés._
 
 ## 🏁 Descargas de registros más rápidas {#faster-log-downloads}
 
-[La descarga de registros del roboRIO](/overview/log-files/#downloading-from-the-robot) ahora es **2-4 veces más rápida** que las versiones anteriores. Esto se logra cambiando a un nuevo protocolo (FTP) que permite al roboRIO transferir datos de registro con menos sobrecarga de CPU.
+[Descargar registros desde el roboRIO](/overview/log-files/#downloading-from-the-robot) ahora es **de 2 a 4 veces más rápido** que en versiones anteriores. Lo logramos cambiando a un nuevo protocolo (FTP) que permite al roboRIO transferir los datos con mucha menos carga de CPU.
 
-La siguiente tabla muestra la velocidad de transferencia medida en los lanzamientos de 2025 y 2026 de AdvantageScope mientras está conectado a través de Ethernet (ancho de banda máximo de 100 Mb/s). Ten en cuenta que el rendimiento de la versión de 2025 se ve gravemente afectado por la carga de la CPU en el roboRIO.
+La siguiente tabla compara las velocidades de transferencia medidas en las versiones 2025 y 2026 de AdvantageScope usando conexión por Ethernet (ancho de banda máximo de 100 Mb/s). Como ves, la carga de la CPU en el roboRIO afectaba bastante el rendimiento en la versión 2025.
 
-|                                                              | 2025 (SFTP) | 2026 (FTP) | Aceleración                                      |
+|                                                              | 2025 (SFTP) | 2026 (FTP) | Mejora                                           |
 | ------------------------------------------------------------ | ----------- | ---------- | ------------------------------------------------ |
 | Carga alta de CPU<br /><sub>Código de robot complejo</sub>   | 25 Mb/s     | 80 Mb/s    | <span style={{fontSize: '24px'}}>**3.2x**</span> |
 | Carga promedio de CPU<br /><sub>Código de robot normal</sub> | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**2.3x**</span> |
 | Carga mínima de CPU<br /><sub>Sin código de robot</sub>      | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**1.1x**</span> |
 
-## 📁 Descargar registros de subcarpetas {#download-logs-from-subfolders}
+## 📁 Descargar registros desde subcarpetas {#download-logs-from-subfolders}
 
-La ventana de descarga ahora admite guardar registros que están almacenados en subcarpetas. Cada subcarpeta de registros se puede descargar como grupo, lo que proporciona un enfoque simplificado para descargar registros generados por la versión 2026 del [registrador de señales](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) de CTRE (que usa subcarpetas como solución alternativa por no poder almacenar datos en un solo archivo de registro).
+La ventana de descarga ahora te permite guardar registros almacenados dentro de subcarpetas. Puedes descargar cada subcarpeta completa como un grupo, lo que simplifica mucho la descarga de los registros generados por la versión 2026 de [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) de CTRE (que recurre a subcarpetas porque no puede guardar todos los datos en un solo archivo).
 
 <img src="/img/whats-new/subfolders.webp" alt="Descarga de subcarpetas de registro" height="450" />
 
 ## 🌈 Nuevas opciones de visualización {#new-visualization-options}
 
-Se admiten varias opciones nuevas de visualización en el 🗺️ [Campo 2D](/tab-reference/2d-field) y el 👀 [Campo 3D](/tab-reference/3d-field):
+Agregamos varias opciones nuevas de visualización en el 🗺️ [Campo 2D](/tab-reference/2d-field) y el 👀 [Campo 3D](/tab-reference/3d-field):
 
-- Ahora está disponible una variedad más amplia de colores de parachoques de robots en el campo 2D, y cada objeto se puede configurar con su propio color. Esto permite una mayor flexibilidad al combinar fantasmas con múltiples objetos de robot.
-- Al [visualizar mecanismos 2D en el campo 3D](/tab-reference/3d-field/#2d-mechanisms), los mecanismos ahora se pueden colocar en el plano YZ además del plano XZ. Esto permite una visualización más fácil de mecanismos complejos con movimiento en múltiples ejes.
-- El campo 3D ahora admite anti-aliasing opcional para mejorar la calidad de los bordes renderizados.
+- Ahora tienes más colores disponibles para los parachoques del robot en el campo 2D, y puedes configurar cada objeto con su propio color. Esto te da mucha más flexibilidad al combinar fantasmas con varios objetos de robot.
+- Al [visualizar mecanismos 2D en el campo 3D](/tab-reference/3d-field/#2d-mechanisms), ahora puedes colocarlos en el plano YZ además del plano XZ, lo que facilita ver mecanismos complejos con movimiento en varios ejes.
+- El campo 3D ahora incluye antialiasing opcional para suavizar los bordes renderizados.
 
 <img src="/img/whats-new/field-viz.jpg" alt="Nuevas visualizaciones de campo" />
 
-## 🪵 Soporte de registros CAN de REV Robotics {#rev-robotics-can-log-support}
+## 🪵 Soporte para registros CAN de REV Robotics {#rev-robotics-can-log-support}
 
-Ahora puedes abrir archivos `.revlog` producidos por el [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) de REV Robotics directamente en AdvantageScope. Estos archivos registran las señales CAN de los dispositivos Spark Max y Spark Flex, ofreciendo una alternativa oficial a la biblioteca [URCL](/more-features/urcl) de AdvantageScope.
+Ahora puedes abrir directamente en AdvantageScope los archivos `.revlog` generados por [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) de REV Robotics. Estos archivos registran las señales CAN de los controladores Spark Max y Spark Flex, y ofrecen una alternativa oficial a la biblioteca [URCL](/more-features/urcl) de AdvantageScope.
 
-Tanto URCL como el `StatusLogger` oficial permanecerán disponibles durante la temporada 2026 para garantizar una transición sin problemas y proporcionar paridad de funciones con las temporadas anteriores. Tendremos más detalles para compartir sobre las opciones de registro en 2027 y más allá en una fecha posterior.
+Tanto URCL como `StatusLogger` seguirán disponibles durante la temporada 2026 para asegurar una transición sin tropiezos y mantener las mismas funciones de temporadas anteriores. Más adelante compartiremos más detalles sobre las opciones de registro para 2027 y los años siguientes.
 
 <img src="/img/whats-new/revlog.webp" alt="Visualización de REVLOG" />
 
-## 💿 Importaciones de archivos CSV {#csv-file-imports}
+## 💿 Importación de archivos CSV {#csv-file-imports}
 
-Para una visualización más flexible de los datos producidos fuera de los marcos de registro del robot, AdvantageScope ahora incluye soporte básico para importar archivos CSV. Consulta la [documentación](/overview/log-files/#csv-formatting) para obtener más detalles sobre los formatos compatibles y otras limitaciones.
+Para visualizar con mayor flexibilidad datos que provienen de fuera de los sistemas de registro del robot, AdvantageScope ahora incluye soporte básico para importar archivos CSV. Revisa la [documentación](/overview/log-files/#csv-formatting) para conocer los formatos compatibles y sus limitaciones.
 
 <img src="/img/overview/log-files/export-2.webp" alt="Datos CSV" />
 
 ## 🤩 Mejoras estéticas {#aesthetic-improvements}
 
-La interfaz de usuario de AdvantageScope en Windows 11 se ha actualizado para admitir una barra lateral translúcida, que antes era exclusiva para los lanzamientos de macOS. También hay un ícono de aplicación actualizado para macOS Tahoe basado en el material Liquid Glass de Apple.
+Actualizamos la interfaz de AdvantageScope en Windows 11 para incluir una barra lateral translúcida, una función que antes solo estaba disponible en macOS. También estrenamos un ícono actualizado para macOS Tahoe basado en el material Liquid Glass de Apple.
 
 <img src="/img/whats-new/windows-ui.webp" alt="Interfaz de usuario de Windows" />
 
 ## 📋 Menús optimizados {#streamlined-menus}
 
-La barra de menú y los controles relacionados se han optimizado y reorganizado para que los controles sean más accesibles y consistentes en todas las plataformas. Las características notables incluyen:
+Simplificamos y reorganizamos la barra de menú y sus controles para que sean más accesibles y consistentes en todas las plataformas. Entre las mejoras principales están:
 
-- Cambio más rápido entre fuentes en vivo (por ejemplo, NetworkTables y [Diagnósticos de Phoenix](/overview/live-sources/phoenix-diagnostics)), sin necesidad de abrir la ventana de preferencias.
-- Haz clic con el botón derecho en la barra lateral para copiar rápidamente el nombre de un campo (o la clave de campo completa).
-- Reorganización de la ventana de preferencias, facilitando la búsqueda rápida de opciones.
+- Cambio más rápido entre fuentes en vivo (como NetworkTables y [Diagnósticos de Phoenix](/overview/live-sources/phoenix-diagnostics)), sin necesidad de abrir la ventana de preferencias.
+- Clic derecho en la barra lateral para copiar rápidamente el nombre de un campo o su clave completa.
+- Una ventana de preferencias reorganizada para que encuentres las opciones mucho más rápido.
 
 <div className="image-gallery">
   <img src="/img/whats-new/menus-1.webp" />
@@ -123,11 +123,11 @@ La barra de menú y los controles relacionados se han optimizado y reorganizado 
 
 ## 🐛 Mejoras de estabilidad {#stability-improvements}
 
-Esta versión incluye una variedad de correcciones de errores y mejoras de estabilidad en toda la aplicación. La lista completa se puede encontrar en el [registro de cambios](https://github.com/Mechanical-Advantage/AdvantageScope/releases) de la versión, pero algunas correcciones notables se enumeran a continuación:
+Esta versión incluye varias correcciones de errores y mejoras de estabilidad en toda la aplicación. Puedes consultar la lista completa en el [registro de cambios](https://github.com/Mechanical-Advantage/AdvantageScope/releases), pero aquí tienes algunas de las correcciones más destacadas:
 
-- El rendimiento de AdvantageScope al transmitir datos durante períodos prolongados ha mejorado en gran medida, especialmente al usar la pestaña de gráfico de líneas.
-- AdvantageScope ahora es más tolerante a datos de registro inusuales, incluyendo archivos de registro grandes y valores de campo grandes.
-- Se han corregido varios problemas visuales al navegar por los datos del registro, especialmente al usar filtros en la pestaña del gráfico de líneas.
-- Se ha corregido el orden de los archivos de registro de AdvantageKit en la ventana de descarga; los registros sin marcas de tiempo ahora están en la parte inferior de la lista, similar a otros formatos.
-- En la pestaña del campo 3D, las cámaras de los robots con una rotación distinta de cero en el eje de balanceo ahora se visualizan correctamente.
-- La estabilidad de AdvantageScope XR ha mejorado, especialmente cuando se ejecuta en iOS/iPadOS 26. Para instalaciones sin conexión, consulta la App Store para ver si hay actualizaciones disponibles.
+- Mejoramos muchísimo el rendimiento de AdvantageScope al transmitir datos durante períodos largos, sobre todo en la pestaña Gráfico de líneas.
+- Ahora AdvantageScope maneja mejor los datos de registro poco comunes, incluidos archivos muy grandes y campos con valores extensos.
+- Corregimos varios errores visuales al explorar los datos de un registro, especialmente al aplicar filtros en la pestaña Gráfico de líneas.
+- Corregimos el orden de los archivos de registro de AdvantageKit en la ventana de descarga: los registros sin marca de tiempo ahora aparecen al final de la lista, igual que en los demás formatos.
+- En la pestaña Campo 3D, las cámaras del robot con rotación distinta de cero en el eje de alabeo ahora se muestran correctamente.
+- Mejoramos la estabilidad de AdvantageScope XR, sobre todo en iOS/iPadOS 26. Si usas una instalación sin conexión, revisa la App Store para ver si hay actualizaciones disponibles.

@@ -4,36 +4,36 @@ sidebar_position: 5
 
 # 💬 Console {#console}
 
-La vue console est conçue pour afficher un champ de chaîne de caractères unique contenant des données de console. Certains champs suggérés sont énumérés ci-dessous.
+La vue Console sert à afficher un champ de type chaîne de caractères contenant des messages de console. Voici les champs les plus courants :
 
-- **DS:/Dscomm/Console** - Enregistré par la console de pilotage FIRST.
-- **messages** - Enregistré par la journalisation intégrée de WPILib sur la base des appels à la méthode [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>).
-- **/RealOutputs/Console** - Enregistré automatiquement par AdvantageKit pendant le fonctionnement du robot (utilisez `System.out.println` comme d'habitude).
-- **/ReplayOutputs/Console** - Enregistré automatiquement par AdvantageKit pendant la relecture du journal (utilisez `System.out.println` comme d'habitude).
+- **DS:/Dscomm/Console** : enregistré par la console de pilotage FIRST.
+- **messages** : enregistré par la journalisation intégrée de WPILib via les appels à [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>).
+- **/RealOutputs/Console** : enregistré automatiquement par AdvantageKit pendant le fonctionnement du robot (utilisez `System.out.println` comme d'habitude).
+- **/ReplayOutputs/Console** : enregistré automatiquement par AdvantageKit pendant la relecture d'un journal (utilisez `System.out.println` comme d'habitude).
 
-Faites glisser le champ souhaité vers la vue principale pour commencer. Chaque ligne représente une mise à jour du champ. Pour les journaux WPILib, une nouvelle ligne est créée pour chaque ligne enregistrée. Pour les journaux AdvantageKit, une nouvelle ligne est créée pour chaque cycle de boucle.
+Pour commencer, faites glisser le champ souhaité dans la vue principale. Chaque ligne correspond à une mise à jour du champ : avec les journaux WPILib, une ligne apparaît pour chaque texte enregistré ; avec AdvantageKit, une ligne est créée à chaque cycle de boucle.
 
 <img src="/img/tab-reference/console-1.webp" alt="Vue de la console" />
 
 _L'interface en anglais est illustrée ci-dessus._
 
 :::info
-Cliquez sur l'icône de palette de couleurs pour activer ou désactiver la mise en surbrillance des messages d'avertissement et d'erreur. Pour les journaux WPILib et AdvantageKit, les messages sont mis en surbrillance s'ils contiennent le texte « warning » ou « error ».
+Cliquez sur l'icône de palette de couleurs pour activer ou désactiver la mise en surbrillance des avertissements et des erreurs. Dans les journaux WPILib et AdvantageKit, les messages contenant « warning » ou « error » sont automatiquement mis en évidence.
 :::
 
-Les contrôles sont similaires à l'onglet 🔢 [Tableau](../tab-reference/table). L'heure sélectionnée est synchronisée sur tous les onglets. Cliquez sur une ligne pour la sélectionner, ou survolez une ligne pour prévisualiser ce moment dans n'importe quelle fenêtre détachée visible. Cliquer sur le bouton ↓ permet d'aller à l'heure sélectionnée (ou à l'heure saisie dans la zone). Les horodatages et les saisies de saut sont formatés selon la préférence [Horodatages](/more-features/timestamps).
+Les contrôles fonctionnent comme dans l'onglet 🔢 [Tableau](../tab-reference/table). L'instant sélectionné est synchronisé dans tous les onglets : cliquez sur une ligne pour la sélectionner, ou survolez-la pour prévisualiser ce moment dans les fenêtres détachées ouvertes. Le bouton ↓ permet de sauter directement à l'instant sélectionné (ou à celui saisi dans le champ). Le format des horodatages et des saisies dépend de votre préférence [Horodatages](/more-features/timestamps).
 
-Saisissez du texte dans la zone « Filtrer » pour n'afficher que les lignes qui contiennent le texte du filtre. Appuyez sur `Ctrl+F` pour sélectionner rapidement la zone « Filtrer ». Ajoutez un « ! » au début du texte du filtre pour _exclure_ les messages correspondants de la vue principale.
+Tapez du texte dans le champ « Filtrer » pour n'afficher que les lignes qui le contiennent. Appuyez sur `Ctrl+F` pour placer rapidement le curseur dans ce champ. Ajoutez un `!` au début du filtre pour _exclure_ les messages correspondants.
 
 ## Formatage ANSI {#ansi-formatting}
 
-Le moteur de rendu de la console prend en charge le formatage et les codes couleur à l'aide des séquences d'échappement ANSI standard :
+La console prend en charge la mise en forme et les couleurs via les séquences d'échappement ANSI standard :
 
-- **Styles de texte :** Gras, atténué, italique et souligné
-- **Couleurs de premier plan et d'arrière-plan :** 16 couleurs standard (standard et haute intensité)
-- **Couleurs 8 bits et 24 bits :** Palette de recherche de 256 couleurs et RVB 24 bits
-- **Réinitialisations sélectives :** Réinitialiser des styles ou des couleurs spécifiques tout en conservant les autres
+- **Styles de texte :** gras, atténué, italique et souligné
+- **Couleurs de texte et d'arrière-plan :** les 16 couleurs standard (normales et haute intensité)
+- **Couleurs 8 bits et 24 bits :** palette de 256 couleurs et RVB 24 bits
+- **Réinitialisations ciblées :** remise à zéro de certains styles ou couleurs tout en conservant les autres
 
 :::tip
-Cliquez sur l'icône d'enregistrement pour exporter les données de la console vers un fichier texte.
+Cliquez sur l'icône d'enregistrement pour exporter les messages de la console dans un fichier texte.
 :::

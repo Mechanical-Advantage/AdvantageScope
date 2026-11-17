@@ -7,20 +7,20 @@ import TabItem from '@theme/TabItem';
 
 # ⚙️ Mechanisme {#mechanism}
 
-Het tabblad mechanisme toont een geleed mechanisme dat is gemaakt met een of meer [Mechanism2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html)-objecten.
+Op het tabblad **Mechanisme** bekijk je een scharnierend mechanisme dat is opgebouwd uit een of meer [Mechanism2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html)-objecten.
 
-<img src="/img/tab-reference/mechanism-1.webp" alt="Overzicht van tabblad mechanisme" />
+<img src="/img/tab-reference/mechanism-1.webp" alt="Overzicht van tabblad Mechanisme" />
 
 _De Engelstalige interface wordt hierboven weergegeven._
 
 <details>
 <summary>Tijdlijnbesturing</summary>
 
-De tijdlijn wordt gebruikt om het afspelen en de visualisatie te regelen. Als je op de tijdlijn klikt, selecteer je een tijdstip, en als je met de rechtermuisknop klikt, deselecteer je dit weer. Het geselecteerde tijdstip wordt gesynchroniseerd over alle tabbladen, waardoor het eenvoudig is om deze positie snel terug te vinden in andere weergaven.
+Met de tijdlijn bestuur je het afspelen en de weergave van je logdata. Klik op de tijdlijn om een tijdstip te kiezen, en klik met de rechtermuisknop om de selectie weer op te heffen. Het gekozen tijdstip wordt op alle tabbladen tegelijk bijgewerkt, zodat je precies datzelfde moment makkelijk in andere weergaven terugvindt.
 
-Gele gedeelten geven aan wanneer de robot autonoom is, blauwe gedeelten geven aan wanneer de robot tele-operated is en grijze gedeelten geven aan wanneer de robot in de utility-modus staat.
+De kleuren geven de status van de robot aan: geel is autonoom, blauw is teleop en grijs is de utility-modus.
 
-Om te zoomen, plaats je de cursor op de tijdlijn en scrol je omhoog of omlaag. Er kan ook een bereik worden geselecteerd door te klikken en te slepen terwijl je `Shift` ingedrukt houdt. Beweeg naar links en rechts door horizontaal te scrollen (op ondersteunde apparaten), of door op de tijdlijn te klikken en te slepen. Wanneer er live verbinding is, ontgrendelt naar links scrollen van de huidige tijd, en helemaal naar rechts scrollen vergrendelt weer op de huidige tijd. Druk op `Ctrl+\` om in te zoomen op de periode waarin de robot is ingeschakeld.
+Om in of uit te zoomen, houd je de muisaanwijzer boven de tijdlijn en scrol je omhoog of omlaag. Je kunt ook een specifiek tijdsbereik kiezen door `Shift` ingedrukt te houden terwijl je klikt en sleept. Naar links en rechts bewegen doe je door horizontaal te scrollen (als je apparaat dat ondersteunt) of door op de tijdlijn te klikken en te slepen. Bij een live-verbinding koppel je de tijdlijn los van de huidige tijd door naar links te scrollen; scrol je helemaal naar rechts, dan springt hij weer mee met realtime. Druk op `Ctrl+\` om direct in te zoomen op de periode waarin de robot ingeschakeld was.
 
 <img src="/img/tab-reference/timeline.webp" alt="Tijdlijn" />
 
@@ -28,14 +28,14 @@ Om te zoomen, plaats je de cursor op de tijdlijn en scrol je omhoog of omlaag. E
 
 ## Mechanismen toevoegen {#adding-mechanisms}
 
-Om te beginnen sleep je een `Mechanism2d` naar het bedieningspaneel. Verwijder een mechanisme met de X-knop, of verberg het tijdelijk door op het oogpictogram te klikken of te dubbelklikken op de veldnaam. Om alle mechanismen te verwijderen, klik je op de prullenbak naast de astitel en vervolgens op `Alles wissen`. Mechanismen kunnen in de lijst opnieuw worden gerangschikt door te klikken en te slepen.
+Sleep een `Mechanism2d`-veld naar het bedieningspaneel om te beginnen. Met de X-knop verwijder je een mechanisme, en met het oogpictogram (of door te dubbelklikken op de veldnaam) verberg je het tijdelijk. Wil je alles in één keer weghalen? Klik dan op de prullenbak naast de titel en kies `Alles wissen`. Je kunt de volgorde in de lijst aanpassen door de mechanismen te verslepen.
 
 ## Data publiceren {#publishing-data}
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-Om mechanismedata te publiceren met behulp van WPILib, log je een `Mechanism2d`-object periodiek met behulp van `Telemetry` (hieronder weergegeven). Merk op dat deze aanroep alleen de huidige status van de `Mechanism2d` vastlegt, dus deze moet elke loop-cyclus worden aangeroepen nadat het object is bijgewerkt.
+Wil je mechanismedata publiceren met WPILib, log dan periodiek een `Mechanism2d`-object via `Telemetry` (zoals hieronder). Let op: deze aanroep legt alleen de status van dat moment vast. Roep hem dus elke loopcyclus aan nadat het object is bijgewerkt.
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
@@ -48,7 +48,7 @@ periodic() {
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-Om mechanismedata te publiceren met behulp van AdvantageKit, registreer je een `Mechanism2d` periodiek als een uitvoerveld (hieronder weergegeven). Merk op dat deze aanroep alleen de huidige status van de `Mechanism2d` vastlegt, dus deze moet elke loop-cyclus worden aangeroepen nadat het object is bijgewerkt.
+Wil je mechanismedata publiceren met AdvantageKit, sla dan periodiek een `Mechanism2d` op als uitvoerveld (zoals hieronder). Let op: deze aanroep legt alleen de status van dat moment vast. Roep hem dus elke loopcyclus aan nadat het object is bijgewerkt.
 
 ```java
 LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);
@@ -59,7 +59,7 @@ periodic() {
 ```
 
 :::tip
-De [@AutoLogOutput](https://docs.advantagekit.org/data-flow/recording-outputs/annotation-logging)-annotatie van AdvantageKit kan worden gebruikt om de status van het mechanisme automatisch elke loop-cyclus te loggen zonder `Logger.recordOutput` aan te roepen.
+Met de annotatie [@AutoLogOutput](https://docs.advantagekit.org/data-flow/recording-outputs/annotation-logging) van AdvantageKit logt hij de status van het mechanisme automatisch elke loopcyclus, zonder dat je zelf `Logger.recordOutput` hoeft aan te roepen.
 :::
 
 </TabItem>

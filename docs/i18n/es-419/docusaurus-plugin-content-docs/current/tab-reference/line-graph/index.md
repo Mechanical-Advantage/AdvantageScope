@@ -1,6 +1,6 @@
 # 📉 Gráfico de líneas {#line-graph}
 
-El gráfico de líneas es la vista predeterminada en AdvantageScope. Admite campos continuos (numéricos) y discretos.
+El gráfico de líneas es la vista predeterminada de AdvantageScope y funciona tanto con campos continuos (numéricos) como discretos.
 
 <img src="/img/tab-reference/line-graph/line-graph-1.webp" alt="Demostración de gráfico de líneas" />
 
@@ -8,26 +8,26 @@ _En la imagen de arriba se muestra la interfaz en inglés._
 
 ## Panel del visor {#viewer-pane}
 
-Para hacer zoom, coloca el cursor sobre el gráfico principal y desplázate hacia arriba o hacia abajo. También se puede seleccionar un rango haciendo clic y arrastrando mientras se mantiene presionada la tecla `Shift`. Muévete hacia la izquierda y hacia la derecha desplazándote horizontalmente (en dispositivos compatibles) o haciendo clic y arrastrando en el gráfico. Cuando estás conectado en vivo, desplazarte hacia la izquierda desbloquea del tiempo actual, y desplazarte hasta la derecha vuelve a bloquear al tiempo actual.
+Para hacer zoom, coloca el cursor sobre el gráfico principal y usa la rueda del mouse hacia arriba o hacia abajo. También puedes seleccionar un rango haciendo clic y arrastrando mientras mantienes presionada la tecla `Shift`. Para moverte hacia la izquierda o hacia la derecha, desplázate horizontalmente (si tu dispositivo lo permite) o haz clic y arrastra sobre el gráfico. Cuando estés conectado en vivo, desplazarte hacia la izquierda desbloquea la vista del tiempo actual, y desplazarte hasta el extremo derecho la vuelve a bloquear al tiempo actual.
 
-Al hacer clic en el gráfico se selecciona un tiempo, y al hacer clic derecho se anula la selección. El valor de cada campo en ese momento se muestra en la leyenda. El tiempo seleccionado se sincroniza en todas las pestañas, lo que facilita encontrar rápidamente esta ubicación en otras vistas.
+Haz clic en el gráfico para seleccionar un instante de tiempo, y haz clic derecho para quitar la selección. La leyenda mostrará el valor de cada campo en ese momento. El tiempo seleccionado se sincroniza en todas las pestañas, así que podrás ubicar ese mismo instante rápidamente en otras vistas.
 
 :::tip
-El delta entre los tiempos seleccionados y los tiempos en los que se encuentra el cursor se muestra como una superposición en el gráfico, lo que facilita la medición de rangos de tiempo. Las marcas de tiempo se formatean según la preferencia de [Marcas de tiempo](/more-features/timestamps).
+Al pasar el cursor sobre el gráfico, verás superpuesta la diferencia de tiempo entre el instante seleccionado y la posición del cursor, lo que facilita medir intervalos. Las marcas de tiempo siguen el formato configurado en la preferencia [Marcas de tiempo](/more-features/timestamps).
 :::
 
 ## Panel de control {#control-pane}
 
-Para comenzar, arrastra un campo a una de las tres secciones (izquierda, derecha o discreto). Elimina un campo usando el botón X, u ocúltalo temporalmente haciendo clic en el ícono del ojo o haciendo doble clic en el nombre del campo. Para eliminar todos los campos, haz clic en los tres puntos cerca del título del eje y luego en `Borrar todo`.
+Para empezar, arrastra un campo hacia una de las tres secciones (izquierda, derecha o discretos). Puedes quitar un campo con el botón X, u ocultarlo temporalmente haciendo clic en el ícono del ojo o doble clic en su nombre. Si quieres quitar todos los campos de un eje, haz clic en los tres puntos junto al título del eje y elige `Borrar todo`.
 
-Los campos se pueden reorganizar en la lista haciendo clic y arrastrando. El color y el estilo de línea de cada campo se pueden personalizar haciendo clic en el icono de color o haciendo clic derecho en el nombre del campo.
+Puedes reordenar los campos en la lista arrastrándolos. Para personalizar el color y el estilo de línea de cada campo, haz clic en su ícono de color o haz clic derecho sobre su nombre.
 
-Los datos de la API de [alertas persistentes](https://docs.wpilib.org/es/latest/docs/software/telemetry/persistent-alerts.html) de WPILib se pueden visualizar agregando el grupo de alertas como un campo discreto. A continuación se muestra un ejemplo de visualización.
+También puedes visualizar los datos de la API de [alertas persistentes](https://docs.wpilib.org/es/latest/docs/software/telemetry/persistent-alerts.html) de WPILib agregando el grupo de alertas como campo discreto. Abajo tienes un ejemplo de cómo se ve.
 
 <img src="/img/tab-reference/line-graph/line-graph-2.webp" alt="Visualización de alertas" />
 
 :::tip
-Para superponer el modo del robot (autónomo, teleop o utilidad), haz clic en los tres puntos al lado de "Campos discretos" y haz clic en "Mostrar modo del robot".
+Para superponer el modo del robot (autónomo, teleoperado o utilidad), haz clic en los tres puntos junto a "Campos discretos" y selecciona "Mostrar modo del robot".
 
 <img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="Superposición del modo del robot" />
 
@@ -36,7 +36,7 @@ _En la imagen de arriba se muestra la interfaz en inglés._
 
 ### Ajuste de ejes {#adjusting-axes}
 
-Por defecto, cada eje ajusta su rango en función de los datos visibles. Para deshabilitar el rango automático y bloquear el rango a su mínimo y máximo actuales, haz clic en los tres puntos cerca del título del eje y luego en `Bloquear eje`. Para ajustar manualmente el rango, elige `Editar rango...` e ingresa los valores deseados.
+Por defecto, cada eje ajusta su escala automáticamente según los datos visibles. Si quieres desactivar el ajuste automático y fijar el rango mínimo y máximo actual, haz clic en los tres puntos junto al título del eje y elige `Bloquear eje`. Para definir el rango manualmente, selecciona `Editar rango...` e ingresa los valores que necesites.
 
 <img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="Edición del rango del eje" height="250" />
 
@@ -44,8 +44,8 @@ _En la imagen de arriba se muestra la interfaz en inglés._
 
 ### Integración y diferenciación {#integration-and-differentiation}
 
-Los valores se pueden integrar o diferenciar automáticamente en AdvantageScope. El tiempo delta siempre se mide en segundos. Haz clic en los tres puntos cerca del título del eje y luego selecciona `Diferenciar` o `Integrar`.
+AdvantageScope puede integrar o diferenciar valores automáticamente (el delta de tiempo siempre se mide en segundos). Para hacerlo, haz clic en los tres puntos junto al título del eje y selecciona `Diferenciar` o `Integrar`.
 
 :::info
-Las derivadas se calculan usando la [diferencia finita](https://es.wikipedia.org/wiki/Diferencia_finita) de muestras adyacentes. Las integrales se calculan usando la [integración trapezoidal](https://es.wikipedia.org/wiki/Regla_del_trapecio).
+Las derivadas se calculan mediante la [diferencia finita](https://es.wikipedia.org/wiki/Diferencia_finita) entre muestras adyacentes, y las integrales mediante la [regla del trapecio](https://es.wikipedia.org/wiki/Regla_del_trapecio).
 :::

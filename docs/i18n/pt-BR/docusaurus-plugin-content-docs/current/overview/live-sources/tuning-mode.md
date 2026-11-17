@@ -2,30 +2,30 @@
 sidebar_position: 1
 ---
 
-# Modo de ajuste (tuning) {#tuning-mode}
+# Modo de ajuste (Tuning) {#tuning-mode}
 
-Algumas fontes ao vivo suportam o ajuste ao vivo de valores numéricos e booleanos. Por exemplo, este recurso pode ser usado para [ajustar ganhos de controladores](https://docs.wpilib.org/pt/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) quando conectado a uma fonte NetworkTables. Observe que o código do robô deve suportar o recebimento de ganhos via NetworkTables.
+Algumas fontes ao vivo permitem ajustar valores numéricos e booleanos em tempo real. Você pode usar esse recurso, por exemplo, para [ajustar ganhos de controladores](https://docs.wpilib.org/pt/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) quando estiver conectado a uma fonte NetworkTables. Lembre-se de que o código do robô precisa estar preparado para receber esses ganhos via NetworkTables.
 
-Por padrão, todos os valores no AdvantageScope são somente leitura. Para alternar o modo de ajuste, **clique no ícone de controle deslizante** à direita da barra de pesquisa quando conectado a uma fonte ao vivo suportada. Quando o ícone estiver roxo, o modo de ajuste estará ativo e a edição de campos estará habilitada.
+Por padrão, todos os valores no AdvantageScope são somente leitura. Para ativar ou desativar o modo de ajuste, **clique no ícone de controles deslizantes** à direita da barra de pesquisa quando estiver conectado a uma fonte ao vivo compatível. Quando o ícone ficar roxo, o modo de ajuste está ativo e a edição dos campos fica liberada.
 
-- Para editar um **campo numérico**, insira um novo valor usando a caixa de texto à direita do campo na barra lateral. O valor é publicado depois que a entrada é desmarcada ou a tecla "Enter" é pressionada. Deixe a caixa de texto em branco para usar o valor publicado pelo robô.
+- Para editar um **campo numérico**, digite o novo valor na caixa de texto à direita do campo na barra lateral. O valor é publicado assim que você sai da caixa ou pressiona a tecla "Enter". Deixe a caixa em branco para voltar a usar o valor publicado pelo robô.
 - Para alternar um **campo booleano**, clique no círculo vermelho ou verde à direita do campo na barra lateral.
-- Para copiar todos os valores publicados para a área de transferência, **clique com o botão direito no ícone de controle deslizante** e selecione **"Copiar valores ajustados"**.
+- Para copiar todos os valores publicados para a área de transferência, **clique com o botão direito no ícone de controles deslizantes** e selecione **"Copiar valores ajustados"**.
 
 :::warning
-Este recurso não destina-se a controlar o robô no campo. Entradas no estilo dashboard, como seletores (choosers), botões de gatilho, etc. não são suportadas.
+Este recurso não foi feito para controlar o robô em campo. Elementos típicos de dashboard, como seletores (choosers), botões de acionamento, etc., não são suportados.
 :::
 
-## Ajuste com AdvantageKit {#tuning-with-advantagekit}
+## Ajuste com o AdvantageKit {#tuning-with-advantagekit}
 
-Campos publicados pelo AdvantageKit na subtabela `AdvantageKit` são apenas de saída e não podem ser editados. No entanto, os usuários podem publicar campos a partir do código do usuário que são ajustáveis no AdvantageScope. **Quaisquer campos publicados na tabela "/Tuning" no NetworkTables aparecerão sob a tabela "Tuning" ao usar a fonte ao vivo "NetworkTables (AdvantageKit)".**
+Os campos publicados pelo AdvantageKit na subtabela `AdvantageKit` são apenas de saída e não podem ser editados. Mesmo assim, você pode publicar no seu código campos que podem ser ajustados pelo AdvantageScope. **Qualquer campo publicado na tabela "/Tuning" do NetworkTables aparecerá na tabela "Tuning" ao usar a fonte ao vivo "NetworkTables (AdvantageKit)".**
 
-Por exemplo, um número ajustável pode ser publicado usando a classe [`LoggedNetworkNumber`](https://docs.advantagekit.org/data-flow/recording-inputs/dashboard-inputs):
+Por exemplo, você pode publicar um número ajustável usando a classe [`LoggedNetworkNumber`](https://docs.advantagekit.org/data-flow/recording-inputs/dashboard-inputs):
 
 ```java
 LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNumber", 0.0);
 ```
 
 :::warning
-A subtabela `NetworkInputs` **não pode ser editada**, pois é usada pelo AdvantageKit para registrar valores de rede para log e reprodução. Use a tabela `Tuning` para interagir com entradas de rede em tempo real.
+A subtabela `NetworkInputs` **não pode ser editada**, pois o AdvantageKit a utiliza para registrar entradas de rede para log e replay. Use a tabela `Tuning` para interagir com entradas de rede em tempo real.
 :::
