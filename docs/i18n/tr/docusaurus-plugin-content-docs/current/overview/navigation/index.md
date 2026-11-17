@@ -1,53 +1,53 @@
-# 🧭 Uygulama navigasyonu {#app-navigation}
+# 🧭 Uygulama gezinmesi {#app-navigation}
 
-Aşağıdaki ekran görüntüsü, ana AdvantageScope penceresinin önemli öğelerini göstermektedir. Tam görünüm işletim sistemlerine göre değişiklik gösterir.
+Aşağıdaki ekran görüntüsünde ana AdvantageScope penceresinin temel bölümlerini görebilirsiniz. Görünüm işletim sistemine göre ufak farklılıklar gösterebilir.
 
-<img src="/img/overview/navigation/navigation-1.webp" alt="Gezinme diyagramı" />
+<img src="/img/overview/navigation/navigation-1.webp" alt="Gezinme şeması" />
 
 _Yukarıda İngilizce arayüz gösterilmektedir._
 
-- Kırmızı bölüm, mevcut alanları listeleyen [kenar çubuğudur](#sidebar).
-- Kahverengi bölüm, uygulamayı kontrol eden ve görünümler arasında geçiş yapmak için kullanılan [sekme çubuğudur](#tab-bar).
-- Mavi bölüm, verileri gösteren [görüntüleyici panelidir](#viewer-pane).
-- Yeşil bölüm, görselleştirmeyi ayarlamak için kullanılan [kontrol panelidir](#control-pane).
+- Kırmızı bölüm, kullanılabilir alanları listeleyen [kenar çubuğudur](#sidebar).
+- Kahverengi bölüm, uygulamayı yönetmenizi ve görünümler arasında geçiş yapmanızı sağlayan [sekme çubuğudur](#tab-bar).
+- Mavi bölüm, verilerin görüntülendiği [görüntüleyici panelidir](#viewer-pane).
+- Yeşil bölüm, görselleştirmeyi ayarlamanızı sağlayan [kontrol panelidir](#control-pane).
 
 :::tip
-Birden fazla log dosyasını eş zamanlı olarak görüntülemek için `Dosya` > `Yeni Pencere` seçeneğine tıklayın.
+Birden fazla log dosyasını aynı anda incelemek için `Dosya` > `Yeni pencere` seçeneğine tıklayın.
 :::
 
 ## Kenar çubuğu {#sidebar}
 
-Solda mevcut tabloların ve alanların listesini içeren kenar çubuğu bulunur. Seçilebilir alanlar _eğik_ olarak gösterilir ve yerleşik tablolar (WPILib veya AdvantageKit'ten) <u>altı çizili</u> olarak gösterilir. İç içe geçmiş tabloları genişletmek için oka tıklayın. **Tek bir alanı sürükleyerek** seçin veya her birine tıklayarak bir alan koleksiyonu seçmek için **cmd/ctrl tuşunu basılı tutun**. Seçimi tamamlamak için alan koleksiyonunu sürüklemeye başlayın.
+Sol tarafta kullanılabilir tabloları ve alanları gösteren kenar çubuğu yer alır. Seçilebilir alanlar _italik_ olarak, yerleşik tablolar (WPILib veya AdvantageKit’ten gelenler) ise <u>altı çizili</u> olarak gösterilir. İç içe tabloları açmak için ok simgesine tıklayın. **Tek bir alanı sürükleyerek** seçebilir ya da **cmd/ctrl tuşunu basılı tutup** birden fazla alana tıklayarak bir grup oluşturabilirsiniz. Seçimi tamamlamak için seçtiğiniz alan grubunu sürüklemeye başlayın.
 
-Bir alanı aramak için arama kutusuna yazmaya başlayın. Alanların bir açılır menüsü görüntülenir, ardından seçilen alan kenar çubuğunda vurgulanır ve görünecek şekilde kaydırılır.
+Bir alanı aramak için arama kutusuna yazmaya başlayın. Açılan listeden istediğiniz alanı seçtiğinizde, ilgili alan kenar çubuğunda vurgulanır ve otomatik olarak ekrana kaydırılır.
 
 :::info
-Kenar çubuğunu yeniden boyutlandırmak veya gizlemek için sağ kenara tıklayıp sürükleyin. Kenar çubuğu görünürlüğünü değiştirmek için çift tıklayın.
+Kenar çubuğunun sağ kenarından tutup sürükleyerek boyutunu değiştirebilir veya gizleyebilirsiniz. Görünürlüğünü hızlıca açıp kapatmak için kenara çift tıklayın.
 :::
 
 ## Sekme çubuğu {#tab-bar}
 
-Farklı görünümler arasında geçiş yapmak için sekme çubuğunu (mavi) kullanın. Bu dokümantasyona, soldaki 📖 simgesine tıklanarak istenildiği zaman ulaşılabilir. Mevcut sekme düzenini (ve ilgili ayarları) dışa aktarmak için `Dosya` > `Düzeni Dışa Aktar...` seçeneğine tıklayın. Bir dosyadan düzen içe aktarmak için `Dosya` > `Düzen İçe Aktar...` seçeneğine tıklayın.
+Farklı görünümler arasında geçiş yapmak için sekme çubuğunu (mavi) kullanın. Sol taraftaki 📖 simgesine tıklayarak bu belgelere istediğiniz zaman ulaşabilirsiniz. Mevcut sekme düzenini (ve ilgili ayarları) dışa aktarmak için `Dosya` > `Düzeni dışa aktar...`, bir dosyadan düzen içe aktarmak içinse `Dosya` > `Düzeni içe aktar...` yolunu izleyin.
 
 :::info
-Sekmeler tıklanıp sürüklenerek yeniden düzenlenebilir veya sağ tıklanıp `Yeniden Adlandır...` seçilerek yeniden adlandırılabilir.
+Sekmeleri sürükleyip bırakarak yeniden sıralayabilir, üzerine sağ tıklayıp `Sekmeyi yeniden adlandır` seçeneğini seçerek adlarını değiştirebilirsiniz.
 :::
 
-Üstteki navigasyon düğmeleri (yeşil) sekmeleri yönetir ve oynatmayı kontrol eder.
+Üstteki gezinme düğmeleri (yeşil) sekmeleri yönetmenizi ve oynatmayı kontrol etmenizi sağlar.
 
-- **Artı Düğmesi:** Yeni bir sekme oluşturmak için bir açılır menü açar.
-- **Pencere Düğmesi:** Sekme ile yeni bir ayrılmış pencere oluşturur. Bu özellik, birden fazla sekmeden gelen verileri eş zamanlı olarak görüntülemek için kullanılabilir.
-- **X Düğmesi:** Mevcut sekmeyi kapatır.
-- **Oynat Düğmesi:** Gerçek zamanlı oynatmayı başlatır ve durdurur. _Oynatma hızını değiştirmek veya döngüyü etkinleştirmek için sağ tıklayın._
+- **Artı düğmesi:** Yeni sekme eklemek için bir açılır menü açar.
+- **Pencere düğmesi:** Sekmeyi ayrı bir pencereye taşır. Bu özellik sayesinde birden fazla sekmedeki verileri aynı anda yan yana görebilirsiniz.
+- **X düğmesi:** Açık olan sekmeyi kapatır.
+- **Oynat düğmesi:** Gerçek zamanlı oynatmayı başlatır ve durdurur. _Oynatma hızını değiştirmek veya döngüyü açmak için sağ tıklayın._
 
 ## Görüntüleyici paneli {#viewer-pane}
 
-Görüntüleyici paneli, her sekme türü için verilerin sunulduğu yerdir. Her sekmenin görüntüleyici paneline ilişkin ayrıntılar için sekme referans dokümantasyonunu kontrol edin. Bu görünüm, sekme çubuğundaki pencereyi ayır düğmesine tıklanarak ayrı bir pencereye taşınabilir.
+Görüntüleyici paneli, her sekme türü için verilerin ekrana çizildiği alandır. Her sekmenin görüntüleyici paneliyle ilgili ayrıntılar için ilgili sekme belgelerini inceleyin. Sekme çubuğundaki pencereyi ayır düğmesine tıklayarak bu görünümü ayrı bir pencereye taşıyabilirsiniz.
 
 ## Kontrol paneli {#control-pane}
 
-Kontrol paneli, görselleştirme için alanları seçmek ve diğer seçenekleri yönetmek için kullanılır. Her sekme için mevcut olan seçeneklerin ayrıntıları için sekme referans dokümantasyonunu kontrol edin.
+Kontrol paneli, görselleştirilecek alanları seçmek ve diğer ayarları düzenlemek için kullanılır. Her sekmede hangi seçeneklerin bulunduğunu görmek için ilgili sekme belgelerini inceleyin.
 
 :::info
-Kontrol panelini yeniden boyutlandırmak veya gizlemek için üst kenara tıklayıp sürükleyin. Kontrol paneli görünürlüğünü değiştirmek için çift tıklayın.
+Kontrol panelinin üst kenarından tutup sürükleyerek boyutunu değiştirebilir veya gizleyebilirsiniz. Görünürlüğünü hızlıca açıp kapatmak için kenara çift tıklayın.
 :::

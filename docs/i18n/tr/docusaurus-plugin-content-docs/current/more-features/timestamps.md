@@ -8,21 +8,21 @@ AdvantageScope; zaman çizelgesi, 📉 [Çizgi grafik](/tab-reference/line-graph
 
 ## Görüntüleme modları {#display-modes}
 
-Zaman damgası görüntüleme modu tercihler penceresinden yapılandırılabilir:
+Zaman damgası görüntüleme modunu tercihler penceresinden ayarlayabilirsiniz:
 
-- **Sıfırdan başlat (Varsayılan):** Logdaki en erken verinin sıfırdan (`+0.0s`) başlaması için tüm zaman damgalarını öteler. Bu modda görüntülenen zaman damgaları, verilerin başlangıcından itibaren geçen süreyi belirtmek için bir `+` sembolü ile ön ek alır.
-- **Orijinal:** Zaman damgalarını, log dosyasında kaydedildiği gibi orijinal sayısal değerlerini kullanarak görüntüler ve robot kodu tarafından kullanılan tam değerlerle eşleşir.
+- **Sıfırdan başlat (Varsayılan):** Logdaki en eski verinin sıfırdan (`+0.0s`) başlaması için tüm zaman damgalarını kaydırır. Bu modda zaman damgalarının başına, verilerin başlangıcından itibaren geçen süreyi göstermek için bir `+` işareti eklenir.
+- **Orijinal:** Zaman damgalarını log dosyasına kaydedildiği orijinal sayısal değerleriyle gösterir; yani robot kodunun kullandığı değerlerle birebir eşleşir.
 
 :::info
-WPILib 2027'den başlayarak, zaman damgaları Systemcore'da ve simülasyonda cihazın açılışından (boot) bu yana geçen süre kullanılarak ölçülür. Ham zaman damgaları rastgele büyük sayılardan başlayabileceğinden, **Sıfırdan başlat** daha sezgisel bir görselleştirme seçeneği olarak sunulmuştur.
+WPILib 2027'den itibaren zaman damgaları Systemcore'da ve simülasyonda cihazın açılışından (boot) bu yana geçen süreye göre ölçülür. Ham zaman damgaları çok büyük veya rastgele sayılardan başlayabildiği için **Sıfırdan başlat** modu daha anlaşılır bir görünüm sunar.
 :::
 
 ## Çoklu log senkronizasyonu {#multi-log-synchronization}
 
-[Birden fazla log dosyası aynı anda açıldığında](/overview/log-files/#opening-logs), AdvantageScope bunların zaman damgalarını senkronize eder ve hizalar. **Sıfırdan başlat** modunda, sıfır noktası yüklenen tüm dosyalar arasındaki en erken zaman damgasına ayarlanır. **Orijinal** modunda, zaman damgaları ilk açılan logun zaman tabanı kullanılarak görüntülenir ve eklenen diğer loglar buna hizalanacak şekilde kaydırılır.
+[Birden fazla log dosyasını aynı anda açtığınızda](/overview/log-files/#opening-logs) AdvantageScope bunların zaman damgalarını senkronize edip hizalar. **Sıfırdan başlat** modunda sıfır noktası, yüklü tüm dosyalar arasındaki en eski zaman damgasına göre belirlenir. **Orijinal** modunda ise ilk açılan logun zaman tabanı esas alınır ve diğer loglar buna hizalanacak şekilde kaydırılır.
 
 ## Özelleştirme {#customization}
 
-Zaman damgası görüntüleme modunu değiştirmek için `App` > `Tercihleri Göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) seçeneğine tıklayarak ya da `Ctrl+,` / `Cmd+,` tuşlarına basarak tercihler penceresini açın. **Zaman damgaları** ayarını istediğiniz seçeneğe güncelleyin.
+Zaman damgası görüntüleme modunu değiştirmek için `Uygulama` > `Tercihleri göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) menüsünden ya da `Ctrl+,` / `Cmd+,` kısayoluyla tercihler penceresini açın. Ardından **Zaman damgaları** ayarını istediğiniz seçenekle değiştirin.
 
 <img src="/img/prefs_tr.webp" alt="Tercihler diyagramı" height="450" />

@@ -7,20 +7,20 @@ import TabItem from '@theme/TabItem';
 
 # 🗺 2B saha {#2d-field}
 
-2B saha sekmesi, sahanın bir haritası üzerine çakıştırılmış robotun 2B görselleştirmesini gösterir. Ayrıca görüş hedefleme durumu ve referans pozları gibi ek verileri de gösterebilir.
+2B saha sekmesi, robotun 2B görselleştirmesini bir saha haritası üzerinde gösterir. Ayrıca kamera hedefleme durumu ve referans pozları gibi ek verileri de görüntüleyebilirsiniz.
 
-<img src="/img/tab-reference/2d-field-1.webp" alt="2D saha sekmesine genel bakış" />
+<img src="/img/tab-reference/2d-field-1.webp" alt="2B saha sekmesine genel bakış" />
 
-_Yukarıda İngilizce arayüz gösterilmektedir._
+_Yukarıda İngilizce arayüz gösterilmiştir._
 
 <details>
 <summary>Zaman Çizelgesi Kontrolleri</summary>
 
-Zaman çizelgesi oynatmayı ve görselleştirmeyi kontrol etmek için kullanılır. Zaman çizelgesine tıklamak bir zaman seçer ve sağ tıklamak seçimi kaldırır. Seçilen zaman tüm sekmeler arasında senkronize edilir, bu da bu konumu diğer görünümlerde hızlıca bulmayı kolaylaştırır.
+Zaman çizelgesi, oynatmayı ve görselleştirmeyi kontrol etmenizi sağlar. Zaman çizelgesine tıklayarak bir anı seçebilir, sağ tıklayarak seçimi kaldırabilirsiniz. Seçilen zaman tüm sekmelerde senkronize edildiği için aynı anı diğer görünümlerde de kolayca bulabilirsiniz.
 
-Sarı bölümler robotun otonomda olduğu zamanları, mavi bölümler robotun teleoperasyonda olduğu zamanları ve gri bölümler robotun test modunda olduğu zamanları gösterir.
+Sarı bölümler robotun otonomda, mavi bölümler teleop modunda, gri bölümler ise test modunda olduğu aralıkları gösterir.
 
-Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı veya aşağı kaydırın. `Shift` tuşunu basılı tutarken tıklayıp sürükleyerek bir aralık da seçilebilir. Yatay olarak kaydırarak (desteklenen cihazlarda) veya zaman çizelgesinde tıklayıp sürükleyerek sola ve sağa hareket edin. Canlı bağlandığında sola kaydırmak mevcut zamandan kilidi kaldırır ve en sağa kadar kaydırmak tekrar mevcut zamana kilitler. Robotun etkin olduğu periyoda yakınlaştırmak için `Ctrl+\` tuşlarına basın.
+Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirip yukarı veya aşağı kaydırın. `Shift` tuşunu basılı tutarak tıklayıp sürüklediğinizde belirli bir aralığı da seçebilirsiniz. Yatay kaydırma yaparak (desteklenen cihazlarda) veya zaman çizelgesini tıklayıp sürükleyerek sağa ve sola hareket edebilirsiniz. Canlı bağlantıdayken sola kaydırmak mevcut zamandaki kilidi açar, en sağa kadar kaydırmak ise tekrar mevcut zamana kilitler. Robotun etkin olduğu aralığa yakınlaştırmak için `Ctrl+\` tuşlarına basın.
 
 <img src="/img/tab-reference/timeline.webp" alt="Zaman çizelgesi" />
 
@@ -28,31 +28,31 @@ Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı v
 
 ## Kamera kontrolleri {#camera-controls}
 
-Yakınlaştırmak ve uzaklaştırmak için sahanın üzerinde yukarı ve aşağı kaydırın. Saha boyunca kaydırmak için tıklayıp sürükleyin. Aşağıdaki seçenekleri içeren kamera menüsünü açmak için sahanın herhangi bir yerine sağ tıklayın:
+Yakınlaşıp uzaklaşmak için sahanın üzerinde yukarı veya aşağı kaydırın. Sahayı kaydırmak için tıklayıp sürükleyin. Aşağıdaki seçenekleri içeren kamera menüsünü açmak için sahanın herhangi bir yerine sağ tıklayın:
 
 - **Kilitsiz**: Kaydırma ve yakınlaştırma manueldir.
-- **Robota kilitli**: Kamera, robotu takip etmek için otomatik olarak kaydırılır.
-- **Robota ve rotasyona kilitli**: Kamera, robotu ve rotasyonunu takip etmek için otomatik olarak kaydırılır ve döndürülür.
+- **Robota kilitli**: Kamera, robotu takip etmek için otomatik olarak kayar.
+- **Robota ve rotasyona kilitli**: Kamera, robotu ve rotasyonunu takip etmek için otomatik olarak kayar ve döner.
 
-Her iki kilitli modda da kamera robottan uzağa serbestçe kaydırılabilir. Kontrol panelindeki yönlendirme düğmeleri kamerayı herhangi bir modda döndürmek için kullanılabilir.
+Her iki kilitli modda da kamerayı robottan uzağa serbestçe kaydırabilirsiniz. Kontrol panelindeki yönelim düğmelerini kullanarak kamerayı her modda döndürebilirsiniz.
 
 ## Nesneler ekleme {#adding-objects}
 
-Başlamak için bir alanı "Pozlar" bölümüne sürükleyin. X düğmesini kullanarak bir nesneyi silin veya göz simgesine tıklayarak ya da alan adına çift tıklayarak geçici olarak gizleyin. Tüm nesneleri kaldırmak için eksen başlığının yanındaki çöp kutusuna ve ardından `Tümünü Temizle` seçeneğine tıklayın. Nesneler listede tıklanıp sürüklenerek yeniden düzenlenebilir.
+Başlamak için bir alanı “Pozlar” bölümüne sürükleyin. Bir nesneyi X düğmesiyle silebilir; göz simgesine tıklayarak ya da alan adına çift tıklayarak geçici olarak gizleyebilirsiniz. Tüm nesneleri kaldırmak için eksen başlığının yanındaki çöp kutusuna ve ardından `Tümünü temizle` seçeneğine tıklayın. Nesneleri listede tıklayıp sürükleyerek yeniden sıralayabilirsiniz.
 
-**Her bir nesneyi özelleştirmek için renkli simgeye tıklayın veya alan adına sağ tıklayın.** AdvantageScope, birçoğu özelleştirilebilen (renkleri değiştirme gibi) çok sayıda nesne türünü destekler. Bazı nesnelerin mevcut bir nesneye alt öge olarak eklenmesi gerekir.
+**Her bir nesneyi özelleştirmek için renkli simgeye tıklayın veya alan adına sağ tıklayın.** AdvantageScope, çoğu özelleştirilebilen (örneğin renkleri değiştirilebilen) çok sayıda nesne türünü destekler. Bazı nesnelerin mevcut bir nesnenin altına alt öge olarak eklenmesi gerekir.
 
 :::tip
-Desteklenen nesne türlerinin tam listesini görmek için `?` simgesine tıklayın. Bu liste ayrıca desteklenen veri türlerini ve nesnelerin alt öge olarak eklenmesi gerekip gerekmediğini içerir.
+Desteklenen nesne türlerinin tam listesini görmek için `?` simgesine tıklayın. Bu listede desteklenen veri türlerini ve nesnelerin alt öge olarak eklenmesinin gerekip gerekmediğini de görebilirsiniz.
 :::
 
-<img src="/img/tab-reference/2d-field-2.webp" alt="Nesneler içeren 2D saha" />
+<img src="/img/tab-reference/2d-field-2.webp" alt="Nesneler içeren 2B saha" />
 
 ## Veri formatı {#data-format}
 
-Geometri verileri bayt kodlu struct veya protobuf olarak yayınlanmalıdır. `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` ve daha fazlası dahil olmak üzere çeşitli 2B ve 3B geometri türleri desteklenmektedir.
+Geometri verileri bayt kodlu struct veya protobuf olarak yayınlanmalıdır. `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` ve daha fazlası dahil olmak üzere çeşitli 2B ve 3B geometri türleri desteklenir.
 
-WPILib ve AdvantageKit dahil olmak üzere birçok kütüphane struct formatını destekler. Aşağıdaki örnek kod Java'da 2B poz verilerinin nasıl loglanacağını göstermektedir.
+WPILib ve AdvantageKit dahil birçok kütüphane struct formatını destekler. Aşağıdaki örnek kod, Java'da 2B poz verilerinin nasıl loglanacağını gösterir.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -117,10 +117,10 @@ telemetry.update();
 
 ## Yapılandırma {#configuration}
 
-- **Saha:** Kullanılacak saha görseli. Son dönemdeki tüm FRC ve FTC oyunları desteklenmektedir. Özel bir saha görseli eklemek için [Özel Varlıklar](/more-features/custom-assets) bölümüne bakın.
+- **Saha:** Kullanılacak saha görseli. Son dönemdeki tüm FRC ve FTC oyunları desteklenir. Özel bir saha görseli eklemek için [Özel Varlıklar](/more-features/custom-assets) bölümüne bakın.
 - **Yönelim:** Görüntüleyici panelindeki saha görselinin yönelimi.
 - **Boyut:** Robotun kenar uzunluğu (FRC için 30/27/24 inç, FTC için 18/16/14 inç).
 
 :::info
-Bu sekmede kullanılan koordinat sistemi özelleştirilebilir. Ayrıntılar için [koordinat sistemi](/more-features/coordinate-systems) sayfasına bakın.
+Bu sekmede kullanılan koordinat sistemini özelleştirebilirsiniz. Ayrıntılar için [koordinat sistemi](/more-features/coordinate-systems) sayfasına bakın.
 :::

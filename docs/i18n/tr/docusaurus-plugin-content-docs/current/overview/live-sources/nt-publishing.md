@@ -4,41 +4,41 @@ sidebar_position: 3
 
 # NetworkTables verilerini yayınlama {#publishing-networktables-data}
 
-AdvantageScope, bir log dosyasında saklanan NetworkTables verilerini bir simülatör veya robot gibi bir NetworkTables sunucusuna tekrar yayınlamayı destekler. Olası kullanım durumları şunlardır:
+AdvantageScope, bir log dosyasında saklanan NetworkTables verilerini bir simülatör veya robot gibi bir NetworkTables sunucusuna geri yayınlayabilir. Bunu şu gibi amaçlarla kullanabilirsiniz:
 
-- Hata ayıklama için maçları simülasyonda yeniden oynatma.
-- Gerçek bir robot üzerinde bir yan işlemciden gelen verileri taklit etme.
-- Gerçekçi maç verilerini kullanarak sürücü gösterge paneli uygulamalarında hata ayıklama.
+- Hata ayıklamak için maçları simülasyonda yeniden oynatmak
+- Gerçek bir robotta yardımcı işlemciden (coprocessor) gelen verileri taklit etmek
+- Gerçekçi maç verileriyle sürücü gösterge paneli uygulamalarını test etmek ve hata ayıklamak
 
-Bu özellik, NetworkTables verilerinin tam bir kaydını içeren bir log dosyası gerektirir; bu kayıt WPILib'in [yerleşik veri loglayıcısı](https://docs.wpilib.org/tr/stable/docs/software/telemetry/datalog.html) kullanılarak oluşturulabilir. AdvantageKit'in bunun yerine simülasyonda daha eksiksiz deterministik yeniden oynatmaya olanak tanıdığından bu özelliği desteklemediğini unutmayın.
+Bu özellik için NetworkTables verilerinin tam kaydını içeren bir log dosyası gerekir; bunu WPILib’in [yerleşik veri loglayıcısı](https://docs.wpilib.org/tr/stable/docs/software/telemetry/datalog.html) ile oluşturabilirsiniz. AdvantageKit bu özelliği desteklemez; çünkü onun yerine simülasyonda çok daha kapsamlı, deterministik yeniden oynatma imkânı sunar.
 
 ## Başlarken {#getting-started}
 
-Yayınlamaya başlamak için NetworkTables verilerini içeren bir log dosyası açık olmalıdır. Ardından şu adımları izleyin:
+Veri yayınlamaya başlamak için önce NetworkTables verileri içeren bir log dosyası açın. Ardından:
 
-- **Robota Yayınla:** `Dosya` > `NT verilerini yayınla` > `Robota bağlan` seçeneğine tıklayın.
-- **Simülatöre Yayınla:** `Dosya` > `NT verilerini yayınla` > `Simülatöre bağlan` seçeneğine tıklayın.
+- **Robota yayınla:** `Dosya` > `NT verilerini yayınla` > `Robota bağlan` seçeneğine tıklayın.
+- **Simülatöre yayınla:** `Dosya` > `NT verilerini yayınla` > `Simülatöre bağlan` seçeneğine tıklayın.
 
-Pencerenin üst kısmı, veri yayınlama durumunu belirtmek için "Aranıyor" veya "Yayınlanıyor" metnini gösterir. AdvantageScope, bağlantı kesildikten sonra aynı ayarları kullanarak otomatik olarak yeniden bağlanmaya çalışır.
+Pencerenin üst kısmında veri yayınının durumunu göstermek için “Aranıyor” veya “Yayınlanıyor” yazısı görünür. Bağlantı koparsa AdvantageScope aynı ayarlarla otomatik olarak yeniden bağlanmayı dener.
 
-Tüm alanlar, birçok AdvantageScope sekmesi tarafından kullanılan _seçili zaman damgasındaki_ saklanan değerleri kullanılarak yayınlanacaktır. Bu, AdvantageScope içindeki oynatmayla aynı mekanizma aracılığıyla gerçek zamanlı ağ oynatılmasına olanak tanır. Daha fazla ayrıntı için [Uygulama Navigasyonu](/overview/navigation) bölümüne bakın. Bir zaman damgası seçilmemişse, alanlar _üzerine gelinen zaman damgasındaki_ saklanan değerleri kullanılarak yayınlanır.
+Tüm alanlar, birçok AdvantageScope sekmesinin kullandığı _seçili zaman damgasındaki_ değerleriyle yayınlanır. Böylece AdvantageScope içindeki oynatma mekanizmasını kullanarak ağ üzerinden gerçek zamanlı oynatma yapabilirsiniz. Ayrıntılar için [Uygulama gezinmesi](/overview/navigation) sayfasına göz atabilirsiniz. Eğer hiçbir zaman damgası seçili değilse, alanlar _üzerine gelinen zaman damgasındaki_ değerleriyle yayınlanır.
 
 Yayınlamayı durdurmak için `Dosya` > `NT verilerini yayınla` > `Yayınlamayı durdur` seçeneğine tıklayın.
 
 ## Alanları filtreleme {#filtering-fields}
 
-Varsayılan olarak AdvantageScope, log dosyasında saklanan tüm NetworkTables alanlarını yayınlar (sunucu tarafından yayınlanan meta başlıklar hariç). Bir yan işlemciyi taklit etmek gibi bazı kullanım durumları, yalnızca sınırlı bir alan veya alt tablo kümesinin yayınlanmasını gerektirir. İzin verilen alan ön ekleri kümesini ayarlamak için `Uygulama` > `Tercihleri göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) seçeneğine tıklayarak tercihler penceresini açın.
+Varsayılan olarak AdvantageScope, log dosyasındaki tüm NetworkTables alanlarını yayınlar (sunucunun yayınladığı meta başlıklar hariç). Ancak yardımcı işlemciyi taklit etmek gibi bazı senaryolarda yalnızca belirli alanları veya alt tabloları yayınlamak isteyebilirsiniz. İzin verilen alan ön eklerini ayarlamak için `Uygulama` > `Tercihleri göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) yolunu izleyerek tercihler penceresini açın.
 
-"NT Yayınlama Ön ekleri" seçeneği, NetworkTables'a yayınlanan alanlar için izin verilen ön ekleri ayarlar. Boş bırakılırsa tüm alanlar dahil edilir. Aksi takdirde, virgülle ayrılmış bir ön ek veya alan listesi sağlanabilir. Aşağıdaki örneklere bakın.
+“NT yayın ön ekleri” ayarı, NetworkTables’a yayınlanacak alanların ön eklerini belirler. Boş bırakırsanız tüm alanlar yayınlanır. İsterseniz virgülle ayrılmış bir ön ek veya alan listesi girebilirsiniz. Aşağıdaki örneklere göz atın:
 
-- "_Telemetry_": "Telemetry" tablosundaki tüm alanları dahil et.
-- "_Telemetry/Drive_": Yalnızca "Telemetry/Drive" tablosunu dahil et.
-- "_limelight/tx,limelight/ty_": Yalnızca "limelight/tx" ve "limelight/ty" alanlarını dahil et.
+- “_Telemetry_”: “Telemetry” tablosundaki tüm alanları dahil eder.
+- “_Telemetry/Drive_”: Yalnızca “Telemetry/Drive” tablosunu dahil eder.
+- “_limelight/tx,limelight/ty_”: Yalnızca “limelight/tx” ve “limelight/ty” alanlarını dahil eder.
 
 ## Sınırlamalar {#limitations}
 
 :::warning
 
-- Alanlar her 20 ms'de bir yayınlanır, bu nedenle orijinal olarak daha yüksek bir frekansta yayınlanan NetworkTables verileri örnekleri atlayacaktır.
-- Yayınlanan örneklerin zaman damgaları korunmaz. Zaman içinde ileri geri gezinirken veya farklı hızlarda oynatırken bu imkansız olurdu.
+- Alanlar her 20 ms’de bir yayınlanır; dolayısıyla daha yüksek frekansta kaydedilmiş NetworkTables verilerinde bazı örnekler atlanır.
+- Yayınlanan örneklerin zaman damgaları korunmaz. Zaman içinde ileri geri sararken veya farklı hızlarda oynatırken bu zaten mümkün değildir.
   :::

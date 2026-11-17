@@ -1,6 +1,6 @@
 # Klavye kısayolları {#keyboard-shortcuts}
 
-AdvantageScope, daha hızlı navigasyon sağlayan çok sayıda klavye kısayolu içerir. `ctrl` tuşunu kullanan kısayollar macOS'ta ⌘ tuşu ile değiştirilir.
+AdvantageScope, uygulamada daha hızlı gezinmenizi sağlayan pek çok klavye kısayolu sunar. `ctrl` tuşunu kullanan kısayollarda macOS üzerinde ⌘ tuşu kullanılır.
 
 ### Veri kaynakları {#data-sources}
 
@@ -17,7 +17,7 @@ AdvantageScope, daha hızlı navigasyon sağlayan çok sayıda klavye kısayolu 
 
 <table>
 <tr><td>`Ctrl+E`</td><td>Log verilerini dışa aktar</td></tr>
-<tr><td>`Ctrl+P`</td><td>Log verilerini robottaki bir NetworkTables sunucusunda yayınla</td></tr>
+<tr><td>`Ctrl+P`</td><td>Log verilerini robottaki bir NetworkTables sunucusuna yayınla</td></tr>
 <tr><td>`Ctrl+Shift+P`</td><td>Log verilerini simülasyondaki bir NetworkTables sunucusunda yayınla</td></tr>
 <tr><td>`Option+Ctrl+P`</td><td>NetworkTables yayınını durdur</td></tr>
 </table>
@@ -25,24 +25,24 @@ AdvantageScope, daha hızlı navigasyon sağlayan çok sayıda klavye kısayolu 
 ### Pencere kontrolleri {#window-controls}
 
 <table>
-<tr><td>`Ctrl+N`</td><td>Yeni bir pencere oluştur</td></tr>
+<tr><td>`Ctrl+N`</td><td>Yeni pencere oluştur</td></tr>
 <tr><td>`Ctrl+Shift+N`</td><td>Mevcut pencereyi kapat</td></tr>
 <tr><td>`Ctrl+Virgül`</td><td>Tercihler penceresini aç</td></tr>
-<tr><td>`Ctrl+Nokta`</td><td>Kenar çubuğu görünürlüğünü değiştir</td></tr>
-<tr><td>`Ctrl+Slaş`</td><td>Kontrol paneli görünürlüğünü değiştir</td></tr>
+<tr><td>`Ctrl+Nokta`</td><td>Kenar çubuğu görünürlüğünü aç/kapat</td></tr>
+<tr><td>`Ctrl+Slaş`</td><td>Kontrol paneli görünürlüğünü aç/kapat</td></tr>
 </table>
 
 ### Sekme kontrolleri {#tab-controls}
 
 <table>
-<tr><td>`Ctrl+T`</td><td>Yeni bir sekme eklemek için açılır menüyü aç</td></tr>
-<tr><td>`Ctrl+Shift+T`</td><td>Mevcut sekme için yeni bir ayrılmış pencere oluştur</td></tr>
-<tr><td>`Ctrl+Sol` ve `Ctrl+Sağ`</td><td>Sekmeleri değiştir</td></tr>
-<tr><td>`Ctrl+[` ve `Ctrl+]`</td><td>Sekmeleri yeniden düzenle</td></tr>
+<tr><td>`Ctrl+T`</td><td>Yeni sekme eklemek için açılır menüyü aç</td></tr>
+<tr><td>`Ctrl+Shift+T`</td><td>Mevcut sekmeyi yeni bir ayrılmış pencerede aç</td></tr>
+<tr><td>`Ctrl+Sol` ve `Ctrl+Sağ`</td><td>Sekmeler arasında geçiş yap</td></tr>
+<tr><td>`Ctrl+[` ve `Ctrl+]`</td><td>Sekmeleri yeniden sırala</td></tr>
 <tr><td>`Ctrl+W`</td><td>Mevcut sekmeyi kapat</td></tr>
 </table>
 
-**Aşağıdaki kısayollar hızlıca yeni sekmeler oluşturmak için kullanılabilir:**
+**Hızlıca yeni sekmeler oluşturmak için aşağıdaki kısayolları kullanabilirsiniz:**
 
 <table>
 <tr>
@@ -67,7 +67,7 @@ AdvantageScope, daha hızlı navigasyon sağlayan çok sayıda klavye kısayolu 
 </tr>
 <tr>
 <td>`Option+S`</td><td>[📊 İstatistikler](/tab-reference/statistics)</td>
-<td>`Option+I`</td><td>[🔍 Üst Veri](/tab-reference/metadata)</td>
+<td>`Option+I`</td><td>[🔍 Üst veri](/tab-reference/metadata)</td>
 </tr>
 </table>
 
@@ -76,13 +76,13 @@ AdvantageScope, daha hızlı navigasyon sağlayan çok sayıda klavye kısayolu 
 <table>
 <tr><td>`Space`</td><td>Oynatmayı başlat/durdur</td></tr>
 <tr><td>`Sol` ve `Sağ`</td><td>Log dosyasında adım adım ilerle</td></tr>
-<tr><td>`L` veya `Ctrl+L`</td><td>Canlı verileri görüntülerken kilidi değiştir</td></tr>
+<tr><td>`L` veya `Ctrl+L`</td><td>Canlı verileri görüntülerken kilidi aç/kapat</td></tr>
 <tr><td>`Ctrl+\`</td><td>Zaman çizelgesini etkin aralığa yakınlaştır</td></tr>
 </table>
 
 ### Touch Bar {#touch-bar}
 
-Desteklenen MacBook modellerinde Touch Bar, log dosyasında gezinmek ve yeni sekmeler eklemek için kullanılabilir.
+Desteklenen MacBook modellerinde Touch Bar’ı kullanarak log dosyasında ileri geri gezinebilir ve yeni sekmeler ekleyebilirsiniz.
 
 <img src="/img/overview/navigation/keyboard-1.webp" alt="Touch Bar kaydırma arayüzü" />
 <img src="/img/overview/navigation/keyboard-2.webp" alt="Touch Bar yeni sekme arayüzü" />

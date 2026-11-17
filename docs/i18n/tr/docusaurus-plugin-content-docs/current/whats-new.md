@@ -9,21 +9,21 @@ draft: true
 <img src="/img/whats-new/banner-light.webp" className="light-only" />
 <img src="/img/whats-new/banner-dark.webp" className="dark-only" />
 
-AdvantageScope'un 2026 sürümü yayınlandı! Detaylar için [kurulum belgelerini](/overview/installation) ve [tüm değişiklik günlüğünü](https://github.com/Mechanical-Advantage/AdvantageScope/releases) kontrol edin. Bu sürüm, uygulama genelinde birkaç büyük yeni özellik ve çok sayıda iyileştirme içermektedir. Bu sürümdeki özelliklerin birçoğu, gelecekteki sezonlarda [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) sistemine sorunsuz bir geçiş sağlarken mevcut kontrol sistemlerindeki deneyimi iyileştirmek için tasarlanmıştır.
+AdvantageScope'un 2026 sürümü çıktı! Ayrıntılar için [kurulum belgelerine](/overview/installation) ve [değişiklik günlüğünün tamamına](https://github.com/Mechanical-Advantage/AdvantageScope/releases) göz atabilirsiniz. Bu sürüm, uygulama genelinde önemli yeni özellikler ve pek çok iyileştirme getiriyor. Yeniliklerin büyük bölümü mevcut kontrol sistemlerindeki deneyimi geliştirirken, gelecek sezonlarda [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) sistemine geçişi de kolaylaştırmak üzere tasarlandı.
 
-**Geri bildirimlerinize değer veriyoruz! Geri bildirimler, özellik istekleri ve hata raporları [sorunlar sayfasında](https://github.com/Mechanical-Advantage/AdvantageScope/issues) memnuniyetle karşılanır.**
+**Görüşleriniz bizim için çok önemli! Geri bildirimlerinizi, özellik isteklerinizi ve hata raporlarınızı [GitHub Issues sayfasında](https://github.com/Mechanical-Advantage/AdvantageScope/issues) paylaşabilirsiniz.**
 
 ## ✴️ Deneysel: FTC desteği {#ftc-support}
 
-2027-2028 sezonunda Systemcore ile tam desteğe hazırlık amacıyla, bu sürüm mevcut FIRST Tech Challenge kontrol sistemiyle uyumluluğu artırmak için birkaç özellik eklemektedir:
+2027-2028 sezonunda Systemcore ile gelecek tam desteğe hazırlık olarak, bu sürüm mevcut FIRST Tech Challenge kontrol sistemiyle uyumluluğu artıran çeşitli yenilikler ekliyor:
 
 - 🗺️ [2B saha](/tab-reference/2d-field) ve 👀 [3B saha](/tab-reference/3d-field) sekmelerinde FTC sahaları ve robot modelleri
-- [Standart FTC koordinatları](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html) ile uyumluluk için yeni [koordinat sistemi](/more-features/coordinate-systems) seçenekleri
-- [Road Runner](https://rr.brott.dev/docs/v1-0/installation/) log dosyaları desteği
-- [FTC Dashboard](https://github.com/acmerobotics/ftc-dashboard) canlı akış formatı desteği
+- [Standart FTC koordinatlarıyla](/more-features/coordinate-systems) uyumlu yeni [koordinat sistemi](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html) seçenekleri
+- [Road Runner](https://rr.brott.dev/docs/v1-0/installation/) log dosyaları için destek
+- [FTC Dashboard](https://github.com/acmerobotics/ftc-dashboard) canlı veri akışı formatı desteği
 
 :::tip
-FTC takımları resmi sezon boyunca deneysel yazılımları kullanırken dikkatli olmalıdır. AdvantageScope için FTC desteği hâlâ aktif geliştirme aşamasındadır.
+FTC takımlarının resmi sezon boyunca deneysel yazılımları kullanırken dikkatli olması gerekir. AdvantageScope'un FTC desteği hâlâ aktif olarak geliştiriliyor.
 :::
 
 <div className="image-gallery">
@@ -34,26 +34,26 @@ FTC takımları resmi sezon boyunca deneysel yazılımları kullanırken dikkatl
   <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
 </div>
 
-Birkaç üçüncü taraf FTC loglama/telemetri kütüphanesi, AdvantageScope ile uyumlu WPILOG ve RLOG gibi diğer formatları destekler. Bu kütüphanelerin belgeleri ilgili projelerde bulunabilir; AdvantageScope geliştiricileri, AdvantageScope ile kullanım için özel bir FTC loglama çözümünü önermemekte/tavsiye etmemektedir.
+Çeşitli üçüncü taraf FTC loglama ve telemetri kütüphaneleri, AdvantageScope ile uyumlu WPILOG ve RLOG gibi formatlarda çıktı üretebilir. Bu kütüphanelerin dokümantasyonuna kendi proje sayfalarından ulaşabilirsiniz; AdvantageScope geliştiricileri belirli bir FTC loglama çözümünü özel olarak önermez.
 
 :::info
-AdvantageScope, WPILlib çerçevesi ve ilgili loglama araçlarıyla birlikte kullanıldığında en iyi deneyimi sunmak üzere tasarlanmıştır. Resmi olmayan loglama çözümlerini kullanırken uyumluluk sorunlarıyla karşılaşabilir veya sınırlı yeteneklerle karşılaşabilirsiniz.
+AdvantageScope en iyi deneyimi WPILib ve ilgili loglama araçlarıyla birlikte sunar. Resmi olmayan loglama çözümlerini kullanırken uyumluluk sorunları yaşayabilir veya bazı özelliklerden yararlanamayabilirsiniz.
 
-AdvantageScope'un tüm özellikleri, 2027-2028 sezonunda Systemcore'a geçişten sonra FTC'de resmi olarak desteklenecektir.
+2027-2028 sezonunda Systemcore'a geçildikten sonra AdvantageScope'un tüm özellikleri FTC'de resmi olarak desteklenecektir.
 :::
 
 ## 🧮 Birim duyarlı grafikleme {#unit-aware-graphing}
 
-📉 [Çizgi Grafiği](/tab-reference/line-graph/) sekmesi, tamamen birim duyarlı olacak şekilde yeniden tasarlandı. Bu, sayısal alanları grafiklerken birkaç yeni yetenek sağlar:
+📉 [Çizgi grafik](/tab-reference/line-graph/) sekmesi artık tamamen birim duyarlı olacak şekilde baştan tasarlandı. Sayısal alanların grafiğini çizerken şu yeni özelliklerden yararlanabilirsiniz:
 
-- Y eksenlerinin ve değer göstergelerinin hassas etiketlenmesi
-- Uyumlu birimlere hızlı dönüştürme (açılır pencere yok)
-- Tek bir eksen içinde uyumlu birim türlerinin örtük dönüştürülmesi
+- Y eksenlerinin ve değer göstergelerinin doğru birimlerle etiketlenmesi
+- Açılır pencere açmadan uyumlu birimlere hızlı dönüştürme
+- Aynı eksen içindeki uyumlu birim türlerinin otomatik dönüştürülmesi
 - [İntegrali ve türevi alınmış](/tab-reference/line-graph/#integration-and-differentiation) birimlerin doğru gösterimi
 
-Aşağıdaki ekran görüntüsü tüm bu özellikleri çalışırken göstermektedir. Sol eksenin farklı açısal hız birimlerine sahip alanları içerdiğini ve sağ eksenin türevi alınmış ve yerel olmayan bir birimde (derece) görüntülenen değerleri içerdiğini unutmayın. Birim seçimi de her bir eksen için doğrudan kontrol menüsüne entegre edilen uyumlu birim seçenekleriyle artık her zamankinden daha kolay.
+Aşağıdaki ekran görüntüsünde tüm bu özelliklerin bir arada nasıl çalıştığını görebilirsiniz. Sol eksende farklı açısal hız birimlerine sahip alanların yer aldığına, sağ eksende ise türevi alınmış ve orijinalinden farklı bir birimde (derece) gösterilen değerlerin bulunduğuna dikkat edin. Her eksenin kendi menüsüne doğrudan eklenen uyumlu birim seçenekleri sayesinde birim seçmek de artık her zamankinden daha kolay.
 
-_Birim desteği hakkında daha fazla bilgi [dokümantasyonda](/tab-reference/line-graph/units) bulunabilir._
+_Birim desteği hakkında daha fazla bilgi için [ilgili dokümantasyona](/tab-reference/line-graph/units) göz atabilirsiniz._
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="Birim duyarlı grafikleme" />
 
@@ -61,9 +61,9 @@ _Yukarıda İngilizce arayüz gösterilmektedir._
 
 ## 🏁 Daha hızlı log indirmeleri {#faster-log-downloads}
 
-[roboRIO'dan log indirme](/overview/log-files/#downloading-from-the-robot) işlemi artık önceki sürümlere göre **2-4 kat daha hızlı**. Bu, roboRIO'nun daha az CPU yükü ile log verilerini aktarmasına olanak tanıyan yeni bir protokole (FTP) geçilerek sağlandı.
+[roboRIO'dan log indirme](/overview/log-files/#downloading-from-the-robot) işlemi artık önceki sürümlere göre **2-4 kat daha hızlı**. Bu hız artışı, roboRIO'nun daha düşük CPU yüküyle log verisi aktarmasını sağlayan yeni FTP protokolüne geçilmesiyle elde edildi.
 
-Aşağıdaki tablo, Ethernet üzerinden bağlıyken (maksimum 100 Mb/s bant genişliği) AdvantageScope'un 2025 ve 2026 sürümlerinde ölçülen aktarım hızını göstermektedir. 2025 sürümünün performansının roboRIO üzerindeki CPU yükünden ciddi şekilde etkilendiğini unutmayın.
+Aşağıdaki tabloda, AdvantageScope'un 2025 ve 2026 sürümlerinde Ethernet üzerinden (maksimum 100 Mb/s bant genişliğiyle) ölçülen aktarım hızlarını görebilirsiniz. 2025 sürümünün performansının roboRIO üzerindeki CPU yükünden ciddi şekilde etkilendiğine dikkat edin.
 
 |                                                     | 2025 (SFTP) | 2026 (FTP) | Hızlanma                                         |
 | --------------------------------------------------- | ----------- | ---------- | ------------------------------------------------ |
@@ -73,47 +73,47 @@ Aşağıdaki tablo, Ethernet üzerinden bağlıyken (maksimum 100 Mb/s bant geni
 
 ## 📁 Alt klasörlerden log indirme {#download-logs-from-subfolders}
 
-İndirme penceresi artık alt klasörlerde saklanan logların kaydedilmesini desteklemektedir. Log içeren her bir alt klasör bir grup olarak indirilebilir; bu da CTRE'nin [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) 2026 sürümü tarafından oluşturulan logları indirmek için kolaylaştırılmış bir yaklaşım sunar (bu sürüm, tek bir log dosyasında veri saklayamama sorununa çözüm olarak alt klasörleri kullanır).
+İndirme penceresi artık alt klasörlerde tutulan logları da destekliyor. Log içeren her alt klasörü tek seferde indirebilirsiniz; bu da CTRE'nin verileri tek bir log dosyasında toplayamama sorununu aşmak için alt klasörleri kullanan [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) 2026 sürümünün ürettiği logları indirmeyi çok daha pratik hale getiriyor.
 
 <img src="/img/whats-new/subfolders.webp" alt="Log alt klasörlerini indirme" height="450" />
 
 ## 🌈 Yeni görselleştirme seçenekleri {#new-visualization-options}
 
-🗺️ [2B saha](/tab-reference/2d-field) ve 👀 [3B saha](/tab-reference/3d-field) sekmelerinde birkaç yeni görselleştirme seçeneği desteklenmektedir:
+🗺️ [2B saha](/tab-reference/2d-field) ve 👀 [3B saha](/tab-reference/3d-field) sekmelerine çeşitli yeni görselleştirme seçenekleri eklendi:
 
-- 2B sahada artık daha çeşitli robot tamponu renkleri mevcuttur ve her nesne kendi rengiyle yapılandırılabilir. Bu, hayaletleri birden fazla robot nesnesiyle birleştirirken daha fazla esneklik sağlar.
-- [3B sahada 2B mekanizmaları görselleştirirken](/tab-reference/3d-field#2d-mechanisms), mekanizmalar artık XZ düzleminin yanı sıra YZ düzlemine de yerleştirilebilir. Bu, birden fazla eksende harekete sahip karmaşık mekanizmaların daha kolay görselleştirilmesini sağlar.
-- 3B saha artık işlenen kenarların kalitesini artırmak için isteğe bağlı kenar yumuşatmayı desteklemektedir.
+- 2B sahada artık daha fazla robot tamponu rengi seçeneği var ve her nesneye ayrı renk atanabiliyor. Bu sayede hayalet modelleri birden fazla robot nesnesiyle birleştirirken çok daha esnek çalışabilirsiniz.
+- [3B sahada 2B mekanizmaları görselleştirirken](/tab-reference/3d-field#2d-mechanisms), mekanizmaları artık XZ düzleminin yanı sıra YZ düzlemine de yerleştirebilirsiniz. Bu, birden fazla eksende hareket eden karmaşık mekanizmaları incelemeyi kolaylaştırır.
+- 3B sahada kenar kalitesini artırmak için isteğe bağlı kenar yumuşatma (antialiasing) desteği eklendi.
 
 <img src="/img/whats-new/field-viz.jpg" alt="Yeni saha görselleştirmeleri" />
 
 ## 🪵 REV Robotics CAN log desteği {#rev-robotics-can-log-support}
 
-REV Robotics'in [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) yazılımı tarafından üretilen `.revlog` dosyalarını artık doğrudan AdvantageScope'ta açabilirsiniz. Bu dosyalar Spark Max ve Spark Flex cihazlarından gelen CAN sinyallerini kaydederek AdvantageScope'un [URCL](/more-features/urcl) kütüphanesine resmi bir alternatif sunar.
+REV Robotics'in [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) aracıyla oluşturulan `.revlog` dosyalarını artık doğrudan AdvantageScope'ta açabilirsiniz. Spark Max ve Spark Flex cihazlarından gelen CAN sinyallerini kaydeden bu dosyalar, AdvantageScope'un [URCL](/more-features/urcl) kütüphanesine resmi bir alternatif sunuyor.
 
-Hem URCL hem de resmi `StatusLogger`, sorunsuz bir geçiş sağlamak ve önceki sezonlarla özellik eşitliğini korumak için 2026 sezonu boyunca mevcut kalacaktır. 2027 ve sonrasındaki loglama seçenekleri hakkında paylaşacak daha fazla ayrıntıya daha sonra sahip olacağız.
+Sorunsuz bir geçiş sağlamak ve önceki sezonlardaki tüm özellikleri korumak için hem URCL hem de resmi `StatusLogger` 2026 sezonu boyunca kullanılabilir olacak. 2027 ve sonrası için loglama seçenekleriyle ilgili ayrıntıları ilerleyen dönemde paylaşacağız.
 
 <img src="/img/whats-new/revlog.webp" alt="REVLOG görselleştirmesi" />
 
-## 💿 CSV dosyası içe aktarmaları {#csv-file-imports}
+## 💿 CSV dosyalarını içe aktarma {#csv-file-imports}
 
-Robot loglama çerçevelerinin dışında üretilen verilerin daha esnek görselleştirilmesi için AdvantageScope artık CSV dosyalarını içe aktarmak için temel destek içeriyor. Desteklenen formatlar ve diğer sınırlamalar hakkında daha fazla ayrıntı için [dokümantasyonu](/overview/log-files/#csv-formatting) kontrol edin.
+Robot loglama kütüphaneleri dışında üretilen verileri de kolayca görselleştirebilmeniz için AdvantageScope artık CSV dosyalarını içe aktarmaya yönelik temel destek sunuyor. Desteklenen formatlar ve kısıtlamalar için [ilgili dokümantasyona](/overview/log-files/#csv-formatting) bakabilirsiniz.
 
 <img src="/img/overview/log-files/export-2.webp" alt="CSV verileri" />
 
 ## 🤩 Estetik iyileştirmeler {#aesthetic-improvements}
 
-Windows 11'deki AdvantageScope UI, daha önce yalnızca macOS sürümlerine özel olan yarı saydam bir kenar çubuğunu destekleyecek şekilde güncellendi. macOS Tahoe için Apple'ın Sıvı Cam (Liquid Glass) malzemesini temel alan güncellenmiş bir uygulama simgesi de mevcuttur.
+Windows 11'deki AdvantageScope arayüzü, daha önce yalnızca macOS sürümlerinde bulunan yarı saydam kenar çubuğunu destekleyecek şekilde güncellendi. Ayrıca macOS Tahoe için Apple'ın Liquid Glass tasarım diline uygun yenilenmiş bir uygulama simgesi eklendi.
 
 <img src="/img/whats-new/windows-ui.webp" alt="Windows kullanıcı arayüzü" />
 
 ## 📋 Yalınlaştırılmış menüler {#streamlined-menus}
 
-Menü çubuğu ve ilgili kontroller, kontrolleri tüm platformlarda daha erişilebilir ve tutarlı hale getirmek için yalınlaştırıldı ve yeniden düzenlendi. Göze çarpan özellikler şunlardır:
+Menü çubuğu ve ilgili kontroller, tüm platformlarda daha erişilebilir ve tutarlı bir deneyim sunmak için sadeleştirilip yeniden düzenlendi. Öne çıkan yenilikler şunlar:
 
-- Tercihler penceresini açmaya gerek kalmadan canlı kaynaklar (örneğin NetworkTables ve [Phoenix tanılama](/overview/live-sources/phoenix-diagnostics)) arasında daha hızlı geçiş.
-- Bir alanın adını (veya tam alan anahtarını) hızlıca kopyalamak için kenar çubuğuna sağ tıklayın.
-- Tercihler penceresinin yeniden düzenlenmesi, seçeneklerin hızlıca bulunmasını kolaylaştırıyor.
+- Tercihler penceresini açmaya gerek kalmadan canlı kaynaklar (örneğin NetworkTables ve [Phoenix tanılama](/overview/live-sources/phoenix-diagnostics)) arasında hızlı geçiş.
+- Kenar çubuğuna sağ tıklayarak bir alanın adını (veya tam alan anahtarını) tek tıkla kopyalama.
+- Seçeneklerin çok daha hızlı bulunmasını sağlayan yenilenmiş Tercihler penceresi düzeni.
 
 <div className="image-gallery">
   <img src="/img/whats-new/menus-1.webp" />
@@ -123,11 +123,11 @@ Menü çubuğu ve ilgili kontroller, kontrolleri tüm platformlarda daha erişil
 
 ## 🐛 Kararlılık iyileştirmeleri {#stability-improvements}
 
-Bu sürüm, uygulama genelinde çeşitli hata düzeltmeleri ve kararlılık iyileştirmeleri içerir. Tam liste sürüm [değişiklik günlüğünde](https://github.com/Mechanical-Advantage/AdvantageScope/releases) bulunabilir, ancak bazı önemli düzeltmeler aşağıda listelenmiştir:
+Bu sürüm, uygulama genelinde pek çok hata düzeltmesi ve kararlılık iyileştirmesi içeriyor. Tam listeyi sürümün [değişiklik günlüğünde](https://github.com/Mechanical-Advantage/AdvantageScope/releases) bulabilirsiniz; öne çıkan bazı düzeltmeler ise şöyle:
 
-- Özellikle çizgi grafiği sekmesini kullanırken, uzun süreler boyunca veri akışı yaparken AdvantageScope'un performansı büyük ölçüde iyileştirildi.
-- AdvantageScope artık büyük log dosyaları ve büyük alan değerleri dahil olmak üzere olağan dışı log verilerine karşı daha toleranslıdır.
-- Log verilerine göz atarken, özellikle Çizgi grafik sekmesinde filtreler kullanılırken oluşan çeşitli görsel aksaklıklar düzeltildi.
-- İndirme penceresindeki AdvantageKit log dosyalarının sıralaması düzeltildi; zaman damgası olmayan loglar artık diğer formatlara benzer şekilde listenin en altındadır.
-- 3B saha sekmesinde, yalpalama (roll) ekseninde sıfır olmayan bir rotasyona sahip robot kameraları artık doğru şekilde görselleştirilmektedir.
-- Özellikle iOS/iPadOS 26 üzerinde çalışırken AdvantageScope XR'nin kararlılığı artırıldı. Çevrimdışı kurulumlar için mevcut güncellemeler için App Store'u kontrol edin.
+- Özellikle çizgi grafik sekmesi kullanılırken uzun süreli canlı veri akışındaki performans büyük ölçüde iyileştirildi.
+- AdvantageScope artık büyük log dosyaları ve alışılmadık derecede büyük alan değerleri dahil olmak üzere sıra dışı log verilerine karşı daha dayanıklı.
+- Log verileri incelenirken (özellikle çizgi grafik sekmesinde filtreler kullanılırken) ortaya çıkan çeşitli görsel hatalar giderildi.
+- İndirme penceresindeki AdvantageKit log dosyalarının sıralaması düzeltildi; zaman damgası olmayan loglar artık diğer formatlarda olduğu gibi listenin en altında yer alıyor.
+- 3B saha sekmesinde, yalpalama (roll) ekseninde sıfır olmayan açıya sahip robot kameraları artık doğru şekilde görüntüleniyor.
+- AdvantageScope XR'ın kararlılığı özellikle iOS/iPadOS 26 üzerinde artırıldı. Çevrimdışı kurulumlar için App Store'daki güncellemeleri kontrol etmeyi unutmayın.

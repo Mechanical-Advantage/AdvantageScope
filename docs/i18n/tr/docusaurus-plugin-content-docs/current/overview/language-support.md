@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 🌐 Dil desteği {#language-support}
 
-AdvantageScope, dünya çapındaki takımlara yerelleştirilmiş bir deneyim sunmak için birden fazla dili destekler. Aşağıdaki diller şu anda mevcuttur ve AdvantageScope belgeleri, masaüstü uygulaması, mobil uygulamalar (AdvantageScope XR ve AdvantageTune) ile AdvantageScope Lite (Systemcore üzerinde ve FIRST Driver Station'da) tarafından desteklenmektedir:
+AdvantageScope, dünyanın dört bir yanındaki takımlara kendi dillerinde bir deneyim sunmak için birden fazla dili destekler. Aşağıdaki diller şu anda AdvantageScope belgelerinde, masaüstü uygulamasında, mobil uygulamalarda (AdvantageScope XR ve AdvantageTune) ve AdvantageScope Lite’ta (Systemcore üzerinde ve FIRST Driver Station’da) kullanılabilir:
 
 - İngilizce (ABD)
 - İspanyolca (Latin Amerika)
@@ -26,15 +26,15 @@ AdvantageScope, dünya çapındaki takımlara yerelleştirilmiş bir deneyim sun
 
 ## Yapılandırma {#configuration}
 
-AdvantageScope'ta görüntüleme dilini değiştirmek için `App` > `Tercihleri Göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) seçeneğine tıklayarak tercihler penceresini açın. "Dil" ayarı altında, desteklenen diller listesinden seçim yapabilir veya işletim sisteminizin diliyle otomatik olarak eşleştirmek için "Sistem Varsayılanı"nı seçebilirsiniz.
+AdvantageScope’un arayüz dilini değiştirmek için `Uygulama` > `Tercihleri göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) yolunu izleyerek tercihler penceresini açın. “Dil” ayarından desteklenen dillerden birini seçebilir veya işletim sisteminizin dilini otomatik olarak kullanmak için “Sistem varsayılanı”nı tercih edebilirsiniz.
 
-<img src="/img/prefs_tr.webp" alt="Tercihler şeması" height="450" />
+<img src="/img/prefs_tr.webp" alt="Tercihler penceresi" height="450" />
 
 ## Log anahtarları {#logging-keys}
 
-AdvantageScope tarafından desteklenen tüm formatlar, log anahtarları tanımlanırken tam Unicode uyumluluğuna sahiptir. Bu, verileri tercih ettiğiniz dili kullanarak (aksanlar, özel karakterler ve Latin dışı alfabeler dahil) kaydedebileceğiniz ve verilerin AdvantageScope'ta düzgün bir şekilde kaydedilip görüntüleneceği anlamına gelir.
+AdvantageScope’un desteklediği tüm formatlar, log anahtarları tanımlanırken tam Unicode uyumluluğu sunar. Yani verilerinizi kendi dilinizde (Türkçe karakterler, aksanlar, özel simgeler ve Latin dışı alfabeler dahil) kaydedebilirsiniz; AdvantageScope bunları sorunsuz bir şekilde saklar ve görüntüler.
 
-Aşağıda Türkçe bir anahtarla dize kaydetme örneği verilmiştir:
+Aşağıda Türkçe bir anahtarla metin (string) kaydetme örneğini görebilirsiniz:
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -54,11 +54,11 @@ Logger.recordOutput("Sürüş/Sağ motor hızı", "Hızlı");
 </Tabs>
 
 :::tip Birim desteği
-Birim üst verilerini iletme hakkında daha fazla ayrıntı için [birim desteği](/tab-reference/line-graph/units) sayfasına bakın. AdvantageScope'ta seçilen dilden bağımsız olarak birim adları SI simgeleri veya İngilizce (Amerikan veya İngiliz İngilizcesi yazımı) kullanılarak sağlanmalıdır.
+Birim üst verilerini nasıl ileteceğinizi öğrenmek için [birim desteği](/tab-reference/line-graph/units) sayfasını inceleyebilirsiniz. AdvantageScope’ta seçtiğiniz dilden bağımsız olarak, birim adlarını SI simgeleriyle veya İngilizce (Amerikan ya da İngiliz yazımıyla) belirtmeniz gerekir.
 :::
 
 ## Geliştirme {#development}
 
-AdvantageScope'un yerelleştirmesi, yapay zekâ ve topluluk iş birliğinin birleşimiyle oluşturulmaktadır. AdvantageScope hızla gelişen bir proje olduğundan, çevrilen uygulamanın ve belgelerin her dilde senkronize tutulması için yapay zekâ kullanımı zorunludur. Bu, seçtiğiniz dilden bağımsız olarak yeni özelliklerin ve güncellemelerin her zaman eşzamanlı olarak mevcut olduğu anlamına gelir.
+AdvantageScope’un yerelleştirmesi, yapay zekâ ve topluluk katkılarının birleşimiyle hazırlanır. AdvantageScope çok hızlı gelişen bir proje olduğu için, uygulamanın ve belgelerin tüm dillerde güncel kalabilmesi adına yapay zekâdan yararlanmak gerekir. Bu sayede hangi dili seçerseniz seçin, yeni özelliklere ve güncellemelere herkesle aynı anda ulaşabilirsiniz.
 
-Sürecimiz, yerel ekiplerin aşina olduğu belirli kelime dağarcığına, alıntı sözcüklere ve transliterasyonlara uyacak şekilde tasarlanmıştır. Bununla birlikte, yapay zekâ çevirileri genellikle doğal olmayan ifadeler veya başka yanlışlıklar içerir. Geri bildirimlerinizi memnuniyetle karşılıyoruz; uygulamadaki mor simgeye tıklayarak çeviriler hakkında geri bildirim sağlayabilirsiniz (İngilizce dışındaki herhangi bir dile ayarlandığında).
+Çeviri sürecimiz, yerel takımların günlük hayatta kullandığı terimlere ve alıntı kelimelere uyum sağlayacak şekilde tasarlanmıştır. Yine de yapay zekâ çevirilerinde zaman zaman doğal durmayan ifadeler veya hatalar bulunabilir. Geri bildirimleriniz bizim için çok değerli; uygulama İngilizce dışında bir dile ayarlıyken mor simgeye tıklayarak çevirilerle ilgili görüşlerinizi paylaşabilirsiniz.

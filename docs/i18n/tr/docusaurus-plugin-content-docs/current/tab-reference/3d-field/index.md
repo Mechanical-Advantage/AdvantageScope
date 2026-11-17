@@ -3,52 +3,52 @@ import TabItem from '@theme/TabItem';
 
 # 👀 3B saha {#3d-field}
 
-3B saha, robotun ve sahanın 3B görselleştirmesini gösterir. Normal 2B pozlarla kullanılabilir, ancak özellikle 3B hesaplamalarıyla çalışırken (AprilTag'ler ile konum belirleme gibi) son derece yararlıdır. Sahaya göre, robota göre ve sabit dahil olmak üzere birden fazla kamera görünümü mevcuttur. [AdvantageScope XR](advantagescope-xr) bu sekmenin artırılmış gerçeklik kullanılarak görselleştirilmesine olanak tanır. Zaman çizelgesi robotun ne zaman etkin olduğunu gösterir ve log verileri arasında gezinmek için kullanılabilir.
+3B saha sekmesi, robotun ve sahanın 3B görselleştirmesini gösterir. Normal 2B pozlarla da kullanabilirsiniz; ancak özellikle 3B hesaplamalarla (örneğin AprilTag'lerle konum belirleme) çalışırken çok işinize yarar. Sahaya göre, robota göre ve sabit kamera gibi birden fazla kamera görünümü sunar. [AdvantageScope XR](advantagescope-xr) ile bu sekmeyi artırılmış gerçeklik üzerinden de görüntüleyebilirsiniz. Zaman çizelgesi robotun ne zaman etkin olduğunu gösterir ve log verileri arasında gezinmenizi sağlar.
 
-<img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="3D saha sekmesi örneği" />
+<img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="3B saha sekmesi örneği" />
 
-_Yukarıda İngilizce arayüz gösterilmektedir._
+_Yukarıda İngilizce arayüz gösterilmiştir._
 
 <details>
-<summary>Zaman Çizelgesi Kontrolleri</summary>
+<summary>Zaman çizelgesi kontrolleri</summary>
 
-Zaman çizelgesi oynatmayı ve görselleştirmeyi kontrol etmek için kullanılır. Zaman çizelgesine tıklamak bir zaman seçer ve sağ tıklamak seçimi kaldırır. Seçilen zaman tüm sekmeler arasında senkronize edilir, bu da bu konumu diğer görünümlerde hızlıca bulmayı kolaylaştırır.
+Zaman çizelgesi, oynatmayı ve görselleştirmeyi kontrol etmenizi sağlar. Zaman çizelgesine tıklayarak bir anı seçebilir, sağ tıklayarak seçimi kaldırabilirsiniz. Seçilen zaman tüm sekmelerde senkronize edildiği için aynı anı diğer görünümlerde de kolayca bulabilirsiniz.
 
-Sarı bölümler robotun otonomda olduğu zamanları, mavi bölümler robotun teleoperasyonda olduğu zamanları ve gri bölümler robotun test modunda olduğu zamanları gösterir.
+Sarı bölümler robotun otonomda, mavi bölümler teleop modunda, gri bölümler ise test modunda olduğu aralıkları gösterir.
 
-Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı veya aşağı kaydırın. `Shift` tuşunu basılı tutarken tıklayıp sürükleyerek bir aralık da seçilebilir. Yatay olarak kaydırarak (desteklenen cihazlarda) veya zaman çizelgesinde tıklayıp sürükleyerek sola ve sağa hareket edin. Canlı bağlandığında sola kaydırmak mevcut zamandan kilidi kaldırır ve en sağa kadar kaydırmak tekrar mevcut zamana kilitler. Robotun etkin olduğu periyoda yakınlaştırmak için `Ctrl+\` tuşlarına basın.
+Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirip yukarı veya aşağı kaydırın. `Shift` tuşunu basılı tutarak tıklayıp sürüklediğinizde belirli bir aralığı da seçebilirsiniz. Yatay kaydırma yaparak (desteklenen cihazlarda) veya zaman çizelgesini tıklayıp sürükleyerek sağa ve sola hareket edebilirsiniz. Canlı bağlantıdayken sola kaydırmak mevcut zamandaki kilidi açar, en sağa kadar kaydırmak ise tekrar mevcut zamana kilitler. Robotun etkin olduğu aralığa yakınlaştırmak için `Ctrl+\` tuşlarına basın.
 
 <img src="/img/tab-reference/timeline.webp" alt="Zaman çizelgesi" />
 
 </details>
 
 :::warning 2026-2027 FTC Sahası
-2026-2027 FTC saha modeli, hive üzerindeki etiketlerin konumlarının maç sırasında değişmesi beklendiğinden yerleşik AprilTag'leri içermez. Takımlar, sahaya dinamik AprilTag nesneleri eklemek için bir `Pose3d[]` ve `number[]` yayınlayabilir. Bu saha için doğru AprilTag boyutu **3,25 inç**tir.
+2026-2027 FTC saha modelinde yerleşik AprilTag'ler bulunmaz; çünkü maç sırasında kovan (hive) üzerindeki etiketlerin konumlarının değişmesi beklenir. Takımlar, sahaya dinamik AprilTag nesneleri eklemek için bir `Pose3d[]` ve `number[]` yayınlayabilir. Bu saha için doğru AprilTag boyutu **3,25 inç**tir.
 :::
 
 :::warning 2026 FRC Sahası
-2026 FRC saha modeli, **kaynaklı** saha için AprilTag düzeniyle tutarlıdır. Kaynaklı ve AndyMark sahaları arasındaki farklar çok küçüktür, ancak AndyMark saha düzenine dayalı AprilTag pozları görselleştirilirken küçük (~0.5 inç) hizalama hataları olabilir.
+2026 FRC saha modeli, **kaynaklı (welded)** sahanın AprilTag düzeniyle uyumludur. Kaynaklı ve AndyMark sahaları arasındaki farklar çok küçüktür; ancak AndyMark saha düzenine dayalı AprilTag pozlarını görselleştirirken küçük (~0,5 inç) hizalama farkları görebilirsiniz.
 :::
 
 ## Nesneler ekleme {#adding-objects}
 
-Başlamak için bir alanı "Pozlar" bölümüne sürükleyin. X düğmesini kullanarak bir nesneyi silin veya göz simgesine tıklayarak ya da alan adına çift tıklayarak geçici olarak gizleyin. Tüm nesneleri kaldırmak için eksen başlığının yanındaki çöp kutusuna ve ardından `Tümünü Temizle` seçeneğine tıklayın. Nesneler listede tıklanıp sürüklenerek yeniden düzenlenebilir.
+Başlamak için bir alanı “Pozlar” bölümüne sürükleyin. Bir nesneyi X düğmesiyle silebilir; göz simgesine tıklayarak ya da alan adına çift tıklayarak geçici olarak gizleyebilirsiniz. Tüm nesneleri kaldırmak için bölüm başlığının yanındaki çöp kutusuna ve ardından `Tümünü temizle` seçeneğine tıklayın. Nesneleri listede tıklayıp sürükleyerek yeniden sıralayabilirsiniz.
 
-**Her bir nesneyi özelleştirmek için renkli simgeye tıklayın veya alan adına sağ tıklayın.** AdvantageScope, birçoğu özelleştirilebilen (renkleri ve robot modellerini değiştirme gibi) çok sayıda nesne türünü destekler. Bazı nesnelerin mevcut bir nesneye alt öge olarak eklenmesi gerekir.
+**Her bir nesneyi özelleştirmek için renkli simgeye tıklayın veya alan adına sağ tıklayın.** AdvantageScope, çoğu özelleştirilebilen (örneğin renkleri ve robot modellerini değiştirebileceğiniz) çok sayıda nesne türünü destekler. Bazı nesnelerin mevcut bir nesnenin altına alt öge olarak eklenmesi gerekir.
 
 :::tip
-Desteklenen nesne türlerinin tam listesini görmek için `?` simgesine tıklayın. Bu liste ayrıca desteklenen veri türlerini ve nesnelerin alt öge olarak eklenmesi gerekip gerekmediğini içerir.
+Desteklenen nesne türlerinin tam listesini görmek için `?` simgesine tıklayın. Bu listede desteklenen veri türlerini ve nesnelerin alt öge olarak eklenmesinin gerekip gerekmediğini de görebilirsiniz.
 :::
 
 :::info
-AdvantageScope, FTC sahaları için AprilTag'lerin çeşitli boyutlarını destekler. Boyutlar, gerekli beyaz kenarlık hariç, **AprilTag'in siyah bölümünün kenar uzunluğu** olarak ölçülür.
+AdvantageScope, FTC sahaları için farklı AprilTag boyutlarını destekler. Boyutlar, etrafındaki zorunlu beyaz kenarlık hariç, **AprilTag'in siyah bölümünün kenar uzunluğu** olarak ölçülür.
 :::
 
 ## Veri formatı {#data-format}
 
-Geometri verileri bayt kodlu struct veya protobuf olarak yayınlanmalıdır. `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` ve daha fazlası dahil olmak üzere çeşitli 2B ve 3B geometri türleri desteklenmektedir.
+Geometri verileri bayt kodlu struct veya protobuf olarak yayınlanmalıdır. `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` ve daha fazlası dahil olmak üzere çeşitli 2B ve 3B geometri türleri desteklenir.
 
-WPILib ve AdvantageKit dahil olmak üzere birçok kütüphane struct formatını destekler. Aşağıdaki örnek kod Java'da 3B poz verilerinin nasıl loglanacağını göstermektedir.
+WPILib ve AdvantageKit dahil birçok kütüphane struct formatını destekler. Aşağıdaki örnek kod, Java'da 3B poz verilerinin nasıl loglanacağını gösterir.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -92,43 +92,43 @@ packet.put("Pose heading (deg)", 180.0); // Derece
 </TabItem>
 </Tabs>
 
-## Mekanizmalar & bileşenler {#mechanisms-and-components}
+## Mekanizmalar ve bileşenler {#mechanisms-and-components}
 
-Mekanizma verileri 2B mekanizmalar veya eklemli 3B bileşenler kullanılarak görselleştirilebilir.
+Mekanizma verilerini 2B mekanizmalar veya eklemli 3B bileşenler kullanarak görselleştirebilirsiniz.
 
 ### 2B mekanizmalar {#2d-mechanisms}
 
-Bir [`Mechanism2d`](https://docs.wpilib.org/tr/stable/docs/software/dashboards/glass/mech2d-widget.html) kullanılarak loglanan mekanizma verilerini görselleştirmek için mekanizma alanını mevcut bir robot veya hayalet nesnesine ekleyin. Mekanizma, aşağıda gösterildiği gibi basit kutular kullanılarak robotun XZ veya YZ düzlemine yansıtılır. XZ ve YZ düzlemleri arasında geçiş yapmak için dişli simgesine tıklayın veya alan adına sağ tıklayın. Robotun orijini mekanizmanın alt kenarında merkezlenmiştir.
+Bir [`Mechanism2d`](https://docs.wpilib.org/tr/stable/docs/software/dashboards/glass/mech2d-widget.html) kullanarak logladığınız mekanizma verilerini görselleştirmek için mekanizma alanını mevcut bir robot veya hayalet nesnesinin altına ekleyin. Mekanizma, aşağıda gösterildiği gibi basit kutular halinde robotun XZ veya YZ düzlemine yansıtılır. XZ ve YZ düzlemleri arasında geçiş yapmak için dişli simgesine tıklayın veya alan adına sağ tıklayın. Robotun orijini mekanizmanın alt kenarının ortasında yer alır.
 
-<img src="/img/tab-reference/3d-field/3d-field-2.webp" alt="2D mekanizma" />
+<img src="/img/tab-reference/3d-field/3d-field-2.webp" alt="2B mekanizma" />
 
 ### 3B bileşenler {#3d-components}
 
 :::warning
-3B bileşenlerin kurulumu karmaşık ve zaman alıcı olabilir. 3B sahada mekanizmaları görselleştirmek için daha kolaylaştırılmış bir yaklaşım sunan yukarıda açıklandığı gibi AdvantageScope'un `Mechanism2d` desteğinden yararlanmayı düşünün.
+3B bileşenleri ayarlamak karmaşık ve zaman alıcı olabilir. 3B sahada mekanizmaları görselleştirmek için daha pratik bir yol sunan, yukarıda açıklanan AdvantageScope `Mechanism2d` desteğini kullanmayı değerlendirebilirsiniz.
 :::
 
-Mekanizmalar, her bileşenin robota göre konumlarını temsil eden bir 3B poz kümesi loglanarak eklemli bileşenlerle görselleştirilebilir. Pozları mevcut bir robot veya hayalet nesnesine ekleyin ve nesne türünü "Bileşen" olarak ayarlayın.
+Her bileşenin robota göre konumunu temsil eden bir 3B poz dizisi loglayarak mekanizmaları eklemli bileşenlerle görselleştirebilirsiniz. Pozları mevcut bir robot veya hayalet nesnesinin altına ekleyin ve nesne türünü “Bileşen” olarak seçin.
 
-Her bileşen bağımsız olarak hareket ettirilebilir (asansör taşıyıcısı, kol veya uç işlevci gibi). AdvantageKit kullanıcıları, bir Mechanism2d'yi bir Pose3d nesneleri dizisine dönüştürmek için [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) yöntemini kullanmayı düşünmelidir. Robotların bileşenlerle yapılandırılması hakkında daha fazla bilgi için [Özel Varlıklar](/more-features/custom-assets) bölümüne bakın.
+Her bileşen bağımsız olarak hareket edebilir (örneğin asansör taşıyıcısı, kol veya uç efektör (end effector)). AdvantageKit kullanıyorsanız bir Mechanism2d nesnesini Pose3d dizisine dönüştürmek için [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) metodunu kullanabilirsiniz. Robotları bileşenlerle yapılandırma hakkında daha fazla bilgi için [Özel Varlıklar](/more-features/custom-assets) bölümüne bakın.
 
-<img src="/img/tab-reference/3d-field/3d-field-3.webp" alt="3D mekanizma" />
+<img src="/img/tab-reference/3d-field/3d-field-3.webp" alt="3B mekanizma" />
 
 ## Oyun objesi nesneleri {#game-piece-objects}
 
-Her saha bir dizi oyun objesi nesne türü içerir; bu da oyun objelerinin robot kodu tarafından yayınlanan veriler kullanılarak sahadaki herhangi bir konumda işlenmesine olanak tanır. Bunun aşağıdakiler dahil çeşitli uygulamaları vardır:
+Her sahada oyun objesi nesne türleri bulunur; böylece robot kodunuzun yayınladığı verileri kullanarak oyun objelerini sahanın herhangi bir yerinde gösterebilirsiniz. Bunun birçok kullanım alanı vardır:
 
-- Basit animasyonlar kullanarak simüle edilmiş otonom rutinlerin eylemlerini görselleştirme
+- Basit animasyonlarla simüle edilmiş otonom rutinlerin adımlarını görselleştirme
 - Sahada tespit edilen oyun objelerinin konumlarını gösterme
-- Oyun objelerinin robot içindeki konumlarını belirtme
+- Oyun objelerinin robotun içinde nerede bulunduğunu belirtme
 - Fizik hesaplamalarına dayalı atış yörüngelerini görüntüleme
 
-Başka bir basit kullanım durumu, sensör verilerine dayalı olarak robot içindeki oyun objelerinin durumunu göstermektir. Örneğin, bir 2024 robotu için nota yolu içindeki bir ışın kesme sensörü bir notanın görünmesine neden olabilir (aşağıda gösterildiği gibi).
+Bir diğer basit kullanım şekli ise sensör verilerine göre robotun içindeki oyun objelerinin durumunu göstermektir. Örneğin, 2024 robotunda nota yolundaki bir ışın kesme (beam break) sensörü, robotun içinde bir notanın görünmesini sağlayabilir (aşağıda gösterildiği gibi).
 
 <details>
 <summary>Kod Örneği</summary>
 
-AdvantageKit KitBot 2024 örnek projesi, robottan hoparlöre seyahat eden bir notayı hareket ettiren basit bir [komut](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) örneği içerir. Bu komut standart [fırlatma sırasına](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73) dahil edilmiştir ve ne zaman bir nota serbest bırakılsa animasyonu tetikler. [Bu video](https://youtube.com/shorts/-HxfDo9f19U?feature=share), oyun objesi animasyonlarının birkaç farklı oyun için otonom rutinleri görselleştirmek üzere nasıl kullanılabileceğini göstermektedir.
+AdvantageKit KitBot 2024 örnek projesi, robottan hoparlöre doğru giden bir notayı canlandıran basit bir [komut](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) örneği içerir. Bu komut standart [fırlatma sekansına](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73) dahil edilmiştir ve her nota fırlatıldığında animasyonu tetikler. [Bu video](https://youtube.com/shorts/-HxfDo9f19U?feature=share), farklı oyunlar için otonom rutinleri görselleştirmede oyun objesi animasyonlarının nasıl kullanılabileceğini gösterir.
 
 </details>
 
@@ -136,62 +136,62 @@ AdvantageKit KitBot 2024 örnek projesi, robottan hoparlöre seyahat eden bir no
 
 ## Kamera seçenekleri {#camera-options}
 
-Seçilen kamera modunu değiştirmek için işlenen saha görünümüne sağ tıklayın. Kamera modu ve konumu her ayrılmış pencere için bağımsız olarak kontrol edilir, bu da çoklu kamera görünümlerinin kolayca oluşturulmasına olanak tanır.
+Kamera modunu değiştirmek için 3B saha görünümüne sağ tıklayın. Kamera modu ve konumu ayrılmış her pencere için bağımsız olarak kontrol edilir; böylece kolayca çoklu kamera görünümleri oluşturabilirsiniz.
 
 :::info
-Yörünge ve Sürücü İstasyonu kameralarının FOV değerini ayarlamak için işlenen saha görünümüne sağ tıklayın ve "FOV Düzenle..."ye tıklayın.
+Yörünge ve Sürücü İstasyonu kameralarının FOV değerini ayarlamak için saha görünümüne sağ tıklayın ve “FOV ayarla” seçeneğine tıklayın.
 :::
 
-### Yörünge saha {#orbit-field}
+### Saha yörüngesi {#orbit-field}
 
-Bu, kameranın sahaya göre serbestçe hareket ettirilebildiği varsayılan kamera modudur. **Sol tıkla + sürükle** kamerayı döndürür ve **sağ tıkla + sürükle** kamerayı kaydırır. Yakınlaştırmak ve uzaklaştırmak için **kaydırın**.
+Bu, kamerayı sahaya göre serbestçe hareket ettirebildiğiniz varsayılan kamera modudur. **Sol tık + sürükle** kamerayı döndürür, **sağ tık + sürükle** kamerayı kaydırır. Yakınlaşıp uzaklaşmak için **fare tekerleğini kaydırın**.
 
 :::tip
-Kamera klavye kullanılarak da kontrol edilebilir. **WASD** tuşları ötelemek, **IJKL** tuşları döndürmek ve **E** ile **Q** tuşları dikey olarak ötelemek için kullanılır.
+Kamerayı klavyeyle de kontrol edebilirsiniz. **WASD** tuşları yatay hareket, **IJKL** tuşları döndürme, **E** ve **Q** tuşları ise dikey hareket içindir.
 :::
 
-### Yörünge robot {#orbit-robot}
+### Robot yörüngesi {#orbit-robot}
 
-Bu mod "Yörünge Saha" moduyla aynı kontrollere sahiptir, ancak kameranın konumu robota göre kilitlenmiştir. Bu, robotun hareketinin takip çekimlerine olanak tanır.
+Bu mod “Saha yörüngesi” moduyla aynı kontrollere sahiptir, ancak kameranın konumu robota göre kilitlidir. Bu sayede robotun hareketini takip eden çekimler elde edebilirsiniz.
 
 ### Sürücü İstasyonu {#driver-station}
 
-Bu mod, kamerayı sürücü istasyonlarından birinin arkasına tipik göz hizasında kilitler. Görüntülenecek istasyonu manuel olarak seçin veya log verilerinde saklanan ittifak ve istasyon numarasını kullanmak için "Otomatik"yi seçin.
+Bu mod, kamerayı sürücü istasyonlarından birinin arkasına, tipik göz hizasına kilitler. Görüntülemek istediğiniz istasyonu manuel olarak seçebilir veya log verilerindeki ittifak ve istasyon numarasını kullanmak için “Otomatik” seçeneğini seçebilirsiniz.
 
 :::warning
-İstasyon numarasının otomatik seçimi AdvantageKit 2023 veya öncesi tarafından üretilen log verileri görüntülenirken yanlış olabilir.
+AdvantageKit 2023 veya daha eski sürümlerle üretilen log verilerini görüntülerken istasyon numarasının otomatik seçimi hatalı olabilir.
 :::
 
 ### Sabit kamera {#fixed-camera}
 
-Her robot modeli, görüş ve sürücü kameraları gibi bir dizi sabit kamera ile yapılandırılmıştır. Bu kameralar sabit konumlara, en boy oranlarına ve FOV değerlerine sahiptir. Bu görünümler genellikle görüş verilerini kontrol etmek veya bir sürücü kamerası görünümünü simüle etmek için kullanışlıdır. Aşağıdaki örnekte bir sürücü kamerası gösterilmektedir.
+Her robot modelinde görüntü işleme (vision) ve sürücü kameraları gibi sabit kameralar tanımlıdır. Bu kameraların sabit konumları, en boy oranları ve FOV değerleri vardır. Bu görünümler genellikle görüntü işleme verilerini kontrol etmek veya sürücü kamerası görünümünü simüle etmek için çok kullanışlıdır. Aşağıdaki örnekte bir sürücü kamerası gösterilmiştir.
 
 <img src="/img/tab-reference/3d-field/3d-field-5.webp" alt="Sabit kamera" />
 
-Bir "Kamera Geçersiz Kılma" pozisyonu sağlanırsa, yapılandırılmış FOV değerlerini ve en boy oranlarını korurken tüm sabit kameraların varsayılan pozlarının yerini alır. Bu, robot kodunun bir taret veya atıcı başlığı üzerine monte edilmiş bir kamera gibi hareketli bir kameranın konumunu sağlamasına olanak tanır.
+Bir “Kamera geçersiz kılma” pozu sağlandığında, tüm sabit kameraların yapılandırılmış FOV ve en boy oranları korunarak varsayılan pozlarının yerini alır. Böylece robot kodunuz, taret veya atıcı başlığı üzerine monte edilmiş hareketli bir kameranın konumunu da sağlayabilir.
 
 :::info
-Diğer poz verileriyle tutarlı olarak, "Kamera Geçersiz Kılma" pozu robota göre değil, _sahaya göre_ olmalıdır.
+Diğer poz verileriyle uyumlu olarak, “Kamera geçersiz kılma” pozu robota göre değil, _sahaya göre_ olmalıdır.
 :::
 
 ## Yapılandırma {#configuration}
 
-Saha modeli açılır menü kullanılarak yapılandırılabilir. Son dönemdeki tüm FRC ve FTC oyunları desteklenmektedir. Sınırlı grafik performansına sahip cihazlar için "Evergreen" sahalarını kullanmanızı öneririz. "Eksenler" sahaları, ölçek için bir saha taslağı ile yalnızca orijinde XYZ eksenlerini görüntüler.
+Saha modelini açılır menüden seçebilirsiniz. Son dönemdeki tüm FRC ve FTC oyunları desteklenir. Grafik performansı sınırlı cihazlarda “Evergreen” sahalarını kullanmanızı öneririz. “Eksenler” sahaları ise ölçek için bir saha taslağıyla birlikte yalnızca orijinde XYZ eksenlerini gösterir.
 
 :::info
-Bu sekmede kullanılan koordinat sistemi özelleştirilebilir. Ayrıntılar için [koordinat sistemi](/more-features/coordinate-systems) sayfasına bakın.
+Bu sekmede kullanılan koordinat sistemini özelleştirebilirsiniz. Ayrıntılar için [koordinat sistemi](/more-features/coordinate-systems) sayfasına bakın.
 :::
 
 ### İşleme modları {#rendering-modes}
 
 3B saha üç işleme modunu destekler:
 
-- **Sinematik (Sol):** Daha gerçekçi bir görünüm için gölgeler, aydınlatma, yansımalar ve yüksek detaylı 3B modeller kullanarak işleyin. Oldukça güçlü bir GPU gerektirir.
-- **Standart (Orta):** Varsayılan, minimum aydınlatma ve basitleştirilmiş 3B modellerle işleyin. Çoğu cihazda iyi çalışır.
-- **Düşük Güç (Sağ):** Pil tüketimini azaltmak ve alt seviye cihazlarda daha tutarlı performans sağlamak için kare hızını, çözünürlüğü ve model detayını düşürün.
+- **Sinematik (Sol):** Daha gerçekçi bir görünüm için gölgeler, aydınlatma, yansımalar ve yüksek detaylı 3B modeller kullanır. Güçlü bir GPU gerektirir.
+- **Standart (Orta):** Varsayılan moddur; minimum aydınlatma ve basitleştirilmiş 3B modeller kullanır. Çoğu cihazda akıcı çalışır.
+- **Düşük güç (Sağ):** Pil tüketimini azaltmak ve düşük donanımlı cihazlarda daha kararlı performans elde etmek için kare hızını, çözünürlüğü ve model detayını düşürür.
 
 <img src="/img/tab-reference/3d-field/3d-field-6.webp" alt="İşleme modlarının karşılaştırılması" />
 
-İşleme modunu yapılandırmak için `Uygulama` > `Tercihleri göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) seçeneğine tıklayarak tercihler penceresini açın. "3B modu (Pil)" ayarı, şarj olmuyorken bir dizüstü bilgisayarda kullanılan işleme modunu geçersiz kılmak için varsayılandan değiştirilebilir. Örneğin bu, yarışmadayken pili korumak için kullanılabilir.
+İşleme modunu yapılandırmak için `Uygulama` > `Tercihleri göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) yolunu izleyerek tercihler penceresini açın. Dizüstü bilgisayarınız şarjda değilken kullanılacak işleme modunu değiştirmek için “3B modu (Pil)” ayarını varsayılandan farklı bir moda alabilirsiniz. Örneğin, yarışma sırasında pil tasarrufu yapmak için bu özellik oldukça yararlıdır.
 
 <img src="/img/prefs_tr.webp" alt="Tercihler diyagramı" height="450" />

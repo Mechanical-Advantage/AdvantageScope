@@ -4,28 +4,28 @@ sidebar_position: 1
 
 # Ayar modu {#tuning-mode}
 
-Bazı canlı kaynaklar sayısal ve boole değerlerinin canlı ayarlanmasını destekler. Örneğin bu özellik, bir NetworkTables kaynağına bağlıyken [kontrolcü kazançlarını ayarlamak](https://docs.wpilib.org/tr/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) için kullanılabilir. Robot kodunun NetworkTables üzerinden kazanç almayı desteklemesi gerektiğini unutmayın.
+Bazı canlı kaynaklar sayısal ve boolean değerlerin canlı olarak ayarlanmasını destekler. Örneğin bir NetworkTables kaynağına bağlıyken [kontrolcü kazançlarını ayarlamak](https://docs.wpilib.org/tr/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) için bu özelliği kullanabilirsiniz. Elbette robot kodunun da NetworkTables üzerinden kazanç almayı desteklemesi gerekir.
 
-Varsayılan olarak AdvantageScope'taki tüm değerler salt okunurdur. Ayar modunu açıp kapatmak için, desteklenen bir canlı kaynağa bağlıyken arama çubuğunun sağındaki **kaydırıcı simgesine tıklayın**. Simge mor olduğunda ayar modu aktiftir ve alan düzenleme etkindir.
+Varsayılan olarak AdvantageScope’taki tüm değerler salt okunurdur. Ayar modunu açıp kapatmak için desteklenen bir canlı kaynağa bağlıyken arama çubuğunun sağındaki **kaydırıcı simgesine tıklayın**. Simge mor renge döndüğünde ayar modu etkindir ve alanları düzenleyebilirsiniz.
 
-- Bir **sayısal alanı** düzenlemek için kenar çubuğundaki alanın sağında bulunan metin kutusunu kullanarak yeni bir değer girin. Değer, girdi seçimi kaldırıldıktan veya "Enter" tuşuna basıldıktan sonra yayınlanır. Robot tarafından yayınlanan değeri kullanmak için metin kutusunu boş bırakın.
-- Bir **boole alanını** açıp kapatmak için kenar çubuğundaki alanın sağında bulunan kırmızı veya yeşil daireye tıklayın.
-- Yayınlanan tüm değerleri panoya kopyalamak için **kaydırıcı simgesine sağ tıklayın** ve **"Ayarlanan değerleri kopyala"** seçeneğini seçin.
+- Bir **sayısal alanı** düzenlemek için kenar çubuğundaki alanın sağında yer alan metin kutusuna yeni değeri yazın. Kutu dışına tıkladığınızda veya “Enter” tuşuna bastığınızda değer yayınlanır. Robotun yayınladığı değeri kullanmaya devam etmek için metin kutusunu boş bırakın.
+- Bir **boolean alanı** değiştirmek için kenar çubuğundaki alanın sağında yer alan kırmızı veya yeşil daireye tıklayın.
+- Yayınlanan tüm değerleri panoya kopyalamak için **kaydırıcı simgesine sağ tıklayıp** **“Ayarlanan değerleri kopyala”**yı seçin.
 
 :::warning
-Bu özellik robotu sahada kontrol etmek için tasarlanmamıştır. Seçiciler, tetikleyici düğmeler vb. gibi gösterge paneli tarzı girdiler desteklenmez.
+Bu özellik robotu sahada sürmek veya kontrol etmek için tasarlanmamıştır. Seçiciler (chooser), tetikleyici düğmeler vb. dashboard tarzı girdiler desteklenmez.
 :::
 
 ## AdvantageKit ile ayarlama {#tuning-with-advantagekit}
 
-AdvantageKit tarafından `AdvantageKit` alt tablosuna yayınlanan alanlar yalnızca çıkış amaçlıdır ve düzenlenemez. Ancak kullanıcılar, kullanıcı kodundan AdvantageScope'tan ayarlanabilir alanlar yayınlayabilir. **NetworkTables üzerindeki "/Tuning" tablosuna yayınlanan tüm alanlar, "NetworkTables (AdvantageKit)" canlı kaynağı kullanılırken "Tuning" tablosu altında görünecektir.**
+AdvantageKit’in `AdvantageKit` alt tablosuna yayınladığı alanlar yalnızca çıktı amaçlıdır ve düzenlenemez. Ancak kendi kodunuzdan AdvantageScope üzerinden ayarlanabilen alanlar yayınlayabilirsiniz. **NetworkTables’daki “/Tuning” tablosuna yayınlanan tüm alanlar, “NetworkTables (AdvantageKit)” canlı kaynağı kullanılırken “Tuning” tablosunun altında görünür.**
 
-Örneğin, ayarlanabilir bir sayı [`LoggedNetworkNumber`](https://docs.advantagekit.org/data-flow/recording-inputs/dashboard-inputs) sınıfı kullanılarak yayınlanabilir:
+Örneğin [`LoggedNetworkNumber`](https://docs.advantagekit.org/data-flow/recording-inputs/dashboard-inputs) sınıfını kullanarak ayarlanabilir bir sayı yayınlayabilirsiniz:
 
 ```java
 LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNumber", 0.0);
 ```
 
 :::warning
-`NetworkInputs` alt tablosu **düzenlenemez**, çünkü AdvantageKit tarafından loglama ve yeniden oynatma amacıyla ağ değerlerini kaydetmek için kullanılır. Ağ girdileriyle gerçek zamanlı olarak etkileşime girmek için `Tuning` tablosunu kullanın.
+`NetworkInputs` alt tablosu **düzenlenemez**; çünkü AdvantageKit bu tabloyu loglama ve yeniden oynatma amacıyla ağ değerlerini kaydetmek için kullanır. Ağ girdileriyle gerçek zamanlı etkileşim kurmak için `Tuning` tablosunu kullanın.
 :::

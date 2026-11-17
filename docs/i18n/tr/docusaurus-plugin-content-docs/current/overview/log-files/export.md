@@ -1,51 +1,51 @@
 # Log verilerini dışa aktarma {#exporting-log-data}
 
-AdvantageScope, log verilerini CSV, WPILOG veya MCAP dosyası olarak dışa aktarmak için esnek bir sistem içerir. Dışa aktarma işlevleri, bir log dosyası görüntülenirken veya bir canlı veri kaynağına bağlıyken çalışır. Olası kullanım durumları şunlardır:
+AdvantageScope, log verilerini CSV, WPILOG veya MCAP dosyası olarak dışa aktarmak için esnek bir sistem sunar. Bu özelliği hem kayıtlı bir log dosyasını incelerken hem de canlı bir veri kaynağına bağlıyken kullanabilirsiniz. Dışa aktarmayı şu gibi amaçlarla kullanabilirsiniz:
 
-- Başka uygulamalarda analiz etmek üzere bir WPILOG dosyasını CSV veya MCAP'e dönüştürme.
-- Daha sonra erişmek üzere NetworkTables verilerine dayalı bir WPILOG dosyası dışa aktarma.
-- Dosya boyutunu küçültmek için sınırlı sayıda alana sahip (ve yinelenen değerleri kaldırılmış) bir WPILOG kaydetme.
+- Başka uygulamalarda analiz etmek için bir WPILOG dosyasını CSV veya MCAP’e dönüştürmek
+- Daha sonra tekrar incelemek üzere NetworkTables verilerinden bir WPILOG dosyası oluşturmak
+- Dosya boyutunu küçültmek için yalnızca belirli alanları içeren (ve tekrarlayan değerlerin temizlendiği) bir WPILOG kaydetmek
 
-Dışa aktarma seçeneklerini görüntülemek için `Dosya` > `Verileri dışa aktar...` seçeneğine tıklayın.
+Dışa aktarma seçeneklerini görmek için `Dosya` > `Verileri dışa aktar...` yolunu izleyin.
 
 <img src="/img/overview/log-files/export-1.webp" alt="Dışa aktarma seçenekleri" />
 
 _Yukarıda İngilizce arayüz gösterilmektedir._
 
 :::tip
-Burada açıklanan tam log dışa aktarımına ek olarak, 💬 [Konsol](/tab-reference/console) sekmesi konsol verilerinin bir metin dosyasına dışa aktarılmasına olanak tanır.
+Buradaki tam log dışa aktarma özelliğine ek olarak, 💬 [Konsol](/tab-reference/console) sekmesinden konsol verilerini de bir metin dosyası olarak dışa aktarabilirsiniz.
 :::
 
 :::warning
-**SysId İçin Veri Dışa Aktarma**
+**SysId için veri dışa aktarma**
 
-SysId, AdvantageScope'un varsayılan dışa aktarma seçenekleriyle uyumsuz ek zaman damgası verileri gerektirdiğinden, [SysId](https://docs.wpilib.org/tr/stable/docs/software/advanced-controls/system-identification/introduction.html) uygulamasında kullanılmak üzere **simülasyonda üretilen** log verilerini dışa aktarmak için bu özelliğin kullanılmasını önermiyoruz. **Simülasyon _dışında_ üretilen** log verilerinin SysId'de kullanılmak üzere minimum veri kaybıyla dışa aktarılabileceğini unutmayın (bununla birlikte maksimum doğruluk doğrudan SysId'de _orijinal_ veri logu kullanılarak elde edilebilir).
+SysId, AdvantageScope’un varsayılan dışa aktarma seçenekleriyle uyuşmayan ek zaman damgası verilerine ihtiyaç duyduğundan, **simülasyonda üretilen** log verilerini [SysId](https://docs.wpilib.org/tr/stable/docs/software/advanced-controls/system-identification/introduction.html) için bu özellik üzerinden dışa aktarmanızı önermeyiz. **Simülasyon _dışında_ üretilen** log verilerini ise çok az veri kaybıyla SysId için dışa aktarabilirsiniz (yine de en yüksek doğruluk için _orijinal_ log dosyasını doğrudan SysId’de kullanmanız daha iyidir).
 
-_Bu uyarı, "AdvantageKit döngüleri" seçeneği seçilerek hiçbir veri kaybı olmadan dışa aktarılabilen AdvantageKit tarafından üretilen loglar için **geçerli değildir**. Detaylar için [bu sayfaya](https://docs.advantagekit.org/data-flow/sysid-compatibility) bakın._
+_Bu uyarı AdvantageKit’in ürettiği loglar için **geçerli değildir**; “AdvantageKit döngüleri” seçeneğini seçerek bu logları hiçbir veri kaybı olmadan dışa aktarabilirsiniz. Ayrıntılar için [bu sayfaya](https://docs.advantagekit.org/data-flow/sysid-compatibility) göz atın._
 :::
 
 ## Seçenekler {#options}
 
-Dışa aktarma sırasında aşağıdaki seçenekler sunulur:
+Dışa aktarma penceresinde şu seçenekler bulunur:
 
-- **Format:** Dışa aktarılan dosyanın genel formatını ayarlar. Aşağıdaki seçeneklere bakın.
-  - _CSV (Tablo):_ Her satırın ayrı bir zaman damgasını temsil ettiği ve her sütunun bir alanı (artı zaman damgası değeri için bir sütun) temsil ettiği virgülle ayrılmış değerler. Her satır birden fazla alandaki bir değeri temsil edebilir.
-  - _CSV (Liste):_ Her satırın zaman damgası, anahtar ve değer sütunlarıyla tek bir alandaki değeri temsil ettiği virgülle ayrılmış değerler.
-  - _WPILOG:_ AdvantageScope'ta tekrar açılabilen standart WPILOG dosyası.
-  - _MCAP:_ [Foxglove](https://foxglove.dev) uygulamasında açılabilen standart [MCAP](https://mcap.dev) dosyası.
-- **Zaman damgaları:** Yalnızca "CSV (Tablo)" içindir. Yeni satır oluşturma yöntemini ayarlar. Aşağıdaki seçeneklere bakın.
-  - _Tüm değişiklikler:_ Yalnızca alan değerleri güncellendiğinde yeni satırlar/girdiler oluşturur. Dışa aktarmanın dosya boyutunu en aza indirir.
-  - _Sabit periyot:_ Sabit bir aralıkla yeni satırlar/girdiler oluşturur; zaman damgası senkronizasyonu olmayan loglar için yararlıdır (birçok alan benzer, ancak aynı olmayan zaman damgalarıyla loglandığında). Örnek noktaları arasında bir değişiklik olup olmadığına bakılmaksızın tüm değerlerin dahil edildiğini unutmayın.
-  - _AdvantageKit döngüleri:_ Her AdvantageKit senkronize döngü periyodu için yeni bir satır/girdi oluşturur. Döngü periyotları arasında bir değişiklik olup olmadığına bakılmaksızın tüm değerlerin dahil edildiğini unutmayın.
-- **Periyot:** Yalnızca "Sabit periyot" seçildiğinde. Her örnek arasındaki periyodu milisaniye cinsinden ayarlar. Genellikle bu, robot kodunun döngü periyoduyla eşleşmelidir.
-- **Ön ekler:** Boşsa tüm alanları dahil eder. Aksi takdirde, yalnızca sağlanan ön eklerle eşleşen alanları dahil eder (virgülle ayrılmış). Aşağıdaki örneklere bakın.
-  - "_/DriverStation/Joystick0_": "/DriverStation/Joystick0" ile başlayan tüm alanları (ilk joystick'ten gelen veriler) dahil et.
-  - "_Flywheels,DS:enabled_": "/Flywheels" veya "DS:enabled" ile başlayan tüm alanları (volandan gelen tüm veriler artı robotun etkin durumu) dahil et.
-  - "_Drive/LeftPosition,Drive/RightPosition_": Yalnızca "/Drive/LeftPosition" ve "/Drive/RightPosition" alanlarını dahil et.
-- **Alan kümesi:** Aşağıdaki seçeneklere bakın. Oluşturulan alanlar, karmaşık türleri ayrıştırmak için AdvantageScope tarafından oluşturulur ve kenar çubuğunda gri metinle görüntülenir. Bu, dizilerin, struct'ların ve diğer şemaların bireysel bileşenlerini içerir.
-  - _Oluşturulanları dahil et:_ Oluşturulan alanları da içeren tüm görüntülenebilir alanları dışa aktarır. Dışa aktarılan veriler karmaşık türleri ayrıştırma yeteneğine sahip olmayan bir uygulamada açılacaksa önerilir.
-  - _Yalnızca orijinaller:_ Oluşturulan alanları hariç tutarak yalnızca orijinal log dosyasında bulunan alanları dışa aktarır. Dışa aktarılan veriler AdvantageScope'ta veya karmaşık türleri ayrıştırabilen başka bir uygulamada açılacaksa önerilir.
+- **Format:** Dışa aktarılacak dosyanın genel formatını belirler:
+  - _CSV (Tablo):_ Her satırın ayrı bir zaman damgasını, her sütunun ise bir alanı (ve zaman damgası değerini) temsil ettiği virgülle ayrılmış dosya formatıdır. Tek bir satırda birden fazla alanın değeri yer alabilir.
+  - _CSV (Liste):_ Her satırın zaman damgası, anahtar ve değer sütunlarıyla tek bir alanın değerini temsil ettiği virgülle ayrılmış dosya formatıdır.
+  - _WPILOG:_ AdvantageScope’ta yeniden açılabilen standart WPILOG dosyasıdır.
+  - _MCAP:_ [Foxglove](https://foxglove.dev) uygulamasında açılabilen standart [MCAP](https://mcap.dev) dosyasıdır.
+- **Zaman damgaları:** Yalnızca “CSV (Tablo)” için geçerlidir. Yeni satırların nasıl oluşturulacağını belirler:
+  - _Tüm değişiklikler:_ Yalnızca alan değerleri güncellendiğinde yeni satır oluşturur. Çıktı dosyasının boyutunu en aza indirir.
+  - _Sabit periyot:_ Sabit aralıklarla yeni satır oluşturur. Zaman damgası senkronizasyonu olmayan loglar için (birçok alanın benzer ama birebir aynı olmayan zaman damgalarıyla kaydedildiği durumlarda) kullanışlıdır. Örnek noktaları arasında değer değişmese bile tüm değerler dosyaya dahil edilir.
+  - _AdvantageKit döngüleri:_ Her AdvantageKit senkronize döngü periyodu için yeni bir satır oluşturur. Döngü periyotları arasında değer değişmese bile tüm değerler dosyaya dahil edilir.
+- **Periyot (ms):** Yalnızca “Sabit periyot” seçildiğinde görünür. Örnekler arasındaki süreyi milisaniye cinsinden ayarlar. Genellikle robot kodunuzun döngü süresiyle aynı olmalıdır.
+- **Ön ekler:** Boş bırakılırsa tüm alanlar dahil edilir. Değer girerseniz yalnızca belirttiğiniz ön eklerle (virgülle ayrılmış) eşleşen alanlar dışa aktarılır. Örnekler:
+  - “_/DriverStation/Joystick0_”: “/DriverStation/Joystick0” ile başlayan tüm alanları (ilk joystick verilerini) dahil eder.
+  - “_Flywheels,DS:enabled_”: “/Flywheels” veya “DS:enabled” ile başlayan tüm alanları (volan verilerini ve robotun etkin durumunu) dahil eder.
+  - “_Drive/LeftPosition,Drive/RightPosition_”: Yalnızca “/Drive/LeftPosition” ve “/Drive/RightPosition” alanlarını dahil eder.
+- **Alan kümesi:** Aşağıdaki iki seçenekten birini seçebilirsiniz. Oluşturulan alanlar, karmaşık veri türlerini parçalamak için AdvantageScope’un ürettiği alanlardır ve kenar çubuğunda gri renkte görünür (dizilerin, struct’ların ve diğer şemaların tekil bileşenleri gibi).
+  - _Oluşturulanları dahil et:_ Oluşturulan alanlar dahil görüntülenebilen tüm alanları dışa aktarır. Çıktı dosyasını karmaşık veri türlerini ayrıştıramayan bir uygulamada açacaksanız bu seçeneği kullanın.
+  - _Yalnızca orijinaller:_ Oluşturulan alanları hariç tutarak yalnızca orijinal log dosyasında bulunan alanları dışa aktarır. Çıktı dosyasını AdvantageScope’ta veya karmaşık türleri ayrıştırabilen başka bir uygulamada açacaksanız bu seçeneği kullanın.
 
-Zaman damgaları "Tüm değişiklikler" olarak ayarlanmış "CSV (Tablo)" formatında AdvantageScope'tan dışa aktarılan örnek bir CSV dosyası aşağıda gösterilmiştir:
+Zaman damgaları “Tüm değişiklikler” olarak ayarlanmış “CSV (Tablo)” formatında AdvantageScope’tan dışa aktarılan örnek bir CSV dosyasını aşağıda görebilirsiniz:
 
 <img src="/img/overview/log-files/export-2.webp" alt="CSV tablosu" />

@@ -2,24 +2,24 @@
 
 ## Desteklenen formatlar {#supported-formats}
 
-- **WPILOG (.wpilog)** - WPILib'in [yerleşik veri loglaması](https://docs.wpilib.org/tr/stable/docs/software/telemetry/datalog.html) ve AdvantageKit tarafından üretilir. REV motor kontrolcülerinden gelen sinyalleri bir WPILOG dosyasına kaydetmek için [URCL](/more-features/urcl) kullanılabilir.
-- **Hoot (.hoot)** - CTRE'nin Phoenix 6 [sinyal loglayıcısı](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) tarafından üretilir.
-- **REVLOG (.revlog)** - REV Robotics'in [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) yazılımı tarafından üretilir.
-- **Road Runner (.log)** - FTC için [Road Runner](https://github.com/acmerobotics/road-runner) kütüphanesi tarafından üretilir.
-- **CSV (.csv)** - AdvantageScope tarafından "CSV (Tablo)" veya "CSV (Liste)" modlarında [dışa aktarılan](/overview/log-files/export) formatla eşleşen virgülle ayrılmış değerler. Detaylar için [buraya](#csv-formatting) bakın.
-- **NI Sürücü İstasyonu logları (.dslog ve .dsevents)** - Eski, NI [FRC Sürücü İstasyonu](https://docs.wpilib.org/tr/stable/docs/software/driverstation/driver-station.html) (2010-2026) tarafından üretilmiştir. AdvantageScope, her iki log türü açıldığında karşılık gelen log dosyasını otomatik olarak arar.
-- **RLOG (.rlog)** - Eski, AdvantageKit 2022 tarafından üretilmiş.
+- **WPILOG (.wpilog)** - WPILib’in [yerleşik veri loglama sistemi](https://docs.wpilib.org/tr/stable/docs/software/telemetry/datalog.html) ve AdvantageKit bu formatta kayıt alır. REV motor kontrolcülerinden gelen sinyalleri bir WPILOG dosyasına kaydetmek için [URCL](/more-features/urcl) kullanabilirsiniz.
+- **Hoot (.hoot)** - CTRE’nin Phoenix 6 [sinyal loglayıcısı](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) bu formatta kayıt alır.
+- **REVLOG (.revlog)** - REV Robotics’in [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) aracı bu formatta kayıt alır.
+- **Road Runner (.log)** - FTC için geliştirilen [Road Runner](https://github.com/acmerobotics/road-runner) kütüphanesi bu formatta kayıt alır.
+- **CSV (.csv)** - AdvantageScope’un “CSV (Tablo)” veya “CSV (Liste)” modlarında [dışa aktardığı](/overview/log-files/export) formatla uyumlu, virgülle ayrılmış değerler dosyasıdır. Ayrıntılar için [buraya](#csv-formatting) göz atın.
+- **NI Sürücü İstasyonu logları (.dslog ve .dsevents)** - NI [FRC Sürücü İstasyonu](https://docs.wpilib.org/tr/stable/docs/software/driverstation/driver-station.html) (2010–2026) ile kaydedilen eski formattır. İki log türünden birini açtığınızda AdvantageScope karşılık gelen diğer dosyayı otomatik olarak bulur.
+- **RLOG (.rlog)** - AdvantageKit 2022’nin ürettiği eski formattır.
 
 :::info
-Hoot log dosyaları yalnızca CTRE'nin [son kullanıcı lisans sözleşmesini](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt) kabul ettikten sonra açılabilir. AdvantageScope, bir Hoot log dosyasını ilk kez açarken bu koşullara kabulü onaylamak için bir bildirim görüntüler.
+Hoot log dosyalarını açabilmek için önce CTRE’nin [son kullanıcı lisans sözleşmesini](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt) kabul etmeniz gerekir. Bir Hoot log dosyasını ilk kez açtığınızda AdvantageScope bu koşulları onaylamanız için bir pencere gösterir.
 :::
 
 ## Logları açma {#opening-logs}
 
-Menü çubuğunda `Dosya` > `Log aç...` seçeneğine tıklayın, ardından yerel diskten bir veya daha fazla log dosyası seçin. Sistem dosya tarayıcısından bir log dosyasını AdvantageScope simgesine veya penceresine sürüklemek de dosyanın açılmasını sağlar.
+Menü çubuğundan `Dosya` > `Log aç...` seçeneğine tıklayın ve bilgisayarınızdan bir veya daha fazla log dosyası seçin. Sistem dosya yöneticisinden bir log dosyasını doğrudan AdvantageScope simgesinin ya da penceresinin üzerine sürükleyip bırakarak da açabilirsiniz.
 
 :::info
-Birden fazla dosya aynı anda açılırsa, zaman damgaları otomatik olarak hizalanacaktır. Bu, birden fazla kaynaktan gelen log dosyalarının kolayca karşılaştırılmasını sağlar. Zaman damgası görüntüleme seçenekleriyle ilgili ayrıntılar için [Zaman Damgaları](/more-features/timestamps) sayfasına bakın.
+Birden fazla dosyayı aynı anda açarsanız zaman damgaları otomatik olarak hizalanır. Böylece farklı kaynaklardan gelen log dosyalarını kolayca karşılaştırabilirsiniz. Zaman damgası görüntüleme seçenekleri hakkında ayrıntılı bilgi için [Zaman damgaları](/more-features/timestamps) sayfasına göz atın.
 :::
 
 <img src="/img/overview/log-files/open-file-1.webp" alt="Kaydedilmiş bir logu açma" />
@@ -28,24 +28,24 @@ _Yukarıda İngilizce arayüz gösterilmektedir._
 
 ## Yeni loglar ekleme {#adding-new-logs}
 
-Bir log dosyası açtıktan sonra görselleştirmeye kolayca ek loglar eklenebilir. Zaman damgaları mevcut verilerle senkronize edilmek üzere otomatik olarak yeniden hizalanacaktır.
+Bir log dosyası açıkken mevcut görselleştirmeye kolayca başka loglar da ekleyebilirsiniz. Zaman damgaları mevcut verilerle eşleşecek şekilde otomatik olarak yeniden hizalanır.
 
-Menü çubuğunda `Dosya` > `Yeni log ekle...` seçeneğine tıklayın, ardından mevcut görselleştirmeye eklemek için bir veya daha fazla log dosyası seçin. Her logdaki alanlar `Log0`, `Log1` vb. olarak adlandırılan tablolar altında kaydedilecektir.
+Menü çubuğundan `Dosya` > `Yeni log ekle...` seçeneğine tıklayıp eklemek istediğiniz bir veya daha fazla log dosyasını seçin. Eklenen her logdaki alanlar `Log0`, `Log1` vb. tabloların altında listelenir.
 
 ## Robottan indirme {#downloading-from-the-robot}
 
 <details>
 <summary>Yapılandırma</summary>
 
-`Uygulama` > `Tercihleri göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) seçeneğine tıklayarak tercihler penceresini açın. Robot adresini ve log klasörünü güncelleyin.
+`Uygulama` > `Tercihleri göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) yolunu izleyerek tercihler penceresini açın. Robot adresini ve log klasörünü güncelleyin.
 
-<img src="/img/prefs_tr.webp" alt="Tercihler diyagramı" height="450" />
+<img src="/img/prefs_tr.webp" alt="Tercihler penceresi" height="450" />
 </details>
 
-`Dosya` > `Logları indir...` seçeneğine tıklayarak indirme penceresini açın. Log indirme Systemcore ve roboRIO üzerinde desteklenmektedir. Robota bağlandıktan sonra mevcut loglar en yenisi en üstte olacak şekilde gösterilir. İndirmek için bir veya daha fazla log dosyası ya da klasörü seçin (bir aralık seçmek için shift-tıkla veya tümünü seçmek için **cmd/ctrl + A** kullanın). Ardından ↓ simgesine tıklayın ve bir kaydetme konumu seçin.
+`Dosya` > `Logları indir...` seçeneğine tıklayarak indirme penceresini açın. Log indirme özelliği Systemcore ve roboRIO’da desteklenir. Robota bağlandığınızda mevcut loglar en yenisi en üstte olacak şekilde listelenir. İndirmek istediğiniz bir veya daha fazla log dosyasını ya da klasörü seçin (aralık seçmek için Shift ile tıklayın veya tümünü seçmek için **cmd/ctrl + A** kullanın). Ardından ↓ simgesine tıklayıp kayıt konumunu seçin.
 
 :::tip
-Birden fazla dosya indirirken AdvantageScope, hedef klasörde zaten mevcut olan tüm dosyaları atlar.
+Birden fazla dosya indirirken AdvantageScope, hedef klasörde zaten bulunan dosyaları otomatik olarak atlar.
 :::
 
 <img src="/img/overview/log-files/open-file-2.webp" alt="Log dosyalarını indirme" height="350" />
@@ -54,12 +54,12 @@ _Yukarıda İngilizce arayüz gösterilmektedir._
 
 ## CSV biçimlendirme {#csv-formatting}
 
-CSV sütun adları "Timestamp, Key, Value" veya "Timestamp, (Key), (Key), vb." olmalıdır. Zaman damgası değerleri saniye cinsindendir. Aşağıdaki liste yaygın değer türlerinin beklenen formatını göstermektedir. CSV karmaşık alan türlerini desteklemediğinden, log verilerini bir CSV olarak dışa aktarmanın ve yeniden içe aktarmanın _kayıplı_ olduğunu unutmayın.
+CSV sütun adları “Timestamp, Key, Value” veya “Timestamp, (Key), (Key), vb.” biçiminde olmalıdır. Zaman damgası değerleri saniye cinsindendir. Aşağıdaki listede yaygın veri türleri için beklenen formatı görebilirsiniz. CSV karmaşık alan türlerini desteklemediğinden, log verilerini CSV olarak dışa aktarıp tekrar içe aktarmanın _veri kaybına_ yol açacağını unutmayın.
 
-- **Boole Değerleri:** `true` veya `false`
+- **Boolean değerler:** `true` veya `false`
 - **Metinler (String):** `"(değer)"`
   - Örnek: `"Hello world"`
 - **Diziler (Array):** `[(değer); (değer); (değer)]`
   - Örnek: `[1; 2; 3]`
-- **Baytlar:** `-` ile ayrılmış onaltılık
+- **Baytlar:** `-` ile ayrılmış onaltılık (hex) değerler
   - Örnek: `4d-41-36-33-32-38`

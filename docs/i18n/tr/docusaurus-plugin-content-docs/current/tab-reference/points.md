@@ -7,38 +7,38 @@ import TabItem from '@theme/TabItem';
 
 # 📍 Noktalar {#points}
 
-Noktalar sekmesi keyfi noktaların 2B görselleştirmesini gösterir. Bu, görüş verilerinin/borularının, mekanizma durumlarının vb. özel görselleştirmelerine olanak tanıyan son derece esnek bir araçtır.
+Noktalar sekmesi, istediğiniz noktaların 2B görselleştirmesini sunar. Bu, görüntü işleme verilerinin/hatlarının, mekanizma durumlarının vb. özel görselleştirmelerine olanak tanıyan son derece esnek bir araçtır.
 
-<img src="/img/tab-reference/points-1.webp" alt="Nokta sekmesi örneği" />
+<img src="/img/tab-reference/points-1.webp" alt="Noktalar sekmesi örneği" />
 
 _Yukarıda İngilizce arayüz gösterilmektedir._
 
 <details>
-<summary>Zaman Çizelgesi Kontrolleri</summary>
+<summary>Zaman çizelgesi kontrolleri</summary>
 
-Zaman çizelgesi oynatmayı ve görselleştirmeyi kontrol etmek için kullanılır. Zaman çizelgesine tıklamak bir zaman seçer ve sağ tıklamak seçimi kaldırır. Seçilen zaman tüm sekmeler arasında senkronize edilir, bu da bu konumu diğer görünümlerde hızlıca bulmayı kolaylaştırır.
+Zaman çizelgesi, oynatmayı ve görselleştirmeyi kontrol etmek için kullanılır. Zaman çizelgesine tıklayarak bir zaman seçebilir, sağ tıklayarak seçimi kaldırabilirsiniz. Seçilen zaman tüm sekmeler arasında senkronize edilir; böylece aynı anı diğer görünümlerde de hızlıca bulabilirsiniz.
 
-Sarı bölümler robotun otonomda olduğu zamanları, mavi bölümler robotun teleoperasyonda olduğu zamanları ve gri bölümler robotun test modunda olduğu zamanları gösterir.
+Sarı bölümler robotun otonomda, mavi bölümler teleop'ta ve gri bölümler test modunda olduğu zamanları gösterir.
 
-Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı veya aşağı kaydırın. `Shift` tuşunu basılı tutarken tıklayıp sürükleyerek bir aralık da seçilebilir. Yatay olarak kaydırarak (desteklenen cihazlarda) veya zaman çizelgesinde tıklayıp sürükleyerek sola ve sağa hareket edin. Canlı bağlandığında sola kaydırmak mevcut zamandan kilidi kaldırır ve en sağa kadar kaydırmak tekrar mevcut zamana kilitler. Robotun etkin olduğu periyoda yakınlaştırmak için `Ctrl+\` tuşlarına basın.
+Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı veya aşağı kaydırın. `Shift` tuşunu basılı tutarken tıklayıp sürükleyerek bir aralık da seçebilirsiniz. Yatay kaydırma yaparak (desteklenen cihazlarda) veya zaman çizelgesi üzerinde tıklayıp sürükleyerek sola ve sağa hareket edebilirsiniz. Canlı bağlantıdayken sola kaydırmak mevcut zamandan kilidi açar, en sağa kadar kaydırmak ise tekrar mevcut zamana kilitler. Robotun etkin olduğu aralığa yakınlaştırmak için `Ctrl+\` tuşlarına basın.
 
 <img src="/img/tab-reference/timeline.webp" alt="Zaman çizelgesi" />
 
 </details>
 
-## Kaynaklar ekleme {#adding-sources}
+## Kaynak ekleme {#adding-sources}
 
-Başlamak için bir alanı "Kaynaklar" bölümüne sürükleyin. X düğmesini kullanarak bir kaynağı silin veya göz simgesine tıklayarak ya da alan adına çift tıklayarak geçici olarak gizleyin. Tüm nesneleri kaldırmak için eksen başlığının yanındaki çöp kutusuna ve ardından `Tümünü Temizle` seçeneğine tıklayın. Kaynaklar listede tıklanıp sürüklenerek yeniden düzenlenebilir.
+Başlamak için bir alanı “Kaynaklar” bölümüne sürükleyin. X düğmesine tıklayarak bir kaynağı silebilir, göz simgesine tıklayarak veya alan adına çift tıklayarak geçici olarak gizleyebilirsiniz. Tüm nesneleri kaldırmak için başlığın yanındaki çöp kutusuna ve ardından `Tümünü temizle` seçeneğine tıklayın. Kaynakların listedeki sırasını tıklayıp sürükleyerek değiştirebilirsiniz.
 
-**Her kaynağı özelleştirmek için renkli simgeye tıklayın veya alan adına sağ tıklayın.** Her kaynağın simgesi, rengi ve boyutu ayarlanabilir.
+**Her kaynağı özelleştirmek için renkli simgeye tıklayın veya alan adına sağ tıklayın.** Her kaynağın simgesini, rengini ve boyutunu ayarlayabilirsiniz.
 
 :::tip
-Desteklenen kaynak türlerinin tam listesini görmek için `?` simgesine tıklayın. Bu liste ayrıca desteklenen veri türlerini de içerir.
+Desteklenen kaynak türlerinin tam listesini görmek için `?` simgesine tıklayın. Bu listede desteklenen veri türlerini de bulabilirsiniz.
 :::
 
 ## Veri formatı {#data-format}
 
-Nokta verileri, `Translation2d[]` türü kullanılarak bayt kodlu struct veya protobuf olarak yayınlanmalıdır. WPILib ve AdvantageKit dahil birçok kütüphane bu formatı destekler. Aşağıdaki örnek kod Java'da nokta verilerinin nasıl loglanacağını göstermektedir.
+Nokta verileri, `Translation2d[]` türü kullanılarak bayt kodlu (byte-encoded) struct veya protobuf formatında yayınlanmalıdır. WPILib ve AdvantageKit dahil birçok kütüphane bu formatı destekler. Aşağıdaki örnek kod, Java'da nokta verilerinin nasıl loglanacağını gösterir.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -73,6 +73,6 @@ Logger.recordOutput("MyTranslations",
 
 Aşağıdaki yapılandırma seçenekleri mevcuttur:
 
-- **Boyutlar:** Görüntüleme alanının boyutu. Bu, yayınlanan noktalarla eşleşen herhangi bir birimi kullanabilir. Görüş verilerini görüntülerken bu, kameranın çözünürlüğüdür.
+- **Boyutlar:** Görüntüleme alanının boyutu. Burada yayınlanan noktalarla eşleşen herhangi bir birimi kullanabilirsiniz. Görüntü işleme verilerini görüntülerken bu değer kameranın çözünürlüğüdür.
 - **Yönelim:** Kullanılacak koordinat sistemi (X ve Y eksenlerinin yönelimi).
 - **Orijin:** Koordinat sisteminde orijinin konumu.
