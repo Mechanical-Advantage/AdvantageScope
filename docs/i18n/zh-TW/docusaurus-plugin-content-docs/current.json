@@ -8,7 +8,7 @@
     "description": "The label for category 'Overview' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Overview.link.generated-index.description": {
-    "message": "這些頁面介紹了 AdvantageScope 的基本操作以及如何存取資料。",
+    "message": "這些頁面介紹 AdvantageScope 的基本操作與資料存取方式。",
     "description": "The generated-index page description for category 'Overview' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.🧭 App Navigation": {
@@ -28,7 +28,7 @@
     "description": "The label for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Tab Reference.link.generated-index.description": {
-    "message": "AdvantageScope 支援多種查看與分析資料的方式，並以分頁形式進行組織。對於開啟的每個新分頁，其視覺化類型都是可選擇的，並且可以同時開啟多個相同類型的分頁。可以對分頁進行命名以方便組織，並且可以將分頁彈出至獨立視窗，以便同時、同步地查看資料。",
+    "message": "AdvantageScope 支援多種以分頁呈現的資料檢視與分析方式。開啟新分頁時，你可以自由選擇視覺化類型，也能同時開啟多個相同類型的分頁。此外，你還可以為分頁重新命名以方便整理，或將分頁彈出至獨立視窗，同步檢視多組資料。",
     "description": "The generated-index page description for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.📉 Line Graph": {

@@ -8,7 +8,7 @@
     "description": "The label for category 'Overview' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Overview.link.generated-index.description": {
-    "message": "Deze pagina's behandelen de basisprincipes van het navigeren in AdvantageScope en toegang krijgen tot data.",
+    "message": "Deze pagina's behandelen de basisprincipes van navigeren in AdvantageScope en het laden van data.",
     "description": "The generated-index page description for category 'Overview' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.🧭 App Navigation": {
@@ -28,7 +28,7 @@
     "description": "The label for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Tab Reference.link.generated-index.description": {
-    "message": "AdvantageScope ondersteunt vele manieren om data te bekijken en te analyseren, georganiseerd in tabbladen. Het type visualisatie kan worden geselecteerd voor elk nieuw geopend tabblad, en er kunnen meerdere tabbladen van een bepaald type tegelijk geopend zijn. Tabbladen kunnen van een naam worden voorzien voor eenvoudige organisatie en kunnen worden losgekoppeld naar aparte vensters voor gelijktijdige, gesynchroniseerde dataweergave.",
+    "message": "AdvantageScope biedt allerlei manieren om data te bekijken en te analyseren, overzichtelijk georganiseerd in tabbladen. Voor elk nieuw tabblad kies je zelf het type visualisatie, en je kunt meerdere tabbladen van hetzelfde type tegelijk openen. Geef tabbladen een eigen naam om alles netjes geordend te houden, of maak ze los naar aparte vensters om meerdere weergaven tegelijk en gesynchroniseerd te bekijken.",
     "description": "The generated-index page description for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.📉 Line Graph": {

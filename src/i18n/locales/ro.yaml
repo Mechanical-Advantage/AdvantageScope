@@ -15,10 +15,10 @@ download:
   title: "Descărcare loguri — AdvantageScope"
   cancel: "Anulează"
   download: "Descarcă"
-  errorNoFolder: "Eșec la deschiderea folderului de loguri la <u>{{path}}</u>"
+  errorNoFolder: "Nu s-a putut deschide folderul de loguri la <u>{{path}}</u>"
   errorNotFound: "Robotul nu a fost găsit la <u>{{address}}</u> (verifică conexiunea)"
   errorUnknownAddress: "Adresă necunoscută <u>{{address}}</u>"
-  errorAuthFailed: "Eșec la autentificarea pe robot la <u>{{address}}</u>"
+  errorAuthFailed: "Nu s-a putut realiza autentificarea pe robot la <u>{{address}}</u>"
   errorNotConnected: "S-a pierdut conexiunea cu robotul"
   errorUnknown: "Eroare necunoscută: {{error}}"
   statusPreparing: "Se pregătește"
@@ -28,7 +28,7 @@ download:
   sizeLessThanMinimum: "(<0,1 MB)"
   sizeValue: "({{size}} MB)"
   alertSelectLog: "Selectează un log pentru descărcare."
-  alertNoNewLogs: "Nu s-au găsit log-uri noi."
+  alertNoNewLogs: "Nu s-au găsit loguri noi."
 
 editFov:
   title: "Editare FOV — AdvantageScope"
@@ -65,7 +65,7 @@ export:
   prefixes: "Prefixuri"
   prefixesInputTitle: "Introdu prefixurile câmpurilor de exportat, separate prin virgulă (opțional)"
   fieldSet: "Set de câmpuri"
-  fieldSetSelectTitle: "Selectează dacă să incluzi câmpurile generate în export"
+  fieldSetSelectTitle: "Alege dacă incluzi câmpurile generate în export"
   fieldSetIncludeGenerated: "Inclusiv cele generate"
   fieldSetOriginalOnly: "Doar originale"
   cancel: "Anulează"
@@ -76,7 +76,7 @@ preferences:
   title: "Preferințe — AdvantageScope"
   language: "Limbă 🌐"
   languageSelectTitle: "Selectează limba aplicației"
-  languageSystemDefault: "Implicită sistemului"
+  languageSystemDefault: "Implicită a sistemului"
   theme: "Temă aplicație"
   themeSelectTitle: "Selectează tema aplicației"
   themeSystem: "Conform sistemului"
@@ -180,7 +180,7 @@ unitConversion:
   cancel: "Anulează"
   confirm: "Confirmă"
   notAvailable: "Indisponibil"
-  alertError: "Eșec la parsarea factorului suplimentar."
+  alertError: "Nu s-a putut interpreta factorul suplimentar."
 
 uploadAsset:
   title: "Încărcare resursă — AdvantageScope"
@@ -208,7 +208,7 @@ xrControls:
   streamingSmooth: "Fluid"
   streamingLowLatency: "Latență scăzută"
   showFloor: "Afișare podea"
-  showFloorTitle: "Comutare vizibilitate covor podea"
+  showFloorTitle: "Comută vizibilitatea podelei"
   showField: "Afișare teren"
   showFieldTitle: "Comutare vizibilitate teren"
   showRobots: "Afișare roboți"
@@ -307,7 +307,7 @@ hub:
   logs:
     statusLoading: "Se încarcă"
     statusError: "Eroare"
-    openErrorTitle: "Eșec la deschiderea logului"
+    openErrorTitle: "Nu s-a putut deschide logul"
     openErrorCsv: "A apărut o problemă la citirea fișierului log. Consultă documentația pentru mai multe informații despre formatul necesar al fișierelor CSV."
     openErrorFallback: "A apărut o problemă la citirea fișierului log. Încearcă din nou."
     cannotOpenTitle_one: "Nu se poate deschide fișierul"
@@ -338,7 +338,7 @@ hub:
     cannotExportTitle: "Datele nu pot fi exportate"
     waitExport: "Așteaptă finalizarea exportului anterior, apoi încearcă din nou."
     noLogs: "Deschide un fișier log sau conectează-te la o sursă live, apoi încearcă din nou."
-    failedTitle: "Eșec la exportarea datelor"
+    failedTitle: "Datele nu au putut fi exportate"
     failedContent: "A apărut o problemă la conversia în formatul de export. Încearcă din nou."
 
   playback:
@@ -369,8 +369,8 @@ hub:
     titleHours_one: "{{fields}}, {{duration}} oră"
     titleHours_few: "{{fields}}, {{duration}} ore"
     titleHours_other: "{{fields}}, {{duration}} de ore"
-    conflictTitle: "Tipuri în conflict"
-    conflictMessage: "În acest câmp au fost scrise valori cu tipuri în conflict. Pot fi vizualizate și exportate doar valorile compatibile cu tipul inițial."
+    conflictTitle: "Tipuri incompatibile"
+    conflictMessage: "În acest câmp au fost scrise valori cu tipuri incompatibile. Pot fi vizualizate și exportate doar valorile compatibile cu tipul inițial."
 
   field:
     poses: "Pose-uri"
@@ -481,7 +481,7 @@ hub:
     sections:
       summary: "Rezumat"
       center: "Centru"
-      spread: "Răspândire"
+      spread: "Dispersie"
       percentiles: "Percentile"
     metrics:
       count: "Număr"
@@ -494,7 +494,7 @@ hub:
       harmonicMean: "Medie armonică"
       quadraticMean: "Medie pătratică"
       standardDeviation: "Deviație standard"
-      medianAbsoluteDeviation: "Deviație absolută mediană"
+      medianAbsoluteDeviation: "Abatere mediană absolută"
       interquartileRange: "Interval intercuartilic"
       skewness: "Asimetrie"
       percentile01: "Percentila 1"
@@ -542,9 +542,9 @@ hub:
     noApiKeyTitle: "Nicio cheie API"
     noApiKeyContent: "Introdu o cheie API pentru The Blue Alliance în preferințele AdvantageScope. O cheie API poate fi obținută de pe pagina contului de pe site-ul The Blue Alliance."
     noMatchInfoTitle: "Nicio informație despre meci"
-    noMatchInfoContent: "Eșec la citirea informațiilor despre eveniment și meci din log. Încarcă videoclipul folosind un URL YouTube sau un fișier local în schimb."
+    noMatchInfoContent: "Nu s-au putut citi informațiile despre eveniment și meci din log. Încarcă videoclipul folosind un URL YouTube sau un fișier local."
     noPracticeTitle: "Niciun videoclip pentru meciul de antrenament"
-    noPracticeContent: "Acesta este un meci de antrenament. Nu sunt disponibile date pe The Blue Alliance pentru meciurile de antrenament. Încarcă videoclipul folosind un URL YouTube sau un fișier local în schimb."
+    noPracticeContent: "Acesta este un meci de antrenament. Nu sunt disponibile date pe The Blue Alliance pentru meciurile de antrenament. Încarcă videoclipul folosind un URL YouTube sau un fișier local."
 
   joysticks:
     selectTitle: "Selectează sursa de date pentru joystick"
@@ -694,7 +694,7 @@ menu:
     hide: "Ascunde AdvantageScope"
     hideOthers: "Ascunde celelalte"
     unhide: "Afișează tot"
-    quit: "Părăsește AdvantageScope"
+    quit: "Închide AdvantageScope"
 
   edit:
     heading: "Editare"
@@ -804,7 +804,7 @@ menu:
   field3d:
     orbitField: "Orbitare teren"
     orbitRobot: "Orbitare robot"
-    driverView: "Vizualizare șofer"
+    driverView: "Vizualizare driver"
     driverStation: "Driver Station"
     blueLeft: "Albastru stânga"
     blueRight: "Albastru dreapta"
@@ -833,7 +833,7 @@ main:
     downloadFinished: "Toate resursele au fost descărcate. AdvantageScope va verifica actualizările periodic."
     connectFailed: "Nu se poate realiza conexiunea la GitHub. Vom încerca din nou în curând."
     noDiskSpace: "Spațiu insuficient pe disc. Vom încerca din nou în curând."
-    readme: "Acest folder conține resurse suplimentare pentru terenul 2D, terenul 3D și vizualizările joystick. Pentru mai multe detalii, consultă documentația AdvantageScope (disponibilă prin fila de documentație din aplicație sau la URL-ul de mai jos)."
+    readme: "Acest folder conține resurse suplimentare pentru terenul 2D, terenul 3D și vizualizările pentru joystick. Pentru mai multe detalii, consultă documentația AdvantageScope (disponibilă prin fila de documentație din aplicație sau la URL-ul de mai jos)."
 
   owlet:
     upToDate: "Owlet este actualizat. AdvantageScope va verifica actualizările periodic."
@@ -855,12 +855,12 @@ main:
     continue: "Continuă"
     dontClose: "Nu închide"
     copyCloseWin: "Copiază și închide"
-    copyCloseMac: "Copiază & închide"
+    copyCloseMac: "Copiază și închide"
     iAgree: "Sunt de acord"
     viewLicense: "Vezi licența"
     ok: "OK"
     stop: "Oprește"
-    skip: "Sari"
+    skip: "Omite"
     dontShowAgain: "Nu mai afișa"
     reset: "Resetează"
     documentation: "Documentație"
@@ -879,17 +879,17 @@ main:
     incompleteDetail: "Se verifică informațiile despre actualizare. Încearcă din nou."
     cannotCheck: "Nu se pot verifica actualizările"
     devEnvDetail: "Această aplicație rulează într-un mediu de dezvoltare."
-    fetchFailedDetail: "Eșec la recuperarea informațiilor de actualizare de la GitHub. Verifică conexiunea la internet și încearcă din nou."
+    fetchFailedDetail: "Nu s-au putut prelua informațiile de actualizare de la GitHub. Verifică conexiunea la internet și încearcă din nou."
     noData: "Nu sunt disponibile date de actualizare"
     noDataDetail: "Nu s-au găsit informații de actualizare pentru versiunea instalată a AdvantageScope. Verifică repozitoriul GitHub AdvantageScope pentru a descărca cea mai recentă versiune."
     later: "Mai târziu"
     viewChangelog: "Vezi jurnalul de modificări"
     downloadLatestNativeQuery: "Descarci cea mai recentă versiune nativă?"
-    downloadLatestNativeDetail: "Versiunea {{latestVersion}} este disponibilă (lansată pe {{latestDate}}). Momentan rulezi build-ul x86 al versiunii {{currentVersion}} pe o platformă arm64. Ai dori să descarci cea mai recentă versiune nativă?"
+    downloadLatestNativeDetail: "Versiunea {{latestVersion}} este disponibilă (lansată pe {{latestDate}}). Momentan rulezi build-ul x86 al versiunii {{currentVersion}} pe o platformă arm64. Vrei să descarci cea mai recentă versiune nativă?"
     downloadLatestQuery: "Descarci cea mai recentă versiune?"
-    downloadLatestDetail: "Versiunea {{latestVersion}} este disponibilă (lansată pe {{latestDate}}). Momentan rulezi versiunea {{currentVersion}}. Ai dori să descarci cea mai recentă versiune?"
+    downloadLatestDetail: "Versiunea {{latestVersion}} este disponibilă (lansată pe {{latestDate}}). Momentan rulezi versiunea {{currentVersion}}. Vrei să descarci cea mai recentă versiune?"
     downloadNativeQuery: "Descarci versiunea nativă?"
-    downloadNativeDetail: "Se pare că rulezi versiunea x86 a acestei aplicații pe o platformă arm64. Ai dori să descarci versiunea nativă?"
+    downloadNativeDetail: "Se pare că rulezi versiunea x86 a acestei aplicații pe o platformă arm64. Vrei să descarci versiunea nativă?"
     noUpdates: "Nu sunt actualizări disponibile"
     upToDateDetail: "Momentan rulezi versiunea {{currentVersion}} (lansată pe {{latestDate}})."
 
@@ -911,7 +911,7 @@ main:
     exportConsoleFilename: "Consolă {{date}}.txt"
     textFilter: "Fișiere text"
     openQuery: "Deschizi logul?"
-    openDetail: "Ai dori să deschizi fișierul log „{{name}}”?"
+    openDetail: "Vrei să deschizi fișierul log „{{name}}”?"
     openDsLogTitle: "Deschidere log DS"
     openDsLogQuery: "Deschizi acest log folosind aranjamentul DS?"
     openDsLogDetail: "Aranjamentul Driver Station poate fi deschis într-o fereastră separată fără a modifica aranjamentul curent."
@@ -919,7 +919,7 @@ main:
     openDsInNewWindow: "Deschide în fereastră nouă"
     openDsInThisWindow: "Deschide în această fereastră"
     unsupportedFormatLite: "Format de fișier neacceptat în AdvantageScope Lite."
-    decompressFailed: "Eșec la decomprimarea fișierului WPILOG."
+    decompressFailed: "Nu s-a putut decomprima fișierul WPILOG."
     limitedSignals: "Semnale limitate disponibile"
     limitedSignalsDetail: "Acest fișier log include un număr limitat de semnale de la dispozitivele Phoenix. Consultă documentația Phoenix pentru detalii."
 
@@ -927,7 +927,7 @@ main:
     exportTitle: "Selectează locația de export pentru fișierul de aranjament"
     jsonFilter: "Fișiere JSON"
     importTitle: "Selectează unul sau mai multe fișiere de aranjament pentru a le importa"
-    failedImport: "Eșec la importul aranjamentului"
+    failedImport: "Aranjamentul nu a putut fi importat"
     oldDetail: "Fișierul de aranjament selectat utilizează un format mai vechi care nu este compatibil cu versiunea curentă a AdvantageScope."
     invalidDetail: "Fișierul de aranjament selectat nu are un format recunoscut."
     versionMismatch: "Nepotrivire de versiune"
@@ -937,19 +937,19 @@ main:
 
   video:
     pythonRequired: "Este necesară instalarea Python"
-    pythonRequiredDetail: "Această funcționalitate necesită Python 3.10 sau o versiune ulterioară disponibilă în sistemul tău. Instalează Python și încearcă din nou."
+    pythonRequiredDetail: "Această funcționalitate necesită Python 3.10 sau o versiune ulterioară disponibilă pe sistemul tău. Instalează Python și încearcă din nou."
     ffmpegRequired: "Este necesară instalarea FFmpeg"
     ffmpegRequiredDetail: "FFmpeg este necesar pentru procesarea fișierelor video. Instalează FFmpeg și adaugă-l la PATH."
     downloadFfmpeg: "Descarci FFmpeg?"
     downloadFfmpegDetail: "FFmpeg este necesar pentru a procesa fișierele video. Selectează „Continuă” pentru a descărca automat, sau instalează FFmpeg manual și adaugă-l la PATH."
-    failedProcess: "Eșec la procesarea videoclipului"
+    failedProcess: "Videoclipul nu a putut fi procesat"
     failedProcessDetail: "A apărut o problemă la procesarea videoclipului. Încearcă din nou."
     copyUrl: "Copiază URL-ul în clipboard"
     copyUrlDetail: "Copiază un URL YouTube în clipboard, apoi încearcă din nou."
     youtubeFailed: "Descărcarea YouTube a eșuat"
-    youtubeFailedDetail: "A apărut o eroare la încercarea de a deschide videoclipul YouTube. Reține că această funcționalitate poate eșua în mod neașteptat din cauza modificărilor de pe serverele YouTube. Verifică dacă există actualizări sau alege un fișier video local în schimb."
+    youtubeFailedDetail: "A apărut o eroare la încercarea de a deschide videoclipul YouTube. Reține că această funcționalitate poate eșua în mod neașteptat din cauza modificărilor de pe serverele YouTube. Verifică dacă există actualizări sau alege un fișier video local."
     tbaFailed: "Descărcarea TBA a eșuat"
-    tbaFailedDetail: "A apărut o problemă la găsirea videoclipului meciului pe The Blue Alliance. Verifică-ți cheia API, sau încarcă videoclipul folosind un URL YouTube sau un fișier local în schimb."
+    tbaFailedDetail: "A apărut o problemă la găsirea videoclipului meciului pe The Blue Alliance. Verifică-ți cheia API sau încarcă videoclipul folosind un URL YouTube ori un fișier local."
     openTitle: "Selectează un videoclip pentru deschidere"
     filter: "Videoclipuri"
 
@@ -987,13 +987,13 @@ main:
     notNow: "Nu acum"
 
   coordinateSystem:
-    legacyFrcMessage: "Sistem de coordonate moștenit"
-    legacyFrcDetail: "Acest teren folosește în mod implicit un sistem de coordonate moștenit pentru compatibilitate cu versiunile WPILib anterioare anului 2027. Dacă codul robotului tău folosește WPILib 2027, poți schimba opțiunea „Sistem de coordonate” din preferințele AdvantageScope. Consultă documentația pentru detalii."
+    legacyFrcMessage: "Sistem de coordonate vechi (legacy)"
+    legacyFrcDetail: "Acest teren folosește în mod implicit un sistem de coordonate vechi (legacy) pentru compatibilitate cu versiunile WPILib anterioare anului 2027. Dacă codul robotului tău folosește WPILib 2027, poți schimba opțiunea „Sistem de coordonate” din preferințele AdvantageScope. Consultă documentația pentru detalii."
     systemcoreFtcMessage: "Sistem de coordonate Systemcore"
     systemcoreFtcDetail: "Acest teren folosește în mod implicit sistemul de coordonate Systemcore. Dacă codul robotului tău folosește sistemul de coordonate tradițional FTC, poți schimba opțiunea „Sistem de coordonate” din preferințele AdvantageScope. Consultă documentația pentru detalii."
 
   lite:
-    tooSmall: "Nu este suficient spațiu, te rugăm să schimbi aranjamentul ecranului."
+    tooSmall: "Nu este suficient spațiu, te rugăm să ajustezi aranjamentul ecranului."
     mobileWarning: "AdvantageScope Lite funcționează cel mai bine pe desktop și tablete."
 
 units:
@@ -1128,7 +1128,7 @@ units:
     milliseconds: "{{value}} ms"
     microseconds: "{{value}} μs"
     nanoseconds: "{{value}} ns"
-    minutes: "{{value}} m"
+    minutes: "{{value}} min"
     hours: "{{value}} h"
     days_one: "{{value}} zi"
     days_few: "{{value}} zile"
@@ -1209,8 +1209,8 @@ units:
     microsecondsSeconds: "{{value}} μs·s"
     nanosecondsPerSecond: "{{value}} ns/s"
     nanosecondsSeconds: "{{value}} ns·s"
-    minutesPerSecond: "{{value}} m/s"
-    minutesSeconds: "{{value}} m·s"
+    minutesPerSecond: "{{value}} min/s"
+    minutesSeconds: "{{value}} min·s"
     hoursPerSecond: "{{value}} h/s"
     hoursSeconds: "{{value}} h·s"
     daysPerSecond_one: "{{value}} zi/s"

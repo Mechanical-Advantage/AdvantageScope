@@ -6,8 +6,8 @@ betaWelcome:
   descDesktop: "תודה על העזרה בבדיקה ושיפור תכונות עתידיות ב-AdvantageScope! יש לסמן את התיבות למטה כדי לאשר כל הצהרה לפני שממשיכים."
   descLite: "תודה על העזרה בבדיקה ושיפור AdvantageScope Lite! יש לסמן את התיבות למטה כדי לאשר כל הצהרה לפני שממשיכים."
   checkUnstable: "מובן לי שזוהי גרסה לא יציבה, וייתכן שאיתקל בבעיות שלא קיימות בגרסאות יציבות."
-  checkReport: "מוסכם עלי לדווח על כל בעיה שאמצא למפתחים, מה שיעזור לשפר את הגרסאות העתידיות."
-  checkFeedback: "מוסכם עלי לספק משוב למפתחים אם אשאל על חוויית השימוש שלי בגרסה זו."
+  checkReport: "מוסכם עליי לדווח למפתחים על כל בעיה שאמצא, מה שיעזור לשפר את הגרסאות העתידיות."
+  checkFeedback: "מוסכם עליי לספק משוב למפתחים אם אתבקש לשתף על חוויית השימוש שלי בגרסה זו."
   help: 'בכל שלב, ניתן ללחוץ על <span class="purple">הסמל הסגול</span> בשורת הכותרת כדי לדווח על בעיה, לבקש תכונה חדשה או לשאול שאלה.'
   continue: "המשך"
 
@@ -65,8 +65,8 @@ export:
   prefixes: "קידומות"
   prefixesInputTitle: "הזנת קידומות שדות לייצוא, מופרדות בפסיקים (אופציונלי)"
   fieldSet: "סט שדות"
-  fieldSetSelectTitle: "בחירה האם לכלול שדות מיוצרים בייצוא"
-  fieldSetIncludeGenerated: "לכלול שדות מיוצרים"
+  fieldSetSelectTitle: "בחירה האם לכלול שדות שנוצרו בייצוא"
+  fieldSetIncludeGenerated: "לכלול שדות שנוצרו"
   fieldSetOriginalOnly: "מקוריים בלבד"
   cancel: "ביטול"
   export: "ייצוא"
@@ -85,7 +85,7 @@ preferences:
   themeLightSimple: "בהירה"
   themeDarkSimple: "כהה"
   coordinateSystem: "מערכת צירים"
-  coordinateSystemSelectTitle: "בחירת המקור והכיוון של מערכת הצירים התלת-ממדית"
+  coordinateSystemSelectTitle: "בחירת הראשית והכיוון של מערכת הצירים התלת-ממדית"
   coordinateSystemAutomatic: "אוטומטית"
   coordinateSystemCenterRed: "מרכז/אדום (Systemcore)"
   coordinateSystemWallBlue: "קיר כחול (FRC 2023-2026)"
@@ -180,7 +180,7 @@ unitConversion:
   cancel: "ביטול"
   confirm: "אישור"
   notAvailable: "לא זמין"
-  alertError: "ניתוח המקדם הנוסף נכשל."
+  alertError: "קריאת המקדם הנוסף נכשלה."
 
 uploadAsset:
   title: "העלאת נכס — AdvantageScope"
@@ -216,7 +216,7 @@ xrControls:
 
 tabs:
   console: "מסוף"
-  joysticks: "ג'וייסטיקים"
+  joysticks: "ג'ויסטיקים"
   lineGraph: "גרף קווי"
   field2d: "מגרש 2D"
   field3d: "מגרש 3D"
@@ -314,9 +314,9 @@ hub:
     cannotOpenTitle_two: "לא ניתן לפתוח את הקבצים"
     cannotOpenTitle_other: "לא ניתן לפתוח את הקבצים"
     waitExport: "יש להמתין לסיום הייצוא, ולאחר מכן לנסות שוב."
-    cannotInsertTitle_one: "לא ניתן להכניס קובץ"
-    cannotInsertTitle_two: "לא ניתן להכניס קבצים"
-    cannotInsertTitle_other: "לא ניתן להכניס קבצים"
+    cannotInsertTitle_one: "לא ניתן להוסיף קובץ"
+    cannotInsertTitle_two: "לא ניתן להוסיף קבצים"
+    cannotInsertTitle_other: "לא ניתן להוסיף קבצים"
     noLogsLoaded: 'כרגע לא טעונים קובצי יומן. יש לבחור "פתיחת יומן(ים)" כדי לטעון קבצים חדשים.'
 
   live:
@@ -325,11 +325,11 @@ hub:
     connectErrorTitle: "בעיה במקור החי"
     connectErrorContent: "אירעה בעיה במהלך ההתחברות למקור החי. יש לבדוק את הגדרות החיבור ולנסות שוב."
     nt4NoFieldsTitle: "בעיה בחיבור NetworkTables"
-    nt4NoFieldsContent: "לא התקבלו שדות מהשרת. מצב AdvantageKit נבחר. האם מתבצע חיבור לשרת ללא AdvantageKit?"
+    nt4NoFieldsContent: "לא התקבלו שדות מהשרת. נבחר מצב AdvantageKit. האם מתבצע חיבור לשרת ללא AdvantageKit?"
     cannotConnectTitle: "לא ניתן להתחבר"
     cannotConnectContent: "יש להמתין לסיום הייצוא, ולאחר מכן לנסות שוב."
     cannotPublishTitle: "לא ניתן לפרסם"
-    cannotPublishLive: "פרסום אינו מורשה ממקור חי."
+    cannotPublishLive: "לא ניתן לפרסם ממקור חי."
     cannotPublishNoNt: "יש לפתוח קובץ יומן המכיל נתוני NetworkTables, ולאחר מכן לנסות שוב."
     publishSearching: "מחפש"
     publishActive: "מפרסם"
@@ -349,7 +349,7 @@ hub:
 
   tabs:
     close: "סגירת כרטיסייה"
-    popout: "חלץ כרטיסייה"
+    popout: "חילוץ כרטיסייה"
     add: "הוספת כרטיסייה"
 
   sidebar:
@@ -481,7 +481,7 @@ hub:
     sections:
       summary: "סיכום"
       center: "מרכז"
-      spread: "פריסה"
+      spread: "פיזור"
       percentiles: "אחוזונים"
     metrics:
       count: "ספירה"
@@ -507,8 +507,8 @@ hub:
       percentile95: "אחוזון 95"
       percentile99: "אחוזון 99"
     types:
-      independent: "עצמאי"
-      reference: "התייחסות"
+      independent: "בלתי תלוי"
+      reference: "ייחוס"
       relativeError: "שגיאה יחסית"
       absoluteError: "שגיאה מוחלטת"
     timeRange: "טווח זמן"
@@ -613,7 +613,7 @@ hub:
     orientationXrYd: "+X ימינה, +Y למטה"
     orientationXrYu: "+X ימינה, +Y למעלה"
     orientationXuYl: "+X למעלה, +Y שמאלה"
-    origin: "מקור מערכת הצירים"
+    origin: "ראשית מערכת הצירים"
     originUpperLeft: "שמאל עליון"
     originUpperRight: "ימין עליון"
     originLowerLeft: "שמאל תחתון"
@@ -649,7 +649,7 @@ xrClient:
     placeSecondFTCRed: "יש להקיש כדי להציב נקודה נוספת על בסיס המחסום שליד אזור הברית האדומה, במרחק של לפחות 1 מטר מהנקודה הקודמת."
     placeSecondFTCBlue: "יש להקיש כדי להציב נקודה נוספת על בסיס המחסום שליד אזור הברית הכחולה, במרחק של לפחות 1 מטר מהנקודה הקודמת."
     placeThirdFRC: "יש להקיש כדי לבחור את הבסיס של אחד ממחסומי המגרש הארוכים."
-    placeThirdFTC: "יש להקיש כדי לבחור את הבסיס של אחד ממחסומי המגרש האנכיים."
+    placeThirdFTC: "יש להקיש כדי לבחור את הבסיס של אחד ממחסומי המגרש המאונכים."
 
 liveModeName:
   nt4: "NetworkTables"
@@ -747,7 +747,7 @@ menu:
   tabs:
     heading: "כרטיסיות"
     newTab: "כרטיסייה חדשה"
-    newPopOut: "חלץ כרטיסייה חדשה"
+    newPopOut: "חילוץ כרטיסייה חדשה"
     prevTab: "הכרטיסייה הקודמת"
     prevTabShortcut: "הכרטיסייה הקודמת ({{shortcut}})"
     nextTab: "הכרטיסייה הבאה"
@@ -792,7 +792,7 @@ menu:
     editConversion: "עריכת המרה"
     disableAutoUnits: "השבתת יחידות אוטומטיות"
     resetUnits: "איפוס יחידות"
-    zoomEnabled: "התקרבות לטווח מופעל"
+    zoomEnabled: "התקרבות לטווח הפעיל"
     differentiate: "גזירה"
     integrate: "אינטגרציה"
 
@@ -884,12 +884,12 @@ main:
     noDataDetail: "לא נמצא מידע על עדכונים עבור הגרסה המותקנת של AdvantageScope. יש לבדוק במאגר GitHub של AdvantageScope כדי להוריד את הגרסה החדשה ביותר."
     later: "מאוחר יותר"
     viewChangelog: "הצגת יומן שינויים"
-    downloadLatestNativeQuery: "להוריד את הגרסה המקומית (Native) החדשה ביותר?"
-    downloadLatestNativeDetail: "גרסה {{latestVersion}} זמינה (שוחררה ב-{{latestDate}}). כרגע פועלת גרסת x86 של גרסה {{currentVersion}} על פלטפורמת arm64. האם ברצונך להוריד את הגרסה המקומית החדשה ביותר?"
+    downloadLatestNativeQuery: "להוריד את הגרסה הייעודית (Native) החדשה ביותר?"
+    downloadLatestNativeDetail: "גרסה {{latestVersion}} זמינה (שוחררה ב-{{latestDate}}). כרגע פועלת גרסת x86 של גרסה {{currentVersion}} על פלטפורמת arm64. האם ברצונך להוריד את הגרסה הייעודית החדשה ביותר?"
     downloadLatestQuery: "להוריד את הגרסה החדשה ביותר?"
     downloadLatestDetail: "גרסה {{latestVersion}} זמינה (שוחררה ב-{{latestDate}}). כרגע פועלת גרסה {{currentVersion}}. האם ברצונך להוריד את הגרסה החדשה ביותר?"
-    downloadNativeQuery: "להוריד גרסה מקומית (Native)?"
-    downloadNativeDetail: "נראה שפועלת גרסת x86 של האפליקציה על פלטפורמת arm64. האם ברצונך להוריד את הגרסה המקומית?"
+    downloadNativeQuery: "להוריד גרסה ייעודית (Native)?"
+    downloadNativeDetail: "נראה שפועלת גרסת x86 של האפליקציה על פלטפורמת arm64. האם ברצונך להוריד את הגרסה הייעודית?"
     noUpdates: "אין עדכונים זמינים"
     upToDateDetail: "כרגע פועלת גרסה {{currentVersion}} (שוחררה ב-{{latestDate}})."
 
@@ -1163,8 +1163,8 @@ units:
     hertz: "{{value}} הרץ"
     kilohertz: "{{value}} קילו-הרץ"
     megahertz: "{{value}} מגה-הרץ"
-    celsius: "{{value}} °צלזיוס"
-    fahrenheit: "{{value}} °פרנהייט"
+    celsius: "{{value}}° צלזיוס"
+    fahrenheit: "{{value}}° פרנהייט"
     kelvin: "{{value}} קלווין"
     volts: "{{value}} וולט"
     millivolts: "{{value}} מילי-וולט"
@@ -1176,7 +1176,9 @@ units:
     horsepower: '{{value}} כ"ס'
     joules: "{{value}} ג'אול"
     wattHours: "{{value}} וואט-שעה"
-    calories: "{{value}} קלוריה"
+    calories_one: "{{value}} קלוריה"
+    calories_two: "{{value}} קלוריות"
+    calories_other: "{{value}} קלוריות"
     potatoes_one: "{{value}} תפוח אדמה"
     potatoes_two: "{{value}} תפוחי אדמה"
     potatoes_other: "{{value}} תפוחי אדמה"
@@ -1295,8 +1297,12 @@ units:
     joulesSeconds: "{{value}} ג'אול·שנ'"
     wattHoursPerSecond: "{{value}} וואט-שעה/שנ'"
     wattHoursSeconds: "{{value}} וואט-שעה·שנ'"
-    caloriesPerSecond: "{{value}} קלוריה/שנ'"
-    caloriesSeconds: "{{value}} קלוריה·שנ'"
+    caloriesPerSecond_one: "{{value}} קלוריה/שנ'"
+    caloriesPerSecond_two: "{{value}} קלוריות/שנ'"
+    caloriesPerSecond_other: "{{value}} קלוריות/שנ'"
+    caloriesSeconds_one: "{{value}} קלוריה·שנ'"
+    caloriesSeconds_two: "{{value}} קלוריות·שנ'"
+    caloriesSeconds_other: "{{value}} קלוריות·שנ'"
     potatoesPerSecond_one: "{{value}} תפוח אדמה/שנ'"
     potatoesPerSecond_two: "{{value}} תפוחי אדמה/שנ'"
     potatoesPerSecond_other: "{{value}} תפוחי אדמה/שנ'"

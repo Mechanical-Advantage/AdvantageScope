@@ -28,7 +28,7 @@
     "description": "The label for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Tab Reference.link.generated-index.description": {
-    "message": "AdvantageScope permite numeroase moduri de vizualizare și analiză a datelor, organizate în file. Tipul de vizualizare este selectabil pentru fiecare filă nouă deschisă, și pot fi deschise mai multe file de un anumit tip în același timp. Filele pot fi denumite pentru o organizare mai ușoară și se pot desprinde în ferestre separate pentru vizualizarea simultană și sincronizată a datelor.",
+    "message": "AdvantageScope oferă numeroase moduri de vizualizare și analiză a datelor, organizate în file. Poți alege tipul de vizualizare pentru fiecare filă nouă și poți deschide mai multe file de același tip simultan. De asemenea, poți redenumi filele pentru o organizare mai ușoară și le poți detașa în ferestre separate pentru a vizualiza datele simultan și sincronizat.",
     "description": "The generated-index page description for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.📉 Line Graph": {
@@ -40,7 +40,7 @@
     "description": "The label for category '👀 3D Field' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.More Features": {
-    "message": "Mai multe caracteristici",
+    "message": "Alte funcționalități",
     "description": "The label for category 'More Features' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.⚙️ Custom Assets": {

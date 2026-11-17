@@ -8,7 +8,7 @@
     "description": "The label for category 'Overview' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Overview.link.generated-index.description": {
-    "message": "Эти страницы охватывают основы навигации в AdvantageScope и доступа к данным.",
+    "message": "В этом разделе описаны основы навигации по AdvantageScope и работы с данными.",
     "description": "The generated-index page description for category 'Overview' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.🧭 App Navigation": {
@@ -28,7 +28,7 @@
     "description": "The label for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Tab Reference.link.generated-index.description": {
-    "message": "AdvantageScope поддерживает множество способов просмотра и анализа данных, организованных в виде вкладок. Тип визуализации выбирается для каждой новой открываемой вкладки, при этом одновременно может быть открыто несколько вкладок одного типа. Вкладкам можно давать имена для удобства организации, а также выносить их в отдельные окна для одновременного синхронизированного просмотра данных.",
+    "message": "AdvantageScope предлагает множество способов просмотра и анализа данных в виде отдельных вкладок. При создании новой вкладки можно выбрать нужный тип визуализации, а также открыть несколько вкладок одного типа одновременно. Для удобства вкладки можно переименовывать и выносить в отдельные окна для синхронизированного просмотра данных.",
     "description": "The generated-index page description for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.📉 Line Graph": {

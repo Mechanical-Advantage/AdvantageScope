@@ -12,7 +12,7 @@
     "description": "The generated-index page description for category 'Overview' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.🧭 App Navigation": {
-    "message": "🧭 Uygulama navigasyonu",
+    "message": "🧭 Uygulama gezinmesi",
     "description": "The label for category '🧭 App Navigation' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.📂 Log Files": {
@@ -28,7 +28,7 @@
     "description": "The label for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Tab Reference.link.generated-index.description": {
-    "message": "AdvantageScope, verileri sekmeler halinde düzenleyerek görüntülemek ve analiz etmek için birçok yol sunar. Açılan her yeni sekme için görselleştirme türü seçilebilir ve aynı anda belirli bir türden birden fazla sekme açık olabilir. Sekmeler kolay düzenleme amacıyla adlandırılabilir ve eş zamanlı, senkronize veri görüntüleme için ayrı pencerelere ayrılabilir.",
+    "message": "AdvantageScope, verilerinizi sekmeler hâlinde düzenleyip analiz etmeniz için birçok yol sunar. Açtığınız her yeni sekme için farklı bir görselleştirme türü seçebilir, aynı türden birden fazla sekmeyi aynı anda açık tutabilirsiniz. Ayrıca sekmeleri kolayca yeniden adlandırabilir, verileri eş zamanlı ve senkronize şekilde incelemek için ayrı pencerelere ayırabilirsiniz.",
     "description": "The generated-index page description for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.📉 Line Graph": {

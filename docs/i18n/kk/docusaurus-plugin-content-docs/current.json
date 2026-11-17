@@ -16,7 +16,7 @@
     "description": "The label for category '🧭 App Navigation' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.📂 Log Files": {
-    "message": "📂 Лог файлдары",
+    "message": "📂 Журнал файлдары",
     "description": "The label for category '📂 Log Files' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.🛜 Live Sources": {
@@ -28,7 +28,7 @@
     "description": "The label for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Tab Reference.link.generated-index.description": {
-    "message": "AdvantageScope деректерді қарау мен талдаудың қойындыларға бөлінген көптеген тәсілдерін қолдайды. Әрбір жаңа ашылған қойынды үшін визуализация түрін таңдауға болады және бір уақытта белгілі бір түрдегі бірнеше қойынды ашық болуы мүмкін. Қойындыларды реттеу оңай болуы үшін оларға атау беруге болады, сондай-ақ деректерді бір уақытта, синхронды түрде қарау үшін оларды жеке терезелерге шығаруға (бөлуге) болады.",
+    "message": "AdvantageScope қолданбасы деректерді қарау мен талдаудың қойындыларға негізделген көптеген тәсілдерін қолдайды. Әрбір жаңа қойынды үшін визуализация түрін таңдауға және бір түрдегі бірнеше қойындыны қатар ашып қоюға болады. Оңай реттеу үшін қойындыларға атау беруге, сондай-ақ деректерді бір уақытта қарау үшін оларды жеке қалқымалы терезелерге шығаруға болады.",
     "description": "The generated-index page description for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.📉 Line Graph": {
@@ -36,7 +36,7 @@
     "description": "The label for category '📉 Line Graph' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.👀 3D Field": {
-    "message": "👀 3D Алаң",
+    "message": "👀 3D алаң",
     "description": "The label for category '👀 3D Field' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.More Features": {

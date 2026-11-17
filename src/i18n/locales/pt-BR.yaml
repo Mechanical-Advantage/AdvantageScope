@@ -7,7 +7,7 @@ betaWelcome:
   descLite: "Obrigado por ajudar a testar e melhorar o AdvantageScope Lite! Marque as caixas abaixo para confirmar cada declaração antes de continuar."
   checkUnstable: "Entendo que esta é uma versão instável e encontrarei problemas que não estão presentes nas versões estáveis."
   checkReport: "Concordo em relatar quaisquer problemas que encontrar aos desenvolvedores, o que ajudará a melhorar as versões futuras."
-  checkFeedback: "Concordo em fornecer feedback aos desenvolvedores se for questionado sobre minha experiência de uso desta versão."
+  checkFeedback: "Concordo em fornecer feedback aos desenvolvedores se perguntarem sobre minha experiência com esta versão."
   help: 'A qualquer momento, você pode clicar no <span class="purple">ícone roxo</span> na barra de título para relatar um problema, solicitar um recurso ou fazer uma pergunta.'
   continue: "Continuar"
 
@@ -23,8 +23,8 @@ download:
   errorUnknown: "Erro desconhecido: {{error}}"
   statusPreparing: "Preparando"
   statusFinished: "Concluído"
-  progressSimple: "{{current}}MB / {{total}}MB"
-  progressDetailed: "{{current}}MB / {{total}}MB ({{speed}}Mb/s, {{minutes}}m{{seconds}}s)"
+  progressSimple: "{{current}} MB / {{total}} MB"
+  progressDetailed: "{{current}} MB / {{total}} MB ({{speed}} Mb/s, {{minutes}} min {{seconds}} s)"
   sizeLessThanMinimum: "(<0,1 MB)"
   sizeValue: "({{size}} MB)"
   alertSelectLog: "Selecione um log para baixar."
@@ -65,7 +65,7 @@ export:
   prefixes: "Prefixos"
   prefixesInputTitle: "Inserir prefixos de campo para exportar, separados por vírgulas (opcional)"
   fieldSet: "Conjunto de campos"
-  fieldSetSelectTitle: "Selecionar se campos gerados devem ser incluídos na exportação"
+  fieldSetSelectTitle: "Selecionar se os campos gerados devem ser incluídos na exportação"
   fieldSetIncludeGenerated: "Incluir gerados"
   fieldSetOriginalOnly: "Apenas originais"
   cancel: "Cancelar"
@@ -96,7 +96,7 @@ preferences:
   timestampsStartZero: "Iniciar no zero"
   timestampsOriginal: "Original"
   tbaApiKey: "Chave de API do TBA"
-  tbaApiKeyInputTitle: "Inserir sua chave de API para o The Blue Alliance"
+  tbaApiKeyInputTitle: "Inserir sua chave de API do The Blue Alliance"
   networkingTitle: "Opções de rede"
   networkingSubtitle: 'A fonte ao vivo pode ser alterada no menu "Arquivo".'
   robotAddress: "Endereço do robô"
@@ -108,7 +108,7 @@ preferences:
   liveModeLowBandwidth: "Baixa largura de banda"
   liveModeLogging: "Logging"
   discardLive: "Descartar dados ao vivo"
-  discardLiveSelectTitle: "Selecionar por quanto tempo reter dados ao vivo antes de descartar"
+  discardLiveSelectTitle: "Selecionar por quanto tempo manter os dados ao vivo antes de descartá-los"
   discardLive1Min: "Após 1 minuto"
   discardLive5Min: "Após 5 minutos"
   discardLive20Min: "Após 20 minutos"
@@ -116,7 +116,7 @@ preferences:
   ntPublish: "Prefixos de publicação NT"
   ntPublishInputTitle: "Inserir prefixos para publicação no NetworkTables, separados por vírgulas"
   renderingTitle: "Opções de renderização 3D"
-  mode3dDefault: "Modo 3D (Padrão)"
+  mode3dDefault: "Modo 3D (padrão)"
   mode3dDefaultSelectTitle: "Selecionar o modo de renderização 3D padrão"
   mode3dCinematic: "Cinematográfico"
   mode3dStandard: "Normal"
@@ -185,7 +185,7 @@ uploadAsset:
   title: "Enviar recurso — AdvantageScope"
   menuTitle: "Enviar recurso"
   inputTitle: "Escolher arquivo zip contendo os recursos"
-  progressDefault: "Escolha um arquivo zip contendo recursos do AdvantageScope.<br />Você pode verificar a documentação do AdvantageScope Lite para obter mais informações sobre os formatos de arquivo suportados."
+  progressDefault: "Escolha um arquivo zip com recursos do AdvantageScope.<br />Consulte a documentação do AdvantageScope Lite para mais informações sobre os formatos de arquivo suportados."
   cancel: "Cancelar"
   upload: "Enviar"
   progressUploading: "Enviando arquivo..."
@@ -196,7 +196,7 @@ xrControls:
   title: "Controles de XR — AdvantageScope"
   header: "Escaneie o código para iniciar o AdvantageScope XR"
   scanInstructions: "Nenhuma instalação de aplicativo é necessária."
-  requirements: "Requer um iPhone ou iPad conectado à mesma rede Wi-Fi. Verifique a documentação para mais detalhes."
+  requirements: "Requer um iPhone ou iPad conectado à mesma rede Wi-Fi. Consulte a documentação para mais detalhes."
   calibration: "Calibração"
   calibrationSelectTitle: "Selecionar escala/modo de calibração"
   calibrationMiniature: "Miniatura"
@@ -207,7 +207,7 @@ xrControls:
   streamingSmooth: "Suave"
   streamingLowLatency: "Baixa latência"
   showFloor: "Mostrar chão"
-  showFloorTitle: "Alternar visibilidade do tapete do chão"
+  showFloorTitle: "Alternar visibilidade do piso"
   showField: "Mostrar campo"
   showFieldTitle: "Alternar visibilidade do campo"
   showRobots: "Mostrar robôs"
@@ -341,7 +341,7 @@ hub:
 
   tabs:
     close: "Fechar guia"
-    popout: "Destacar aba"
+    popout: "Destacar guia"
     add: "Adicionar guia"
 
   sidebar:
@@ -528,11 +528,11 @@ hub:
     nextFrame: "Próximo quadro"
     goForward5s: "Avançar 5 segundos"
     noApiKeyTitle: "Sem chave de API"
-    noApiKeyContent: "Você precisa inserir uma chave de API para o The Blue Alliance nas preferências do AdvantageScope. Uma chave de API pode ser obtida na página da Conta no site do The Blue Alliance."
+    noApiKeyContent: "Insira uma chave de API do The Blue Alliance nas preferências do AdvantageScope. Você pode obter uma chave de API na página da Conta no site do The Blue Alliance."
     noMatchInfoTitle: "Sem informações da partida"
-    noMatchInfoContent: "Falha ao ler informações do evento e da partida no log. Carregue o vídeo usando um URL do YouTube ou um arquivo local em vez disso."
+    noMatchInfoContent: "Falha ao ler as informações do evento e da partida no log. Carregue o vídeo usando uma URL do YouTube ou um arquivo local."
     noPracticeTitle: "Sem vídeos para partida de treino"
-    noPracticeContent: "Esta é uma partida de treino. Não há dados disponíveis no The Blue Alliance para partidas de treino. Carregue o vídeo usando um URL do YouTube ou um arquivo local em vez disso."
+    noPracticeContent: "Esta é uma partida de treino. Não há dados disponíveis no The Blue Alliance para partidas de treino. Carregue o vídeo usando uma URL do YouTube ou um arquivo local."
 
   joysticks:
     selectTitle: "Selecionar fonte de dados do joystick"
@@ -722,7 +722,7 @@ menu:
     toggleSidebar: "Alternar barra lateral"
     toggleControls: "Alternar controles"
     resetLayout: "Redefinir layout"
-    loopVisible: "Fazer loop no intervalo visível"
+    loopVisible: "Reproduzir intervalo visível em loop"
     showRobotMode: "Mostrar modo do robô"
     reload: "Recarregar"
     toggleDevTools: "Alternar ferramentas de desenvolvedor"
@@ -734,7 +734,7 @@ menu:
   tabs:
     heading: "Guias"
     newTab: "Nova guia"
-    newPopOut: "Nova aba destacável"
+    newPopOut: "Nova guia destacável"
     prevTab: "Guia anterior"
     prevTabShortcut: "Guia anterior ({{shortcut}})"
     nextTab: "Próxima guia"
@@ -745,12 +745,12 @@ menu:
     shiftRightShortcut: "Mover para a direita ({{shortcut}})"
     closeTab: "Fechar guia"
     closeTabShortcut: "Fechar guia ({{shortcut}})"
-    newTabShortcut: "Nova guia (Atalho)"
+    newTabShortcut: "Nova guia (atalho)"
     renameTab: "Renomear guia"
 
   window:
     heading: "Janela"
-    bringFront: "Trazer tudo para frente"
+    bringFront: "Trazer todas para frente"
     minimize: "Minimizar"
     zoom: "Zoom"
 
@@ -779,7 +779,7 @@ menu:
     editConversion: "Editar conversão"
     disableAutoUnits: "Desativar unidades automáticas"
     resetUnits: "Redefinir unidades"
-    zoomEnabled: "Zoom para intervalo habilitado"
+    zoomEnabled: "Zoom para o intervalo habilitado"
     differentiate: "Diferenciar"
     integrate: "Integrar"
 
@@ -872,21 +872,21 @@ main:
     later: "Mais tarde"
     viewChangelog: "Ver notas de versão"
     downloadLatestNativeQuery: "Baixar a versão nativa mais recente?"
-    downloadLatestNativeDetail: "A versão {{latestVersion}} está disponível (lançada em {{latestDate}}). Você está executando no momento a compilação x86 da versão {{currentVersion}} em uma plataforma arm64. Deseja baixar a versão nativa mais recente?"
+    downloadLatestNativeDetail: "A versão {{latestVersion}} está disponível (lançada em {{latestDate}}). No momento, você está executando a compilação x86 da versão {{currentVersion}} em uma plataforma arm64. Deseja baixar a versão nativa mais recente?"
     downloadLatestQuery: "Baixar a versão mais recente?"
-    downloadLatestDetail: "A versão {{latestVersion}} está disponível (lançada em {{latestDate}}). Você está executando no momento a versão {{currentVersion}}. Deseja baixar a versão mais recente?"
+    downloadLatestDetail: "A versão {{latestVersion}} está disponível (lançada em {{latestDate}}). No momento, você está executando a versão {{currentVersion}}. Deseja baixar a versão mais recente?"
     downloadNativeQuery: "Baixar versão nativa?"
     downloadNativeDetail: "Parece que você está executando a versão x86 deste aplicativo em uma plataforma arm64. Deseja baixar a versão nativa?"
     noUpdates: "Nenhuma atualização disponível"
-    upToDateDetail: "Você está executando no momento a versão {{currentVersion}} (lançada em {{latestDate}})."
+    upToDateDetail: "No momento, você está executando a versão {{currentVersion}} (lançada em {{latestDate}})."
 
   logs:
     openTitle: "Selecione o(s) arquivo(s) de log do robô para abrir"
     openMessage: "Se vários arquivos forem selecionados, os timestamps serão alinhados automaticamente"
     robotLogsFilter: "Logs do robô"
     addTitle: "Selecione o(s) arquivo(s) de log do robô para adicionar ao log atual"
-    downloadFolderTitle: "Selecione o local de salvamento para os logs do robô"
-    downloadFileTitle: "Selecione o local de salvamento para o log do robô"
+    downloadFolderTitle: "Selecione onde salvar os logs do robô"
+    downloadFileTitle: "Selecione onde salvar o log do robô"
     extensionWpilog: "Log do robô WPILib"
     extensionWpilogxz: "Log do robô WPILib compactado"
     extensionRlog: "Log do robô RLOG"
@@ -894,7 +894,7 @@ main:
     extensionRevlog: "Log de CAN da REV Robotics"
     csvFilter: "Valores separados por vírgula (CSV)"
     mcapFilter: "Log MCAP"
-    exportConsoleTitle: "Selecione o local de exportação para o log do console"
+    exportConsoleTitle: "Selecione onde exportar o log do console"
     exportConsoleFilename: "Console {{date}}.txt"
     textFilter: "Arquivos de texto"
     openQuery: "Abrir log?"
@@ -911,12 +911,12 @@ main:
     limitedSignalsDetail: "Este arquivo de log inclui um número limitado de sinais de dispositivos Phoenix. Verifique a documentação do Phoenix para mais detalhes."
 
   layout:
-    exportTitle: "Selecione o local de exportação para o arquivo de layout"
+    exportTitle: "Selecione onde exportar o arquivo de layout"
     jsonFilter: "Arquivos JSON"
     importTitle: "Selecione um ou mais arquivos de layout para importar"
     failedImport: "Falha ao importar layout"
     oldDetail: "O arquivo de layout selecionado usa um formato mais antigo que não é compatível com a versão atual do AdvantageScope."
-    invalidDetail: "O arquivo de layout selecionado não estava em um formato reconhecido."
+    invalidDetail: "O arquivo de layout selecionado não está em um formato reconhecido."
     versionMismatch: "Incompatibilidade de versão"
     versionMismatchDetail: "O arquivo de layout foi gerado por uma versão diferente do AdvantageScope. A compatibilidade não é garantida."
     resetDsQuery: "Redefinir para o layout da DS?"
@@ -932,11 +932,11 @@ main:
     failedProcess: "Falha ao processar vídeo"
     failedProcessDetail: "Houve um problema ao processar o vídeo. Tente novamente."
     copyUrl: "Copiar URL para a área de transferência"
-    copyUrlDetail: "Você pode copiar um URL do YouTube para a área de transferência e tente novamente."
+    copyUrlDetail: "Copie uma URL do YouTube para a área de transferência e tente novamente."
     youtubeFailed: "Falha no download do YouTube"
     youtubeFailedDetail: "Ocorreu um erro ao tentar abrir o vídeo do YouTube. Observe que esse recurso pode falhar inesperadamente devido a mudanças nos servidores do YouTube. Verifique se há atualizações ou escolha um arquivo de vídeo local."
     tbaFailed: "Falha no download do TBA"
-    tbaFailedDetail: "Houve um problema ao encontrar o vídeo da partida no The Blue Alliance. Verifique sua chave de API ou carregue o vídeo usando um URL do YouTube ou um arquivo local em vez disso."
+    tbaFailedDetail: "Houve um problema ao encontrar o vídeo da partida no The Blue Alliance. Verifique sua chave de API ou carregue o vídeo usando uma URL do YouTube ou um arquivo local."
     openTitle: "Selecione um vídeo para abrir"
     filter: "Vídeos"
 
@@ -956,8 +956,8 @@ main:
 
   ctre:
     licenseTitle: "Contrato de licença da CTRE"
-    licenseDetail: "A decodificação do arquivo de log Hoot requer a concordância com o Contrato de Licença de Usuário Final (EULA) da CTRE. Clique no botão abaixo para ver o contrato de licença completo e, em seguida, marque a caixa se concordar com os termos."
-    licenseRequired: "Arquivos de log Hoot não podem ser decodificados sem concordar com o Contrato de Licença de Usuário Final (EULA) da CTRE."
+    licenseDetail: "Para decodificar arquivos de log Hoot, é necessário aceitar o Contrato de Licença de Usuário Final (EULA) da CTRE. Clique no botão abaixo para ver o contrato de licença completo e marque a caixa se concordar com os termos."
+    licenseRequired: "Arquivos de log Hoot não podem ser decodificados sem aceitar o Contrato de Licença de Usuário Final (EULA) da CTRE."
 
   survey:
     alphaComplete: "Alpha concluído"
@@ -968,9 +968,9 @@ main:
     expiredBetaGithub: "A fase beta do AdvantageScope foi concluída. Baixe a versão estável mais recente do AdvantageScope no GitHub."
     expiredLiteAlpha: "A fase alpha do AdvantageScope Lite foi concluída. Siga as instruções na documentação para atualizar para a versão estável mais recente."
     expiredLiteBeta: "A fase beta do AdvantageScope Lite foi concluída. Siga as instruções na documentação para atualizar para a versão estável mais recente."
-    feedbackQuery: "Pesquisa de feedback?"
-    feedbackAlphaDetail: "Por favor, reserve 30 segundos para compartilhar sua experiência de uso da versão alpha do AdvantageScope. Prometemos ser rápidos."
-    feedbackBetaDetail: "Por favor, reserve 30 segundos para compartilhar sua experiência de uso da versão beta do AdvantageScope. Prometemos ser rápidos."
+    feedbackQuery: "Responder à pesquisa de feedback?"
+    feedbackAlphaDetail: "Reserve 30 segundos para compartilhar sua experiência com a versão alpha do AdvantageScope. Prometemos que será rápido."
+    feedbackBetaDetail: "Reserve 30 segundos para compartilhar sua experiência com a versão beta do AdvantageScope. Prometemos que será rápido."
     notNow: "Agora não"
 
   coordinateSystem:
@@ -980,11 +980,11 @@ main:
     systemcoreFtcDetail: 'Este campo usa o sistema de coordenadas do Systemcore por padrão. Se o código do seu robô usa o sistema de coordenadas tradicional da FTC, você pode alterar a opção "Sistema de coordenadas" nas preferências do AdvantageScope. Consulte a documentação para mais detalhes.'
 
   lite:
-    tooSmall: "Não há espaço suficiente, por favor, altere o layout da tela."
+    tooSmall: "Não há espaço suficiente. Altere o layout da tela."
     mobileWarning: "O AdvantageScope Lite funciona melhor em desktops e tablets."
 
 units:
-  defaultLabel: "{{unit}} (Padrão)"
+  defaultLabel: "{{unit}} (padrão)"
   deltaValue: "Δ {{value}}"
   relativeValue: "+{{value}}"
 

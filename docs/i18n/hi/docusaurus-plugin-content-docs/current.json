@@ -28,7 +28,7 @@
     "description": "The label for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Tab Reference.link.generated-index.description": {
-    "message": "AdvantageScope डेटा देखने और विश्लेषण करने के कई तरीकों का समर्थन करता है, जिन्हें टैब्स में व्यवस्थित किया गया है। प्रत्येक नए खोले गए टैब के लिए विज़ुअलाइज़ेशन के प्रकार का चयन किया जा सकता है, और किसी दिए गए प्रकार के कई टैब्स एक साथ खुले हो सकते हैं। संगठन की आसानी के लिए टैब्स को नाम दिया जा सकता है और एक साथ, सिंक्रनाइज़ डेटा देखने के लिए अलग विंडो में पॉप-आउट किया जा सकता है।",
+    "message": "AdvantageScope में डेटा देखने और एनालाइज़ करने के कई तरीके हैं, जिन्हें टैब्स में व्यवस्थित किया गया है। हर नए टैब के लिए आप विज़ुअलाइज़ेशन का प्रकार चुन सकते हैं, और एक ही प्रकार के कई टैब्स एक साथ खोल सकते हैं। इन्हें आसानी से व्यवस्थित रखने के लिए आप टैब्स को नाम दे सकते हैं और एक साथ सिंक्रनाइज़्ड डेटा देखने के लिए अलग विंडो में पॉप-आउट कर सकते हैं।",
     "description": "The generated-index page description for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.📉 Line Graph": {

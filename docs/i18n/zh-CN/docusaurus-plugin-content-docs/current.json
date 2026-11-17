@@ -28,7 +28,7 @@
     "description": "The label for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Tab Reference.link.generated-index.description": {
-    "message": "AdvantageScope 支持多种查看和分析数据的方式，并以选项卡形式进行组织。对于打开的每个新选项卡，其可视化类型都是可选的，并且可以同时打开多个相同类型的选项卡。可以对选项卡进行命名以方便组织，并且可以将选项卡弹出到独立窗口中，以便同时、同步地查看数据。",
+    "message": "AdvantageScope 通过选项卡来组织数据的查看与分析。每次新建选项卡时，你都可以自由选择可视化类型，也可以同时打开多个同类型的选项卡。你还可以重命名选项卡以便分类整理，或将其弹出到独立窗口，实现多视图同步查看。",
     "description": "The generated-index page description for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.📉 Line Graph": {

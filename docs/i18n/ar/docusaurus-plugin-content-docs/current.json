@@ -28,7 +28,7 @@
     "description": "The label for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Tab Reference.link.generated-index.description": {
-    "message": "يدعم AdvantageScope طرقاً عديدة لعرض البيانات وتحليلها، وهي منظمة في علامات تبويب. يمكن اختيار نوع التصور المرئي لكل علامة تبويب جديدة يتم فتحها، ويمكن فتح علامات تبويب متعددة من نوع معين في نفس الوقت. يمكن تسمية علامات التبويب لتسهيل تنظيمها ويمكن فصلها في نوافذ مستقلة لعرض البيانات بشكل متزامن ومتزامن.",
+    "message": "يدعم AdvantageScope طرقًا عديدة لعرض البيانات وتحليلها ضمن علامات تبويب منظّمة. يمكنك اختيار نوع العرض المرئي لكل علامة تبويب جديدة تفتحها، وفتح عدة علامات تبويب من النوع نفسه في آنٍ واحد، كما يمكنك تسميتها لتسهيل تنظيمها وفصلها في نوافذ مستقلة لعرض البيانات بالتزامن.",
     "description": "The generated-index page description for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.📉 Line Graph": {

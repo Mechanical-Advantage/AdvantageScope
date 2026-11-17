@@ -28,7 +28,7 @@
     "description": "The label for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Tab Reference.link.generated-index.description": {
-    "message": "AdvantageScope admite muchas formas de ver y analizar datos, organizadas en pestañas. El tipo de visualización se puede seleccionar para cada nueva pestaña abierta, y se pueden abrir múltiples pestañas de un tipo determinado a la vez. Las pestañas se pueden nombrar para facilitar la organización y se pueden separar en ventanas independientes para una visualización de datos simultánea y sincronizada.",
+    "message": "AdvantageScope ofrece diversas formas de ver y analizar datos, organizadas en pestañas. Al abrir una pestaña nueva, puedes elegir su tipo de visualización y tener varias del mismo tipo abiertas al mismo tiempo. También puedes nombrarlas para organizarte mejor y separarlas en ventanas independientes para visualizar los datos de forma simultánea y sincronizada.",
     "description": "The generated-index page description for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.📉 Line Graph": {

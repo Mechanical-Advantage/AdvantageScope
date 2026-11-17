@@ -28,7 +28,7 @@
     "description": "The label for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Tab Reference.link.generated-index.description": {
-    "message": "AdvantageScope prend en charge de nombreuses manières de visualiser et d'analyser les données, organisées en onglets. Le type de visualisation peut être sélectionné pour chaque nouvel onglet ouvert, et plusieurs onglets d'un type donné peuvent être ouverts simultanément. Les onglets peuvent être nommés pour faciliter l'organisation et peuvent être détachés dans des fenêtres distinctes pour une visualisation simultanée et synchronisée des données.",
+    "message": "AdvantageScope propose de nombreux onglets pour visualiser et analyser vos données. Choisissez le type de visualisation à l'ouverture de chaque nouvel onglet et ouvrez-en plusieurs du même type simultanément. Vous pouvez également renommer vos onglets pour mieux vous organiser ou les détacher dans des fenêtres distinctes afin de comparer vos données de façon synchronisée.",
     "description": "The generated-index page description for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.📉 Line Graph": {
