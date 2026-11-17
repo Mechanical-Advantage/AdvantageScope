@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 🔍 Метаданные {#metadata}
 
-Вкладка метаданных показывает значения, опубликованные в скрытую таблицу "/Metadata" или через AdvantageKit. Ключи метаданных отображаются слева, а столбцы разделяют данные из разных источников (например, реальный и повтор при использовании AdvantageKit).
+Вкладка метаданных показывает значения, опубликованные в скрытую таблицу «/Metadata» или через AdvantageKit. Ключи метаданных отображаются слева, а столбцы разделяют данные из разных источников (например, реальный запуск и повтор при использовании AdvantageKit).
 
 <img src="/img/tab-reference/metadata-1.webp" alt="Обзор вкладки метаданных" />
 
@@ -18,7 +18,7 @@ _Выше показан интерфейс на английском языке
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-В WPILib логируйте значения в таблицу "/Metadata" в виде строк с помощью класса `Telemetry`.
+В WPILib логируйте значения в таблицу «/Metadata» в виде строк с помощью класса `Telemetry`.
 
 ```java
 TelemetryTable metadata = Telemetry.getTable("Metadata");

@@ -6,11 +6,11 @@
 
 Хотя Onshape включает опцию экспорта в glTF, это часто приводит к очень большим файлам, которыми трудно управлять. Вместо этого рекомендуется экспортировать из Onshape в STEP, а затем следовать инструкциям в следующем разделе для преобразования в glTF.
 
-1. После открытия файла Onshape щелкните правой кнопкой мыши по главной сборке и выберите «Export...»:
+1. После открытия файла Onshape щёлкните правой кнопкой мыши по главной сборке и выберите «Export...»:
 
 <img src="/img/more-features/custom-assets/gltf-convert-1.webp" alt="Выбор параметра «Export...»" />
 
-2. Во всплывающем окне опций убедитесь, что формат экспорта — «STEP», и нажмите «Export»:
+2. Во всплывающем окне параметров убедитесь, что формат экспорта — «STEP», и нажмите «Export»:
 
 <img src="/img/more-features/custom-assets/gltf-convert-2.webp" alt="Всплывающее окно параметров экспорта" />
 
@@ -34,7 +34,7 @@
 
 <img src="/img/more-features/custom-assets/gltf-convert-5.webp" alt="Переключение формата экспорта" />
 
-6. Нажмите иконку шестеренки, затем включите «Merge faces within the same part»:
+6. Нажмите иконку шестерёнки, затем включите «Merge faces within the same part»:
 
 <img src="/img/more-features/custom-assets/gltf-convert-6.webp" alt="Включение «Merge faces within the same part»" />
 

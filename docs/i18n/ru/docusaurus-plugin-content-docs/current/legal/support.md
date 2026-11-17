@@ -6,5 +6,5 @@ sidebar_position: 3
 
 Чтобы получить поддержку по AdvantageScope или AdvantageScope XR, пожалуйста, используйте один из приведенных ниже способов связи.
 
-- Для запросов функций и сообщений об ошибках [создайте проблему](https://github.com/Mechanical-Advantage/AdvantageScope/issues) на GitHub.
-- Для всех остальных запросов обращайтесь по адресу software@team6328.org.
+- Для предложений новых функций и сообщений об ошибках [создайте issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues) на GitHub.
+- По всем остальным вопросам обращайтесь по адресу software@team6328.org.
