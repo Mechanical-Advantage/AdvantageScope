@@ -398,6 +398,30 @@ export function grabTranslation3d(log: Log, key: string, timestamp: number, uuid
 }
 
 export function grabTranslation2dArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
+  // Try reading directly from the raw WPILib struct byte array
+  // Special case to support large arrays of game piece poses (#477 workaround)
+  let rawData = getOrDefault(log, key, LoggableType.Raw, timestamp, null, uuid);
+  if (rawData !== null) {
+    let poses: AnnotatedPose3d[] = [];
+    let dataView = new DataView(rawData.buffer, rawData.byteOffset, rawData.byteLength);
+
+    // A Translation2d WPILib struct is 2 little-endian doubles (16 bytes)
+    for (let i = 0; i <= rawData.byteLength - 16; i += 16) {
+      poses.push({
+        pose: {
+          translation: translation2dTo3d([
+            dataView.getFloat64(i, true), // x
+            dataView.getFloat64(i + 8, true) // y
+          ]),
+          rotation: Rotation3dZero
+        },
+        annotation: { is2DSource: true }
+      });
+    }
+    return poses;
+  }
+
+  // Fallback to reading parsed child fields
   return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
     (array, index) => array.concat(grabTranslation2d(log, key + "/" + index.toString(), timestamp)),
     [] as AnnotatedPose3d[]
@@ -488,6 +512,30 @@ export function grabPose3d(log: Log, key: string, timestamp: number, uuid?: stri
 }
 
 export function grabPose2dArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
+  // Try reading directly from the raw WPILib struct byte array
+  // Special case to support large arrays of game piece poses (#477 workaround)
+  let rawData = getOrDefault(log, key, LoggableType.Raw, timestamp, null, uuid);
+  if (rawData !== null) {
+    let poses: AnnotatedPose3d[] = [];
+    let dataView = new DataView(rawData.buffer, rawData.byteOffset, rawData.byteLength);
+
+    // A Pose2d/Transform2d WPILib struct is 3 little-endian doubles (24 bytes)
+    for (let i = 0; i <= rawData.byteLength - 24; i += 24) {
+      poses.push({
+        pose: pose2dTo3d({
+          translation: [
+            dataView.getFloat64(i, true), // x
+            dataView.getFloat64(i + 8, true) // y
+          ],
+          rotation: dataView.getFloat64(i + 16, true) // value
+        }),
+        annotation: { is2DSource: true }
+      });
+    }
+    return poses;
+  }
+
+  // Fallback to reading parsed child fields
   return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
     (array, index) => array.concat(grabPose2d(log, key + "/" + index.toString(), timestamp)),
     [] as AnnotatedPose3d[]
