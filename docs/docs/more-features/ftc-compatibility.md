@@ -30,7 +30,7 @@ FTC fields and robot models are fully supported natively.
 
 ## Supported Formats
 
-AdvantageScope includes native support for the **FTC Dashboard** live streaming format and **Road Runner** `.log` files, in addition to WPILib-compatible formats such as WPILOG and NetworkTables.
+AdvantageScope includes native support for the **FTC Dashboard** live streaming format, **Road Runner** `.log` files, and **FateWeaver** `.fate` files, in addition to WPILib-compatible formats such as WPILOG and NetworkTables.
 
 Several third-party FTC logging and telemetry libraries produce data in formats compatible with AdvantageScope. The AdvantageScope developers do not endorse or recommend any particular FTC logging solution, and you may encounter limited capabilities when using some logging solutions.
 

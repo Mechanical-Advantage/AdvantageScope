@@ -29,6 +29,7 @@ import FTCDashboardSource from "./dataSources/ftcdashboard/FTCDashboardSource";
 import { NT4Publisher, NT4PublisherStatus } from "./dataSources/nt4/NT4Publisher";
 import NT4Source, { NT4Mode } from "./dataSources/nt4/NT4Source";
 import RLOGServerSource from "./dataSources/rlog/RLOGServerSource";
+import FateWeaverSource from "./dataSources/roadrunnerlog/FateWeaverSource";
 
 // Constants
 const STATE_SAVE_PERIOD_MS = 250;
@@ -453,6 +454,9 @@ function startLive(sourceType: "robot" | "sim" | "ds") {
         break;
       case "ftcdashboard":
         liveSource = new FTCDashboardSource();
+        break;
+      case "fateweaver":
+        liveSource = new FateWeaverSource();
         break;
     }
   }

@@ -40,6 +40,7 @@ export class HistoricalDataSource {
     ".hoot": "wpilogWorker.js", // Converted to WPILOG by main process
     ".revlog": "wpilogWorker.js", // Converted to WPILOG by main process
     ".log": "roadRunnerWorker.js",
+    ".fate": "roadRunnerWorker.js", // FateWeaver, extended RoadRunner log
     ".csv": "csvWorker.js",
     ".dslog": "dsLogWorker.js",
     ".dsevents": "dsLogWorker.js"
