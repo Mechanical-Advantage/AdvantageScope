@@ -37,6 +37,7 @@ export default class RobotManager extends ObjectManager<
   private SWERVE_CANVAS_METERS = 3;
   private SWERVE_BUMPER_OFFSET = 0.15;
   private MECHANISM_WIDTH_PER_WEIGHT = 0.01;
+  private GHOST_OPACITY = 0.35;
 
   private loadingStart: () => void;
   private loadingEnd: () => void;
@@ -45,7 +46,7 @@ export default class RobotManager extends ObjectManager<
   private dimensions: [number, number, number, number] = [0, 0, 0, 0]; // Distance to each side
   private ghostMaterial = new THREE.MeshPhongMaterial({
     transparent: true,
-    opacity: 0.35,
+    opacity: this.GHOST_OPACITY,
     specular: this.materialSpecular,
     shininess: this.materialShininess,
     depthWrite: false
@@ -327,10 +328,14 @@ export default class RobotManager extends ObjectManager<
       }
     }
 
-    // Update color
-    if (object.type === "ghost" && object.color !== this.lastColor) {
-      this.lastColor = object.color;
-      this.ghostMaterial.color = new THREE.Color(object.color);
+    // Update ghost color and fade out opacity
+    if (object.type === "ghost") {
+      if (object.color !== this.lastColor) {
+        this.lastColor = object.color;
+        this.ghostMaterial.color = new THREE.Color(object.color);
+      }
+
+      this.ghostMaterial.opacity = this.GHOST_OPACITY * object.fadeFactor;
     }
 
     // Update primary model
