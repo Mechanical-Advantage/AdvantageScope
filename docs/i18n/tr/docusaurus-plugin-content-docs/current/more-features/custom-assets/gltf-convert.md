@@ -32,7 +32,7 @@ Onshape, glTF için bir dışa aktarma seçeneği içerse de bu genellikle yöne
 
 5. Bir kaydetme konumu seçin, ardından dışa aktarma formatını "glb" olarak değiştirmek için açılır menüyü kullanın:
 
-<img src="/img/more-features/custom-assets/gltf-convert-5.webp" alt="Dışa aktarma biçيميني değiştirme" />
+<img src="/img/more-features/custom-assets/gltf-convert-5.webp" alt="Dışa aktarma biçimini değiştirme" />
 
 6. Dişli simgesine tıklayın, ardından "Merge faces within the same part" seçeneğini etkinleştirin:
 

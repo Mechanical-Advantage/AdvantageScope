@@ -28,7 +28,7 @@ Onshape ішінде glTF үшін экспорттау опциясы болс�
 
 4. «Save» белгішесін басыңыз:
 
-<img src="/img/more-features/custom-assets/gltf-convert-4.webp" alt="«Сақтау» белгішесіن басу" />
+<img src="/img/more-features/custom-assets/gltf-convert-4.webp" alt="«Сақтау» белгішесін басу" />
 
 5. Сақтау орнын таңдаңыз, содан кейін ашылмалы тізімді пайдаланып, экспорттау пішімін «glb» күйіне ауыстырыңыз:
 
@@ -40,4 +40,4 @@ Onshape ішінде glTF үшін экспорттау опциясы болс�
 
 7. «Save» белгішесін басып, экспорттаудың аяқталуын күтіңіз:
 
-<img src="/img/more-features/custom-assets/gltf-convert-7.webp" alt="«Сақтау» белгішесіن басу" />
+<img src="/img/more-features/custom-assets/gltf-convert-7.webp" alt="«Сақтау» белгішесін басу" />

@@ -61,4 +61,4 @@ style={{ marginBottom: "15px" }}
 歡迎在 [issues 頁面](https://github.com/Mechanical-Advantage/AdvantageScope/issues) 提供回饋、功能需求或回報 Bug。有關參與 AdvantageScope 貢獻的更多資訊，請參閱[貢獻頁面](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/CONTRIBUTING.md)。如有非公開諮詢，請致信 software@team6328.org。
 
 <img src="/img/screenshot-light.webp" className="light-only" />
-<img src="/img/screenshot-light.webp" className="dark-only" />
+<img src="/img/screenshot-dark.webp" className="dark-only" />

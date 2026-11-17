@@ -24,7 +24,7 @@ AdvantageScope כוללת תמיכה במספר מערכות צירים נפוצ
 
 המקור נמצא בפינה הימנית ביותר של קיר הברית הכחולה כאשר ציר ה-+X פונה לקיר הברית האדומה, כפי שמוצג למטה. **זוהי מערכת הצירים כברירת מחדל עבור מגרשי FRC מ-2023 עד 2026.**
 
-<img src="/img/more-features/coordinate-system-blue-wall.webp" alt="מערכת צירים קיר כחول" />
+<img src="/img/more-features/coordinate-system-blue-wall.webp" alt="מערכת צירים קיר כחול" />
 
 ## קיר הברית {#alliance-wall}
 

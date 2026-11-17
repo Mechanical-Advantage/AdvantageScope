@@ -65,11 +65,11 @@ _ऊपर अंग्रेजी इंटरफ़ेस दिखाया 
 
 नीचे दी गई तालिका ईथरनेट के माध्यम से जुड़े होने पर AdvantageScope के 2025 और 2026 रिलीज़ पर मापी गई स्थानांतरण गति दिखाती है (100 Mb/s की अधिकतम बैंडविड्थ)। ध्यान दें कि 2025 रिलीज़ का प्रदर्शन roboRIO पर CPU लोड से गंभीर रूप से प्रभावित होता है।
 
-|                                                    | 2025 (SFTP) | 2026 (FTP) | Speedup                                          |
+|                                                    | 2025 (SFTP) | 2026 (FTP) | गति में वृद्धि (Speedup)                         |
 | -------------------------------------------------- | ----------- | ---------- | ------------------------------------------------ |
-| High CPU load<br /><sub>Complex robot code</sub>   | 25 Mb/s     | 80 Mb/s    | <span style={{fontSize: '24px'}}>**3.2x**</span> |
-| Average CPU load<br /><sub>Normal robot code</sub> | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**2.3x**</span> |
-| Minimal CPU load<br /><sub>No robot code</sub>     | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**1.1x**</span> |
+| उच्च CPU लोड<br /><sub>जटिल रोबोट कोड</sub>       | 25 Mb/s     | 80 Mb/s    | <span style={{fontSize: '24px'}}>**3.2x**</span> |
+| औसत CPU लोड<br /><sub>सामान्य रोबोट कोड</sub>     | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**2.3x**</span> |
+| न्यूनतम CPU लोड<br /><sub>कोई रोबोट कोड नहीं</sub> | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**1.1x**</span> |
 
 ## 📁 सबफोल्डर्स से लॉग्स डाउनलोड करें {#download-logs-from-subfolders}
 

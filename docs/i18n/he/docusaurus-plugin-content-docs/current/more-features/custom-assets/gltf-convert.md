@@ -12,7 +12,7 @@
 
 2. בחלון הקופץ של האפשרויות, ודאו כי פורמט הייצוא הוא "STEP" ולחצו על "Export":
 
-<img src="/img/more-features/custom-assets/gltf-convert-2.webp" alt="חלون קופץ של אפשרויות ייצוא" />
+<img src="/img/more-features/custom-assets/gltf-convert-2.webp" alt="חלון קופץ של אפשרויות ייצוא" />
 
 3. המתינו להמרת הקובץ ולהורדתו. נתון זה עשוי לקחת מספר דקות.
 
@@ -40,4 +40,4 @@
 
 7. לחצו על סמל ה-"Save" והמתינו לסיום הייצוא:
 
-<img src="/img/more-features/custom-assets/gltf-convert-7.webp" alt="לחיצה على סמל &quot;שמירה&quot;" />
+<img src="/img/more-features/custom-assets/gltf-convert-7.webp" alt="לחיצה על סמל &quot;שמירה&quot;" />
