@@ -332,12 +332,13 @@ export default class Log {
       if (parentKey === null) return null;
       let parentType = this.getType(parentKey);
       if (parentType !== LoggableType.NumberArray) return null;
-      return Units.getUnitForField(parentKey);
+      return this.getUnit(parentKey);
     };
 
     // Apply cache
     if (!(key in this.fields)) return null;
-    if (this.fields[key].getType() !== LoggableType.Number) return null;
+    const type = this.fields[key].getType();
+    if (!(type == LoggableType.Number || type == LoggableType.NumberArray)) return null;
     if (!(key in this.fieldUnitCache)) this.fieldUnitCache[key] = getUnitImpl() ?? null;
     return this.fieldUnitCache[key];
   }
