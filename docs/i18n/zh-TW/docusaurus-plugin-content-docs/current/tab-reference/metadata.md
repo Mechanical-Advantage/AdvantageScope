@@ -7,30 +7,33 @@ import TabItem from '@theme/TabItem';
 
 # 🔍 中繼資料 {#metadata}
 
-中繼資料分頁顯示發布到隱藏的「/Metadata」表格或透過 AdvantageKit 發布的數值。中繼資料鍵名顯示在左側，各欄分隔來自不同來源的資料（例如使用 AdvantageKit 時的原始執行與重播資料）。
+中繼資料分頁會顯示發布至隱藏「/Metadata」表格或透過 AdvantageKit 記錄的數值。左側列出中繼資料的鍵名，右側各欄則區分來自不同來源的資料（例如使用 AdvantageKit 時的實際執行與重播資料）。
 
 <img src="/img/tab-reference/metadata-1.webp" alt="中繼資料分頁概述" />
 
 _上圖所示為英文介面。_
 
-下面的範例程式碼展示了如何使用 Java 記錄中繼資料。
+以下範例程式示範如何在 Java 中記錄中繼資料：
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-在 WPILib 中，數值必須記錄到「/Metadata」表格中（如下所示）。
+在 WPILib 中，請使用 `Telemetry` 類別將數值以字串形式記錄至「/Metadata」表格：
 
 ```java
-Telemetry.getTable("Metadata").putString("Darwin", "macOS");
+TelemetryTable metadata = Telemetry.getTable("Metadata");
+metadata.log("RobotName", "Darwin");
+metadata.log("Platform", "macOS");
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-在 AdvantageKit 中，請在啟動記錄器之前呼叫下面的方法。在原始執行與重播中執行時，中繼資料會分開儲存以便於比較。
+在 AdvantageKit 中，請於啟動記錄器前呼叫以下方法。實際執行與重播時的中繼資料會分開儲存，方便對照比較。
 
 ```java
-Logger.recordMetadata("Darwin", "macOS");
+Logger.recordMetadata("RobotName", "Darwin");
+Logger.recordMetadata("Platform", "macOS");
 ```
 
 </TabItem>

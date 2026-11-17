@@ -1,36 +1,36 @@
 # 將 Onshape 與 STEP 檔案轉換為 glTF {#converting-onshape-and-step-files-to-gltf}
 
-AdvantageScope 的 3D 視圖接受用於場地與機器人的自訂模型，這些模型可以透過[此處](/more-features/custom-assets)描述的流程進行安裝。所有模型都必須使用 [glTF](https://www.khronos.org/gltf/) 檔案格式，選擇該格式是因為其在儲存與載入模型時的高效性。請注意，AdvantageScope 使用二進位形式 (.glb)，該形式在單一檔案中包含所有資源，而非純 JSON 形式 (.gltf)。
+AdvantageScope 的 3D 視圖支援自訂場地與機器人模型，安裝方式請參考[自訂資源](/more-features/custom-assets)頁面。所有模型都必須採用 [glTF](https://www.khronos.org/gltf/) 格式，這種格式在儲存與載入模型時效率極高。請注意，AdvantageScope 使用的是包含所有資源的單一二進位檔案 (.glb)，而非純 JSON 格式 (.gltf)。
 
 ## 將 Onshape 轉換為 STEP {#converting-onshape-to-step}
 
-雖然 Onshape 包含 glTF 的匯出選項，但這通常會產生非常大且難以管理的檔案。相反地，建議從 Onshape 匯出為 STEP，然後按照下一節中的說明轉換為 glTF。
+雖然 Onshape 內建匯出 glTF 的選項，但產生的檔案通常非常龐大且難以處理。因此，建議先從 Onshape 匯出為 STEP 檔案，再依照下一節的步驟轉換為 glTF。
 
-1. 開啟 Onshape 檔案後，按右鍵點擊主組件並選擇「Export...」：
+1. 開啟 Onshape 檔案後，在主組件上按右鍵並選擇「Export...」：
 
 <img src="/img/more-features/custom-assets/gltf-convert-1.webp" alt="選擇「Export...」選項" />
 
-2. 在選項快顯視窗中，確保匯出格式為「STEP」，然後點擊「Export」：
+2. 在彈出的選項視窗中，確認匯出格式為「STEP」，然後點擊「Export」：
 
-<img src="/img/more-features/custom-assets/gltf-convert-2.webp" alt="匯出選項快顯視窗" />
+<img src="/img/more-features/custom-assets/gltf-convert-2.webp" alt="匯出選項彈出視窗" />
 
-3. 等待檔案轉換與下載。這可能需要幾分鐘的時間。
+3. 等待檔案轉換並下載，這可能需要幾分鐘。
 
 ## 將 STEP 轉換為 glTF {#converting-step-to-gltf}
 
-1. 下載 [CAD Assistant](https://www.opencascade.com/products/cad-assistant/)。這款免費應用程式可以在許多 3D 格式之間進行轉換，包括 STEP 和 glTF。
+1. 下載 [CAD Assistant](https://www.opencascade.com/products/cad-assistant/)。這款免費軟體支援多種 3D 格式之間的轉換，包含 STEP 與 glTF。
 
 2. 開啟 CAD Assistant 並選擇要轉換的 STEP 檔案：
 
 <img src="/img/more-features/custom-assets/gltf-convert-3.webp" alt="在 CAD Assistant 中開啟 STEP 檔案" />
 
-3. 等待 STEP 檔案匯入。這可能需要幾分鐘的時間。
+3. 等待 STEP 檔案匯入，這可能需要幾分鐘。
 
 4. 點擊「儲存」圖示：
 
 <img src="/img/more-features/custom-assets/gltf-convert-4.webp" alt="點擊「儲存」圖示" />
 
-5. 選擇儲存位置，然後使用下拉式選單將匯出格式切換為「glb」：
+5. 選擇儲存位置，接著從下拉式選單將匯出格式切換為「glb」：
 
 <img src="/img/more-features/custom-assets/gltf-convert-5.webp" alt="切換匯出格式" />
 

@@ -3,52 +3,52 @@ import TabItem from '@theme/TabItem';
 
 # 👀 3D 场地 {#3d-field}
 
-3D 场地展示机器人和场地的 3D 可视化效果。它可以用于常规 2D 位姿，但在处理 3D 计算（例如利用 AprilTag 定位）时特别有用。提供多种相机视图，包括相对场地、相对机器人和固定视图。[AdvantageScope XR](advantagescope-xr) 允许使用增强现实来可视化此选项卡。时间轴显示机器人何时处于启用状态，并可用于在日志数据中进行导航。
+3D 场地视图以三维形式展示机器人和比赛场地。它不仅适用于常规 2D 位姿，在进行 3D 计算（如利用 AprilTag 进行视觉定位）时更是格外实用。视图支持多种相机模式，包括相对场地、相对机器人以及固定视角。[AdvantageScope XR](advantagescope-xr) 还支持通过增强现实来查看此选项卡。时间轴会标示机器人的启用时段，并可用于在日志数据中快速跳转。
 
-<img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="3D 场地标签页示例" />
+<img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="3D 场地选项卡示例" />
 
 _上图所示为英文界面。_
 
 <details>
 <summary>时间轴控制</summary>
 
-时间轴用于控制播放和可视化。在时间轴上点击可选择时间，右键单击可取消选择。所选时间将在所有选项卡中同步，从而可以轻松地在其他视图中快速找到此位置。
+时间轴用于控制数据回放和可视化显示。在时间轴上点击即可选中某个时间点，右键点击可取消选择。所选时间点会在所有选项卡之间同步，方便你在其他视图中快速定位到同一时刻。
 
 黄色区域表示机器人处于自动阶段，蓝色区域表示机器人处于遥控阶段，灰色区域表示机器人处于测试模式。
 
-要进行缩放，请将光标置于时间轴上方并向上或向下滚动。按住 `Shift` 的同时点击并拖动也可以选择一个范围。通过水平滚动（在受支持的设备上）或在时间轴上点击并拖动来左右移动。当进行实时连接时，向左滚动会解锁与当前时间的关联，而一路向右滚动将重新锁定到当前时间。按下 `Ctrl+\` 可缩放到机器人处于启用状态的时间段。
+将鼠标悬停在时间轴上并上下滚动即可缩放；按住 `Shift` 并点击拖动可以框选时间范围。在支持横向滚动的设备上水平滚动，或在时间轴上直接点击拖动，即可左右移动视图。实时连接时，向左滚动会解除对当前时间的锁定，一直向右滚动到底则会重新锁定到当前时间。按下 `Ctrl+\` 可一键缩放到机器人处于启用状态的时间段。
 
 <img src="/img/tab-reference/timeline.webp" alt="时间轴" />
 
 </details>
 
-:::warning 2026 FRC 场地
-2026 FRC 场地模型与 **焊接版** 场地的 AprilTag 布局一致。焊接版和 AndyMark 场地之间的差异非常微小，但在基于 AndyMark 场地布局可视化 AprilTag 位姿时可能会有轻微（~0.5 英寸）的不对齐。
+:::warning 2026-2027 FTC 场地
+2026-2027 FTC 场地模型不包含内置 AprilTag，因为比赛过程中巢箱（hive）上的标签位置可能会发生变化。队伍可以发布 `Pose3d[]` 和 `number[]` 数据，在场地上添加动态 AprilTag 对象。该场地使用的 AprilTag 正确尺寸为 **3.25 英寸**。
 :::
 
-:::warning 2026-2027 FTC 场地
-2026-2027 FTC 场地上的 AprilTag 目标是动态的，无法在 AdvantageScope 中作为静态对象显示。要在 3D 场地中查看它们的位置，请将对象类型设置为尺寸为 **3.25 英寸** 的 **AprilTag**，并从机器人代码中动态记录它们的位置。
+:::warning 2026 FRC 场地
+2026 FRC 场地模型与**焊接版**场地的 AprilTag 布局一致。焊接版和 AndyMark 场地之间的差异非常微小，但在基于 AndyMark 场地布局可视化 AprilTag 位姿时，可能会出现轻微（约 0.5 英寸）的偏差。
 :::
 
 ## 添加对象 {#adding-objects}
 
-要开始使用，请将字段拖动到“位姿”部分。使用 X 按钮删除对象，或通过点击眼睛图标或双击字段名称临时隐藏它。要移除所有对象，请点击轴标题附近的垃圾桶图标，然后点击 `清除所有字段`。可以在列表中通过点击并拖动来重新排列对象。
+首先将字段拖入“位姿”区域即可开始使用。点击 X 按钮可删除对象，点击眼睛图标或双击字段名称可暂时隐藏对象。如需移除所有对象，请点击列表标题旁的垃圾桶图标，然后选择 `清除所有字段`。你也可以在列表中点击并拖动对象来调整排列顺序。
 
-**要自定义每个对象，请点击彩色图标或右键单击字段名称。** AdvantageScope 支持大量对象类型，其中许多类型都可以进行自定义（例如更改颜色和机器人模型）。某些对象必须作为子项添加到现有对象中。
+**点击彩色图标或右键点击字段名称，即可自定义各个对象。** AdvantageScope 支持丰富的对象类型，其中许多都支持自定义设置（如更改颜色和机器人模型等）。部分对象需要作为子项添加到现有对象下。
 
 :::tip
-要查看受支持对象类型的完整列表，请点击 `?` 图标。该列表还包含受支持的数据类型以及对象是否必须作为子项添加。
+要查看受支持对象类型的完整列表，请点击 `?` 图标。该列表还会说明每种对象支持的数据类型，以及是否必须作为子项添加。
 :::
 
 :::info
-AdvantageScope 支持用于 FTC 场地的多种尺寸的 AprilTag。尺寸以 **AprilTag 黑色部分的边长** 进行测量，不包括所需的白色边框。
+AdvantageScope 支持用于 FTC 场地的多种尺寸 AprilTag。尺寸按 **AprilTag 黑色区域的边长**计算，不包含外围必需的白色边框。
 :::
 
 ## 数据格式 {#data-format}
 
-几何数据应作为字节编码的结构体或 protobuf 进行发布。支持各种 2D 和 3D 几何类型，包括 `Pose2d`、`Pose3d`、`Translation2d`、`Translation3d` 等。
+几何数据需要以字节编码的 Struct 或 protobuf 格式发布，支持多种 2D 和 3D 几何类型，包括 `Pose2d`、`Pose3d`、`Translation2d`、`Translation3d` 等。
 
-许多库都支持结构体格式，包括 WPILib 和 AdvantageKit。下面的示例代码展示了如何在 Java 中记录 3D 位姿数据。
+WPILib、AdvantageKit 等众多库均支持 Struct 格式。以下示例代码演示了如何在 Java 中记录 3D 位姿数据。
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -95,104 +95,104 @@ packet.put("Pose heading (deg)", 180.0); // 度
 
 ## 机构与组件 {#mechanisms-and-components}
 
-机构数据可以使用 2D 机构或 3D 关节组件进行可视化。
+机构数据可以通过 2D 机构或 3D 关节组件进行可视化。
 
 ### 2D 机构 {#2d-mechanisms}
 
-要可视化使用 [`Mechanism2d`](https://docs.wpilib.org/zh-cn/stable/docs/software/dashboards/glass/mech2d-widget.html) 记录的机构数据，请将机构字段添加到现有的机器人或幽灵模型对象中。机构使用简单的方框投影到机器人的 XZ 或 YZ 平面上（如下所示）。点击齿轮图标或右键单击字段名称可以在 XZ 和 YZ 平面之间切换。机器人的原点位于机构底边的中心。
+要可视化使用 [`Mechanism2d`](https://docs.wpilib.org/zh-cn/stable/docs/software/dashboards/glass/mech2d-widget.html) 记录的机构数据，请将机构字段添加到现有的机器人或幽灵模型对象下。系统会使用简化的方框，将机构投影到机器人的 XZ 或 YZ 平面上（如下图所示）。点击齿轮图标或右键点击字段名称，即可在 XZ 和 YZ 平面之间切换。机器人的原点位于机构底边的中心。
 
 <img src="/img/tab-reference/3d-field/3d-field-2.webp" alt="2D 机构" />
 
 ### 3D 组件 {#3d-components}
 
 :::warning
-设置 3D 组件可能非常复杂且耗时。可考虑使用如上所述的 AdvantageScope 的 `Mechanism2d` 支持，它提供了在 3D 场地上可视化机构的更简化方法。
+配置 3D 组件通常较为复杂且耗时。建议优先考虑使用上文介绍的 AdvantageScope `Mechanism2d` 支持，它能以更简便的方式在 3D 场地中展示机构。
 :::
 
-机构可以通过记录代表每个组件相对于机器人的位置的一组 3D 位姿，使用关节组件进行可视化。将这些位姿添加到现有的机器人或幽灵模型对象中，并将对象类型设置为“组件”。
+通过记录一组表示各组件相对机器人位置的 3D 位姿，即可使用关节组件来可视化机构。将这些位姿添加到现有的机器人或幽灵模型对象下，并将对象类型设为“组件”即可。
 
-每个组件都可以独立移动（例如升降机滑台、机械臂或末端执行器）。AdvantageKit 用户应考虑使用 [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) 方法将 Mechanism2d 转换为 Pose3d 对象数组。有关配置带有组件的机器人的更多信息，请参阅 [自定义资源](/more-features/custom-assets)。
+每个组件都可以独立运动（例如升降机滑台、机械臂或末端执行器）。AdvantageKit 用户可以使用 [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) 方法将 Mechanism2d 转换为 Pose3d 对象数组。有关配置带组件机器人的更多信息，请参阅[自定义资源](/more-features/custom-assets)。
 
 <img src="/img/tab-reference/3d-field/3d-field-3.webp" alt="3D 机构" />
 
 ## 游戏元素对象 {#game-piece-objects}
 
-每个场地都包含一套游戏元素对象类型，允许使用机器人代码发布的数据在场地的任何位置渲染游戏元素。这具有多种应用，包括：
+每个场地都内置了对应的游戏元素对象类型，可根据机器人代码发布的数据在场地任意位置渲染游戏元素。这有多种实用场景，包括：
 
-- 使用简单动画可视化模拟自动程序运行过程的操作
-- 显示在场地上检测到的游戏元素位置
-- 指示游戏元素位于机器人内的什么位置
-- 根据物理计算查看发射轨迹
+- 使用简单动画可视化自动阶段仿真例程的动作
+- 展示在场地上识别到的游戏元素位置
+- 指示游戏元素当前在机器人内部的位置
+- 根据物理计算预览发射轨迹
 
-另一个简单的使用场景是根据传感器数据在机器人内显示游戏元素的状态。例如，2024 年机器人的 Note 路径内的断光传感器可以使 Note 出现（如下所示）。
+另一个常见用法是根据传感器数据展示游戏元素在机器人内部的状态。例如，在 2024 赛季机器人的 Note 通道中，当断光传感器触发时，即可让 Note 显示出来（如下图所示）。
 
 <details>
 <summary>代码示例</summary>
 
-AdvantageKit KitBot 2024 示例项目包含一个 [命令](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) 的简单示例，该命令动画展示了 Note 从机器人飞向 Speaker 的过程。此命令被纳入标准 [发射序列](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73)，每当释放 Note 时便触发动画。[此视频](https://youtube.com/shorts/-HxfDo9f19U?feature=share) 展示了如何使用游戏元素动画来可视化多个不同比赛的自动阶段例程。
+AdvantageKit KitBot 2024 示例项目包含一个简单的[命令](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java)示例，可通过动画演示 Note 从机器人飞向 Speaker 的过程。该命令已集成到标准的[发射序列](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73)中，每次发射 Note 时都会触发动画。[这段视频](https://youtube.com/shorts/-HxfDo9f19U?feature=share)展示了如何利用游戏元素动画来可视化多个不同赛季的自动阶段例程。
 
 </details>
 
-<img src="/img/tab-reference/3d-field/3d-field-4.webp" alt="2024 KitBot 音符可视化" />
+<img src="/img/tab-reference/3d-field/3d-field-4.webp" alt="2024 KitBot Note 可视化" />
 
 ## 相机选项 {#camera-options}
 
-要切换选定的相机模式，请右键单击渲染的场地视图。每个弹出窗口的相机模式和位置均独立控制，从而可以轻松创建多相机视图。
+右键点击渲染的场地视图即可切换相机模式。每个弹出窗口的相机模式和位置均可独立控制，方便轻松搭建多视角画面。
 
 :::info
-右键单击渲染的场地视图并点击“设置视野...”以调整环绕相机和操控站相机的视野 (FOV)。
+右键点击场地视图并选择“设置视野...”，即可调整环绕相机和操控站相机的视野 (FOV)。
 :::
 
 ### 环绕场地 {#orbit-field}
 
-这是默认的相机模式，相机可以相对于场地自由移动。**左键点击 + 拖动** 旋转相机，**右键点击 + 拖动** 平移相机。**滚动** 放大和缩小。
+这是默认的相机模式，相机可相对于场地自由移动。**左键点击并拖动**可旋转相机，**右键点击并拖动**可平移相机，**滚动滚轮**可放大或缩小。
 
 :::tip
-相机也可以使用键盘控制。**WASD** 键用于平移，**IJKL** 键用于旋转，**E** 和 **Q** 键用于垂直平移。
+相机也支持键盘控制：**WASD** 键用于水平平移，**IJKL** 键用于旋转视角，**E** 和 **Q** 键用于垂直升降。
 :::
 
 ### 环绕机器人 {#orbit-robot}
 
-此模式与“环绕场地”模式具有相同的控制方式，但相机的位姿锁定在相对于机器人的位置。这允许对机器人的运动进行“追踪”拍摄。
+此模式的控制方式与“环绕场地”相同，但相机位置会锁定为相对机器人固定，从而实现“跟拍”机器人运动的效果。
 
 ### 操控站 {#driver-station}
 
-此模式将相机锁定在其中一个操控站后方的典型眼高位置。可以手动选择要查看的操控站，或者选择“自动选择”以使用日志数据中存储的联盟和操控站编号。
+此模式将相机锁定在其中一个操控站后方的正常视线高度。你可以手动选择要观察的操控站，或选择“自动”以直接读取日志中记录的联盟与操控站编号。
 
 :::warning
-查看由 AdvantageKit 2023 或更早版本生成的日志数据时，自动选择操控站编号可能会不准确。
+查看 AdvantageKit 2023 或更早版本生成的日志数据时，自动选择操控站编号可能不够准确。
 :::
 
 ### 固定相机 {#fixed-camera}
 
-每个机器人模型都配置了一组固定相机，例如视觉相机和驾驶员相机。这些相机具有固定的位置、宽高比和 FOV。这些视图通常有助于检查视觉数据或模拟驾驶员相机视图。在下面的示例中，显示了一个驾驶员相机。
+每个机器人模型都配置了一组固定相机（如视觉相机和驾驶员相机），它们具有固定的安装位置、宽高比和 FOV。这些视角常用于检查视觉识别数据或模拟驾驶员第一视角。下方示例展示了一个驾驶员相机视图。
 
 <img src="/img/tab-reference/3d-field/3d-field-5.webp" alt="固定相机" />
 
-如果提供了“相机覆盖”位姿，它将在保留其配置的 FOV 和宽高比的同时替换所有固定相机的默认位姿。这允许机器人代码提供移动相机的位姿，例如安装在转塔或发射罩上的相机。
+如果提供了“相机覆盖”位姿，它会替换所有固定相机的默认位姿，同时保留各自配置的 FOV 和宽高比。这样机器人代码就能传入可动相机（例如安装在转塔或发射罩上的相机）的实时位姿。
 
 :::info
-与其它位姿数据一致，“相机覆盖”位姿必须是 _相对场地_ 的，而不是相对机器人的。
+与其他位姿数据一致，“相机覆盖”位姿必须**相对场地**，而非相对机器人。
 :::
 
 ## 配置 {#configuration}
 
-可以使用下拉菜单配置场地模型。支持所有近期的 FRC 和 FTC 比赛。我们建议在图形性能有限的设备上使用“Evergreen”场地。“Axes”场地仅在原点显示 XYZ 轴，并带有场地外框以供参考标尺。
+可通过下拉菜单选择场地模型，支持近期所有 FRC 和 FTC 赛季场地。对于图形性能有限的设备，建议使用“Evergreen”场地。“Axes”场地仅在原点显示 XYZ 坐标轴及场地外框，用作比例参考。
 
 :::info
-在此选项卡上使用的坐标系是可自定义的。有关详细信息，请参阅 [坐标系](/more-features/coordinate-systems) 页面。
+此选项卡使用的坐标系支持自定义，详情请参阅[坐标系](/more-features/coordinate-systems)页面。
 :::
 
 ### 渲染模式 {#rendering-modes}
 
 3D 场地支持三种渲染模式：
 
-- **电影级（左）：** 使用阴影、照明、反射和高细节 3D 模型进行渲染，以获得更逼真的外观。需要相当强大的 GPU。
-- **标准（中）：** 默认，使用最小限度的照明和简化的 3D 模型进行渲染。在大多数设备上运行良好。
-- **低功耗（右）：** 降低帧率、分辨率和模型细节，以减少电池消耗，并在低端设备上提供更一致的性能。
+- **电影级（左）：** 启用阴影、光照、反射和高细节 3D 模型，呈现更逼真的视觉效果，需要性能较强的 GPU。
+- **标准（中）：** 默认模式，采用精简光照和简化版 3D 模型，在绝大多数设备上都能流畅运行。
+- **低功耗（右）：** 降低帧率、分辨率和模型细节，以减少耗电，并在低配置设备上提供更稳定的性能。
 
 <img src="/img/tab-reference/3d-field/3d-field-6.webp" alt="渲染模式比较" />
 
-要配置渲染模式，请按点击 `应用程序` > `显示首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。“3D 模式（电池供电）”设置可以从默认值切换，以覆盖笔记本电脑未充电时使用的渲染模式。例如，这可用于在比赛现场节省电量。
+要配置渲染模式，请点击 `应用程序` > `显示首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。“3D 模式（电池供电）”选项可用于覆盖笔记本电脑未接通电源时的默认渲染模式，例如在比赛现场借此节省电量。
 
-<img src="/img/prefs_zh-CN.webp" alt="偏好设置图解" height="450" />
+<img src="/img/prefs_zh-CN.webp" alt="首选项界面图解" height="450" />

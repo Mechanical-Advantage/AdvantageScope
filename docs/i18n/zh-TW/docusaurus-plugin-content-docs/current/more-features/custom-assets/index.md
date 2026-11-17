@@ -1,16 +1,16 @@
 # ⚙️ 自訂資源 {#custom-assets}
 
-AdvantageScope 使用一組預設的平面場地圖片、場地模型、機器人模型與搖桿設定。初次安裝中包含簡單資源（例如常青場地）。當 AdvantageScope 連線到網際網路時，會在背景自動下載詳細資源（例如特定賽季的場地）。要檢查這些下載的狀態，請點擊 `應用程式`/`AdvantageScope` > `資源下載狀態...`。
+AdvantageScope 內建一組預設的平面場地圖片、場地模型、機器人模型與搖桿設定。初次安裝時已包含基本資源（例如常青場地）；當 AdvantageScope 連上網際網路時，會在背景自動下載精細資源（例如特定賽季的場地）。若要檢查下載狀態，請點擊 `應用程式`/`AdvantageScope` > `資源下載狀態...`。
 
-如果需要，可以自訂資源集以新增更多選項。要開啟使用者資源資料夾，請點擊 `應用程式`/`AdvantageScope` > `顯示資源資料夾`。資源的預期格式定義如下。請參閱預設的[詳細資源](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases)與[隨附資源](https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/bundledAssets)作為參考。
+如有需要，你也可以自訂資源來擴充選項。點擊 `應用程式`/`AdvantageScope` > `顯示資源資料夾` 即可開啟使用者資源資料夾。以下說明各類資源的格式規範，你也可以參考預設的[精細資源](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases)與[內建隨附資源](https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/bundledAssets)。
 
 :::tip
-要從替代位置載入資源，請點擊 `應用程式`/`AdvantageScope` > `使用自訂資源資料夾`。選取的資料夾應為*父資料夾*，其中可以在單獨的子資料夾中放置多個資源。此功能允許自訂資源與機器人程式碼一起儲存在版本控制之下。
+若要從其他位置載入資源，請點擊 `應用程式`/`AdvantageScope` > `使用自訂資源資料夾`。選取的資料夾應作為*父資料夾*，底下可依需求建立多個獨立的子資料夾來存放不同資源。這樣一來，你就能將自訂資源與機器人程式碼一起納入版本控制。
 :::
 
 ## 通用格式 {#general-format}
 
-所有資源都儲存在命名慣例為「TYPE_NAME」的資料夾中。資料夾使用的 NAME 不會由 AdvantageScope 顯示。可能的資源類型為：
+所有資源都必須存放在符合「TYPE_NAME」命名規則的資料夾中。資料夾名稱中的 NAME 不會顯示在 AdvantageScope 介面上。支援的資源類型如下：
 
 - "Field2d"
 - "Field3d"
@@ -21,13 +21,13 @@ AdvantageScope 使用一組預設的平面場地圖片、場地模型、機器�
 範例資料夾名稱為「Field2d_2023Field」、「Joystick_OperatorButtons」或「Robot_Dozer」。
 :::
 
-此資料夾應包含名為「config.json」的檔案以及一個或多個資源檔案，如下所述。設定檔總是包含 AdvantageScope 要顯示的資源名稱。此名稱在每種資源類型中必須是唯一的。資源也可以選擇性地包含一個「locales」物件，將語言代碼（例如「en-US」、「es-419」、「fr」）對應到翻譯後的名稱。如果未提供所選語言或省略了「locales」，則根層級的「name」將被視為預設名稱。
+資料夾內必須包含一個「config.json」設定檔以及一個或多個資源檔案（詳見下方說明）。設定檔中一定要有「name」欄位，用來指定 AdvantageScope 顯示的資源名稱，且同一資源類型下的名稱不可重複。此外，你也可以選擇性地加入「locales」物件，將語言代碼（例如「es-419」、「fr」、「zh-CN」）對應到翻譯後的名稱；若未提供目前所選語言的翻譯或省略「locales」，系統就會使用根層級的「name」作為預設名稱。
 
 ```json
 {
-  "name": string, // 唯一的預設名稱，所有資源類型均需要
-  "locales": { [locale: string]: string } // 可選的本地化名稱，將語言代碼（例如 "en-US"、"fr"）對應到翻譯
-  ... // 依類型而定的設定，如下所述
+  "name": string, // 唯一的預設名稱，所有資源類型皆為必填
+  "locales": { [locale: string]: string } // 選填的本地化名稱，將語言代碼（例如 "es-419"、"fr"）對應到翻譯
+  ... // 依類型而定的設定，詳見下文
 }
 ```
 
@@ -39,95 +39,95 @@ AdvantageScope 使用一組預設的平面場地圖片、場地模型、機器�
 
 ### 概述 {#overview}
 
-資料夾中必須包含名為「model.glb」的模型。CAD 檔案必須轉換為 glTF；有關詳細資訊，請參閱[此頁面](gltf-convert)。設定檔必須採用以下格式：
+資料夾內必須包含名為「model.glb」的模型檔案。CAD 檔案須先轉換為 glTF 格式，詳細步驟請參閱[此頁面](gltf-convert)。設定檔格式如下：
 
 ```json
 {
-  "name": string // 唯一名稱，所有資源類型均需要
-  "locales": { [locale: string]: string } // 資源名稱的可選翻譯
-  "isFTC": boolean // 模型是否旨在用於 FTC 場地而非 FRC 場地（預設為 "false"）
+  "name": string // 唯一名稱，所有資源類型皆為必填
+  "locales": { [locale: string]: string } // 資源名稱的選填翻譯
+  "isFTC": boolean // 模型是否用於 FTC 場地而非 FRC 場地（預設為 "false"）
   "disableSimplification": boolean // 是否停用模型簡化，選填
-  "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // 沿 x、y 和 z 軸的旋轉序列
-  "position": [number, number, number] // 以公尺為單位的平移偏移，在旋轉後應用
-  "cameras": [ // 固定攝影機位置，可為空
+  "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // 沿 x、y 和 z 軸的旋轉順序
+  "position": [number, number, number] // 以公尺為單位的位置偏移，在旋轉後套用
+  "cameras": [ // 固定攝影機位置，可為空陣列
     {
       "name": string // 攝影機名稱
-      "locales": { [locale: string]: string } // 攝影機名稱的可選翻譯
-      "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // 沿 x、y 和 z 軸的旋轉序列
-      "position": [number, number, number] // 相對於機器人的公尺為單位的平移偏移，在旋轉後應用
+      "locales": { [locale: string]: string } // 攝影機名稱的選填翻譯
+      "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // 沿 x、y 和 z 軸的旋轉順序
+      "position": [number, number, number] // 相對於機器人的位置偏移（公尺），在旋轉後套用
       "resolution": [number, number] // 像素解析度，用於設定固定長寬比
       "fov": number // 水平視野（度）
     }
   ],
-  "components": [...] // 請參閱「關節組件」
+  "components": [...] // 請參閱「連桿組件」
 }
 ```
 
-確定適當位置與旋轉數值最簡單的方法是反覆試驗。我們建議在位置之前調整旋轉，因為變換是按此順序應用的。
+要找出正確的位置與旋轉數值，最簡單的方法就是反覆測試。由於系統會先套用旋轉再套用平移，建議你先調整旋轉角度，再調整位置。
 
 :::info
-AdvantageScope 會自動簡化模型幾何形狀以提升效能，其中詳細程度取決於選取的[渲染模式](/tab-reference/3d-field#rendering-modes)。如果在自訂資源中模型簡化產生了不希望的效果，可以使用兩種解決方案：
+AdvantageScope 會自動簡化模型幾何結構以提升效能，細節程度取決於你選擇的[渲染模式](/tab-reference/3d-field#rendering-modes)。如果自動簡化讓自訂資源出現非預期的外觀問題，可以透過以下兩種方式處理：
 
-- 要停用特定網格 (mesh) 的自動移除，請在網格名稱中包含字串 `NOSIMPLIFY`。
-- 要停用整個機器人模型的模型簡化，請將設定中的 `disableSimplification` 選項設定為 `true`。
+- 若要停用特定網格 (mesh) 的自動簡化移除，請在該網格名稱中加入字串 `NOSIMPLIFY`。
+- 若要停用整個機器人模型的簡化功能，請在設定檔中將 `disableSimplification` 設為 `true`。
 
 :::
 
-### 關節組件 {#articulated-components}
+### 連桿組件 {#articulated-components}
 
 :::warning
-設定關節組件可能複雜且耗時。請考慮利用 AdvantageScope 的 3D [`Mechanism2d` 支援](/tab-reference/3d-field#2d-mechanisms)，它提供了一種更簡化的方法來**在 3D 場地上視覺化機構**。
+設定連桿組件可能相當繁瑣且耗時。建議優先考慮使用 AdvantageScope 的 3D [`Mechanism2d` 支援](/tab-reference/3d-field#2d-mechanisms)，這是在 **3D 場地上視覺化機構**更簡便的做法。
 :::
 
-機器人模型可以包含用於視覺化機構資料的關節組件（有關詳細資訊，請參閱[此處](/tab-reference/3d-field)）。基礎 glTF 模型應不包含任何組件，然後每個組件應作為單獨的 glTF 模型匯出。組件模型遵循命名慣例「model_INDEX.glb」，因此第一個關節組件將是「model_0.glb」。
+機器人模型可以包含連桿組件，用來視覺化機構資料（詳情請參閱[此處](/tab-reference/3d-field)）。基礎 glTF 模型中不應包含任何組件，每個組件都必須單獨匯出成獨立的 glTF 檔案。組件模型須遵守「model_INDEX.glb」的命名規則，例如第一個連桿組件就是「model_0.glb」。
 
-組件設定在機器人的設定檔中提供。應在「components」鍵下提供組件陣列。當使用者未在 AdvantageScope 中提供組件姿態時，組件模型將使用預設的機器人旋轉與位置（見上文）進行定位。當使用者提供組件姿態時，將改為應用「歸零」的旋轉與位置，以將每個組件帶到機器人原點。然後應用使用者的姿態將每個組件移動到機器人上的正確位置。
+組件設定需寫在機器人的設定檔中，並於「components」鍵下提供組件陣列。如果使用者未在 AdvantageScope 中提供組件姿態，組件模型會套用機器人預設的旋轉與位置（見上文）。當使用者提供了組件姿態時，系統會改為先套用「歸零」(zeroed) 的旋轉與位置，將每個組件移回機器人原點，接著再套用使用者的姿態資料，把各組件移動到機器人上的正確位置。
 
 :::tip
-當相對於機器人定位 3D 組件時，座標系的原點與機器人發布的姿態相匹配。請注意，此姿態通常使用零高度，即地面平面，而非機器人底板（對於典型的 2D 機器人運動）。
+相對於機器人定位 3D 組件時，座標系的原點會與機器人發布的姿態對齊。請注意，這組姿態的高度通常為零（也就是地面平面），而非機器人底盤底板（適用於一般的 2D 機器人移動）。
 :::
 
 ```json
 "components": [
   {
-    "zeroedRotations": { "axis": "x" | "y" | "z", "degrees": number }[] // 沿 x、y 和 z 軸的旋轉序列
-    "zeroedPosition": [number, number, number] // 相對於機器人的公尺為單位的平移偏移，在旋轉後應用
+    "zeroedRotations": { "axis": "x" | "y" | "z", "degrees": number }[] // 沿 x、y 和 z 軸的旋轉順序
+    "zeroedPosition": [number, number, number] // 相對於機器人的位置偏移（公尺），在旋轉後套用
   }
 ]
 ```
 
 #### 設定流程 {#setup-process}
 
-要校準關節組件的位置，我們建議採用以下流程：
+若要校準連桿組件的位置，建議按照以下步驟操作：
 
-1. 將基礎模型與組件在其正確的「預設」位置匯出。如果在 AdvantageScope 中未提供組件姿態，這就是它們應有的渲染方式。
+1. 以正確的「預設」位置匯出基礎模型與各個組件。如果在 AdvantageScope 中沒有提供組件姿態，這就是它們應該呈現的樣子。
 
-2. 從機器人程式碼發布歸零的 2D 姿態，然後在 AdvantageScope 中將其選取為機器人姿態。切換到顯示場地原點的「座標軸」3D 場地。
+2. 從機器人程式碼發布一組歸零的 2D 姿態，並在 AdvantageScope 中將它選為機器人姿態，同時將 3D 場地切換為會顯示場地原點的「座標軸」(Axes)。
 
-3. 調整機器人（而非組件）的全域旋轉，直到整個機器人定向正確。然後，調整全域位置以將整個機器人帶到原點。在此過程中，組件應始終以相同的預設位置進行渲染。
+3. 調整整個機器人（不是單獨調整組件）的全域旋轉角度，直到機器人朝向正確，接著調整全域位置，將整個機器人移至原點。在這整個過程中，各組件都應維持在原本的預設位置。
 
-4. 從機器人程式碼發布與模型中組件數量相匹配的歸零 3D 姿態陣列，然後在 AdvantageScope 中將其選取為組件姿態集。
+4. 從機器人程式碼發布一組數量與模型組件數相同的歸零 3D 姿態陣列，並在 AdvantageScope 中將其選為組件姿態。
 
-5. 調整每個組件的旋轉，然後是位置，直到它們對齊到原點。例如，手臂區段將與原點處的樞軸對齊，同時沿 X 軸向前指向。
+5. 依序調整每個組件的旋轉角度與位置，直到它們都對齊原點。例如，手臂連桿應讓樞軸對齊原點，並沿著 X 軸朝前延伸。
 
-6. 發布來自機器人程式碼的真實組件姿態，這些姿態將基於每個組件新定義的原點。例如，手臂區段的姿態將位於手臂關節處，指向區段的方向。
+6. 從機器人程式碼發布真實的組件姿態，這些姿態會以各組件剛定義好的新原點為基準。例如，手臂連桿的姿態會位於手臂關節處，並指向該連桿的方向。
 
 ## 搖桿 {#joysticks}
 
-資料夾中必須包含名為「image.png」的圖片。設定檔必須採用以下格式：
+資料夾內必須包含名為「image.png」的圖片，設定檔格式如下：
 
 ```json
 {
-  "name": string // 唯一名稱，所有資源類型均需要
-  "locales": { [locale: string]: string } // 資源名稱的可選翻譯
-  "components": [...] // 組件設定陣列，見下文
+  "name": string // 唯一名稱，所有資源類型皆為必填
+  "locales": { [locale: string]: string } // 資源名稱的選填翻譯
+  "components": [...] // 組件設定陣列，詳見下文
 }
 ```
 
 :::info
-按鈕、搖桿與軸值均支援 [SDL](https://www.libsdl.org) 綁定（由目前 FIRST Driver Station 使用）與 NI 綁定（由舊版 NI FRC Driver Station 使用）。每個組件必須至少提供一組綁定。
+按鈕、搖桿與軸數值同時支援 [SDL](https://www.libsdl.org) 綁定（目前 FIRST Driver Station 所使用）與 NI 綁定（舊版 NI FRC Driver Station 所使用）。每個組件至少必須提供一組綁定設定。
 
-對於 NI 綁定，AdvantageScope 反向相容舊的無前綴設定鍵名（例如 `sourceIndex`）。**所有新搖桿都應使用明確的 SDL 綁定（例如 `sdlSourceIndex`），以相容目前的 FIRST Driver Station。**
+在 NI 綁定方面，AdvantageScope 向下相容舊版無前綴的設定鍵名（例如 `sourceIndex`）。**所有新增的搖桿設定都應明確使用 SDL 綁定（例如 `sdlSourceIndex`），以確保與目前的 FIRST Driver Station 相容。**
 :::
 
 ### 單一按鈕 / POV 值 {#single-button-pov-value}
@@ -202,67 +202,67 @@ AdvantageScope 會自動簡化模型幾何形狀以提升效能，其中詳細�
 
 ## 平面場地圖片 {#flat-field-images}
 
-資料夾中必須包含名為「image.png」的圖片。方向應設定為紅方聯盟在左側。設定檔必須採用以下格式：
+資料夾內必須包含名為「image.png」的圖片，且方向應讓紅方聯盟位於左側。設定檔格式如下：
 
 ```json
 {
-  "name": string // 唯一名稱，所有資源類型均需要
-  "locales": { [locale: string]: string } // 資源名稱的可選翻譯
-  "isFTC": boolean // 這是否為 FTC 場地而非 FRC 場地
+  "name": string // 唯一名稱，所有資源類型皆為必填
+  "locales": { [locale: string]: string } // 資源名稱的選填翻譯
+  "isFTC": boolean // 是否為 FTC 場地（而非 FRC 場地）
   "coordinateSystem": // 要使用的預設座標系（見下文）
       "wall-alliance" |  // FRC 2022
       "wall-blue" |      // FRC 2023-2026
       "center-rotated" | // FTC 傳統
       "center-red"       // Systemcore
-  "useGrid": boolean // 如果此場地是 FTC 場地，是否渲染格線（預設為 "true"）
+  "useGrid": boolean // 若為 FTC 場地，是否顯示格線（預設為 "true"）
   "sourceUrl": string // 原始檔案連結，選填
   "topLeft": [number, number] // 像素座標（原點在左上角）
   "bottomRight": [number, number] // 像素座標（原點在左上角）
-  "widthInches": number // 場地的真實寬度（長邊）
-  "heightInches": number // 場地的真實高度（短邊）
+  "widthInches": number // 場地的實際寬度（長邊）
+  "heightInches": number // 場地的實際高度（短邊）
 }
 ```
 
 ## 3D 場地模型 {#3d-field-models}
 
-資料夾中必須包含名為「model.glb」的模型。應用所有旋轉後，場地方向應設定為紅方聯盟在左側。CAD 檔案必須轉換為 glTF；有關詳細資訊，請參閱[此頁面](gltf-convert)。遊戲物件模型根據其在「gamePieces」陣列中出現的順序，遵循命名慣例「model_INDEX.glb」。此處宣告的 AprilTag 總是使用[中心/紅方](/more-features/coordinate-systems#center-red)座標系進行定位，無論是否有任何其他設定選項。
+資料夾內必須包含名為「model.glb」的模型檔案。套用所有旋轉後，場地方向應讓紅方聯盟位於左側。CAD 檔案須先轉換為 glTF 格式，詳細步驟請參閱[此頁面](gltf-convert)。遊戲物件模型會依照在「gamePieces」陣列中的出現順序，遵守「model_INDEX.glb」的命名規則。不論其他設定選項為何，此處宣告的 AprilTag 一律使用[中心/紅方](/more-features/coordinate-systems#center-red)座標系來定位。
 
-設定檔必須採用以下格式：
+設定檔格式如下：
 
 ```json
 {
-  "name": string // 唯一名稱，所有資源類型均需要
-  "locales": { [locale: string]: string } // 資源名稱的可選翻譯
-  "isFTC": boolean // 這是否為 FTC 場地而非 FRC 場地
+  "name": string // 唯一名稱，所有資源類型皆為必填
+  "locales": { [locale: string]: string } // 資源名稱的選填翻譯
+  "isFTC": boolean // 是否為 FTC 場地（而非 FRC 場地）
   "coordinateSystem": // 要使用的預設座標系（見下文）
       "wall-alliance" |  // FRC 2022
       "wall-blue" |      // FRC 2023-2026
       "center-rotated" | // FTC 傳統
       "center-red"       // Systemcore
-  "useGrid": boolean // 如果此場地是 FTC 場地，是否渲染格線（預設為 "true"）
-  "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // 沿 x、y 和 z 軸的旋轉序列
-  "widthInches": number // 場地的真實寬度（長邊）
-  "heightInches": number // 場地的真實高度（短邊）
-  "defaultOrigin": "auto" | "blue" | "red" // 預設原點位置，如果未指定則為 "auto"
+  "useGrid": boolean // 若為 FTC 場地，是否顯示格線（預設為 "true"）
+  "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // 沿 x、y 和 z 軸的旋轉順序
+  "widthInches": number // 場地的實際寬度（長邊）
+  "heightInches": number // 場地的實際高度（短邊）
+  "defaultOrigin": "auto" | "blue" | "red" // 預設原點位置，未指定時為 "auto"
   "driverStations": [
     [number, number] // 駕駛站位置（相對於場地中心的 X 與 Y 公尺數）
-    ...              // 對於 FRC，包含 6 個元素按 [B1, B2, B3, R1, R2, R3] 排序。對於 FTC，包含 4 個元素按 [BL, BR, RL, RR] 排序。
+    ...              // FRC 包含 6 個元素，依 [B1, B2, B3, R1, R2, R3] 排序；FTC 包含 4 個元素，依 [BL, BR, RL, RR] 排序
   ]
   "gamePieces": [ // 遊戲物件類型清單
     {
       "name": string // 遊戲物件名稱
-      "locales": { [locale: string]: string } // 遊戲物件名稱的可選翻譯
-      "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // 沿 x、y 和 z 軸的旋轉序列
-      "position": [number, number, number] // 以公尺為單位的平移偏移，在旋轉後應用
-      "stagedObjects": string[] // 預置遊戲物件的名稱，如果提供了使用者姿態則隱藏
+      "locales": { [locale: string]: string } // 遊戲物件名稱的選填翻譯
+      "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // 沿 x、y 和 z 軸的旋轉順序
+      "position": [number, number, number] // 以公尺為單位的位置偏移，在旋轉後套用
+      "stagedObjects": string[] // 預置遊戲物件的名稱，當使用者提供姿態時將隱藏這些物件
     },
     ...
   ],
-  "aprilTags": [ // 補充 AprilTag 模型清單（如果不屬於場地模型的一部分）
-    "variant": string // 格式為 "FAMILY-SIZEin"，其中 "FAMILY" 為 "36h11" 或 "16h5"，"SIZE" 為黑色區域的長度
+  "aprilTags": [ // 補充的 AprilTag 模型清單（若未包含於場地模型中）
+    "variant": string // 格式為 "FAMILY-SIZEin"，其中 "FAMILY" 為 "36h11" 或 "16h5"，"SIZE" 為黑色區域的邊長
     "id": number
-    "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // 沿 x、y 和 z 軸的旋轉序列
-    "position": [number, number, number] // 以公尺為單位的平移偏移，在旋轉後應用
+    "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // 沿 x、y 和 z 軸的旋轉順序
+    "position": [number, number, number] // 以公尺為單位的位置偏移，在旋轉後套用
   ]
 }
 ```

@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 🦀 Swerve {#swerve}
 
-Swerve 分頁顯示四個 Swerve 模組的狀態，包括速度向量、空閒位置、機器人旋轉與底盤速度。
+Swerve 分頁會顯示四個 Swerve 模組的狀態，包括速度向量、靜止位置、機器人旋轉角度與底盤速度。
 
 <img src="/img/tab-reference/swerve-1.webp" alt="Swerve 分頁概述" />
 
@@ -16,11 +16,11 @@ _上圖所示為英文介面。_
 <details>
 <summary>時間軸控制項</summary>
 
-時間軸用於控制播放與視覺化。點擊時間軸會選擇一個時間，按右鍵取消選擇。選取的時間在所有分頁中保持同步，從而可以輕鬆在其他視圖中快速找到此位置。
+時間軸用於控制播放與視覺化。點擊時間軸可選取時間點，按右鍵則可取消選取；選取的時間會在所有分頁間同步，方便你快速在其他分頁中定位到相同時間。
 
-黃色區域表示機器人在自動階段，藍色區域表示機器人在遙控階段，灰色區域表示機器人在實用工具模式。
+黃色區段代表機器人處於自動階段，藍色區段代表遙控階段，灰色區段則代表實用工具模式。
 
-要縮放，請將游標置於時間軸上方並向上或向下滾動。也可以透過按住 `Shift` 的同時點擊並拖曳來選擇範圍。透過水平滾動（在受支援的裝置上）或透過在時間軸上點擊並拖曳來左右移動。當即時連線時，向左滾動會解鎖目前時間，滾動到最右側會再次鎖定到目前時間。按下 `Ctrl+\` 可縮放至機器人啟用的時間段。
+將游標移至時間軸上方並上下滾動即可縮放，也可以按住 `Shift` 拖曳來選取範圍。在支援的裝置上可透過水平滾動左右移動，或直接在時間軸上按住左鍵拖曳。在即時連線狀態下，向左滾動會解除鎖定目前時間，向右滾動到底則會重新鎖定目前時間。按下 `Ctrl+\` 可縮放至機器人啟用的時段。
 
 <img src="/img/tab-reference/timeline.webp" alt="時間軸" />
 
@@ -28,19 +28,19 @@ _上圖所示為英文介面。_
 
 ## 新增來源 {#adding-sources}
 
-要開始，請將欄位拖曳到「來源」區段。使用 X 按鈕刪除來源，或透過點擊眼睛圖示或雙擊欄位名稱暫時隱藏它。要移除所有來源，請點擊軸標題附近的垃圾桶，然後點擊 `全部清除`。可以透過點擊並拖曳在清單中重新排列來源。
+將欄位拖曳到「來源」區段即可開始使用。點擊 X 按鈕可移除來源，點擊眼睛圖示或雙擊欄位名稱則可暫時隱藏。若要移除所有來源，請點擊標題旁的垃圾桶圖示，再選擇 `全部清除`。在清單中拖曳欄位即可重新排序。
 
-**要自訂每個來源，請點擊彩色圖示或在欄位名稱上按右鍵。** AdvantageScope 支援三種來源類型：
+**點擊彩色圖示或在欄位名稱上按右鍵，即可自訂各個來源的外觀。** AdvantageScope 支援三種來源類型：
 
 - **模組速度：** 一組四個 Swerve 模組狀態，在圖表上顯示為向量。
-- **機器人速度：** 在圖表中心顯示的線速度與角速度。
+- **機器人速度：** 顯示於圖表中心的線速度與角速度。
 - **旋轉：** 用於旋轉圖表的角度位置。
 
 ## 資料格式 {#data-format}
 
-資料應使用 `SwerveModuleVelocity[]`、`ChassisVelocities`、`Rotation2d` 或 `Rotation3d` 類型作為位元組編碼的 struct 或 protobuf 發布。
+資料應使用 `SwerveModuleVelocity[]`、`ChassisVelocities`、`Rotation2d` 或 `Rotation3d` 類型，並以位元組編碼的 struct 或 protobuf 格式發布。
 
-許多函式庫都支援 struct 格式，包括 WPILib 與 AdvantageKit。下面的範例程式碼展示了如何在 Java 中記錄 Swerve 模組狀態。
+WPILib 與 AdvantageKit 等多個函式庫皆支援 struct 格式，以下範例程式示範如何在 Java 中記錄 Swerve 模組狀態：
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -74,17 +74,17 @@ Logger.recordOutput("MyStates", states);
 </Tabs>
 
 :::note
-在 2027 年，此資料結構已從 `SwerveModuleState` 重新命名為 `SwerveModuleVelocity`。
-對於在 WPILib 2027 和 Systemcore 之前建立的日誌檔案，仍支援使用舊的 `SwerveModuleState` 類型進行視覺化。
+自 2027 年起，此資料結構已從 `SwerveModuleState` 重新命名為 `SwerveModuleVelocity`。
+若需視覺化 WPILib 2027 與 Systemcore 之前建立的舊版日誌檔案，仍可支援舊的 `SwerveModuleState` 類型。
 :::
 
 ## 設定 {#configuration}
 
 以下是可用的設定選項：
 
-- **最大速度：** 模組可達到的最大速度，用於調整向量的大小。
-- **框架尺寸：** 左右與前後 Swerve 模組之間的距離。變更機器人圖示的長寬比。
-- **方向：** 調整機器人圖示指向的方向。此選項通常對於與姿態資料對齊或匹配影片非常有幫助。
+- **最大速度：** 模組可達到的最大速度，用於調整向量顯示的比例。
+- **框架尺寸：** 左右與前後 Swerve 模組之間的距離，用來調整機器人圖示的長寬比。
+- **方向：** 調整機器人圖示朝向的方向，常用於對齊姿態資料或比賽影片的視角。
 
 :::note
 [🦀 🦀 🦀 🦀 🦀 🦀 🦀 🦀 🦀](https://www.youtube.com/watch?v=IbbwtyM8Dxs)

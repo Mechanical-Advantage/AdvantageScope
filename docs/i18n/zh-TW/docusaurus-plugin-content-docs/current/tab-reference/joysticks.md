@@ -4,7 +4,7 @@ sidebar_position: 8
 
 # 🎮 搖桿 {#joysticks}
 
-搖桿分頁顯示多達六個已連線控制器的狀態。下圖顯示了一個範例佈局，包含兩個 Xbox 控制器和一個通用搖桿。每個按鈕在按下時都會高亮顯示，並顯示搖桿和其他軸的狀態。
+「搖桿」分頁最多可同時顯示六個已連線控制器的狀態。下圖為一個範例配置，包含兩支 Xbox 控制器與一個通用搖桿。每個按鈕在按下時都會亮起提示，同時也會顯示搖桿與其他軸的即時狀態。
 
 <img src="/img/tab-reference/joysticks-1.webp" alt="搖桿分頁概述" />
 
@@ -13,11 +13,11 @@ _上圖所示為英文介面。_
 <details>
 <summary>時間軸控制項</summary>
 
-時間軸用於控制播放與視覺化。點擊時間軸會選擇一個時間，按右鍵取消選擇。選取的時間在所有分頁中保持同步，從而可以輕鬆在其他視圖中快速找到此位置。
+時間軸用於控制播放與資料視覺化。點擊時間軸即可選取時間點，按右鍵則可取消選取。選取的時間點會在所有分頁間同步，方便你快速在其他檢視中定位。
 
-黃色區域表示機器人在自動階段，藍色區域表示機器人在遙控階段，灰色區域表示機器人在實用工具模式。
+黃色區段代表機器人處於自動階段，藍色區段代表遙控階段，灰色區段則代表實用工具模式。
 
-要縮放，請將游標置於時間軸上方並向上或向下滾動。也可以透過按住 `Shift` 的同時點擊並拖曳來選擇範圍。透過水平滾動（在受支援的裝置上）或透過在時間軸上點擊並拖曳來左右移動。當即時連線時，向左滾動會解鎖目前時間，滾動到最右側會再次鎖定到目前時間。按下 `Ctrl+\` 可縮放至機器人啟用的時間段。
+若要縮放，請將游標移至時間軸上方並向上或向下捲動。你也可以按住 `Shift` 並點擊拖曳來選取範圍。若要左右移動，可在支援的裝置上水平捲動，或直接在時間軸上點擊拖曳。即時連線時，向左捲動會解除鎖定目前時間，捲動至最右側則會重新鎖定目前時間。按下 `Ctrl+\` 可快速縮放至機器人啟用的區段。
 
 <img src="/img/tab-reference/timeline.webp" alt="時間軸" />
 
@@ -25,10 +25,10 @@ _上圖所示為英文介面。_
 
 ## 控制面板 {#control-pane}
 
-在分頁底部的表格中選擇搖桿類型。搖桿 ID 範圍從 0 到 5，並與 Driver Station 和 WPILib 中的 ID 相匹配。有關搖桿的更多資訊可以在 [WPILib 文件](https://docs.wpilib.org/zh-cn/stable/docs/software/basic-programming/joystick.html)中找到。
+在分頁底部的表格中選擇各個搖桿的類型。搖桿 ID 範圍為 0 到 5，與 Driver Station 及 WPILib 中的 ID 一致。更多關於搖桿的說明，請參閱 [WPILib 文件](https://docs.wpilib.org/en/stable/docs/software/basic-programming/joystick.html)。
 
-AdvantageScope 包含一組常見的搖桿，包括以網格格式包含所有按鈕、軸與 POV 的「通用搖桿」（見上圖）。要新增自訂搖桿，請參閱[自訂資源](/more-features/custom-assets)。
+AdvantageScope 內建多款常見搖桿，其中包括將所有按鈕、軸與 POV (視角) 以格狀呈現的「通用搖桿」（如上圖所示）。若要新增自訂搖桿，請參閱[自訂資源](/more-features/custom-assets)。
 
 :::warning
-**使用原生 WPILib 的 NetworkTables 連線時，搖桿資料不可用。** 支援 WPILib 日誌檔案（[已啟用搖桿記錄](https://docs.wpilib.org/zh-cn/stable/docs/software/telemetry/datalog.html#logging-joystick-data)）、AdvantageKit 日誌以及 AdvantageKit 串流。
+**透過原生 WPILib 的 NetworkTables 連線時，無法取得搖桿資料。** 目前僅支援 WPILib 日誌檔案（需[啟用搖桿記錄](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)）、AdvantageKit 日誌以及 AdvantageKit 串流。
 :::

@@ -1,6 +1,6 @@
 # 鍵盤快捷鍵 {#keyboard-shortcuts}
 
-AdvantageScope 包含多個鍵盤快捷鍵，可實現更快的導覽。在 macOS 上，使用 `ctrl` 鍵的快捷鍵被 ⌘ 鍵取代。
+AdvantageScope 內建多種鍵盤快捷鍵，讓操作與導覽更快速。在 macOS 上，使用 `ctrl` 鍵的快捷鍵請改按 ⌘ 鍵。
 
 ### 資料來源 {#data-sources}
 
@@ -82,7 +82,7 @@ AdvantageScope 包含多個鍵盤快捷鍵，可實現更快的導覽。在 macO
 
 ### 觸控列 (Touch Bar) {#touch-bar}
 
-在受支援的 MacBook 機型上，觸控列可用於滾動瀏覽日誌並新增新分頁。
+在支援的 MacBook 機型上，可使用觸控列 (Touch Bar) 來拖曳瀏覽日誌時間軸並新增分頁。
 
 <img src="/img/overview/navigation/keyboard-1.webp" alt="觸控列滾動瀏覽介面" />
 <img src="/img/overview/navigation/keyboard-2.webp" alt="觸控列新增分頁介面" />

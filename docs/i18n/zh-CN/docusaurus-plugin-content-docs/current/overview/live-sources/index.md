@@ -1,55 +1,55 @@
 # 🛜 实时数据源 {#live-sources}
 
-AdvantageScope 中的所有可视化功能除了处理日志文件外，均旨在接收来自机器人或仿真器的实时数据。本节描述如何连接到实时数据源。AdvantageScope 支持以下实时数据源：
+除了读取日志文件，AdvantageScope 的所有可视化功能也支持接收来自机器人或模拟器的实时数据。本节介绍如何连接实时数据源，支持的数据源类型如下：
 
-- **NetworkTables:** 这是 WPILib 的主要网络协议。有关更多详细信息，请参阅 [WPILib 文档](https://docs.wpilib.org/zh-cn/stable/docs/software/networktables/index.html)。
-- **NetworkTables (AdvantageKit):** 此模式专为运行 AdvantageKit 的机器人代码设计，该代码发布到 NetworkTables 中的 `AdvantageKit` 表。
-- **Systemcore 诊断:** 此模式连接到 Systemcore OS 使用的内置 NetworkTables 服务器，其中包括机器人状态和设备 IO 等诊断数据。
-- **Phoenix 诊断:** 此模式使用 HTTP 连接到 Phoenix [诊断服务器](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html)，允许通过 [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/) 从 CTRE CAN 设备串流数据。这类似于 Phoenix Tuner 中的 [绘图功能](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html)。有关更多信息，请参阅 [此页面](/overview/live-sources/phoenix-diagnostics)。
-- **RLOG 服务器:** 该协议由 AdvantageKit 支持，作为 NetworkTables 的替代方案。默认在 5800 端口发起连接。
-- **FTC Dashboard:** 此模式集成了发布数据到 [FTC Dashboard](https://acmerobotics.github.io/ftc-dashboard) 的 FTC 机器人。
+- **NetworkTables：** WPILib 的主力网络通信协议。详情请参阅 [WPILib 文档](https://docs.wpilib.org/zh-cn/stable/docs/software/networktables/index.html)。
+- **NetworkTables (AdvantageKit)：** 专为运行 AdvantageKit 的机器人代码设计，该模式会读取发布到 NetworkTables 中 `AdvantageKit` 表的数据。
+- **Systemcore 诊断：** 连接到 Systemcore 操作系统内置的 NetworkTables 服务器，获取机器人状态、设备 IO 等诊断数据。
+- **Phoenix 诊断：** 通过 HTTP 连接到 Phoenix [诊断服务器](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html)，实时串流来自 [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/) CTRE CAN 设备的信号，体验类似 Phoenix Tuner 中的 [绘图功能](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html)。详情请参阅 [Phoenix 诊断页面](/overview/live-sources/phoenix-diagnostics)。
+- **RLOG 服务器：** AdvantageKit 支持的协议，可作为 NetworkTables 的替代方案，默认通过 5800 端口建立连接。
+- **FTC Dashboard：** 适用于将遥测数据发布到 [FTC Dashboard](https://acmerobotics.github.io/ftc-dashboard) 的 FTC 机器人。
 
 :::info
-当与 DS 应用程序在同一台设备上运行时，AdvantageScope 可以连接到 FIRST Driver Station 以查看诊断数据。无需进行任何配置（请参阅下文说明）。
+当 AdvantageScope 与 FIRST Driver Station 运行在同一台设备上时，无需任何配置即可直接连接操控站查看诊断数据（操作步骤见下文）。
 :::
 
 ## 启动连接 {#starting-the-connection}
 
-要启动实时连接，请按以下步骤操作：
+要建立实时连接，请按以下步骤操作：
 
-- **机器人：** 点击 `文件` > `连接到机器人` > `默认` 或特定的实时数据源
-- **仿真器：** 点击 `文件` > `连接到模拟器` > `默认` 或特定的实时数据源
+- **机器人：** 点击 `文件` > `连接到机器人` > `默认` 或选择特定实时数据源
+- **模拟器：** 点击 `文件` > `连接到模拟器` > `默认` 或选择特定实时数据源
 - **操控站：** 点击 `文件` > `连接到操控站`
 
-窗口标题将显示 IP 地址和“搜索中”文本，直到目标连接成功。在断开连接后，AdvantageScope 会尝试使用相同设置自动重新连接。
+连接成功前，窗口标题栏会显示目标 IP 地址及“搜索中”提示；若连接意外断开，AdvantageScope 会自动沿用当前设置尝试重连。
 
 ## 查看实时数据 {#viewing-live-data}
 
-当连接到实时数据源时，AdvantageScope 默认将所有选项卡锁定到当前时间。诸如 📉 [折线图](/tab-reference/line-graph) 和 🔢 [表格](/tab-reference/table) 等视图会自动滚动，而场地和控制器等视图则显示每个字段的当前值。点击导航栏中的红色箭头按钮可以切换此锁定，从而允许查看和重放过去的数据。
+连接实时数据源后，AdvantageScope 默认会将所有选项卡锁定到当前最新时刻：📉 [折线图](/tab-reference/line-graph) 和 🔢 [表格](/tab-reference/table) 等视图会自动滚动，场地和控制器等视图则会实时刷新各字段的当前值。点击导航栏中的红色箭头按钮可以切换锁定状态，方便随时暂停并回放历史数据。
 
 <img src="/img/overview/live-sources/open-live-1.webp" alt="实时锁定/解锁按钮" />
 
 :::tip
-在折线图或时间轴中向左滚动会解锁与当前时间的关联，而一路向右滚动将重新锁定到当前时间。
+在折线图或时间轴中向左滚动即可解除实时锁定；一路向右滚动到底部，则会重新锁定到当前时间。
 :::
 
 ## 配置 {#configuration}
 
 点击 `应用程序` > `显示首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。
 
-<img src="/img/prefs_zh-CN.webp" alt="偏好设置图解" height="450" />
+<img src="/img/prefs_zh-CN.webp" alt="首选项图解" height="450" />
 
 ### 机器人地址 {#robot-address}
 
-按照 [WPILib 文档](https://docs.wpilib.org/zh-cn/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation) 中所述，使用主机名（例如 `robot.local`）或 IP 地址（例如 `10.TE.AM.2`）输入机器人地址。通过 USB 或内置 Wi-Fi 热点连接到 Systemcore 时，点击 `文件` > `使用 Systemcore USB 地址`/`使用 Systemcore Wi-Fi 地址` 以临时使用正确的静态 IP 地址。
+请参照 [WPILib 文档](https://docs.wpilib.org/zh-cn/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation) 的说明，输入机器人的主机名（例如 `robot.local`）或 IP 地址（例如 `10.TE.AM.2`）。通过 USB 或内置 Wi-Fi 热点连接 Systemcore 时，可点击 `文件` > `使用 Systemcore USB 地址` / `使用 Systemcore Wi-Fi 地址`，临时切换为对应的静态 IP 地址。
 
 ### 实时模式 {#live-mode}
 
-当使用 NetworkTables 作为实时数据源时，可以选择以下实时模式：
+选择 NetworkTables 作为实时数据源时，可切换以下两种实时模式：
 
-- **低带宽（默认）：** AdvantageScope 仅向服务器请求当前正在被使用的字段的数据。选择某个字段之前发布的数据将不可用。当在网络带宽有限的环境中运行或发布大量字段时，**强烈建议**使用此模式。
-- **日志记录：** 无论是否正在使用，AdvantageScope 都会请求所有字段的数据。这意味着可以通过暂停实时数据流来回顾过去的字段（见下文）。此模式通常在开发期间非常有用，但**不应在带宽受限时使用**。
+- **低带宽（默认）：** AdvantageScope 只向服务器请求当前正在使用的字段，选中字段之前已经发布的数据不会保留。在网络带宽受限或机器人发布了大量字段时，**强烈建议**使用此模式。
+- **日志记录：** 无论字段是否正在界面中使用，AdvantageScope 都会请求全部字段的数据。这样一来，你可以暂停实时数据流并随时回溯查看此前未选中的字段（见下文）。此模式在开发调试时非常实用，但**切勿在带宽受限时使用**。
 
 ### 丢弃实时数据 {#discard-live-data}
 
-在实时连接期间，数据被存储在本地以允许重放过去的数据（参阅上文“查看实时数据”）。为避免过高的内存占用，默认在 20 分钟后丢弃数据。可以选择更短的时间段以减少内存使用，或者选择“从不”以无限期存储实时数据。
+在实时连接过程中，数据会缓存在本地以支持历史回放（参见上文“查看实时数据”）。为避免内存占用过高，默认只保留最近 20 分钟的数据。你也可以在设置中缩短保留时长以节省内存，或选择“从不”以持续保存所有实时数据。

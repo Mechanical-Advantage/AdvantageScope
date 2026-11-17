@@ -4,27 +4,27 @@ sidebar_position: 2
 
 # Phoenix 诊断 {#phoenix-diagnostics}
 
-AdvantageScope 支持从 Phoenix 6 设备实时串流信号，**无需在用户代码中进行设置**。这使得利用熟悉的界面和 AdvantageScope 的强大功能可以轻松进行 Phoenix 设备的调试与调参：
+AdvantageScope 支持直接实时串流 Phoenix 6 设备的信号，**无需在机器人代码中做任何额外配置**。你可以借助熟悉的操作界面与 AdvantageScope 的完整功能，轻松调试和调参 Phoenix 设备：
 
-- 灵活的可视化选项，包括对多轴、离散字段、表格和统计分析的支持
-- 完全支持单位感知图表，包括隐式和一键单位转换（[文档](/tab-reference/line-graph/units)）
-- 将枚举值解码为易于阅读的字符串（控制模式、桥接状态、CANcoder 磁铁状态等）
-- 集成侧边栏工具提示，包含每个信号的描述和单位
-- 信号的分层组织，按 CAN 总线、设备和信号类型分组
-- 借助内置积分和求导选项进行高级数据分析（[文档](/tab-reference/line-graph/#adjusting-axes)）
+- 灵活的可视化方式，支持表格展示与统计分析
+- 完整支持单位感知图表，包含隐式换算与一键单位转换（[文档](/tab-reference/line-graph/units)）
+- 将枚举值自动解码为易读文本（如控制模式、桥接状态、CANcoder 磁铁状态等）
+- 侧边栏内置工具提示，悬停即可查看每个信号的说明与单位
+- 按 CAN 总线、设备和信号类型分层归类信号
+- 内置积分与微分等高级数据分析工具（[文档](/tab-reference/line-graph/#adjusting-axes)）
 
 :::tip
-要建立连接，请在从菜单栏连接到机器人或模拟器时选择“Phoenix 诊断”。
+在菜单栏连接机器人或模拟器时，选择“Phoenix 诊断”即可建立连接。
 :::
 
 <img src="/img/overview/live-sources/phoenix-1.webp" alt="折线图截图" />
 
-AdvantageScope 的 📊 [统计](/tab-reference/statistics) 选项卡还支持对 Phoenix 信号进行高级分析，支持直方图、自定义范围以及用于相对和绝对误差测量的派生字段：
+借助 AdvantageScope 的 📊 [统计](/tab-reference/statistics) 选项卡，你还可以对 Phoenix 信号进行深入分析，包括直方图、自定义范围，以及用于衡量相对误差与绝对误差的派生字段：
 
 <img src="/img/overview/live-sources/phoenix-2.webp" alt="统计数据截图" />
 
 _上图所示为英文界面。_
 
 :::note
-由于 Phoenix 更新，此功能偶尔可能会遇到问题。我们建议使用最新版本的 AdvantageScope 以最大程度减少问题。否则，请 [提交 issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues) 以告知我们遇到的任何问题。
+由于 Phoenix 自身会持续更新，此功能偶尔可能出现兼容性问题。建议始终使用最新版本的 AdvantageScope 以减少此类情况；如仍有异常，欢迎 [提交 issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues) 告知我们。
 :::

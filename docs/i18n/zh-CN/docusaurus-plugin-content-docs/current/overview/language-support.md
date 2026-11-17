@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 🌐 语言支持 {#language-support}
 
-AdvantageScope 在文档、桌面应用程序、移动应用程序（AdvantageScope XR 和 AdvantageTune）以及 AdvantageScope Lite 中支持多种语言。目前支持以下语言：
+AdvantageScope 支持多种语言，旨在为全球队伍提供本地化体验。目前，AdvantageScope 文档、桌面应用、移动应用（AdvantageScope XR 和 AdvantageTune）以及 AdvantageScope Lite（运行于 Systemcore 及 FIRST Driver Station 中）均已支持以下语言：
 
 - 英语（美国）
 - 西班牙语（拉丁美洲）
@@ -26,13 +26,13 @@ AdvantageScope 在文档、桌面应用程序、移动应用程序（AdvantageSc
 
 ## 配置 {#configuration}
 
-要在 AdvantageScope 中更改显示语言，请点击 `应用程序` > `显示首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。在“语言”设置下，你可以从受支持的语言列表中进行选择，或选择“系统默认”以自动匹配操作系统的语言。
+如需更改 AdvantageScope 的界面语言，请点击 `应用程序` > `显示首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。在“语言”选项中，你可以选择任意受支持的语言，或选择“系统默认”以自动跟随系统语言。
 
 <img src="/img/prefs_zh-CN.webp" alt="首选项图解" height="450" />
 
 ## 日志键名 {#logging-keys}
 
-AdvantageScope 支持的所有格式在定义日志键名时均具有完全的 Unicode 兼容性。这意味着你可以使用自己的首选语言（包括重音符号、特殊字符和非拉丁字母）记录数据，并且这些数据将在 AdvantageScope 中正确记录和显示。
+AdvantageScope 支持的所有日志格式均完整兼容 Unicode 键名。也就是说，你可以直接用自己熟悉的语言（包括重音符号、特殊字符和非拉丁文字）记录数据，AdvantageScope 都能正常解析并显示。
 
 以下是使用简体中文键名记录字符串的示例：
 
@@ -54,11 +54,11 @@ Logger.recordOutput("驱动/右电机速度", "快");
 </Tabs>
 
 :::tip 单位支持
-有关传递单位元数据的更多详细信息，请参阅 [单位支持](/tab-reference/line-graph/units) 页面。无论在 AdvantageScope 中选择了什么语言，单位名称都必须使用国际单位制 (SI) 符号或英语（美式或英式拼写）提供。
+关于如何传入单位元数据，详情请参阅 [单位支持](/tab-reference/line-graph/units) 页面。无论你在 AdvantageScope 中选择了哪种界面语言，单位名称都必须使用国际单位制 (SI) 符号或英语（美式或英式拼写）。
 :::
 
 ## 开发 {#development}
 
-AdvantageScope 的本地化是由人机协作工作流共同推动的。由于 AdvantageScope 是一个快速发展的项目，使用 AI 对于保持翻译后的应用程序和文档在所有语言中同步至关重要。这意味着无论你选择哪种语言，新功能和更新始终同时可用。
+AdvantageScope 的本地化工作由人工智能与社区协作共同完成。由于 AdvantageScope 迭代迅速，借助 AI 对于让所有语言的应用界面和文档保持同步至关重要。这样一来，无论你选择哪种语言，都能第一时间用上新功能与更新。
 
-为了确保最高质量的翻译，我们的流程依赖于来自 FIRST 社区母语人士的丰富参考资料，为每种语言构建详细的词汇表和指南。这有助于翻译契合本地队伍所熟悉的特定词汇、借词和音译。虽然这些指南是在人工参与下建立的，但**所有翻译均在 AI 的支持下创建，可能包含不准确之处**。用户还可以通过点击应用程序中的紫色图标或文档页眉中的链接来提供有关翻译的反馈（当设置为英语以外的任何语言时）。
+我们的本地化流程会尽量贴合各地队伍熟悉的专业词汇、借词和译法，但 AI 翻译仍可能出现生硬或不准确之处。欢迎随时向我们反馈：在应用中选择英语以外的任意语言时，点击标题栏中的紫色图标即可提交翻译意见。

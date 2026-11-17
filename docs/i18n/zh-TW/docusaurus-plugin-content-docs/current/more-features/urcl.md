@@ -8,34 +8,34 @@ import TabItem from '@theme/TabItem';
 # 📝 URCL (非官方 REV 相容記錄器) {#unofficial-rev-compatible-logger}
 
 :::info
-2026 年最新功能，REVLib 包含官方記錄解決方案，用於將來自 Spark Max 與 Spark Flex 的資料儲存至 REV CAN 日誌 (`.revlog`)。有關詳細資訊，請參閱[此處](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger)。這些檔案可以直接在 AdvantageScope 中開啟，但無法與其他資料來源精確同步。
+從 2026 賽季起，REVLib 新增了官方的日誌記錄方案，可將 Spark Max 與 Spark Flex 的資料儲存為 REV CAN 日誌 (`.revlog`)。詳情請參閱[官方文件](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger)。這些檔案能直接在 AdvantageScope 中開啟，但無法與其他資料來源精確同步。
 
-AdvantageScope 的*非官方* REV 相容記錄器 (URCL) 在 2026 賽季也將繼續向隊伍提供，以確保順暢過渡並提供與先前賽季同等的功能。我們將在稍後日期分享有關 2027 年及以後記錄選項的更多詳細資訊。
+在 2026 賽季，AdvantageScope 仍會繼續提供*非官方* REV 相容記錄器 (URCL)，確保隊伍順利過渡並維持與過往賽季相同的功能。我們會在日後公布 2027 年及之後的日誌記錄規劃。
 :::
 
-URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger，非官方 REV 相容記錄器) 是一個可用於 Java、C++ 與 Python 的記錄函式庫，可自動記錄來自 Spark Max 與 Spark Flex 的資料。這實現了所有裝置的即時繪圖與記錄，類似於 CTRE 的 [Tuner X 繪圖功能](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) 與 [Phoenix 6 訊號記錄器](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html)。
+URCL（**U**nofficial **R**EV-**C**ompatible **L**ogger，非官方 REV 相容記錄器）是一款支援 Java、C++ 與 Python 的日誌函式庫，可自動記錄 Spark Max 與 Spark Flex 的資料，讓所有裝置都能進行即時繪圖與日誌記錄，就像 CTRE 的 [Tuner X 繪圖功能](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html)與 [Phoenix 6 訊號記錄器](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html)一樣。
 
-設定完成後，來自所有 Spark Max 與 Spark Flex 裝置的週期性 CAN 框架都會發布到 NetworkTables 或 DataLog。使用 NetworkTables 時，可以使用 WPILib 的 [DataLogManager](https://docs.wpilib.org/zh-cn/stable/docs/software/telemetry/datalog.html) 將資料擷取到日誌檔案中。這些框架可以在 AdvantageScope 中檢視（請參閱[管理日誌檔案](/overview/log-files)與[連線到即時來源](/overview/live-sources)）。
+設定完成後，所有 Spark Max 與 Spark Flex 裝置的週期性 CAN 訊框都會發布到 NetworkTables 或 DataLog。若透過 NetworkTables 發布，可以使用 WPILib 的 [DataLogManager](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) 將資料擷取並寫入日誌檔案，接著就能在 AdvantageScope 中檢視這些訊框（請參閱[管理日誌檔案](/overview/log-files)與[連線到即時來源](/overview/live-sources)）。
 
-- **所有訊號**都會被自動擷取，**新裝置無需手動設定**。
-- **擷取每一個框架**，即使狀態框架週期比機器人迴圈週期更快。
-- 框架以**基於 CAN RX 時間的時間戳記**進行記錄，與使用者程式碼中的傳統記錄相比，可以在 [SysId](https://docs.wpilib.org/zh-cn/stable/docs/software/pathplanning/system-identification/introduction.html) 中實現更準確的加速度表徵（請參閱下方的「SysId 使用」）。
-- 記錄**高度高效**；操作經過執行緒化處理，每個 20ms 週期性週期的執行時間在 80µs 以下，即使在記錄大量裝置時也是如此。
-- **REVLib 的所有功能均不受影響。**
+- **所有訊號**都會自動擷取，**新增裝置時也不需手動設定**。
+- **完整擷取每個訊框**，即使狀態訊框的週期比機器人迴圈週期還快也不會漏掉。
+- 訊框會以 **CAN RX 接收時間作為時間戳記**來記錄，相較於在使用者程式碼中進行傳統記錄，能讓 [SysId](https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/introduction.html) 做出更準確的加速度特性分析（請參閱下方的「SysId 使用方式」）。
+- 記錄過程**極具效率**：相關作業採用多執行緒處理，即使記錄大量裝置，每個 20 ms 週期內的執行時間也低於 80 µs。
+- **完全不影響 REVLib 的任何功能。**
 
 :::info
-由於此函式庫並非 REV 官方工具，支援諮詢應發送至 URCL [issues 頁面](https://github.com/Mechanical-Advantage/URCL/issues) 或 software@team6328.org，而非 REV 的支援聯絡方式。
+由於此函式庫並非 REV 官方工具，若有支援問題請前往 URCL 的 [issues 頁面](https://github.com/Mechanical-Advantage/URCL/issues)或寄信至 software@team6328.org，切勿聯絡 REV 官方支援。
 :::
 
 ## 設定 {#setup}
 
-按照在 VSCode 中使用依賴項管理員安裝[第三方函式庫](https://docs.wpilib.org/zh-cn/stable/docs/software/vscode-overview/3rd-party-libraries.html)的說明安裝 URCL 第三方函式庫 (vendordep)。或者，你可以使用以下廠商 JSON URL：
+請依照在 VSCode 中使用相依性管理員安裝[第三方函式庫](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html)的步驟，安裝 URCL 第三方函式庫 (vendordep)；或者也可以直接使用以下廠商 JSON URL：
 
 ```
 https://raw.githubusercontent.com/Mechanical-Advantage/URCL/main/URCL.json
 ```
 
-URCL 預設發布到 NetworkTables，在其中可以透過啟用 WPILib 的 DataLogManager 將資料儲存到日誌檔案中。或者，URCL 可以直接記錄到 DataLog。記錄器應在 `robotInit` 中啟動，如下所示。
+URCL 預設會發布到 NetworkTables，你可以啟用 WPILib 的 DataLogManager 將資料儲存到日誌檔案；或者也可以讓 URCL 直接寫入 DataLog。記錄器應在 `robotInit` 中啟動，範例如下。
 
 <Tabs>
 <TabItem value="java" label="Java" default>
@@ -97,23 +97,23 @@ public Robot() {
 ```
 
 :::warning
-URCL 與 AdvantageKit 的相容性僅為方便提供；記錄到日誌中的資料在重播中**不可用**。**REV 馬達控制器仍必須是具有已定義輸入的 IO 實作的一部分以支援重播**。
+URCL 與 AdvantageKit 的相容性僅為方便使用而提供，寫入日誌的資料並**無法**用於重播 (replay)。**REV 馬達控制器仍必須透過定義好輸入的 IO 實作來支援重播**。
 :::
 
 </TabItem>
 </Tabs>
 
-為了在日誌中更容易識別裝置，可以透過將映射物件傳遞給 `start()` 或 `startExternal()` 方法來將 CAN ID 指派給別名。鍵是 CAN ID，值是在日誌中使用的名稱字串。未指派別名的任何裝置都將使用其預設名稱進行記錄。
+為了在日誌中更容易辨識各個裝置，你可以將一個映射物件 (map) 傳入 `start()` 或 `startExternal()` 方法，為 CAN ID 指定別名。其中 key 為 CAN ID，value 則是在日誌中顯示的名稱字串。未指定別名的裝置會以預設名稱記錄。
 
 :::warning
-為了盡可能減少 CAN 利用率，Spark 裝置的大多數狀態框架在呼叫關聯的 getter 方法之前**預設為停用**。這些停用的狀態框架中包含的任何資料在 URCL 日誌中都將不可用。
+為了降低 CAN 匯流排使用率，Spark 裝置大多數的狀態訊框**預設為停用**，直到程式呼叫對應的 getter 方法才會啟用。任何包含在這些停用狀態訊框中的資料，都不會出現在 URCL 日誌裡。
 
-有關更多詳細資訊，請查看 [REVLib 文件](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods)。我們建議在設定 Spark 時使用 [`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) 以手動啟用要在日誌檔案中包含的任何訊號。
+詳情請參閱 [REVLib 文件](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods)。我們建議在設定 Spark 時使用 [`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig)，手動啟用你想記錄到日誌檔案中的所有訊號。
 :::
 
-## SysId 使用 {#sysid-usage}
+## SysId 使用方式 {#sysid-usage}
 
-1. 如上所示設定 URCL 後，將 SysId 常規程序設定為使用 `null` 作為機構日誌消費者。Java 的範例顯示如下。此設定可在次系統類別內部執行。
+1. 如上所述設定好 URCL 後，建立 SysId 常規程序 (routine) 時將機構的 log consumer 設為 `null`。下方為 Java 範例，此設定可直接放在子系統 (subsystem) 類別中。
 
 <Tabs groupId="library">
 <TabItem value="WPILib" label="WPILib" default>
@@ -163,22 +163,22 @@ sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
 </TabItem>
 </Tabs>
 
-2. 在機器人上執行 SysId 常規程序。SysId 命令可以設定為自動常規程序或連線到按鈕觸發器。
+2. 在機器人上執行 SysId 常規程序。你可以將 SysId 指令設定為自動階段常規程序，或綁定到搖桿按鈕觸發。
 
-3. 下載日誌檔案並在 AdvantageScope 中開啟。在選單列中，前往 `檔案` > `匯出資料...`。將格式設定為「WPILOG」，將欄位集設定為「包含產生的」。點擊儲存圖示並選擇儲存日誌的位置。
+3. 下載日誌檔案並在 AdvantageScope 中開啟。從選單列選擇 `檔案` > `匯出資料...`，將格式設為「WPILOG」、欄位集設為「包含產生的」，然後點擊儲存圖示並選擇儲存位置。
 
 :::warning
-來自機器人的日誌檔案必須在*使用 SysId 分析器開啟之前*，先由 AdvantageScope 開啟並匯出。這是將 URCL 記錄的 CAN 資料轉換為與 SysId 相容的格式所必需的。
+從機器人下載的日誌檔案必須先由 AdvantageScope 開啟並匯出，**才能用 SysId 分析器開啟**。這是為了將 URCL 記錄的 CAN 資料轉換成與 SysId 相容的格式。
 :::
 
-4. 透過在 VSCode 命令分頁中搜尋「WPILib: Start Tool」並選擇「SysId」（或在 Windows 上使用桌面啟動器）來開啟 SysId 分析器。點擊「Open data log file...」開啟匯出的日誌檔案。
+4. 在 VSCode 命令選擇區搜尋「WPILib: Start Tool」並選擇「SysId」（或在 Windows 上使用桌面啟動器）來開啟 SysId 分析器，接著點擊「Open data log file...」開啟剛匯出的日誌檔案。
 
-5. 選擇下方欄位以使用預設編碼器執行分析。也可以使用來自次要編碼器的位置與速度資料（備用、外部、類比、絕對等）。
+5. 選取以下欄位即可使用預設編碼器進行分析，也可以改用次要編碼器（備用、外部、類比、絕對等）的位置與速度資料：
 
    - Position = "NT:/URCL/&lt;Device&gt;/MotorPositionRotations"
    - Velocity = "NT:/URCL/&lt;Device&gt;/MotorVelocityRPM"
    - Voltage = "NT:/URCL/&lt;Device&gt;/AppliedOutputVoltage"
 
 :::tip
-SysId 產生的增益將使用 Spark Max/Flex 設定回報的單位（使用 [`setPositionConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setPositionConversionFactor(double)>) 與 [`setVelocityConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setVelocityConversionFactor(double)>)）。預設情況下，這些是在未應用齒輪比情況下的圈數與 RPM。如果記錄資料時使用的單位與所需的單位不符，可在分析期間於 SysId 中調整縮放比例。
+SysId 產生的增益值 (gains) 會採用 Spark Max/Flex 設定回報的單位（透過 [`setPositionConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setPositionConversionFactor(double)>) 與 [`setVelocityConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setVelocityConversionFactor(double)>) 設定）。預設情況下，未套用齒輪比時的單位為圈數與 RPM。若記錄資料時使用的單位與你想要的單位不同，可以在 SysId 分析過程中調整縮放比例。
 :::
