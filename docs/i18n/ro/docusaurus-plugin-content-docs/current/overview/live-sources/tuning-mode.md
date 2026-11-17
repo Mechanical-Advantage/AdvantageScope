@@ -4,21 +4,21 @@ sidebar_position: 1
 
 # Mod de ajustare {#tuning-mode}
 
-Unele surse live suportă ajustarea în timp real a valorilor numerice și booleene. De exemplu, această caracteristică poate fi utilizată pentru a [ajusta amplificările controllerului](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) când sunteți conectat la o sursă NetworkTables. Rețineți că codul robotului trebuie să suporte primirea amplificărilor prin NetworkTables.
+Unele surse live suportă ajustarea în timp real a valorilor numerice și booleene. De exemplu, această funcționalitate poate fi folosită pentru a [ajusta constantele (gains) controllerului](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) când ești conectat la o sursă NetworkTables. Reține că codul robotului trebuie să suporte primirea acestora prin NetworkTables.
 
-În mod implicit, toate valorile din AdvantageScope sunt doar pentru citire. Pentru a comuta modul de ajustare, **dați clic pe pictograma glisor** din dreapta bării de căutare când sunteți conectat la o sursă live suportată. Când pictograma este mov, modul de ajustare este activ și editarea câmpurilor este activată.
+În mod implicit, toate valorile din AdvantageScope sunt doar pentru citire. Pentru a comuta modul de ajustare, **dă clic pe pictograma glisor** din dreapta barei de căutare când ești conectat la o sursă live suportată. Când pictograma este mov, modul de ajustare este activ și editarea câmpurilor este permisă.
 
-- Pentru a edita un **câmp numeric**, introduceți o valoare nouă folosind caseta de text din dreapta câmpului în bara laterală. Valoarea este publicată după ce caseta este deselectată sau este apăsată tasta „Enter”. Lăsați caseta de text necompletată pentru a utiliza valoarea publicată de robot.
-- Pentru a comuta un **câmp boolean**, dați clic pe cercul roșu sau verde din dreapta câmpului în bara laterală.
-- Pentru a copia toate valorile publicate în clipboard, **dați clic dreapta pe pictograma glisor** și selectați **„Copiază valorile ajustate”**.
+- Pentru a edita un **câmp numeric**, introdu o valoare nouă folosind caseta de text din dreapta câmpului în bara laterală. Valoarea este publicată după ce caseta este deselectată sau este apăsată tasta „Enter”. Lasă caseta de text necompletată pentru a folosi valoarea publicată de robot.
+- Pentru a comuta un **câmp boolean**, dă clic pe cercul roșu sau verde din dreapta câmpului în bara laterală.
+- Pentru a copia toate valorile publicate în clipboard, **dă clic dreapta pe pictograma glisor** și selectează **„Copiază valorile ajustate”**.
 
 :::warning
-Această caracteristică nu este destinată controlului robotului pe teren. Intrările în stil panou de bord (dashboard), cum ar fi opțiunile de selecție (choosers), butoanele de declanșare etc. nu sunt suportate.
+Această funcționalitate nu este destinată controlării robotului pe teren. Intrările în stil dashboard, cum ar fi meniurile de selecție (choosers), butoanele de declanșare etc. nu sunt suportate.
 :::
 
 ## Ajustarea cu AdvantageKit {#tuning-with-advantagekit}
 
-Câmpurile publicate de AdvantageKit în subtabelul `AdvantageKit` sunt doar pentru ieșire și nu pot fi editate. Cu toate acestea, utilizatorii pot publica câmpuri din codul utilizatorului care pot fi ajustate din AdvantageScope. **Orice câmpuri publicate în tabelul „/Tuning” pe NetworkTables vor apărea sub tabelul „Tuning” când se utilizează sursa live „NetworkTables (AdvantageKit)”.**
+Câmpurile publicate de AdvantageKit în subtabelul `AdvantageKit` sunt doar pentru ieșire și nu pot fi editate. Cu toate acestea, utilizatorii pot publica câmpuri din codul robotului care pot fi ajustate din AdvantageScope. **Orice câmp publicat în tabelul „/Tuning” pe NetworkTables va apărea sub tabelul „Tuning” când folosești sursa live „NetworkTables (AdvantageKit)”.**
 
 De exemplu, un număr ajustabil poate fi publicat folosind clasa [`LoggedNetworkNumber`](https://docs.advantagekit.org/data-flow/recording-inputs/dashboard-inputs):
 
@@ -27,5 +27,5 @@ LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNu
 ```
 
 :::warning
-Subtabelul `NetworkInputs` **nu poate fi editat**, deoarece este utilizat de AdvantageKit pentru a înregistra valori de rețea pentru logare și reluare. Utilizați tabelul `Tuning` pentru a interacționa cu intrările de rețea în timp real.
+Subtabelul `NetworkInputs` **nu poate fi editat**, deoarece este folosit de AdvantageKit pentru a înregistra valori de rețea pentru logare și reluare. Folosește tabelul `Tuning` pentru a interacționa cu intrările de rețea în timp real.
 :::

@@ -26,13 +26,13 @@ AdvantageScope suportă mai multe limbi pentru a oferi o experiență localizat�
 
 ## Configurare {#configuration}
 
-Pentru a schimba limba de afișare în AdvantageScope, deschide fereastra de preferințe făcând clic pe `App` > `Afișează preferințele...` (Windows/Linux) sau `AdvantageScope` > `Setări...` (macOS). La setarea „Limbă”, poți alege din lista de limbi suportate sau poți selecta „Implicit sistem” pentru a se potrivi automat cu limba sistemului tău de operare.
+Pentru a schimba limba de afișare în AdvantageScope, deschide fereastra de preferințe dând clic pe `Aplicație` > `Afișează preferințele...` (Windows/Linux) sau `AdvantageScope` > `Setări...` (macOS). La setarea „Limbă”, poți alege din lista de limbi suportate sau poți selecta „Implicită sistemului” pentru a folosi automat limba sistemului tău de operare.
 
 <img src="/img/prefs_ro.webp" alt="Diagrama preferințelor" height="450" />
 
 ## Chei de jurnalizare {#logging-keys}
 
-Toate formatele suportate de AdvantageScope beneficiază de compatibilitate completă Unicode la definirea cheilor de jurnalizare. Aceasta înseamnă că poți înregistra date folosind limba ta preferată (inclusiv diacritice, caractere speciale și alfabete non-latine) și acestea vor fi înregistrate și afișate corect în AdvantageScope.
+Toate formatele suportate de AdvantageScope beneficiază de compatibilitate completă Unicode la definirea cheilor de jurnalizare. Asta înseamnă că poți înregistra date folosind limba ta preferată (inclusiv diacritice, caractere speciale și alfabete non-latine), iar acestea vor fi înregistrate și afișate corect în AdvantageScope.
 
 Iată un exemplu de înregistrare a unui șir de caractere cu o cheie în limba română:
 
@@ -59,6 +59,6 @@ Consultă pagina despre [suportul pentru unități](/tab-reference/line-graph/un
 
 ## Dezvoltare {#development}
 
-Localizarea AdvantageScope este creată printr-o combinație de inteligență artificială și colaborare comunitară. Deoarece AdvantageScope este un proiect în continuă evoluție, utilizarea IA este esențială pentru a menține sincronizate aplicația tradusă și documentația în fiecare limbă. Aceasta înseamnă că noile funcționalități și actualizări sunt întotdeauna disponibile simultan, indiferent de limba selectată.
+Localizarea AdvantageScope este realizată printr-o combinație de inteligență artificială și colaborare comunitară. Deoarece AdvantageScope este un proiect în continuă evoluție, utilizarea AI este esențială pentru a menține aplicația tradusă și documentația sincronizate în fiecare limbă. Astfel, noile funcționalități și actualizări sunt disponibile simultan, indiferent de limba selectată.
 
-Procesul nostru este conceput pentru a se potrivi cu vocabularul specific, împrumuturile lexicale și transliterările cu care echipele locale sunt familiarizate. Cu toate acestea, traducerile generate de IA includ adesea formulări nenaturale sau alte inexactități. Apreciem feedbackul tău; poți oferi feedback cu privire la traduceri făcând clic pe pictograma mov din aplicație (când este configurată pentru orice altă limbă în afară de engleză).
+Procesul nostru este conceput pentru a se potrivi cu vocabularul specific, împrumuturile și transliterările cu care echipele locale sunt familiarizate. Cu toate acestea, traducerile generate de AI includ adesea formulări nenaturale sau alte inexactități. Apreciem feedback-ul tău; poți trimite observații despre traduceri dând clic pe pictograma mov din aplicație (atunci când este configurată pentru orice altă limbă în afară de engleză).

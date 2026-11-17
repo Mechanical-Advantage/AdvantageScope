@@ -4,7 +4,7 @@ sidebar_position: 8
 
 # 🎮 Joystick-uri {#joysticks}
 
-Fila joystick-uri afișează starea a până la șase controlere conectate. Imaginea de mai jos prezintă un exemplu de aranjament, cu două controlere Xbox și un joystick generic. Fiecare buton este evidențiat când este apăsat, și sunt afișate stările joystick-urilor și ale altor axe.
+Fila joystick-uri îți arată starea a până la șase controllere conectate. Imaginea de mai jos prezintă un exemplu de aranjament, cu două controllere Xbox și un joystick generic. Fiecare buton se aprinde când este apăsat, iar stările joystick-urilor și ale celorlalte axe sunt afișate în timp real.
 
 <img src="/img/tab-reference/joysticks-1.webp" alt="Prezentare generală a filei joystick-uri" />
 
@@ -13,11 +13,11 @@ _Interfața în limba engleză este ilustrată mai sus._
 <details>
 <summary>Controale cronologie</summary>
 
-Cronologia este utilizată pentru a controla redarea și vizualizarea. Dând clic pe cronologie se selectează un timp, iar dând clic dreapta se deselectează. Timpul selectat este sincronizat în toate filele, făcând ușoară găsirea rapidă a acestei locații în alte vizualizări.
+Cronologia controlează redarea și vizualizarea. Fă clic pe cronologie pentru a selecta un moment, iar clic dreapta pentru a-l deselecta. Momentul selectat este sincronizat în toate filele, astfel încât poți găsi rapid aceeași poziție și în alte vizualizări.
 
-Secțiunile galbene indică momentul în care robotul este în modul autonom, secțiunile albastre indică momentul în care robotul este în modul teleoperat, iar secțiunile gri indică momentul în care robotul este în modul utilitar.
+Secțiunile galbene arată când robotul este în autonom, cele albastre când este în teleoperat, iar cele gri când este în modul utilitar.
 
-Pentru a mări, plasați cursorul peste cronologie și derulați în sus sau în jos. Un interval poate fi de asemenea selectat prin clic și tragere în timp ce țineți apăsată tasta `Shift`. Mutați-vă la stânga și la dreapta prin derulare orizontală (pe dispozitivele suportate) sau prin clic și tragere pe cronologie. Când sunteți conectat live, derularea spre stânga deblochează timpul curent, iar derularea până la capăt în dreapta blochează din nou timpul curent. Apăsați `Ctrl+\` pentru a mări la perioada în care robotul este activat.
+Pentru a face zoom, pune cursorul peste cronologie și derulează în sus sau în jos. Poți selecta și un interval făcând clic și trăgând în timp ce ții apăsată tasta `Shift`. Mută-te la stânga și la dreapta prin derulare orizontală (pe dispozitivele suportate) sau făcând clic și trăgând pe cronologie. Când ești conectat live, derularea spre stânga deblochează cronologia de la momentul curent, iar derularea până la capăt în dreapta o blochează din nou pe momentul curent. Apasă `Ctrl+\` pentru a face zoom pe perioada în care robotul este activat.
 
 <img src="/img/tab-reference/timeline.webp" alt="Cronologie" />
 
@@ -25,10 +25,10 @@ Pentru a mări, plasați cursorul peste cronologie și derulați în sus sau în
 
 ## Panoul de control {#control-pane}
 
-Selectați tipurile de joystick-uri din tabelul din partea de jos a filei. ID-urile joystick-urilor variază de la 0 la 5 și se potrivesc cu ID-urile din Driver Station și WPILib. Mai multe informații despre joystick-uri pot fi găsite în [documentația WPILib](https://docs.wpilib.org/en/stable/docs/software/basic-programming/joystick.html).
+Selectează tipurile de joystick-uri din tabelul din partea de jos a filei. ID-urile joystick-urilor merg de la 0 la 5 și corespund cu ID-urile din Driver Station și WPILib. Găsești mai multe informații despre joystick-uri în [documentația WPILib](https://docs.wpilib.org/en/stable/docs/software/basic-programming/joystick.html).
 
-AdvantageScope include un set de joystick-uri comune, inclusiv un „Joystick generic” cu toate butoanele, axele și POV-urile într-un format de grilă (văzut mai sus). Pentru a adăuga un joystick personalizat, consultați [Resurse personalizate](/more-features/custom-assets).
+AdvantageScope include un set de joystick-uri comune, inclusiv un „Joystick generic” care afișează toate butoanele, axele și POV-urile într-un format de grilă (vizibil mai sus). Pentru a adăuga un joystick personalizat, consultă [Resurse personalizate](/more-features/custom-assets).
 
 :::warning
-**Datele joystick-urilor NU sunt disponibile printr-o conexiune NetworkTables cu WPILib standard.** Fișierele de log WPILib (cu [înregistrarea datelor de joystick activată](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), logurile AdvantageKit și streaming-ul AdvantageKit sunt suportate.
+**Datele de la joystick-uri NU sunt disponibile printr-o conexiune NetworkTables cu WPILib standard.** Sunt suportate fișierele de log WPILib (cu [logarea datelor de joystick activată](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), logurile AdvantageKit și streamingul AdvantageKit.
 :::

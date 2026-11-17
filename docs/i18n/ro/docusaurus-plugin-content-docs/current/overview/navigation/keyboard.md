@@ -28,7 +28,7 @@ AdvantageScope include numeroase scurtături de tastatură care permit o navigar
 <tr><td>`Ctrl+N`</td><td>Creează o fereastră nouă</td></tr>
 <tr><td>`Ctrl+Shift+N`</td><td>Închide fereastra curentă</td></tr>
 <tr><td>`Ctrl+Virgulă`</td><td>Deschide fereastra de preferințe</td></tr>
-<tr><td>`Ctrl+Punct`</td><td>Comută vizibilitatea bării laterale</td></tr>
+<tr><td>`Ctrl+Punct`</td><td>Comută vizibilitatea barei laterale</td></tr>
 <tr><td>`Ctrl+Bară înclinată`</td><td>Comută vizibilitatea panoului de control</td></tr>
 </table>
 
@@ -76,8 +76,8 @@ AdvantageScope include numeroase scurtături de tastatură care permit o navigar
 <table>
 <tr><td>`Spațiu`</td><td>Comută redarea</td></tr>
 <tr><td>`Stânga` și `Dreapta`</td><td>Parcurge pas cu pas fișierul log</td></tr>
-<tr><td>`L` sau `Ctrl+L`</td><td>Comută blocajul la vizualizarea datelor live</td></tr>
-<tr><td>`Ctrl+\`</td><td>Mărește cronologia la intervalul activat</td></tr>
+<tr><td>`L` sau `Ctrl+L`</td><td>Comută blocarea la vizualizarea datelor live</td></tr>
+<tr><td>`Ctrl+\`</td><td>Zoom pe axa timpului la intervalul activ (enabled)</td></tr>
 </table>
 
 ### Touch Bar {#touch-bar}

@@ -1,16 +1,16 @@
 # ⚙️ Resurse personalizate {#custom-assets}
 
-AdvantageScope utilizează un set implicit de imagini plate ale terenului, modele ale terenului, modele ale robotului și configurații de joystick-uri. Resursele simple (de ex. terenurile evergreen) sunt incluse în instalarea inițială. Resursele detaliate (de ex. terenurile specifice sezonului) sunt descărcate automat în fundal când AdvantageScope este conectat la internet. Pentru a verifica starea acestor descărcări, dați clic pe `Aplicație`/`AdvantageScope` > `Stare descărcare resursă...`.
+AdvantageScope folosește un set implicit de imagini plate de teren, modele de teren, modele de roboți și configurații de joystick-uri. Resursele simple (de ex., terenurile evergreen) sunt incluse direct la instalare. Resursele detaliate (de ex., terenurile specifice fiecărui sezon) se descarcă automat în fundal atunci când AdvantageScope are conexiune la internet. Pentru a verifica starea acestor descărcări, dă clic pe `Aplicație`/`AdvantageScope` > `Stare descărcare resursă...`.
 
-Setul de resurse poate fi personalizat pentru a adăuga mai multe opțiuni dacă se dorește. Pentru a deschide folderul cu resurse al utilizatorului, dați clic pe `Aplicație`/`AdvantageScope` > `Afișează folderul cu resurse`. Formatele așteptate pentru resurse sunt definite mai jos. Consultați setul implicit de [resurse detaliate](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases) și [resurse incluse](https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/bundledAssets) pentru referință.
+Dacă vrei să adaugi mai multe opțiuni, poți personaliza setul de resurse. Pentru a deschide folderul cu resurse al utilizatorului, dă clic pe `Aplicație`/`AdvantageScope` > `Afișează folderul cu resurse`. Mai jos găsești formatele acceptate pentru fiecare tip de resursă. Consultă setul implicit de [resurse detaliate](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases) și [resurse incluse](https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/bundledAssets) ca referință.
 
 :::tip
-Pentru a încărca resurse dintr-o locație alternativă, dați clic pe `Aplicație`/`AdvantageScope` > `Utilizează folderul cu resurse personalizate`. Folderul selectat ar trebui să fie _folderul părinte_ în care pot fi plasate mai multe resurse în subfoldere separate. Această caracteristică permite ca resursele personalizate să fie stocate sub controlul versiunilor alături de codul robotului.
+Pentru a încărca resurse dintr-o locație alternativă, dă clic pe `Aplicație`/`AdvantageScope` > `Utilizează folderul cu resurse personalizate`. Folderul selectat trebuie să fie _folderul părinte_, în care poți pune mai multe resurse în subfoldere separate. Astfel, poți salva resursele personalizate sub controlul versiunilor, alături de codul robotului.
 :::
 
 ## Format general {#general-format}
 
-Toate resursele sunt stocate în foldere cu convenția de denumire „TIP_NUME”. NUMELE utilizat pentru folder nu este afișat de AdvantageScope. Tipurile posibile de resurse sunt:
+Toate resursele sunt stocate în foldere denumite după formatul „TIP_NUME”. Partea „NUME” din numele folderului nu este afișată în AdvantageScope. Tipurile posibile de resurse sunt:
 
 - "Field2d"
 - "Field3d"
@@ -18,10 +18,10 @@ Toate resursele sunt stocate în foldere cu convenția de denumire „TIP_NUME�
 - "Joystick"
 
 :::info
-Exemple de nume de foldere ar fi „Field2d_2023Field”, „Joystick_OperatorButtons” sau „Robot_Dozer”.
+Exemple de nume de foldere: „Field2d_2023Field”, „Joystick_OperatorButtons” sau „Robot_Dozer”.
 :::
 
-Acest folder ar trebui să conțină un fișier numit „config.json” și unul sau mai multe fișiere de resurse, așa cum este descris mai jos. Fișierul de configurare include întotdeauna numele resursei care va fi afișat de AdvantageScope. Acest nume trebuie să fie unic pentru fiecare tip de resursă. De asemenea, resursele pot include opțional un obiect „locales” care mapează codurile de limbă (de ex., „en-US”, „es-419”, „fr”) la nume traduse. Numele „name” de la nivelul rădăcină este tratat ca nume implicit dacă limba selectată nu este furnizată sau „locales” este omis.
+Fiecare folder trebuie să conțină un fișier numit „config.json” și unul sau mai multe fișiere de resurse, conform descrierii de mai jos. Fișierul de configurare include întotdeauna numele resursei afișat în AdvantageScope, care trebuie să fie unic pentru fiecare tip de resursă. Opțional, resursele pot include un obiect „locales” care mapează codurile de limbă (de ex., „es-419”, „fr”, „zh-CN”) la nume traduse. Câmpul „name” de la nivelul principal este folosit ca nume implicit dacă limba selectată nu apare în „locales” sau dacă „locales” lipsește.
 
 ```json
 {
@@ -39,7 +39,7 @@ Acest folder ar trebui să conțină un fișier numit „config.json” și unul
 
 ### Prezentare generală {#overview}
 
-Un model trebuie să fie inclus în folder cu numele „model.glb”. Fișierele CAD trebuie convertite în glTF; consultați [această pagină](gltf-convert) pentru detalii. Fișierul de configurare trebuie să fie în următorul format:
+Folderul trebuie să conțină un model numit „model.glb”. Fișierele CAD trebuie convertite în glTF; consultă [această pagină](gltf-convert) pentru detalii. Fișierul de configurare trebuie să respecte următorul format:
 
 ```json
 {
@@ -63,28 +63,28 @@ Un model trebuie să fie inclus în folder cu numele „model.glb”. Fișierele
 }
 ```
 
-Cea mai simplă cale de a determina valorile adecvate pentru poziție și rotație este prin încercare și eroare. Recomandăm ajustarea rotației înainte de poziție, deoarece transformările sunt aplicate în această ordine.
+Cel mai simplu mod de a găsi valorile potrivite pentru poziție și rotație este prin încercare și eroare. Îți recomandăm să ajustezi mai întâi rotația și apoi poziția, deoarece transformările se aplică în această ordine.
 
 :::info
-AdvantageScope simplifică automat geometria modelului pentru a îmbunătăți performanța, unde nivelul de detaliu depinde de [modul de randare](/tab-reference/3d-field#rendering-modes) selectat. În cazurile în care simplificarea modelului produce efecte nedorite cu resurse personalizate, pot fi utilizate două soluții:
+AdvantageScope simplifică automat geometria modelului pentru a îmbunătăți performanța, iar nivelul de detaliu depinde de [modul de randare](/tab-reference/3d-field#rendering-modes) selectat. Dacă simplificarea modelului produce efecte nedorite la resursele personalizate, ai două soluții:
 
-- Pentru a dezactiva eliminarea automată a unei anumite rețele (mesh), includeți șirul `NOSIMPLIFY` în numele rețelei.
-- Pentru a dezactiva simplificarea modelului pentru un întreg model de robot, setați opțiunea `disableSimplification` din configurație la `true`.
+- Pentru a dezactiva eliminarea automată a unei anumite rețele (mesh), include șirul `NOSIMPLIFY` în numele rețelei.
+- Pentru a dezactiva simplificarea modelului pentru un întreg robot, setează opțiunea `disableSimplification` din configurație la `true`.
 
 :::
 
 ### Componente articulate {#articulated-components}
 
 :::warning
-Configurarea componentelor articulate poate fi complexă și necesită timp. Luați în considerare utilizarea suportului [3D `Mechanism2d`](/tab-reference/3d-field#2d-mechanisms) al AdvantageScope, care oferă o abordare mai simplificată pentru **vizualizarea mecanismelor pe terenul 3D**.
+Configurarea componentelor articulate poate fi complexă și consumatoare de timp. Ia în considerare folosirea suportului [3D `Mechanism2d`](/tab-reference/3d-field#2d-mechanisms) din AdvantageScope, care oferă o abordare mult mai simplă pentru **vizualizarea mecanismelor pe terenul 3D**.
 :::
 
-Modelele de roboți pot conține componente articulate pentru vizualizarea datelor mecanismelor (consultați [aici](/tab-reference/3d-field) pentru detalii). Modelul de bază glTF nu ar trebui să conțină componente, apoi fiecare componentă ar trebui exportată ca un model glTF separat. Modelele componentelor urmează convenția de denumire „model_INDEX.glb”, astfel încât prima componentă articulată ar fi „model_0.glb”.
+Modelele de roboți pot conține componente articulate pentru vizualizarea datelor mecanismelor (vezi [această pagină](/tab-reference/3d-field) pentru detalii). Modelul glTF de bază nu trebuie să includă componentele; fiecare componentă se exportă separat ca model glTF. Modelele componentelor urmează convenția de denumire „model_INDEX.glb”, astfel încât prima componentă articulată va fi „model_0.glb”.
 
-Configurarea componentelor este furnizată în fișierul de configurare al robotului. Un tablou de componente ar trebui furnizat sub cheia „components”. Când nu sunt furnizate pose-uri de componente de către utilizator în AdvantageScope, modelele componentelor vor fi poziționate folosind rotațiile și poziția implicite ale robotului (consultați mai sus). Când sunt furnizate pose-uri de componente de către utilizator, rotațiile și poziția „aduse la zero” (zeroed) sunt aplicate în schimb pentru a aduce fiecare componentă la originea robotului. Pose-urile utilizatorului sunt apoi aplicate pentru a muta fiecare componentă la locația corectă pe robot.
+Configurarea componentelor se face în fișierul de configurare al robotului, furnizând un tablou (array) sub cheia „components”. Dacă nu furnizezi pose-uri pentru componente în AdvantageScope, modelele acestora vor fi poziționate folosind rotațiile și poziția implicite ale robotului (vezi mai sus). Dacă furnizezi pose-uri pentru componente, se aplică mai întâi rotațiile și poziția „aduse la zero” (zeroed) pentru a aduce fiecare componentă în originea robotului, apoi se aplică pose-urile tale pentru a muta fiecare componentă la locul ei pe robot.
 
 :::tip
-La poziționarea componentelor 3D relativ la robot, originea sistemului de coordonate se potrivește cu pose-ul publicat al robotului. Rețineți că acest pose utilizează în general o înălțime egală cu zero, care este planul podelei și NU placa de bază a robotului (pentru mișcarea 2D tipică a robotului).
+Când poziționezi componente 3D relativ la robot, originea sistemului de coordonate corespunde pose-ului publicat al robotului. Reține că acest pose are de obicei înălțimea zero, adică planul podelei, și NU placa de bază (bellypan) a robotului (pentru mișcarea 2D obișnuită a robotului).
 :::
 
 ```json
@@ -98,23 +98,23 @@ La poziționarea componentelor 3D relativ la robot, originea sistemului de coord
 
 #### Procesul de configurare {#setup-process}
 
-Pentru a calibra pozițiile componentelor articulate, recomandăm următorul proces:
+Pentru a calibra pozițiile componentelor articulate, îți recomandăm să urmezi acești pași:
 
-1. Exportați modelul de bază și componentele în pozițiile lor „implicite” corecte. Acesta este modul în care ar trebui randate dacă nu sunt furnizate pose-uri de componente în AdvantageScope.
+1. Exportă modelul de bază și componentele în pozițiile lor „implicite” corecte. Așa vor fi randate dacă nu furnizezi pose-uri pentru componente în AdvantageScope.
 
-2. Publicați un pose 2D adus la zero din codul robotului, apoi selectați-l ca pose al robotului în AdvantageScope. Comutați la terenul 3D „Axe”, care arată originea terenului.
+2. Publică un pose 2D adus la zero din codul robotului, apoi selectează-l ca pose al robotului în AdvantageScope. Comută la terenul 3D „Axe”, care arată originea terenului.
 
-3. Ajustați rotațiile generale ale robotului (nu ale componentelor) până când întregul robot este orientat corect. Apoi, ajustați poziția generală pentru a aduce întregul robot la origine. Componentele ar trebui să fie randate în aceleași poziții implicite pe parcursul acestui proces.
+3. Ajustează rotațiile generale ale robotului (nu ale componentelor) până când întregul robot este orientat corect. Apoi, ajustează poziția generală pentru a aduce întregul robot în origine. Componentele ar trebui să rămână randate în aceleași poziții implicite pe tot parcursul acestui pas.
 
-4. Publicați un tablou de pose-uri 3D aduse la zero din codul robotului care să se potrivească cu numărul de componente din model, apoi selectați-l ca set de pose-uri ale componentelor în AdvantageScope.
+4. Publică un tablou de pose-uri 3D aduse la zero din codul robotului, corespunzător numărului de componente din model, apoi selectează-l ca set de pose-uri ale componentelor în AdvantageScope.
 
-5. Ajustați rotațiile, urmate de poziții, pentru fiecare componentă până când acestea sunt aliniate la origine. De exemplu, un segment de braț ar fi aliniat cu pivotul la origine în timp ce este îndreptat înainte de-a lungul axei X.
+5. Ajustează rotațiile, urmate de poziții, pentru fiecare componentă până când acestea sunt aliniate la origine. De exemplu, un segment de braț va fi aliniat cu pivotul în origine și îndreptat înainte, de-a lungul axei X.
 
-6. Publicați pose-urile reale ale componentelor din codul robotului, care se vor baza pe originile nou definite pentru fiecare componentă. De exemplu, pose-ul pentru un segment de braț ar fi poziționat la articulația brațului îndreptat în direcția segmentului.
+6. Publică pose-urile reale ale componentelor din codul robotului, care se vor baza pe originile nou definite pentru fiecare componentă. De exemplu, pose-ul pentru un segment de braț va fi poziționat la articulația brațului și orientat în direcția segmentului.
 
 ## Joystick-uri {#joysticks}
 
-O imagine trebuie inclusă în folder cu numele „image.png”. Fișierul de configurare trebuie să fie în următorul format:
+Folderul trebuie să conțină o imagine numită „image.png”. Fișierul de configurare trebuie să respecte următorul format:
 
 ```json
 {
@@ -125,7 +125,7 @@ O imagine trebuie inclusă în folder cu numele „image.png”. Fișierul de co
 ```
 
 :::info
-Butoanele, joystick-urile și valorile axelor suportă atât legături [SDL](https://www.libsdl.org) (utilizate de actualul FIRST Driver Station), cât și legături NI (utilizate de vechiul NI FRC Driver Station). Cel puțin un set de legături trebuie furnizat pentru fiecare componentă.
+Butoanele, joystick-urile și valorile axelor suportă atât legături [SDL](https://www.libsdl.org) (folosite de actualul FIRST Driver Station), cât și legături NI (folosite de vechiul NI FRC Driver Station). Trebuie să furnizezi cel puțin un set de legături pentru fiecare componentă.
 
 Pentru legăturile NI, AdvantageScope este compatibil retroactiv cu vechile chei de configurare fără prefix (de ex. `sourceIndex`). **Toate joystick-urile noi ar trebui să utilizeze legături explicite SDL (de ex. `sdlSourceIndex`) pentru compatibilitate cu actualul FIRST Driver Station.**
 :::
@@ -202,7 +202,7 @@ Pentru legăturile NI, AdvantageScope este compatibil retroactiv cu vechile chei
 
 ## Imagini plate de teren {#flat-field-images}
 
-O imagine trebuie inclusă în folder cu numele „image.png”. Aceasta ar trebui orientată cu alianța roșie în stânga. Fișierul de configurare trebuie să fie în următorul format:
+Folderul trebuie să conțină o imagine numită „image.png”, orientată cu alianța roșie în stânga. Fișierul de configurare trebuie să respecte următorul format:
 
 ```json
 {
@@ -225,9 +225,9 @@ O imagine trebuie inclusă în folder cu numele „image.png”. Aceasta ar treb
 
 ## Modele de teren 3D {#3d-field-models}
 
-Un model trebuie inclus în folder cu numele „model.glb”. După aplicarea tuturor rotațiilor, terenul ar trebui să fie orientat cu alianța roșie în stânga. Fișierele CAD trebuie convertite în glTF; consultați [această pagină](gltf-convert) pentru detalii. Modelele pieselor de joc urmează convenția de denumire „model_INDEX.glb” pe baza ordinii în care apar în tabloul „gamePieces”. AprilTag-urile declarate aici sunt întotdeauna poziționate folosind un sistem de coordonate [centru/roșu](/more-features/coordinate-systems#center-red), indiferent de orice alte opțiuni de configurare.
+Folderul trebuie să conțină un model numit „model.glb”. După aplicarea tuturor rotațiilor, terenul trebuie să fie orientat cu alianța roșie în stânga. Fișierele CAD trebuie convertite în glTF; consultă [această pagină](gltf-convert) pentru detalii. Modelele pieselor de joc urmează convenția de denumire „model_INDEX.glb”, în ordinea în care apar în tabloul „gamePieces”. AprilTag-urile declarate aici sunt întotdeauna poziționate folosind sistemul de coordonate [centru/roșu](/more-features/coordinate-systems#center-red), indiferent de orice alte opțiuni de configurare.
 
-Fișierul de configurare trebuie să fie în următorul format:
+Fișierul de configurare trebuie să respecte următorul format:
 
 ```json
 {
