@@ -7,30 +7,33 @@ import TabItem from '@theme/TabItem';
 
 # 🔍 मेटाडेटा {#metadata}
 
-मेटाडेटा टैब छिपी हुई "/Metadata" तालिका या AdvantageKit के माध्यम से पब्लिश किए गए मानों को दिखाता है। मेटाडेटा कुंजियाँ बाईं ओर प्रदर्शित होती हैं, और कॉलम विभिन्न स्रोतों से डेटा को अलग करते हैं (उदा. AdvantageKit का उपयोग करते समय रियल और रीप्ले)।
+मेटाडेटा टैब छिपी हुई "/Metadata" टेबल या AdvantageKit के माध्यम से पब्लिश किए गए मान दिखाता है। मेटाडेटा कुंजियाँ (keys) बाईं ओर दिखती हैं, और कॉलम अलग-अलग स्रोतों से आने वाले डेटा को अलग करते हैं (जैसे AdvantageKit इस्तेमाल करते समय रियल और रीप्ले)।
 
 <img src="/img/tab-reference/metadata-1.webp" alt="Overview of metadata tab" />
 
 _ऊपर अंग्रेजी इंटरफ़ेस दिखाया गया है।_
 
-नीचे दिया गया उदाहरण कोड दिखाता है कि Java का उपयोग करके मेटाडेटा कैसे लॉग किया जाए।
+नीचे दिया गया उदाहरण कोड दिखाता है कि Java में मेटाडेटा कैसे लॉग किया जाता है।
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-WPILib में, मान "Metadata" तालिका में पब्लिश किए जाने चाहिए।
+WPILib में, `Telemetry` क्लास का उपयोग करके "/Metadata" टेबल में मान स्ट्रिंग के रूप में लॉग करें।
 
 ```java
-Telemetry.getTable("Metadata").putString("Darwin", "macOS");
+TelemetryTable metadata = Telemetry.getTable("Metadata");
+metadata.log("RobotName", "Darwin");
+metadata.log("Platform", "macOS");
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-AdvantageKit में, लॉगर शुरू करने से पहले नीचे दी गई विधि को कॉल करें। आसान तुलना के लिए रियल और रीप्ले में चलते समय मेटाडेटा अलग से संग्रहीत किया जाता है।
+AdvantageKit में, लॉगर शुरू करने से पहले नीचे दिया गया मेथड कॉल करें। आसान तुलना के लिए रियल और रीप्ले में चलते समय मेटाडेटा अलग-अलग स्टोर होता है।
 
 ```java
-Logger.recordMetadata("Darwin", "macOS");
+Logger.recordMetadata("RobotName", "Darwin");
+Logger.recordMetadata("Platform", "macOS");
 ```
 
 </TabItem>

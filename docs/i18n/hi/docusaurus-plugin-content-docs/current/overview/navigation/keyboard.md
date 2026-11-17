@@ -1,6 +1,6 @@
 # कीबोर्ड शॉर्टकट {#keyboard-shortcuts}
 
-AdvantageScope में कई कीबोर्ड शॉर्टकट शामिल हैं जो तेज़ नेविगेशन की अनुमति देते हैं। `ctrl` कुंजी का उपयोग करने वाले शॉर्टकट macOS पर ⌘ कुंजी द्वारा प्रतिस्थापित किए जाते हैं।
+AdvantageScope में कई कीबोर्ड शॉर्टकट हैं जो तेज़ी से नेविगेट करने की सुविधा देते हैं। `ctrl` कुंजी का उपयोग करने वाले शॉर्टकट में macOS पर ⌘ कुंजी का उपयोग होता है।
 
 ### डेटा स्रोत {#data-sources}
 
@@ -28,8 +28,8 @@ AdvantageScope में कई कीबोर्ड शॉर्टकट श�
 <tr><td>`Ctrl+N`</td><td>एक नई विंडो बनाएँ</td></tr>
 <tr><td>`Ctrl+Shift+N`</td><td>वर्तमान विंडो बंद करें</td></tr>
 <tr><td>`Ctrl+Comma`</td><td>प्राथमिकताएं विंडो खोलें</td></tr>
-<tr><td>`Ctrl+Period`</td><td>साइडबार दृश्यता टॉगल करें</td></tr>
-<tr><td>`Ctrl+Slash`</td><td>कंट्रोल पेन दृश्यता टॉगल करें</td></tr>
+<tr><td>`Ctrl+Period`</td><td>साइडबार दिखाएँ या छिपाएँ</td></tr>
+<tr><td>`Ctrl+Slash`</td><td>कंट्रोल पेन दिखाएँ या छिपाएँ</td></tr>
 </table>
 
 ### टैब नियंत्रण {#tab-controls}
@@ -38,11 +38,11 @@ AdvantageScope में कई कीबोर्ड शॉर्टकट श�
 <tr><td>`Ctrl+T`</td><td>एक नया टैब जोड़ने के लिए ड्रॉपडाउन खोलें</td></tr>
 <tr><td>`Ctrl+Shift+T`</td><td>वर्तमान टैब के लिए एक नई पॉप-आउट विंडो बनाएँ</td></tr>
 <tr><td>`Ctrl+Left` और `Ctrl+Right`</td><td>टैब्स बदलें</td></tr>
-<tr><td>`Ctrl+[` और `Ctrl+]`</td><td>टैब्स को पुनर्व्यवस्थित करें</td></tr>
+<tr><td>`Ctrl+[` और `Ctrl+]`</td><td>टैब्स का क्रम बदलें</td></tr>
 <tr><td>`Ctrl+W`</td><td>वर्तमान टैब बंद करें</td></tr>
 </table>
 
-**नीचे दिए गए शॉर्टकट का उपयोग नए टैब जल्दी से बनाने के लिए किया जा सकता है:**
+**नए टैब जल्दी से बनाने के लिए नीचे दिए गए शॉर्टकट का उपयोग किया जा सकता है:**
 
 <table>
 <tr>
@@ -77,12 +77,12 @@ AdvantageScope में कई कीबोर्ड शॉर्टकट श�
 <tr><td>`Space`</td><td>प्लेबैक टॉगल करें</td></tr>
 <tr><td>`Left` और `Right`</td><td>लॉग फ़ाइल में आगे/पीछे जाएँ</td></tr>
 <tr><td>`L` या `Ctrl+L`</td><td>लाइव डेटा देखते समय लॉक टॉगल करें</td></tr>
-<tr><td>`Ctrl+\`</td><td>टाइमलाइन को सक्षम रेंज में ज़ूम करें</td></tr>
+<tr><td>`Ctrl+\`</td><td>टाइमलाइन को enabled रेंज पर ज़ूम करें</td></tr>
 </table>
 
 ### टच बार {#touch-bar}
 
-समर्थित MacBook मॉडलों पर, टच बार का उपयोग लॉग में स्क्रब करने और नए टैब जोड़ने के लिए किया जा सकता है।
+समर्थित MacBook मॉडल्स पर, टच बार का उपयोग लॉग में स्क्रब करने और नए टैब जोड़ने के लिए किया जा सकता है।
 
 <img src="/img/overview/navigation/keyboard-1.webp" alt="Touch Bar scrubbing interface" />
 <img src="/img/overview/navigation/keyboard-2.webp" alt="Touch Bar new tab interface" />

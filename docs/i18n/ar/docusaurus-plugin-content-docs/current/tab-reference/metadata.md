@@ -7,30 +7,33 @@ import TabItem from '@theme/TabItem';
 
 # 🔍 بيانات وصفية {#metadata}
 
-تعرض علامة تبويب البيانات الوصفية القيم المنشورة في جدول "/Metadata" المخفي أو من خلال AdvantageKit. تُعرض مفاتيح البيانات الوصفية إلى اليسار، وتفصل الأعمدة البيانات من المصادر المختلفة (مثل حقيقي وإعادة عند استخدام AdvantageKit).
+تعرض علامة تبويب البيانات الوصفية القيم المنشورة في جدول `"/Metadata"` المخفي أو عبر AdvantageKit. تظهر مفاتيح البيانات الوصفية إلى اليسار، وتفصل الأعمدة بين البيانات الواردة من مصادر مختلفة (مثل التشغيل الحقيقي وإعادة التشغيل عند استخدام AdvantageKit).
 
 <img src="/img/tab-reference/metadata-1.webp" alt="نظرة عامة على علامة تبويب البيانات الوصفية" />
 
 _تظهر في الصورة أعلاه الواجهة باللغة الإنجليزية._
 
-يظهر كود المثال أدناه كيفية تسجيل البيانات الوصفية باستخدام Java.
+يوضح المثال البرمجي أدناه كيفية تسجيل البيانات الوصفية بلغة Java.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-في WPILib، يجب نشر القيم في جدول "Metadata".
+في WPILib، سجّل القيم في جدول `"/Metadata"` كسلاسل نصية باستخدام الفئة `Telemetry`.
 
 ```java
-Telemetry.getTable("Metadata").putString("Darwin", "macOS");
+TelemetryTable metadata = Telemetry.getTable("Metadata");
+metadata.log("RobotName", "Darwin");
+metadata.log("Platform", "macOS");
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-في AdvantageKit، استدعِ الطريقة أدناه قبل بدء مسجل البيانات. يتم تخزين البيانات الوصفية بشكل منفصل عند التشغيل في الحقيقي وإعادة التشغيل لسلاسة المقارنة.
+في AdvantageKit، استدعِ الدالة أدناه قبل بدء مسجل البيانات. وتُخزَّن البيانات الوصفية بشكل منفصل عند التشغيل الحقيقي وإعادة التشغيل لتسهيل المقارنة.
 
 ```java
-Logger.recordMetadata("Darwin", "macOS");
+Logger.recordMetadata("RobotName", "Darwin");
+Logger.recordMetadata("Platform", "macOS");
 ```
 
 </TabItem>

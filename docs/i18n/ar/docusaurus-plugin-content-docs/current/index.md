@@ -11,7 +11,7 @@ import DocCardList from "@theme/DocCardList";
 <img src="/img/banner-rtl-light.webp" className="light-only" />
 <img src="/img/banner-rtl-dark.webp" className="dark-only" />
 
-AdvantageScope هو تطبيق لتشخيص الروبوت، ومراجعة/تحليل السجلات، وعرض البيانات مخصص لفرق FIRST تم تطويره بواسطة [فريق 6328](https://littletonrobotics.org). يقرأ التطبيق السجلات بتنسيقات WPILOG، و Hoot (CTRE)، و REVLOG (REV Robotics)، و Road Runner، و CSV، وسجل NI DS، و RLOG، بالإضافة إلى عرض بيانات الروبوت المباشرة باستخدام بث NT4، أو Phoenix، أو RLOG، أو FTC Dashboard. يمكن استخدام AdvantageScope مع أي مشروع WPILib، ولكنه محسّن أيضًا للاستخدام مع إطار عمل إعادة تشغيل السجلات [AdvantageKit](https://docs.advantagekit.org). يرجى ملاحظة أن **AdvantageKit ليس مطلوبًا لاستخدام AdvantageScope**.
+AdvantageScope هو تطبيق من تطوير [فريق 6328](https://littletonrobotics.org) لفرق FIRST، مخصّص لتشخيص الروبوت، ومراجعة السجلات وتحليلها، وعرض البيانات. يقرأ التطبيق السجلات بتنسيقات WPILOG و Hoot (CTRE) و REVLOG (REV Robotics) و Road Runner و CSV وسجل NI DS و RLOG، بالإضافة إلى عرض بيانات الروبوت المباشرة عبر بث NT4 أو Phoenix أو RLOG أو FTC Dashboard. يمكنك استخدام AdvantageScope مع أي مشروع WPILib، كما أنه محسّن للعمل مع إطار عمل إعادة تشغيل السجلات [AdvantageKit](https://docs.advantagekit.org). يُرجى ملاحظة أن **AdvantageKit ليس مطلوبًا لاستخدام AdvantageScope**.
 
 <DocCardList
 items={[
@@ -41,13 +41,13 @@ href: "/overview/champs-conference"
 يتضمن AdvantageScope الأدوات التالية:
 
 - مجموعة واسعة من الرسوم البيانية والمخططات المرنة
-- تصورات الملعب ثنائية وثلاثية الأبعاد لبيانات الوضعيات (poses)، مع روبوتات قابلة للتخصيص مستندة إلى نماذج CAD
-- تشغيل فيديو متزامن من فيديو مباراة تم تحميله بشكل منفصل
-- عرض أذرع التحكم (Joystick)، لإظهار إجراءات السائق على تمثيلات وحدات تحكم قابلة للتخصيص
-- شاشات عرض متجهات موديولات سويرف (Swerve)
+- عرض الملعب ثنائي وثلاثي الأبعاد لبيانات الوضعيات (Poses)، مع روبوتات قابلة للتخصيص مستندة إلى نماذج CAD
+- تشغيل فيديو متزامن من فيديو مباراة محمّل بشكل منفصل
+- عرض أذرع التحكم، لإظهار إجراءات السائق على تمثيلات وحدات تحكم قابلة للتخصيص
+- عرض متجهات موديولات السويرف (Swerve)
 - مراجعة رسائل وحدة التحكم (Console)
 - تحليل إحصائيات السجل
-- خيارات تصدير مرنة، مع دعم لـ CSV و WPILOG
+- خيارات تصدير مرنة تدعم CSV و WPILOG
 
 <Button
 label="الانتقال إلى التنزيلات"

@@ -8,34 +8,34 @@ import TabItem from '@theme/TabItem';
 # 📝 مسجل متوافق مع REV غير رسمي {#unofficial-rev-compatible-logger}
 
 :::info
-جديد في عام 2026، يتضمن REVLib حل تسجيل رسمي لحفظ البيانات من Spark Max و Spark Flex إلى سجل REV CAN (`.revlog`). راجع التفاصيل [هنا](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger). يمكن فتح هذه الملفات مباشرة في AdvantageScope، ولكن لا يمكن مزامنتها بدقة مع مصادر البيانات الأخرى.
+جديد في عام 2026: يتضمن REVLib حل تسجيل رسمي لحفظ البيانات من Spark Max وSpark Flex إلى سجل REV CAN (`.revlog`). راجع التفاصيل [هنا](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger). يمكنك فتح هذه الملفات مباشرةً في AdvantageScope، لكن لا يمكن مزامنتها بدقة مع مصادر البيانات الأخرى.
 
-سيكون المسجل المتوافق مع REV _غير الرسمي_ (URCL) لـ AdvantageScope متاحاً أيضاً للفرق في عام 2026 لضمان انتقال سلس وتوفير تكافؤ الميزات مع المواسم السابقة. سيكون لدينا المزيد من التفاصيل لمشاركتها حول خيارات التسجيل في عام 2027 وما بعده في وقت لاحق.
+وسيظل المسجل المتوافق مع REV _غير الرسمي_ (URCL) الخاص بـ AdvantageScope متاحًا للفرق في عام 2026 لضمان انتقال سلس وتوفير تكافؤ في الميزات مع المواسم السابقة. وسنشارك المزيد من التفاصيل حول خيارات التسجيل لعام 2027 وما بعده في وقت لاحق.
 :::
 
-URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) هي مكتبة تسجيل متاحة لـ Java و C++ و Python والتي تقوم بتسجيل البيانات تلقائياً من Spark Max و Spark Flex. يتيح ذلك رسم البيانات مباشرة وتسجيل جميع الأجهزة بشكل مشابه لـ [ميزة رسم Tuner X](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) و [مسجل إشارات Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) لـ CTRE.
+مكتبة URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) هي مكتبة تسجيل متاحة للغات Java وC++ وPython، تسجّل البيانات تلقائيًا من وحدتي Spark Max وSpark Flex، مما يتيح لك رسم البيانات مباشرةً وتسجيل جميع الأجهزة على غرار [ميزة الرسم في Tuner X](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) و[مسجل إشارات Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) من CTRE.
 
-بعد الإعداد، يتم نشر إطارات CAN الدورية من جميع أجهزة Spark Max و Spark Flex إلى NetworkTables أو DataLog. عند استخدام NetworkTables، يمكن استخدام [DataLogManager](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) الخاص بـ WPILib لالتقاط البيانات في ملف سجل. تكون هذه الإطارات قابلة للعرض في AdvantageScope (راجع [إدارة ملفات السجل](/overview/log-files) و [الاتصال بالمصادر المباشرة](/overview/live-sources)).
+بعد الإعداد، تُنشَر إطارات CAN الدورية من جميع أجهزة Spark Max وSpark Flex إلى NetworkTables أو DataLog. وعند استخدام NetworkTables، يمكنك الاستعانة بـ [DataLogManager](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) من WPILib لحفظ البيانات في ملف سجل. ويمكنك عرض هذه الإطارات في AdvantageScope (راجع [إدارة ملفات السجل](/overview/log-files) و[الاتصال بالمصادر المباشرة](/overview/live-sources)).
 
-- **جميع الإشارات** يتم التقاطها تلقائياً، مع **عدم وجود إعداد يدوي للأجهزة الجديدة**.
-- **كل إطار يتم التقاطه**، حتى عندما تكون فترة إطار الحالة أسرع من دورة حلقة الروبوت.
-- يتم تسجيل الإطارات بـ **طوابع زمنية بناءً على وقت استلام CAN RX**، مما يتيح توصيف تسارع أكثر دقة باستخدام [SysId](https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/introduction.html) مقارنة بالتسجيل التقليدي في كود المستخدم (راجع "استخدام SysId" أدناه).
-- التسجيل **كفء للغاية**؛ العمليات تدار عبر مسارات منفصلة (threaded) وتعمل لأقل من 80 ميكروثانية لكل دورة دورية سعتها 20 مللي ثانية، حتى عند تسجيل عدد كبير من الأجهزة.
-- **جميع وظائف REVLib لا تتأثر.**
+- **جميع الإشارات** تُلتقَط تلقائيًا، **دون الحاجة إلى إعداد يدوي للأجهزة الجديدة**.
+- **يُلتقَط كل إطار**، حتى عندما تكون فترة إطار الحالة أسرع من دورة حلقة الروبوت.
+- تُسجَّل الإطارات **بطوابع زمنية تستند إلى وقت استقبال CAN RX**، مما يتيح توصيف التسارع بدقة أكبر باستخدام [SysId](https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/introduction.html) مقارنةً بالتسجيل التقليدي في كود المستخدم (راجع «استخدام SysId» أدناه).
+- التسجيل **عالي الكفاءة**؛ إذ تعمل العمليات في خيوط تنفيذ منفصلة (threaded) وتستغرق أقل من 80 ميكروثانية لكل دورة مدتها 20 مللي ثانية، حتى عند تسجيل عدد كبير من الأجهزة.
+- **تبقى جميع وظائف REVLib دون أي تأثر.**
 
 :::info
-نظراً لأن هذه المكتبة ليست أداة رسمية من REV، يجب توجيه استفسارات الدعم إلى [صفحة مشكلات URCL](https://github.com/Mechanical-Advantage/URCL/issues) أو software@team6328.org بدلاً من جهة اتصال دعم REV.
+نظرًا لأن هذه المكتبة ليست أداة رسمية من REV، يُرجى توجيه استفسارات الدعم إلى [صفحة مشكلات URCL](https://github.com/Mechanical-Advantage/URCL/issues) أو إلى البريد الإلكتروني software@team6328.org بدلًا من التواصل مع دعم REV.
 :::
 
 ## الإعداد {#setup}
 
-قم بتثبيت vendordep لـ URCL باتباع التعليمات لتثبيت [مكتبات الطرف الثالث](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html) باستخدام مدير التبعيات في VSCode. بدلاً من ذلك، يمكنك استخدام عنوان URL التالي لـ vendor JSON:
+ثبّت تبعية المورد (vendordep) الخاصة بـ URCL باتباع تعليمات تثبيت [مكتبات الطرف الثالث](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html) عبر مدير التبعيات في VSCode. وبدلًا من ذلك، يمكنك استخدام عنوان URL التالي لملف vendor JSON:
 
 ```
 https://raw.githubusercontent.com/Mechanical-Advantage/URCL/main/URCL.json
 ```
 
-ينشر URCL إلى NetworkTables بشكل افتراضي، حيث يمكن حفظ البيانات في ملف سجل عن طريق تمكين DataLogManager الخاص بـ WPILib. بدلاً من ذلك، يمكن لـ URCL التسجيل مباشرة إلى DataLog. يجب بدء مسجل البيانات في `robotInit`، كما هو موضح أدناه.
+ينشر URCL إلى NetworkTables افتراضيًا، حيث يمكنك حفظ البيانات في ملف سجل عبر تفعيل DataLogManager في WPILib. وبدلًا من ذلك، يمكن لـ URCL التسجيل مباشرةً في DataLog. وينبغي بدء المسجل في `robotInit`، كما هو موضح أدناه.
 
 <Tabs>
 <TabItem value="java" label="Java" default>
@@ -97,23 +97,23 @@ public Robot() {
 ```
 
 :::warning
-يتم توفير توافق URCL مع AdvantageKit للراحة فقط؛ البيانات المسجلة في السجل غير متاحة في إعادة التشغيل (replay). **يجب أن تظل محركات تشغيل REV جزءاً من تطبيق IO مع مدخلات محددة لدعم إعادة التشغيل**.
+يتوفر توافق URCL مع AdvantageKit للتسهيل فقط؛ فالبيانات المسجلة في السجل غير متاحة في إعادة التشغيل (replay). **يجب أن تظل متحكمات محركات REV جزءًا من تطبيق IO مع مدخلات محددة لدعم إعادة التشغيل.**
 :::
 
 </TabItem>
 </Tabs>
 
-لتحديد الأجهزة بسهولة أكبر في السجل، يمكن تعيين معرفات CAN إلى أسماء مستعارة عن طريق تمرير كائن خريطة (map) إلى طريقة `start()` أو `startExternal()`. المفاتيح هي معرفات CAN والقيم هي نصوص للأسماء المستخدمة في السجل. أي أجهزة لم يتم تعيين اسم مستعار لها سيتم تسجيلها باستخدام أسمائها الافتراضية.
+لتسهيل التعرف على الأجهزة في السجل، يمكنك ربط معرفات CAN بأسماء مستعارة عبر تمرير كائن خريطة (map) إلى الدالة `start()` أو `startExternal()`. تمثل المفاتيح معرفات CAN، بينما تمثل القيم النصوص المستخدمة بوصفها أسماءً في السجل؛ أما الأجهزة التي لم يُعيَّن لها اسم مستعار فستُسجَّل بأسمائها الافتراضية.
 
 :::warning
-تقليلاً لاستخدام ناقل CAN، يتم **تعطيل معظم إطارات الحالة لأجهزة Spark بشكل افتراضي** حتى يتم استدعاء طريقة المكتسب (getter) المرتبطة بها. أي بيانات تتضمنها إطارات الحالة المعطلة هذه لن تكون متاحة في سجل URCL.
+لتقليل استهلاك ناقل CAN، تكون **معظم إطارات الحالة لأجهزة Spark معطّلة افتراضيًا** حتى يُستدعى تابع الجلب (getter) المرتبط بها. ولن تتوفر أي بيانات مضمنة في إطارات الحالة المعطّلة هذه ضمن سجل URCL.
 
-لمزيد من التفاصيل، تحقق من [وثائق REVLib](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods). نوصي باستخدام [`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) عند تكوين Spark لتمكين أي إشارات ترغب في تضمينها في ملف السجل يدوياً.
+لمزيد من التفاصيل، راجع [وثائق REVLib](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods). ونوصي باستخدام [`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) عند تهيئة Spark لتفعيل أي إشارات ترغب في تضمينها في ملف السجل يدويًا.
 :::
 
 ## استخدام SysId {#sysid-usage}
 
-1. بعد إعداد URCL كما هو موضح أعلاه، قم بتكوين روتين SysId باستخدام `null` للمستهلك سجل الآلية. يظهر مثال أدناه لـ Java. يمكن تنفيذ هذا التكوين داخل فئة النظام الفرعي.
+1. بعد إعداد URCL كما هو موضح أعلاه، هيّئ روتين SysId بتمرير `null` لمستهلك سجل الآلية. يوضح المثال التالي ذلك بلغة Java، ويمكن تنفيذ هذه التهيئة داخل فئة النظام الفرعي.
 
 <Tabs groupId="library">
 <TabItem value="WPILib" label="WPILib" default>
@@ -163,22 +163,22 @@ sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
 </TabItem>
 </Tabs>
 
-2. قم بتشغيل روتين SysId على الروبوت. يمكن تكوين أوامر SysId كروتينات ذاتية (auto) أو توصيلها بمشغل زر.
+2. شغّل روتين SysId على الروبوت. ويمكنك تهيئة أوامر SysId كروتينات تحكم ذاتي أو ربطها بزر تشغيل.
 
-3. قم بتنزيل ملف السجل وافتحه في AdvantageScope. في شريط القوائم، انتقل إلى `ملف` > `تصدير البيانات...`. اضبط التنسيق على "WPILOG« ومجموعة الحقول على »تضمين المُنشأة". انقر فوق أيقونة الحفظ واختر موقعاً لحفظ السجل.
+3. نزّل ملف السجل وافتحه في AdvantageScope. من شريط القوائم، انتقل إلى `ملف` > `تصدير البيانات...`، واضبط التنسيق على «WPILOG» ومجموعة الحقول على «تضمين المُنشأة»، ثم انقر على أيقونة الحفظ واختر موقعًا لحفظ السجل.
 
 :::warning
-يجب فتح ملف السجل من الروبوت وتصديره بواسطة AdvantageScope _قبل فتحه باستخدام محلل SysId_. هذا مطلوب لتحويل بيانات CAN المسجلة بواسطة URCL إلى تنسيق متوافق مع SysId.
+يجب فتح ملف السجل المأخوذ من الروبوت وتصديره عبر AdvantageScope _قبل فتحه باستخدام محلل SysId_؛ وذلك لتحويل بيانات CAN المسجلة بواسطة URCL إلى تنسيق متوافق مع SysId.
 :::
 
-4. افتح محلل SysId بالبحث عن "WPILib: Start Tool" في لوحة أوامر VSCode واختيار "SysId" (أو باستخدام مشغل سطح المكتب على Windows). افتح ملف السجل المُصدر بالنقر فوق "Open data log file..."
+4. افتح محلل SysId بالبحث عن «WPILib: Start Tool» في لوحة أوامر VSCode واختيار «SysId» (أو باستخدام مشغل سطح المكتب على Windows)، ثم افتح ملف السجل المُصدَّر بالنقر على «Open data log file...».
 
-5. اختر الحقول التالية أدناه لتشغيل التحليل باستخدام المشفر (encoder) الافتراضي. يمكن أيضاً استخدام بيانات الموضع والسرعة من المشفرات الثانوية (بديلة، خارجية، تناظرية، مطلقة، إلخ).
+5. اختر الحقول التالية أدناه لتشغيل التحليل باستخدام المشفر (encoder) الافتراضي. كما يمكنك استخدام بيانات الموضع والسرعة من المشفرات الثانوية (البديلة أو الخارجية أو التناظرية أو المطلقة، إلخ).
 
    - Position = "NT:/URCL/&lt;Device&gt;/MotorPositionRotations"
    - Velocity = "NT:/URCL/&lt;Device&gt;/MotorVelocityRPM"
    - Voltage = "NT:/URCL/&lt;Device&gt;/AppliedOutputVoltage"
 
 :::tip
-ستستخدم الكاسب المكتسبة (gains) الناتجة عن SysId الوحدات التي تم تكوين Spark Max/Flex للإبلاغ عنها (باستخدام [`setPositionConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setPositionConversionFactor(double)>) و [`setVelocityConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setVelocityConversionFactor(double)>)). بشكل افتراضي، هذه هي الدورات والدورة في الدقيقة (RPM) بدون تطبيق تروس. إذا كانت الوحدات المستخدمة عند تسجيل البيانات لا تطلب الوحدات المرغوبة، يمكن ضبط القياس في SysId أثناء التحليل.
+ستستخدم المكاسب (gains) الناتجة عن SysId الوحدات التي هُيِّئ Spark Max/Flex للإبلاغ بها (باستخدام [`setPositionConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setPositionConversionFactor(double)>) و[`setVelocityConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setVelocityConversionFactor(double)>)). وبشكل افتراضي، تكون هذه الوحدات هي الدورات (rotations) والدورة في الدقيقة (RPM) دون تطبيق نسب تروس. وإذا كانت الوحدات المستخدمة عند تسجيل البيانات لا تطابق الوحدات المرغوبة، فيمكنك ضبط التحجيم في SysId أثناء التحليل.
 :::
