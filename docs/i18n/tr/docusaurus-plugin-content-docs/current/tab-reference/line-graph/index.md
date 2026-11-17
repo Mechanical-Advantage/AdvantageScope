@@ -25,7 +25,7 @@ Her alanın rengini ve çizgi stilini renkli simgeye tıklayarak veya alan adın
 <img src="/img/tab-reference/line-graph/line-graph-2.webp" alt="Uyarılar görselleştirmesi" />
 
 :::tip
-Robot modunu (otonom, teleop veya test) grafikte üst üste bindirmek için “Ayrık alanlar”ın yanındaki üç noktaya tıklayıp “Robot modunu göster”i seçin.
+Robot modunu (otonom, teleop veya test) grafiğin üzerinde göstermek için “Ayrık alanlar”ın yanındaki üç noktaya tıklayıp “Robot modunu göster”i seçin.
 
 <img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="Robot modu katmanı" />
 

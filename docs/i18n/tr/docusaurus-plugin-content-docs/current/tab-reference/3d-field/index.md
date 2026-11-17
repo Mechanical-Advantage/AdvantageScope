@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # 👀 3B saha {#3d-field}
 
-3B saha sekmesi, robotun ve sahanın 3B görselleştirmesini gösterir. Normal 2B pozlarla da kullanabilirsiniz; ancak özellikle 3B hesaplamalarla (örneğin AprilTag'lerle konum belirleme) çalışırken çok işinize yarar. Sahaya göre, robota göre ve sabit kamera gibi birden fazla kamera görünümü sunar. [AdvantageScope XR](advantagescope-xr) ile bu sekmeyi artırılmış gerçeklik üzerinden de görüntüleyebilirsiniz. Zaman çizelgesi robotun ne zaman etkin olduğunu gösterir ve log verileri arasında gezinmenizi sağlar.
+3B saha sekmesi, robotun ve sahanın 3B görselleştirmesini gösterir. Normal 2B pozlarla da kullanabilirsiniz; ancak özellikle 3B hesaplamalarla (örneğin AprilTag'lerle konum belirleme) çalışırken çok işinize yarar. Saha odaklı, robot odaklı ve sabit kamera gibi birden fazla kamera görünümü sunar. [AdvantageScope XR](advantagescope-xr) ile bu sekmeyi artırılmış gerçeklik üzerinden de görüntüleyebilirsiniz. Zaman çizelgesi robotun ne zaman etkin olduğunu gösterir ve log verileri arasında gezinmenizi sağlar.
 
 <img src="/img/tab-reference/3d-field/3d-field-1.webp" alt="3B saha sekmesi örneği" />
 
@@ -142,7 +142,7 @@ Kamera modunu değiştirmek için 3B saha görünümüne sağ tıklayın. Kamera
 Yörünge ve Sürücü İstasyonu kameralarının FOV değerini ayarlamak için saha görünümüne sağ tıklayın ve “FOV ayarla” seçeneğine tıklayın.
 :::
 
-### Saha yörüngesi {#orbit-field}
+### Saha etrafında dön {#orbit-field}
 
 Bu, kamerayı sahaya göre serbestçe hareket ettirebildiğiniz varsayılan kamera modudur. **Sol tık + sürükle** kamerayı döndürür, **sağ tık + sürükle** kamerayı kaydırır. Yakınlaşıp uzaklaşmak için **fare tekerleğini kaydırın**.
 
@@ -150,9 +150,9 @@ Bu, kamerayı sahaya göre serbestçe hareket ettirebildiğiniz varsayılan kame
 Kamerayı klavyeyle de kontrol edebilirsiniz. **WASD** tuşları yatay hareket, **IJKL** tuşları döndürme, **E** ve **Q** tuşları ise dikey hareket içindir.
 :::
 
-### Robot yörüngesi {#orbit-robot}
+### Robot etrafında dön {#orbit-robot}
 
-Bu mod “Saha yörüngesi” moduyla aynı kontrollere sahiptir, ancak kameranın konumu robota göre kilitlidir. Bu sayede robotun hareketini takip eden çekimler elde edebilirsiniz.
+Bu mod “Saha etrafında dön” moduyla aynı kontrollere sahiptir, ancak kameranın konumu robota göre kilitlidir. Bu sayede robotun hareketini takip eden çekimler elde edebilirsiniz.
 
 ### Sürücü İstasyonu {#driver-station}
 
@@ -168,10 +168,10 @@ Her robot modelinde görüntü işleme (vision) ve sürücü kameraları gibi sa
 
 <img src="/img/tab-reference/3d-field/3d-field-5.webp" alt="Sabit kamera" />
 
-Bir “Kamera geçersiz kılma” pozu sağlandığında, tüm sabit kameraların yapılandırılmış FOV ve en boy oranları korunarak varsayılan pozlarının yerini alır. Böylece robot kodunuz, taret veya atıcı başlığı üzerine monte edilmiş hareketli bir kameranın konumunu da sağlayabilir.
+Bir “Özel kamera konumu” pozu sağlandığında, tüm sabit kameraların yapılandırılmış FOV ve en boy oranları korunarak varsayılan pozlarının yerini alır. Böylece robot kodunuz, taret veya atıcı başlığı üzerine monte edilmiş hareketli bir kameranın konumunu da sağlayabilir.
 
 :::info
-Diğer poz verileriyle uyumlu olarak, “Kamera geçersiz kılma” pozu robota göre değil, _sahaya göre_ olmalıdır.
+Diğer poz verileriyle uyumlu olarak, “Özel kamera konumu” pozu robota göre değil, _sahaya göre_ olmalıdır.
 :::
 
 ## Yapılandırma {#configuration}

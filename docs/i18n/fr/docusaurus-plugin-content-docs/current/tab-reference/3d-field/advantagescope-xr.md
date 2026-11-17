@@ -18,11 +18,11 @@ AdvantageScope XR fonctionne sur de nombreux modèles d'iPhone et d'iPad, mais l
 <details>
 <summary>Qu'en est-il des autres plateformes?</summary>
 
-AdvantageScope XR est uniquement pris en charge sur iOS et iPadOS, et nous n'avons pas prévu dans l'immédiat de supporter d'autres plateformes. L'application cliente repose sur une intégration poussée avec les API natives pour la réalité augmentée, l'enregistrement vidéo, le rendu web, etc. iOS et iPadOS sont prioritaires pour plusieurs raisons :
+AdvantageScope XR est uniquement pris en charge sur iOS et iPadOS, et nous n'avons pas prévu dans l'immédiat de prendre en charge d'autres plateformes. L'application cliente repose sur une intégration poussée avec les API natives pour la réalité augmentée, l'enregistrement vidéo, le rendu web, etc. iOS et iPadOS sont prioritaires pour plusieurs raisons :
 
-- **Homogénéité :** AdvantageScope XR est très exigeante en ressources. Contrairement aux appareils Android dont la puissance et les capacités varient énormément, les iPhone et iPad offrent un environnement matériel et logiciel cohérent d'une génération à l'autre. Tous les appareils iOS et iPadOS récents ont la puissance nécessaire pour faire tourner AdvantageScope XR, et les modèles les plus récents apportent des atouts supplémentaires comme le LiDAR.
+- **Homogénéité :** L'application AdvantageScope XR est très exigeante en ressources. Contrairement aux appareils Android dont la puissance et les capacités varient énormément, les iPhone et iPad offrent un environnement matériel et logiciel cohérent d'une génération à l'autre. Tous les appareils iOS et iPadOS récents ont la puissance nécessaire pour faire tourner AdvantageScope XR, et les modèles les plus récents apportent des atouts supplémentaires comme le LiDAR.
 - **Accessibilité :** l'iPhone reste le téléphone le plus répandu chez les élèves aux États-Unis ou le plus facile à emprunter dans une équipe, et il est bien plus accessible qu'un casque de réalité virtuelle ou mixte. Privilégier iOS permet donc au plus grand nombre d'utiliser AdvantageScope XR facilement.
-- **Prise en charge des tablettes :** sur une tablette, l'écran plus grand permet à plusieurs personnes de suivre la scène en même temps. L'iPad étant la tablette la plus répandue dans le monde, supporter iPadOS rend cette expérience collective aussi accessible que possible.
+- **Prise en charge des tablettes :** sur une tablette, l'écran plus grand permet à plusieurs personnes de suivre la scène en même temps. L'iPad étant la tablette la plus répandue dans le monde, la prise en charge d'iPadOS rend cette expérience collective aussi accessible que possible.
 
 </details>
 

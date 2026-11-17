@@ -42,7 +42,7 @@ Les boutons de navigation en haut (en vert) gèrent les onglets et la lecture :
 
 ## Volet de visualisation {#viewer-pane}
 
-Le volet de visualisation est la zone principale où s'affichent les données de chaque onglet. Consultez la référence des onglets pour découvrir le fonctionnement propre à chaque vue. Vous pouvez détacher ce volet dans une fenêtre séparée en cliquant sur le bouton de détachement dans la barre d'onglets.
+Le volet de visualisation est la zone principale où s'affichent les données de chaque onglet. Consultez la référence des onglets pour découvrir le fonctionnement propre à chaque vue. Vous pouvez détacher ce volet dans une fenêtre séparée en cliquant sur le bouton Fenêtre dans la barre d'onglets.
 
 ## Panneau de contrôle {#control-pane}
 

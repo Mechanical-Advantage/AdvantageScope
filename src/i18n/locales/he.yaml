@@ -6,8 +6,8 @@ betaWelcome:
   descDesktop: "תודה על העזרה בבדיקה ושיפור תכונות עתידיות ב-AdvantageScope! יש לסמן את התיבות למטה כדי לאשר כל הצהרה לפני שממשיכים."
   descLite: "תודה על העזרה בבדיקה ושיפור AdvantageScope Lite! יש לסמן את התיבות למטה כדי לאשר כל הצהרה לפני שממשיכים."
   checkUnstable: "מובן לי שזוהי גרסה לא יציבה, וייתכן שאיתקל בבעיות שלא קיימות בגרסאות יציבות."
-  checkReport: "מוסכם עליי לדווח למפתחים על כל בעיה שאמצא, מה שיעזור לשפר את הגרסאות העתידיות."
-  checkFeedback: "מוסכם עליי לספק משוב למפתחים אם אתבקש לשתף על חוויית השימוש שלי בגרסה זו."
+  checkReport: "אדווח למפתחים על כל בעיה שאמצא, כדי לעזור לשפר את הגרסאות העתידיות."
+  checkFeedback: "אספק משוב למפתחים אם אתבקש לשתף מחוויית השימוש שלי בגרסה זו."
   help: 'בכל שלב, ניתן ללחוץ על <span class="purple">הסמל הסגול</span> בשורת הכותרת כדי לדווח על בעיה, לבקש תכונה חדשה או לשאול שאלה.'
   continue: "המשך"
 
@@ -65,7 +65,7 @@ export:
   prefixes: "קידומות"
   prefixesInputTitle: "הזנת קידומות שדות לייצוא, מופרדות בפסיקים (אופציונלי)"
   fieldSet: "סט שדות"
-  fieldSetSelectTitle: "בחירה האם לכלול שדות שנוצרו בייצוא"
+  fieldSetSelectTitle: "קביעה אם לכלול שדות שנוצרו בייצוא"
   fieldSetIncludeGenerated: "לכלול שדות שנוצרו"
   fieldSetOriginalOnly: "מקוריים בלבד"
   cancel: "ביטול"
@@ -92,7 +92,7 @@ preferences:
   coordinateSystemWallAlliance: "קיר הברית (FRC 2022)"
   coordinateSystemCenterRotated: "מרכז/מסובב (FTC מסורתי)"
   timestamps: "חותמות זמן"
-  timestampsSelectTitle: "בחירה כיצד מוצגות חותמות הזמן"
+  timestampsSelectTitle: "בחירת אופן התצוגה של חותמות הזמן"
   timestampsStartZero: "התחלה מאפס"
   timestampsOriginal: "מקורי"
   tbaApiKey: "מפתח API של The Blue Alliance"
@@ -108,7 +108,7 @@ preferences:
   liveModeLowBandwidth: "רוחב פס נמוך"
   liveModeLogging: "רישום יומן"
   discardLive: "מחיקת נתונים חיים"
-  discardLiveSelectTitle: "בחירה כמה זמן לשמור נתונים חיים לפני מחיקתם"
+  discardLiveSelectTitle: "בחירת משך השמירה של נתונים חיים לפני מחיקתם"
   discardLive1Min: "אחרי דקה"
   discardLive5Min: "אחרי 5 דקות"
   discardLive20Min: "אחרי 20 דקות"
@@ -175,8 +175,8 @@ unitConversion:
   fromUnitSelectTitle: "בחירת היחידה שממנה ממירים"
   toUnit: "ליחידה"
   toUnitSelectTitle: "בחירת היחידה שאליה ממירים"
-  extraFactor: "גורם נוסף"
-  extraFactorInputTitle: "הזנת מקדם התאמה מותאם אישית (מכפלה)"
+  extraFactor: "מקדם נוסף"
+  extraFactorInputTitle: "הזנת מקדם התאמה מותאם אישית (מכפיל)"
   cancel: "ביטול"
   confirm: "אישור"
   notAvailable: "לא זמין"
@@ -208,11 +208,11 @@ xrControls:
   streamingSmooth: "חלק"
   streamingLowLatency: "שיהוי נמוך"
   showFloor: "הצגת רצפה"
-  showFloorTitle: "הפעלה/כיבוי של נראות שטיח הרצפה"
+  showFloorTitle: "הצגה/הסתרה של שטיח הרצפה"
   showField: "הצגת מגרש"
-  showFieldTitle: "הפעלה/כיבוי של נראות המגרש"
+  showFieldTitle: "הצגה/הסתרה של המגרש"
   showRobots: "הצגת רובוטים"
-  showRobotsTitle: "הפעלה/כיבוי של נראות מודלי הרובוטים"
+  showRobotsTitle: "הצגה/הסתרה של מודלי הרובוטים"
 
 tabs:
   console: "מסוף"
@@ -255,7 +255,7 @@ sourceList:
   values_one: "{{count}} ערך"
   values_two: "{{count}} ערכים"
   values_other: "{{count}} ערכים"
-  toggleVisibility: "הפעלה/כיבוי של נראות השדה"
+  toggleVisibility: "הצגה/הסתרה של השדה"
   hideField: "הסתרת שדה"
   showField: "הצגת שדה"
   typeName: "{{name}}:"
@@ -349,7 +349,7 @@ hub:
 
   tabs:
     close: "סגירת כרטיסייה"
-    popout: "חילוץ כרטיסייה"
+    popout: "פתיחה בחלון צף"
     add: "הוספת כרטיסייה"
 
   sidebar:
@@ -654,8 +654,8 @@ xrClient:
 liveModeName:
   nt4: "NetworkTables"
   nt4Akit: "NetworkTables (AdvantageKit)"
-  nt4Systemcore: "דיאגנוסטיקה Systemcore"
-  phoenix: "דיאגנוסטיקה Phoenix"
+  nt4Systemcore: "דיאגנוסטיקה של Systemcore"
+  phoenix: "דיאגנוסטיקה של Phoenix"
   rlog: "שרת RLOG"
   ftcdashboard: "FTC Dashboard"
 
@@ -699,7 +699,7 @@ menu:
   edit:
     heading: "עריכה"
     undo: "ביטול"
-    redo: "ביצוע שוב"
+    redo: "ביצוע חוזר"
     cut: "גזירה"
     copy: "העתקה"
     paste: "הדבקה"
@@ -747,7 +747,7 @@ menu:
   tabs:
     heading: "כרטיסיות"
     newTab: "כרטיסייה חדשה"
-    newPopOut: "חילוץ כרטיסייה חדשה"
+    newPopOut: "חלון צף חדש"
     prevTab: "הכרטיסייה הקודמת"
     prevTabShortcut: "הכרטיסייה הקודמת ({{shortcut}})"
     nextTab: "הכרטיסייה הבאה"
@@ -792,7 +792,7 @@ menu:
     editConversion: "עריכת המרה"
     disableAutoUnits: "השבתת יחידות אוטומטיות"
     resetUnits: "איפוס יחידות"
-    zoomEnabled: "התקרבות לטווח הפעיל"
+    zoomEnabled: "התמקדות בטווח המאופשר"
     differentiate: "גזירה"
     integrate: "אינטגרציה"
 
@@ -822,21 +822,21 @@ menu:
 main:
   language:
     welcomeMessage: "ברוכים הבאים"
-    welcomeDetail: "הגרסה העברית של AdvantageScope נוצרת בתמיכת AI ועשויה לכלול אי-דיוקים. יש ללחוץ על הסמל הסגול בשורת הכותרת כדי לדווח לנו על כל בעיה."
-    reloadLite: "AdvantageScope Lite צריך להיטען מחדש כדי להחליף שפה. להמשיך?"
-    reloadResetLite: "AdvantageScope Lite צריך להתאפס ולהיטען מחדש כדי להחליף שפה. להמשיך?"
-    restart: "AdvantageScope צריך לבצע הפעלה מחדש כדי להחליף שפה."
+    welcomeDetail: "הגרסה העברית של AdvantageScope נוצרת בסיוע בינה מלאכותית ועשויה לכלול אי-דיוקים. יש ללחוץ על הסמל הסגול בשורת הכותרת כדי לדווח לנו על כל בעיה."
+    reloadLite: "AdvantageScope Lite צריכה להיטען מחדש כדי להחליף שפה. להמשיך?"
+    reloadResetLite: "AdvantageScope Lite צריכה להתאפס ולהיטען מחדש כדי להחליף שפה. להמשיך?"
+    restart: "AdvantageScope צריכה לבצע הפעלה מחדש כדי להחליף שפה."
     restartTitle: "להפעיל מחדש את AdvantageScope?"
 
   assets:
     downloadStarted: "ההורדה התחילה ב-{{time}}. יש להמתין מספר דקות לסיום ההורדה."
-    downloadFinished: "כל הנכסים ירדו. AdvantageScope יבדוק עדכונים מעת לעת."
+    downloadFinished: "כל הנכסים ירדו. AdvantageScope תבדוק עדכונים מעת לעת."
     connectFailed: "לא ניתן להתחבר ל-GitHub. ננסה שוב בקרוב."
     noDiskSpace: "אין מספיק מקום בדיסק. ננסה שוב בקרוב."
     readme: "תיקייה זו מכילה נכסים נוספים עבור תצוגות המגרש הדו-ממדי, המגרש התלת-ממדי והבקרים. לפרטים נוספים, יש לעיין בתיעוד של AdvantageScope (זמין דרך כרטיסיית התיעוד באפליקציה או בכתובת ה-URL למטה)."
 
   owlet:
-    upToDate: "Owlet מעודכן. AdvantageScope יבדוק עדכונים מעת לעת."
+    upToDate: "Owlet מעודכן. AdvantageScope תבדוק עדכונים מעת לעת."
     offlineCache: "שימוש במטמון לא מקוון של Owlet. נבדוק עדכונים בקרוב."
     noDiskSpace: "אין מספיק מקום בדיסק. ננסה שוב בקרוב."
     noOwlet: "לא ניתן לפענח את קובץ היומן של Hoot מכיוון ש-Owlet אינו זמין."
@@ -885,11 +885,11 @@ main:
     later: "מאוחר יותר"
     viewChangelog: "הצגת יומן שינויים"
     downloadLatestNativeQuery: "להוריד את הגרסה הייעודית (Native) החדשה ביותר?"
-    downloadLatestNativeDetail: "גרסה {{latestVersion}} זמינה (שוחררה ב-{{latestDate}}). כרגע פועלת גרסת x86 של גרסה {{currentVersion}} על פלטפורמת arm64. האם ברצונך להוריד את הגרסה הייעודית החדשה ביותר?"
+    downloadLatestNativeDetail: "גרסה {{latestVersion}} זמינה (שוחררה ב-{{latestDate}}). כרגע פועלת גרסת x86 של גרסה {{currentVersion}} על פלטפורמת arm64. האם תרצו להוריד את הגרסה הייעודית החדשה ביותר?"
     downloadLatestQuery: "להוריד את הגרסה החדשה ביותר?"
-    downloadLatestDetail: "גרסה {{latestVersion}} זמינה (שוחררה ב-{{latestDate}}). כרגע פועלת גרסה {{currentVersion}}. האם ברצונך להוריד את הגרסה החדשה ביותר?"
+    downloadLatestDetail: "גרסה {{latestVersion}} זמינה (שוחררה ב-{{latestDate}}). כרגע פועלת גרסה {{currentVersion}}. האם תרצו להוריד את הגרסה החדשה ביותר?"
     downloadNativeQuery: "להוריד גרסה ייעודית (Native)?"
-    downloadNativeDetail: "נראה שפועלת גרסת x86 של האפליקציה על פלטפורמת arm64. האם ברצונך להוריד את הגרסה הייעודית?"
+    downloadNativeDetail: "נראה שפועלת גרסת x86 של האפליקציה על פלטפורמת arm64. האם תרצו להוריד את הגרסה הייעודית?"
     noUpdates: "אין עדכונים זמינים"
     upToDateDetail: "כרגע פועלת גרסה {{currentVersion}} (שוחררה ב-{{latestDate}})."
 
@@ -911,7 +911,7 @@ main:
     exportConsoleFilename: "מסוף {{date}}.txt"
     textFilter: "קובצי טקסט"
     openQuery: "לפתוח יומן?"
-    openDetail: 'האם ברצונך לפתוח את קובץ היומן "{{name}}"?'
+    openDetail: 'האם תרצו לפתוח את קובץ היומן "{{name}}"?'
     openDsLogTitle: "פתיחת יומן DS"
     openDsLogQuery: "האם לפתוח יומן זה באמצעות פריסת DS?"
     openDsLogDetail: "ניתן לפתוח את פריסת ה-Driver Station בחלון נפרד מבלי לשנות את הפריסה הנוכחית שלכם."
@@ -937,7 +937,7 @@ main:
 
   video:
     pythonRequired: "נדרשת התקנת Python"
-    pythonRequiredDetail: "תכונה זו דורשת ש-Python 3.10 ומעלה יהיה זמין במערכת שלך. יש להתקין Python ולנסות שוב."
+    pythonRequiredDetail: "תכונה זו דורשת ש-Python 3.10 ומעלה יהיה זמין במערכת שלכם. יש להתקין Python ולנסות שוב."
     ffmpegRequired: "נדרשת התקנת FFmpeg"
     ffmpegRequiredDetail: "FFmpeg נדרש כדי לעבד קובצי וידאו. יש להתקין את FFmpeg ולהוסיפו למשתנה הסביבה PATH."
     downloadFfmpeg: "להוריד FFmpeg?"
@@ -949,7 +949,7 @@ main:
     youtubeFailed: "הורדה מ-YouTube נכשלה"
     youtubeFailedDetail: "אירעה שגיאה במהלך הניסיון לפתוח את הסרטון מ-YouTube. שימו לב שתכונה זו עשויה להיכשל באופן בלתי צפוי עקב שינויים בשרתים של YouTube. יש לבדוק עדכונים או לבחור קובץ וידאו מקומי במקום זאת."
     tbaFailed: "הורדה מ-TBA נכשלה"
-    tbaFailedDetail: "אירעה בעיה במציאת סרטון המשחק ב-The Blue Alliance. יש לבדוק את מפתח ה-API שלך, או לטעון את הווידאו באמצעות כתובת URL של YouTube או קובץ מקומי במקום זאת."
+    tbaFailedDetail: "אירעה בעיה במציאת סרטון המשחק ב-The Blue Alliance. יש לבדוק את מפתח ה-API שלכם, או לטעון את הווידאו באמצעות כתובת URL של YouTube או קובץ מקומי במקום זאת."
     openTitle: "בחירת וידאו לפתיחה"
     filter: "סרטונים"
 
@@ -958,7 +958,7 @@ main:
     warning: "אזהרה"
     alert: "התראה"
     exportInProgress: "ייצוא בתהליך"
-    exportInProgressDetail: "האם ברצונך לסגור את החלון בזמן שמתבצע ייצוא? הנתונים לא יישמרו."
+    exportInProgressDetail: "האם תרצו לסגור את החלון בזמן שמתבצע ייצוא? הנתונים לא יישמרו."
     incompleteExport: "נתונים חלקיים לייצוא"
     incompleteExportDetail: 'חלק מהשדות לא יהיו זמינים בנתונים המיוצאים. כדי לשמור את כל השדות מהשרת, יש לבחור במצב חי "רישום יומן". יש לעיין בתיעוד של AdvantageScope לפרטים נוספים.'
 
@@ -994,7 +994,7 @@ main:
 
   lite:
     tooSmall: "אין מספיק מקום, אנא שנו את פריסת המסך."
-    mobileWarning: "AdvantageScope Lite פועל בצורה הטובה ביותר במחשבים שולחניים ובטאבלטים."
+    mobileWarning: "AdvantageScope Lite פועלת בצורה הטובה ביותר במחשבים שולחניים ובטאבלטים."
 
 units:
   defaultLabel: "{{unit}} (ברירת מחדל)"
@@ -1131,35 +1131,35 @@ units:
     rotationsPerSecondSquared_two: "{{value}} סיבובים/שנ' בריבוע"
     rotationsPerSecondSquared_other: "{{value}} סיבובים/שנ' בריבוע"
     seconds: "{{value}} שנ'"
-    milliseconds: '{{value}} מ"ש'
-    microseconds: "{{value}} מיקרו-שנ'"
-    nanoseconds: "{{value}} ננו-שנ'"
+    milliseconds: "{{value}} ms"
+    microseconds: "{{value}} μs"
+    nanoseconds: "{{value}} ns"
     minutes: "{{value}} דק'"
-    hours: "{{value}} שע'"
+    hours: "{{value}} שעות"
     days_one: "{{value}} יום"
     days_two: "{{value}} ימים"
     days_other: "{{value}} ימים"
     bytes_one: "{{value}} בית"
     bytes_two: "{{value}} בתים"
     bytes_other: "{{value}} בתים"
-    kilobytes: '{{value}} ק"ב'
-    megabytes: '{{value}} מ"ב'
-    gigabytes: '{{value}} ג"ב'
-    terabytes: '{{value}} ט"ב'
+    kilobytes: "{{value}} KB"
+    megabytes: "{{value}} MB"
+    gigabytes: "{{value}} GB"
+    terabytes: "{{value}} TB"
     bitsPerSecond_one: "{{value}} ביט/שנ'"
     bitsPerSecond_two: "{{value}} ביטים/שנ'"
     bitsPerSecond_other: "{{value}} ביטים/שנ'"
     bytesPerSecond_one: "{{value}} בית/שנ'"
     bytesPerSecond_two: "{{value}} בתים/שנ'"
     bytesPerSecond_other: "{{value}} בתים/שנ'"
-    kilobitsPerSecond: "{{value}} קילו-ביט/שנ'"
-    kilobytesPerSecond: '{{value}} ק"ב/שנ'''
-    megabitsPerSecond: "{{value}} מגה-ביט/שנ'"
-    megabytesPerSecond: '{{value}} מ"ב/שנ'''
-    gigabitsPerSecond: "{{value}} גיגה-ביט/שנ'"
-    gigabytesPerSecond: '{{value}} ג"ב/שנ'''
-    terabitsPerSecond: "{{value}} טרה-ביט/שנ'"
-    terabytesPerSecond: '{{value}} ט"ב/שנ'''
+    kilobitsPerSecond: "{{value}} Kb/s"
+    kilobytesPerSecond: "{{value}} KB/s"
+    megabitsPerSecond: "{{value}} Mb/s"
+    megabytesPerSecond: "{{value}} MB/s"
+    gigabitsPerSecond: "{{value}} Gb/s"
+    gigabytesPerSecond: "{{value}} GB/s"
+    terabitsPerSecond: "{{value}} Tb/s"
+    terabytesPerSecond: "{{value}} TB/s"
     hertz: "{{value}} הרץ"
     kilohertz: "{{value}} קילו-הרץ"
     megahertz: "{{value}} מגה-הרץ"
@@ -1221,16 +1221,16 @@ units:
     rotationsPerSecondCubed_other: "{{value}} סיבובים/שנ' בשלישית"
     secondsPerSecond: "{{value}} שנ'/שנ'"
     secondsSeconds: "{{value}} שנ' בריבוע"
-    millisecondsPerSecond: '{{value}} מ"ש/שנ'''
-    millisecondsSeconds: '{{value}} מ"ש·שנ'''
-    microsecondsPerSecond: "{{value}} מיקרו-שנ'/שנ'"
-    microsecondsSeconds: "{{value}} מיקרו-שנ'·שנ'"
-    nanosecondsPerSecond: "{{value}} ננו-שנ'/שנ'"
-    nanosecondsSeconds: "{{value}} ננו-שנ'·שנ'"
+    millisecondsPerSecond: "{{value}} ms/s"
+    millisecondsSeconds: "{{value}} ms·s"
+    microsecondsPerSecond: "{{value}} μs/s"
+    microsecondsSeconds: "{{value}} μs·s"
+    nanosecondsPerSecond: "{{value}} ns/s"
+    nanosecondsSeconds: "{{value}} ns·s"
     minutesPerSecond: "{{value}} דק'/שנ'"
     minutesSeconds: "{{value}} דק'·שנ'"
-    hoursPerSecond: "{{value}} שע'/שנ'"
-    hoursSeconds: "{{value}} שע'·שנ'"
+    hoursPerSecond: "{{value}} שעות/שנ'"
+    hoursSeconds: "{{value}} שעות·שנ'"
     daysPerSecond_one: "{{value}} יום/שנ'"
     daysPerSecond_two: "{{value}} ימים/שנ'"
     daysPerSecond_other: "{{value}} ימים/שנ'"
@@ -1240,10 +1240,10 @@ units:
     bytesSeconds_one: "{{value}} בית·שנ'"
     bytesSeconds_two: "{{value}} בתים·שנ'"
     bytesSeconds_other: "{{value}} בתים·שנ'"
-    kilobytesSeconds: '{{value}} ק"ב·שנ'''
-    megabytesSeconds: '{{value}} מ"ב·שנ'''
-    gigabytesSeconds: '{{value}} ג"ב·שנ'''
-    terabytesSeconds: '{{value}} ט"ב·שנ'''
+    kilobytesSeconds: "{{value}} KB·s"
+    megabytesSeconds: "{{value}} MB·s"
+    gigabytesSeconds: "{{value}} GB·s"
+    terabytesSeconds: "{{value}} TB·s"
     bits_one: "{{value}} ביט"
     bits_two: "{{value}} ביטים"
     bits_other: "{{value}} ביטים"
@@ -1253,28 +1253,28 @@ units:
     bytesPerSecondSquared_one: "{{value}} בית/שנ' בריבוע"
     bytesPerSecondSquared_two: "{{value}} בתים/שנ' בריבוע"
     bytesPerSecondSquared_other: "{{value}} בתים/שנ' בריבוע"
-    kilobits: "{{value}} קילו-ביט"
-    kilobitsPerSecondSquared: "{{value}} קילו-ביט/שנ' בריבוע"
-    kilobytesPerSecondSquared: '{{value}} ק"ב/שנ'' בריבוע'
-    megabits: "{{value}} מגה-ביט"
-    megabitsPerSecondSquared: "{{value}} מגה-ביט/שנ' בריבוע"
-    megabytesPerSecondSquared: '{{value}} מ"ב/שנ'' בריבוע'
-    gigabits: "{{value}} גיגה-ביט"
-    gigabitsPerSecondSquared: "{{value}} גיגה-ביט/שנ' בריבוע"
-    gigabytesPerSecondSquared: '{{value}} ג"ב/שנ'' בריבוע'
-    terabits: "{{value}} טרה-ביט"
-    terabitsPerSecondSquared: "{{value}} טרה-ביט/שנ' בריבוע"
-    terabytesPerSecondSquared: '{{value}} ט"ב/שנ'' בריבוע'
+    kilobits: "{{value}} Kb"
+    kilobitsPerSecondSquared: "{{value}} Kb/s²"
+    kilobytesPerSecondSquared: "{{value}} KB/s²"
+    megabits: "{{value}} Mb"
+    megabitsPerSecondSquared: "{{value}} Mb/s²"
+    megabytesPerSecondSquared: "{{value}} MB/s²"
+    gigabits: "{{value}} Gb"
+    gigabitsPerSecondSquared: "{{value}} Gb/s²"
+    gigabytesPerSecondSquared: "{{value}} GB/s²"
+    terabits: "{{value}} Tb"
+    terabitsPerSecondSquared: "{{value}} Tb/s²"
+    terabytesPerSecondSquared: "{{value}} TB/s²"
     hertzPerSecond: "{{value}} הרץ/שנ'"
     hertzSeconds: "{{value}}"
     kilohertzPerSecond: "{{value}} קילו-הרץ/שנ'"
     kilohertzSeconds: "{{value}} קילו-הרץ·שנ'"
     megahertzPerSecond: "{{value}} מגה-הרץ/שנ'"
     megahertzSeconds: "{{value}} מגה-הרץ·שנ'"
-    celsiusPerSecond: "{{value}} °צלזיוס/שנ'"
-    celsiusSeconds: "{{value}} °צלזיוס·שנ'"
-    fahrenheitPerSecond: "{{value}} °פרנהייט/שנ'"
-    fahrenheitSeconds: "{{value}} °פרנהייט·שנ'"
+    celsiusPerSecond: "{{value}}° צלזיוס/שנ'"
+    celsiusSeconds: "{{value}}° צלזיוס·שנ'"
+    fahrenheitPerSecond: "{{value}}° פרנהייט/שנ'"
+    fahrenheitSeconds: "{{value}}° פרנהייט·שנ'"
     kelvinPerSecond: "{{value}} קלווין/שנ'"
     kelvinSeconds: "{{value}} קלווין·שנ'"
     voltsPerSecond: "{{value}} וולט/שנ'"

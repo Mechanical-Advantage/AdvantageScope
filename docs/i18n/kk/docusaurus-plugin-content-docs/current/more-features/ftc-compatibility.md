@@ -41,6 +41,6 @@ AdvantageScope қолданбасында WPILOG және NetworkTables сияқ
 
 ### FTC үшін AdvantageScope Lite {#advantagescope-lite-for-ftc}
 
-FTC жарыстарына оңтайландырылған [AdvantageScope Lite](/more-features/advantagescope-lite) нұсқасының бейресми дистрибутиві қолжетімді: [**AdvantageScope Lite for REV Control System**](https://github.com/j5155/AdvantageScope-Lite-FTC). Бұл дистрибутив бейресми болып табылады және оған AdvantageScope әзірлеушілері қолдау көрсетпейді.
+FTC жарыстарына оңтайландырылған [AdvantageScope Lite](/more-features/advantagescope-lite) нұсқасының бейресми дистрибутиві қолжетімді: [**AdvantageScope Lite for REV Control System**](https://github.com/j5155/AdvantageScope-Lite-FTC). Бұл дистрибутив бейресми және оған AdvantageScope әзірлеушілері қолдау көрсетпейді.
 
 Стандартты [AdvantageScope Lite](/more-features/advantagescope-lite) нұсқасы Systemcore жүйесінде және FIRST Driver Station бағдарламасында пайдалануға арналған веб-қолданба болса, бейресми FTC дистрибутиві қазіргі FTC басқару жүйесінде тікелей жұмыс істеу үшін арнайы бейімделген. Ол қосымша бағдарламалық жасақтаманы қажет етпей, FTC Dashboard хаттамасы арқылы тікелей деректерді қарауды кіріктірілген түрде қолдайды.

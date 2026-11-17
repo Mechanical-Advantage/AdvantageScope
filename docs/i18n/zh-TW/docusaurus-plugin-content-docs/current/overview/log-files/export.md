@@ -30,7 +30,7 @@ _此警告**不適用**於 AdvantageKit 產生的日誌，只要選擇「Advanta
 
 - **格式：** 設定匯出檔案的格式，請參閱下方選項。
   - _CSV（表格）：_ 逗號分隔值檔案，每一列代表一個時間戳記，每一欄代表一個欄位（外加一欄時間戳記數值），每列可包含多個欄位的值。
-  - _CSV（列表）：_ 逗號分隔值檔案，每一列代表單一欄位的一筆數值，包含時間戳記、鍵名與數值三欄。
+  - _CSV（清單）：_ 逗號分隔值檔案，每一列代表單一欄位的一筆數值，包含時間戳記、鍵名與數值三欄。
   - _WPILOG：_ 標準 WPILOG 檔案，可重新在 AdvantageScope 中開啟。
   - _MCAP：_ 標準 [MCAP](https://mcap.dev) 檔案，可在 [Foxglove](https://foxglove.dev) 中開啟。
 - **時間戳記：** 僅適用於「CSV（表格）」，用來設定建立新資料列的方式。請參閱下方選項。
@@ -42,7 +42,7 @@ _此警告**不適用**於 AdvantageKit 產生的日誌，只要選擇「Advanta
   - 「_/DriverStation/Joystick0_」：包含所有以「/DriverStation/Joystick0」開頭的欄位（第一個搖桿的資料）。
   - 「_Flywheels,DS:enabled_」：包含所有以「/Flywheels」或「DS:enabled」開頭的欄位（飛輪的所有資料，以及機器人的啟用狀態）。
   - 「_Drive/LeftPosition,Drive/RightPosition_」：僅包含「/Drive/LeftPosition」與「/Drive/RightPosition」欄位。
-- **欄位集：** 請參閱下方選項。產生的欄位是 AdvantageScope 為了拆解複雜類型而自動建立的欄位，在側邊欄中會以灰色文字顯示，包含陣列、結構體 (struct) 與其他資料結構的個別成員。
+- **欄位集：** 請參閱下方選項。產生的欄位是 AdvantageScope 為了拆解複雜類型而自動建立的欄位，在側邊欄中會以灰色文字顯示，包含陣列、結構 (struct) 與其他資料結構的個別成員。
   - _包含產生的欄位：_ 匯出所有可檢視的欄位，包括自動產生的欄位。若匯出的資料要在無法解析複雜類型的應用程式中開啟，建議選擇此項。
   - _僅限原始欄位：_ 僅匯出原始日誌檔案中原本就存在的欄位，不包含自動產生的欄位。若匯出的資料要在 AdvantageScope 或其他支援複雜類型的應用程式中開啟，建議選擇此項。
 

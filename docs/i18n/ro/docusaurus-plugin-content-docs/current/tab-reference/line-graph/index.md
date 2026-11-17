@@ -20,7 +20,7 @@ Diferența (delta) dintre timpul selectat și cel peste care ții cursorul este 
 
 Pentru a începe, trage un câmp într-una dintre cele trei secțiuni (axa stângă, axa dreaptă sau câmpuri discrete). Șterge un câmp folosind butonul X sau ascunde-l temporar dând clic pe pictograma ochi ori dublu clic pe numele câmpului. Pentru a elimina toate câmpurile, dă clic pe cele trei puncte de lângă titlul axei și apoi pe `Șterge tot`. Poți reorganiza câmpurile în listă prin clic și tragere.
 
-Poți personaliza culoarea și stilul liniei fiecărui câmp dând clic pe pictograma colorată sau clic dreapta pe numele câmpului. De asemenea, poți vizualiza datele din API-ul WPILib pentru [alerte persistente](https://docs.wpilib.org/en/latest/docs/software/telemetry/persistent-alerts.html) adăugând grupul de alerte ca câmp discret. Mai jos este prezentat un exemplu de vizualizare.
+Poți personaliza culoarea și stilul liniei fiecărui câmp dând clic pe pictograma colorată sau clic dreapta pe numele câmpului. De asemenea, poți vizualiza datele din API-ul WPILib pentru [alerte persistente](https://docs.wpilib.org/en/latest/docs/software/telemetry/persistent-alerts.html) adăugând grupul de alerte drept câmp discret. Mai jos este prezentat un exemplu de vizualizare.
 
 <img src="/img/tab-reference/line-graph/line-graph-2.webp" alt="Vizualizare alerte" />
 
@@ -40,9 +40,9 @@ _Mai sus este prezentată interfața în limba engleză._
 
 _Mai sus este prezentată interfața în limba engleză._
 
-### Integrare și diferențiere {#integration-and-differentiation}
+### Integrare și derivare {#integration-and-differentiation}
 
-AdvantageScope poate integra sau diferenția automat valorile. Timpul delta este măsurat întotdeauna în secunde. Dă clic pe cele trei puncte de lângă titlul axei și selectează `Diferențiază` sau `Integrează`.
+AdvantageScope poate integra sau deriva automat valorile. Timpul delta este măsurat întotdeauna în secunde. Dă clic pe cele trei puncte de lângă titlul axei și selectează `Derivează` sau `Integrează`.
 
 :::info
 Derivatele sunt calculate folosind [diferența finită](https://ro.wikipedia.org/wiki/Diferen%C8%9B%C4%83_finit%C4%83) a eșantioanelor adiacente. Integralele sunt calculate folosind [integrarea trapezoidală](https://en.wikipedia.org/wiki/Trapezoidal_rule).

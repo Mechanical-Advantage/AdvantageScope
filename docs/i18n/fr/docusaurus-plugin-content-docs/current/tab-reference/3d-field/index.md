@@ -142,7 +142,7 @@ Faites un clic droit sur la vue 3D pour changer de mode de caméra. Chaque fenê
 Faites un clic droit sur la vue 3D et sélectionnez « Définir le champ de vision » pour ajuster l'angle de vue (FOV) des caméras orbitales et du poste de pilotage.
 :::
 
-### Orbiter le terrain {#orbit-field}
+### Orbiter autour du terrain {#orbit-field}
 
 C'est le mode par défaut : vous déplacez la caméra librement autour du terrain. Maintenez **clic gauche + glisser** pour pivoter, **clic droit + glisser** pour vous déplacer latéralement, et utilisez la **molette** pour zoomer ou dézoomer.
 
@@ -150,9 +150,9 @@ C'est le mode par défaut : vous déplacez la caméra librement autour du terra
 Vous pouvez aussi piloter la caméra au clavier : **WASD** pour vous déplacer horizontalement, **IJKL** pour pivoter, et **E** / **Q** pour monter ou descendre.
 :::
 
-### Orbiter le robot {#orbit-robot}
+### Orbiter autour du robot {#orbit-robot}
 
-Ce mode reprend les mêmes commandes que « Orbiter le terrain », mais la caméra reste verrouillée sur le robot afin de suivre ses déplacements en continu.
+Ce mode reprend les mêmes commandes que « Orbiter autour du terrain », mais la caméra reste verrouillée sur le robot afin de suivre ses déplacements en continu.
 
 ### Poste de pilotage {#driver-station}
 
@@ -168,10 +168,10 @@ Chaque modèle de robot intègre des caméras fixes (caméras de vision ou de pi
 
 <img src="/img/tab-reference/3d-field/3d-field-5.webp" alt="Caméra fixe" />
 
-Si vous fournissez une pose « Remplacement de la caméra », elle remplace la position par défaut de toutes les caméras fixes tout en conservant leur champ de vision et leur format d'image. Votre code peut ainsi animer une caméra mobile, par exemple montée sur une tourelle ou un capot de lanceur.
+Si vous fournissez une pose de type « Remplacement de la caméra », elle remplace la position par défaut de toutes les caméras fixes tout en conservant leur champ de vision et leur format d'image. Votre code peut ainsi animer une caméra mobile, par exemple montée sur une tourelle ou un capot de lanceur.
 
 :::info
-Comme pour les autres données de pose, la pose « Remplacement de la caméra » doit être _relative au terrain_, et non relative au robot.
+Comme pour les autres données de pose, la pose de type « Remplacement de la caméra » doit être _relative au terrain_, et non relative au robot.
 :::
 
 ## Configuration {#configuration}

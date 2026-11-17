@@ -164,7 +164,7 @@ Selectarea automată a numărului stației poate fi inexactă pentru logurile ge
 
 ### Cameră fixă {#fixed-camera}
 
-Fiecare model de robot este configurat cu un set de camere fixe, cum ar fi camerele de viziune și camerele de driver. Aceste camere au poziții, raporturi de aspect și FOV-uri fixe și sunt foarte utile pentru a verifica datele de viziune sau a simula perspectiva driverului. În exemplul de mai jos este prezentată o cameră de driver.
+Fiecare model de robot este configurat cu un set de camere fixe, cum ar fi camerele de vision și camerele de driver. Aceste camere au poziții, raporturi de aspect și FOV-uri fixe și sunt foarte utile pentru a verifica datele de vision sau a simula perspectiva driverului. În exemplul de mai jos este prezentată o cameră de driver.
 
 <img src="/img/tab-reference/3d-field/3d-field-5.webp" alt="Cameră fixă" />
 

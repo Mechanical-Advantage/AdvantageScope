@@ -12,7 +12,7 @@
     "description": "The label of footer link with label=WPILib Docs linking to https://docs.wpilib.org"
   },
   "copyright": {
-    "message": "कॉपीराइट © 2021-2026 Littleton Robotics। AI के समर्थन से अनुवादित।",
+    "message": "कॉपीराइट © 2021-2026 Littleton Robotics। AI के सहयोग से अनुवादित।",
     "description": "The footer copyright"
   }
 }

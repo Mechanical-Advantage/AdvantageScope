@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # 💡 AdvantageScope Lite {#advantagescope-lite}
 
-AdvantageScope Lite 是 AdvantageScope 的网页版，可通过 FIRST Driver Station 和 Systemcore Web 界面访问。它包含了 AdvantageScope 桌面应用的大多数基础功能；不过出于兼容性限制，部分功能有所精简（包括某些选项卡类型、日志格式及相关功能）。
+AdvantageScope Lite 是 AdvantageScope 的网页版，可通过 FIRST Driver Station 和 Systemcore Web 界面访问。它包含了 AdvantageScope 桌面应用的大多数基础功能；不过受兼容性限制，部分功能有所精简（包括某些选项卡类型、日志格式及相关功能）。
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="AdvantageScope Lite Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 

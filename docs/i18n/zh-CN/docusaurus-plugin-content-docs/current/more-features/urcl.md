@@ -113,7 +113,7 @@ URCL 对 AdvantageKit 的兼容仅出于使用便利考虑，记录到日志中�
 
 ## SysId 使用 {#sysid-usage}
 
-1. 按照上文配置好 URCL 后，在创建 SysId 例程时将机构日志消费者 (mechanism log consumer) 设为 `null`。下方为 Java 示例，该配置可写在子系统类内部。
+1. 按照上文配置好 URCL 后，在创建 SysId 例程时将机构日志回调 (mechanism log consumer) 设为 `null`。下方为 Java 示例，该配置可写在子系统类内部。
 
 <Tabs groupId="library">
 <TabItem value="WPILib" label="WPILib" default>
@@ -124,7 +124,7 @@ var sysIdRoutine = new SysIdRoutine(
   new SysIdRoutine.Config(),
   new SysIdRoutine.Mechanism(
     (voltage) -> subsystem.runVolts(voltage.in(Volts)),
-    null, // 没有日志消费者，因为数据由 URCL 记录
+    null, // 无需日志回调，数据由 URCL 记录
     subsystem
   )
 );
@@ -148,7 +148,7 @@ var sysIdRoutine = new SysIdRoutine(
   ),
   new SysIdRoutine.Mechanism(
     (voltage) -> subsystem.runVolts(voltage.in(Volts)),
-    null, // 没有日志消费者，因为数据由 URCL 记录
+    null, // 无需日志回调，数据由 URCL 记录
     subsystem
   )
 );

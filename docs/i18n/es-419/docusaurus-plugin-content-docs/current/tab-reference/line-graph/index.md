@@ -8,7 +8,7 @@ _En la imagen de arriba se muestra la interfaz en inglés._
 
 ## Panel del visor {#viewer-pane}
 
-Para hacer zoom, coloca el cursor sobre el gráfico principal y usa la rueda del mouse hacia arriba o hacia abajo. También puedes seleccionar un rango haciendo clic y arrastrando mientras mantienes presionada la tecla `Shift`. Para moverte hacia la izquierda o hacia la derecha, desplázate horizontalmente (si tu dispositivo lo permite) o haz clic y arrastra sobre el gráfico. Cuando estés conectado en vivo, desplazarte hacia la izquierda desbloquea la vista del tiempo actual, y desplazarte hasta el extremo derecho la vuelve a bloquear al tiempo actual.
+Para hacer zoom, coloca el cursor sobre el gráfico principal y gira la rueda del mouse hacia arriba o hacia abajo. También puedes seleccionar un rango haciendo clic y arrastrando mientras mantienes presionada la tecla `Shift`. Para moverte hacia la izquierda o hacia la derecha, desplázate horizontalmente (si tu dispositivo lo permite) o haz clic y arrastra sobre el gráfico. Cuando estés conectado en vivo, desplazarte hacia la izquierda desbloquea la vista del tiempo actual, y desplazarte hasta el extremo derecho la vuelve a bloquear al tiempo actual.
 
 Haz clic en el gráfico para seleccionar un instante de tiempo, y haz clic derecho para quitar la selección. La leyenda mostrará el valor de cada campo en ese momento. El tiempo seleccionado se sincroniza en todas las pestañas, así que podrás ubicar ese mismo instante rápidamente en otras vistas.
 

@@ -27,9 +27,9 @@ AdvantageScope incluye varios atajos de teclado para que puedas moverte más rá
 <table>
 <tr><td>`Ctrl+N`</td><td>Crear una ventana nueva</td></tr>
 <tr><td>`Ctrl+Shift+N`</td><td>Cerrar la ventana actual</td></tr>
-<tr><td>`Ctrl+Comma`</td><td>Abrir la ventana de preferencias</td></tr>
-<tr><td>`Ctrl+Period`</td><td>Alternar la visibilidad de la barra lateral</td></tr>
-<tr><td>`Ctrl+Slash`</td><td>Alternar la visibilidad del panel de control</td></tr>
+<tr><td>`Ctrl+,`</td><td>Abrir la ventana de preferencias</td></tr>
+<tr><td>`Ctrl+.`</td><td>Mostrar u ocultar la barra lateral</td></tr>
+<tr><td>`Ctrl+Slash`</td><td>Mostrar u ocultar el panel de control</td></tr>
 </table>
 
 ### Controles de pestañas {#tab-controls}
@@ -74,9 +74,9 @@ AdvantageScope incluye varios atajos de teclado para que puedas moverte más rá
 ### Reproducción {#playback}
 
 <table>
-<tr><td>`Space`</td><td>Alternar reproducción</td></tr>
+<tr><td>`Espacio`</td><td>Reproducir o pausar</td></tr>
 <tr><td>`Left` y `Right`</td><td>Avanzar o retroceder paso a paso en el archivo de registro</td></tr>
-<tr><td>`L` o `Ctrl+L`</td><td>Alternar el bloqueo al ver datos en vivo</td></tr>
+<tr><td>`L` o `Ctrl+L`</td><td>Activar o desactivar el bloqueo al ver datos en vivo</td></tr>
 <tr><td>`Ctrl+\`</td><td>Ajustar el zoom de la línea de tiempo al rango habilitado</td></tr>
 </table>
 

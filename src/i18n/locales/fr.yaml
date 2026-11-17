@@ -281,9 +281,9 @@ sourceList:
     "#3b875a": "Vert"
     "#d993aa": "Rose"
     "#5f4528": "Brun"
-    normal: "Normal"
-    bold: "Gras"
-    verybold: "Très gras"
+    normal: "Normale"
+    bold: "Épaisse"
+    verybold: "Très épaisse"
     thin: "Fin"
     medium: "Moyen"
     large: "Grand"
@@ -306,7 +306,7 @@ hub:
     openErrorFallback: "Un problème est survenu lors de la lecture du fichier journal. Veuillez réessayer."
     cannotOpenTitle_one: "Impossible d'ouvrir le fichier"
     cannotOpenTitle_other: "Impossible d'ouvrir les fichiers"
-    waitExport: "Veuillez patienter jusqu'à la fin de l'exportation, puis réessayez."
+    waitExport: "Veuillez patienter jusqu'à la fin de l'exportation, puis réessayer."
     cannotInsertTitle_one: "Impossible d'insérer le fichier"
     cannotInsertTitle_other: "Impossible d'insérer les fichiers"
     noLogsLoaded: "Aucun fichier journal n'est actuellement chargé. Choisissez « Ouvrir un ou plusieurs journaux » pour charger de nouveaux fichiers."
@@ -317,19 +317,19 @@ hub:
     connectErrorTitle: "Problème avec la source en direct"
     connectErrorContent: "Un problème est survenu lors de la connexion à la source en direct. Veuillez vérifier vos paramètres de connexion et réessayer."
     nt4NoFieldsTitle: "Problème avec la connexion NetworkTables"
-    nt4NoFieldsContent: "Aucun champ n'a été reçu du serveur. Le mode AdvantageKit est sélectionné. Vous connectez-vous à un serveur sans AdvantageKit?"
+    nt4NoFieldsContent: "Aucun champ n'a été reçu du serveur. Le mode AdvantageKit est sélectionné. Essayez-vous de vous connecter à un serveur sans AdvantageKit?"
     cannotConnectTitle: "Impossible de se connecter"
-    cannotConnectContent: "Veuillez patienter jusqu'à la fin de l'exportation, puis réessayez."
+    cannotConnectContent: "Veuillez patienter jusqu'à la fin de l'exportation, puis réessayer."
     cannotPublishTitle: "Impossible de publier"
     cannotPublishLive: "La publication n'est pas autorisée depuis une source en direct."
-    cannotPublishNoNt: "Veuillez ouvrir un fichier journal contenant des données NetworkTables, puis réessayez."
+    cannotPublishNoNt: "Veuillez ouvrir un fichier journal contenant des données NetworkTables, puis réessayer."
     publishSearching: "Recherche"
     publishActive: "Publication"
 
   export:
     cannotExportTitle: "Impossible d'exporter les données"
-    waitExport: "Veuillez patienter jusqu'à la fin de l'exportation précédente, puis réessayez."
-    noLogs: "Veuillez ouvrir un fichier journal ou vous connecter à une source en direct, puis réessayez."
+    waitExport: "Veuillez patienter jusqu'à la fin de l'exportation précédente, puis réessayer."
+    noLogs: "Veuillez ouvrir un fichier journal ou vous connecter à une source en direct, puis réessayer."
     failedTitle: "Échec de l'exportation des données"
     failedContent: "Un problème est survenu lors de la conversion au format d'exportation. Veuillez réessayer."
 
@@ -469,7 +469,7 @@ hub:
     sections:
       summary: "Résumé"
       center: "Centre"
-      spread: "Écart"
+      spread: "Dispersion"
       percentiles: "Centiles"
     metrics:
       count: "Nombre"
@@ -530,9 +530,9 @@ hub:
     noApiKeyTitle: "Aucune clé API"
     noApiKeyContent: "Veuillez saisir une clé API pour The Blue Alliance dans les préférences d'AdvantageScope. Une clé API peut être obtenue depuis la page de compte sur le site Web de The Blue Alliance."
     noMatchInfoTitle: "Aucune info de match"
-    noMatchInfoContent: "Impossible de lire les informations sur l'événement et le match dans le journal. Veuillez charger la vidéo à l'aide d'une URL YouTube ou d'un fichier local à la place."
+    noMatchInfoContent: "Impossible de lire les informations sur l'événement et le match dans le journal. Veuillez plutôt charger la vidéo à partir d'une URL YouTube ou d'un fichier local."
     noPracticeTitle: "Aucune vidéo pour le match d'entraînement"
-    noPracticeContent: "Il s'agit d'un match d'entraînement. Aucune donnée n'est disponible sur The Blue Alliance pour les matchs d'entraînement. Veuillez charger la vidéo à l'aide d'une URL YouTube ou d'un fichier local à la place."
+    noPracticeContent: "Il s'agit d'un match d'entraînement. Aucune donnée n'est disponible sur The Blue Alliance pour les matchs d'entraînement. Veuillez plutôt charger la vidéo à partir d'une URL YouTube ou d'un fichier local."
 
   joysticks:
     selectTitle: "Sélectionner la source de données des manettes"
@@ -618,7 +618,7 @@ hub:
   console:
     exportLog: "Exporter le journal de la console"
     cannotExportTitle: "Impossible d'exporter le journal de la console"
-    addConsoleData: "Veuillez ajouter un champ avec des données de console, puis réessayez."
+    addConsoleData: "Veuillez ajouter un champ avec des données de console, puis réessayer."
 
 xrClient:
   miniature:
@@ -712,7 +712,7 @@ menu:
     stopPublish: "Arrêter la publication"
     exportLayout: "Exporter la disposition..."
     importLayout: "Importer la disposition..."
-    resetDsLayout: "Réinitialiser à la disposition DS"
+    resetDsLayout: "Rétablir la disposition DS"
     newWindow: "Nouvelle fenêtre"
     closeWindow: "Fermer la fenêtre"
     recentPresets: "Préréglages récents"
@@ -790,8 +790,8 @@ menu:
     lockedRobotRotation: "Verrouillé sur le robot et la rotation"
 
   field3d:
-    orbitField: "Orbiter le terrain"
-    orbitRobot: "Orbiter le robot"
+    orbitField: "Orbiter autour du terrain"
+    orbitRobot: "Orbiter autour du robot"
     driverView: "Vue de pilotage"
     driverStation: "Poste de pilotage"
     blueLeft: "Bleu gauche"
@@ -854,7 +854,7 @@ main:
     documentation: "Documentation"
 
   app:
-    selectAssetsFolder: "Sélectionnez le dossier contenant des ressources AdvantageScope personnalisées"
+    selectAssetsFolder: "Sélectionner le dossier contenant des ressources AdvantageScope personnalisées"
 
   downloadStatus:
     assetTitle: "État de téléchargement des ressources"
@@ -869,7 +869,7 @@ main:
     devEnvDetail: "Cette application s'exécute dans un environnement de développement."
     fetchFailedDetail: "Échec de la récupération des informations de mise à jour depuis GitHub. Veuillez vérifier votre connexion Internet et réessayer."
     noData: "Aucune donnée de mise à jour disponible"
-    noDataDetail: "Aucune information de mise à jour n'a été trouvée pour la version installée d'AdvantageScope. Veuillez vérifier le dépôt GitHub d'AdvantageScope pour télécharger la dernière version."
+    noDataDetail: "Aucune information de mise à jour n'a été trouvée pour la version installée d'AdvantageScope. Veuillez consulter le dépôt GitHub d'AdvantageScope pour télécharger la dernière version."
     later: "Plus tard"
     viewChangelog: "Voir le journal des modifications"
     downloadLatestNativeQuery: "Télécharger la dernière version native?"
@@ -882,10 +882,10 @@ main:
     upToDateDetail: "Vous exécutez actuellement la version {{currentVersion}} (publiée le {{latestDate}})."
 
   logs:
-    openTitle: "Sélectionnez le ou les fichiers journaux du robot à ouvrir"
+    openTitle: "Sélectionner le ou les fichiers journaux du robot à ouvrir"
     openMessage: "Si plusieurs fichiers sont sélectionnés, les horodatages seront alignés automatiquement"
     robotLogsFilter: "Journaux du robot"
-    addTitle: "Sélectionnez le ou les fichiers journaux du robot à ajouter au journal actuel"
+    addTitle: "Sélectionner le ou les fichiers journaux du robot à ajouter au journal actuel"
     downloadFolderTitle: "Sélectionner l'emplacement de sauvegarde des journaux du robot"
     downloadFileTitle: "Sélectionner l'emplacement de sauvegarde du journal du robot"
     extensionWpilog: "Journal robot WPILib"
@@ -920,7 +920,7 @@ main:
     invalidDetail: "Le fichier de disposition sélectionné n'est pas dans un format reconnu."
     versionMismatch: "Incompatibilité de version"
     versionMismatchDetail: "Le fichier de disposition a été généré par une version différente d'AdvantageScope. La compatibilité n'est pas garantie."
-    resetDsQuery: "Réinitialiser à la disposition DS?"
+    resetDsQuery: "Rétablir la disposition DS?"
     resetDsDetail: "La disposition de cette fenêtre sera remplacée par la disposition DS. Cette action ne peut pas être annulée."
 
   video:
@@ -933,7 +933,7 @@ main:
     failedProcess: "Échec du traitement de la vidéo"
     failedProcessDetail: "Un problème est survenu lors du traitement de la vidéo. Veuillez réessayer."
     copyUrl: "Copier l'URL dans le presse-papiers"
-    copyUrlDetail: "Veuillez copier une URL YouTube dans le presse-papiers, puis réessayez."
+    copyUrlDetail: "Veuillez copier une URL YouTube dans le presse-papiers, puis réessayer."
     youtubeFailed: "Échec du téléchargement YouTube"
     youtubeFailedDetail: "Une erreur s'est produite lors de la tentative d'ouverture de la vidéo YouTube. Notez que cette fonctionnalité peut échouer de manière inattendue en raison de changements sur les serveurs de YouTube. Veuillez vérifier les mises à jour ou choisir un fichier vidéo local."
     tbaFailed: "Échec du téléchargement TBA"
@@ -975,8 +975,8 @@ main:
     notNow: "Pas maintenant"
 
   coordinateSystem:
-    legacyFrcMessage: "Système de coordonnées hérité"
-    legacyFrcDetail: "Ce champ utilise par défaut un système de coordonnées hérité pour assurer la compatibilité avec WPILib avant 2027. Si le code de votre robot utilise WPILib 2027, vous pouvez modifier l'option « Système de coordonnées » dans les préférences d'AdvantageScope. Consultez la documentation pour plus de détails."
+    legacyFrcMessage: "Ancien système de coordonnées"
+    legacyFrcDetail: "Ce champ utilise par défaut l'ancien système de coordonnées pour assurer la compatibilité avec WPILib avant 2027. Si le code de votre robot utilise WPILib 2027, vous pouvez modifier l'option « Système de coordonnées » dans les préférences d'AdvantageScope. Consultez la documentation pour plus de détails."
     systemcoreFtcMessage: "Système de coordonnées Systemcore"
     systemcoreFtcDetail: "Ce champ utilise par défaut le système de coordonnées Systemcore. Si le code de votre robot utilise le système de coordonnées traditionnel de la FTC, vous pouvez modifier l'option « Système de coordonnées » dans les préférences d'AdvantageScope. Consultez la documentation pour plus de détails."
 

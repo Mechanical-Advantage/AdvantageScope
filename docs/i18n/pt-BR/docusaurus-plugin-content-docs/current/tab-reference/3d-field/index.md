@@ -123,7 +123,7 @@ Cada arena já vem com tipos de objetos próprios para as peças do jogo, permit
 - Indicar quando e onde há uma peça dentro do robô
 - Visualizar trajetórias de lançamento calculadas com física
 
-Um uso bem prático é mostrar o estado das peças dentro do robô usando dados dos sensores. Por exemplo, um sensor de quebra de feixe (beam break) no caminho da nota em um robô de 2024 pode fazer a nota aparecer no modelo (como abaixo).
+Um uso bem prático é mostrar o estado das peças dentro do robô usando dados dos sensores. Por exemplo, um sensor de barreira óptica (beam break) no caminho da nota em um robô de 2024 pode fazer a nota aparecer no modelo (como abaixo).
 
 <details>
 <summary>Exemplo de código</summary>
@@ -144,7 +144,7 @@ Clique com o botão direito no campo 3D e escolha "Definir FOV..." para ajustar 
 
 ### Orbitar campo {#orbit-field}
 
-É o modo padrão, em que você move a câmera livremente pela arena. Use **clique esquerdo + arrastar** para girar a câmera e **clique direito + arrastar** para deslocar a visualização. **Role** o mouse para aproximar ou afastar o zoom.
+É o modo padrão, em que você move a câmera livremente pela arena. Clique com o botão esquerdo e arraste para girar a câmera e **clique direito + arrastar** para deslocar a visualização. **Role** o mouse para aproximar ou afastar o zoom.
 
 :::tip
 Você também pode controlar a câmera pelo teclado: **WASD** move para frente, trás e lados; **IJKL** gira a câmera; e **E** e **Q** sobem e descem na vertical.
@@ -168,7 +168,7 @@ Cada modelo de robô pode ter câmeras fixas configuradas, como câmeras de vis�
 
 <img src="/img/tab-reference/3d-field/3d-field-5.webp" alt="Câmera fixa" />
 
-Se você fornecer uma pose de "Substituição de câmera", ela passa a definir a posição de todas as câmeras fixas, mantendo o FOV e a proporção originais. Assim, o código do robô pode informar a posição de uma câmera móvel, como uma montada em uma torreta ou no capô de um lançador.
+Se você fornecer uma pose de "Substituição de câmera", ela passa a definir a posição de todas as câmeras fixas, mantendo o FOV e a proporção originais. Assim, o código do robô pode informar a posição de uma câmera móvel, como uma montada em uma torreta ou no hood (defletor) de um lançador.
 
 :::info
 Assim como os outros dados de pose, a pose de "Substituição de câmera" precisa ser _relativa à arena_, e não relativa ao robô.

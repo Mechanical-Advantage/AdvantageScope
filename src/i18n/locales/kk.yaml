@@ -175,7 +175,7 @@ unitConversion:
   toUnit: "Соңғы өлшем бірлігі"
   toUnitSelectTitle: "Түрлендірілетін соңғы өлшем бірлігін таңдау"
   extraFactor: "Қосымша коэффициент"
-  extraFactorInputTitle: "Таңдамалы масштабтау коэффициентін (көбейткішті) енгізу"
+  extraFactorInputTitle: "Арнайы масштабтау коэффициентін (көбейткішті) енгізу"
   cancel: "Бас тарту"
   confirm: "Растау"
   notAvailable: "Қолжетімсіз"
@@ -207,7 +207,7 @@ xrControls:
   streamingSmooth: "Біркелкі"
   streamingLowLatency: "Төмен кідіріс"
   showFloor: "Еденді көрсету"
-  showFloorTitle: "Еден кілемінің көрінуін қосу немесе өшіру"
+  showFloorTitle: "Еденнің көрінуін қосу немесе өшіру"
   showField: "Алаңды көрсету"
   showFieldTitle: "Алаңның көрінуін қосу немесе өшіру"
   showRobots: "Роботтарды көрсету"
@@ -297,7 +297,7 @@ hub:
   title: "AdvantageScope"
   updateAvailable: "Жаңарту қолжетімді"
   shareFeedback: "Пікір қалдыру"
-  timelineScrollToZoom: "Масштабтау үшін хронологияны айналдырыңыз"
+  timelineScrollToZoom: "Масштабтау үшін хронологияны дөңгелекпен айналдыру"
 
   logs:
     statusLoading: "Жүктелуде"
@@ -338,7 +338,7 @@ hub:
     play: "Ойнату"
     pause: "Кідірту"
     lock: "Ойнатуды нақты уақытқа бекіту"
-    unlock: "Ойнатуды босату"
+    unlock: "Ойнату бекітуін ашу"
 
   tabs:
     close: "Қойындыны жабу"
@@ -383,8 +383,8 @@ hub:
       ghost: "Елес"
       vision: "Камера нысанасы"
       swerveModuleVelocities: "Swerve модулінің жылдамдықтары"
-      rotationOverride: "Айналуды қайта анықтау"
-      rotationOverrideLegacy: "Айналуды қайта анықтау"
+      rotationOverride: "Айналуды алмастыру"
+      rotationOverrideLegacy: "Айналуды алмастыру"
       trajectory: "Траектория"
       heatmap: "Жылу картасы"
       arrow: "Көрсеткі"
@@ -395,7 +395,7 @@ hub:
       aprilTagIDs: "AprilTag идентификаторлары"
       axes: "Осьтер"
       cone: "Конус"
-      cameraOverride: "Камераны қайта анықтау"
+      cameraOverride: "Камераны алмастыру"
     options:
       bumpers: "Бамперлер"
       color: "Түс"
@@ -414,7 +414,7 @@ hub:
       enabled: "Қосулы"
       auto: "Авто"
       teleop: "Телеоперация"
-      teleop-no-endgame: "Телеоперация (эндшпильсіз)"
+      teleop-no-endgame: "Телеоперация (соңғы кезеңсіз)"
       full: "Толық журнал"
       visible: "Көрінетін ауқым"
       center: "Орталық"
@@ -670,7 +670,7 @@ menu:
     updates: "Жаңартуларды тексеру..."
     licenses: "Лицензияларды көрсету..."
     assetsFolder: "Активтер қалтасын көрсету"
-    customAssetsFolder: "Таңдамалы активтер қалтасын пайдалану"
+    customAssetsFolder: "Пайдаланушы активтері қалтасын пайдалану"
     assetDownloadStatus: "Активтерді жүктеп алу күйі..."
     owletDownloadStatus: "Owlet жүктеп алу күйі..."
     settings: "Параметрлер..."
@@ -749,7 +749,7 @@ menu:
 
   window:
     heading: "Терезе"
-    bringFront: "Барлығын алдыңғы жоспарға шығару"
+    bringFront: "Барлық терезені алдыға шығару"
     minimize: "Жию"
     zoom: "Масштаб"
 
@@ -817,14 +817,14 @@ main:
   assets:
     downloadStarted: "Жүктеп алу {{time}} басталды. Жүктеп алу аяқталғанша бірнеше минут күтіңіз."
     downloadFinished: "Барлық активтер жүктеп алынды. AdvantageScope жаңартуларды жүйелі түрде тексеріп тұрады."
-    connectFailed: "GitHub-қа қосылу мүмкін емес. Жақында қайта қосылып көреді."
-    noDiskSpace: "Дискіде орын жеткіліксіз. Жақында қайталап көреді."
+    connectFailed: "GitHub-қа қосылу мүмкін емес. Сәлден соң қайта қосылу әрекеті жасалады."
+    noDiskSpace: "Дискіде орын жеткіліксіз. Сәлден соң қайталап көру әрекеті жасалады."
     readme: "Бұл қалтада 2D алаңы, 3D алаңы және джойстик көріністеріне арналған қосымша активтер бар. Қосымша мәліметтер алу үшін AdvantageScope құжаттамасын қараңыз (қолданбадағы құжаттама қойындысы арқылы немесе төмендегі URL мекенжайында қолжетімді)."
 
   owlet:
     upToDate: "Owlet жаңартылған. AdvantageScope жаңартуларды жүйелі түрде тексеріп тұрады."
-    offlineCache: "Офлайн Owlet кэші пайдаланылуда. Жаңартуларды жақында тексереді."
-    noDiskSpace: "Дискіде орын жеткіліксіз. Жақында қайталап көреді."
+    offlineCache: "Офлайн Owlet кэші пайдаланылуда. Сәлден соң жаңартулар тексеріледі."
+    noDiskSpace: "Дискіде орын жеткіліксіз. Сәлден соң қайталап көру әрекеті жасалады."
     noOwlet: "Owlet қолжетімсіз болғандықтан, Hoot журнал файлын декодтау мүмкін емес."
     openFailed: "Hoot журнал файлын ашу мүмкін болмады."
     tooOld: "Hoot журнал файлы декодтау үшін тым ескі. Hoot журналдарын Phoenix 2024 немесе одан кейінгі нұсқалары шығаруы керек."
@@ -852,7 +852,7 @@ main:
     documentation: "Құжаттама"
 
   app:
-    selectAssetsFolder: "Таңдамалы AdvantageScope активтері бар қалтаны таңдау"
+    selectAssetsFolder: "Пайдаланушының AdvantageScope активтері бар қалтаны таңдау"
 
   downloadStatus:
     assetTitle: "Активті жүктеп алу күйі"
@@ -871,13 +871,13 @@ main:
     later: "Кейінірек"
     viewChangelog: "Өзгерістер журналын қарау"
     downloadLatestNativeQuery: "Жүйеге арналған соңғы нұсқаны жүктеп аласыз ба?"
-    downloadLatestNativeDetail: "{{latestVersion}} нұсқасы қолжетімді (шығарылған күні {{latestDate}}). Сіз қазір arm64 платформасында {{currentVersion}} нұсқасының x86 құрастырылымын іске қосып отырсыз. Жүйеге арналған соңғы нұсқаны жүктеп алғыңыз келе ме?"
+    downloadLatestNativeDetail: "{{latestVersion}} нұсқасы қолжетімді (шығарылған күні {{latestDate}}). Қазір arm64 платформасында {{currentVersion}} нұсқасының x86 құрастырылымы іске қосылған. Жүйеге арналған соңғы нұсқаны жүктеп алғыңыз келе ме?"
     downloadLatestQuery: "Соңғы нұсқаны жүктеп аласыз ба?"
-    downloadLatestDetail: "{{latestVersion}} нұсқасы қолжетімді (шығарылған күні {{latestDate}}). Сіз қазір {{currentVersion}} нұсқасын іске қосып отырсыз. Соңғы нұсқаны жүктеп алғыңыз келе ме?"
+    downloadLatestDetail: "{{latestVersion}} нұсқасы қолжетімді (шығарылған күні {{latestDate}}). Қазір {{currentVersion}} нұсқасы пайдаланылуда. Соңғы нұсқаны жүктеп алғыңыз келе ме?"
     downloadNativeQuery: "Жүйеге арналған нұсқаны жүктеп аласыз ба?"
-    downloadNativeDetail: "Сіз бұл қолданбаның x86 нұсқасын arm64 платформасында іске қосып отырған сияқтысыз. Жүйеге арналған нұсқаны жүктеп алғыңыз келе ме?"
+    downloadNativeDetail: "Бұл қолданбаның x86 нұсқасы arm64 платформасында пайдаланылып жатқан тәрізді. Жүйеге арналған нұсқаны жүктеп алғыңыз келе ме?"
     noUpdates: "Жаңартулар жоқ"
-    upToDateDetail: "Сіз қазір {{currentVersion}} нұсқасын (шығарылған күні {{latestDate}}) іске қосып отырсыз."
+    upToDateDetail: "Қазір {{currentVersion}} нұсқасы (шығарылған күні {{latestDate}}) пайдаланылуда."
 
   logs:
     openTitle: "Ашылатын робот журналының файл(дар)ын таңдау"
@@ -944,7 +944,7 @@ main:
     warning: "Ескерту"
     alert: "Дабыл"
     exportInProgress: "Экспорттау орындалуда"
-    exportInProgressDetail: "Экспорттау орындалып жатқанда терезені жапқыңыз келетініне сенімдісіз бе? Деректер САҚТАЛМАЙДЫ."
+    exportInProgressDetail: "Терезені жапсаңыз, деректер САҚТАЛМАЙДЫ. Жабуды растайсыз ба?"
     incompleteExport: "Экспорттауға арналған деректер толық емес"
     incompleteExportDetail: "Кейбір өрістер экспортталған деректерде қолжетімсіз болады. Барлық өрістерді серверден сақтау үшін «Журналдау» тікелей режимін таңдау керек. Мәліметтер алу үшін AdvantageScope құжаттамасын қараңыз."
 
@@ -980,7 +980,7 @@ main:
 
   lite:
     tooSmall: "Орын жеткіліксіз, экран орналасуын өзгертіңіз."
-    mobileWarning: "AdvantageScope Lite үстел компьютерлері мен планшеттерде жақсырақ жұмыс істейді."
+    mobileWarning: "AdvantageScope Lite компьютерлер мен планшеттерде жақсырақ жұмыс істейді."
 
 units:
   defaultLabel: "{{unit}} (Әдепкі)"

@@ -13,7 +13,7 @@ REVLib, 2026 itibarıyla Spark Max ve Spark Flex'ten gelen verileri bir REV CAN 
 AdvantageScope'un _Gayriresmi_ REV Uyumlu Loglayıcısı (URCL), sorunsuz bir geçiş sağlamak ve önceki sezonlardaki tüm özellikleri korumak için 2026'da da takımların kullanımına açık kalacak. 2027 ve sonrasındaki loglama seçenekleriyle ilgili detayları ilerleyen tarihlerde paylaşacağız.
 :::
 
-URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger / Gayriresmi REV Uyumlu Loglayıcı), Spark Max ve Spark Flex cihazlarından gelen verileri otomatik olarak kaydeden, Java, C++ ve Python için geliştirilmiş bir loglama kütüphanesidir. CTRE'nin [Tuner X grafik çizme özelliğine](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) ve [Phoenix 6 sinyal loglayıcısına](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) benzer şekilde tüm cihazların canlı grafiklenmesini ve loglanmasını sağlar.
+URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger / Gayriresmi REV Uyumlu Loglayıcı), Spark Max ve Spark Flex cihazlarından gelen verileri otomatik olarak kaydeden, Java, C++ ve Python için geliştirilmiş bir loglama kütüphanesidir. CTRE'nin [Tuner X grafik çizme özelliğine](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) ve [Phoenix 6 sinyal loglayıcısına](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) benzer şekilde tüm cihazların canlı grafiğe dökülmesini ve loglanmasını sağlar.
 
 Kurulumdan sonra tüm Spark Max ve Spark Flex cihazlarından gelen periyodik CAN kareleri NetworkTables'a veya DataLog'a aktarılır. NetworkTables kullanıyorsanız verileri bir log dosyasına kaydetmek için WPILib'in [DataLogManager](https://docs.wpilib.org/tr/stable/docs/software/telemetry/datalog.html) aracından yararlanabilirsiniz. Bu kareleri AdvantageScope'ta görüntüleyebilirsiniz (detaylar için [Log dosyalarını yönetme](/overview/log-files/index.md) ve [Canlı kaynaklara bağlanma](/overview/live-sources/index.md) sayfalarına bakın).
 
@@ -113,7 +113,7 @@ Daha fazla detay için [REVLib dokümantasyonuna](https://docs.revrobotics.com/r
 
 ## SysId kullanımı {#sysid-usage}
 
-1. URCL'yi yukarıda gösterildiği gibi kurduktan sonra, mekanizma log tüketicisi için `null` vererek SysId rutinini yapılandırın. Aşağıda Java için bir örnek verilmiştir. Bu yapılandırmayı alt sistem sınıfı içinde yapabilirsiniz.
+1. URCL'yi yukarıda gösterildiği gibi kurduktan sonra, mekanizma log alıcısı (log consumer) için `null` vererek SysId rutinini yapılandırın. Aşağıda Java için bir örnek verilmiştir. Bu yapılandırmayı alt sistem sınıfı içinde yapabilirsiniz.
 
 <Tabs groupId="library">
 <TabItem value="WPILib" label="WPILib" default>
@@ -124,7 +124,7 @@ var sysIdRoutine = new SysIdRoutine(
   new SysIdRoutine.Config(),
   new SysIdRoutine.Mechanism(
     (voltage) -> subsystem.runVolts(voltage.in(Volts)),
-    null, // Veriler URCL ile kaydedildiği için log tüketicisi yok
+    null, // Veriler URCL ile kaydedildiği için log alıcısı (log consumer) yok
     subsystem
   )
 );
@@ -148,7 +148,7 @@ var sysIdRoutine = new SysIdRoutine(
   ),
   new SysIdRoutine.Mechanism(
     (voltage) -> subsystem.runVolts(voltage.in(Volts)),
-    null, // Veriler URCL ile kaydedildiği için log tüketicisi yok
+    null, // Veriler URCL ile kaydedildiği için log alıcısı (log consumer) yok
     subsystem
   )
 );

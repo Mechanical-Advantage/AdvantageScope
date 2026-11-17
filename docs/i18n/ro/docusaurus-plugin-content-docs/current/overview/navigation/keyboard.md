@@ -27,9 +27,9 @@ AdvantageScope include numeroase scurtături de tastatură care permit o navigar
 <table>
 <tr><td>`Ctrl+N`</td><td>Creează o fereastră nouă</td></tr>
 <tr><td>`Ctrl+Shift+N`</td><td>Închide fereastra curentă</td></tr>
-<tr><td>`Ctrl+Virgulă`</td><td>Deschide fereastra de preferințe</td></tr>
-<tr><td>`Ctrl+Punct`</td><td>Comută vizibilitatea barei laterale</td></tr>
-<tr><td>`Ctrl+Bară înclinată`</td><td>Comută vizibilitatea panoului de control</td></tr>
+<tr><td>`Ctrl+,`</td><td>Deschide fereastra de preferințe</td></tr>
+<tr><td>`Ctrl+.`</td><td>Comută vizibilitatea barei laterale</td></tr>
+<tr><td>`Ctrl+/`</td><td>Comută vizibilitatea panoului de control</td></tr>
 </table>
 
 ### Controale file {#tab-controls}

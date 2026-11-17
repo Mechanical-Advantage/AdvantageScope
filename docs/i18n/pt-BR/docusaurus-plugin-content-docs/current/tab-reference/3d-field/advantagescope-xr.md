@@ -66,7 +66,7 @@ Na janela Controles de XR, você encontra várias opções para ajustar como o c
 - **Transmissão:**
   - Escolha _Suave_ quando um pequeno atraso não atrapalhar e você quiser uma transmissão mais estável, como ao simular rotinas autônomas ou reproduzir logs.
   - Escolha _Baixa latência_ quando precisar de resposta imediata (mesmo com alguma oscilação visual), como ao sobrepor dados em um robô real ou pilotar um robô simulado no teleoperado.
-- **Mostrar chão:** Exibe o modelo plano do piso/tapete embaixo do campo em vez de sobrepor diretamente na superfície real.
+- **Mostrar piso:** Exibe o modelo plano do piso/tapete embaixo do campo em vez de sobrepor diretamente na superfície real.
 - **Mostrar campo:** Exibe o modelo da arena, incluindo as barreiras e os elementos do jogo. Os objetos personalizados de [peças do jogo](/tab-reference/3d-field#game-piece-objects) aparecem sempre, mesmo com essa opção desligada.
 - **Mostrar robôs:** Exibe os modelos dos robôs. Você pode desativar essa opção quando estiver sobrepondo dados em um robô físico (como alvos de visão ou mecanismos 2D).
 

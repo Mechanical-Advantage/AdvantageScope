@@ -48,7 +48,7 @@ periodic() {
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-Pentru a publica date despre mecanism folosind AdvantageKit, înregistrează periodic un `Mechanism2d` ca câmp de ieșire (ca în exemplul de mai jos). Reține că acest apel salvează doar starea curentă a lui `Mechanism2d`, așa că trebuie apelat în fiecare ciclu de buclă după actualizarea obiectului.
+Pentru a publica date despre mecanism folosind AdvantageKit, înregistrează periodic un `Mechanism2d` drept câmp de ieșire (ca în exemplul de mai jos). Reține că acest apel salvează doar starea curentă a lui `Mechanism2d`, așa că trebuie apelat în fiecare ciclu de buclă după actualizarea obiectului.
 
 ```java
 LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);

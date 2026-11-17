@@ -42,9 +42,9 @@ O AdvantageScope foi projetado para entregar a melhor experiência possível qua
 Todos os recursos do AdvantageScope terão suporte oficial no FTC após a transição para o Systemcore na temporada 2027-2028.
 :::
 
-## 🧮 Gráficos cientes de unidade {#unit-aware-graphing}
+## 🧮 Gráficos com suporte a unidades {#unit-aware-graphing}
 
-A guia 📉 [Gráfico de linha](/tab-reference/line-graph/) foi reformulada para ser totalmente ciente de unidade. Isso libera vários recursos novos ao plotar campos numéricos:
+A guia 📉 [Gráfico de linha](/tab-reference/line-graph/) foi reformulada para ter suporte completo a unidades. Isso libera vários recursos novos ao plotar campos numéricos:
 
 - Rótulos precisos nos eixos Y e na exibição dos valores
 - Conversão rápida para unidades compatíveis (sem janelas pop-up)
@@ -55,7 +55,7 @@ A captura de tela abaixo mostra tudo isso funcionando na prática. Repare que o 
 
 _Você encontra mais detalhes sobre o suporte a unidades na [documentação](/tab-reference/line-graph/units)._
 
-<img src="/img/tab-reference/line-graph/units-1.webp" alt="Gráficos cientes de unidade" />
+<img src="/img/tab-reference/line-graph/units-1.webp" alt="Gráficos com suporte a unidades" />
 
 _A interface em inglês é exibida acima._
 

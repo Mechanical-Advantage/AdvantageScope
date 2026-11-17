@@ -25,7 +25,7 @@ _上圖所示為英文介面。_
 <img src="/img/tab-reference/line-graph/line-graph-2.webp" alt="警示視覺化" />
 
 :::tip
-要疊加機器人模式（自動、遙控或實用工具），請點擊「離散欄位」旁的三個點，再點擊「顯示機器人模式」。
+要疊加機器人模式（自動、遙控或測試模式），請點擊「離散欄位」旁的三個點，再點擊「顯示機器人模式」。
 
 <img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="機器人模式疊加顯示" />
 

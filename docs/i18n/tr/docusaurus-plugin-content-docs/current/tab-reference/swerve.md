@@ -18,7 +18,7 @@ _Yukarıda İngilizce arayüz gösteriliyor._
 
 Zaman çizelgesi, oynatmayı ve görselleştirmeyi kontrol etmek için kullanılır. Zaman çizelgesine tıklayarak bir zaman seçebilir, sağ tıklayarak seçimi kaldırabilirsiniz. Seçilen zaman tüm sekmeler arasında senkronize edilir; böylece aynı anı diğer görünümlerde de hızlıca bulabilirsiniz.
 
-Sarı bölümler robotun otonomda, mavi bölümler teleopta ve gri bölümler test modunda olduğu zamanları gösterir.
+Sarı bölümler robotun otonomda, mavi bölümler teleop'ta ve gri bölümler test modunda olduğu zamanları gösterir.
 
 Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı veya aşağı kaydırın. `Shift` tuşunu basılı tutarken tıklayıp sürükleyerek bir aralık da seçebilirsiniz. Yatay kaydırma yaparak (desteklenen cihazlarda) veya zaman çizelgesi üzerinde tıklayıp sürükleyerek sola ve sağa hareket edebilirsiniz. Canlı bağlantıdayken sola kaydırmak mevcut zamandan kilidi açar, en sağa kadar kaydırmak ise tekrar mevcut zamana kilitler. Robotun etkin olduğu aralığa yakınlaştırmak için `Ctrl+\` tuşlarına basın.
 
@@ -34,7 +34,7 @@ Başlamak için bir alanı “Kaynaklar” bölümüne sürükleyin. X düğmesi
 
 - **Modül hızları:** Diyagram üzerinde vektörler olarak görüntülenen dört swerve modülü durumundan oluşan küme.
 - **Robot hızları:** Diyagramın merkezinde görüntülenen doğrusal ve açısal hızlar.
-- **Döndürme:** Diyagramı döndürmek için kullanılan açısal konum.
+- **Rotasyon:** Diyagramı döndürmek için kullanılan açısal konum.
 
 ## Veri formatı {#data-format}
 

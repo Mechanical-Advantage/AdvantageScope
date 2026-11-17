@@ -43,4 +43,4 @@ AdvantageScope כוללת כלים שנועדו לתת חוויית עבודה �
 
 קיימת הפצה לא רשמית של [AdvantageScope Lite](/more-features/advantagescope-lite) שהותאמה במיוחד ל-FTC: [**AdvantageScope Lite for REV Control System**](https://github.com/j5155/AdvantageScope-Lite-FTC). הפצה זו אינה רשמית ואינה נתמכת על ידי מפתחי AdvantageScope.
 
-בעוד ש-[AdvantageScope Lite](/more-features/advantagescope-lite) הרגילה היא אפליקציית דפדפן שנועדה לפעול על Systemcore וב-FIRST Driver Station, ההפצה הלא רשמית ל-FTC הותאמה לעבודה ישירה על מערכת הבקרה הקיימת של FTC. היא תומכת מובנית בצפייה בנתונים חיים דרך פרוטוקול FTC Dashboard, ללא צורך בתוכנה נוספת.
+בעוד ש-[AdvantageScope Lite](/more-features/advantagescope-lite) הרגילה היא אפליקציית דפדפן שנועדה לפעול על Systemcore וב-FIRST Driver Station, ההפצה הלא רשמית ל-FTC הותאמה לעבודה ישירה על מערכת הבקרה הקיימת של FTC. היא כוללת תמיכה מובנית בצפייה בנתונים חיים דרך פרוטוקול FTC Dashboard, ללא צורך בתוכנה נוספת.

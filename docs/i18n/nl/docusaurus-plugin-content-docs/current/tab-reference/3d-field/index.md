@@ -152,7 +152,7 @@ Je kunt de camera ook met het toetsenbord besturen: **WASD** om te verplaatsen, 
 
 ### Rond robot draaien {#orbit-robot}
 
-Deze modus werkt precies zo als "Rond veld draaien", alleen beweegt de camera nu met de robot mee. Zo krijg je mooie volgshots van hoe de robot over het veld rijdt.
+Deze modus werkt precies hetzelfde als "Rond veld draaien", alleen beweegt de camera nu met de robot mee. Zo krijg je mooie volgshots van hoe de robot over het veld rijdt.
 
 ### Driver Station {#driver-station}
 

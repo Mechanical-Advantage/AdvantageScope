@@ -4,7 +4,7 @@ sidebar_position: 7
 
 # 🎬 Video {#video}
 
-Fila video îți permite să compari datele din log alăturat cu un videoclip al meciului înregistrat separat. Pașii de mai jos arată cum încarci un videoclip și cum îl sincronizezi cu logul.
+Fila video îți permite să compari datele din log în paralel cu un videoclip al meciului înregistrat separat. Pașii de mai jos arată cum încarci un videoclip și cum îl sincronizezi cu logul.
 
 ## Încărcarea videoclipului {#loading-the-video}
 
@@ -12,7 +12,7 @@ AdvantageScope îți oferă trei opțiuni pentru a încărca un videoclip:
 
 1. **Fișier local:** Dă clic pe pictograma gri pentru fișier, apoi alege fișierul video dorit. Majoritatea formatelor video uzuale sunt suportate.
 2. **YouTube:** Copiază un link YouTube în clipboard, apoi dă clic pe pictograma roșie pentru clipboard. După câteva secunde, videoclipul va începe să se descarce.
-3. **The Blue Alliance:** Dă clic pe pictograma albastră TBA pentru a încărca automat videoclipul meciului pe baza fișierului log. Dacă sunt disponibile mai multe videoclipuri, alege-l pe cel dorit din meniul pop-up. Această funcție necesită o cheie API pentru TBA, pe care o poți obține de la [thebluealliance.com/account](https://www.thebluealliance.com/account) și o poți copia în preferințele AdvantageScope, la „Cheie API TBA”.
+3. **The Blue Alliance:** Dă clic pe pictograma albastră TBA pentru a încărca automat videoclipul meciului pe baza fișierului log. Dacă sunt disponibile mai multe videoclipuri, alege-l pe cel dorit din meniul pop-up. Această funcție necesită o cheie API pentru TBA, pe care o poți obține de pe [thebluealliance.com/account](https://www.thebluealliance.com/account) și o poți introduce în preferințele AdvantageScope, la „Cheie API TBA”.
 
 <img src="/img/tab-reference/video-1.webp" alt="Selector de sursă" />
 
@@ -65,11 +65,11 @@ Odată blocată, redarea video rămâne sincronizată cu timpul selectat în log
 <details>
 <summary>Controale cronologie</summary>
 
-Cronologia controlează redarea și vizualizarea. Dacă dai clic pe cronologie, selectezi un moment de timp, iar cu clic dreapta îl deselectezi. Timpul selectat este sincronizat în toate filele, astfel încât să poți găsi rapid același moment și în alte vizualizări.
+Cronologia controlează redarea și vizualizarea. Fă clic pe cronologie pentru a selecta un moment, iar clic dreapta pentru a-l deselecta. Momentul selectat este sincronizat în toate filele, astfel încât poți găsi rapid aceeași poziție și în alte vizualizări.
 
-Secțiunile galbene arată când robotul este în modul autonom, cele albastre când este în modul teleoperat, iar cele gri când este în modul utilitar.
+Secțiunile galbene arată când robotul este în autonom, cele albastre când este în teleoperat, iar cele gri când este în modul utilitar.
 
-Pentru a mări, plasează cursorul peste cronologie și derulează în sus sau în jos. Poți selecta un interval și prin clic și tragere în timp ce ții apăsată tasta `Shift`. Mută-te la stânga și la dreapta prin derulare orizontală (pe dispozitivele suportate) sau prin clic și tragere pe cronologie. Când ești conectat live, derularea spre stânga deblochează redarea de la timpul curent, iar derularea până la capăt în dreapta o blochează din nou la timpul curent. Apasă `Ctrl+\` pentru a mări la intervalul în care robotul este activat.
+Pentru a face zoom, pune cursorul peste cronologie și derulează în sus sau în jos. Poți selecta și un interval făcând clic și trăgând în timp ce ții apăsată tasta `Shift`. Mută-te la stânga și la dreapta prin derulare orizontală (pe dispozitivele suportate) sau făcând clic și trăgând pe cronologie. Când ești conectat live, derularea spre stânga deblochează cronologia de la momentul curent, iar derularea până la capăt în dreapta o blochează din nou pe momentul curent. Apasă `Ctrl+\` pentru a face zoom pe perioada în care robotul este activat.
 
 <img src="/img/tab-reference/timeline.webp" alt="Cronologie" />
 

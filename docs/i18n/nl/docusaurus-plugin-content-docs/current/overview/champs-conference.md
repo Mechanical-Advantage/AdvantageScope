@@ -2,7 +2,7 @@
 sidebar_position: 6
 ---
 
-# 📽️ Kampioenschapsconferentie {#championship-conference}
+# 📽️ FIRST Championship-conferentie {#championship-conference}
 
 In deze presentatie van Team 6328 op het FIRST Championship 2025 krijg je een toegankelijk overzicht van wat AdvantageScope allemaal kan en hoe je het inzet.
 

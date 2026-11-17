@@ -15,7 +15,7 @@ draft: true
 
 ## ✴️ Experimental: Soporte de FTC {#ftc-support}
 
-Como preparación para el soporte completo con Systemcore en la temporada 2027-2028, esta versión suma varias funciones para mejorar la compatibilidad con el sistema de control actual de Reto Tecnológico FIRST (FTC):
+Como preparación para el soporte completo con Systemcore en la temporada 2027-2028, esta versión suma varias funciones para mejorar la compatibilidad con el sistema de control actual de FIRST Tech Challenge (FTC):
 
 - Campos de FTC y modelos de robots en el 🗺️ [Campo 2D](/tab-reference/2d-field) y el 👀 [Campo 3D](/tab-reference/3d-field)
 - Nuevas opciones de [sistemas de coordenadas](/more-features/coordinate-systems) compatibles con las [coordenadas estándar de FTC](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html)

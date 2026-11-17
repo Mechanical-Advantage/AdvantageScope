@@ -36,4 +36,4 @@ AdvantageScope के अनौपचारिक डिस्ट्रीब्
 
 - [**REV कंट्रोल सिस्टम के लिए AdvantageScope लाइट:**](https://github.com/j5155/AdvantageScope-Lite-FTC) मौजूदा (pre-Systemcore) FTC कंट्रोल सिस्टम पर उपयोग के लिए [AdvantageScope लाइट](/more-features/advantagescope-lite) का एक संशोधित संस्करण।
 - [**Homebrew इंस्टॉलर:**](https://formulae.brew.sh/cask/advantagescope) macOS पर कमांड लाइन से AdvantageScope इंस्टॉल करने के लिए एक Homebrew cask।
-- [**Arch User Repository:**](https://aur.archlinux.org/packages/advantagescope) pacman पैकेज मैनेजर के साथ उपयोग के लिए एक वैकल्पिक वितरण तरीका (AdvantageScope का आधिकारिक Arch वितरण [यहाँ](#6328-downloads) उपलब्ध है)।
+- [**Arch User Repository:**](https://aur.archlinux.org/packages/advantagescope) pacman पैकेज मैनेजर के साथ उपयोग के लिए एक वैकल्पिक डिस्ट्रीब्यूशन तरीका (AdvantageScope का आधिकारिक Arch डिस्ट्रीब्यूशन [यहाँ](#6328-downloads) उपलब्ध है)।

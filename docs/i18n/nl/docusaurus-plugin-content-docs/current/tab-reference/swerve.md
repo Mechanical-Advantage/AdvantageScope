@@ -82,7 +82,7 @@ Heb je oudere logbestanden van vóór WPILib 2027 en Systemcore? Dan worden de o
 
 Je kunt de volgende opties instellen:
 
-- **Max snelheid:** De hoogst haalbare snelheid van de modules; hiermee schaalt de lengte van de pijlen.
+- **Max. snelheid:** De hoogst haalbare snelheid van de modules; hiermee schaalt de lengte van de pijlen.
 - **Framegrootte:** De afstanden tussen de swerve-modules links en rechts, en voor en achter. Dit past de beeldverhouding van het robotdiagram aan.
 - **Oriëntatie:** Draait de richting waarin het robotdiagram wijst. Handig om het diagram gelijk te zetten met posedata of wedstrijdvideo's.
 

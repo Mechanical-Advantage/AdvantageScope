@@ -36,7 +36,7 @@ Lista de mai jos este un punct de plecare, dar nu este exhaustivă:
 - **PsiKit**: Un framework de logging și replay (reluare) pentru FTC, inspirat de AdvantageKit.
 
 :::warning
-Aveți grijă să respectați regula R704 la competiții. Serviciile de telemetrie terțe, precum FTC Dashboard, sunt interzise prin Wi-Fi în timpul competițiilor.
+Respectă regula R704 la competiții. Serviciile de telemetrie terțe, precum FTC Dashboard, sunt interzise prin Wi-Fi în timpul competițiilor.
 :::
 
 ### AdvantageScope Lite pentru FTC {#advantagescope-lite-for-ftc}

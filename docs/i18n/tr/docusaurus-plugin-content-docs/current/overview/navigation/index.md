@@ -1,4 +1,4 @@
-# 🧭 Uygulama gezinmesi {#app-navigation}
+# 🧭 Uygulamada gezinme {#app-navigation}
 
 Aşağıdaki ekran görüntüsünde ana AdvantageScope penceresinin temel bölümlerini görebilirsiniz. Görünüm işletim sistemine göre ufak farklılıklar gösterebilir.
 
@@ -19,7 +19,7 @@ Birden fazla log dosyasını aynı anda incelemek için `Dosya` > `Yeni pencere`
 
 Sol tarafta kullanılabilir tabloları ve alanları gösteren kenar çubuğu yer alır. Seçilebilir alanlar _italik_ olarak, yerleşik tablolar (WPILib veya AdvantageKit'ten gelenler) ise <u>altı çizili</u> olarak gösterilir. İç içe tabloları açmak için ok simgesine tıklayın. **Tek bir alanı sürükleyerek** seçebilir ya da **cmd/ctrl tuşunu basılı tutup** birden fazla alana tıklayarak bir grup oluşturabilirsiniz. Seçimi tamamlamak için seçtiğiniz alan grubunu sürüklemeye başlayın.
 
-Bir alanı aramak için arama kutusuna yazmaya başlayın. Açılan listeden istediğiniz alanı seçtiğinizde, ilgili alan kenar çubuğunda vurgulanır ve otomatik olarak ekrana kaydırılır.
+Bir alanı aramak için arama kutusuna yazmaya başlayın. Açılan listeden istediğiniz alanı seçtiğinizde, ilgili alan kenar çubuğunda vurgulanır ve liste otomatik olarak o alana kaydırılır.
 
 :::info
 Kenar çubuğunun sağ kenarından tutup sürükleyerek boyutunu değiştirebilir veya gizleyebilirsiniz. Görünürlüğünü hızlıca açıp kapatmak için kenara çift tıklayın.
@@ -42,7 +42,7 @@ Sekmeleri sürükleyip bırakarak yeniden sıralayabilir, üzerine sağ tıklay�
 
 ## Görüntüleyici paneli {#viewer-pane}
 
-Görüntüleyici paneli, her sekme türü için verilerin ekrana çizildiği alandır. Her sekmenin görüntüleyici paneliyle ilgili ayrıntılar için ilgili sekme belgelerini inceleyin. Sekme çubuğundaki pencereyi ayır düğmesine tıklayarak bu görünümü ayrı bir pencereye taşıyabilirsiniz.
+Görüntüleyici paneli, her sekme türü için verilerin ekrana çizildiği alandır. Her sekmenin görüntüleyici paneliyle ilgili ayrıntılar için ilgili sekme belgelerini inceleyin. Sekme çubuğundaki “Sekmeyi ayır” düğmesine tıklayarak bu görünümü ayrı bir pencereye taşıyabilirsiniz.
 
 ## Kontrol paneli {#control-pane}
 

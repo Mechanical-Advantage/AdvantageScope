@@ -63,7 +63,7 @@ AdvantageScope 內建多種鍵盤快捷鍵，讓操作與導覽更快速。在 m
 </tr>
 <tr>
 <td>`Option+C`</td><td>[💬 主控台](/tab-reference/console)</td>
-<td>`Option+P`</td><td>[📍 點](/tab-reference/points)</td>
+<td>`Option+P`</td><td>[📍 點位圖](/tab-reference/points)</td>
 </tr>
 <tr>
 <td>`Option+S`</td><td>[📊 統計資料](/tab-reference/statistics)</td>

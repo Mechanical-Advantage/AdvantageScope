@@ -19,7 +19,7 @@ Systemcore के लिए AdvantageScope लाइट को इंस्ट�
 
 - [**डिफ़ॉल्ट FRC एसेट्स**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsDefaultFRC.zip): FRC फील्ड्स, FRC उदाहरण रोबोट, और सभी जॉयस्टिक लेआउट।
 - [**डिफ़ॉल्ट FTC एसेट्स**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsDefaultFTC.zip): FTC फील्ड्स, FTC उदाहरण रोबोट, और सभी जॉयस्टिक लेआउट।
-- [**FRC 6328 एसेट्स**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsFRC6328.zip): केवल AdvantageScope के [Team 6328 वितरण](/overview/installation#team-6328) के लिए विशेष एसेट्स।
+- [**FRC 6328 एसेट्स**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsFRC6328.zip): केवल AdvantageScope के [Team 6328 डिस्ट्रीब्यूशन](/overview/installation#team-6328) के लिए विशेष एसेट्स।
 
 :::
 

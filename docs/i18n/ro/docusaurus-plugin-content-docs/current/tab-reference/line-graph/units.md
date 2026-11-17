@@ -4,7 +4,7 @@ Fila grafic liniar recunoaște unitățile de măsură, așa că poți converti 
 
 - Când adaugi **câmpuri pe aceeași axă cu tipuri de unități compatibile**, AdvantageScope convertește automat ambele câmpuri la aceeași unitate. Acest lucru se reflectă în etichetarea axei Y și a legendei.
 - Dă clic pe cele trei puncte de lângă titlul axei pentru a **comuta rapid la unități alternative**. Lista include cele mai comune unități compatibile cu câmpurile selectate.
-- Activează **integrarea sau diferențierea** ([documentație](/tab-reference/line-graph/#integration-and-differentiation)) pentru a vedea unitățile exacte ale integralei sau derivatei. Poți ajusta unitatea de bază din meniu pentru a filtra în unități non-native.
+- Activează **integrarea sau derivarea** ([documentație](/tab-reference/line-graph/#integration-and-differentiation)) pentru a vedea unitățile exacte ale integralei sau derivatei. Poți ajusta unitatea de bază din meniu pentru a filtra în unități non-native.
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="Grafice bazate pe unități" />
 

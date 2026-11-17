@@ -50,6 +50,6 @@ Canlı kaynak olarak NetworkTables kullanıyorsanız şu iki moddan birini seçe
 - **Düşük bant genişliği (Varsayılan):** AdvantageScope sunucudan yalnızca o anda kullandığınız alanların verilerini ister. Bir alanı seçmeden önce yayınlanan veriler görünmez. Ağ bant genişliğinin kısıtlı olduğu ortamlarda veya çok sayıda alan yayınlandığında bu modu kullanmanız **kesinlikle önerilir**.
 - **Loglama:** AdvantageScope, o anda kullanıp kullanmadığınıza bakmaksızın tüm alanlar için veri ister. Böylece canlı akışı duraklatıp diğer alanları da geriye dönük olarak inceleyebilirsiniz (yukarıdaki “Canlı verileri görüntüleme” bölümüne bakın). Bu mod geliştirme sırasında oldukça kullanışlıdır, ancak **bant genişliği kısıtlıysa KULLANILMAMALIDIR**.
 
-### Canlı veriyi at {#discard-live-data}
+### Canlı veriyi temizle {#discard-live-data}
 
-Canlı bağlantı sırasında, geçmiş verileri yeniden oynatabilmeniz için veriler yerel olarak tutulur (yukarıdaki “Canlı verileri görüntüleme” bölümüne bakın). Bellek kullanımının aşırı artmasını önlemek için bu veriler varsayılan olarak 20 dakika sonra atılır. Belleği azaltmak için daha kısa bir süre seçebilir ya da canlı verileri süresiz tutmak için “Asla”yı seçebilirsiniz.
+Canlı bağlantı sırasında, geçmiş verileri yeniden oynatabilmeniz için veriler yerel olarak tutulur (yukarıdaki “Canlı verileri görüntüleme” bölümüne bakın). Bellek kullanımının aşırı artmasını önlemek için bu veriler varsayılan olarak 20 dakika sonra atılır. Bellek kullanımını azaltmak için daha kısa bir süre seçebilir ya da canlı verileri süresiz tutmak için “Asla”yı seçebilirsiniz.

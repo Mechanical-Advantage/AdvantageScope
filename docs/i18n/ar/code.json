@@ -12,7 +12,7 @@
     "description": "The title of the fallback page when the page crashed"
   },
   "theme.BackToTopButton.buttonAriaLabel": {
-    "message": "إنتقل للأعلى",
+    "message": "انتقل للأعلى",
     "description": "The ARIA label for the back to top button"
   },
   "theme.blog.archive.title": {
@@ -84,11 +84,11 @@
     "description": "The label used to navigate to the next doc"
   },
   "theme.docs.tagDocListPageTitle.nDocsTagged": {
-    "message": "مستند موسوم واحد|{count} مستندات موسومة",
+    "message": "وثيقة موسومة واحدة|{count} وثائق موسومة",
     "description": "Pluralized label for \"{count} docs tagged\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
   },
   "theme.docs.tagDocListPageTitle": {
-    "message": "{nDocsTagged} مستند موسوم بـ \"{tagName}\"",
+    "message": "{nDocsTagged} وثيقة موسومة بـ \"{tagName}\"",
     "description": "The title of the page for a docs tag"
   },
   "theme.docs.versionBadge.label": {
@@ -175,7 +175,7 @@
     "description": "The ARIA label to expand the sidebar category"
   },
   "theme.DocSidebarItem.collapseCategoryAriaLabel": {
-    "message": "طوي فئة الشريط الجانبي '{label}'",
+    "message": "طي فئة الشريط الجانبي '{label}'",
     "description": "The ARIA label to collapse the sidebar category"
   },
   "theme.IconExternalLink.ariaLabel": {
@@ -191,7 +191,7 @@
     "description": "The first paragraph of the 404 page"
   },
   "theme.NotFound.p2": {
-    "message": "يُـرجى الإتصال بمالك الموقع الذي ربطك بعنوان URL الأصلي وإخباره بأن الارتباط الخاص به مُعطل.",
+    "message": "يُرجى الاتصال بمالك الموقع الذي ربطك بعنوان URL الأصلي وإخباره بأن الارتباط الخاص به مُعطل.",
     "description": "The 2nd paragraph of the 404 page"
   },
   "theme.navbar.mobileLanguageDropdown.label": {
@@ -235,7 +235,7 @@
     "description": "The ARIA label for the home page in the breadcrumbs"
   },
   "theme.docs.sidebar.navAriaLabel": {
-    "message": "الشريط الجانبي للمستندات",
+    "message": "الشريط الجانبي للوثائق",
     "description": "The ARIA label for the sidebar navigation"
   },
   "theme.docs.sidebar.collapseButtonTitle": {
@@ -263,7 +263,7 @@
     "description": "The ARIA label of the button to expand the mobile dropdown navbar item"
   },
   "theme.navbar.mobileDropdown.collapseButton.collapseAriaLabel": {
-    "message": "طوي القائمة المنسدلة",
+    "message": "طي القائمة المنسدلة",
     "description": "The ARIA label of the button to collapse the mobile dropdown navbar item"
   },
   "theme.docs.sidebar.expandButtonTitle": {
@@ -278,7 +278,7 @@
     "message": "مشاهدة جميع {count} نتائج"
   },
   "theme.SearchPage.documentsFound.plurals": {
-    "message": "تم العثور على مستند واحد|تم العثور على {count} مستندات",
+    "message": "تم العثور على وثيقة واحدة|تم العثور على {count} وثائق",
     "description": "Pluralized label for \"{count} documents found\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
   },
   "theme.SearchPage.existingResultsTitle": {
@@ -322,11 +322,11 @@
     "description": "The label and ARIA label for search box cancel button"
   },
   "theme.SearchModal.searchBox.placeholderText": {
-    "message": "البحث في المستندات",
+    "message": "البحث في الوثائق",
     "description": "The placeholder text for the main search input field"
   },
   "theme.SearchModal.searchBox.placeholderTextAskAi": {
-    "message": "اسأل سؤالاً آخر...",
+    "message": "اسأل سؤالًا آخر...",
     "description": "The placeholder text when in AI question mode"
   },
   "theme.SearchModal.searchBox.placeholderTextAskAiStreaming": {
@@ -354,7 +354,7 @@
     "description": "The ARIA label for back to keyword search button"
   },
   "theme.SearchModal.startScreen.recentSearchesTitle": {
-    "message": "الأبحاث الأخيرة",
+    "message": "عمليات البحث الأخيرة",
     "description": "The title for recent searches"
   },
   "theme.SearchModal.startScreen.noRecentSearchesText": {
@@ -430,7 +430,7 @@
     "description": "The title for dislike button"
   },
   "theme.SearchModal.askAiScreen.thanksForFeedbackText": {
-    "message": "شكراً لك على ملاحظاتك!",
+    "message": "شكرًا لك على ملاحظاتك!",
     "description": "The text for thanks for feedback"
   },
   "theme.SearchModal.askAiScreen.preToolCallText": {
@@ -446,7 +446,7 @@
     "description": "The text after tool call"
   },
   "theme.SearchModal.footer.selectText": {
-    "message": "to select",
+    "message": "للتحديد",
     "description": "The select text for footer"
   },
   "theme.SearchModal.footer.submitQuestionText": {
@@ -458,7 +458,7 @@
     "description": "The ARIA label for select key in footer"
   },
   "theme.SearchModal.footer.navigateText": {
-    "message": "to navigate",
+    "message": "للتنقل",
     "description": "The navigate text for footer"
   },
   "theme.SearchModal.footer.navigateUpKeyAriaLabel": {
@@ -470,7 +470,7 @@
     "description": "The ARIA label for navigate down key in footer"
   },
   "theme.SearchModal.footer.closeText": {
-    "message": "to close",
+    "message": "للإغلاق",
     "description": "The close text for footer"
   },
   "theme.SearchModal.footer.closeKeyAriaLabel": {
@@ -486,7 +486,7 @@
     "description": "The back to search text for footer"
   },
   "theme.SearchModal.noResultsScreen.noResultsText": {
-    "message": "No results for",
+    "message": "لا توجد نتائج لـ",
     "description": "The text when there are no results"
   },
   "theme.SearchModal.noResultsScreen.suggestedQueryText": {
@@ -502,7 +502,7 @@
     "description": "The link text for reporting missing results"
   },
   "theme.SearchModal.placeholder": {
-    "message": "البحث في المستندات",
+    "message": "البحث في الوثائق",
     "description": "The placeholder of the input of the DocSearch pop-up modal"
   },
   "theme.blog.post.plurals": {
@@ -522,7 +522,7 @@
     "description": "The title of the authors page"
   },
   "theme.blog.authorsList.viewAll": {
-    "message": "View All Authors",
+    "message": "عرض جميع المؤلفين",
     "description": "The label of the link targeting the blog authors page"
   },
   "theme.blog.author.noPosts": {
@@ -550,7 +550,7 @@
     "description": "The label of the button to try again rendering when the React error boundary captures an error"
   },
   "theme.common.skipToMainContent": {
-    "message": "إنتقل إلى المحتوى الرئيسي",
+    "message": "انتقل إلى المحتوى الرئيسي",
     "description": "The skip to content label used for accessibility, allowing to rapidly navigate to main content with keyboard tab/enter navigation"
   },
   "theme.tags.tagsPageTitle": {

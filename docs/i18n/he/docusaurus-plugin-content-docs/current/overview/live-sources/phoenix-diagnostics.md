@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# דיאגנוסטיקה Phoenix {#phoenix-diagnostics}
+# דיאגנוסטיקה של Phoenix {#phoenix-diagnostics}
 
 AdvantageScope תומכת בהזרמה חיה של אותות מהתקני Phoenix 6 **בלי צורך בשום הגדרה בקוד הרובוט**. זה מאפשר לבדוק ולכוונן בקרים וחיישנים של Phoenix בקלות, בממשק המוכר ועם כל היכולות של AdvantageScope:
 
@@ -14,7 +14,7 @@ AdvantageScope תומכת בהזרמה חיה של אותות מהתקני Phoen
 - ניתוח נתונים מתקדם עם אפשרויות מובנות לאינטגרציה וגזירה ([תיעוד](/tab-reference/line-graph/#adjusting-axes))
 
 :::tip
-כדי להתחבר, בחרו "דיאגנוסטיקה Phoenix" כשמתחברים לרובוט או לסימולטור משורת התפריטים.
+כדי להתחבר, בחרו "דיאגנוסטיקה של Phoenix" כשמתחברים לרובוט או לסימולטור משורת התפריטים.
 :::
 
 <img src="/img/overview/live-sources/phoenix-1.webp" alt="צילום מסך של גרף קווי" />

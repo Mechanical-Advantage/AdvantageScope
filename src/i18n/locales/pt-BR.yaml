@@ -206,7 +206,7 @@ xrControls:
   streamingSelectTitle: "Selecionar modo de transmissão"
   streamingSmooth: "Suave"
   streamingLowLatency: "Baixa latência"
-  showFloor: "Mostrar chão"
+  showFloor: "Mostrar piso"
   showFloorTitle: "Alternar visibilidade do piso"
   showField: "Mostrar campo"
   showFieldTitle: "Alternar visibilidade do campo"
@@ -282,9 +282,9 @@ sourceList:
     "#d993aa": "Rosa"
     "#5f4528": "Marrom"
     normal: "Normal"
-    bold: "Negrito"
-    verybold: "Muito negrito"
-    thin: "Fino"
+    bold: "Grossa"
+    verybold: "Muito grossa"
+    thin: "Fina"
     medium: "Médio"
     large: "Grande"
     small: "Pequeno"
@@ -336,8 +336,8 @@ hub:
   playback:
     play: "Reproduzir"
     pause: "Pausar"
-    lock: "Bloquear reprodução em tempo real"
-    unlock: "Desbloquear reprodução"
+    lock: "Travar reprodução em tempo real"
+    unlock: "Destravar reprodução"
 
   tabs:
     close: "Fechar guia"
@@ -374,9 +374,9 @@ hub:
     sizeLabel: "Tamanho"
     rotateClockwise: "Rotacionar campo no sentido horário"
     rotateCounterClockwise: "Rotacionar campo no sentido anti-horário"
-    sizeLarge: "Tamanho de robô grande"
-    sizeMedium: "Tamanho de robô médio"
-    sizeSmall: "Tamanho de robô pequeno"
+    sizeLarge: "Tamanho grande do robô"
+    sizeMedium: "Tamanho médio do robô"
+    sizeSmall: "Tamanho pequeno do robô"
     xrTitle: "XR"
     xrStart: "Iniciar transmissão XR"
     source: "Fonte"
@@ -570,8 +570,8 @@ hub:
     frameSize: "Tamanho do chassi (m)"
     frameLengthTitle: "Comprimento do chassi do robô (metros)"
     frameWidthTitle: "Largura do chassi do robô (metros)"
-    rotateModuleClockwise: "Rotacionar layout do módulo Swerve no sentido horário"
-    rotateModuleCounterClockwise: "Rotacionar layout do módulo Swerve no sentido anti-horário"
+    rotateModuleClockwise: "Rotacionar layout dos módulos Swerve no sentido horário"
+    rotateModuleCounterClockwise: "Rotacionar layout dos módulos Swerve no sentido anti-horário"
 
   mechanism:
     sources: "Fontes"
@@ -602,10 +602,10 @@ hub:
     orientationXrYu: "+X direita, +Y cima"
     orientationXuYl: "+X cima, +Y esquerda"
     origin: "Origem do sistema de coordenadas"
-    originUpperLeft: "Superior esquerdo"
-    originUpperRight: "Superior direito"
-    originLowerLeft: "Inferior esquerdo"
-    originLowerRight: "Inferior direito"
+    originUpperLeft: "Canto superior esquerdo"
+    originUpperRight: "Canto superior direito"
+    originLowerLeft: "Canto inferior esquerdo"
+    originLowerRight: "Canto inferior direito"
     originCenter: "Centro"
     dimensions: "Dimensões"
 
@@ -651,15 +651,15 @@ menu:
     app: "App"
     appTooltip: "Menu do aplicativo"
     file: "Arquivo"
-    fileTooltip: "Menu arquivo"
+    fileTooltip: "Menu Arquivo"
     view: "Exibir"
-    viewTooltip: "Menu exibir"
+    viewTooltip: "Menu Exibir"
     tabs: "Guias"
-    tabsTooltip: "Menu guias"
+    tabsTooltip: "Menu Guias"
     window: "Janela"
-    windowTooltip: "Menu janela"
+    windowTooltip: "Menu Janela"
     help: "Ajuda"
-    helpTooltip: "Menu ajuda"
+    helpTooltip: "Menu Ajuda"
 
   app:
     aboutApp: "Sobre o AdvantageScope"
@@ -734,7 +734,7 @@ menu:
   tabs:
     heading: "Guias"
     newTab: "Nova guia"
-    newPopOut: "Nova guia destacável"
+    newPopOut: "Nova janela destacada"
     prevTab: "Guia anterior"
     prevTabShortcut: "Guia anterior ({{shortcut}})"
     nextTab: "Próxima guia"
@@ -785,8 +785,8 @@ menu:
 
   field2d:
     unlocked: "Desbloqueado"
-    lockedRobot: "Bloqueado ao robô"
-    lockedRobotRotation: "Bloqueado ao robô e rotação"
+    lockedRobot: "Travado no robô"
+    lockedRobotRotation: "Travado no robô e na rotação"
 
   field3d:
     orbitField: "Orbitar campo"

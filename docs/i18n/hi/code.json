@@ -28,11 +28,11 @@
     "description": "The ARIA label for the blog pagination"
   },
   "theme.blog.paginator.newerEntries": {
-    "message": "नए एंट्रीज़",
+    "message": "नई एंट्रीज़",
     "description": "The label used to navigate to the newer blog posts page (previous page)"
   },
   "theme.blog.paginator.olderEntries": {
-    "message": "पुराने एंट्रीज़",
+    "message": "पुरानी एंट्रीज़",
     "description": "The label used to navigate to the older blog posts page (next page)"
   },
   "theme.blog.post.paginator.navAriaLabel": {
@@ -306,7 +306,7 @@
     "description": "The paragraph for empty search result"
   },
   "theme.SearchPage.fetchingNewResults": {
-    "message": "नए परिणाम प्राप्त कर रहे हैं...",
+    "message": "नए परिणाम प्राप्त किए जा रहे हैं...",
     "description": "The paragraph for fetching new search results"
   },
   "theme.SearchBar.label": {
@@ -434,7 +434,7 @@
     "description": "The text for thanks for feedback"
   },
   "theme.SearchModal.askAiScreen.preToolCallText": {
-    "message": "खोज रहा है...",
+    "message": "खोजा जा रहा है...",
     "description": "The text before tool call"
   },
   "theme.SearchModal.askAiScreen.duringToolCallText": {
@@ -478,7 +478,7 @@
     "description": "The ARIA label for close key in footer"
   },
   "theme.SearchModal.footer.searchByText": {
-    "message": "संचालित",
+    "message": "द्वारा संचालित",
     "description": "The 'Powered by' text for footer"
   },
   "theme.SearchModal.footer.backToSearchText": {

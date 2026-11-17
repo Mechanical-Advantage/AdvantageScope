@@ -1,6 +1,6 @@
 {
   "version.label": {
-    "message": "Следующая",
+    "message": "В разработке",
     "description": "The label for version current"
   },
   "sidebar.sidebar.category.Overview": {
@@ -24,7 +24,7 @@
     "description": "The label for category '🛜 Live Sources' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Tab Reference": {
-    "message": "Справочник вкладок",
+    "message": "Справочник по вкладкам",
     "description": "The label for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Tab Reference.link.generated-index.description": {

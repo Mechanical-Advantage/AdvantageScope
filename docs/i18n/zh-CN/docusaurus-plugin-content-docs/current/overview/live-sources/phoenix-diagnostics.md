@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Phoenix 诊断 {#phoenix-diagnostics}
 
-AdvantageScope 支持直接实时串流 Phoenix 6 设备的信号，**无需在机器人代码中做任何额外配置**。你可以借助熟悉的操作界面与 AdvantageScope 的完整功能，轻松调试和调参 Phoenix 设备：
+AdvantageScope 支持直接实时串流 Phoenix 6 设备的信号，**无需在机器人代码中做任何额外配置**。你可以借助熟悉的操作界面与 AdvantageScope 的完整功能，轻松地对 Phoenix 设备进行调试与调参：
 
 - 灵活的可视化方式，支持表格展示与统计分析
 - 完整支持单位感知图表，包含隐式换算与一键单位转换（[文档](/tab-reference/line-graph/units)）

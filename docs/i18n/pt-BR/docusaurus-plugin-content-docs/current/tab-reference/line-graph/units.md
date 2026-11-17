@@ -1,12 +1,12 @@
 # Suporte a unidades {#unit-support}
 
-A guia Gráfico de linha é ciente de unidade, o que significa que ela converte valores numéricos entre unidades compatíveis com facilidade. Quando o campo tem informação de unidade, os valores nos eixos e nas legendas já aparecem rotulados corretamente. Veja [aqui](#supported-formats) como publicar informações de unidade no seu código. O AdvantageScope oferece vários recursos para trabalhar com unidades:
+A guia Gráfico de linha tem suporte a unidades, o que significa que ela converte valores numéricos entre unidades compatíveis com facilidade. Quando o campo tem informação de unidade, os valores nos eixos e nas legendas já aparecem rotulados corretamente. Veja [aqui](#supported-formats) como publicar informações de unidade no seu código. O AdvantageScope oferece vários recursos para trabalhar com unidades:
 
 - Ao colocar **campos com unidades compatíveis no mesmo eixo**, o AdvantageScope converte ambos automaticamente para a mesma unidade, atualizando os rótulos do eixo Y e da legenda.
 - Clique nos três pontinhos ao lado do título do eixo para **alternar rapidamente entre unidades**. A lista mostra as unidades mais comuns compatíveis com os campos selecionados.
 - Ative a **integração ou diferenciação** ([documentação](/tab-reference/line-graph/#integration-and-differentiation)) para ver as unidades exatas da integral ou da derivada. Você pode ajustar a unidade base pelo menu para aplicar o filtro em unidades diferentes da original.
 
-<img src="/img/tab-reference/line-graph/units-1.webp" alt="Gráficos cientes de unidade" />
+<img src="/img/tab-reference/line-graph/units-1.webp" alt="Gráficos com suporte a unidades" />
 
 _A interface em inglês é exibida acima._
 
@@ -26,7 +26,7 @@ O AdvantageScope usa automaticamente as unidades nativas para tipos de dados est
 
 ### 🥈 Metadados do campo {#field-metadata}
 
-Os formatos WPILOG e NetworkTables permitem publicar "metadados" extras para cada campo. O AdvantageScope procura campos JSON chamados "unit" ou "units" com uma string indicando a unidade (em espaços, camel-case, pascal-case ou snake-case). Para conferir os metadados de um campo, passe o cursor sobre o nome dele na barra lateral.
+Os formatos WPILOG e NetworkTables permitem publicar "metadados" extras para cada campo. O AdvantageScope procura campos JSON chamados "unit" ou "units" com uma string indicando a unidade (separada por espaços, camel-case, pascal-case ou snake-case). Para conferir os metadados de um campo, passe o cursor sobre o nome dele na barra lateral.
 
 :::tip
 Na WPILib, registrar objetos `Measure` com `Telemetry.log()` anexa os metadados de unidade automaticamente. Você também pode configurá-los de forma explícita usando `Telemetry.setProperty("fieldName", "unit", "\"volts\"")`.

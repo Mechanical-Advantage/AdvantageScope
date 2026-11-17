@@ -130,4 +130,4 @@ Windows 11 版 AdvantageScope 的界面已更新，现已支持半透明侧边�
 - 修复了浏览日志数据时的多处界面显示问题，尤其是在折线图选项卡中使用过滤器时的异常。
 - 修复了下载窗口中 AdvantageKit 日志文件的排序问题；与其他格式一致，无时间戳的日志现已统一排在列表底部。
 - 修复了 3D 场地选项卡中横滚轴 (roll axis) 旋转角度非零时机器人相机的显示问题。
-- 提升了 AdvantageScope XR 的稳定性，尤其是 iOS/iPadOS 26 设备的运行表现。如需离线更新，请前往 App Store 检查可用版本。
+- 提升了 AdvantageScope XR 的稳定性，尤其是 iOS/iPadOS 26 设备的运行表现。对于离线安装版本，请前往 App Store 检查可用更新。

@@ -1,6 +1,6 @@
 {
   "theme.docs.DocCard.categoryDescription.plurals": {
-    "message": "1 item|{count} items",
+    "message": "פריט אחד|{count} פריטים|{count} פריטים|{count} פריטים",
     "description": "The default description for a category card in the generated index about how many items this category includes"
   },
   "theme.NotFound.title": {
@@ -8,19 +8,19 @@
     "description": "The title of the 404 page"
   },
   "theme.ErrorPageContent.title": {
-    "message": "This page crashed.",
+    "message": "דף זה קרס.",
     "description": "The title of the fallback page when the page crashed"
   },
   "theme.BackToTopButton.buttonAriaLabel": {
-    "message": "Scroll back to top",
+    "message": "גלילה בחזרה לראש הדף",
     "description": "The ARIA label for the back to top button"
   },
   "theme.blog.archive.title": {
-    "message": "Archive",
+    "message": "ארכיון",
     "description": "The page & hero title of the blog archive page"
   },
   "theme.blog.archive.description": {
-    "message": "Archive",
+    "message": "ארכיון",
     "description": "The page & hero description of the blog archive page"
   },
   "theme.blog.paginator.navAriaLabel": {
@@ -64,7 +64,7 @@
     "description": "The name for the dark color mode"
   },
   "theme.colorToggle.ariaLabel": {
-    "message": "Switch between dark and light mode (currently {mode})",
+    "message": "מעבר בין מצב כהה לבהיר (כעת: {mode})",
     "description": "The ARIA label for the color mode toggle"
   },
   "theme.docs.breadcrumbs.navAriaLabel": {
@@ -72,7 +72,7 @@
     "description": "The ARIA label for the breadcrumbs"
   },
   "theme.docs.paginator.navAriaLabel": {
-    "message": "רשימת דוקומנטאציה",
+    "message": "ניווט בתיעוד",
     "description": "The ARIA label for the docs pagination"
   },
   "theme.docs.paginator.previous": {
@@ -84,30 +84,30 @@
     "description": "The label used to navigate to the next doc"
   },
   "theme.docs.tagDocListPageTitle.nDocsTagged": {
-    "message": "One doc tagged|{count} docs tagged",
+    "message": "מסמך אחד מתויג|{count} מסמכים מתויגים|{count} מסמכים מתויגים|{count} מסמכים מתויגים",
     "description": "Pluralized label for \"{count} docs tagged\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
   },
   "theme.docs.tagDocListPageTitle": {
-    "message": "{nDocsTagged} with \"{tagName}\"",
+    "message": "{nDocsTagged} עם התגית \"{tagName}\"",
     "description": "The title of the page for a docs tag"
   },
   "theme.docs.versionBadge.label": {
     "message": "גרסה: {versionLabel}"
   },
   "theme.docs.versions.unreleasedVersionLabel": {
-    "message": "דוקומנטאציה שעדיין לא יצאה לאוויר ל {siteTitle} {versionLabel} גרסא.",
+    "message": "זהו תיעוד שטרם פורסם עבור {siteTitle} גרסה {versionLabel}.",
     "description": "The label used to tell the user that he's browsing an unreleased doc version"
   },
   "theme.docs.versions.unmaintainedVersionLabel": {
-    "message": "דוקומנטאציה זו {siteTitle} {versionLabel}, כבר לא נתמכת.",
+    "message": "תיעוד זה הוא עבור {siteTitle} גרסה {versionLabel}, שאינה נתמכת עוד.",
     "description": "The label used to tell the user that he's browsing an unmaintained doc version"
   },
   "theme.docs.versions.latestVersionSuggestionLabel": {
-    "message": "לדוקומנטאציה עדכנית, ראה {latestVersionLink} ({versionLabel}).",
+    "message": "לתיעוד עדכני, ראו {latestVersionLink} ({versionLabel}).",
     "description": "The label used to tell the user to check the latest version"
   },
   "theme.docs.versions.latestVersionLinkLabel": {
-    "message": "גרסא אחרונה",
+    "message": "הגרסה האחרונה",
     "description": "The label used for the latest version suggestion link label"
   },
   "theme.common.editThisPage": {
@@ -131,7 +131,7 @@
     "description": "The sentence used to display when a page has been last updated, and by who"
   },
   "theme.navbar.mobileVersionsDropdown.label": {
-    "message": "Versions",
+    "message": "גרסאות",
     "description": "The label for the navbar versions dropdown on mobile view"
   },
   "theme.tags.tagsListLabel": {
@@ -147,7 +147,7 @@
     "description": "The default label used for the Caution admonition (:::caution)"
   },
   "theme.admonition.danger": {
-    "message": "danger",
+    "message": "סכנה",
     "description": "The default label used for the Danger admonition (:::danger)"
   },
   "theme.admonition.info": {
@@ -286,7 +286,7 @@
     "description": "The search page title for non-empty query"
   },
   "theme.SearchPage.emptyResultsTitle": {
-    "message": "חפש בדוקומנטאציה",
+    "message": "חיפוש בתיעוד",
     "description": "The search page title for empty query"
   },
   "theme.SearchPage.inputPlaceholder": {
@@ -314,7 +314,7 @@
     "description": "The ARIA label and placeholder for search button"
   },
   "theme.SearchModal.searchBox.resetButtonTitle": {
-    "message": "ניקอย השילתא",
+    "message": "ניקוי השאילתה",
     "description": "The label and ARIA label for search box reset button"
   },
   "theme.SearchModal.searchBox.cancelButtonText": {
@@ -398,7 +398,7 @@
     "description": "The placeholder text for Ask AI input"
   },
   "theme.SearchModal.askAiScreen.disclaimerText": {
-    "message": "התשובות מופקות על ידי AI ועלולות להכيل שגיאות. יש לאמת את התשובות.",
+    "message": "התשובות מופקות על ידי AI ועלולות להכיל שגיאות. יש לאמת את התשובות.",
     "description": "The disclaimer text for AI answers"
   },
   "theme.SearchModal.askAiScreen.relatedSourcesText": {
@@ -446,7 +446,7 @@
     "description": "The text after tool call"
   },
   "theme.SearchModal.footer.selectText": {
-    "message": "to select",
+    "message": "לבחירה",
     "description": "The select text for footer"
   },
   "theme.SearchModal.footer.submitQuestionText": {
@@ -458,7 +458,7 @@
     "description": "The ARIA label for select key in footer"
   },
   "theme.SearchModal.footer.navigateText": {
-    "message": "to navigate",
+    "message": "לניווט",
     "description": "The navigate text for footer"
   },
   "theme.SearchModal.footer.navigateUpKeyAriaLabel": {
@@ -470,7 +470,7 @@
     "description": "The ARIA label for navigate down key in footer"
   },
   "theme.SearchModal.footer.closeText": {
-    "message": "to close",
+    "message": "לסגירה",
     "description": "The close text for footer"
   },
   "theme.SearchModal.footer.closeKeyAriaLabel": {
@@ -482,11 +482,11 @@
     "description": "The 'Powered by' text for footer"
   },
   "theme.SearchModal.footer.backToSearchText": {
-    "message": "חזרה לחיпоש",
+    "message": "חזרה לחיפוש",
     "description": "The back to search text for footer"
   },
   "theme.SearchModal.noResultsScreen.noResultsText": {
-    "message": "No results for",
+    "message": "אין תוצאות עבור",
     "description": "The text when there are no results"
   },
   "theme.SearchModal.noResultsScreen.suggestedQueryText": {
@@ -522,7 +522,7 @@
     "description": "The title of the authors page"
   },
   "theme.blog.authorsList.viewAll": {
-    "message": "View All Authors",
+    "message": "הצגת כל המחברים",
     "description": "The label of the link targeting the blog authors page"
   },
   "theme.blog.author.noPosts": {

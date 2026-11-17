@@ -16,10 +16,10 @@ Je kunt op drie manieren een video laden in AdvantageScope:
 
 <img src="/img/tab-reference/video-1.webp" alt="Bronkiezer" />
 
-Zodra je een video hebt gekozen, kleurt de tijdlijn rechtsonder langzaam blauw. Dat laat zien welke frames al in de cache staan (nodig om de video soepel te kunnen afspelen). Omdat alle frames eerst omgezet moeten worden, is deze functie echt bedoeld voor video's van wedstrijdformaat (niet voor urenlange opnames).
+Zodra je een video hebt gekozen, kleurt de tijdlijn rechtsonder langzaam blauw. Dat laat zien welke frames al in de cache staan (nodig om de video soepel te kunnen afspelen). Omdat alle frames eerst omgezet moeten worden, is deze functie echt bedoeld voor video's ter lengte van een wedstrijd (niet voor urenlange opnames).
 
 :::warning
-Het downloaden van YouTube- en TBA-video's kan soms onverwacht stukgaan door aanpassingen op de servers van YouTube. Werkt het niet? Kijk of er een update is voor AdvantageScope, of gebruik een lokaal videobestand.
+Het downloaden van YouTube- en TBA-video's kan soms onverwacht mislukken door aanpassingen op de servers van YouTube. Werkt het niet? Kijk of er een update is voor AdvantageScope, of gebruik een lokaal videobestand.
 :::
 
 :::info

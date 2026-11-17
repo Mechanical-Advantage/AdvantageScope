@@ -19,7 +19,7 @@ _上图所示为英文界面。_
 :::warning
 **为 SysId 导出数据**
 
-我们不建议将**在仿真中生成的**日志数据导出后用于 [SysId](https://docs.wpilib.org/zh-cn/stable/docs/software/advanced-controls/system-identification/introduction.html)，因为 SysId 需要额外的时间戳信息，而这与 AdvantageScope 的默认导出格式并不一致。不过，**在仿真 _之外_ 生成的**日志数据仍可导出供 SysId 使用，且几乎不会损失数据（当然，直接在 SysId 中导入_原始_日志文件依然能获得最高精度）。
+我们不建议将**在仿真中生成的**日志数据导出后用于 [SysId](https://docs.wpilib.org/zh-cn/stable/docs/software/advanced-controls/system-identification/introduction.html)，因为 SysId 需要额外的时间戳信息，而这与 AdvantageScope 的默认导出格式并不一致。不过，**在仿真“之外”生成的**日志数据仍可导出供 SysId 使用，且几乎不会损失数据（当然，直接在 SysId 中导入**原始**日志文件依然能获得最高精度）。
 
 _此警告**不适用于** AdvantageKit 生成的日志——导出时只需选择“AdvantageKit 周期”选项，即可无损导出。详情请参阅 [此页面](https://docs.advantagekit.org/data-flow/sysid-compatibility)。_
 :::
@@ -34,7 +34,7 @@ _此警告**不适用于** AdvantageKit 生成的日志——导出时只需选�
   - _WPILOG：_ 标准 WPILOG 文件，可在 AdvantageScope 中再次打开。
   - _MCAP：_ 标准 [MCAP](https://mcap.dev) 文件，可在 [Foxglove](https://foxglove.dev) 中打开。
 - **时间戳：** 仅在“CSV (表格)”格式下可用，用于设置生成新行的方式：
-  - _所有更改：_ 仅当字段值发生变化时才创建新行，可最大限度减小导出文件的体积。
+  - _所有变化：_ 仅当字段值发生变化时才创建新行，可最大限度减小导出文件的体积。
   - _固定周期：_ 按固定时间间隔生成新行，适用于未进行时间戳同步的日志（例如多个字段记录在相近但不完全相同的时间戳上）。注意：无论相邻采样点之间数值是否变化，都会输出所有字段的值。
   - _AdvantageKit 周期：_ 为每个 AdvantageKit 同步循环周期生成一行。同样，无论循环周期之间数值是否变化，都会输出所有字段的值。
 - **周期：** 仅在选择“固定周期”时可用，用于设置相邻采样点之间的间隔（单位为毫秒），通常应与机器人代码的循环周期一致。
@@ -46,6 +46,6 @@ _此警告**不适用于** AdvantageKit 生成的日志——导出时只需选�
   - _包含生成字段：_ 导出所有可见字段，包含生成字段。如果导出文件要在不支持解析复杂数据类型的软件中打开，建议选择此项。
   - _仅原始字段：_ 仅导出原始日志文件中存在的字段，不包含生成字段。如果导出文件要在 AdvantageScope 或其他支持复杂数据类型的软件中打开，建议选择此项。
 
-下图展示了以“CSV (表格)”格式、时间戳设为“所有更改”时从 AdvantageScope 导出的 CSV 文件示例：
+下图展示了以“CSV (表格)”格式、时间戳设为“所有变化”时从 AdvantageScope 导出的 CSV 文件示例：
 
 <img src="/img/overview/log-files/export-2.webp" alt="CSV 表格" />

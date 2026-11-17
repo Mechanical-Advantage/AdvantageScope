@@ -7,7 +7,7 @@ sidebar_position: 2
 O AdvantageScope permite acompanhar ao vivo os sinais de dispositivos Phoenix 6 **sem precisar configurar nada no código do robô**. Assim, você pode depurar e ajustar dispositivos Phoenix com praticidade, usando a interface familiar e todos os recursos do AdvantageScope:
 
 - Opções flexíveis de visualização, incluindo suporte a tabelas e análise estatística
-- Suporte completo a gráficos cientes de unidade, com conversão implícita ou com um clique ([docs](/tab-reference/line-graph/units))
+- Suporte completo a gráficos com reconhecimento de unidades, com conversão implícita ou com um clique ([docs](/tab-reference/line-graph/units))
 - Decodificação de valores enum para texto legível (modos de controle, status da ponte, estado do ímã do CANcoder, etc.)
 - Tooltips integrados na barra lateral com a descrição e a unidade de cada sinal
 - Organização hierárquica dos sinais, agrupados por barramento CAN, dispositivo e tipo de sinal

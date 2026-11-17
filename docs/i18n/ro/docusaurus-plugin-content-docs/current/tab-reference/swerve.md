@@ -16,11 +16,11 @@ _Mai sus este prezentată interfața în limba engleză._
 <details>
 <summary>Controale cronologie</summary>
 
-Cronologia controlează redarea și vizualizarea. Dacă dai clic pe cronologie, selectezi un moment de timp, iar cu clic dreapta îl deselectezi. Timpul selectat este sincronizat în toate filele, astfel încât să poți găsi rapid același moment și în alte vizualizări.
+Cronologia controlează redarea și vizualizarea. Fă clic pe cronologie pentru a selecta un moment, iar clic dreapta pentru a-l deselecta. Momentul selectat este sincronizat în toate filele, astfel încât poți găsi rapid aceeași poziție și în alte vizualizări.
 
-Secțiunile galbene arată când robotul este în modul autonom, cele albastre când este în modul teleoperat, iar cele gri când este în modul utilitar.
+Secțiunile galbene arată când robotul este în autonom, cele albastre când este în teleoperat, iar cele gri când este în modul utilitar.
 
-Pentru a mări, plasează cursorul peste cronologie și derulează în sus sau în jos. Poți selecta un interval și prin clic și tragere în timp ce ții apăsată tasta `Shift`. Mută-te la stânga și la dreapta prin derulare orizontală (pe dispozitivele suportate) sau prin clic și tragere pe cronologie. Când ești conectat live, derularea spre stânga deblochează redarea de la timpul curent, iar derularea până la capăt în dreapta o blochează din nou la timpul curent. Apasă `Ctrl+\` pentru a mări la intervalul în care robotul este activat.
+Pentru a face zoom, pune cursorul peste cronologie și derulează în sus sau în jos. Poți selecta și un interval făcând clic și trăgând în timp ce ții apăsată tasta `Shift`. Mută-te la stânga și la dreapta prin derulare orizontală (pe dispozitivele suportate) sau făcând clic și trăgând pe cronologie. Când ești conectat live, derularea spre stânga deblochează cronologia de la momentul curent, iar derularea până la capăt în dreapta o blochează din nou pe momentul curent. Apasă `Ctrl+\` pentru a face zoom pe perioada în care robotul este activat.
 
 <img src="/img/tab-reference/timeline.webp" alt="Cronologie" />
 

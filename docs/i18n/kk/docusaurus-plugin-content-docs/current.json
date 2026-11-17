@@ -20,7 +20,7 @@
     "description": "The label for category '📂 Log Files' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.🛜 Live Sources": {
-    "message": "🛜 Нақты уақыттағы дереккөздер",
+    "message": "🛜 Тікелей дереккөздер",
     "description": "The label for category '🛜 Live Sources' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Tab Reference": {

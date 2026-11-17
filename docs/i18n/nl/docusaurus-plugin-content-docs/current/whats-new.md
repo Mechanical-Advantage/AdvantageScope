@@ -103,7 +103,7 @@ Wil je data bekijken die niet uit een robotloggingframework komt? AdvantageScope
 
 ## 🤩 Visuele verbeteringen {#aesthetic-improvements}
 
-Op Windows 11 heeft AdvantageScope nu een halfdoorzichtige zijbalk, een detail dat voorheen alleen op macOS beschikbaar was. Voor macOS Tahoe is er bovendien een nieuw pictogram van de app ontworpen op basis van Apple's Liquid Glass-materiaal.
+Op Windows 11 heeft AdvantageScope nu een halfdoorzichtige zijbalk, een detail dat voorheen alleen op macOS beschikbaar was. Voor macOS Tahoe is er bovendien een nieuw pictogram van de app ontworpen op basis van het Liquid Glass-materiaal van Apple.
 
 <img src="/img/whats-new/windows-ui.webp" alt="Windows-interface" />
 

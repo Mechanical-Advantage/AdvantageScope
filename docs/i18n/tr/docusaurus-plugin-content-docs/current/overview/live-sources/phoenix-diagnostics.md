@@ -7,7 +7,7 @@ sidebar_position: 2
 AdvantageScope, **kullanıcı kodunda hiçbir kurulum gerektirmeden** Phoenix 6 cihazlarından gelen sinyalleri canlı olarak aktarabilir. Böylece AdvantageScope'un tanıdık arayüzünü ve tüm araçlarını kullanarak Phoenix cihazlarınızda kolayca hata ayıklama ve ince ayar yapabilirsiniz:
 
 - Tablolar ve istatistiksel analiz dahil esnek görselleştirme seçenekleri
-- Örtük ve tek tıkla birim dönüştürme dahil birim duyarlı grafikleme için tam destek ([belgeler](/tab-reference/line-graph/units))
+- Otomatik ve tek tıkla birim dönüştürme dahil birim duyarlı grafikleme için tam destek ([belgeler](/tab-reference/line-graph/units))
 - Enum değerlerinin okunabilir metinlere dönüştürülmesi (kontrol modları, köprü durumu, CANcoder mıknatıs durumu vb.)
 - Her sinyal için açıklamalar ve birimler içeren kenar çubuğu ipuçları
 - CAN veriyolu, cihaz ve sinyal türüne göre gruplandırılmış hiyerarşik sinyal düzeni

@@ -48,7 +48,7 @@
     "description": "The label for category '⚙️ Custom Assets' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Legal": {
-    "message": "قانوني",
+    "message": "الشؤون القانونية",
     "description": "The label for category 'Legal' in sidebar 'sidebar'"
   }
 }

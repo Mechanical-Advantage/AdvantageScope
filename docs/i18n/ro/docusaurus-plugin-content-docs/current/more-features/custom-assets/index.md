@@ -43,23 +43,23 @@ Folderul trebuie să conțină un model numit „model.glb”. Fișierele CAD tr
 
 ```json
 {
-  "name": string // Unique name, required for all asset types
+  "name": string // Nume unic, obligatoriu pentru toate tipurile de resurse
   "locales": { [locale: string]: string } // Traduceri opționale pentru numele resursei
-  "isFTC": boolean // Whether the model is intended for use on FTC fields instead of FRC fields (default "false")
-  "disableSimplification": boolean // Whether to disable model simplification, optional
-  "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
-  "position": [number, number, number] // Position offset in meters, applied after rotation
-  "cameras": [ // Fixed camera positions, can be empty
+  "isFTC": boolean // Dacă modelul este destinat terenurilor FTC în loc de FRC (implicit "false")
+  "disableSimplification": boolean // Dacă se dezactivează simplificarea modelului, opțional
+  "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Secvență de rotații de-a lungul axelor x, y și z
+  "position": [number, number, number] // Decalaj de poziție în metri, aplicat după rotație
+  "cameras": [ // Poziții fixe ale camerelor, poate fi gol
     {
-      "name": string // Camera name
+      "name": string // Numele camerei
       "locales": { [locale: string]: string } // Traduceri opționale pentru numele camerei
-      "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
-      "position": [number, number, number] // Position offset in meters relative to the robot, applied after rotation
-      "resolution": [number, number] // Resolution in pixels, used to set the fixed aspect ratio
-      "fov": number // Horizontal field of view in degrees
+      "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Secvență de rotații de-a lungul axelor x, y și z
+      "position": [number, number, number] // Decalaj de poziție în metri față de robot, aplicat după rotație
+      "resolution": [number, number] // Rezoluția în pixeli, folosită pentru a seta raportul de aspect fix
+      "fov": number // Câmp vizual orizontal (FOV) în grade
     }
   ],
-  "components": [...] // See "Articulated Components"
+  "components": [...] // Vezi „Componente articulate”
 }
 ```
 
@@ -90,8 +90,8 @@ Când poziționezi componente 3D relativ la robot, originea sistemului de coordo
 ```json
 "components": [
   {
-    "zeroedRotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
-    "zeroedPosition": [number, number, number] // Position offset in meters relative to the robot, applied after rotation
+    "zeroedRotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Secvență de rotații de-a lungul axelor x, y și z
+    "zeroedPosition": [number, number, number] // Decalaj de poziție în metri față de robot, aplicat după rotație
   }
 ]
 ```
@@ -118,9 +118,9 @@ Folderul trebuie să conțină o imagine numită „image.png”. Fișierul de c
 
 ```json
 {
-  "name": string // Unique name, required for all asset types
+  "name": string // Nume unic, obligatoriu pentru toate tipurile de resurse
   "locales": { [locale: string]: string } // Traduceri opționale pentru numele resursei
-  "components": [...] // Array of component configurations, see below
+  "components": [...] // Tablou cu configurațiile componentelor, vezi mai jos
 }
 ```
 
@@ -140,9 +140,9 @@ Pentru legăturile NI, AdvantageScope este compatibil retroactiv cu vechile chei
   "centerPx": [number, number]
   "sizePx": [number, number]
   "sdlSourceIndex": number
-  "sdlSourcePov": string // Optional, can be "up", "right", "down", or "left". If provided, the "sdlSourceIndex" will be the index of the POV to read.
+  "sdlSourcePov": string // Opțional, poate fi "up", "right", "down" sau "left". Dacă este furnizat, "sdlSourceIndex" va fi indexul POV-ului de citit.
 
-  // Alternative bindings for the NI Driver Station (optional)
+  // Legături alternative pentru NI Driver Station (opțional)
   "niSourceIndex": number
   "niSourcePov": string
 }
@@ -152,17 +152,17 @@ Pentru legăturile NI, AdvantageScope este compatibil retroactiv cu vechile chei
 
 ```json
 {
-  "type": "joystick" // A joystick that moves in two dimensions
+  "type": "joystick" // Un joystick care se mișcă în două dimensiuni
   "isYellow": boolean
   "centerPx": [number, number]
   "radiusPx": number
   "sdlXSourceIndex": number
-  "sdlXSourceInverted": boolean // Not inverted: right = positive
+  "sdlXSourceInverted": boolean // Neinversat: dreapta = pozitiv
   "sdlYSourceIndex": number
-  "sdlYSourceInverted": boolean // Not inverted: up = positive
-  "sdlButtonSourceIndex": number // Optional
+  "sdlYSourceInverted": boolean // Neinversat: sus = pozitiv
+  "sdlButtonSourceIndex": number // Opțional
 
-  // Alternative bindings for the NI Driver Station (optional)
+  // Legături alternative pentru NI Driver Station (opțional)
   "niXSourceIndex": number
   "niXSourceInverted": boolean
   "niYSourceIndex": number
@@ -175,14 +175,14 @@ Pentru legăturile NI, AdvantageScope este compatibil retroactiv cu vechile chei
 
 ```json
 {
-  "type": "axis" // A single axis value
+  "type": "axis" // O valoare pe o singură axă
   "isYellow": boolean
   "centerPx": [number, number]
   "sizePx": [number, number]
   "sdlSourceIndex": number,
-  "sdlSourceRange": [number, number] // Min greater than max to invert
+  "sdlSourceRange": [number, number] // Min mai mare decât max pentru a inversa
 
-  // Alternative bindings for the NI Driver Station (optional)
+  // Legături alternative pentru NI Driver Station (opțional)
   "niSourceIndex": number,
   "niSourceRange": [number, number]
 }
@@ -192,7 +192,7 @@ Pentru legăturile NI, AdvantageScope este compatibil retroactiv cu vechile chei
 
 ```json
 {
-  "type": "touchpad" // A touchpad
+  "type": "touchpad" // Un touchpad
   "isYellow": boolean
   "centerPx": [number, number]
   "sizePx": [number, number]
@@ -206,20 +206,20 @@ Folderul trebuie să conțină o imagine numită „image.png”, orientată cu 
 
 ```json
 {
-  "name": string // Unique name, required for all asset types
+  "name": string // Nume unic, obligatoriu pentru toate tipurile de resurse
   "locales": { [locale: string]: string } // Traduceri opționale pentru numele resursei
-  "isFTC": boolean // Whether this is an FTC field instead of an FRC field
-  "coordinateSystem": // The default coordinate system to use (see below)
+  "isFTC": boolean // Dacă este un teren FTC în loc de un teren FRC
+  "coordinateSystem": // Sistemul de coordonate implicit de utilizat (vezi mai jos)
       "wall-alliance" |  // FRC 2022
       "wall-blue" |      // FRC 2023-2026
-      "center-rotated" | // FTC traditional
+      "center-rotated" | // FTC tradițional
       "center-red"       // Systemcore
-  "useGrid": boolean // Whether to render grid lines if this field is an FTC one (default "true")
-  "sourceUrl": string // Link to the original file, optional
-  "topLeft": [number, number] // Pixel coordinate (origin at upper left)
-  "bottomRight": [number, number] // Pixel coordinate (origin at upper left)
-  "widthInches": number // Real width of the field (long side)
-  "heightInches": number // Real height of the field (short side)
+  "useGrid": boolean // Dacă se randează linii de grilă dacă acest teren este unul FTC (implicit "true")
+  "sourceUrl": string // Link către fișierul original, opțional
+  "topLeft": [number, number] // Coordonată în pixeli (originea în stânga sus)
+  "bottomRight": [number, number] // Coordonată în pixeli (originea în stânga sus)
+  "widthInches": number // Lățimea reală a terenului (latura lungă)
+  "heightInches": number // Înălțimea reală a terenului (latura scurtă)
 }
 ```
 
@@ -231,38 +231,38 @@ Fișierul de configurare trebuie să respecte următorul format:
 
 ```json
 {
-  "name": string // Unique name, required for all asset types
+  "name": string // Nume unic, obligatoriu pentru toate tipurile de resurse
   "locales": { [locale: string]: string } // Traduceri opționale pentru numele resursei
-  "isFTC": boolean // Whether this is an FTC field instead of an FRC field
-  "coordinateSystem": // The default coordinate system to use (see below)
+  "isFTC": boolean // Dacă este un teren FTC în loc de un teren FRC
+  "coordinateSystem": // Sistemul de coordonate implicit de utilizat (vezi mai jos)
       "wall-alliance" |  // FRC 2022
       "wall-blue" |      // FRC 2023-2026
-      "center-rotated" | // FTC traditional
+      "center-rotated" | // FTC tradițional
       "center-red"       // Systemcore
-  "useGrid": boolean // Whether to render grid lines if this field is an FTC one (default "true")
-  "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
-  "widthInches": number // Real width of the field (long side)
-  "heightInches": number // Real height of the field (short side)
-  "defaultOrigin": "auto" | "blue" | "red" // Default origin location, "auto" if unspecified
+  "useGrid": boolean // Dacă se randează linii de grilă dacă acest teren este unul FTC (implicit "true")
+  "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Secvență de rotații de-a lungul axelor x, y și z
+  "widthInches": number // Lățimea reală a terenului (latura lungă)
+  "heightInches": number // Înălțimea reală a terenului (latura scurtă)
+  "defaultOrigin": "auto" | "blue" | "red" // Locația implicită a originii, "auto" dacă nu este specificată
   "driverStations": [
-    [number, number] // Driver station positions (X & Y in meters relative to the center of the field)
-    ...              // For FRC, 6 elements ordered [B1, B2, B3, R1, R2, R3]. For FTC, 4 elements ordered [BL, BR, RL, RR].
+    [number, number] // Pozițiile Driver Station (X și Y în metri față de centrul terenului)
+    ...              // Pentru FRC, 6 elemente în ordinea [B1, B2, B3, R1, R2, R3]. Pentru FTC, 4 elemente în ordinea [BL, BR, RL, RR].
   ]
-  "gamePieces": [ // List of game piece types
+  "gamePieces": [ // Lista tipurilor de piese de joc
     {
-      "name": string // Game piece name
+      "name": string // Numele piesei de joc
       "locales": { [locale: string]: string } // Traduceri opționale pentru numele piesei de joc
-      "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
-      "position": [number, number, number] // Position offset in meters, applied after rotation
-      "stagedObjects": string[] // Names of staged game piece objects, to hide if user poses are supplied
+      "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Secvență de rotații de-a lungul axelor x, y și z
+      "position": [number, number, number] // Decalaj de poziție în metri, aplicat după rotație
+      "stagedObjects": string[] // Numele obiectelor pieselor de joc prepoziționate, de ascuns dacă sunt furnizate pose-uri de utilizator
     },
     ...
   ],
-  "aprilTags": [ // List of supplemental AprilTag models (if not part of field model)
-    "variant": string // Format as "FAMILY-SIZEin" where "FAMILY" is "36h11" or "16h5" and "SIZE" is the length of the black section
+  "aprilTags": [ // Lista modelelor AprilTag suplimentare (dacă nu fac parte din modelul terenului)
+    "variant": string // Format ca "FAMILY-SIZEin", unde "FAMILY" este "36h11" sau "16h5", iar "SIZE" este lungimea secțiunii negre
     "id": number
-    "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
-    "position": [number, number, number] // Position offset in meters, applied after rotation
+    "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Secvență de rotații de-a lungul axelor x, y și z
+    "position": [number, number, number] // Decalaj de poziție în metri, aplicat după rotație
   ]
 }
 ```

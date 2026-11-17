@@ -32,7 +32,7 @@ sidebar_position: 1
 
 ## Неофициальные дистрибутивы {#unofficial-distributions}
 
-Существует несколько неофициальных дистрибутивов AdvantageScope, которые официально не поддерживаются разработчиками AdvantageScope и WPILib. Они могут отставать от последней официальной версии AdvantageScope. При возникновении проблем обращайтесь напрямую к их сопровождающим.
+Существует несколько неофициальных дистрибутивов AdvantageScope, которые официально не поддерживаются разработчиками AdvantageScope и WPILib. Они могут отставать от последней официальной версии AdvantageScope. При возникновении проблем обращайтесь напрямую к их разработчикам.
 
 - [**AdvantageScope Lite для системы управления REV:**](https://github.com/j5155/AdvantageScope-Lite-FTC) Модификация [AdvantageScope Lite](/more-features/advantagescope-lite) для использования в существующей (до Systemcore) системе управления FTC.
 - [**Установщик Homebrew:**](https://formulae.brew.sh/cask/advantagescope) Cask Homebrew для установки AdvantageScope из командной строки на macOS.

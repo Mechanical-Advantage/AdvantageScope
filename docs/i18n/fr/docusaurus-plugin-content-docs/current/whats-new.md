@@ -37,7 +37,7 @@ Les équipes FTC doivent rester prudentes lorsqu'elles utilisent des logiciels e
 Plusieurs bibliothèques FTC tierces de journalisation et de télémétrie gèrent d'autres formats compatibles avec AdvantageScope, comme WPILOG et RLOG. Vous trouverez leur documentation dans leurs dépôts respectifs; l'équipe d'AdvantageScope ne recommande ni ne privilégie aucune solution de journalisation FTC en particulier.
 
 :::info
-AdvantageScope offre la meilleure expérience lorsqu'elle est utilisée avec le framework WPILib et ses outils de journalisation. Vous pourriez rencontrer des problèmes de compatibilité ou des limites fonctionnelles avec des solutions de journalisation non officielles.
+L'application AdvantageScope offre la meilleure expérience lorsqu'elle est utilisée avec le framework WPILib et ses outils de journalisation. Vous pourriez rencontrer des problèmes de compatibilité ou des limites fonctionnelles avec des solutions de journalisation non officielles.
 
 Toutes les fonctionnalités d'AdvantageScope seront officiellement prises en charge en FTC après la transition vers Systemcore pour la saison 2027-2028.
 :::

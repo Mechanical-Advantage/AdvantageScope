@@ -14,7 +14,7 @@ import TabItem from '@theme/TabItem';
 _Yukarıda İngilizce arayüz gösterilmiştir._
 
 <details>
-<summary>Zaman Çizelgesi Kontrolleri</summary>
+<summary>Zaman çizelgesi kontrolleri</summary>
 
 Zaman çizelgesi, oynatmayı ve görselleştirmeyi kontrol etmenizi sağlar. Zaman çizelgesine tıklayarak bir anı seçebilir, sağ tıklayarak seçimi kaldırabilirsiniz. Seçilen zaman tüm sekmelerde senkronize edildiği için aynı anı diğer görünümlerde de kolayca bulabilirsiniz.
 

@@ -31,8 +31,8 @@ Para dar zoom, coloque o cursor sobre a linha do tempo e role para cima ou para 
 Role o mouse para cima ou para baixo sobre o campo para aproximar e afastar o zoom, e clique e arraste para mover a visualização. Se clicar com o botão direito em qualquer lugar do campo, você abre o menu da câmera com três opções:
 
 - **Desbloqueado**: Você controla o zoom e o deslocamento manualmente.
-- **Bloqueado ao robô**: A câmera acompanha o movimento do robô automaticamente.
-- **Bloqueado ao robô e rotação**: Além de acompanhar o robô, a câmera gira junto com ele.
+- **Travado no robô**: A câmera acompanha o movimento do robô automaticamente.
+- **Travado no robô e na rotação**: Além de acompanhar o robô, a câmera gira junto com ele.
 
 Mesmo nos modos bloqueados, você ainda pode arrastar a câmera livremente para longe do robô se precisar olhar outra parte da arena. Os botões de orientação no painel de controle também permitem girar o campo em qualquer modo.
 

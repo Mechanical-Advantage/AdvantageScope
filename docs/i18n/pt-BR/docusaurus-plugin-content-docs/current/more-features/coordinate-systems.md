@@ -16,7 +16,7 @@ Todas as opções de sistema de coordenadas funcionam tanto com campos da FRC qu
 
 ## Centro/vermelho (Systemcore) {#center-red}
 
-A origem fica no centro do campo, com o eixo +X apontando para longe da parede da aliança vermelha, como mostra a imagem abaixo. **Esse é o sistema de coordenadas padrão para campos da FRC a partir de 2027 e campos da FTC a partir da temporada 2027-2028.**
+A origem fica no centro do campo, com o eixo +X apontando no sentido oposto à parede da aliança vermelha, como mostra a imagem abaixo. **Esse é o sistema de coordenadas padrão para campos da FRC a partir de 2027 e campos da FTC a partir da temporada 2027-2028.**
 
 <img src="/img/more-features/coordinate-system-center-red.webp" alt="Sistema de coordenadas centro/vermelho" />
 

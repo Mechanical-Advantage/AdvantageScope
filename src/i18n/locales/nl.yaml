@@ -6,7 +6,7 @@ betaWelcome:
   descDesktop: "Bedankt voor het helpen testen en verbeteren van aankomende functies in AdvantageScope! Vink de onderstaande vakjes aan om elke stelling te bevestigen voordat je doorgaat."
   descLite: "Bedankt voor het helpen testen en verbeteren van AdvantageScope Lite! Vink de onderstaande vakjes aan om elke stelling te bevestigen voordat je doorgaat."
   checkUnstable: "Ik begrijp dat dit een instabiele versie is en dat ik problemen zal tegenkomen die niet aanwezig zijn in stabiele versies."
-  checkReport: "Ik ga ermee akkoord om eventuele problemen die ik tegenkom te melden aan de ontwikkelaars, wat zal helpen om toekomstige versies te verbeteren."
+  checkReport: "Ik ga ermee akkoord om eventuele problemen die ik tegenkom te melden aan de ontwikkelaars, wat helpt om toekomstige versies te verbeteren."
   checkFeedback: "Ik ga ermee akkoord om feedback te geven aan de ontwikkelaars als mij wordt gevraagd naar mijn ervaring met het gebruik van deze versie."
   help: 'Klik op elk gewenst moment op het <span class="purple">paarse pictogram</span> in de titelbalk om een probleem te melden, een functie aan te vragen of een vraag te stellen.'
   continue: "Doorgaan"
@@ -15,7 +15,7 @@ download:
   title: "Logs downloaden — AdvantageScope"
   cancel: "Annuleren"
   download: "Downloaden"
-  errorNoFolder: "Logmap openen op <u>{{path}}</u> mislukt"
+  errorNoFolder: "Kan de logmap op <u>{{path}}</u> niet openen"
   errorNotFound: "Robot niet gevonden op <u>{{address}}</u> (controleer de verbinding)"
   errorUnknownAddress: "Onbekend adres <u>{{address}}</u>"
   errorAuthFailed: "Authenticatie bij robot op <u>{{address}}</u> mislukt"
@@ -33,7 +33,7 @@ download:
 editFov:
   title: "FOV bewerken — AdvantageScope"
   label: "Camera-FOV"
-  inputTitle: "Gezichtsveld camera instellen (graden)"
+  inputTitle: "Gezichtsveld van camera instellen (graden)"
   cancel: "Annuleren"
   confirm: "Bevestigen"
 
@@ -56,7 +56,7 @@ export:
   formatWpilog: "WPILOG"
   formatMcap: "MCAP"
   timestamps: "Tijdstempels"
-  samplingSelectTitle: "Bemonsteringsmodus tijdstempel selecteren"
+  samplingSelectTitle: "Bemonsteringsmodus voor tijdstempels selecteren"
   samplingAllChanges: "Alle wijzigingen"
   samplingFixedPeriod: "Vaste periode"
   samplingAkit: "AdvantageKit-cycli"
@@ -101,7 +101,7 @@ preferences:
   networkingSubtitle: 'De live-bron kan worden gewijzigd in het menu "Bestand".'
   robotAddress: "Robotadres"
   robotAddressInputTitle: "Voer het IP-adres of de hostnaam van de robot in"
-  robotLogPath: "Logpad robot"
+  robotLogPath: "Logmap op robot"
   robotLogPathInputTitle: "Voer het pad naar logbestanden op de robot in"
   liveMode: "Live-modus"
   liveModeSelectTitle: "Abonnementsmodus voor live-data selecteren"
@@ -169,11 +169,11 @@ sourceListHelp:
 unitConversion:
   title: "Eenheidsconversie — AdvantageScope"
   unitType: "Eenheidstype"
-  unitTypeSelectTitle: "Dimensietype eenheid selecteren"
+  unitTypeSelectTitle: "Dimensietype van eenheid selecteren"
   fromUnit: "Van eenheid"
-  fromUnitSelectTitle: "Selecteer eenheid om van te converteren"
+  fromUnitSelectTitle: "Selecteer de broneenheid"
   toUnit: "Naar eenheid"
-  toUnitSelectTitle: "Selecteer eenheid om naar te converteren"
+  toUnitSelectTitle: "Selecteer de doeleenheid"
   extraFactor: "Extra factor"
   extraFactorInputTitle: "Aangepaste schaalfactor (vermenigvuldiger) invoeren"
   cancel: "Annuleren"
@@ -227,7 +227,7 @@ tabs:
   points: "Punten"
   metadata: "Metadata"
   communication: "Communicatie"
-  power: "Stroom"
+  power: "Vermogen"
   cpu: "CPU"
 
 sourceList:
@@ -244,8 +244,8 @@ sourceList:
   errors_other: "{{count}} fouten"
   warnings_one: "{{count}} waarschuwing"
   warnings_other: "{{count}} waarschuwingen"
-  infos_one: "{{count}} info"
-  infos_other: "{{count}} info's"
+  infos_one: "{{count}} infomelding"
+  infos_other: "{{count}} infomeldingen"
   alerts: "{{errors}}, {{warnings}}, {{infos}}"
   values_one: "{{count}} waarde"
   values_other: "{{count}} waarden"
@@ -282,8 +282,8 @@ sourceList:
     "#5f4528": "Bruin"
     KitBot: "KitBot"
     normal: "Normaal"
-    bold: "Vet"
-    verybold: "Zeer vet"
+    bold: "Dik"
+    verybold: "Extra dik"
     thin: "Dun"
     medium: "Gemiddeld"
     large: "Groot"
@@ -528,14 +528,14 @@ hub:
     nextFrame: "Volgend frame"
     goForward5s: "5 seconden vooruitgaan"
     noApiKeyTitle: "Geen API-sleutel"
-    noApiKeyContent: "Voer je API-sleutel in voor The Blue Alliance in de AdvantageScope-voorkeuren. Een API-sleutel is verkrijgbaar op de accountpagina op de website van The Blue Alliance."
+    noApiKeyContent: "Voer je API-sleutel in voor The Blue Alliance in de AdvantageScope-voorkeuren. Je kunt een API-sleutel aanmaken op de accountpagina op de website van The Blue Alliance."
     noMatchInfoTitle: "Geen matchinfo"
     noMatchInfoContent: "Kan evenement- en matchinfo niet lezen uit het logbestand. Laad de video in plaats daarvan met een YouTube-URL of een lokaal bestand."
     noPracticeTitle: "Geen video's voor oefenwedstrijden"
     noPracticeContent: "Dit is een oefenwedstrijd. Er is geen data beschikbaar op The Blue Alliance voor oefenwedstrijden. Laad de video in plaats daarvan met een YouTube-URL of een lokaal bestand."
 
   joysticks:
-    selectTitle: "Databron joystick selecteren"
+    selectTitle: "Databron voor joystick selecteren"
     noData: "Geen data voor joystick."
     selectLayout: "Selecteer een joystickindeling om data te bekijken."
     none: "Geen"
@@ -673,8 +673,8 @@ menu:
     licenses: "Licenties tonen..."
     assetsFolder: "Assetsmap tonen"
     customAssetsFolder: "Aangepaste assetsmap gebruiken"
-    assetDownloadStatus: "Downloadstatus asset..."
-    owletDownloadStatus: "Downloadstatus Owlet..."
+    assetDownloadStatus: "Downloadstatus van assets..."
+    owletDownloadStatus: "Downloadstatus van Owlet..."
     settings: "Instellingen..."
     setLanguage: "Taal instellen 🌐"
     setLiveMode: "Live-modus instellen"
@@ -780,7 +780,7 @@ menu:
     editConversion: "Conversie bewerken"
     disableAutoUnits: "Automatische eenheden uitschakelen"
     resetUnits: "Eenheden resetten"
-    zoomEnabled: "Zoomen naar ingeschakeld bereik"
+    zoomEnabled: "Zoomen naar ingeschakelde periode"
     differentiate: "Differentiëren"
     integrate: "Integreren"
 
@@ -818,15 +818,15 @@ main:
 
   assets:
     downloadStarted: "Download gestart om {{time}}. Wacht een paar minuten tot de download is voltooid."
-    downloadFinished: "Alle assets gedownload. AdvantageScope zal periodiek op updates controleren."
-    connectFailed: "Kan geen verbinding maken met GitHub. Binnenkort opnieuw proberen."
-    noDiskSpace: "Niet genoeg schijfruimte. Binnenkort opnieuw proberen."
+    downloadFinished: "Alle assets gedownload. AdvantageScope controleert periodiek op updates."
+    connectFailed: "Kan geen verbinding maken met GitHub. Wordt binnenkort opnieuw geprobeerd."
+    noDiskSpace: "Niet genoeg schijfruimte. Wordt binnenkort opnieuw geprobeerd."
     readme: "Deze map bevat extra assets voor het 2D-veld, het 3D-veld en de joystickweergaven. Bekijk de AdvantageScope-documentatie voor meer details (beschikbaar via het tabblad documentatie in de app of de onderstaande URL)."
 
   owlet:
-    upToDate: "Owlet is up-to-date. AdvantageScope zal periodiek op updates controleren."
+    upToDate: "Owlet is up-to-date. AdvantageScope controleert periodiek op updates."
     offlineCache: "Offline Owlet-cache in gebruik. Er wordt binnenkort gecontroleerd op updates."
-    noDiskSpace: "Niet genoeg schijfruimte. Binnenkort opnieuw proberen."
+    noDiskSpace: "Niet genoeg schijfruimte. Wordt binnenkort opnieuw geprobeerd."
     noOwlet: "Het Hoot-logbestand kan niet worden gedecodeerd omdat Owlet niet beschikbaar is."
     openFailed: "Het Hoot-logbestand kon niet worden geopend."
     tooOld: "Het Hoot-logbestand is te oud om te worden gedecodeerd. Hoot-logs moeten geproduceerd zijn door Phoenix 2024 of nieuwer."
@@ -857,8 +857,8 @@ main:
     selectAssetsFolder: "Selecteer de map met aangepaste AdvantageScope-assets"
 
   downloadStatus:
-    assetTitle: "Downloadstatus asset"
-    owletTitle: "Downloadstatus Owlet"
+    assetTitle: "Downloadstatus van assets"
+    owletTitle: "Downloadstatus van Owlet"
 
   updates:
     title: "Updatecontrole"
@@ -907,7 +907,7 @@ main:
     openDsInNewWindow: "Openen in nieuw venster"
     openDsInThisWindow: "Openen in dit venster"
     unsupportedFormatLite: "Niet-ondersteund bestandsformaat in AdvantageScope Lite."
-    decompressFailed: "WPILOG-bestand decomprimeren mislukt."
+    decompressFailed: "Het decomprimeren van het WPILOG-bestand is mislukt."
     limitedSignals: "Beperkte signalen beschikbaar"
     limitedSignalsDetail: "Dit logbestand bevat een beperkt aantal signalen van Phoenix-apparaten. Bekijk de Phoenix-documentatie voor details."
 
@@ -982,7 +982,7 @@ main:
 
   lite:
     tooSmall: "Onvoldoende ruimte, pas de schermindeling aan."
-    mobileWarning: "AdvantageScope Lite werkt het best op desktop- en tabletapparaten."
+    mobileWarning: "AdvantageScope Lite werkt het best op desktops en tablets."
 
 units:
   defaultLabel: "{{unit}} (standaard)"

@@ -26,7 +26,7 @@ AdvantageScope est disponible en plusieurs langues pour offrir une interface ada
 
 ## Configuration {#configuration}
 
-Pour changer la langue d'affichage dans AdvantageScope, ouvrez les préférences en cliquant sur `App` > `Afficher les préférences...` (Windows/Linux) ou `AdvantageScope` > `Paramètres...` (macOS). Sous le paramètre « Langue », choisissez une langue dans la liste ou sélectionnez « Par défaut du système » pour utiliser automatiquement la langue de votre système d'exploitation.
+Pour changer la langue d'affichage dans AdvantageScope, ouvrez les préférences en cliquant sur `App` > `Afficher les préférences...` (Windows/Linux) ou `AdvantageScope` > `Paramètres...` (macOS). Sous le paramètre « Langue », choisissez une langue dans la liste ou sélectionnez « Langue du système » pour utiliser automatiquement la langue de votre système d'exploitation.
 
 <img src="/img/prefs_fr.webp" alt="Fenêtre des préférences" height="450" />
 

@@ -18,7 +18,7 @@ Deze functie is niet bedoeld om de robot op het veld te besturen. Dashboard-elem
 
 ## Tunen met AdvantageKit {#tuning-with-advantagekit}
 
-Velden die AdvantageKit naar de subtabel `AdvantageKit` publiceert, zijn alleen-uitvoer en kun je niet aanpassen. Je kunt vanuit je eigen robotcode wel velden publiceren die je in AdvantageScope kunt tunen. **Alle velden die je naar de tabel "/Tuning" in NetworkTables stuurt, verschijnen onder de tabel "Tuning" zodra je de live-bron "NetworkTables (AdvantageKit)" gebruikt.**
+Velden die AdvantageKit naar de subtabel `AdvantageKit` publiceert, zijn uitsluitend bedoeld als uitvoer en kun je niet aanpassen. Je kunt vanuit je eigen robotcode wel velden publiceren die je in AdvantageScope kunt tunen. **Alle velden die je naar de tabel "/Tuning" in NetworkTables stuurt, verschijnen onder de tabel "Tuning" zodra je de live-bron "NetworkTables (AdvantageKit)" gebruikt.**
 
 Zo publiceer je bijvoorbeeld een instelbaar getal met de klasse [`LoggedNetworkNumber`](https://docs.advantagekit.org/data-flow/recording-inputs/dashboard-inputs):
 

@@ -16,7 +16,7 @@ Tüm koordinat sistemi seçenekleri hem FRC hem de FTC sahalarıyla uyumludur.
 
 ## Merkez/kırmızı (Systemcore) {#center-red}
 
-Aşağıda gösterildiği gibi orijin sahanın merkezindedir ve +X ekseni kırmızı ittifak duvarından uzağa bakar. **Bu, 2027'den itibaren FRC sahaları ve 2027-2028'den itibaren FTC sahaları için varsayılan koordinat sistemidir.**
+Aşağıda gösterildiği gibi orijin sahanın merkezindedir ve +X ekseni kırmızı ittifak duvarının aksi yönüne doğru uzanır. **Bu, 2027'den itibaren FRC sahaları ve 2027-2028'den itibaren FTC sahaları için varsayılan koordinat sistemidir.**
 
 <img src="/img/more-features/coordinate-system-center-red.webp" alt="Merkez/kırmızı koordinat sistemi" />
 

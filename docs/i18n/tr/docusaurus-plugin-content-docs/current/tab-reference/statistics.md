@@ -28,7 +28,7 @@ Her alanın rengini renkli simgeye tıklayarak veya alan adına sağ tıklayarak
 - _Tam log:_ Log dosyasının tüm aralığını analiz eder.
 - _Etkin:_ Robotun etkin olduğu zaman aralıklarını analiz eder.
 - _Otonom:_ Robotun otonomda olduğu zaman aralıklarını analiz eder.
-- _Teleop:_ Robotun teleopta olduğu zaman aralıklarını analiz eder.
+- _Teleop:_ Robotun teleop'ta olduğu zaman aralıklarını analiz eder.
 - _Canlı: 30 saniye:_ En son 30 saniyeyi analiz eder (canlı bir kaynağa bağlıyken).
 - _Canlı: 10 saniye:_ En son 10 saniyeyi analiz eder (canlı bir kaynağa bağlıyken).
 

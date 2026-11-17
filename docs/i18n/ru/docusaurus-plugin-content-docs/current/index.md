@@ -20,11 +20,11 @@ type: "category",
 label: "Обзор",
 href: "/category/overview"
 },
-{
-type: "category",
-label: "Справочник вкладок",
-href: "/category/tab-reference"
-},
+  {
+    type: "category",
+    label: "Справочник по вкладкам",
+    href: "/category/tab-reference"
+  },
 {
 type: "category",
 label: "Другие функции",

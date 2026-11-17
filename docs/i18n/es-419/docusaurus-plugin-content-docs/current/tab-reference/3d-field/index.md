@@ -16,7 +16,7 @@ La línea de tiempo controla la reproducción y te ayuda a explorar el registro.
 
 Las franjas amarillas marcan cuándo el robot está en modo autónomo; las azules, en teledirigido (teleop); y las grises, en modo de utilidad.
 
-Para hacer zoom, coloca el cursor sobre la línea de tiempo y mueve la rueda del ratón (o desliza) hacia arriba o hacia abajo. También puedes seleccionar un tramo específico haciendo clic y arrastrando mientras mantienes presionada la tecla `Shift`. Para moverte a izquierda o derecha, desplázate horizontalmente (si tu dispositivo lo permite) o haz clic y arrastra sobre la línea de tiempo. Cuando estés conectado en vivo, moverte hacia la izquierda desbloquea la vista del tiempo actual, y llegar hasta el extremo derecho la vuelve a fijar en tiempo real. Presiona `Ctrl+\` para hacer zoom automáticamente al período en que el robot está habilitado.
+Para hacer zoom, coloca el cursor sobre la línea de tiempo y mueve la rueda del mouse (o desliza) hacia arriba o hacia abajo. También puedes seleccionar un tramo específico haciendo clic y arrastrando mientras mantienes presionada la tecla `Shift`. Para moverte a izquierda o derecha, desplázate horizontalmente (si tu dispositivo lo permite) o haz clic y arrastra sobre la línea de tiempo. Cuando estés conectado en vivo, moverte hacia la izquierda desbloquea la vista del tiempo actual, y llegar hasta el extremo derecho la vuelve a fijar en tiempo real. Presiona `Ctrl+\` para hacer zoom automáticamente al período en que el robot está habilitado.
 
 <img src="/img/tab-reference/timeline.webp" alt="Línea de tiempo" />
 
@@ -144,7 +144,7 @@ Haz clic derecho en la vista del campo y selecciona "Establecer FOV..." para aju
 
 ### Orbitar campo {#orbit-field}
 
-Es el modo predeterminado: la cámara se mueve libremente respecto al campo. **Clic izquierdo + arrastrar** gira la cámara, **clic derecho + arrastrar** la desplaza (paneo) y la **rueda del ratón** acerca o aleja la vista.
+Es el modo predeterminado: la cámara se mueve libremente respecto al campo. **Clic izquierdo + arrastrar** gira la cámara, **clic derecho + arrastrar** la desplaza (paneo) y la **rueda del mouse** acerca o aleja la vista.
 
 :::tip
 También puedes mover la cámara con el teclado: **WASD** para desplazarte horizontalmente, **IJKL** para rotar y **E** / **Q** para subir o bajar.
@@ -176,7 +176,7 @@ Al igual que el resto de las poses, la pose de **Anulación de cámara** debe se
 
 ## Configuración {#configuration}
 
-Elige el modelo de campo desde el menú desplegable; están incluidos todos los juegos recientes de FRC y FTC. Si tu computadora tiene pocos recursos gráficos, te recomendamos usar los campos "Perenne" (*Evergreen*). Los campos "Ejes" (*Axes*) muestran únicamente los ejes XYZ en el origen junto con el contorno de la cancha para dar referencia de escala.
+Elige el modelo de campo desde el menú desplegable; están incluidos todos los juegos recientes de FRC y FTC. Si tu computadora tiene pocos recursos gráficos, te recomendamos usar los campos "Evergreen". Los campos "Ejes" (*Axes*) muestran únicamente los ejes XYZ en el origen junto con el contorno de la cancha para dar referencia de escala.
 
 :::info
 Puedes personalizar el sistema de coordenadas de esta pestaña. Consulta la página de [sistemas de coordenadas](/more-features/coordinate-systems) para ver los detalles.

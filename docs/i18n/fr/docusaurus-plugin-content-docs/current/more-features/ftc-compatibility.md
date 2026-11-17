@@ -25,12 +25,12 @@ Les terrains et modèles de robot FTC sont entièrement pris en charge nativemen
 
 AdvantageScope prend en charge nativement la diffusion en direct de **FTC Dashboard** et les fichiers `.log` de **Road Runner**, en plus des formats compatibles WPILib comme WPILOG et NetworkTables.
 
-Plusieurs bibliothèques tierces de journalisation et de télémesure pour FTC génèrent des données compatibles avec AdvantageScope. L'équipe de développement d'AdvantageScope ne recommande ni n'approuve aucune solution en particulier, et certaines bibliothèques peuvent offrir des fonctionnalités plus limitées.
+Plusieurs bibliothèques tierces de journalisation et de télémétrie pour FTC génèrent des données compatibles avec AdvantageScope. L'équipe de développement d'AdvantageScope ne recommande ni n'approuve aucune solution en particulier, et certaines bibliothèques peuvent offrir des fonctionnalités plus limitées.
 
 Voici quelques points de départ (liste non exhaustive) :
 
 - [**Road Runner**](https://rr.brott.dev/docs/v1-0/installation/) : génère des fichiers journaux pour déboguer la planification de trajectoires.
-- [**FTC Dashboard**](https://acmerobotics.github.io/ftc-dashboard/) : diffuse de la télémesure en direct compatible à la fois avec son propre tableau de bord et avec AdvantageScope.
+- [**FTC Dashboard**](https://acmerobotics.github.io/ftc-dashboard/) : diffuse de la télémétrie en direct compatible à la fois avec son propre tableau de bord et avec AdvantageScope.
 - [**FateWeaver**](https://github.com/HermesFTC/FateWeaver) : permet d'enregistrer des données personnalisées dans plusieurs formats, aussi bien dans des fichiers journaux qu'en diffusion en direct.
 - [**Koala Log**](https://github.com/Koala-Log/Koala-Log) : enregistre des données au format WPILOG à l'aide d'annotations.
 - **PsiKit** : un framework de journalisation et de relecture pour FTC inspiré d'AdvantageKit.

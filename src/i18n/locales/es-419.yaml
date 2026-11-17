@@ -126,7 +126,7 @@ preferences:
   mode3dBatteryDefault: "Predeterminado"
   mode3dSimple: "Modo 3D"
   antialiasing: "Antialiasing 3D"
-  antialiasingSelectTitle: "Alternar antialiasing 3D"
+  antialiasingSelectTitle: "Activar o desactivar antialiasing 3D"
   antialiasingOn: "Activado"
   antialiasingOff: "Desactivado"
   cancel: "Cancelar"
@@ -207,11 +207,11 @@ xrControls:
   streamingSmooth: "Fluida"
   streamingLowLatency: "Baja latencia"
   showFloor: "Mostrar piso"
-  showFloorTitle: "Alternar visibilidad del piso"
+  showFloorTitle: "Mostrar u ocultar el piso"
   showField: "Mostrar campo"
-  showFieldTitle: "Alternar la visibilidad del campo"
+  showFieldTitle: "Mostrar u ocultar el campo"
   showRobots: "Mostrar robots"
-  showRobotsTitle: "Alternar la visibilidad del modelo del robot"
+  showRobotsTitle: "Mostrar u ocultar el modelo del robot"
 
 tabs:
   console: "Consola"
@@ -244,12 +244,12 @@ sourceList:
   errors_other: "{{count}} errores"
   warnings_one: "{{count}} advertencia"
   warnings_other: "{{count}} advertencias"
-  infos_one: "{{count}} info"
-  infos_other: "{{count}} infos"
+  infos_one: "{{count}} aviso"
+  infos_other: "{{count}} avisos"
   alerts: "{{errors}}, {{warnings}}, {{infos}}"
   values_one: "{{count}} valor"
   values_other: "{{count}} valores"
-  toggleVisibility: "Alternar visibilidad del campo"
+  toggleVisibility: "Mostrar u ocultar campo"
   hideField: "Ocultar campo"
   showField: "Mostrar campo"
   typeName: "{{name}}:"
@@ -282,12 +282,12 @@ sourceList:
     "#d993aa": "Rosa"
     "#5f4528": "Marrón"
     normal: "Normal"
-    bold: "Negrita"
-    verybold: "Extra negrita"
+    bold: "Gruesa"
+    verybold: "Muy gruesa"
     thin: "Fina"
-    medium: "Media"
+    medium: "Mediano"
     large: "Grande"
-    small: "Pequeña"
+    small: "Pequeño"
 
 licenses:
   title: "Licencias — AdvantageScope"
@@ -303,7 +303,7 @@ hub:
     statusError: "Error"
     openErrorTitle: "No se pudo abrir el registro"
     openErrorCsv: "Hubo un problema al leer el archivo de registro. Consulta la documentación para obtener más información sobre el formato requerido de los archivos CSV."
-    openErrorFallback: "Hubo un problema al leer el archivo de registro. Por favor, intenta de nuevo."
+    openErrorFallback: "Hubo un problema al leer el archivo de registro. Intenta de nuevo."
     cannotOpenTitle_one: "No se puede abrir el archivo"
     cannotOpenTitle_other: "No se pueden abrir los archivos"
     waitExport: "Espera a que termine la exportación e intenta de nuevo."
@@ -331,7 +331,7 @@ hub:
     waitExport: "Espera a que termine la exportación anterior e intenta de nuevo."
     noLogs: "Abre un archivo de registro o conéctate a una fuente en vivo e intenta de nuevo."
     failedTitle: "No se pudieron exportar los datos"
-    failedContent: "Hubo un problema al convertir al formato de exportación. Por favor, intenta de nuevo."
+    failedContent: "Hubo un problema al convertir al formato de exportación. Intenta de nuevo."
 
   playback:
     play: "Reproducir"
@@ -348,7 +348,7 @@ hub:
     titleDefault: "Abre un registro o conéctate"
     searchPlaceholder: "Buscar"
     searchTitle: "Buscar campos"
-    tuningTitle: "Alternar modo de ajuste"
+    tuningTitle: "Activar o desactivar modo de ajuste"
     fields_one: "{{count}} campo"
     fields_other: "{{count}} campos"
     titleSeconds_one: "{{fields}}, {{duration}} segundo"
@@ -446,8 +446,8 @@ hub:
     noUnits: "Sin unidades"
     differentiated: "Diferenciado"
     integrated: "Integrado"
-    helpScrollToZoom: "Desplázate para hacer zoom"
-    helpDragToPan: "Arrastrar para mover"
+    helpScrollToZoom: "Usa la rueda para hacer zoom"
+    helpDragToPan: "Arrastra para moverte"
     robotMode:
       disabled: "Deshabilitado"
       auto: "Auto"
@@ -715,22 +715,22 @@ menu:
     resetDsLayout: "Restablecer a la disposición de DS"
     newWindow: "Nueva ventana"
     closeWindow: "Cerrar ventana"
-    recentPresets: "Ajustes preestablecidos recientes"
-    recentPresetsLite: "— Ajustes preestablecidos recientes —"
+    recentPresets: "Preajustes recientes"
+    recentPresetsLite: "— Preajustes recientes —"
     defaultMode: "Predeterminado: {{mode}}"
 
   view:
-    toggleSidebar: "Alternar barra lateral"
-    toggleControls: "Alternar controles"
+    toggleSidebar: "Mostrar u ocultar barra lateral"
+    toggleControls: "Mostrar u ocultar controles"
     resetLayout: "Restablecer disposición"
     loopVisible: "Repetir rango visible"
     showRobotMode: "Mostrar modo del robot"
     reload: "Recargar"
-    toggleDevTools: "Alternar herramientas de desarrollador"
+    toggleDevTools: "Mostrar u ocultar herramientas de desarrollador"
     resetZoom: "Tamaño real"
     zoomIn: "Acercar"
     zoomOut: "Alejar"
-    toggleFullscreen: "Alternar pantalla completa"
+    toggleFullscreen: "Pantalla completa"
 
   tabs:
     heading: "Pestañas"
@@ -825,11 +825,11 @@ main:
 
   owlet:
     upToDate: "Owlet está actualizado. AdvantageScope buscará actualizaciones periódicamente."
-    offlineCache: "Usando caché offline de Owlet. Se buscarán actualizaciones pronto."
+    offlineCache: "Se está usando la caché sin conexión de Owlet. Se buscarán actualizaciones pronto."
     noDiskSpace: "No hay suficiente espacio en el disco. Se intentará de nuevo pronto."
     noOwlet: "El archivo de registro de Hoot no se puede decodificar porque Owlet no está disponible."
     openFailed: "El archivo de registro de Hoot no se pudo abrir."
-    tooOld: "El archivo de registro de Hoot es demasiado antiguo para ser decodificado. Los registros de Hoot deben ser producidos por Phoenix 2024 o posterior."
+    tooOld: "El archivo de registro de Hoot es demasiado antiguo para decodificarlo. Los registros de Hoot deben generarse con Phoenix 2024 o posterior."
     incompatible: "El registro de Hoot no se puede decodificar debido a un problema de compatibilidad. Verifica el estado de descarga de Owlet en la barra de menú para obtener más información."
 
   buttons:
@@ -864,7 +864,7 @@ main:
     title: "Buscador de actualizaciones"
     download: "Descargar"
     incomplete: "Búsqueda de actualizaciones no completada"
-    incompleteDetail: "Buscando información de actualización. Por favor, intenta de nuevo."
+    incompleteDetail: "Buscando información de actualización. Intenta de nuevo."
     cannotCheck: "No se puede buscar actualizaciones"
     devEnvDetail: "Esta aplicación se está ejecutando en un entorno de desarrollo."
     fetchFailedDetail: "No se pudo obtener la información de actualización desde GitHub. Verifica tu conexión a internet e intenta de nuevo."
@@ -873,16 +873,16 @@ main:
     later: "Más tarde"
     viewChangelog: "Ver registro de cambios"
     downloadLatestNativeQuery: "¿Descargar la versión nativa más reciente?"
-    downloadLatestNativeDetail: "La versión {{latestVersion}} está disponible (publicada el {{latestDate}}). Actualmente estás ejecutando la versión x86 de {{currentVersion}} en una plataforma arm64. ¿Deseas descargar la versión nativa más reciente?"
+    downloadLatestNativeDetail: "La versión {{latestVersion}} está disponible (publicada el {{latestDate}}). Actualmente estás ejecutando la compilación x86 de la versión {{currentVersion}} en una plataforma arm64. ¿Quieres descargar la versión nativa más reciente?"
     downloadLatestQuery: "¿Descargar la versión más reciente?"
-    downloadLatestDetail: "La versión {{latestVersion}} está disponible (publicada el {{latestDate}}). Actualmente estás ejecutando la versión {{currentVersion}}. ¿Deseas descargar la versión más reciente?"
+    downloadLatestDetail: "La versión {{latestVersion}} está disponible (publicada el {{latestDate}}). Actualmente estás ejecutando la versión {{currentVersion}}. ¿Quieres descargar la versión más reciente?"
     downloadNativeQuery: "¿Descargar versión nativa?"
-    downloadNativeDetail: "Parece que estás ejecutando la versión x86 de esta aplicación en una plataforma arm64. ¿Deseas descargar la versión nativa?"
+    downloadNativeDetail: "Parece que estás ejecutando la compilación x86 de esta aplicación en una plataforma arm64. ¿Quieres descargar la versión nativa?"
     noUpdates: "No hay actualizaciones disponibles"
     upToDateDetail: "Actualmente estás ejecutando la versión {{currentVersion}} (publicada el {{latestDate}})."
 
   logs:
-    openTitle: "Seleccionar el/los archivo(s) de registro del robot para abrir"
+    openTitle: "Seleccionar archivo(s) de registro del robot"
     openMessage: "Si se seleccionan varios archivos, las marcas de tiempo se alinearán automáticamente"
     robotLogsFilter: "Registros del robot"
     addTitle: "Seleccionar el/los archivo(s) de registro del robot para agregar al registro actual"
@@ -899,7 +899,7 @@ main:
     exportConsoleFilename: "Consola {{date}}.txt"
     textFilter: "Archivos de texto"
     openQuery: "¿Abrir registro?"
-    openDetail: '¿Deseas abrir el archivo de registro "{{name}}"?'
+    openDetail: '¿Quieres abrir el archivo de registro "{{name}}"?'
     openDsLogTitle: "Abrir registro de DS"
     openDsLogQuery: "¿Abrir este registro usando la disposición de DS?"
     openDsLogDetail: "La disposición de Driver Station se puede abrir en una ventana separada sin cambiar tu disposición actual."
@@ -925,20 +925,20 @@ main:
 
   video:
     pythonRequired: "Se requiere instalación de Python"
-    pythonRequiredDetail: "Esta función requiere Python 3.10 o superior disponible en tu sistema. Instala Python e intenta de nuevo."
+    pythonRequiredDetail: "Esta función requiere tener instalado Python 3.10 o superior en tu sistema. Instala Python e intenta de nuevo."
     ffmpegRequired: "Se requiere instalación de FFmpeg"
     ffmpegRequiredDetail: "FFmpeg es necesario para procesar archivos de video. Instala FFmpeg y agrégalo al PATH."
     downloadFfmpeg: "¿Descargar FFmpeg?"
     downloadFfmpegDetail: 'FFmpeg es necesario para procesar archivos de video. Selecciona "Continuar" para descargar automáticamente, o instala FFmpeg manualmente y agrégalo al PATH.'
     failedProcess: "No se pudo procesar el video"
-    failedProcessDetail: "Hubo un problema al procesar el video. Por favor, intenta de nuevo."
+    failedProcessDetail: "Hubo un problema al procesar el video. Intenta de nuevo."
     copyUrl: "Copiar URL al portapapeles"
     copyUrlDetail: "Copia una URL de YouTube al portapapeles e intenta de nuevo."
     youtubeFailed: "Falló la descarga de YouTube"
     youtubeFailedDetail: "Hubo un error al intentar abrir el video de YouTube. Ten en cuenta que esta función puede fallar inesperadamente debido a cambios en los servidores de YouTube. Busca actualizaciones o elige un archivo de video local."
     tbaFailed: "Falló la descarga de TBA"
     tbaFailedDetail: "Hubo un problema al encontrar el video del partido en The Blue Alliance. Verifica tu clave API o carga el video usando una URL de YouTube o un archivo local."
-    openTitle: "Seleccionar un video para abrir"
+    openTitle: "Seleccionar un video"
     filter: "Videos"
 
   warnings:
@@ -946,7 +946,7 @@ main:
     warning: "Advertencia"
     alert: "Alerta"
     exportInProgress: "Exportación en curso"
-    exportInProgressDetail: "¿Estás seguro de que deseas cerrar la ventana mientras hay una exportación en curso? Los datos NO se guardarán."
+    exportInProgressDetail: "¿Seguro que quieres cerrar la ventana mientras hay una exportación en curso? Los datos NO se guardarán."
     incompleteExport: "Datos incompletos para la exportación"
     incompleteExportDetail: 'Algunos campos no estarán disponibles en los datos exportados. Para guardar todos los campos del servidor, se debe seleccionar el modo en vivo "Registro". Consulta la documentación de AdvantageScope para obtener detalles.'
 
@@ -981,7 +981,7 @@ main:
     systemcoreFtcDetail: 'Este campo utiliza de forma predeterminada el sistema de coordenadas de Systemcore. Si el código de tu robot utiliza el sistema de coordenadas tradicional de FTC, puedes cambiar la opción "Sistema de coordenadas" en las preferencias de AdvantageScope. Consulta la documentación para obtener más detalles.'
 
   lite:
-    tooSmall: "No hay suficiente espacio, por favor cambia la disposición de la pantalla."
+    tooSmall: "No hay suficiente espacio. Cambia la disposición de la pantalla."
     mobileWarning: "AdvantageScope Lite funciona mejor en computadoras de escritorio y tabletas."
 
 units:
