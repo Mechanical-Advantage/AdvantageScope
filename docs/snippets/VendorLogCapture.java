@@ -56,22 +56,24 @@ import org.wpilib.system.Notifier;
  *
  * <p>
  * This class should be initialized in your {@code Robot} constructor as shown
- * below. You must select an appropriate directory (such as {@code "/U/logs/"}
- * on a USB drive or {@code "/home/systemcore/logs/"}) for temporarily staging
+ * below. You must select an appropriate directory (we recommend
+ * {@code "/home/systemcore/logs/"}) for temporarily staging
  * vendor logs during capture.
  *
  * <pre>{@code
  * public Robot() {
  *   // Start WPILib's DataLogManager normally
- *   DataLogManager.start();
- *
- *   // Enable vendor log capturing from a temporary staging directory
- *   new VendorLogCapture(DataLogManager.getLog(), "/U/logs/");
- *
- *   // Start the vendor logger AFTER log capture is enabled
- *   // If configurable, the output directory must match the path above
- *   VendorLogger.setPath("/U/logs/");
- *   VendorLogger.start();
+ *.  DataLogManager.start();
+ * 
+ *.  // Enable vendor log capturing from a temporary staging directory
+ *.  // We recommend staging vendor logs on the internal storage even
+ *.  // when using a USB drive (vendor logs do not persist after capture)
+ *.  VendorLogCapture.start(DataLogManager.getLog(), "/home/systemcore/logs/");
+ * 
+ *.  // Start the vendor logger AFTER log capture is enabled
+ *.  // If configurable, the output directory must match the path above
+ *.  VendorLogger.setPath("/home/systemcore/logs/");
+ *.  VendorLogger.start();
  * }
  * }</pre>
  */
@@ -81,9 +83,9 @@ public class VendorLogCapture {
   private static Notifier notifier;
 
   private static final ByteBuffer readBuffer = ByteBuffer.allocateDirect(65536);
-  private static final Map<Path, TrackedLog> trackedLogs = new HashMap<>();
+  private static final Map<Object, TrackedLog> trackedLogs = new HashMap<>();
   private static final Map<String, Integer> formatCounts = new HashMap<>();
-  private static final Set<Path> ignoredLogs = new HashSet<>();
+  private static final Set<Object> ignoredLogs = new HashSet<>();
 
   private VendorLogCapture() {
     throw new RuntimeException("This class cannot be instantiated.");
@@ -132,8 +134,7 @@ public class VendorLogCapture {
         try {
           trackedLog.channel.close();
           Files.deleteIfExists(trackedLog.filePath);
-          Files.deleteIfExists(
-              trackedLog.filePath.resolveSibling("." + trackedLog.filePath.getFileName().toString() + ".captured"));
+          Files.deleteIfExists(getMarkerPath(trackedLog.filePath));
         } catch (IOException e) {
         }
       }
@@ -156,8 +157,27 @@ public class VendorLogCapture {
           return FileVisitResult.CONTINUE;
         }
 
+        @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-          if (isCapturable(file) && !trackedLogs.containsKey(file) && !ignoredLogs.contains(file)) {
+          Object fileKey = getFileKey(file, attrs);
+          TrackedLog existing = trackedLogs.get(fileKey);
+          if (existing != null) {
+            if (!existing.filePath.equals(file)) {
+              // File was renamed, move the marker and update the tracked path
+              try {
+                Files.deleteIfExists(getMarkerPath(existing.filePath));
+              } catch (IOException e) {
+              }
+              try {
+                Files.createFile(getMarkerPath(file));
+              } catch (IOException e) {
+              }
+              existing.filePath = file;
+            }
+            return FileVisitResult.CONTINUE;
+          }
+
+          if (isCapturable(file) && !ignoredLogs.contains(fileKey)) {
             String extension = getExtension(file);
             if (extension.isEmpty()) {
               return FileVisitResult.CONTINUE;
@@ -173,12 +193,11 @@ public class VendorLogCapture {
             try {
               FileChannel channel = FileChannel.open(file, StandardOpenOption.READ);
               RawLogEntry entry = new RawLogEntry(dataLog, entryName, "", "log:" + extension.toLowerCase());
-              trackedLogs.put(file, new TrackedLog(channel, entry, file));
+              trackedLogs.put(fileKey, new TrackedLog(channel, entry, file));
 
               // Create marker file
-              Path markerPath = file.resolveSibling("." + file.getFileName().toString() + ".captured");
               try {
-                Files.createFile(markerPath);
+                Files.createFile(getMarkerPath(file));
               } catch (IOException e) {
               }
             } catch (IOException e) {
@@ -223,7 +242,7 @@ public class VendorLogCapture {
    */
   private static boolean isCapturable(Path file) {
     String filename = file.getFileName().toString();
-    return !filename.endsWith(".wpilog") && !filename.startsWith(".");
+    return !filename.endsWith(".wpilog") && !filename.endsWith(".wpilogxz") && !filename.startsWith(".");
   }
 
   /**
@@ -236,6 +255,21 @@ public class VendorLogCapture {
       return fileName.substring(dotIndex + 1);
     }
     return "";
+  }
+
+  /**
+   * Returns the platform file key if available, falling back to the path.
+   */
+  private static Object getFileKey(Path file, BasicFileAttributes attrs) {
+    Object fileKey = attrs.fileKey();
+    return fileKey != null ? fileKey : file;
+  }
+
+  /**
+   * Returns the capture marker path corresponding to a log file.
+   */
+  private static Path getMarkerPath(Path file) {
+    return file.resolveSibling("." + file.getFileName().toString() + ".captured");
   }
 
   /**
@@ -257,12 +291,12 @@ public class VendorLogCapture {
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
           String filename = file.getFileName().toString();
           if (isCapturable(file)) {
-            Path markerPath = file.resolveSibling("." + filename + ".captured");
+            Path markerPath = getMarkerPath(file);
             if (Files.exists(markerPath)) {
               Files.deleteIfExists(file);
               Files.deleteIfExists(markerPath);
             } else {
-              ignoredLogs.add(file);
+              ignoredLogs.add(getFileKey(file, attrs));
             }
           } else if (filename.startsWith(".") && filename.endsWith(".captured")) {
             String originalName = filename.substring(1, filename.length() - 9);
@@ -292,7 +326,7 @@ public class VendorLogCapture {
   private static class TrackedLog {
     final FileChannel channel;
     final RawLogEntry entry;
-    final Path filePath;
+    volatile Path filePath;
     long currentOffset;
 
     TrackedLog(FileChannel channel, RawLogEntry entry, Path filePath) {
