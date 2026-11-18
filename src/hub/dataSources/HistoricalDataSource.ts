@@ -362,7 +362,8 @@ export class HistoricalDataSource {
         this.lastRawRequestFields = new Set([...requestFields]);
 
         // Add keys that are always requested
-        this.log?.getFieldKeys().forEach((key) => {
+        let fieldKeys = this.log?.getFieldKeys().filter((key) => !this.log?.isGenerated(key)) ?? [];
+        fieldKeys.forEach((key) => {
           if (isSchema(key)) {
             requestFields.add(key);
           }
@@ -384,17 +385,20 @@ export class HistoricalDataSource {
         ].forEach((key) => requestFields.add(key));
 
         // Compare to existing fields
-        requestFields.forEach((field) => {
-          this.log?.getFieldKeys().forEach((existingField) => {
-            if (this.log?.getType(existingField) === LoggableType.Empty) return;
+        let initialRequestFields = Array.from(requestFields);
+        fieldKeys.forEach((existingField) => {
+          if (this.log?.getType(existingField) === LoggableType.Empty) return;
+          for (let i = 0; i < initialRequestFields.length; i++) {
+            let field = initialRequestFields[i];
             if (
               existingField === field ||
               existingField.startsWith(field + "/") ||
               field.startsWith(existingField + "/")
             ) {
               requestFields.add(existingField);
+              break;
             }
-          });
+          }
         });
 
         // Filter fields and forward to child sources
