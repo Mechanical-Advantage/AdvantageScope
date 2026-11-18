@@ -55,20 +55,22 @@ class VendorLogCapture:
     by embedding those vendor logs directly into the main .wpilog.
 
     This class should be initialized in your Robot constructor as shown
-    below. You must select an appropriate directory (such as "/U/logs/"
-    on a USB drive or "/home/systemcore/logs/") for temporarily staging
-    vendor logs during capture.
+    below. You must select an appropriate directory (we recommend
+    "/home/systemcore/logs/") for temporarily staging vendor logs during capture.
 
     ```python
     # Start WPILib's DataLogManager normally
     wpilib.DataLogManager.start()
 
     # Enable vendor log capturing from a temporary staging directory
-    VendorLogCapture.start(wpilib.DataLogManager.get_log(), "/U/logs/")
+    # We recommend staging vendor logs on the internal storage even
+    # when using a USB drive (vendor logs do not persist after capture)
+    VendorLogCapture.start(wpilib.DataLogManager.get_log(), "/home/systemcore/logs/")
 
     # Start the vendor logger AFTER log capture is enabled
     # If configurable, the output directory must match the path above
-    phoenix6.SignalLogger.start()
+    VendorLogger.set_path("/home/systemcore/logs/")
+    VendorLogger.start()
     ```
     """
     _data_log = None
@@ -122,7 +124,23 @@ class VendorLogCapture:
         for root, _, files in os.walk(cls._capture_directory):
             for name in files:
                 p = Path(root) / name
-                if cls._is_capturable(p) and p not in cls._tracked_logs and p not in cls._ignored_logs:
+                file_key = cls._get_file_key(p)
+                existing = cls._tracked_logs.get(file_key)
+                if existing is not None:
+                    if existing.file_path != p:
+                        # File was renamed, move the marker and update the tracked path
+                        try:
+                            cls._get_marker_path(existing.file_path).unlink(missing_ok=True)
+                        except OSError:
+                            pass
+                        try:
+                            cls._get_marker_path(p).touch()
+                        except OSError:
+                            pass
+                        existing.file_path = p
+                    continue
+
+                if cls._is_capturable(p) and file_key not in cls._ignored_logs:
                     extension = cls._get_extension(p)
                     if not extension:
                         continue
@@ -138,12 +156,11 @@ class VendorLogCapture:
                         stream = open(p, "rb")
                         ext_lower = extension.lower()
                         log_entry = wpilog.RawLogEntry(cls._data_log, entry_name, "", f"log:{ext_lower}")
-                        cls._tracked_logs[p] = TrackedLog(stream, log_entry, p)
+                        cls._tracked_logs[file_key] = TrackedLog(stream, log_entry, p)
 
                         # Create marker file
-                        marker_path = p.with_name(f".{p.name}.captured")
                         try:
-                            marker_path.touch()
+                            cls._get_marker_path(p).touch()
                         except OSError:
                             pass
 
@@ -169,12 +186,32 @@ class VendorLogCapture:
                 pass
 
     @classmethod
+    def _get_file_key(cls, file: Path):
+        """
+        Returns the platform file key if available, falling back to the path.
+        """
+        try:
+            st = file.stat()
+            if st.st_ino != 0:
+                return (st.st_dev, st.st_ino)
+        except OSError:
+            pass
+        return file
+
+    @classmethod
+    def _get_marker_path(cls, file: Path) -> Path:
+        """
+        Returns the capture marker path corresponding to a log file.
+        """
+        return file.with_name(f".{file.name}.captured")
+
+    @classmethod
     def _is_capturable(cls, file: Path) -> bool:
         """
         Checks if a file is a capturable log file. Excludes WPILOG and hidden files.
         """
         filename = file.name
-        if filename.endswith(".wpilog"):
+        if filename.endswith(".wpilog") or filename.endswith(".wpilogxz"):
             return False
         if filename.startswith("."):
             return False
@@ -206,7 +243,7 @@ class VendorLogCapture:
             for name in files:
                 p = Path(root) / name
                 if cls._is_capturable(p):
-                    marker_path = p.with_name(f".{p.name}.captured")
+                    marker_path = cls._get_marker_path(p)
                     if marker_path.exists():
                         try:
                             p.unlink()
@@ -214,7 +251,7 @@ class VendorLogCapture:
                         except OSError:
                             pass
                     else:
-                        cls._ignored_logs.add(p)
+                        cls._ignored_logs.add(cls._get_file_key(p))
                 elif name.startswith(".") and name.endswith(".captured"):
                     original_name = name[1:-9]
                     if not p.with_name(original_name).exists():

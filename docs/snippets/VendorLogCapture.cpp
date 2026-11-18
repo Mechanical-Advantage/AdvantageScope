@@ -31,6 +31,9 @@
 #include <iostream>
 #include <span>
 #include <system_error>
+#ifndef _WIN32
+#include <sys/stat.h>
+#endif
 
 #include "wpi/units/time.hpp"
 
@@ -39,18 +42,18 @@ std::filesystem::path VendorLogCapture::captureDirectory;
 std::unique_ptr<wpi::Notifier> VendorLogCapture::notifier;
 
 std::vector<uint8_t> VendorLogCapture::readBuffer(65536);
-std::map<std::filesystem::path, VendorLogCapture::TrackedLog>
+std::map<VendorLogCapture::FileKey, VendorLogCapture::TrackedLog>
     VendorLogCapture::trackedLogs;
 std::map<std::string, int> VendorLogCapture::formatCounts;
-std::set<std::filesystem::path> VendorLogCapture::ignoredLogs;
+std::set<VendorLogCapture::FileKey> VendorLogCapture::ignoredLogs;
 
-void VendorLogCapture::Start(wpi::log::DataLog *log,
+void VendorLogCapture::Start(wpi::log::DataLog &log,
                              const std::string &directory) {
   // Initialize configuration
   if (dataLog != nullptr) {
     return;
   }
-  dataLog = log;
+  dataLog = &log;
   captureDirectory = std::filesystem::path(directory);
 
   // Ensure that the log directory exists
@@ -86,8 +89,23 @@ void VendorLogCapture::Periodic() {
       break;
     if (entry.is_regular_file()) {
       auto file = entry.path();
-      if (IsCapturable(file) && trackedLogs.find(file) == trackedLogs.end() &&
-          ignoredLogs.find(file) == ignoredLogs.end()) {
+      FileKey fileKey = GetFileKey(file);
+      auto existing = trackedLogs.find(fileKey);
+      if (existing != trackedLogs.end()) {
+        if (existing->second.filePath != file) {
+          // File was renamed, move the marker and update the tracked path
+          std::error_code markerEc;
+          std::filesystem::remove(GetMarkerPath(existing->second.filePath),
+                                  markerEc);
+          std::ofstream markerStream(GetMarkerPath(file));
+          markerStream.close();
+          existing->second.filePath = file;
+        }
+        continue;
+      }
+
+      if (IsCapturable(file) &&
+          ignoredLogs.find(fileKey) == ignoredLogs.end()) {
         std::string extension = GetExtension(file);
         if (extension.empty()) {
           continue;
@@ -123,14 +141,11 @@ void VendorLogCapture::Periodic() {
         wpi::log::RawLogEntry logEntry(*dataLog, entryName, "",
                                        "log:" + extLower);
 
-        trackedLogs.emplace(file,
+        trackedLogs.emplace(std::move(fileKey),
                             TrackedLog(stream, std::move(logEntry), file));
 
         // Create marker file
-        std::filesystem::path markerPath = file;
-        markerPath.replace_filename("." + file.filename().string() +
-                                    ".captured");
-        std::ofstream markerStream(markerPath);
+        std::ofstream markerStream(GetMarkerPath(file));
         markerStream.close();
 
         // Print status
@@ -141,7 +156,7 @@ void VendorLogCapture::Periodic() {
   }
 
   // Capture new data from each log
-  for (auto &[path, log] : trackedLogs) {
+  for (auto &[key, log] : trackedLogs) {
     while (true) {
       log.stream->clear();
       log.stream->seekg(log.currentOffset, std::ios::beg);
@@ -159,10 +174,33 @@ void VendorLogCapture::Periodic() {
   }
 }
 
+VendorLogCapture::FileKey
+VendorLogCapture::GetFileKey(const std::filesystem::path &file) {
+#ifndef _WIN32
+  struct stat st;
+  if (stat(file.c_str(), &st) == 0) {
+    return std::pair<uint64_t, uint64_t>{static_cast<uint64_t>(st.st_dev),
+                                         static_cast<uint64_t>(st.st_ino)};
+  }
+#endif
+  return file;
+}
+
+std::filesystem::path
+VendorLogCapture::GetMarkerPath(const std::filesystem::path &file) {
+  std::filesystem::path markerPath = file;
+  markerPath.replace_filename("." + file.filename().string() + ".captured");
+  return markerPath;
+}
+
 bool VendorLogCapture::IsCapturable(const std::filesystem::path &file) {
   std::string filename = file.filename().string();
   if (filename.length() >= 7 &&
       filename.substr(filename.length() - 7) == ".wpilog") {
+    return false;
+  }
+  if (filename.length() >= 9 &&
+      filename.substr(filename.length() - 9) == ".wpilogxz") {
     return false;
   }
   if (!filename.empty() && filename[0] == '.') {
@@ -196,13 +234,12 @@ void VendorLogCapture::CleanCapturableLogs() {
     if (entry.is_regular_file()) {
       std::string filename = entry.path().filename().string();
       if (IsCapturable(entry.path())) {
-        std::filesystem::path markerPath = entry.path();
-        markerPath.replace_filename("." + filename + ".captured");
+        std::filesystem::path markerPath = GetMarkerPath(entry.path());
         if (std::filesystem::exists(markerPath)) {
           std::filesystem::remove(entry.path(), ec);
           std::filesystem::remove(markerPath, ec);
         } else {
-          ignoredLogs.insert(entry.path());
+          ignoredLogs.insert(GetFileKey(entry.path()));
         }
       } else if (filename.length() > 10 && filename.front() == '.' &&
                  filename.substr(filename.length() - 9) == ".captured") {

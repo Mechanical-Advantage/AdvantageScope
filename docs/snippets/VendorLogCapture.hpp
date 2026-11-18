@@ -27,12 +27,15 @@
 
 #pragma once
 
+#include <cstdint>
 #include <filesystem>
 #include <fstream>
 #include <map>
 #include <memory>
 #include <set>
 #include <string>
+#include <utility>
+#include <variant>
 #include <vector>
 
 #include "wpi/datalog/DataLog.hpp"
@@ -50,9 +53,8 @@
  * by embedding those vendor logs directly into the main .wpilog.
  *
  * This class should be initialized in your Robot constructor as shown
- * below. You must select an appropriate directory (such as "/U/logs/"
- * on a USB drive or "/home/systemcore/logs/") for temporarily staging
- * vendor logs during capture.
+ * below. You must select an appropriate directory (we recommend
+ * "/home/systemcore/logs/") for temporarily staging vendor logs during capture.
  *
  * \code{.cpp}
  * Robot::Robot() {
@@ -60,11 +62,15 @@
  *   wpi::DataLogManager::Start();
  *
  *   // Enable vendor log capturing from a temporary staging directory
- *   VendorLogCapture::Start(&wpi::DataLogManager::GetLog(), "/U/logs/");
+ *   // We recommend staging vendor logs on the internal storage even
+ *   // when using a USB drive (vendor logs do not persist after capture)
+ *   VendorLogCapture::Start(wpi::DataLogManager::GetLog(),
+ *                            "/home/systemcore/logs/");
  *
  *   // Start the vendor logger AFTER log capture is enabled
  *   // If configurable, the output directory must match the path above
- *   ctre::phoenix6::SignalLogger::Start();
+ *   VendorLogger::SetPath("/home/systemcore/logs/");
+ *   VendorLogger::Start();
  * }
  * \endcode
  */
@@ -83,10 +89,23 @@ public:
    *                  "/U/logs/" on a USB drive or
    *                  "/home/systemcore/logs/").
    */
-  static void Start(wpi::log::DataLog *log, const std::string &directory);
+  static void Start(wpi::log::DataLog &log, const std::string &directory);
 
 private:
+  using FileKey =
+      std::variant<std::pair<uint64_t, uint64_t>, std::filesystem::path>;
+
   static void Periodic();
+
+  /**
+   * Returns the platform file key if available, falling back to the path.
+   */
+  static FileKey GetFileKey(const std::filesystem::path &file);
+
+  /**
+   * Returns the capture marker path corresponding to a log file.
+   */
+  static std::filesystem::path GetMarkerPath(const std::filesystem::path &file);
 
   /**
    * Checks if a file is a capturable log file. Excludes WPILOG and hidden
@@ -121,7 +140,7 @@ private:
   static std::unique_ptr<wpi::Notifier> notifier;
 
   static std::vector<uint8_t> readBuffer;
-  static std::map<std::filesystem::path, TrackedLog> trackedLogs;
+  static std::map<FileKey, TrackedLog> trackedLogs;
   static std::map<std::string, int> formatCounts;
-  static std::set<std::filesystem::path> ignoredLogs;
+  static std::set<FileKey> ignoredLogs;
 };
