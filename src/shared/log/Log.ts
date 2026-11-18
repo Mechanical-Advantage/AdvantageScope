@@ -856,7 +856,12 @@ export default class Log {
       this.setStructuredType(key, schemaType + (isArray ? "[]" : ""));
 
       if (
-        (schemaType === "Translation3d" || schemaType === "Pose3d" || schemaType === "Transform3d") &&
+        (schemaType === "Translation2d" ||
+          schemaType === "Pose2d" ||
+          schemaType === "Transform2d" ||
+          schemaType === "Translation3d" ||
+          schemaType === "Pose3d" ||
+          schemaType === "Transform3d") &&
         value.length > 5000
       ) {
         // Special case: skip full decoding for large arrays of game piece poses (#477 workaround)
