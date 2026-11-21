@@ -92,6 +92,10 @@ public:
   static void Start(wpi::log::DataLog &log, const std::string &directory);
 
 private:
+  static constexpr size_t CHUNK_SIZE = 65536;
+  static constexpr int MAX_CHUNKS_PER_CYCLE = 6;
+  static constexpr uint64_t MAX_UNCAPTURED_BYTES = 1048576; // 1 MB
+
   using FileKey =
       std::variant<std::pair<uint64_t, uint64_t>, std::filesystem::path>;
 
@@ -106,6 +110,19 @@ private:
    * Returns the capture marker path corresponding to a log file.
    */
   static std::filesystem::path GetMarkerPath(const std::filesystem::path &file);
+
+  /**
+   * Writes the captured byte offset to the marker file.
+   */
+  static void WriteMarkerOffset(const std::filesystem::path &file,
+                                uint64_t offset);
+
+  /**
+   * Reads the captured byte offset from a marker file, or returns false if
+   * invalid.
+   */
+  static bool ReadMarkerOffset(const std::filesystem::path &markerPath,
+                               uint64_t &offset);
 
   /**
    * Checks if a file is a capturable log file. Excludes WPILOG and hidden

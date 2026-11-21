@@ -30,6 +30,7 @@ package first.robot;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
@@ -78,11 +79,15 @@ import org.wpilib.system.Notifier;
  * }</pre>
  */
 public class VendorLogCapture {
+  private static final int CHUNK_SIZE = 65536;
+  private static final int MAX_CHUNKS_PER_CYCLE = 6;
+  private static final long MAX_UNCAPTURED_BYTES = 1048576; // 1 MB
+
   private static DataLog dataLog;
   private static Path captureDirectory;
   private static Notifier notifier;
 
-  private static final ByteBuffer readBuffer = ByteBuffer.allocateDirect(65536);
+  private static final ByteBuffer readBuffer = ByteBuffer.allocateDirect(CHUNK_SIZE);
   private static final Map<Object, TrackedLog> trackedLogs = new HashMap<>();
   private static final Map<String, Integer> formatCounts = new HashMap<>();
   private static final Set<Object> ignoredLogs = new HashSet<>();
@@ -127,25 +132,14 @@ public class VendorLogCapture {
     notifier.setName("VendorLogCapture");
     notifier.startPeriodic(0.2);
 
-    // Add shutdown hook
-    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-      notifier.close();
-      for (TrackedLog trackedLog : trackedLogs.values()) {
-        try {
-          trackedLog.channel.close();
-          Files.deleteIfExists(trackedLog.filePath);
-          Files.deleteIfExists(getMarkerPath(trackedLog.filePath));
-        } catch (IOException e) {
-        }
-      }
-      cleanCapturableLogs();
-    }));
-
     // Print status
     System.err.println("[VendorLogCapture] Searching for logs in \"" + directory + "\"");
   }
 
   private static void periodic() {
+    // Ensure DataLog stays active even when DS is disconnected
+    dataLog.resume();
+
     // Check for new files in the directory tree.
     try {
       if (!Files.exists(captureDirectory)) {
@@ -168,11 +162,8 @@ public class VendorLogCapture {
                 Files.deleteIfExists(getMarkerPath(existing.filePath));
               } catch (IOException e) {
               }
-              try {
-                Files.createFile(getMarkerPath(file));
-              } catch (IOException e) {
-              }
               existing.filePath = file;
+              writeMarkerOffset(file, existing.currentOffset);
             }
             return FileVisitResult.CONTINUE;
           }
@@ -196,16 +187,13 @@ public class VendorLogCapture {
               trackedLogs.put(fileKey, new TrackedLog(channel, entry, file));
 
               // Create marker file
-              try {
-                Files.createFile(getMarkerPath(file));
-              } catch (IOException e) {
-              }
+              writeMarkerOffset(file, 0);
+
+              // Print status
+              System.err.println("[VendorLogCapture] Capturing log \"" + file + "\" to entry \"" + entryName + "\"");
             } catch (IOException e) {
               System.err.println("[VendorLogCapture] Could not open log \"" + file + "\"");
             }
-
-            // Print status
-            System.err.println("[VendorLogCapture] Capturing log \"" + file + "\" to entry \"" + entryName + "\"");
           }
           return FileVisitResult.CONTINUE;
         }
@@ -214,9 +202,11 @@ public class VendorLogCapture {
     }
 
     // Capture new data from each log
+    int totalChunks = 0;
     for (TrackedLog log : trackedLogs.values()) {
+      boolean updated = false;
       try {
-        while (true) {
+        while (totalChunks < MAX_CHUNKS_PER_CYCLE) {
           readBuffer.clear();
           int bytesRead = log.channel.read(readBuffer, log.currentOffset);
 
@@ -230,9 +220,17 @@ public class VendorLogCapture {
 
           log.entry.append(dataChunk);
           log.currentOffset += bytesRead;
+          totalChunks++;
+          updated = true;
         }
       } catch (IOException e) {
         // File may have been temporarily locked; retry next cycle
+      }
+      if (updated) {
+        writeMarkerOffset(log.filePath, log.currentOffset);
+      }
+      if (totalChunks >= MAX_CHUNKS_PER_CYCLE) {
+        break;
       }
     }
   }
@@ -273,6 +271,33 @@ public class VendorLogCapture {
   }
 
   /**
+   * Writes the captured byte offset to the marker file.
+   */
+  private static void writeMarkerOffset(Path file, long offset) {
+    try {
+      Files.writeString(
+          getMarkerPath(file),
+          Long.toString(offset),
+          StandardCharsets.UTF_8,
+          StandardOpenOption.CREATE,
+          StandardOpenOption.TRUNCATE_EXISTING,
+          StandardOpenOption.WRITE);
+    } catch (IOException e) {
+    }
+  }
+
+  /**
+   * Reads the captured byte offset from a marker file, or returns -1 if invalid.
+   */
+  private static long readMarkerOffset(Path markerPath) {
+    try {
+      return Long.parseLong(Files.readString(markerPath, StandardCharsets.UTF_8).trim());
+    } catch (IOException | NumberFormatException e) {
+      return -1;
+    }
+  }
+
+  /**
    * Cleans any capturable log files and subdirectories.
    */
   private static void cleanCapturableLogs() {
@@ -293,8 +318,14 @@ public class VendorLogCapture {
           if (isCapturable(file)) {
             Path markerPath = getMarkerPath(file);
             if (Files.exists(markerPath)) {
-              Files.deleteIfExists(file);
+              long capturedOffset = readMarkerOffset(markerPath);
+              long fileSize = attrs.size();
               Files.deleteIfExists(markerPath);
+              if (capturedOffset >= 0 && fileSize - capturedOffset <= MAX_UNCAPTURED_BYTES) {
+                Files.deleteIfExists(file);
+              } else {
+                ignoredLogs.add(getFileKey(file, attrs));
+              }
             } else {
               ignoredLogs.add(getFileKey(file, attrs));
             }

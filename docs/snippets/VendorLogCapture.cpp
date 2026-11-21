@@ -41,7 +41,7 @@ wpi::log::DataLog *VendorLogCapture::dataLog = nullptr;
 std::filesystem::path VendorLogCapture::captureDirectory;
 std::unique_ptr<wpi::Notifier> VendorLogCapture::notifier;
 
-std::vector<uint8_t> VendorLogCapture::readBuffer(65536);
+std::vector<uint8_t> VendorLogCapture::readBuffer(CHUNK_SIZE);
 std::map<VendorLogCapture::FileKey, VendorLogCapture::TrackedLog>
     VendorLogCapture::trackedLogs;
 std::map<std::string, int> VendorLogCapture::formatCounts;
@@ -76,6 +76,9 @@ void VendorLogCapture::Start(wpi::log::DataLog &log,
 }
 
 void VendorLogCapture::Periodic() {
+  // Ensure DataLog stays active even when DS is disconnected
+  dataLog->Resume();
+
   // Check for new files in the directory tree.
   if (!std::filesystem::exists(captureDirectory)) {
     return;
@@ -97,9 +100,8 @@ void VendorLogCapture::Periodic() {
           std::error_code markerEc;
           std::filesystem::remove(GetMarkerPath(existing->second.filePath),
                                   markerEc);
-          std::ofstream markerStream(GetMarkerPath(file));
-          markerStream.close();
           existing->second.filePath = file;
+          WriteMarkerOffset(file, existing->second.currentOffset);
         }
         continue;
       }
@@ -145,8 +147,7 @@ void VendorLogCapture::Periodic() {
                             TrackedLog(stream, std::move(logEntry), file));
 
         // Create marker file
-        std::ofstream markerStream(GetMarkerPath(file));
-        markerStream.close();
+        WriteMarkerOffset(file, 0);
 
         // Print status
         std::cerr << "[VendorLogCapture] Capturing log \"" << file.string()
@@ -156,12 +157,20 @@ void VendorLogCapture::Periodic() {
   }
 
   // Capture new data from each log
+  int totalChunks = 0;
   for (auto &[key, log] : trackedLogs) {
-    while (true) {
+    bool updated = false;
+    while (totalChunks < MAX_CHUNKS_PER_CYCLE) {
       log.stream->clear();
       log.stream->seekg(log.currentOffset, std::ios::beg);
+      if (log.stream->fail()) {
+        break;
+      }
       log.stream->read(reinterpret_cast<char *>(readBuffer.data()),
                        readBuffer.size());
+      if (log.stream->bad()) {
+        break;
+      }
       std::streamsize bytesRead = log.stream->gcount();
 
       if (bytesRead <= 0) {
@@ -170,6 +179,14 @@ void VendorLogCapture::Periodic() {
 
       log.entry.Append(std::span<const uint8_t>(readBuffer.data(), bytesRead));
       log.currentOffset += bytesRead;
+      totalChunks++;
+      updated = true;
+    }
+    if (updated) {
+      WriteMarkerOffset(log.filePath, log.currentOffset);
+    }
+    if (totalChunks >= MAX_CHUNKS_PER_CYCLE) {
+      break;
     }
   }
 }
@@ -191,6 +208,24 @@ VendorLogCapture::GetMarkerPath(const std::filesystem::path &file) {
   std::filesystem::path markerPath = file;
   markerPath.replace_filename("." + file.filename().string() + ".captured");
   return markerPath;
+}
+
+void VendorLogCapture::WriteMarkerOffset(const std::filesystem::path &file,
+                                         uint64_t offset) {
+  std::ofstream markerStream(GetMarkerPath(file), std::ios::trunc);
+  if (markerStream.is_open()) {
+    markerStream << offset;
+    markerStream.close();
+  }
+}
+
+bool VendorLogCapture::ReadMarkerOffset(const std::filesystem::path &markerPath,
+                                        uint64_t &offset) {
+  std::ifstream markerStream(markerPath);
+  if (!markerStream.is_open()) {
+    return false;
+  }
+  return static_cast<bool>(markerStream >> offset);
 }
 
 bool VendorLogCapture::IsCapturable(const std::filesystem::path &file) {
@@ -236,8 +271,18 @@ void VendorLogCapture::CleanCapturableLogs() {
       if (IsCapturable(entry.path())) {
         std::filesystem::path markerPath = GetMarkerPath(entry.path());
         if (std::filesystem::exists(markerPath)) {
-          std::filesystem::remove(entry.path(), ec);
+          uint64_t capturedOffset = 0;
+          bool validOffset = ReadMarkerOffset(markerPath, capturedOffset);
+          std::error_code sizeEc;
+          uint64_t fileSize = std::filesystem::file_size(entry.path(), sizeEc);
           std::filesystem::remove(markerPath, ec);
+          if (validOffset && !sizeEc &&
+              (fileSize <= capturedOffset ||
+               fileSize - capturedOffset <= MAX_UNCAPTURED_BYTES)) {
+            std::filesystem::remove(entry.path(), ec);
+          } else {
+            ignoredLogs.insert(GetFileKey(entry.path()));
+          }
         } else {
           ignoredLogs.insert(GetFileKey(entry.path()));
         }

@@ -73,6 +73,10 @@ class VendorLogCapture:
     VendorLogger.start()
     ```
     """
+    _CHUNK_SIZE = 65536
+    _MAX_CHUNKS_PER_CYCLE = 6
+    _MAX_UNCAPTURED_BYTES = 1048576  # 1 MB
+
     _data_log = None
     _capture_directory = None
     _notifier = None
@@ -117,6 +121,9 @@ class VendorLogCapture:
 
     @classmethod
     def _periodic(cls):
+        # Ensure DataLog stays active even when DS is disconnected
+        cls._data_log.resume()
+
         # Check for new files in the directory tree.
         if not cls._capture_directory.exists():
             return
@@ -133,11 +140,8 @@ class VendorLogCapture:
                             cls._get_marker_path(existing.file_path).unlink(missing_ok=True)
                         except OSError:
                             pass
-                        try:
-                            cls._get_marker_path(p).touch()
-                        except OSError:
-                            pass
                         existing.file_path = p
+                        cls._write_marker_offset(p, existing.current_offset)
                     continue
 
                 if cls._is_capturable(p) and file_key not in cls._ignored_logs:
@@ -159,10 +163,7 @@ class VendorLogCapture:
                         cls._tracked_logs[file_key] = TrackedLog(stream, log_entry, p)
 
                         # Create marker file
-                        try:
-                            cls._get_marker_path(p).touch()
-                        except OSError:
-                            pass
+                        cls._write_marker_offset(p, 0)
 
                         # Print status
                         print(f'[VendorLogCapture] Capturing log "{p}" to entry "{entry_name}"', file=sys.stderr)
@@ -170,20 +171,28 @@ class VendorLogCapture:
                         print(f'[VendorLogCapture] Could not open log "{p}"', file=sys.stderr)
 
         # Capture new data from each log
+        total_chunks = 0
         for _, tracked_log in list(cls._tracked_logs.items()):
+            updated = False
             try:
-                while True:
+                while total_chunks < cls._MAX_CHUNKS_PER_CYCLE:
                     tracked_log.stream.seek(tracked_log.current_offset)
-                    data_chunk = tracked_log.stream.read(65536)
+                    data_chunk = tracked_log.stream.read(cls._CHUNK_SIZE)
 
                     if not data_chunk:
                         break
 
                     tracked_log.entry.append(data_chunk)
                     tracked_log.current_offset += len(data_chunk)
+                    total_chunks += 1
+                    updated = True
             except IOError:
                 # File may have been temporarily locked; retry next cycle
                 pass
+            if updated:
+                cls._write_marker_offset(tracked_log.file_path, tracked_log.current_offset)
+            if total_chunks >= cls._MAX_CHUNKS_PER_CYCLE:
+                break
 
     @classmethod
     def _get_file_key(cls, file: Path):
@@ -204,6 +213,26 @@ class VendorLogCapture:
         Returns the capture marker path corresponding to a log file.
         """
         return file.with_name(f".{file.name}.captured")
+
+    @classmethod
+    def _write_marker_offset(cls, file: Path, offset: int):
+        """
+        Writes the captured byte offset to the marker file.
+        """
+        try:
+            cls._get_marker_path(file).write_text(str(offset), encoding="utf-8")
+        except OSError:
+            pass
+
+    @classmethod
+    def _read_marker_offset(cls, marker_path: Path) -> int:
+        """
+        Reads the captured byte offset from a marker file, or returns -1 if invalid.
+        """
+        try:
+            return int(marker_path.read_text(encoding="utf-8").strip())
+        except (OSError, ValueError):
+            return -1
 
     @classmethod
     def _is_capturable(cls, file: Path) -> bool:
@@ -245,11 +274,16 @@ class VendorLogCapture:
                 if cls._is_capturable(p):
                     marker_path = cls._get_marker_path(p)
                     if marker_path.exists():
+                        captured_offset = cls._read_marker_offset(marker_path)
                         try:
-                            p.unlink()
+                            file_size = p.stat().st_size
                             marker_path.unlink()
+                            if captured_offset >= 0 and file_size - captured_offset <= cls._MAX_UNCAPTURED_BYTES:
+                                p.unlink()
+                            else:
+                                cls._ignored_logs.add(cls._get_file_key(p))
                         except OSError:
-                            pass
+                            cls._ignored_logs.add(cls._get_file_key(p))
                     else:
                         cls._ignored_logs.add(cls._get_file_key(p))
                 elif name.startswith(".") and name.endswith(".captured"):
