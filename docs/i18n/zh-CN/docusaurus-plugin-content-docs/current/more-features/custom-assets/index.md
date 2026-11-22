@@ -1,6 +1,6 @@
 # ⚙️ 自定义资源 {#custom-assets}
 
-AdvantageScope 内置了一套默认的平面场地图像、场地模型、机器人模型和控制器配置。其中，基础资源（如通用场地）随安装包自带；而精细资源（如特定赛季的场地）会在 AdvantageScope 联网时于后台自动下载。如需查看下载状态，请点击 `应用程序`/`AdvantageScope` > `资源下载状态...`。
+AdvantageScope 内置了一套默认的平面场地图像、场地模型、机器人模型和控制器配置。其中，基础资源（如“常青”场地）随安装包自带；而精细资源（如特定赛季的场地）会在 AdvantageScope 联网时于后台自动下载。如需查看下载状态，请点击 `应用程序`/`AdvantageScope` > `资源下载状态...`。
 
 如有需要，你也可以添加自定义资源来扩展可选项。点击 `应用程序`/`AdvantageScope` > `显示资源文件夹` 即可打开用户资源目录。下文详细介绍了各类资源的格式规范，你也可以参考默认的 [精细资源](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases) 和 [内置资源](https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/bundledAssets)。
 
@@ -21,7 +21,7 @@ AdvantageScope 内置了一套默认的平面场地图像、场地模型、机�
 文件夹名称示例：“Field2d_2023Field”、“Joystick_OperatorButtons”或“Robot_Dozer”。
 :::
 
-该文件夹中应包含一个名为“config.json”的文件以及一个或多个资源文件，具体要求见下文。配置文件中必须包含资源在 AdvantageScope 中显示的名称，且该名称在同一种资源类型中必须唯一。你还可以选择在资源中添加一个“locales”对象，将语言代码（如“es-419”、“fr”、“zh-CN”）映射到对应的翻译名称。如果当前选择的语言未在“locales”中提供，或省略了“locales”字段，系统将默认使用根级别的“name”。
+该文件夹中应包含一个名为“config.json”的文件以及一个或多个资源文件，具体要求见下文。配置文件中必须包含资源在 AdvantageScope 中显示的名称，且该名称在同一种资源类型中必须唯一。你还可以选择在资源中添加一个“locales”对象，将语言代码（如“es-419”、“fr”、“zh-CN”）映射到对应的翻译名称。如果当前选择的语言未在“locales”中提供，或省略了“locales”字段，系统将默认使用顶层的“name”。
 
 ```json
 {
@@ -258,7 +258,7 @@ AdvantageScope 会自动简化模型几何结构以提升性能，简化程度�
     },
     ...
   ],
-  "aprilTags": [ // 补充的 AprilTag 模型列表（如果不属于场地模型的一部分）
+  "aprilTags": [ // 补充的 AprilTag 模型列表（若未包含在场地模型中）
     "variant": string // 格式为 "FAMILY-SIZEin"，其中 "FAMILY" 为 "36h11" 或 "16h5"，"SIZE" 为黑色部分的长度
     "id": number
     "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // 沿 x、y 和 z 轴的旋转序列

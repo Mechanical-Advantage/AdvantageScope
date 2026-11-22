@@ -7,7 +7,7 @@ betaWelcome:
   descLite: "Merci de nous aider à tester et à améliorer AdvantageScope Lite! Veuillez cocher les cases ci-dessous pour confirmer chaque déclaration avant de continuer."
   checkUnstable: "Je comprends qu'il s'agit d'une version instable, et que je rencontrerai des problèmes non présents dans les versions stables."
   checkReport: "J'accepte de signaler tout problème rencontré aux développeurs, ce qui aidera à améliorer les futures versions."
-  checkFeedback: "J'accepte de partager mon avis avec les développeurs s'ils m'interrogent sur mon expérience avec cette version."
+  checkFeedback: "J'accepte de donner mon avis aux développeurs s'ils me sollicitent au sujet de cette version."
   help: 'À tout moment, cliquez sur l''<span class="purple">icône violette</span> dans la barre de titre pour signaler un problème, demander une fonctionnalité ou poser une question.'
   continue: "Continuer"
 
@@ -107,7 +107,7 @@ preferences:
   liveModeSelectTitle: "Sélectionner le mode d'abonnement aux données en direct"
   liveModeLowBandwidth: "Faible bande passante"
   liveModeLogging: "Journalisation"
-  discardLive: "Supprimer les données en direct"
+  discardLive: "Conservation des données en direct"
   discardLiveSelectTitle: "Sélectionner la durée de conservation des données en direct"
   discardLive1Min: "Après 1 minute"
   discardLive5Min: "Après 5 minutes"
@@ -457,7 +457,7 @@ hub:
       utility: "Utilitaire"
     types:
       stepped: "En escalier"
-      smooth: "Lisse"
+      smooth: "Lissé"
       points: "Points"
       stripes: "Bandes"
       graph: "Graphique"
@@ -755,7 +755,7 @@ menu:
     heading: "Fenêtre"
     bringFront: "Tout mettre au premier plan"
     minimize: "Réduire"
-    zoom: "Zoom"
+    zoom: "Agrandir"
 
   sidebar:
     clearAll: "Tout effacer"
@@ -905,10 +905,10 @@ main:
     textFilter: "Fichiers texte"
     openQuery: "Ouvrir le journal?"
     openDetail: "Souhaitez-vous ouvrir le fichier journal « {{name}} »?"
-    openDsLogTitle: "Ouvrir le journal de la DS"
-    openDsLogQuery: "Ouvrir ce journal avec la disposition de la DS?"
+    openDsLogTitle: "Ouvrir le journal de la console de pilotage"
+    openDsLogQuery: "Ouvrir ce journal avec la disposition de la console de pilotage?"
     openDsLogDetail: "La disposition de la console de pilotage peut être ouverte dans une fenêtre séparée sans modifier votre disposition actuelle."
-    openDsInDsWindow: "Ouvrir dans la fenêtre de la DS"
+    openDsInDsWindow: "Ouvrir dans la fenêtre de la console de pilotage"
     openDsInNewWindow: "Ouvrir dans une nouvelle fenêtre"
     openDsInThisWindow: "Ouvrir dans cette fenêtre"
     unsupportedFormatLite: "Format de fichier non pris en charge dans AdvantageScope Lite."
@@ -930,7 +930,7 @@ main:
 
   video:
     pythonRequired: "Installation de Python requise"
-    pythonRequiredDetail: "Cette fonctionnalité nécessite que Python 3.10 ou supérieur soit disponible sur votre système. Veuillez installer Python et réessayer."
+    pythonRequiredDetail: "Cette fonctionnalité nécessite que Python 3.10 ou une version ultérieure soit installé sur votre système. Veuillez installer Python et réessayer."
     ffmpegRequired: "Installation de FFmpeg requise"
     ffmpegRequiredDetail: "FFmpeg est requis pour traiter les fichiers vidéo. Veuillez installer FFmpeg et l'ajouter au PATH."
     downloadFfmpeg: "Télécharger FFmpeg?"
@@ -951,7 +951,7 @@ main:
     warning: "Avertissement"
     alert: "Alerte"
     exportInProgress: "Exportation en cours"
-    exportInProgressDetail: "Êtes-vous sûr de vouloir fermer la fenêtre pendant qu'une exportation est en cours? Les données NE seront PAS enregistrées."
+    exportInProgressDetail: "Voulez-vous vraiment fermer la fenêtre pendant qu'une exportation est en cours? Les données ne seront pas enregistrées."
     incompleteExport: "Données incomplètes pour l'exportation"
     incompleteExportDetail: "Certains champs ne seront pas disponibles dans les données exportées. Pour enregistrer tous les champs du serveur, le mode en direct « Journalisation » doit être sélectionné. Consultez la documentation d'AdvantageScope pour plus de détails."
 

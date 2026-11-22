@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 A guia Swerve mostra o estado dos quatro módulos swerve, incluindo vetores de velocidade, posições de repouso, rotação do robô e velocidades do chassi.
 
-<img src="/img/tab-reference/swerve-1.webp" alt="Visão geral da guia de swerve" />
+<img src="/img/tab-reference/swerve-1.webp" alt="Visão geral da guia Swerve" />
 
 _A interface em inglês é exibida acima._
 

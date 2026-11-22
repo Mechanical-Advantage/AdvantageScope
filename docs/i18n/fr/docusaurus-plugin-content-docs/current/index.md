@@ -11,7 +11,7 @@ import DocCardList from "@theme/DocCardList";
 <img src="/img/banner-ltr-light.webp" className="light-only" />
 <img src="/img/banner-ltr-dark.webp" className="dark-only" />
 
-AdvantageScope est une application d'analyse de journaux, de diagnostic et de visualisation de données conçue pour les équipes FIRST par l'[équipe 6328](https://littletonrobotics.org). Elle lit les fichiers journaux aux formats WPILOG, Hoot (CTRE), REVLOG (REV Robotics), Road Runner, CSV, NI DS et RLOG, et permet aussi de suivre les données du robot en direct via NT4, Phoenix, RLOG ou FTC Dashboard. Vous pouvez utiliser AdvantageScope avec n'importe quel projet WPILib, même si l'application est particulièrement optimisée pour notre framework de relecture [AdvantageKit](https://docs.advantagekit.org). **AdvantageKit n'est toutefois pas nécessaire pour utiliser AdvantageScope**.
+AdvantageScope est une application d'analyse de journaux, de diagnostic et de visualisation de données conçue pour les équipes FIRST par l'[équipe 6328](https://littletonrobotics.org). Elle lit les fichiers journaux aux formats WPILOG, Hoot (CTRE), REVLOG (REV Robotics), Road Runner, CSV, NI DS et RLOG, et permet aussi de suivre les données du robot en direct via NT4, Phoenix, RLOG ou FTC Dashboard. Vous pouvez utiliser AdvantageScope avec n'importe quel projet WPILib, même si l'application est particulièrement optimisée pour notre framework de rejeu [AdvantageKit](https://docs.advantagekit.org). **AdvantageKit n'est toutefois pas nécessaire pour utiliser AdvantageScope**.
 
 <DocCardList
 items={[

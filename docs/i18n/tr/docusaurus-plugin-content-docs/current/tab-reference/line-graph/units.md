@@ -52,10 +52,10 @@ Birimler yanlış ayrıştırılırsa birim bilgisini yok saymak için `Manuel b
 
 Birim üst verisi mevcut olmadığında veya hatalı olduğunda, birimler arasında dönüştürme yapmak (veya birim üst verisini tamamen yok saymak) için eksenleri manuel olarak da yapılandırabilirsiniz.
 
-Manuel dönüştürmeyi ayarlamak için eksen başlığının yanındaki üç noktaya ve ardından `Manuel birimler` > `Dönüşümü düzenle...` seçeneğine tıklayın. Birim türünü, kaynak birimi ve hedef birimi seçin. Her değer ayrıca “Ekstra faktör” ile çarpılır; böylece dişli oranları, açısal-doğrusal dönüşümler veya AdvantageScope'ta yer almayan diğer birimler için özel dönüştürmeler yapabilirsiniz. Faktörü `1.5*pi` gibi matematiksel bir ifadeyle de girebilirsiniz.
+Manuel dönüştürmeyi ayarlamak için eksen başlığının yanındaki üç noktaya ve ardından `Manuel birimler` > `Dönüşümü düzenle...` seçeneğine tıklayın. Birim türünü, kaynak birimi ve hedef birimi seçin. Her değer ayrıca “Ek çarpan” ile çarpılır; böylece dişli oranları, açısal-doğrusal dönüşümler veya AdvantageScope'ta yer almayan diğer birimler için özel dönüştürmeler yapabilirsiniz. Faktörü `1.5*pi` gibi matematiksel bir ifadeyle de girebilirsiniz.
 
 :::tip
-Birim dönüştürmeyi hızlıca açıp kapatmak için eksen başlığının yanındaki üç noktaya tıklayın ve `Son önayarlar` veya `Birimleri sıfırla` seçeneğini seçin.
+Birim dönüştürmeyi hızlıca açıp kapatmak için eksen başlığının yanındaki üç noktaya tıklayın ve `Son ön ayarlar` veya `Birimleri sıfırla` seçeneğini seçin.
 :::
 
 <img src="/img/tab-reference/line-graph/units-2.webp" alt="Birim dönüşümünü düzenleme" height="250" />

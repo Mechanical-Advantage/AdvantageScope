@@ -7,7 +7,7 @@ betaWelcome:
   descLite: "Obrigado por ajudar a testar e melhorar o AdvantageScope Lite! Marque as caixas abaixo para confirmar cada declaração antes de continuar."
   checkUnstable: "Entendo que esta é uma versão instável e encontrarei problemas que não estão presentes nas versões estáveis."
   checkReport: "Concordo em relatar quaisquer problemas que encontrar aos desenvolvedores, o que ajudará a melhorar as versões futuras."
-  checkFeedback: "Concordo em fornecer feedback aos desenvolvedores se perguntarem sobre minha experiência com esta versão."
+  checkFeedback: "Concordo em enviar feedback aos desenvolvedores caso me perguntem sobre minha experiência com esta versão."
   help: 'A qualquer momento, você pode clicar no <span class="purple">ícone roxo</span> na barra de título para relatar um problema, solicitar um recurso ou fazer uma pergunta.'
   continue: "Continuar"
 
@@ -285,9 +285,9 @@ sourceList:
     bold: "Grossa"
     verybold: "Muito grossa"
     thin: "Fina"
-    medium: "Médio"
+    medium: "Média"
     large: "Grande"
-    small: "Pequeno"
+    small: "Pequena"
 
 licenses:
   title: "Licenças — AdvantageScope"
@@ -404,7 +404,7 @@ hub:
       bumpers: "Bumpers"
       color: "Cor"
       size: "Espessura"
-      arrangement: "Arranjo"
+      arrangement: "Disposição"
       units: "Unidades de rotação"
       timeRange: "Intervalo de tempo"
       position: "Posição"
@@ -513,8 +513,8 @@ hub:
     dataRange: "Intervalo de dados"
     dataRangeMin: "Valor mínimo do histograma"
     dataRangeMax: "Valor máximo do histograma"
-    stepSize: "Tamanho do passo"
-    stepSizeTitle: "Tamanho do passo do histograma"
+    stepSize: "Largura do intervalo"
+    stepSizeTitle: "Largura do intervalo do histograma"
 
   video:
     local: "Abrir arquivo de vídeo local"
@@ -558,7 +558,7 @@ hub:
       rotationLegacy: "Rotação"
     options:
       color: "Cor"
-      arrangement: "Arranjo"
+      arrangement: "Disposição"
       units: "Unidades de rotação"
     optionValues:
       "0,1,2,3": "DE/DD/TE/TD"
@@ -782,7 +782,7 @@ menu:
     editConversion: "Editar conversão"
     disableAutoUnits: "Desativar unidades automáticas"
     resetUnits: "Redefinir unidades"
-    zoomEnabled: "Zoom para o intervalo habilitado"
+    zoomEnabled: "Dar zoom no período habilitado"
     differentiate: "Diferenciar"
     integrate: "Integrar"
 
@@ -831,7 +831,7 @@ main:
     noDiskSpace: "Espaço em disco insuficiente. Tentando novamente em breve."
     noOwlet: "O arquivo de log Hoot não pôde ser decodificado porque o Owlet não está disponível."
     openFailed: "O arquivo de log Hoot não pôde ser aberto."
-    tooOld: "O arquivo de log Hoot é muito antigo para ser decodificado. Os logs Hoot devem ser produzidos pelo Phoenix 2024 ou mais recente."
+    tooOld: "O arquivo de log Hoot é muito antigo para ser decodificado. Os logs Hoot precisam ter sido gerados pelo Phoenix 2024 ou mais recente."
     incompatible: "O log Hoot não pôde ser decodificado devido a um problema de compatibilidade. Verifique o status de download do Owlet na barra de menus para mais informações."
 
   buttons:
@@ -929,7 +929,7 @@ main:
 
   video:
     pythonRequired: "Instalação do Python necessária"
-    pythonRequiredDetail: "Este recurso requer que o Python 3.10 ou superior esteja disponível em seu sistema. Instale o Python e tente novamente."
+    pythonRequiredDetail: "Este recurso exige o Python 3.10 ou superior instalado no seu sistema. Instale o Python e tente novamente."
     ffmpegRequired: "Instalação do FFmpeg necessária"
     ffmpegRequiredDetail: "O FFmpeg é necessário para processar arquivos de vídeo. Instale o FFmpeg e adicione-o ao PATH."
     downloadFfmpeg: "Baixar o FFmpeg?"
@@ -952,7 +952,7 @@ main:
     exportInProgress: "Exportação em andamento"
     exportInProgressDetail: "Tem certeza de que deseja fechar a janela enquanto uma exportação está em andamento? Os dados NÃO serão salvos."
     incompleteExport: "Dados incompletos para exportação"
-    incompleteExportDetail: 'Alguns campos não estarão disponíveis nos dados exportados. Para salvar todos os campos do servidor, o modo ao vivo "Logging" deve ser selecionado. Verifique a documentação do AdvantageScope para obter detalhes.'
+    incompleteExportDetail: 'Alguns campos não estarão disponíveis nos dados exportados. Para salvar todos os campos do servidor, é preciso selecionar o modo ao vivo "Logging". Consulte a documentação do AdvantageScope para mais detalhes.'
 
   xr:
     stopServerQuery: "Parar servidor XR?"
@@ -1082,7 +1082,7 @@ units:
     kilowatts: "Quilowatts"
     horsepower: "Cavalos-vapor"
     joules: "Joules"
-    wattHours: "Watt-hora"
+    wattHours: "Watt-horas"
     calories: "Calorias"
     potatoes: "Batatas"
     ratio: "Proporção"

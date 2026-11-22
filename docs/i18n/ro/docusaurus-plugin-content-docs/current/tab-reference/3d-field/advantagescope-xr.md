@@ -9,7 +9,7 @@ AdvantageScope XR aduce la viață vizualizarea 👀 [Teren 3D](/tab-reference/3
 - **Gazdă (Host):** Aplicația desktop AdvantageScope pe Windows, macOS sau Linux (v4.1.0 sau mai recentă). Orice firewall de pe dispozitiv trebuie să fie [dezactivat](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
 - **Client:** Un iPhone sau iPad cu iOS/iPadOS 16 sau mai recent. Nu trebuie să instalezi nicio aplicație.
 - **Rețea:** Ambele dispozitive trebuie să fie conectate la aceeași rețea (Wi-Fi, partajare internet prin USB etc.). Cu excepția situației de mai jos, această rețea nu are nevoie de conexiune la internet.
-- **Internet:** Dacă AdvantageScope XR nu a fost folosit recent, dispozitivul mobil trebuie să aibă conexiune la internet (de ex., date mobile). Pentru a scăpa de această cerință, consultă secțiunea [Utilizare offline](#offline-usage) de mai jos.
+- **Internet:** Dacă AdvantageScope XR nu a fost folosit recent, dispozitivul mobil trebuie să aibă conexiune la internet (de ex., date mobile). Pentru a elimina această cerință, consultă secțiunea [Utilizare offline](#offline-usage) de mai jos.
 
 :::tip
 AdvantageScope XR funcționează pe multe modele de iPhone și iPad, dar este mai stabil pe dispozitivele cu **senzor LiDAR** — adică iPhone Pro (începând cu iPhone 12 Pro) și iPad Pro (primăvara anului 2020 sau mai recent).
@@ -43,7 +43,7 @@ _Mai sus este prezentată interfața în limba engleză._
 _Mai sus este prezentată interfața în limba engleză._
 
 3. Scanează codul QR folosind **aplicația de cameră integrată** pe dispozitivul client. Nu trebuie să instalezi nicio aplicație.
-4. Atinge „AdvantageScope XR” și apoi „Open” pentru a **porni experiența** și a te conecta la gazdă. Dacă ți se solicită, permite aplicației AdvantageScope XR să acceseze **camera și rețeaua locală**.
+4. Atinge „AdvantageScope XR” și apoi „Open” pentru a **porni vizualizarea AR** și a te conecta la gazdă. Dacă ți se solicită, permite aplicației AdvantageScope XR să acceseze **camera și rețeaua locală**.
 5. Urmează instrucțiunile de pe ecran pentru a **calibra și poziționa modelul terenului**.
 6. Controlează modelul terenului ca de obicei de pe dispozitivul gazdă, inclusiv **redarea logurilor și streamingul live**. Starea modelului terenului se actualizează live pe dispozitivul client.
 7. Pentru a **înregistra rapid un videoclip**, atinge pictograma „Record” din partea de sus a ecranului. Atinge-o din nou pentru a opri înregistrarea, apoi editează și salvează clipul.

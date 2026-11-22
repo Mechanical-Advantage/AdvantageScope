@@ -66,9 +66,9 @@ In het venster XR-bediening vind je verschillende opties voor de weergave in aug
 - **Streamen:**
   - Kies _Vloeiend_ als een kleine vertraging niet erg is in ruil voor een stabielere stream, bijvoorbeeld bij het simuleren van autonome routines of het terugkijken van logs.
   - Kies _Lage latentie_ voor realtime toepassingen waarbij een beetje schokkerigheid niet erg is, zoals data over een echte robot heen projecteren of een gesimuleerde robot besturen in teleop.
-- **Vloer tonen:** Toon het vlakke tapijt- of tegelmodel onder het veld in plaats van de echte vloer erdoorheen te laten zien.
-- **Veld tonen:** Toon het veldmodel, inclusief de veldbarrière en spelspecifieke elementen. Aangepaste [speelstukobjecten](/tab-reference/3d-field#game-piece-objects) blijven altijd zichtbaar.
-- **Robots tonen:** Toon de robotmodellen. Dit kun je uitzetten als je data (zoals vision-targets of 2D-mechanismen) over een echte robot heen projecteert.
+- **Vloer tonen:** Toont het vlakke tapijt- of tegelmodel onder het veld in plaats van de echte vloer erdoorheen te laten zien.
+- **Veld tonen:** Toont het veldmodel, inclusief de veldbarrière en spelspecifieke elementen. Aangepaste [speelstukobjecten](/tab-reference/3d-field#game-piece-objects) blijven altijd zichtbaar.
+- **Robots tonen:** Toont de robotmodellen. Dit kun je uitzetten als je data (zoals vision-targets of 2D-mechanismen) over een echte robot heen projecteert.
 
 ## Offline gebruik {#offline-usage}
 

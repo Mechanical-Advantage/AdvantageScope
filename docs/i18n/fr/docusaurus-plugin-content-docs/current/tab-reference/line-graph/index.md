@@ -40,7 +40,7 @@ Par défaut, chaque axe adapte son échelle aux données visibles. Pour désacti
 
 _L'interface en anglais est illustrée ci-dessus._
 
-### Intégration et différenciation {#integration-and-differentiation}
+### Intégration et dérivation {#integration-and-differentiation}
 
 AdvantageScope peut calculer automatiquement l'intégrale ou la dérivée de vos valeurs, le pas de temps étant toujours mesuré en secondes. Cliquez sur les trois points à côté du titre de l'axe, puis sélectionnez `Différencier` ou `Intégrer`.
 

@@ -16,7 +16,7 @@ Fișierele log Hoot pot fi deschise numai după ce ești de acord cu [acordul de
 
 ## Deschiderea logurilor {#opening-logs}
 
-În bara de meniu, dă clic pe `Fișier` > `Deschidere log(uri)...`, apoi alege unul sau mai multe fișiere log de pe discul local. De asemenea, poți trage un fișier log din managerul de fișiere pe pictograma sau fereastra AdvantageScope pentru a-l deschide.
+În bara de meniu, dă clic pe `Fișier` > `Deschide log(uri)...`, apoi alege unul sau mai multe fișiere log de pe discul local. De asemenea, poți trage un fișier log din managerul de fișiere pe pictograma sau fereastra AdvantageScope pentru a-l deschide.
 
 :::info
 Dacă sunt deschise mai multe fișiere simultan, marcajele de timp vor fi aliniate automat. Acest lucru permite compararea ușoară a fișierelor log din mai multe surse. Consultă pagina despre [Marcaje de timp](/more-features/timestamps) pentru detalii despre opțiunile de afișare a marcajelor de timp.
@@ -42,7 +42,7 @@ Deschide fereastra de preferințe dând clic pe `Aplicație` > `Afișează prefe
 <img src="/img/prefs_ro.webp" alt="Diagramă de preferințe" height="450" />
 </details>
 
-Dă clic pe `Fișier` > `Descărcare loguri...` pentru a deschide fereastra de descărcare. Descărcarea logurilor este suportată pe Systemcore și roboRIO. Odată conectat la robot, logurile disponibile sunt afișate cu cele mai noi în partea de sus. Selectează unul sau mai multe fișiere sau foldere de log de descărcat (shift-clic pentru a selecta un interval sau **cmd/ctrl + A** pentru a selecta tot). Apoi dă clic pe simbolul ↓ și selectează o locație de salvare.
+Dă clic pe `Fișier` > `Descarcă loguri...` pentru a deschide fereastra de descărcare. Descărcarea logurilor este suportată pe Systemcore și roboRIO. Odată conectat la robot, logurile disponibile sunt afișate cu cele mai noi în partea de sus. Selectează unul sau mai multe fișiere sau foldere de log de descărcat (shift-clic pentru a selecta un interval sau **cmd/ctrl + A** pentru a selecta tot). Apoi dă clic pe simbolul ↓ și selectează o locație de salvare.
 
 :::tip
 La descărcarea mai multor fișiere, AdvantageScope omite fișierele care există deja în folderul de destinație.

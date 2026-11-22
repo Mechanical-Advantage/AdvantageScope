@@ -54,7 +54,7 @@ _La imagen de arriba muestra la interfaz en inglés._
 
 ## Formato CSV {#csv-formatting}
 
-Los encabezados de las columnas CSV deben ser "Timestamp, Key, Value" o "Timestamp, (Key), (Key), etc", con los valores de tiempo expresados en segundos. A continuación tienes el formato esperado para los tipos de datos más comunes. Ten en cuenta que exportar y volver a importar un registro en CSV implica _pérdida de información_, ya que CSV no admite tipos de campos complejos.
+Los encabezados de las columnas CSV deben ser "Timestamp, Key, Value" o "Timestamp, (Key), (Key), etc.", con los valores de tiempo expresados en segundos. A continuación tienes el formato esperado para los tipos de datos más comunes. Ten en cuenta que exportar y volver a importar un registro en CSV implica _pérdida de información_, ya que CSV no admite tipos de campos complejos.
 
 - **Booleanos:** `true` o `false`
 - **Cadenas de texto (Strings):** `"(valor)"`

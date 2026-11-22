@@ -7,9 +7,9 @@ AdvantageScope include numeroase scurtături de tastatură care permit o navigar
 <table>
 <tr><td>`Ctrl+O`</td><td>Deschide unul sau mai multe fișiere log</td></tr>
 <tr><td>`Ctrl+Shift+O`</td><td>Adaugă unul sau mai multe fișiere log la vizualizarea curentă</td></tr>
-<tr><td>`Ctrl+K`</td><td>Conectare la robot ca sursă live</td></tr>
-<tr><td>`Ctrl+Shift+K`</td><td>Conectare la simulator ca sursă live</td></tr>
-<tr><td>`Ctrl+Option+Shift+K`</td><td>Conectare la Driver Station ca sursă live</td></tr>
+<tr><td>`Ctrl+K`</td><td>Conectează-te la robot ca sursă live</td></tr>
+<tr><td>`Ctrl+Shift+K`</td><td>Conectează-te la simulator ca sursă live</td></tr>
+<tr><td>`Ctrl+Option+Shift+K`</td><td>Conectează-te la Driver Station ca sursă live</td></tr>
 <tr><td>`Ctrl+D`</td><td>Descarcă fișierele log de pe robot</td></tr>
 </table>
 

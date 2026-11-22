@@ -23,7 +23,7 @@ Bovenaan het venster staat "Zoeken" of "Publiceren" om de status aan te geven. V
 
 Alle velden worden gepubliceerd met hun opgeslagen waarde op het _geselecteerde tijdstempel_ dat veel tabbladen in AdvantageScope gebruiken. Zo kun je data realtime over het netwerk afspelen op precies dezelfde manier als in AdvantageScope zelf (zie [App-navigatie](/overview/navigation) voor meer uitleg). Is er geen tijdstempel geselecteerd, dan gebruikt AdvantageScope de opgeslagen waarden op het _aangewezen tijdstempel_.
 
-Wil je stoppen met publiceren? Klik dan op `Bestand` > `NT-data publiceren` > `Publiceren stoppen`.
+Wil je stoppen met publiceren? Klik dan op `Bestand` > `NT-data publiceren` > `Stoppen met publiceren`.
 
 ## Velden filteren {#filtering-fields}
 

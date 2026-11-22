@@ -81,7 +81,7 @@ La fenêtre de téléchargement permet maintenant de récupérer des journaux ra
 
 Les onglets 🗺️ [Terrain 2D](/tab-reference/2d-field) et 👀 [Terrain 3D](/tab-reference/3d-field) gagnent plusieurs options de visualisation :
 
-- Le terrain 2D propose davantage de couleurs de pare-chocs, et chaque objet peut recevoir sa propre couleur. Il devient ainsi beaucoup plus facile de distinguer vos fantômes de vos différents robots.
+- Le terrain 2D propose davantage de couleurs de pare-chocs, et chaque objet peut recevoir sa propre couleur. Il devient ainsi beaucoup plus facile de distinguer les robots fantômes de vos différents robots.
 - Lors de la [visualisation de mécanismes 2D sur le terrain 3D](/tab-reference/3d-field/#2d-mechanisms), vous pouvez maintenant placer vos mécanismes sur le plan YZ en plus du plan XZ, ce qui facilite l'observation des mécanismes se déplaçant sur plusieurs axes.
 - Le terrain 3D propose désormais un anticrénelage optionnel pour lisser les contours des modèles 3D.
 

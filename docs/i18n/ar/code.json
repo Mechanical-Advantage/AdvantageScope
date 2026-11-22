@@ -1,6 +1,6 @@
 {
   "theme.docs.DocCard.categoryDescription.plurals": {
-    "message": "{count} مواد",
+    "message": "{count} عناصر",
     "description": "The default description for a category card in the generated index about how many items this category includes"
   },
   "theme.NotFound.title": {
@@ -95,7 +95,7 @@
     "message": "الإصدار: {versionLabel}"
   },
   "theme.docs.versions.unreleasedVersionLabel": {
-    "message": "هذه الوثائق لم يتم طرحها بَعـد للإصدار {siteTitle} {versionLabel}.",
+    "message": "هذه الوثائق لم يتم طرحها بعد للإصدار {siteTitle} {versionLabel}.",
     "description": "The label used to tell the user that he's browsing an unreleased doc version"
   },
   "theme.docs.versions.unmaintainedVersionLabel": {
@@ -107,7 +107,7 @@
     "description": "The label used to tell the user to check the latest version"
   },
   "theme.docs.versions.latestVersionLinkLabel": {
-    "message": "احدث إصدار",
+    "message": "أحدث إصدار",
     "description": "The label used for the latest version suggestion link label"
   },
   "theme.common.editThisPage": {
@@ -115,7 +115,7 @@
     "description": "The link label to edit the current page"
   },
   "theme.common.headingLinkTitle": {
-    "message": "إرتباط مُبـاشر بالعنوان {heading}",
+    "message": "ارتباط مباشر بالعنوان {heading}",
     "description": "Title for link to heading"
   },
   "theme.lastUpdated.atDate": {
@@ -167,7 +167,7 @@
     "description": "The ARIA label for close button of announcement bar"
   },
   "theme.blog.sidebar.navAriaLabel": {
-    "message": "أحدث مُشـاركات المدونة",
+    "message": "أحدث مشاركات المدونة",
     "description": "The ARIA label for recent posts in the blog sidebar"
   },
   "theme.DocSidebarItem.expandCategoryAriaLabel": {
@@ -275,7 +275,7 @@
     "description": "The ARIA label and title attribute for expand button of doc sidebar"
   },
   "theme.SearchBar.seeAll": {
-    "message": "مشاهدة جميع {count} نتائج"
+    "message": "عرض جميع النتائج ({count})"
   },
   "theme.SearchPage.documentsFound.plurals": {
     "message": "تم العثور على وثيقة واحدة|تم العثور على {count} وثائق",
@@ -390,7 +390,7 @@
     "description": "The title for error screen"
   },
   "theme.SearchModal.errorScreen.helpText": {
-    "message": "قد ترغب في التحقق من اتصال الشبكة الخاص بك.",
+    "message": "يُرجى التحقق من اتصالك بالشبكة.",
     "description": "The help text for error screen"
   },
   "theme.SearchModal.resultsScreen.askAiPlaceholder": {

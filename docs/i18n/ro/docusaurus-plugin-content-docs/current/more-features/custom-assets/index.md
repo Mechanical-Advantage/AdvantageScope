@@ -1,11 +1,11 @@
 # ⚙️ Resurse personalizate {#custom-assets}
 
-AdvantageScope folosește un set implicit de imagini plate de teren, modele de teren, modele de roboți și configurații de joystick-uri. Resursele simple (de ex., terenurile evergreen) sunt incluse direct la instalare. Resursele detaliate (de ex., terenurile specifice fiecărui sezon) se descarcă automat în fundal atunci când AdvantageScope are conexiune la internet. Pentru a verifica starea acestor descărcări, dă clic pe `Aplicație`/`AdvantageScope` > `Stare descărcare resursă...`.
+AdvantageScope folosește un set implicit de imagini plate de teren, modele de teren, modele de roboți și configurații de joystick-uri. Resursele simple (de ex., terenurile „Permanent”) sunt incluse direct la instalare. Resursele detaliate (de ex., terenurile specifice fiecărui sezon) se descarcă automat în fundal atunci când AdvantageScope are conexiune la internet. Pentru a verifica starea acestor descărcări, dă clic pe `Aplicație`/`AdvantageScope` > `Stare descărcare resursă...`.
 
 Dacă vrei să adaugi mai multe opțiuni, poți personaliza setul de resurse. Pentru a deschide folderul cu resurse al utilizatorului, dă clic pe `Aplicație`/`AdvantageScope` > `Afișează folderul cu resurse`. Mai jos găsești formatele acceptate pentru fiecare tip de resursă. Consultă setul implicit de [resurse detaliate](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases) și [resurse incluse](https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/bundledAssets) ca referință.
 
 :::tip
-Pentru a încărca resurse dintr-o locație alternativă, dă clic pe `Aplicație`/`AdvantageScope` > `Utilizează folderul cu resurse personalizate`. Folderul selectat trebuie să fie _folderul părinte_, în care poți pune mai multe resurse în subfoldere separate. Astfel, poți salva resursele personalizate sub controlul versiunilor, alături de codul robotului.
+Pentru a încărca resurse dintr-o locație alternativă, dă clic pe `Aplicație`/`AdvantageScope` > `Folosește un folder cu resurse personalizate`. Folderul selectat trebuie să fie _folderul părinte_, în care poți pune mai multe resurse în subfoldere separate. Astfel, poți păstra resursele personalizate într-un sistem de control al versiunilor (de ex. Git), alături de codul robotului.
 :::
 
 ## Format general {#general-format}

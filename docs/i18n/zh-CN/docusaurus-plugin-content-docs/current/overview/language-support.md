@@ -26,7 +26,7 @@ AdvantageScope 支持多种语言，旨在为全球队伍提供本地化体验�
 
 ## 配置 {#configuration}
 
-如需更改 AdvantageScope 的界面语言，请点击 `应用程序` > `显示首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。在“语言”选项中，你可以选择任意受支持的语言，或选择“系统默认”以自动跟随系统语言。
+如需更改 AdvantageScope 的界面语言，请点击 `应用程序` > `首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。在“语言”选项中，你可以选择任意受支持的语言，或选择“系统默认”以自动跟随系统语言。
 
 <img src="/img/prefs_zh-CN.webp" alt="首选项图解" height="450" />
 

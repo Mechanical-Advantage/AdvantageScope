@@ -14,7 +14,7 @@ _A interface em inglês é exibida acima._
 
 O AdvantageScope aceita várias formas de informar a unidade de cada campo. A maioria das unidades comuns já é suportada; para ver a lista completa, abra o menu suspenso ao configurar a [conversão manual](#manual-conversion).
 
-Nos métodos (2) e (3), as unidades são identificadas a partir de textos (strings). O AdvantageScope reconhece vários nomes para cada unidade, incluindo abreviações comuns (`ft` e `feet` funcionam, por exemplo) e grafias do inglês americano e britânico (`meters` e `metres`). Atenção: os nomes das unidades devem usar símbolos do SI ou termos em inglês, independentemente do idioma escolhido no AdvantageScope. Se alguma unidade não for reconhecida como esperado, [abra uma issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
+Nos métodos (2) e (3), as unidades são identificadas a partir de textos (strings). O AdvantageScope reconhece vários nomes para cada unidade, incluindo abreviações comuns (por exemplo, `ft` e `feet`) e grafias do inglês americano e britânico (`meters` e `metres`). Atenção: os nomes das unidades devem usar símbolos do SI ou termos em inglês, independentemente do idioma escolhido no AdvantageScope. Se alguma unidade não for reconhecida como esperado, [abra uma issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
 
 :::tip
 Não tem certeza se as unidades estão sendo reconhecidas? Adicione o campo ao gráfico de linha e confira se o tipo de unidade aparece no eixo Y.

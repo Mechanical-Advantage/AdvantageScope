@@ -176,7 +176,7 @@ Al igual que el resto de las poses, la pose de **Anulación de cámara** debe se
 
 ## Configuración {#configuration}
 
-Elige el modelo de campo desde el menú desplegable; están incluidos todos los juegos recientes de FRC y FTC. Si tu computadora tiene pocos recursos gráficos, te recomendamos usar los campos "Evergreen". Los campos "Ejes" (_Axes_) muestran únicamente los ejes XYZ en el origen junto con el contorno de la cancha para dar referencia de escala.
+Elige el modelo de campo desde el menú desplegable; están incluidos todos los juegos recientes de FRC y FTC. Si tu computadora tiene pocos recursos gráficos, te recomendamos usar los campos "Perenne". Los campos "Ejes" (_Axes_) muestran únicamente los ejes XYZ en el origen junto con el contorno de la cancha para dar referencia de escala.
 
 :::info
 Puedes personalizar el sistema de coordenadas de esta pestaña. Consulta la página de [sistemas de coordenadas](/more-features/coordinate-systems) para ver los detalles.

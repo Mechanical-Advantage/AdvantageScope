@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# ✴️ FTC Uyumluluğu {#ftc-compatibility}
+# ✴️ FTC uyumluluğu {#ftc-compatibility}
 
 AdvantageScope, gelecekteki sezonlarda [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller)'a geçişe zemin hazırlarken, mevcut FIRST Tech Challenge kontrol sisteminde sorunsuz bir deneyim sunacak özellikler içerir. 2027-2028 sezonunda Systemcore'a geçilmesiyle birlikte AdvantageScope'un tüm özellikleri FTC'de resmi olarak desteklenecek.
 
@@ -10,8 +10,8 @@ AdvantageScope, gelecekteki sezonlarda [Systemcore](https://community.firstinspi
 
 FTC sahaları ve robot modelleri yerleşik olarak tam desteklenir.
 
-- **Saha ve Robot Modelleri:** 🗺️ [2B saha](/tab-reference/2d-field) ve 👀 [3B saha](/tab-reference/3d-field) sekmelerindeki açılır menülerden FTC sahalarını ve robot modellerini doğrudan seçebilirsiniz. Tüm sahalar [AdvantageScope XR](/tab-reference/3d-field/advantagescope-xr) ile uyumludur.
-- **Koordinat Sistemleri:** Herhangi bir sahada [standart FTC koordinatlarıyla](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html) uyum sağlamak için [koordinat sistemini](/more-features/coordinate-systems) ayarlayabilirsiniz. FTC sahalarında bu koordinat sistemi varsayılan olarak kullanılır.
+- **Saha ve robot modelleri:** 🗺️ [2B saha](/tab-reference/2d-field) ve 👀 [3B saha](/tab-reference/3d-field) sekmelerindeki açılır menülerden FTC sahalarını ve robot modellerini doğrudan seçebilirsiniz. Tüm sahalar [AdvantageScope XR](/tab-reference/3d-field/advantagescope-xr) ile uyumludur.
+- **Koordinat sistemleri:** Herhangi bir sahada [standart FTC koordinatlarıyla](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html) uyum sağlamak için [koordinat sistemini](/more-features/coordinate-systems) ayarlayabilirsiniz. FTC sahalarında bu koordinat sistemi varsayılan olarak kullanılır.
 
 <div className="image-gallery">
   <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />

@@ -58,6 +58,6 @@ AdvantageKit 在记录输入和输出时同样支持单位元数据（详情请�
 要快速启用或禁用单位换算，请点击坐标轴标题旁的三个点，然后选择 `最近预设` 或 `重置单位`。
 :::
 
-<img src="/img/tab-reference/line-graph/units-2.webp" alt="编辑单位转换" height="250" />
+<img src="/img/tab-reference/line-graph/units-2.webp" alt="编辑单位换算" height="250" />
 
 _上图所示为英文界面。_

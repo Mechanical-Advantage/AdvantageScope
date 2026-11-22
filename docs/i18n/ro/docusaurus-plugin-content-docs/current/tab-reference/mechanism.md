@@ -28,7 +28,7 @@ Pentru a face zoom, pune cursorul peste cronologie și derulează în sus sau î
 
 ## Adăugarea mecanismelor {#adding-mechanisms}
 
-Pentru a începe, trage un `Mechanism2d` în panoul de control. Șterge un mecanism folosind butonul X sau ascunde-l temporar făcând clic pe pictograma ochi ori dublu clic pe numele câmpului. Pentru a elimina toate mecanismele, fă clic pe coșul de gunoi de lângă titlul axei și apoi pe `Șterge tot`. Poți reorganiza mecanismele în listă făcând clic și trăgând.
+Pentru a începe, trage un `Mechanism2d` în panoul de control. Șterge un mecanism folosind butonul X sau ascunde-l temporar făcând clic pe pictograma ochi ori dublu clic pe numele câmpului. Pentru a elimina toate mecanismele, fă clic pe coșul de gunoi de lângă titlul axei și apoi pe `Elimină tot`. Poți reorganiza mecanismele în listă făcând clic și trăgând.
 
 ## Publicarea datelor {#publishing-data}
 

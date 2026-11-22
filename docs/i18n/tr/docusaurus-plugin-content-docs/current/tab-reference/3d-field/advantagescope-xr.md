@@ -62,13 +62,13 @@ XR kontrolleri penceresi, modelin artırılmış gerçeklikte nasıl görünece�
 
 - **Kalibrasyon:**
   - Saha modelini masaüstü kullanıma uygun küçültülmüş boyutta görmek için _Minyatür_ modunu kullanın.
-  - Gerçek bir saha bariyerine hizalanmış, birebir ölçekli saha görmek için _Tam Boyut_ modunu kullanın. _Mavi İttifak_ ve _Kırmızı İttifak_ arasında geçiş yapmak kalibrasyonun sahanın hangi tarafından yapılacağını belirler, ancak her iki durumda da sahanın tamamı görüntülenir.
+  - Gerçek bir saha bariyerine hizalanmış, birebir ölçekli saha görmek için _Tam boyut_ modunu kullanın. _Mavi ittifak_ ve _Kırmızı ittifak_ arasında geçiş yapmak kalibrasyonun sahanın hangi tarafından yapılacağını belirler, ancak her iki durumda da sahanın tamamı görüntülenir.
 - **Akış:**
   - Otonom rutinleri simüle etmek veya log dosyalarını oynatmak gibi biraz gecikmenin sorun olmadığı, daha kararlı bir akış gereken durumlarda _Akıcı_ modunu kullanın.
-  - Gerçek bir robotun üzerine veri bindirmek veya simüle edilmiş bir robotu teleop modunda sürmek gibi hafif titremenin kabul edilebildiği gerçek zamanlı kullanımlarda _Düşük Gecikme_ modunu kullanın.
-- **Zemini Göster:** Gerçek bir yüzey üzerine yerleştirmek yerine sahanın altında düz halı/karo zemin modelini gösterir.
-- **Sahayı Göster:** Saha bariyeri ve oyuna özel öğeler dahil tüm saha modelini gösterir. Özel [oyun objesi nesneleri](/tab-reference/3d-field#game-piece-objects) her zaman görünür.
-- **Robotları Göster:** Robot modellerini gösterir; gerçek bir robotun üzerine veri bindirirken (örneğin kamera hedefleri veya 2B mekanizmalar) kapatılabilir.
+  - Gerçek bir robotun üzerine veri bindirmek veya simüle edilmiş bir robotu teleop modunda sürmek gibi hafif titremenin kabul edilebildiği gerçek zamanlı kullanımlarda _Düşük gecikme_ modunu kullanın.
+- **Zemini göster:** Gerçek bir yüzey üzerine yerleştirmek yerine sahanın altında düz halı/karo zemin modelini gösterir.
+- **Sahayı göster:** Saha bariyeri ve oyuna özel öğeler dahil tüm saha modelini gösterir. Özel [oyun objesi nesneleri](/tab-reference/3d-field#game-piece-objects) her zaman görünür.
+- **Robotları göster:** Robot modellerini gösterir; gerçek bir robotun üzerine veri bindirirken (örneğin kamera hedefleri veya 2B mekanizmalar) kapatılabilir.
 
 ## Çevrimdışı kullanım {#offline-usage}
 

@@ -28,7 +28,7 @@ Pentru a face zoom, pune cursorul peste cronologie și derulează în sus sau î
 
 ## Adăugarea surselor {#adding-sources}
 
-Pentru a începe, trage un câmp în secțiunea „Surse”. Șterge o sursă folosind butonul X sau ascunde-o temporar dând clic pe pictograma ochi ori dublu clic pe numele câmpului. Pentru a elimina toate obiectele, dă clic pe coșul de gunoi de lângă titlul secțiunii și apoi pe `Șterge tot`. Poți reorganiza sursele în listă prin clic și tragere.
+Pentru a începe, trage un câmp în secțiunea „Surse”. Șterge o sursă folosind butonul X sau ascunde-o temporar dând clic pe pictograma ochi ori dublu clic pe numele câmpului. Pentru a elimina toate obiectele, dă clic pe coșul de gunoi de lângă titlul secțiunii și apoi pe `Elimină tot`. Poți reorganiza sursele în listă prin clic și tragere.
 
 **Pentru a personaliza fiecare sursă, dă clic pe pictograma colorată sau clic dreapta pe numele câmpului.** Poți ajusta simbolul, culoarea și dimensiunea fiecărei surse.
 

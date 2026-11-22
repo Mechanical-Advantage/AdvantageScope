@@ -17,9 +17,9 @@ AdvantageScope se poate conecta la FIRST Driver Station pentru a vizualiza date 
 
 Pentru a porni conexiunea live, urmează acești pași:
 
-- **Robot:** Dă clic pe `Fișier` > `Conectare la robot` > `Implicit` sau o sursă live specifică
-- **Simulator:** Dă clic pe `Fișier` > `Conectare la simulator` > `Implicit` sau o sursă live specifică
-- **Driver Station:** Dă clic pe `Fișier` > `Conectare la Driver Station`
+- **Robot:** Dă clic pe `Fișier` > `Conectează-te la robot` > `Implicit` sau o sursă live specifică
+- **Simulator:** Dă clic pe `Fișier` > `Conectează-te la simulator` > `Implicit` sau o sursă live specifică
+- **Driver Station:** Dă clic pe `Fișier` > `Conectează-te la Driver Station`
 
 Titlul ferestrei afișează adresa IP și textul „Se caută” până când ținta este conectată. AdvantageScope încearcă să se reconecteze automat folosind aceleași setări după o deconectare.
 
@@ -50,6 +50,6 @@ Când NetworkTables este folosit ca sursă live, poți selecta următoarele modu
 - **Lățime de bandă redusă (implicit):** AdvantageScope solicită date de la server doar pentru câmpurile care sunt utilizate activ. Datele publicate înainte ca un câmp să fie selectat nu vor fi disponibile. Acest mod este **puternic recomandat** când rulezi într-un mediu cu lățime de bandă de rețea limitată sau când este publicat un număr mare de câmpuri.
 - **Înregistrare:** AdvantageScope solicită date pentru toate câmpurile, indiferent dacă sunt utilizate activ sau nu. Asta înseamnă că aceste câmpuri pot fi vizualizate retroactiv punând pe pauză fluxul de date live (vezi mai sus). Acest mod este adesea util în timpul dezvoltării, dar **NU ar trebui folosit când lățimea de bandă este limitată**.
 
-### Renunțare la datele live {#discard-live-data}
+### Ștergerea datelor live {#discard-live-data}
 
 În timpul unei conexiuni live, datele sunt stocate local pentru a permite reluarea datelor anterioare (consultă „Vizualizarea datelor live”). Pentru a evita un consum foarte mare de memorie, datele sunt șterse implicit după 20 de minute. Poți selecta o perioadă mai scurtă pentru a reduce utilizarea memoriei sau poți alege „Niciodată” pentru a păstra datele live pe termen nelimitat.

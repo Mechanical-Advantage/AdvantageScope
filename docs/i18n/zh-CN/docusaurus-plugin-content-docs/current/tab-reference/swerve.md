@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 🦀 Swerve {#swerve}
 
-Swerve 选项卡用于显示四个 Swerve 模块的实时状态，包括速度矢量、空闲位置、机器人旋转角度以及底盘速度。
+Swerve 选项卡用于显示四个 Swerve 模块的状态，包括速度矢量、静止位置、机器人旋转角度以及底盘速度。
 
 <img src="/img/tab-reference/swerve-1.webp" alt="Swerve 选项卡概览" />
 

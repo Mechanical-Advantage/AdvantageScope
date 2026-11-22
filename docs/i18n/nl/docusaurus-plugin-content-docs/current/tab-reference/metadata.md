@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 🔍 Metadata {#metadata}
 
-Op het tabblad Metadata zie je waarden die zijn gepubliceerd naar de verborgen tabel "/Metadata" of via AdvantageKit. Links staan de metadatasleutels, en in de kolommen worden verschillende bronnen naast elkaar gezet (bijvoorbeeld "Echt" en "Herhaling" bij AdvantageKit).
+Op het tabblad Metadata zie je waarden die zijn gepubliceerd naar de verborgen tabel "/Metadata" of via AdvantageKit. Links staan de metadatasleutels, en in de kolommen worden verschillende bronnen naast elkaar gezet (bijvoorbeeld "Echt" en "Replay" bij AdvantageKit).
 
 <img src="/img/tab-reference/metadata-1.webp" alt="Overzicht van tabblad Metadata" />
 
@@ -29,7 +29,7 @@ metadata.log("Platform", "macOS");
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-Roep in AdvantageKit de methode hieronder aan voordat je de logger start. De metadata wordt apart opgeslagen voor echte runs ("Echt") en replays ("Herhaling"), zodat je ze makkelijk kunt vergelijken.
+Roep in AdvantageKit de methode hieronder aan voordat je de logger start. De metadata wordt apart opgeslagen voor echte runs ("Echt") en replays ("Replay"), zodat je ze makkelijk kunt vergelijken.
 
 ```java
 Logger.recordMetadata("RobotName", "Darwin");

@@ -1,6 +1,6 @@
 # ⚙️ Özel varlıklar {#custom-assets}
 
-AdvantageScope; düz saha görselleri, saha modelleri, robot modelleri ve joystick yapılandırmalarından oluşan varsayılan bir varlık setiyle gelir. Temel varlıklar (örneğin genel amaçlı sahalar) ilk kurulumla birlikte gelir. Sezona özel sahalar gibi detaylı varlıklar ise AdvantageScope internete bağlıyken arka planda otomatik olarak indirilir. Bu indirmelerin durumunu kontrol etmek için `Uygulama`/`AdvantageScope` > `Varlık indirme durumu...` seçeneğine tıklayın.
+AdvantageScope; düz saha görselleri, saha modelleri, robot modelleri ve joystick yapılandırmalarından oluşan varsayılan bir varlık setiyle gelir. Temel varlıklar (örneğin “Kalıcı” sahalar) ilk kurulumla birlikte gelir. Sezona özel sahalar gibi detaylı varlıklar ise AdvantageScope internete bağlıyken arka planda otomatik olarak indirilir. Bu indirmelerin durumunu kontrol etmek için `Uygulama`/`AdvantageScope` > `Varlık indirme durumu...` seçeneğine tıklayın.
 
 İsterseniz bu seti özelleştirip kendi varlıklarınızı ekleyebilirsiniz. Kullanıcı varlıkları klasörünü açmak için `Uygulama`/`AdvantageScope` > `Varlıklar klasörünü göster` seçeneğine tıklayın. Varlıklar için beklenen formatlar aşağıda tanımlanmıştır. Örnek olarak varsayılan [detaylı varlıklara](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases) ve [dahili varlıklara](https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/bundledAssets) göz atabilirsiniz.
 
@@ -140,7 +140,7 @@ NI bağlamaları için AdvantageScope, ön eksiz eski yapılandırma anahtarlar�
   "centerPx": [number, number]
   "sizePx": [number, number]
   "sdlSourceIndex": number
-  "sdlSourcePov": string // İsteğe bağlı, "up", "right", "down" veya "left" olabilir. Sağlanırsa "sdlSourceIndex" okunacak POV'un dizini olacaktır.
+  "sdlSourcePov": string // İsteğe bağlı, "up", "right", "down" veya "left" olabilir. Belirtilirse "sdlSourceIndex" okunacak POV'un dizini olur.
 
   // NI Sürücü İstasyonu için alternatif bağlamalar (isteğe bağlı)
   "niSourceIndex": number

@@ -82,9 +82,8 @@ Logger.recordOutput("MyPoseArray", new Pose2d[] {poseA, poseB});
 <TabItem value="ftcdashboard" label="FTC Dashboard">
 
 ```java
-// 该协议不支持现代结构体格式，但位姿值
-// 可以使用带有后缀 "x"、"y" 和 "heading" 的独立字段进行发布
-// （如下所示）：
+// 该协议不支持新版 Struct 格式，但可以通过带 "x"、"y" 和 "heading" 后缀的
+// 独立字段来发布位姿值（如下所示）：
 TelemetryPacket packet = new TelemetryPacket();
 packet.put("Pose x", 6.3); // 英寸
 packet.put("Pose y", 2.8); // 英寸

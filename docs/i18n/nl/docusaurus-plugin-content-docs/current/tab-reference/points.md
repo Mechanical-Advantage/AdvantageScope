@@ -18,7 +18,7 @@ _De Engelstalige interface wordt hierboven weergegeven._
 
 Met de tijdlijn stuur je het afspelen en de weergave aan. Klik op de tijdlijn om een tijdstip te selecteren, en klik met de rechtermuisknop om de selectie weer op te heffen. Het geselecteerde tijdstip wordt gesynchroniseerd over alle tabbladen, zodat je hetzelfde moment makkelijk terugvindt in andere weergaven.
 
-Gele stukken geven aan wanneer de robot autonoom rijdt, blauwe stukken staan voor tele-operated en grijze stukken voor de utility-modus.
+Gele stukken geven aan wanneer de robot autonoom rijdt, blauwe stukken staan voor teleop en grijze stukken voor de utility-modus.
 
 Zet je cursor op de tijdlijn en scrol omhoog of omlaag om in en uit te zoomen. Je kunt ook een bereik selecteren door te klikken en te slepen terwijl je `Shift` ingedrukt houdt. Naar links en rechts bewegen doe je door horizontaal te scrollen (als je apparaat dat ondersteunt) of door op de tijdlijn te klikken en te slepen. Ben je live verbonden? Zodra je naar links scrolt, laat de weergave de huidige tijd los; scrol je weer helemaal naar rechts, dan klikt de weergave vanzelf weer vast op de huidige tijd. Druk op `Ctrl+\` om in te zoomen op de periode waarin de robot is ingeschakeld.
 
@@ -73,6 +73,6 @@ Logger.recordOutput("MyTranslations",
 
 Je kunt de volgende opties instellen:
 
-- **Dimensies:** De grootte van het weergavegebied, in dezelfde eenheid als je gelogde punten. Gebruik je vision-data, vul dan de resolutie van de camera in.
+- **Afmetingen:** De grootte van het weergavegebied, in dezelfde eenheid als je gelogde punten. Gebruik je vision-data, vul dan de resolutie van de camera in.
 - **Oriëntatie:** Het coördinatenstelsel dat wordt gebruikt (de richting van de X- en Y-as).
 - **Oorsprong:** De plek van de oorsprong binnen het coördinatenstelsel.

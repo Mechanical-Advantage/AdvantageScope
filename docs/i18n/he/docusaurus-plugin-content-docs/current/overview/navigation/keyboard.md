@@ -36,7 +36,7 @@ AdvantageScope כוללת קיצורי מקלדת רבים שמאיצים את �
 
 <table>
 <tr><td>`Ctrl+T`</td><td>פתיחת תפריט להוספת כרטיסייה חדשה</td></tr>
-<tr><td>`Ctrl+Shift+T`</td><td>חילוץ הכרטיסייה הנוכחית לחלון חדש</td></tr>
+<tr><td>`Ctrl+Shift+T`</td><td>פתיחת הכרטיסייה הנוכחית בחלון צף</td></tr>
 <tr><td>`Ctrl+Left` ו-`Ctrl+Right`</td><td>מעבר בין כרטיסיות</td></tr>
 <tr><td>`Ctrl+[` ו-`Ctrl+]`</td><td>שינוי סדר הכרטיסיות</td></tr>
 <tr><td>`Ctrl+W`</td><td>סגירת הכרטיסייה הנוכחית</td></tr>

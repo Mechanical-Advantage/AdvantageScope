@@ -50,6 +50,6 @@ Lorsque vous utilisez NetworkTables comme source en direct, deux modes sont disp
 - **Faible bande passante (par défaut) :** AdvantageScope ne demande au serveur que les champs actuellement utilisés dans vos onglets. Les données publiées avant la sélection d'un champ ne sont donc pas récupérées. Ce mode est **vivement recommandé** si la bande passante réseau est limitée ou si votre robot publie un grand nombre de champs.
 - **Journalisation :** AdvantageScope récupère tous les champs, qu'ils soient affichés ou non. Vous pouvez ainsi mettre le flux en pause pour inspecter rétroactivement n'importe quel champ. Ce mode est pratique pendant le développement, mais **il ne faut PAS l'utiliser lorsque la bande passante est limitée**.
 
-### Ignorer les données en direct {#discard-live-data}
+### Conservation des données en direct {#discard-live-data}
 
 Pendant une connexion en direct, AdvantageScope conserve les données en mémoire pour vous permettre de remonter dans le temps (voir « Consulter les données en direct » ci-dessus). Pour éviter une consommation excessive de mémoire, les données plus anciennes que 20 minutes sont supprimées par défaut. Vous pouvez réduire cette durée pour économiser la mémoire, ou choisir « Jamais » pour tout conserver indéfiniment.

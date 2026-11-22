@@ -32,7 +32,7 @@ sidebar_position: 1
 
 ## הפצות לא רשמיות {#unofficial-distributions}
 
-בנוסף קיימות הפצות לא רשמיות של AdvantageScope ממקורות שונים, שאינן נתמכות רשמית על ידי מפתחי AdvantageScope או WPILib. ההפצות האלו עלולות לפגר אחרי הגרסה הרשמית העדכנית ביותר, ואם נתקלתם בבעיה יש לפנות ישירות למתחזקים שלהן.
+בנוסף קיימות הפצות לא רשמיות של AdvantageScope ממקורות שונים, שאינן נתמכות רשמית על ידי מפתחי AdvantageScope או WPILib. ההפצות האלו עלולות להיות מעודכנות פחות מהגרסה הרשמית האחרונה, ואם נתקלתם בבעיה פנו ישירות למתחזקים שלהן.
 
 - [**AdvantageScope Lite עבור מערכת הבקרה של REV:**](https://github.com/j5155/AdvantageScope-Lite-FTC) גרסה מותאמת של [AdvantageScope Lite](/more-features/advantagescope-lite) לעבודה עם מערכת הבקרה הקיימת (לפני Systemcore) ב-FTC.
 - [**מתקין Homebrew:**](https://formulae.brew.sh/cask/advantagescope) חבילת Homebrew cask להתקנת AdvantageScope משורת הפקודה ב-macOS.

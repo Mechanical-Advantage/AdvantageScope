@@ -8,7 +8,7 @@ AdvantageScope 在 [🗺️ 2D 场地](/tab-reference/2d-field) 和 [👀 3D 场
 
 ### 自定义 {#customization}
 
-默认情况下，系统会根据所选的场地图像或模型自动匹配坐标系。如果你想为所有场地统一指定其他坐标系，请点击 `应用程序` > `显示首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口，然后修改“坐标系”选项。
+默认情况下，系统会根据所选的场地图像或模型自动匹配坐标系。如果你想为所有场地统一指定其他坐标系，请点击 `应用程序` > `首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口，然后修改“坐标系”选项。
 
 :::tip
 所有坐标系选项都同时适用于 FRC 和 FTC 场地。

@@ -37,7 +37,7 @@ _上图所示为英文界面。_
 <details>
 <summary>配置</summary>
 
-点击 `应用程序` > `显示首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口，更新机器人地址和日志路径。
+点击 `应用程序` > `首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口，更新机器人地址和日志路径。
 
 <img src="/img/prefs_zh-CN.webp" alt="首选项图解" height="450" />
 </details>

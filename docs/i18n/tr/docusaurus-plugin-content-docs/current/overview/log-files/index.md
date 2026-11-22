@@ -16,7 +16,7 @@ Hoot log dosyalarını açabilmek için önce CTRE'nin [son kullanıcı lisans s
 
 ## Logları açma {#opening-logs}
 
-Menü çubuğundan `Dosya` > `Log aç...` seçeneğine tıklayın ve bilgisayarınızdan bir veya daha fazla log dosyası seçin. Sistem dosya yöneticisinden bir log dosyasını doğrudan AdvantageScope simgesinin ya da penceresinin üzerine sürükleyip bırakarak da açabilirsiniz.
+Menü çubuğundan `Dosya` > `Log aç...` seçeneğine tıklayın ve bilgisayarınızdan bir veya daha fazla log dosyası seçin. Bilgisayarınızın dosya yöneticisinden bir log dosyasını doğrudan AdvantageScope simgesinin ya da penceresinin üzerine sürükleyip bırakarak da açabilirsiniz.
 
 :::info
 Birden fazla dosyayı aynı anda açarsanız zaman damgaları otomatik olarak hizalanır. Böylece farklı kaynaklardan gelen log dosyalarını kolayca karşılaştırabilirsiniz. Zaman damgası görüntüleme seçenekleri hakkında ayrıntılı bilgi için [Zaman damgaları](/more-features/timestamps) sayfasına göz atın.

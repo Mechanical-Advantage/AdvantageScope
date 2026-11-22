@@ -27,7 +27,7 @@ AdvantageScope 支持将日志文件中记录的 NetworkTables 数据重新发�
 
 ## 过滤字段 {#filtering-fields}
 
-默认情况下，AdvantageScope 会发布日志中存储的所有 NetworkTables 字段（服务器发布的元话题除外）。在某些场景下（例如模拟协处理器），你可能只想发布部分字段或子表。此时可以点击 `应用程序` > `显示首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口进行调整。
+默认情况下，AdvantageScope 会发布日志中存储的所有 NetworkTables 字段（服务器发布的元话题除外）。在某些场景下（例如模拟协处理器），你可能只想发布部分字段或子表。此时可以点击 `应用程序` > `首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口进行调整。
 
 通过“NT 发布前缀”选项，你可以限定允许发布到 NetworkTables 的字段前缀。留空表示包含全部字段；否则可填写以逗号分隔的前缀或字段列表，示例如下：
 

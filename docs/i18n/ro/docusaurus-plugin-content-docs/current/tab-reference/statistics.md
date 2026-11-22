@@ -12,7 +12,7 @@ _Mai sus este prezentată interfața în limba engleză._
 
 ## Panoul de control {#control-pane}
 
-Pentru a începe, trage un câmp în secțiunea „Măsurători”. Șterge un câmp folosind butonul X sau ascunde-l temporar dând clic pe pictograma ochi ori dublu clic pe numele câmpului. Pentru a elimina toate câmpurile, dă clic pe coșul de gunoi de lângă titlul secțiunii și apoi pe `Șterge tot`. Poți reorganiza câmpurile în listă prin clic și tragere.
+Pentru a începe, trage un câmp în secțiunea „Măsurători”. Șterge un câmp folosind butonul X sau ascunde-l temporar dând clic pe pictograma ochi ori dublu clic pe numele câmpului. Pentru a elimina toate câmpurile, dă clic pe coșul de gunoi de lângă titlul secțiunii și apoi pe `Elimină tot`. Poți reorganiza câmpurile în listă prin clic și tragere.
 
 Pentru a analiza diferența dintre câmpuri, comută un câmp în modul „Referință” și adaugă alte câmpuri ca elemente copil. Elementele copil pot fi comutate între modurile „Eroare relativă” și „Eroare absolută”.
 

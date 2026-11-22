@@ -72,7 +72,7 @@ La ventana de controles XR incluye varias opciones para personalizar cómo se ve
 
 ## Uso sin conexión {#offline-usage}
 
-AdvantageScope XR funciona sin conexión a Internet. Para asegurarte de tenerlo siempre listo offline, descarga la app AdvantageScope XR desde la App Store con el enlace de abajo. Para conectarte a la versión de escritorio, escanea el código QR con la cámara de iOS o toca el botón "Escanear" dentro de la app AdvantageScope XR.
+AdvantageScope XR funciona sin conexión a Internet. Para asegurarte de tenerla siempre lista sin conexión, descarga la app AdvantageScope XR desde la App Store con el enlace de abajo. Para conectarte a la versión de escritorio, escanea el código QR con la cámara de iOS o toca el botón "Escanear" dentro de la app AdvantageScope XR.
 
 [<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
 

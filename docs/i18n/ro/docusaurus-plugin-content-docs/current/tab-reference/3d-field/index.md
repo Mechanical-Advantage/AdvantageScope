@@ -32,7 +32,7 @@ Modelul terenului FRC 2026 respectă layout-ul AprilTag pentru terenul **sudat**
 
 ## Adăugarea obiectelor {#adding-objects}
 
-Pentru a începe, trage un câmp în secțiunea „Pose-uri”. Șterge un obiect folosind butonul X sau ascunde-l temporar făcând clic pe pictograma ochi ori dublu clic pe numele câmpului. Pentru a elimina toate obiectele, fă clic pe coșul de gunoi de lângă titlul axei și apoi pe `Șterge tot`. Poți reorganiza obiectele în listă făcând clic și trăgând.
+Pentru a începe, trage un câmp în secțiunea „Pose-uri”. Șterge un obiect folosind butonul X sau ascunde-l temporar făcând clic pe pictograma ochi ori dublu clic pe numele câmpului. Pentru a elimina toate obiectele, fă clic pe coșul de gunoi de lângă titlul axei și apoi pe `Elimină tot`. Poți reorganiza obiectele în listă făcând clic și trăgând.
 
 **Pentru a personaliza un element, fă clic pe pictograma colorată sau clic dreapta pe numele câmpului.** AdvantageScope suportă o gamă largă de tipuri de obiecte, iar multe dintre ele pot fi personalizate (de exemplu, poți schimba culorile și modelele de robot). Unele trebuie adăugate ca elemente copil ale unui obiect existent.
 
@@ -176,7 +176,7 @@ La fel ca în cazul celorlalte date de pose, pose-ul de „Suprascriere cameră�
 
 ## Configurare {#configuration}
 
-Poți selecta modelul terenului din meniul derulant. Toate jocurile recente FRC și FTC sunt suportate. Pentru dispozitivele cu performanță grafică limitată, îți recomandăm terenurile „Evergreen”. Terenurile „Axe” afișează doar axele XYZ la origine, împreună cu un contur al terenului pentru scară.
+Poți selecta modelul terenului din meniul derulant. Toate jocurile recente FRC și FTC sunt suportate. Pentru dispozitivele cu performanță grafică limitată, îți recomandăm terenurile „Permanent”. Terenurile „Axe” afișează doar axele XYZ la origine, împreună cu un contur al terenului pentru scară.
 
 :::info
 Sistemul de coordonate folosit în această filă poate fi personalizat. Consultă pagina [Sisteme de coordonate](/more-features/coordinate-systems) pentru detalii.
@@ -192,6 +192,6 @@ Terenul 3D suportă trei moduri de randare:
 
 <img src="/img/tab-reference/3d-field/3d-field-6.webp" alt="Compararea modurilor de randare" />
 
-Pentru a configura modul de randare, deschide fereastra de preferințe făcând clic pe `Aplicație` > `Afișează preferințele...` (Windows/Linux) sau `AdvantageScope` > `Setări...` (macOS). Setarea „Mod 3D (baterie)” poate fi schimbată de la valoarea implicită pentru a suprascrie modul de randare folosit pe un laptop când nu este la încărcat — util, de exemplu, ca să economisești bateria la competiții.
+Pentru a configura modul de randare, deschide fereastra de preferințe făcând clic pe `Aplicație` > `Afișează preferințele...` (Windows/Linux) sau `AdvantageScope` > `Setări...` (macOS). Setarea „Mod 3D (baterie)” poate fi modificată față de valoarea implicită pentru a suprascrie modul de randare folosit pe un laptop când nu este la încărcat — util, de exemplu, ca să economisești bateria la competiții.
 
 <img src="/img/prefs_ro.webp" alt="Diagramă de preferințe" height="450" />

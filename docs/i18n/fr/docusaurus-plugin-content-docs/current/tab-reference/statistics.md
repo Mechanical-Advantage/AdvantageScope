@@ -61,7 +61,7 @@ Le tableau des mesures statistiques présente les valeurs calculées pour chacun
 - [**Moyenne harmonique :**](https://fr.wikipedia.org/wiki/Moyenne_harmonique) un indicateur calculé à partir de la somme des inverses des valeurs, adapté aux _taux et aux vitesses_.
 - [**Moyenne quadratique :**](https://fr.wikipedia.org/wiki/Moyenne_quadratique) un indicateur calculé à partir des carrés des valeurs, utile pour des grandeurs comportant des _valeurs positives et négatives_, comme un mouvement oscillant.
 
-#### Écart {#spread}
+#### Dispersion {#spread}
 
 - [**Écart-type :**](https://fr.wikipedia.org/wiki/%C3%89cart_type) la mesure de dispersion la plus répandue (plus elle est faible, moins les valeurs varient). Pour une loi normale, environ 68 % des données se trouvent à moins d'un écart-type de la moyenne.
 - [**Écart absolu médian :**](https://fr.wikipedia.org/wiki/%C3%89cart_absolu_m%C3%A9dian) la médiane des écarts absolus par rapport à la médiane, moins sensible aux valeurs aberrantes que l'écart-type.

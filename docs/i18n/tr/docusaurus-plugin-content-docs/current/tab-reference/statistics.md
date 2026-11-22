@@ -66,7 +66,7 @@ Histogram, belirlenen aralık içinde her bir dilime düşen örnek sayısını 
 - [**Standart sapma:**](https://tr.wikipedia.org/wiki/Standart_sapma) En yaygın istatistiksel yayılım ölçümüdür; düşük değer daha az değişkenlik anlamına gelir. Normal dağılmış verilerde, verilerin yaklaşık %68'i ortalamanın bir standart sapması içinde kalır.
 - [**Medyan mutlak sapma:**](https://en.wikipedia.org/wiki/Median_absolute_deviation) Verilerin medyanından mutlak sapmaların medyanıdır. Aykırı değerlere karşı standart sapmadan daha dayanıklı bir istatistiksel yayılım ölçümüdür.
 - [**Çeyrekler açıklığı:**](https://tr.wikipedia.org/wiki/%C3%87eyrekler_a%C3%A7%C4%B1kl%C4%B1%C4%9F%C4%B1) Üçüncü ve birinci çeyrekler (%75 ve %25 yüzdelik dilimleri) arasındaki farktır; aykırı değerlerden standart sapmaya göre daha az etkilenir.
-- [**Çarpıklık:**](https://tr.wikipedia.org/wiki/%C3%87arp%C4%B1kl%C4%B1k) Verilerin asimetrik eğikliğinin ölçümüdür. Negatif değer sola doğru bir kuyruk, pozitif değer sağa doğru bir kuyruk belirtir; sıfır değeri ise simetrik bir dağılıma işaret eder.
+- [**Çarpıklık:**](https://tr.wikipedia.org/wiki/%C3%87arp%C4%B1kl%C4%B1k) Veri dağılımındaki asimetrinin (çarpıklığın) ölçüsüdür. Negatif değer sola doğru bir kuyruk, pozitif değer sağa doğru bir kuyruk belirtir; sıfır değeri ise simetrik bir dağılıma işaret eder.
 
 #### Yüzdelikler {#percentiles}
 

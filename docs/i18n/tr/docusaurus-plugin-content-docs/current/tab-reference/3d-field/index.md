@@ -34,7 +34,7 @@ Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirip yukarı veya
 
 Başlamak için bir alanı “Pozlar” bölümüne sürükleyin. Bir nesneyi X düğmesiyle silebilir; göz simgesine tıklayarak ya da alan adına çift tıklayarak geçici olarak gizleyebilirsiniz. Tüm nesneleri kaldırmak için bölüm başlığının yanındaki çöp kutusuna ve ardından `Tümünü temizle` seçeneğine tıklayın. Nesneleri listede tıklayıp sürükleyerek yeniden sıralayabilirsiniz.
 
-**Her bir nesneyi özelleştirmek için renkli simgeye tıklayın veya alan adına sağ tıklayın.** AdvantageScope, çoğu özelleştirilebilen (örneğin renkleri ve robot modellerini değiştirebileceğiniz) çok sayıda nesne türünü destekler. Bazı nesnelerin mevcut bir nesnenin altına alt öge olarak eklenmesi gerekir.
+**Her bir nesneyi özelleştirmek için renkli simgeye tıklayın veya alan adına sağ tıklayın.** AdvantageScope, çoğu özelleştirilebilen (örneğin renkleri ve robot modellerini değiştirebileceğiniz) çok sayıda nesne türünü destekler. Bazı nesnelerin mevcut bir nesnenin alt ögesi olarak eklenmesi gerekir.
 
 :::tip
 Desteklenen nesne türlerinin tam listesini görmek için `?` simgesine tıklayın. Bu listede desteklenen veri türlerini ve nesnelerin alt öge olarak eklenmesinin gerekip gerekmediğini de görebilirsiniz.
@@ -176,7 +176,7 @@ Diğer poz verileriyle uyumlu olarak, “Özel kamera konumu” pozu robota gör
 
 ## Yapılandırma {#configuration}
 
-Saha modelini açılır menüden seçebilirsiniz. Son dönemdeki tüm FRC ve FTC oyunları desteklenir. Grafik performansı sınırlı cihazlarda “Evergreen” sahalarını kullanmanızı öneririz. “Eksenler” sahaları ise ölçek için bir saha taslağıyla birlikte yalnızca orijinde XYZ eksenlerini gösterir.
+Saha modelini açılır menüden seçebilirsiniz. Son dönemdeki tüm FRC ve FTC oyunları desteklenir. Grafik performansı sınırlı cihazlarda “Kalıcı” sahalarını kullanmanızı öneririz. “Eksenler” sahaları ise ölçek için bir saha taslağıyla birlikte yalnızca orijinde XYZ eksenlerini gösterir.
 
 :::info
 Bu sekmede kullanılan koordinat sistemini özelleştirebilirsiniz. Ayrıntılar için [koordinat sistemi](/more-features/coordinate-systems) sayfasına bakın.

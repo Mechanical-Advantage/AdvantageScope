@@ -151,7 +151,7 @@ satellite:
 sourceListHelp:
   title: "Ajutor {{name}} — AdvantageScope"
   titleDefault: "Ajutor — AdvantageScope"
-  parentWarning: "Adaugă la un element {{items, list(type: disjunction)}} existent."
+  parentWarning: "Adaugă ca subelement al unui element existent ({{items, list(type: disjunction)}})."
   quoted: "„{{name}}”"
   listOr: "{{list, list(type: disjunction)}}"
   sources_one: "Sursă: {{list, list(type: disjunction)}}"
@@ -233,7 +233,7 @@ tabs:
 
 sourceList:
   editSettings: "Editare setări"
-  clearFields: "Șterge toate câmpurile"
+  clearFields: "Elimină toate câmpurile"
   help: "Ajutor"
   editConfig: "Editare configurație câmp"
   removeField: "Elimină câmp"
@@ -341,7 +341,7 @@ hub:
     failedTitle: "Datele nu au putut fi exportate"
     failedContent: "A apărut o problemă la conversia în formatul de export. Încearcă din nou."
     cannotExportOriginalTitle: "Nu se poate exporta logul original"
-    cannotExportOriginalContent: "Datele logului original nu sunt disponibile. Te rugăm să aștepți finalizarea încărcării logului și să încerci din nou."
+    cannotExportOriginalContent: "Datele logului original nu sunt disponibile. Așteaptă finalizarea încărcării logului, apoi încearcă din nou."
 
   playback:
     play: "Redare"
@@ -397,7 +397,7 @@ hub:
     types:
       robot: "Robot"
       ghost: "Fantomă"
-      vision: "Țintă de vision"
+      vision: "Țintă vizuală"
       swerveModuleVelocities: "Vitezele modulelor swerve"
       rotationOverride: "Suprascriere rotație"
       rotationOverrideLegacy: "Suprascriere rotație"
@@ -686,7 +686,7 @@ menu:
     updates: "Verifică actualizările..."
     licenses: "Afișează licențele..."
     assetsFolder: "Afișează folderul cu resurse"
-    customAssetsFolder: "Utilizează folderul cu resurse personalizate"
+    customAssetsFolder: "Folosește un folder cu resurse personalizate"
     assetDownloadStatus: "Stare descărcare resursă..."
     owletDownloadStatus: "Stare descărcare Owlet..."
     settings: "Setări..."
@@ -760,7 +760,7 @@ menu:
     shiftRightShortcut: "Mută la dreapta ({{shortcut}})"
     closeTab: "Închide fila"
     closeTabShortcut: "Închide fila ({{shortcut}})"
-    newTabShortcut: "Filă nouă (scurtătură)"
+    newTabShortcut: "Filă nouă (comandă rapidă)"
     renameTab: "Redenumește fila"
 
   window:
@@ -770,7 +770,7 @@ menu:
     zoom: "Zoom"
 
   sidebar:
-    clearAll: "Șterge tot"
+    clearAll: "Elimină tot"
     copyToClipboard: "Copiază „{{title}}” în clipboard"
     copyTunedValues: "Copiază valorile ajustate"
     exportOriginalLog: "Exportă logul original..."
@@ -795,7 +795,7 @@ menu:
     editConversion: "Editează conversia"
     disableAutoUnits: "Dezactivează unitățile automate"
     resetUnits: "Resetează unitățile"
-    zoomEnabled: "Mărește la intervalul activat"
+    zoomEnabled: "Mărește la intervalul activ"
     differentiate: "Derivează"
     integrate: "Integrează"
 
@@ -987,18 +987,18 @@ main:
     expiredLiteAlpha: "Versiunea alpha a AdvantageScope Lite s-a încheiat. Urmează instrucțiunile din documentație pentru a actualiza la cea mai recentă versiune stabilă."
     expiredLiteBeta: "Versiunea beta a AdvantageScope Lite s-a încheiat. Urmează instrucțiunile din documentație pentru a actualiza la cea mai recentă versiune stabilă."
     feedbackQuery: "Trimiți sondajul de feedback?"
-    feedbackAlphaDetail: "Te rugăm să acorzi 30 de secunde pentru a ne împărtăși experiența ta cu versiunea alpha AdvantageScope. Nu îți va lua mult."
-    feedbackBetaDetail: "Te rugăm să acorzi 30 de secunde pentru a ne împărtăși experiența ta cu versiunea beta AdvantageScope. Nu îți va lua mult."
+    feedbackAlphaDetail: "Acordă-ne 30 de secunde și spune-ne cum ți se pare versiunea alpha AdvantageScope. Durează foarte puțin."
+    feedbackBetaDetail: "Acordă-ne 30 de secunde și spune-ne cum ți se pare versiunea beta AdvantageScope. Durează foarte puțin."
     notNow: "Nu acum"
 
   coordinateSystem:
     legacyFrcMessage: "Sistem de coordonate vechi (legacy)"
-    legacyFrcDetail: "Acest teren folosește în mod implicit un sistem de coordonate vechi (legacy) pentru compatibilitate cu versiunile WPILib anterioare anului 2027. Dacă codul robotului tău folosește WPILib 2027, poți schimba opțiunea „Sistem de coordonate” din preferințele AdvantageScope. Consultă documentația pentru detalii."
+    legacyFrcDetail: "Acest teren folosește în mod implicit un sistem de coordonate vechi (legacy) pentru compatibilitate cu versiunile WPILib anterioare anului 2027. Dacă în codul robotului folosești WPILib 2027, poți schimba opțiunea „Sistem de coordonate” din preferințele AdvantageScope. Consultă documentația pentru detalii."
     systemcoreFtcMessage: "Sistem de coordonate Systemcore"
-    systemcoreFtcDetail: "Acest teren folosește în mod implicit sistemul de coordonate Systemcore. Dacă codul robotului tău folosește sistemul de coordonate tradițional FTC, poți schimba opțiunea „Sistem de coordonate” din preferințele AdvantageScope. Consultă documentația pentru detalii."
+    systemcoreFtcDetail: "Acest teren folosește în mod implicit sistemul de coordonate Systemcore. Dacă în codul robotului folosești sistemul de coordonate tradițional FTC, poți schimba opțiunea „Sistem de coordonate” din preferințele AdvantageScope. Consultă documentația pentru detalii."
 
   lite:
-    tooSmall: "Nu este suficient spațiu, te rugăm să ajustezi aranjamentul ecranului."
+    tooSmall: "Nu este suficient spațiu; ajustează aranjamentul ecranului."
     mobileWarning: "AdvantageScope Lite funcționează cel mai bine pe desktop și tablete."
 
 units:

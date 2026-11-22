@@ -19,7 +19,7 @@ AdvantageScope 提供了三种加载视频的方式：
 选择视频后，右下角的时间轴会逐渐变为蓝色，表示视频帧正在缓存（这是实现流畅播放的必要步骤）。由于需要逐帧转换，该功能仅适用于单场比赛时长的视频。
 
 :::warning
-由于 YouTube 服务器的变动，YouTube 和 TBA 视频下载可能会意外失败。如遇问题，请尝试更新 AdvantageScope，或改用本地视频文件。
+由于 YouTube 服务器的变动，YouTube 和 TBA 视频下载随时可能失效。如遇问题，请尝试更新 AdvantageScope，或改用本地视频文件。
 :::
 
 :::info

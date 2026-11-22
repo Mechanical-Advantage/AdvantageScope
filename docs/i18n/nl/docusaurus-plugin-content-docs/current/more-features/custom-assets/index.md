@@ -1,6 +1,6 @@
 # ⚙️ Aangepaste assets {#custom-assets}
 
-AdvantageScope gebruikt standaard een set platte veldafbeeldingen, 3D-veldmodellen, robotmodellen en joystickindelingen. Eenvoudige assets (zoals vaste basisvelden) zitten al bij de installatie inbegrepen. Gedetailleerde assets (zoals seizoensgebonden velden) downloadt AdvantageScope automatisch op de achtergrond zodra je internet hebt. De voortgang bekijk je via `App`/`AdvantageScope` > `Downloadstatus asset...`.
+AdvantageScope gebruikt standaard een set platte veldafbeeldingen, 3D-veldmodellen, robotmodellen en joystickindelingen. Eenvoudige assets (zoals "Permanent"-velden) zitten al bij de installatie inbegrepen. Gedetailleerde assets (zoals seizoensgebonden velden) downloadt AdvantageScope automatisch op de achtergrond zodra je internet hebt. De voortgang bekijk je via `App`/`AdvantageScope` > `Downloadstatus van assets...`.
 
 Wil je zelf extra opties toevoegen? Open dan de gebruikersmap voor assets via `App`/`AdvantageScope` > `Assetsmap tonen`. Hieronder lees je welk formaat AdvantageScope verwacht. Kijk voor voorbeelden ook eens naar de standaardset met [gedetailleerde assets](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases) en de [meegeleverde assets](https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/bundledAssets).
 

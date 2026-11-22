@@ -18,7 +18,7 @@ Diferența (delta) dintre timpul selectat și cel peste care ții cursorul este 
 
 ## Panoul de control {#control-pane}
 
-Pentru a începe, trage un câmp într-una dintre cele trei secțiuni (axa stângă, axa dreaptă sau câmpuri discrete). Șterge un câmp folosind butonul X sau ascunde-l temporar dând clic pe pictograma ochi ori dublu clic pe numele câmpului. Pentru a elimina toate câmpurile, dă clic pe cele trei puncte de lângă titlul axei și apoi pe `Șterge tot`. Poți reorganiza câmpurile în listă prin clic și tragere.
+Pentru a începe, trage un câmp într-una dintre cele trei secțiuni (axa stângă, axa dreaptă sau câmpuri discrete). Șterge un câmp folosind butonul X sau ascunde-l temporar dând clic pe pictograma ochi ori dublu clic pe numele câmpului. Pentru a elimina toate câmpurile, dă clic pe cele trei puncte de lângă titlul axei și apoi pe `Elimină tot`. Poți reorganiza câmpurile în listă prin clic și tragere.
 
 Poți personaliza culoarea și stilul liniei fiecărui câmp dând clic pe pictograma colorată sau clic dreapta pe numele câmpului. De asemenea, poți vizualiza datele din API-ul WPILib pentru [alerte persistente](https://docs.wpilib.org/en/latest/docs/software/telemetry/persistent-alerts.html) adăugând grupul de alerte drept câmp discret. Mai jos este prezentat un exemplu de vizualizare.
 

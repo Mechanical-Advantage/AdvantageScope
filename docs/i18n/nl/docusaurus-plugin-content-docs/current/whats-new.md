@@ -103,7 +103,7 @@ Wil je data bekijken die niet uit een robotloggingframework komt? AdvantageScope
 
 ## 🤩 Visuele verbeteringen {#aesthetic-improvements}
 
-Op Windows 11 heeft AdvantageScope nu een halfdoorzichtige zijbalk, een detail dat voorheen alleen op macOS beschikbaar was. Voor macOS Tahoe is er bovendien een nieuw pictogram van de app ontworpen op basis van het Liquid Glass-materiaal van Apple.
+Op Windows 11 heeft AdvantageScope nu een halfdoorzichtige zijbalk, een detail dat voorheen alleen op macOS beschikbaar was. Voor macOS Tahoe is er bovendien een nieuw app-pictogram ontworpen op basis van het Liquid Glass-materiaal van Apple.
 
 <img src="/img/whats-new/windows-ui.webp" alt="Windows-interface" />
 
@@ -129,5 +129,5 @@ Deze release zit ook vol bugfixes en stabiliteitsverbeteringen door de hele appl
 - AdvantageScope gaat nu beter om met ongewone logdata, zoals hele grote logbestanden en omvangrijke veldwaarden.
 - Verschillende visuele haperingen bij het bladeren door logdata zijn opgelost, met name bij het gebruik van filters op het tabblad Lijngrafiek.
 - De sortering van AdvantageKit-logbestanden in het downloadvenster klopt weer: logs zonder tijdstempel staan nu onderaan de lijst, net als bij andere formaten.
-- Op het tabblad 3D-veld worden robotcamera's met een roll-rotatie die afwijkt van nul nu correct weergegeven.
+- Op het tabblad 3D-veld worden robotcamera's met een roll-rotatie ongelijk aan nul nu correct weergegeven.
 - AdvantageScope XR is stabieler geworden, vooral onder iOS/iPadOS 26. Gebruik je een offline installatie, controleer dan de App Store op updates.

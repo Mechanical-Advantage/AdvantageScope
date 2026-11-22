@@ -61,7 +61,7 @@ _Mai sus este prezentată interfața în limba engleză._
 
 ## 🏁 Descărcări mai rapide de loguri {#faster-log-downloads}
 
-[Descărcarea logurilor de pe roboRIO](/overview/log-files/#downloading-from-the-robot) este acum de **2-4x mai rapidă** decât în versiunile anterioare. Acest lucru se realizează prin trecerea la un nou protocol (FTP), care permite roboRIO să transfere date de log cu o utilizare mai mică a CPU-ului.
+[Descărcarea logurilor de pe roboRIO](/overview/log-files/#downloading-from-the-robot) este acum de **2-4x mai rapidă** decât în versiunile anterioare. Acest lucru se realizează prin trecerea la un nou protocol (FTP), care îi permite controllerului roboRIO să transfere date de log cu o utilizare mai mică a CPU-ului.
 
 Tabelul de mai jos arată viteza de transfer măsurată pe versiunile 2025 și 2026 ale AdvantageScope când este conectat prin Ethernet (lățime de bandă maximă de 100 Mb/s). Reține că performanța versiunii 2025 este puternic afectată de utilizarea CPU-ului pe roboRIO.
 
@@ -112,7 +112,7 @@ Interfața AdvantageScope pe Windows 11 a fost actualizată și include acum o b
 Bara de meniu și controalele asociate au fost simplificate și reorganizate pentru a fi mai accesibile și mai coerente pe toate platformele. Printre funcționalitățile notabile se numără:
 
 - Comutare mai rapidă între sursele live (de exemplu NetworkTables și [Diagnostice Phoenix](/overview/live-sources/phoenix-diagnostics)), fără să mai fie nevoie să deschizi fereastra de preferințe.
-- Clic dreapta pe bara laterală pentru a copia rapid numele unui câmp (sau cheia completă a câmpului).
+- Dă clic dreapta în bara laterală pentru a copia rapid numele unui câmp (sau cheia completă a acestuia).
 - Reorganizarea ferestrei de preferințe, astfel încât opțiunile să fie mai ușor de găsit rapid.
 
 <div className="image-gallery">

@@ -77,7 +77,7 @@ O AdvantageScope conta com vários atalhos de teclado para agilizar a navegaçã
 <tr><td>`Espaço`</td><td>Iniciar ou pausar reprodução</td></tr>
 <tr><td>`Esquerda` e `Direita`</td><td>Avançar ou retroceder pelo arquivo de log</td></tr>
 <tr><td>`L` ou `Ctrl+L`</td><td>Ativar ou desativar trava ao visualizar dados ao vivo</td></tr>
-<tr><td>`Ctrl+\`</td><td>Dar zoom na linha do tempo para o intervalo habilitado</td></tr>
+<tr><td>`Ctrl+\`</td><td>Dar zoom no período habilitado da linha do tempo</td></tr>
 </table>
 
 ### Touch Bar {#touch-bar}

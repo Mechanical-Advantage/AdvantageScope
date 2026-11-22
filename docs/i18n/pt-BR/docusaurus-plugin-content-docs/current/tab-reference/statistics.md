@@ -34,7 +34,7 @@ A opção **Intervalo de tempo** define quais trechos do log entram na análise:
 
 A opção **Intervalo de dados** define os valores mínimo e máximo exibidos no histograma. Os valores fora dessa faixa não aparecem no gráfico, mas continuam entrando no cálculo das medidas estatísticas.
 
-A opção **Tamanho do passo** define a largura de cada barra do histograma. Valores menores geram gráficos mais detalhados, mas também deixam o ruído mais evidente.
+A opção **Largura do intervalo** define a largura de cada barra do histograma. Valores menores geram gráficos mais detalhados, mas também deixam o ruído mais evidente.
 
 ## Painel de visualização {#viewer-pane}
 

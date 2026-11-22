@@ -122,7 +122,7 @@ preferences:
   mode3dStandard: "Estándar"
   mode3dLowPower: "Baja potencia"
   mode3dBattery: "Modo 3D (batería)"
-  mode3dBatterySelectTitle: "Seleccionar el modo de renderizado 3D al funcionar con batería"
+  mode3dBatterySelectTitle: "Seleccionar el modo de renderizado 3D al usar batería"
   mode3dBatteryDefault: "Predeterminado"
   mode3dSimple: "Modo 3D"
   antialiasing: "Antialiasing 3D"
@@ -189,8 +189,8 @@ uploadAsset:
   cancel: "Cancelar"
   upload: "Subir"
   progressUploading: "Subiendo archivo..."
-  progressFailed: "La subida falló"
-  progressFailedWithStatus: "La subida falló: {{status}}"
+  progressFailed: "Error al subir el archivo"
+  progressFailedWithStatus: "Error al subir el archivo: {{status}}"
 
 xrControls:
   title: "Controles XR — AdvantageScope"
@@ -317,7 +317,7 @@ hub:
     connectErrorTitle: "Problema con la fuente en vivo"
     connectErrorContent: "Hubo un problema al conectar con la fuente en vivo. Verifica tu configuración de conexión e intenta de nuevo."
     nt4NoFieldsTitle: "Problema con la conexión de NetworkTables"
-    nt4NoFieldsContent: "No se recibieron campos del servidor. Está seleccionado el modo AdvantageKit. ¿Te estás conectando a un servidor sin AdvantageKit?"
+    nt4NoFieldsContent: "No se recibieron campos del servidor. El modo AdvantageKit está seleccionado. ¿Te estás conectando a un servidor sin AdvantageKit?"
     cannotConnectTitle: "No se puede conectar"
     cannotConnectContent: "Espera a que termine la exportación e intenta de nuevo."
     cannotPublishTitle: "No se puede publicar"
@@ -333,7 +333,7 @@ hub:
     failedTitle: "No se pudieron exportar los datos"
     failedContent: "Hubo un problema al convertir al formato de exportación. Intenta de nuevo."
     cannotExportOriginalTitle: "No se puede exportar el registro original"
-    cannotExportOriginalContent: "Los datos del registro original no están disponibles. Espere a que termine de cargarse el registro e inténtelo de nuevo."
+    cannotExportOriginalContent: "Los datos del registro original no están disponibles. Espera a que termine de cargarse el registro e intenta de nuevo."
 
   playback:
     play: "Reproducir"
@@ -359,7 +359,7 @@ hub:
     titleMinutes_other: "{{fields}}, {{duration}} minutos"
     titleHours_one: "{{fields}}, {{duration}} hora"
     titleHours_other: "{{fields}}, {{duration}} horas"
-    conflictTitle: "Tipos conflictivos"
+    conflictTitle: "Tipos incompatibles"
     conflictMessage: "Se han escrito valores con tipos conflictivos en este campo. Solo se pueden ver y exportar los valores compatibles con el tipo inicial."
 
   field:
@@ -748,7 +748,7 @@ menu:
     shiftRightShortcut: "Desplazar a la derecha ({{shortcut}})"
     closeTab: "Cerrar pestaña"
     closeTabShortcut: "Cerrar pestaña ({{shortcut}})"
-    newTabShortcut: "Nueva pestaña (atajo de teclado)"
+    newTabShortcut: "Nueva pestaña (atajo)"
     renameTab: "Renombrar pestaña"
 
   window:
@@ -820,7 +820,7 @@ main:
     restartTitle: "¿Reiniciar AdvantageScope?"
 
   assets:
-    downloadStarted: "La descarga comenzó a las {{time}}. Por favor espera unos minutos a que se complete la descarga."
+    downloadStarted: "La descarga comenzó a las {{time}}. Espera unos minutos mientras se completa."
     downloadFinished: "Se descargaron todos los recursos. AdvantageScope buscará actualizaciones periódicamente."
     connectFailed: "No se puede conectar con GitHub. Se intentará de nuevo pronto."
     noDiskSpace: "No hay suficiente espacio en el disco. Se intentará de nuevo pronto."
@@ -866,7 +866,7 @@ main:
   updates:
     title: "Buscador de actualizaciones"
     download: "Descargar"
-    incomplete: "Búsqueda de actualizaciones no completada"
+    incomplete: "No se completó la búsqueda de actualizaciones"
     incompleteDetail: "Buscando información de actualización. Intenta de nuevo."
     cannotCheck: "No se puede buscar actualizaciones"
     devEnvDetail: "Esta aplicación se está ejecutando en un entorno de desarrollo."

@@ -176,7 +176,7 @@ Net als andere posedata moet de pose voor "Camera-override" _veldrelatief_ zijn,
 
 ## Configuratie {#configuration}
 
-Via het keuzemenu kies je het veldmodel. Alle recente FRC- en FTC-spellen staan erin. Heeft je laptop beperkte grafische kracht? Gebruik dan de "Evergreen"-velden. De "Assen"-velden tonen alleen de XYZ-assen bij de oorsprong met een omtrek van het veld voor de schaal.
+Via het keuzemenu kies je het veldmodel. Alle recente FRC- en FTC-spellen staan erin. Heeft je laptop beperkte grafische kracht? Gebruik dan de "Permanent"-velden. De "Assen"-velden tonen alleen de XYZ-assen bij de oorsprong met een omtrek van het veld voor de schaal.
 
 :::info
 Je kunt het coördinatenstelsel op dit tabblad zelf instellen. Op de pagina [Coördinatenstelsels](/more-features/coordinate-systems) lees je hoe dat werkt.

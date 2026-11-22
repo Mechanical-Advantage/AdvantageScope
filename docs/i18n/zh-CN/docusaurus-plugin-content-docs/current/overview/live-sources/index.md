@@ -30,12 +30,12 @@
 <img src="/img/overview/live-sources/open-live-1.webp" alt="实时锁定/解锁按钮" />
 
 :::tip
-在折线图或时间轴中向左滚动即可解除实时锁定；一路向右滚动到底部，则会重新锁定到当前时间。
+在折线图或时间轴中向左滚动即可解除实时锁定；一路向右滚动到底，则会重新锁定到当前时间。
 :::
 
 ## 配置 {#configuration}
 
-点击 `应用程序` > `显示首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。
+点击 `应用程序` > `首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。
 
 <img src="/img/prefs_zh-CN.webp" alt="首选项图解" height="450" />
 

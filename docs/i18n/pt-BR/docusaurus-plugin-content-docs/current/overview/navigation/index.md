@@ -30,7 +30,7 @@ Clique e arraste a borda direita para redimensionar ou ocultar a barra lateral. 
 Use a barra de guias (azul) para alternar entre diferentes visualizações. Você pode abrir esta documentação a qualquer momento clicando no ícone 📖 à esquerda. Para exportar o layout atual das guias (junto com suas configurações), clique em `Arquivo` > `Exportar layout...`. Para importar um layout de um arquivo, clique em `Arquivo` > `Importar layout...`.
 
 :::info
-Você pode reorganizar as guias clicando e arrastando, ou renomeá-las clicando com o botão direito e selecionando `Renomear...`
+Você pode reorganizar as guias clicando e arrastando, ou renomeá-las clicando com o botão direito e selecionando `Renomear guia`.
 :::
 
 Os botões de navegação (verdes) na parte superior gerenciam as guias e controlam a reprodução:

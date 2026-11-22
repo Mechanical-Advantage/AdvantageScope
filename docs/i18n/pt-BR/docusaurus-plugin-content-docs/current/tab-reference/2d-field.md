@@ -119,7 +119,7 @@ telemetry.update();
 
 - **Campo:** Escolhe a imagem da arena. Todos os jogos recentes da FRC e da FTC já vêm incluídos. Se quiser usar uma imagem personalizada, veja a página de [Recursos personalizados](/more-features/custom-assets).
 - **Orientação:** Define a rotação da imagem do campo no painel de visualização.
-- **Tamanho:** Ajusta o tamanho do lado do robô (30, 27 ou 24 polegadas para FRC; 18, 16 ou 14 polegadas para FTC).
+- **Tamanho:** Ajusta as dimensões do robô (30, 27 ou 24 polegadas para FRC; 18, 16 ou 14 polegadas para FTC).
 
 :::info
 O sistema de coordenadas usado nesta guia pode ser personalizado. Confira a página de [Sistema de coordenadas](/more-features/coordinate-systems) para ver os detalhes.

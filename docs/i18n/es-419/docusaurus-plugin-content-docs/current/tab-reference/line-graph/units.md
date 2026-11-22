@@ -55,7 +55,7 @@ Cuando no tienes metadatos de unidades o estos son incorrectos, puedes configura
 Para hacerlo, haz clic en los tres puntos junto al título del eje y selecciona `Unidades manuales` > `Editar conversión...`. Elige el tipo de unidad, la unidad de origen y la unidad de destino. Cada valor también se multiplica por el "Factor adicional", lo que resulta útil para conversiones personalizadas (como relaciones de transmisión, pasar de angular a lineal u otras unidades que no vengan en AdvantageScope). Incluso puedes escribir el factor como una expresión matemática, por ejemplo `1.5*pi`.
 
 :::tip
-Para activar o desactivar rápidamente una conversión de unidades, haz clic en los tres puntos junto al título del eje y elige `Ajustes preestablecidos recientes` o `Restablecer unidades`.
+Para activar o desactivar rápidamente una conversión de unidades, haz clic en los tres puntos junto al título del eje y elige `Preajustes recientes` o `Restablecer unidades`.
 :::
 
 <img src="/img/tab-reference/line-graph/units-2.webp" alt="Edición de conversión de unidades" height="250" />

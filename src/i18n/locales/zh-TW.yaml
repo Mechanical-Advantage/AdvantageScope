@@ -291,7 +291,7 @@ hub:
   title: "AdvantageScope"
   updateAvailable: "有可用更新"
   shareFeedback: "意見回饋"
-  timelineScrollToZoom: "滾動時間軸以縮放"
+  timelineScrollToZoom: "捲動時間軸以縮放"
 
   logs:
     statusLoading: "載入中"
@@ -349,7 +349,7 @@ hub:
     titleMinutes: "{{fields}}，{{duration}} 分鐘"
     titleHours: "{{fields}}，{{duration}} 小時"
     conflictTitle: "類型衝突"
-    conflictMessage: "已將衝突類型的值寫入到此欄位。只能檢視和匯出與初始類型相容的值。"
+    conflictMessage: "此欄位包含類型衝突的值。只能檢視與匯出與初始類型相容的資料。"
 
   field:
     poses: "姿態"
@@ -357,7 +357,7 @@ hub:
     selectTitle2d: "選擇場地圖片"
     selectTitle3d: "選擇場地模型"
     dsAlert: "無法取得<br>駕駛站位置。"
-    cameraAlert: "攝影機「{{name}}」的<br>機器人姿態無法取得。"
+    cameraAlert: "無法取得攝影機「{{name}}」的<br>機器人姿態。"
     frc: "FRC 場地"
     ftc: "FTC 場地"
     sourceTitle: "開啟場地圖片來源 URL"
@@ -437,7 +437,7 @@ hub:
     noUnits: "無單位"
     differentiated: "已微分"
     integrated: "已積分"
-    helpScrollToZoom: "滾動以縮放"
+    helpScrollToZoom: "捲動以縮放"
     helpDragToPan: "拖曳以平移"
     robotMode:
       disabled: "已停用"
@@ -557,7 +557,7 @@ hub:
       "3,0,2,1": "右前 / 右後 / 左後 / 左前"
       "1,0,2,3": "右前 / 左前 / 左後 / 右後"
     maxSpeed: "最大速度（公尺/秒）"
-    maxSpeedTitle: "最大速度（公尺每秒）"
+    maxSpeedTitle: "最大速度（公尺/秒）"
     frameSize: "框架尺寸（公尺）"
     frameLengthTitle: "機器人框架長度（公尺）"
     frameWidthTitle: "機器人框架寬度（公尺）"
@@ -706,8 +706,8 @@ menu:
     resetDsLayout: "重設為 DS 佈局"
     newWindow: "新視窗"
     closeWindow: "關閉視窗"
-    recentPresets: "最近使用的預設組"
-    recentPresetsLite: "— 最近使用的預設組 —"
+    recentPresets: "最近使用的預設集"
+    recentPresetsLite: "— 最近使用的預設集 —"
     defaultMode: "預設：{{mode}}"
 
   view:
@@ -779,7 +779,7 @@ menu:
   field2d:
     unlocked: "未鎖定"
     lockedRobot: "鎖定到機器人"
-    lockedRobotRotation: "鎖定到機器人和旋轉"
+    lockedRobotRotation: "鎖定機器人位置與旋轉"
 
   field3d:
     orbitField: "環繞場地"
@@ -865,9 +865,9 @@ main:
     later: "稍後"
     viewChangelog: "檢視更新日誌"
     downloadLatestNativeQuery: "下載最新的原生版本？"
-    downloadLatestNativeDetail: "已發布版本 {{latestVersion}}（{{latestDate}}）。你目前在 arm64 平台上執行 {{currentVersion}} 的 x86 版本，要下載最新的原生版本嗎？"
+    downloadLatestNativeDetail: "最新版本 {{latestVersion}}（{{latestDate}}）已發布。你目前在 arm64 平台上執行 {{currentVersion}} 的 x86 版本，要下載最新的原生版本嗎？"
     downloadLatestQuery: "下載最新版本？"
-    downloadLatestDetail: "已發布版本 {{latestVersion}}（{{latestDate}}）。你目前執行的是 {{currentVersion}} 版本，要下載最新版本嗎？"
+    downloadLatestDetail: "最新版本 {{latestVersion}}（{{latestDate}}）已發布。你目前執行的是 {{currentVersion}} 版本，要下載最新版本嗎？"
     downloadNativeQuery: "下載原生版本？"
     downloadNativeDetail: "你似乎正在 arm64 平台上執行此應用程式的 x86 版本，要下載原生版本嗎？"
     noUpdates: "沒有可用的更新"
@@ -913,7 +913,7 @@ main:
     oldDetail: "所選佈局檔案的格式過舊，與目前的 AdvantageScope 版本不相容。"
     invalidDetail: "無法辨識所選佈局檔案的格式。"
     versionMismatch: "版本不符"
-    versionMismatchDetail: "佈局檔案是由不同版本的 AdvantageScope 產生的。不保證相容性。"
+    versionMismatchDetail: "此佈局檔案是由不同版本的 AdvantageScope 產生的，不一定完全相容。"
     resetDsQuery: "重設為 DS 佈局？"
     resetDsDetail: "此視窗的佈局將會重設為 DS 佈局，且此操作無法復原。"
 
@@ -929,7 +929,7 @@ main:
     copyUrl: "將網址複製到剪貼簿"
     copyUrlDetail: "請將 YouTube 網址複製到剪貼簿，然後再試一次。"
     youtubeFailed: "YouTube 下載失敗"
-    youtubeFailedDetail: "嘗試開啟 YouTube 影片時發生錯誤。請注意，由於 YouTube 伺服器的變更，此功能可能會意外失敗。請檢查更新或改選本機影片檔案。"
+    youtubeFailedDetail: "嘗試開啟 YouTube 影片時發生錯誤。請注意，由於 YouTube 伺服器的變動，此功能隨時可能失效。請檢查更新或改選本機影片檔案。"
     tbaFailed: "TBA 下載失敗"
     tbaFailedDetail: "在 The Blue Alliance 上尋找比賽影片時發生問題。請檢查你的 API 金鑰，或改用 YouTube 網址或本機檔案載入影片。"
     openTitle: "選擇要開啟的影片"
@@ -940,7 +940,7 @@ main:
     warning: "警告"
     alert: "警示"
     exportInProgress: "正在匯出"
-    exportInProgressDetail: "確定要在匯出進行中關閉視窗嗎？資料將不會儲存。"
+    exportInProgressDetail: "匯出尚未完成，確定要關閉視窗嗎？尚未匯出的資料將會遺失。"
     incompleteExport: "匯出資料不完整"
     incompleteExportDetail: "匯出資料中將不包含部分欄位。若要儲存伺服器的所有欄位，請將即時模式設為「記錄」。詳細資訊請參閱 AdvantageScope 說明文件。"
 
@@ -975,7 +975,7 @@ main:
     systemcoreFtcDetail: "此場地預設使用 Systemcore 座標系。如果你的機器人程式碼使用傳統的 FTC 座標系，可以在 AdvantageScope 偏好設定中變更「座標系」選項。詳細資訊請參閱說明文件。"
 
   lite:
-    tooSmall: "空間不足，請變更螢幕佈局。"
+    tooSmall: "畫面空間不足，請調整視窗大小或螢幕配置。"
     mobileWarning: "AdvantageScope Lite 在電腦與平板裝置上使用體驗最佳。"
 
 units:

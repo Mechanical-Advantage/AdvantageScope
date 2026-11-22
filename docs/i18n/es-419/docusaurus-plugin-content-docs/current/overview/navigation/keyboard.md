@@ -29,7 +29,7 @@ AdvantageScope incluye varios atajos de teclado para que puedas moverte más rá
 <tr><td>`Ctrl+Shift+N`</td><td>Cerrar la ventana actual</td></tr>
 <tr><td>`Ctrl+,`</td><td>Abrir la ventana de preferencias</td></tr>
 <tr><td>`Ctrl+.`</td><td>Mostrar u ocultar la barra lateral</td></tr>
-<tr><td>`Ctrl+Slash`</td><td>Mostrar u ocultar el panel de control</td></tr>
+<tr><td>`Ctrl+/`</td><td>Mostrar u ocultar el panel de control</td></tr>
 </table>
 
 ### Controles de pestañas {#tab-controls}
@@ -37,7 +37,7 @@ AdvantageScope incluye varios atajos de teclado para que puedas moverte más rá
 <table>
 <tr><td>`Ctrl+T`</td><td>Abrir el menú desplegable para agregar una pestaña nueva</td></tr>
 <tr><td>`Ctrl+Shift+T`</td><td>Separar la pestaña actual en una ventana nueva</td></tr>
-<tr><td>`Ctrl+Left` y `Ctrl+Right`</td><td>Cambiar de pestaña</td></tr>
+<tr><td>`Ctrl+Flecha izquierda` y `Ctrl+Flecha derecha`</td><td>Cambiar de pestaña</td></tr>
 <tr><td>`Ctrl+[` y `Ctrl+]`</td><td>Reordenar pestañas</td></tr>
 <tr><td>`Ctrl+W`</td><td>Cerrar la pestaña actual</td></tr>
 </table>
@@ -75,7 +75,7 @@ AdvantageScope incluye varios atajos de teclado para que puedas moverte más rá
 
 <table>
 <tr><td>`Espacio`</td><td>Reproducir o pausar</td></tr>
-<tr><td>`Left` y `Right`</td><td>Avanzar o retroceder paso a paso en el archivo de registro</td></tr>
+<tr><td>`Flecha izquierda` y `Flecha derecha`</td><td>Avanzar o retroceder paso a paso en el archivo de registro</td></tr>
 <tr><td>`L` o `Ctrl+L`</td><td>Activar o desactivar el bloqueo al ver datos en vivo</td></tr>
 <tr><td>`Ctrl+\`</td><td>Ajustar el zoom de la línea de tiempo al rango habilitado</td></tr>
 </table>

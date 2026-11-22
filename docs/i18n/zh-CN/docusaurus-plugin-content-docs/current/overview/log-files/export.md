@@ -19,7 +19,7 @@ _上图所示为英文界面。_
 :::warning
 **为 SysId 导出数据**
 
-我们不建议将**在仿真中生成的**日志数据导出后用于 [SysId](https://docs.wpilib.org/zh-cn/stable/docs/software/advanced-controls/system-identification/introduction.html)，因为 SysId 需要额外的时间戳信息，而这与 AdvantageScope 的默认导出格式并不一致。不过，**在仿真“之外”生成的**日志数据仍可导出供 SysId 使用，且几乎不会损失数据（当然，直接在 SysId 中导入**原始**日志文件依然能获得最高精度）。
+我们不建议将**在仿真中生成的**日志数据导出后用于 [SysId](https://docs.wpilib.org/zh-cn/stable/docs/software/advanced-controls/system-identification/introduction.html)，因为 SysId 需要额外的时间戳信息，而这与 AdvantageScope 的默认导出格式并不一致。不过，**非仿真环境**生成的日志数据仍可导出供 SysId 使用，且几乎不会损失数据（当然，直接在 SysId 中导入**原始**日志文件依然能获得最高精度）。
 
 _此警告**不适用于** AdvantageKit 生成的日志——导出时只需选择“AdvantageKit 周期”选项，即可无损导出。详情请参阅 [此页面](https://docs.advantagekit.org/data-flow/sysid-compatibility)。_
 :::

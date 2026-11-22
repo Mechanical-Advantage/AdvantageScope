@@ -126,7 +126,7 @@ Menü çubuğu ve ilgili kontroller, tüm platformlarda daha erişilebilir ve tu
 Bu sürüm, uygulama genelinde pek çok hata düzeltmesi ve kararlılık iyileştirmesi içeriyor. Tam listeyi sürümün [değişiklik günlüğünde](https://github.com/Mechanical-Advantage/AdvantageScope/releases) bulabilirsiniz; öne çıkan bazı düzeltmeler ise şöyle:
 
 - Özellikle çizgi grafik sekmesi kullanılırken uzun süreli canlı veri akışındaki performans büyük ölçüde iyileştirildi.
-- AdvantageScope artık büyük log dosyaları ve alışılmadık derecede büyük alan değerleri dahil olmak üzere sıra dışı log verilerine karşı daha dayanıklı.
+- AdvantageScope artık büyük log dosyaları ve alışılmadık derecede büyük alan değerleri dahil olmak üzere olağandışı (beklenmedik) log verilerine karşı daha dayanıklı.
 - Log verileri incelenirken (özellikle çizgi grafik sekmesinde filtreler kullanılırken) ortaya çıkan çeşitli görsel hatalar giderildi.
 - İndirme penceresindeki AdvantageKit log dosyalarının sıralaması düzeltildi; zaman damgası olmayan loglar artık diğer formatlarda olduğu gibi listenin en altında yer alıyor.
 - 3B saha sekmesinde, sıfırdan farklı bir yalpalama (roll) açısına sahip robot kameraları artık doğru şekilde görüntüleniyor.

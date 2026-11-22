@@ -176,7 +176,7 @@ Comme pour les autres données de pose, la pose de type « Remplacement de la c
 
 ## Configuration {#configuration}
 
-Choisissez le modèle du terrain dans le menu déroulant. Tous les jeux FRC et FTC récents sont disponibles. Sur un appareil aux performances graphiques modestes, nous vous conseillons d'utiliser les terrains « Evergreen ». Les terrains « Axes » n'affichent que les axes XYZ à l'origine avec un simple contour du terrain pour garder l'échelle.
+Choisissez le modèle du terrain dans le menu déroulant. Tous les jeux FRC et FTC récents sont disponibles. Sur un appareil aux performances graphiques modestes, nous vous conseillons d'utiliser les terrains « Permanent ». Les terrains « Axes » n'affichent que les axes XYZ à l'origine avec un simple contour du terrain pour garder l'échelle.
 
 :::info
 Vous pouvez personnaliser le système de coordonnées utilisé dans cet onglet. Consultez la page [Systèmes de coordonnées](/more-features/coordinate-systems) pour en savoir plus.

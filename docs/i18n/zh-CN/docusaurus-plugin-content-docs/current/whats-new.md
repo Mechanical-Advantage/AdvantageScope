@@ -34,7 +34,7 @@ FTC 队伍在正式赛季期间使用实验性软件时请务必谨慎。Advanta
   <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
 </div>
 
-部分第三方 FTC 日志与遥测库支持 WPILOG、RLOG 等兼容 AdvantageScope 的格式，具体用法可查阅各自项目的文档；AdvantageScope 开发团队对任何特定的 FTC 日志方案不作任何背书或推荐。
+部分第三方 FTC 日志与遥测库支持 WPILOG、RLOG 等兼容 AdvantageScope 的格式，具体用法可查阅各自项目的文档；AdvantageScope 开发团队不对任何特定的 FTC 日志方案作官方推荐或担保。
 
 :::info
 搭配 WPILib 框架及相关日志工具使用时，AdvantageScope 能发挥出最佳效果。若采用非官方日志方案，可能会遇到兼容性问题或部分功能受限。
@@ -101,7 +101,7 @@ _上图所示为英文界面。_
 
 <img src="/img/overview/log-files/export-2.webp" alt="CSV 数据" />
 
-## 🤩 美观改进 {#aesthetic-improvements}
+## 🤩 外观改进 {#aesthetic-improvements}
 
 Windows 11 版 AdvantageScope 的界面已更新，现已支持半透明侧边栏（此前仅限 macOS 版本）。此外，我们还基于 Apple 的 Liquid Glass 材质，为 macOS Tahoe 适配了全新应用图标。
 

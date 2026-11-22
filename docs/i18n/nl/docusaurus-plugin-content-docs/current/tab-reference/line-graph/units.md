@@ -8,7 +8,7 @@ Het tabblad Lijngrafiek is eenheidsbewust: numerieke waarden worden automatisch 
 
 <img src="/img/tab-reference/line-graph/units-1.webp" alt="Eenheidsbewuste grafieken" />
 
-_De Engelstalige interface wordt hierboven weergegeven._
+_Hierboven zie je de Engelstalige interface._
 
 ## Ondersteunde formaten {#supported-formats}
 
@@ -42,7 +42,7 @@ Als er geen struct of metadata is, probeert AdvantageScope de eenheid uit de vel
 - **Snake_case**, zoals `position_meters`, `velocity_rad_per_sec` en `timestamp_s`
 - **Met spaties**, zoals `position meters`, `velocity rad per sec` en `timestamp s`
 
-Bij snake*case en spaties maakt het \_niet* uit of je hoofdletters of kleine letters gebruikt.
+Bij `snake_case` en spaties maakt het _niet_ uit of je hoofdletters of kleine letters gebruikt.
 
 :::tip
 Wordt een eenheid verkeerd herkend? Klik dan op `Handmatige eenheden` > `Automatische eenheden uitschakelen` om de automatische herkenning te negeren. Daarna kun je zelf een handmatige conversie instellen.
@@ -60,4 +60,4 @@ Wil je snel wisselen of de conversie uitzetten? Klik op de drie stippen naast de
 
 <img src="/img/tab-reference/line-graph/units-2.webp" alt="Eenheidsconversie bewerken" height="250" />
 
-_De Engelstalige interface wordt hierboven weergegeven._
+_Hierboven zie je de Engelstalige interface._

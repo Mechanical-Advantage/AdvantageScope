@@ -77,7 +77,7 @@ AdvantageScope heeft allerlei sneltoetsen waarmee je sneller door de app navigee
 <tr><td>`Spatie`</td><td>Afspelen starten/pauzeren</td></tr>
 <tr><td>`Links` en `Rechts`</td><td>Stap voor stap door het logbestand gaan</td></tr>
 <tr><td>`L` of `Ctrl+L`</td><td>Live-vergrendeling aan/uitzetten bij live-data</td></tr>
-<tr><td>`Ctrl+\`</td><td>Tijdlijn zoomen naar de ingeschakelde periode</td></tr>
+<tr><td>`Ctrl+\`</td><td>Tijdlijn inzoomen op de ingeschakelde periode</td></tr>
 </table>
 
 ### Touch Bar {#touch-bar}

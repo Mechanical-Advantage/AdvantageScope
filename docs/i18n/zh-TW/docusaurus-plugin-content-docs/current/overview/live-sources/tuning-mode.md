@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # 微調模式 {#tuning-mode}
 
-部分即時來源支援即時微調數值與布林值。舉例來說，連線至 NetworkTables 來源時，你可以用這個功能來[微調控制器增益](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tutorial-intro.html)。請注意，機器人程式碼必須支援透過 NetworkTables 接收增益。
+部分即時來源支援在連線時直接微調數值與布林值。舉例來說，連線至 NetworkTables 來源時，你可以用這個功能來[微調控制器增益](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tutorial-intro.html)。請注意，機器人程式碼必須支援透過 NetworkTables 接收增益。
 
 預設情況下，AdvantageScope 中的所有數值都是唯讀的。連線至支援的即時來源時，**點擊搜尋列右側的滑桿圖示**即可切換微調模式。當圖示變為紫色時，代表微調模式已啟用，你可以編輯欄位數值。
 

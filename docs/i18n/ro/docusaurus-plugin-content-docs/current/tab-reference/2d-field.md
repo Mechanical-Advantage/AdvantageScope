@@ -16,7 +16,7 @@ _Mai sus este prezentată interfața în limba engleză._
 <details>
 <summary>Controale cronologie</summary>
 
-Cronologia controlează redarea și vizualizarea. Fă clic pe cronologie pentru a selecta un moment, iar clic dreapta pentru a-l deselecta. Momentul selectat este sincronizat în toate filele, astfel încât poți găsi rapid aceeași poziție și în alte vizualizări.
+Cronologia controlează redarea și vizualizarea. Dă clic pe cronologie pentru a selecta un moment și clic dreapta pentru a-l deselecta. Momentul selectat este sincronizat în toate filele, astfel încât poți găsi rapid aceeași poziție și în alte vizualizări.
 
 Secțiunile galbene arată când robotul este în autonom, cele albastre când este în teleoperat, iar cele gri când este în modul utilitar.
 
@@ -38,7 +38,7 @@ Derulează în sus și în jos peste teren pentru a mări sau micșora. Fă clic
 
 ## Adăugarea obiectelor {#adding-objects}
 
-Pentru a începe, trage un câmp în secțiunea „Pose-uri”. Șterge un obiect folosind butonul X sau ascunde-l temporar făcând clic pe pictograma ochi ori dublu clic pe numele câmpului. Pentru a elimina toate obiectele, fă clic pe coșul de gunoi de lângă titlul axei și apoi pe `Șterge tot`. Poți reorganiza obiectele în listă făcând clic și trăgând.
+Pentru a începe, trage un câmp în secțiunea „Pose-uri”. Șterge un obiect folosind butonul X sau ascunde-l temporar făcând clic pe pictograma ochi ori dublu clic pe numele câmpului. Pentru a elimina toate obiectele, fă clic pe coșul de gunoi de lângă titlul axei și apoi pe `Elimină tot`. Poți reorganiza obiectele în listă făcând clic și trăgând.
 
 **Pentru a personaliza un element, fă clic pe pictograma colorată sau clic dreapta pe numele câmpului.** AdvantageScope suportă o gamă largă de tipuri de obiecte, iar multe dintre ele pot fi personalizate (de exemplu, poți schimba culorile). Unele trebuie adăugate ca elemente copil ale unui obiect existent.
 

@@ -78,9 +78,8 @@ Logger.recordOutput("MyPoseArray", new Pose3d[] {poseA, poseB});
 <TabItem value="ftcdashboard" label="FTC Dashboard">
 
 ```java
-// 该协议不支持现代结构体格式，但位姿值
-// 可以使用带有后缀 "x"、"y" 和 "heading" 的独立字段进行发布
-// （如下所示）：
+// 该协议不支持新版 Struct 格式，但可以通过带 "x"、"y" 和 "heading" 后缀的
+// 独立字段来发布位姿值（如下所示）：
 TelemetryPacket packet = new TelemetryPacket();
 packet.put("Pose x", 6.3); // 英寸
 packet.put("Pose y", 2.8); // 英寸
@@ -193,6 +192,6 @@ AdvantageKit KitBot 2024 示例项目包含一个简单的[命令](https://githu
 
 <img src="/img/tab-reference/3d-field/3d-field-6.webp" alt="渲染模式比较" />
 
-要配置渲染模式，请点击 `应用程序` > `显示首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。“3D 模式（电池供电）”选项可用于覆盖笔记本电脑未接通电源时的默认渲染模式，例如在比赛现场借此节省电量。
+要配置渲染模式，请点击 `应用程序` > `首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。“3D 模式（电池供电）”选项可用于覆盖笔记本电脑未接通电源时的默认渲染模式，例如在比赛现场借此节省电量。
 
 <img src="/img/prefs_zh-CN.webp" alt="首选项界面图解" height="450" />

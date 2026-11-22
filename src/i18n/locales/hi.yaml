@@ -108,7 +108,7 @@ preferences:
   liveModeLowBandwidth: "लो बैंडविड्थ"
   liveModeLogging: "लॉगिंग"
   discardLive: "लाइव डेटा हटाएँ"
-  discardLiveSelectTitle: "चुनें कि लाइव डेटा को डिस्कार्ड करने से पहले कितने समय तक रखना है"
+  discardLiveSelectTitle: "चुनें कि लाइव डेटा को हटाने से पहले कितनी देर तक रखना है"
   discardLive1Min: "1 मिनट के बाद"
   discardLive5Min: "5 मिनट के बाद"
   discardLive20Min: "20 मिनट के बाद"
@@ -151,7 +151,7 @@ satellite:
 sourceListHelp:
   title: "{{name}} सहायता — AdvantageScope"
   titleDefault: "सहायता — AdvantageScope"
-  parentWarning: "मौजूदा {{items, list(type: disjunction)}} आइटम में जोड़ें।"
+  parentWarning: "किसी मौजूदा {{items, list(type: disjunction)}} आइटम में जोड़ें।"
   quoted: '"{{name}}"'
   listOr: "{{list, list(type: disjunction)}}"
   sources_one: "स्रोत: {{list, list(type: disjunction)}}"
@@ -207,9 +207,9 @@ xrControls:
   streamingSmooth: "स्मूथ"
   streamingLowLatency: "लो लेटेंसी"
   showFloor: "फ़्लोर दिखाएँ"
-  showFloorTitle: "फ़्लोर कार्पेट दिखाना/छिपाना टॉगल करें"
+  showFloorTitle: "फ़्लोर कार्पेट दिखाएँ या छिपाएँ"
   showField: "फ़ील्ड दिखाएँ"
-  showFieldTitle: "फ़ील्ड दृश्यता टॉगल करें"
+  showFieldTitle: "फ़ील्ड की दृश्यता टॉगल करें"
   showRobots: "रोबोट्स दिखाएँ"
   showRobotsTitle: "रोबोट मॉडल दृश्यता टॉगल करें"
 
@@ -249,7 +249,7 @@ sourceList:
   alerts: "{{errors}}, {{warnings}}, {{infos}}"
   values_one: "{{count}} मान"
   values_other: "{{count}} मान"
-  toggleVisibility: "फ़ील्ड दृश्यता टॉगल करें"
+  toggleVisibility: "फ़ील्ड की दृश्यता टॉगल करें"
   hideField: "फ़ील्ड छिपाएँ"
   showField: "फ़ील्ड दिखाएँ"
   typeName: "{{name}}:"
@@ -317,7 +317,7 @@ hub:
     connectErrorTitle: "लाइव स्रोत के साथ समस्या"
     connectErrorContent: "लाइव स्रोत से कनेक्ट करते समय कोई समस्या हुई। कृपया अपनी कनेक्शन सेटिंग्स जाँचें और पुनः प्रयास करें।"
     nt4NoFieldsTitle: "NetworkTables कनेक्शन के साथ समस्या"
-    nt4NoFieldsContent: "सर्वर से कोई फ़ील्ड प्राप्त नहीं हुआ। AdvantageKit मोड चयनित है। क्या आप बिना AdvantageKit वाले सर्वर से कनेक्ट कर रहे हैं?"
+    nt4NoFieldsContent: "सर्वर से कोई फ़ील्ड नहीं मिला। AdvantageKit मोड चुना गया है। क्या आप बिना AdvantageKit वाले सर्वर से कनेक्ट कर रहे हैं?"
     cannotConnectTitle: "कनेक्ट नहीं किया जा सकता"
     cannotConnectContent: "कृपया एक्सपोर्ट समाप्त होने की प्रतीक्षा करें, फिर पुनः प्रयास करें।"
     cannotPublishTitle: "पब्लिश नहीं किया जा सकता"
@@ -445,7 +445,7 @@ hub:
     rightAxisWithModifiers: "राइट एक्सिस [{{modifiers, list(type: unit)}}]"
     locked: "लॉक्ड"
     converted: "रूपांतरित"
-    noUnits: "कोई इकाइयाँ नहीं"
+    noUnits: "कोई इकाई नहीं"
     differentiated: "डिफरेंशिएटेड"
     integrated: "इंटीग्रेटेड"
     helpScrollToZoom: "ज़ूम करने के लिए स्क्रॉल करें"
@@ -693,7 +693,7 @@ menu:
     cut: "कट करें"
     copy: "कॉपी करें"
     paste: "पेस्ट करें"
-    selectAll: "सभी का चयन करें"
+    selectAll: "सभी चुनें"
 
   file:
     heading: "फ़ाइल"
@@ -906,7 +906,7 @@ main:
     openQuery: "लॉग खोलें?"
     openDetail: 'क्या आप लॉग फ़ाइल "{{name}}" खोलना चाहेंगे?'
     openDsLogTitle: "DS लॉग खोलें"
-    openDsLogQuery: "क्या इस लॉग को DS लेआउट का उपयोग करके खोलना है?"
+    openDsLogQuery: "क्या इस लॉग को DS लेआउट में खोलना है?"
     openDsLogDetail: "ड्राइवर स्टेशन लेआउट को आपके वर्तमान लेआउट को बदले बिना एक अलग विंडो में खोला जा सकता है।"
     openDsInDsWindow: "DS विंडो में खोलें"
     openDsInNewWindow: "नई विंडो में खोलें"
@@ -940,7 +940,7 @@ main:
     copyUrl: "URL को क्लिपबोर्ड पर कॉपी करें"
     copyUrlDetail: "कृपया YouTube URL को क्लिपबोर्ड पर कॉपी करें, फिर पुनः प्रयास करें।"
     youtubeFailed: "YouTube डाउनलोड विफल रहा"
-    youtubeFailedDetail: "YouTube वीडियो खोलने का प्रयास करते समय कोई त्रुटि हुई। ध्यान दें कि YouTube के सर्वर पर बदलावों के कारण यह फीचर अप्रत्याशित रूप से विफल हो सकता है। कृपया अपडेट्स की जाँच करें या इसके बजाय एक लोकल वीडियो फ़ाइल चुनें।"
+    youtubeFailedDetail: "YouTube वीडियो खोलने का प्रयास करते समय कोई त्रुटि हुई। ध्यान दें कि YouTube के सर्वर में बदलाव के कारण यह फ़ीचर अचानक काम करना बंद कर सकता है। कृपया अपडेट्स की जाँच करें या इसके बजाय एक लोकल वीडियो फ़ाइल चुनें।"
     tbaFailed: "TBA डाउनलोड विफल रहा"
     tbaFailedDetail: "द ब्लू एलायंस पर मैच वीडियो खोजने में कोई समस्या हुई। कृपया अपनी API की जाँचें, या इसके बजाय YouTube URL या लोकल फ़ाइल का उपयोग करके वीडियो लोड करें।"
     openTitle: "खोलने के लिए एक वीडियो चुनें"
@@ -962,8 +962,8 @@ main:
 
   ctre:
     licenseTitle: "CTRE लाइसेंस समझौता"
-    licenseDetail: "Hoot लॉग फ़ाइल डिकोडिंग के लिए CTRE के एंड यूज़र लाइसेंस एग्रीमेंट की सहमति की आवश्यकता है। पूर्ण लाइसेंस समझौता देखने के लिए कृपया नीचे दिए गए बटन पर क्लिक करें, फिर यदि आप शर्तों से सहमत हैं तो बॉक्स को चेक करें।"
-    licenseRequired: "Hoot लॉग फ़ाइलों को CTRE के एंड यूज़र लाइसेंस एग्रीमेंट पर सहमत हुए बिना डिकोड नहीं किया जा सकता है।"
+    licenseDetail: "Hoot लॉग फ़ाइल डिकोडिंग के लिए CTRE के एंड यूज़र लाइसेंस एग्रीमेंट से सहमत होना आवश्यक है। पूर्ण लाइसेंस समझौता देखने के लिए कृपया नीचे दिए गए बटन पर क्लिक करें, फिर यदि आप शर्तों से सहमत हैं तो बॉक्स को चेक करें।"
+    licenseRequired: "Hoot लॉग फ़ाइलों को CTRE के एंड यूज़र लाइसेंस एग्रीमेंट से सहमत हुए बिना डिकोड नहीं किया जा सकता है।"
 
   survey:
     alphaComplete: "अल्फा पूरा हो गया है"
@@ -986,8 +986,8 @@ main:
     systemcoreFtcDetail: 'यह फ़ील्ड डिफ़ॉल्ट रूप से Systemcore कोऑर्डिनेट सिस्टम का उपयोग करता है। यदि आपका रोबोट कोड पारंपरिक FTC कोऑर्डिनेट सिस्टम का उपयोग करता है, तो आप AdvantageScope प्राथमिकताओं में "कोऑर्डिनेट सिस्टम" विकल्प बदल सकते हैं। विवरण के लिए डॉक्यूमेंटेशन देखें।'
 
   lite:
-    tooSmall: "पर्याप्त स्थान नहीं है, कृपया स्क्रीन लेआउट बदलें।"
-    mobileWarning: "AdvantageScope लाइट डेस्कटॉप और टैबलेट डिवाइस पर सबसे अच्छा काम करता है।"
+    tooSmall: "स्क्रीन पर पर्याप्त जगह नहीं है, कृपया लेआउट बदलें।"
+    mobileWarning: "AdvantageScope लाइट डेस्कटॉप और टैबलेट पर बेहतर चलता है।"
 
 units:
   defaultLabel: "{{unit}} (डिफ़ॉल्ट)"

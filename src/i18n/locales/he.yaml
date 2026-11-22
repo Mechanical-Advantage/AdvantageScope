@@ -23,10 +23,10 @@ download:
   errorUnknown: "שגיאה לא ידועה: {{error}}"
   statusPreparing: "בהכנה"
   statusFinished: "הסתיים"
-  progressSimple: '{{current}} מ"ב / {{total}} מ"ב'
-  progressDetailed: '{{current}} מ"ב / {{total}} מ"ב ({{speed}} מגה-ביט/שנייה, {{minutes}} דק'' {{seconds}} שנ'')'
-  sizeLessThanMinimum: '(<0.1 מ"ב)'
-  sizeValue: '({{size}} מ"ב)'
+  progressSimple: "{{current}} MB / {{total}} MB"
+  progressDetailed: "{{current}} MB / {{total}} MB ({{speed}} Mb/s, {{minutes}} דק' {{seconds}} שנ')"
+  sizeLessThanMinimum: "(<0.1 MB)"
+  sizeValue: "({{size}} MB)"
   alertSelectLog: "יש לבחור יומן להורדה."
   alertNoNewLogs: "לא נמצאו יומנים חדשים."
 
@@ -372,7 +372,7 @@ hub:
     titleHours_two: "{{fields}}, {{duration}} שעות"
     titleHours_other: "{{fields}}, {{duration}} שעות"
     conflictTitle: "סוגים מתנגשים"
-    conflictMessage: "ערכים בעלי סוגים מתנגשים נכתבו לשדה זה. ניתן להציג ולייצא רק ערכים התואמים לסוג הראשוני."
+    conflictMessage: "לשדה זה נכתבו ערכים מסוגים שונים. ניתן להציג ולייצא רק ערכים התואמים לסוג הראשוני."
 
   field:
     poses: "תנוחות"
@@ -550,7 +550,7 @@ hub:
 
   joysticks:
     selectTitle: "בחירת מקור נתוני בקר"
-    noData: "אין נתונים עבור הבקר."
+    noData: "אין נתונים מהבקר."
     selectLayout: "יש לבחור פריסת בקר כדי להציג נתונים."
     none: "ללא"
     generic: "ג'ויסטיק גנרי"
@@ -795,7 +795,7 @@ menu:
     editConversion: "עריכת המרה"
     disableAutoUnits: "השבתת יחידות אוטומטיות"
     resetUnits: "איפוס יחידות"
-    zoomEnabled: "התמקדות בטווח המאופשר"
+    zoomEnabled: "התמקדות בטווח הפעיל"
     differentiate: "גזירה"
     integrate: "אינטגרציה"
 
@@ -825,7 +825,7 @@ menu:
 main:
   language:
     welcomeMessage: "ברוכים הבאים"
-    welcomeDetail: "הגרסה העברית של AdvantageScope נוצרת בסיוע בינה מלאכותית ועשויה לכלול אי-דיוקים. יש ללחוץ על הסמל הסגול בשורת הכותרת כדי לדווח לנו על כל בעיה."
+    welcomeDetail: "הגרסה העברית של AdvantageScope תורגמה בסיוע בינה מלאכותית ועשויה לכלול אי-דיוקים. יש ללחוץ על הסמל הסגול בשורת הכותרת כדי לדווח לנו על כל בעיה."
     reloadLite: "AdvantageScope Lite צריכה להיטען מחדש כדי להחליף שפה. להמשיך?"
     reloadResetLite: "AdvantageScope Lite צריכה להתאפס ולהיטען מחדש כדי להחליף שפה. להמשיך?"
     restart: "AdvantageScope צריכה לבצע הפעלה מחדש כדי להחליף שפה."
@@ -888,7 +888,7 @@ main:
     later: "מאוחר יותר"
     viewChangelog: "הצגת יומן שינויים"
     downloadLatestNativeQuery: "להוריד את הגרסה הייעודית (Native) החדשה ביותר?"
-    downloadLatestNativeDetail: "גרסה {{latestVersion}} זמינה (שוחררה ב-{{latestDate}}). כרגע פועלת גרסת x86 של גרסה {{currentVersion}} על פלטפורמת arm64. האם תרצו להוריד את הגרסה הייעודית החדשה ביותר?"
+    downloadLatestNativeDetail: "גרסה {{latestVersion}} זמינה (שוחררה ב-{{latestDate}}). כרגע פועלת מהדורת x86 של גרסה {{currentVersion}} על פלטפורמת arm64. האם תרצו להוריד את הגרסה הייעודית החדשה ביותר?"
     downloadLatestQuery: "להוריד את הגרסה החדשה ביותר?"
     downloadLatestDetail: "גרסה {{latestVersion}} זמינה (שוחררה ב-{{latestDate}}). כרגע פועלת גרסה {{currentVersion}}. האם תרצו להוריד את הגרסה החדשה ביותר?"
     downloadNativeQuery: "להוריד גרסה ייעודית (Native)?"
@@ -899,10 +899,10 @@ main:
   logs:
     openTitle: "בחירת קובצי היומן של הרובוט לפתיחה"
     openMessage: "אם נבחרים מספר קבצים, חותמות הזמן ייושרו באופן אוטומטי"
-    robotLogsFilter: "יומנים של רובוט"
+    robotLogsFilter: "יומני רובוט"
     addTitle: "בחירת קובצי היומן של הרובוט להוספה ליומן הנוכחי"
-    downloadFolderTitle: "בחירת מיקום שמירה ליומנים של הרובוט"
-    downloadFileTitle: "בחירת מיקום שמירה ליומן של הרובוט"
+    downloadFolderTitle: "בחירת מיקום שמירה ליומני רובוט"
+    downloadFileTitle: "בחירת מיקום שמירה ליומן רובוט"
     extensionWpilog: "יומן רובוט של WPILib"
     extensionWpilogxz: "יומן רובוט דחוס של WPILib"
     extensionRlog: "יומן רובוט"
@@ -925,7 +925,7 @@ main:
     openDsInThisWindow: "פתיחה בחלון זה"
     unsupportedFormatLite: "פורמט קובץ שאינו נתמך ב-AdvantageScope Lite."
     decompressFailed: "חילוץ קובץ ה-WPILOG נכשל."
-    limitedSignals: "אותות זמינים מוגבלים"
+    limitedSignals: "זמינות אותות מוגבלת"
     limitedSignalsDetail: "קובץ יומן זה כולל מספר מוגבל של אותות ממכשירי Phoenix. יש לבדוק את התיעוד של Phoenix לפרטים נוספים."
 
   layout:
@@ -962,7 +962,7 @@ main:
     error: "שגיאה"
     warning: "אזהרה"
     alert: "התראה"
-    exportInProgress: "ייצוא בתהליך"
+    exportInProgress: "הייצוא מתבצע כעת"
     exportInProgressDetail: "האם תרצו לסגור את החלון בזמן שמתבצע ייצוא? הנתונים לא יישמרו."
     incompleteExport: "נתונים חלקיים לייצוא"
     incompleteExportDetail: 'חלק מהשדות לא יהיו זמינים בנתונים המיוצאים. כדי לשמור את כל השדות מהשרת, יש לבחור במצב חי "רישום יומן". יש לעיין בתיעוד של AdvantageScope לפרטים נוספים.'
@@ -998,7 +998,7 @@ main:
     systemcoreFtcDetail: 'מגרש זה משתמש כברירת מחדל במערכת הצירים של Systemcore. אם קוד הרובוט שלכם משתמש במערכת הצירים המסורתית של FTC, תוכלו לשנות את האפשרות "מערכת צירים" בהעדפות של AdvantageScope. ראו את התיעוד לפרטים נוספים.'
 
   lite:
-    tooSmall: "אין מספיק מקום, אנא שנו את פריסת המסך."
+    tooSmall: "אין מספיק מקום, יש לשנות את פריסת המסך."
     mobileWarning: "AdvantageScope Lite פועלת בצורה הטובה ביותר במחשבים שולחניים ובטאבלטים."
 
 units:
@@ -1115,7 +1115,7 @@ units:
     rotations_one: "{{value}} סיבוב"
     rotations_two: "{{value}} סיבובים"
     rotations_other: "{{value}} סיבובים"
-    metersPerSecond: "{{value}} מ'/שנ'"
+    metersPerSecond: "{{value}} m/s"
     inchesPerSecond: "{{value}} אינץ'/שנ'"
     feetPerSecond: "{{value}} רגל/שנ'"
     milesPerHour: "{{value}} מייל/שעה"
@@ -1126,16 +1126,16 @@ units:
     rotationsPerSecond_two: "{{value}} סיבובים/שנ'"
     rotationsPerSecond_other: "{{value}} סיבובים/שנ'"
     rotationsPerMinute: '{{value}} סל"ד'
-    metersPerSecondSquared: "{{value}} מ'/שנ' בריבוע"
+    metersPerSecondSquared: "{{value}} m/s²"
     inchesPerSecondSquared: "{{value}} אינץ'/שנ' בריבוע"
     feetPerSecondSquared: "{{value}} רגל/שנ' בריבוע"
-    standardGravity: "{{value}} ג'י"
+    standardGravity: "{{value}} g"
     radiansPerSecondSquared: "{{value}} רדיאן/שנ' בריבוע"
     degreesPerSecondSquared: "{{value}}°/שנ' בריבוע"
     rotationsPerSecondSquared_one: "{{value}} סיבוב/שנ' בריבוע"
     rotationsPerSecondSquared_two: "{{value}} סיבובים/שנ' בריבוע"
     rotationsPerSecondSquared_other: "{{value}} סיבובים/שנ' בריבוע"
-    seconds: "{{value}} שנ'"
+    seconds: "{{value}} s"
     milliseconds: "{{value}} ms"
     microseconds: "{{value}} μs"
     nanoseconds: "{{value}} ns"
@@ -1190,7 +1190,7 @@ units:
     ratio: "{{value}}"
     percent: "{{value}}%"
 
-    metersSeconds: "{{value}} מ'·שנ'"
+    metersSeconds: "{{value}} m·s"
     inchesSeconds: "{{value}} אינץ'·שנ'"
     millimetersPerSecond: '{{value}} מ"מ/שנ'''
     millimetersSeconds: '{{value}} מ"מ·שנ'''
@@ -1214,18 +1214,18 @@ units:
     kilometersPerHourSeconds: '{{value}} קמ"ש·שנ'''
     rotationsPerMinutePerSecond: '{{value}} סל"ד/שנ'''
     rotationsPerMinuteSeconds: '{{value}} סל"ד·שנ'''
-    metersPerSecondCubed: "{{value}} מ'/שנ' בשלישית"
+    metersPerSecondCubed: "{{value}} m/s³"
     inchesPerSecondCubed: "{{value}} אינץ'/שנ' בשלישית"
     feetPerSecondCubed: "{{value}} רגל/שנ' בשלישית"
-    standardGravityPerSecond: "{{value}} ג'י/שנ'"
-    standardGravitySeconds: "{{value}} ג'י·שנ'"
+    standardGravityPerSecond: "{{value}} g/s"
+    standardGravitySeconds: "{{value}} g·s"
     radiansPerSecondCubed: "{{value}} רדיאן/שנ' בשלישית"
     degreesPerSecondCubed: "{{value}}°/שנ' בשלישית"
     rotationsPerSecondCubed_one: "{{value}} סיבוב/שנ' בשלישית"
     rotationsPerSecondCubed_two: "{{value}} סיבובים/שנ' בשלישית"
     rotationsPerSecondCubed_other: "{{value}} סיבובים/שנ' בשלישית"
-    secondsPerSecond: "{{value}} שנ'/שנ'"
-    secondsSeconds: "{{value}} שנ' בריבוע"
+    secondsPerSecond: "{{value}} s/s"
+    secondsSeconds: "{{value}} s²"
     millisecondsPerSecond: "{{value}} ms/s"
     millisecondsSeconds: "{{value}} ms·s"
     microsecondsPerSecond: "{{value}} μs/s"

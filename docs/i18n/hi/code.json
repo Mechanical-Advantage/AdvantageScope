@@ -171,11 +171,11 @@
     "description": "The ARIA label for recent posts in the blog sidebar"
   },
   "theme.DocSidebarItem.expandCategoryAriaLabel": {
-    "message": "साइडबार श्रेणी '{label}' का विस्तार करें",
+    "message": "साइडबार श्रेणी '{label}' खोलें",
     "description": "The ARIA label to expand the sidebar category"
   },
   "theme.DocSidebarItem.collapseCategoryAriaLabel": {
-    "message": "साइडबार श्रेणी '{label}' को संक्षिप्त करें",
+    "message": "साइडबार श्रेणी '{label}' बंद करें",
     "description": "The ARIA label to collapse the sidebar category"
   },
   "theme.IconExternalLink.ariaLabel": {
@@ -211,7 +211,7 @@
     "description": "The ARIA label for the link to full blog posts from excerpts"
   },
   "theme.blog.post.readingTime.plurals": {
-    "message": "एक मिनट में पढ़ें|{readingTime} मिनट में पढ़ें",
+    "message": "पढ़ने का समय: 1 मिनट|पढ़ने का समय: {readingTime} मिनट",
     "description": "Pluralized label for \"{readingTime} min read\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
   },
   "theme.CodeBlock.copy": {
@@ -550,7 +550,7 @@
     "description": "The label of the button to try again rendering when the React error boundary captures an error"
   },
   "theme.common.skipToMainContent": {
-    "message": "मुख्य सामग्री तक स्किप करें",
+    "message": "मुख्य सामग्री पर जाएँ",
     "description": "The skip to content label used for accessibility, allowing to rapidly navigate to main content with keyboard tab/enter navigation"
   },
   "theme.tags.tagsPageTitle": {

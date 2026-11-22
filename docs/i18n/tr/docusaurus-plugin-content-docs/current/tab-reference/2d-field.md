@@ -40,7 +40,7 @@ Her iki kilitli modda da kamerayı robottan uzağa serbestçe kaydırabilirsiniz
 
 Başlamak için bir alanı “Pozlar” bölümüne sürükleyin. Bir nesneyi X düğmesiyle silebilir; göz simgesine tıklayarak ya da alan adına çift tıklayarak geçici olarak gizleyebilirsiniz. Tüm nesneleri kaldırmak için eksen başlığının yanındaki çöp kutusuna ve ardından `Tümünü temizle` seçeneğine tıklayın. Nesneleri listede tıklayıp sürükleyerek yeniden sıralayabilirsiniz.
 
-**Her bir nesneyi özelleştirmek için renkli simgeye tıklayın veya alan adına sağ tıklayın.** AdvantageScope, çoğu özelleştirilebilen (örneğin renkleri değiştirilebilen) çok sayıda nesne türünü destekler. Bazı nesnelerin mevcut bir nesnenin altına alt öge olarak eklenmesi gerekir.
+**Her bir nesneyi özelleştirmek için renkli simgeye tıklayın veya alan adına sağ tıklayın.** AdvantageScope, çoğu özelleştirilebilen (örneğin renkleri değiştirilebilen) çok sayıda nesne türünü destekler. Bazı nesnelerin mevcut bir nesnenin alt ögesi olarak eklenmesi gerekir.
 
 :::tip
 Desteklenen nesne türlerinin tam listesini görmek için `?` simgesine tıklayın. Bu listede desteklenen veri türlerini ve nesnelerin alt öge olarak eklenmesinin gerekip gerekmediğini de görebilirsiniz.

@@ -140,7 +140,7 @@ AdvantageScope 會自動簡化模型幾何結構以提升效能，細節程度�
   "centerPx": [number, number]
   "sizePx": [number, number]
   "sdlSourceIndex": number
-  "sdlSourcePov": string // 選填，可以是 "up"、"right"、"down" 或 "left"。如果提供，"sdlSourceIndex" 將是要讀取的 POV 索引。
+  "sdlSourcePov": string // 選填，可為 "up"、"right"、"down" 或 "left"。若有設定，sdlSourceIndex 則代表要讀取的 POV 索引。
 
   // NI Driver Station 的替代綁定 (選填)
   "niSourceIndex": number
@@ -180,7 +180,7 @@ AdvantageScope 會自動簡化模型幾何結構以提升效能，細節程度�
   "centerPx": [number, number]
   "sizePx": [number, number]
   "sdlSourceIndex": number,
-  "sdlSourceRange": [number, number] // 最小值大於最大值以反轉
+  "sdlSourceRange": [number, number] // 若將最小值設為大於最大值即可反轉方向
 
   // NI Driver Station 的替代綁定 (選填)
   "niSourceIndex": number,

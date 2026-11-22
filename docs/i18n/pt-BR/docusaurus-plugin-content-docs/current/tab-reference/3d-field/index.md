@@ -139,7 +139,7 @@ O projeto de exemplo KitBot 2024 do AdvantageKit traz um [comando](https://githu
 Para trocar o modo de câmera, clique com o botão direito na área do campo 3D. Cada janela destacada controla seu próprio modo e posição de câmera de forma independente, o que facilita montar telas com vários ângulos ao mesmo tempo.
 
 :::info
-Clique com o botão direito no campo 3D e escolha "Definir FOV..." para ajustar o campo de visão (FOV) das câmeras de órbita e da Driver Station.
+Clique com o botão direito no campo 3D e escolha "Definir FOV" para ajustar o campo de visão (FOV) das câmeras de órbita e da Driver Station.
 :::
 
 ### Orbitar campo {#orbit-field}
@@ -176,7 +176,7 @@ Assim como os outros dados de pose, a pose de "Substituição de câmera" precis
 
 ## Configuração {#configuration}
 
-Você pode escolher o modelo da arena no menu suspenso. Todos os jogos recentes da FRC e da FTC estão disponíveis. Se o computador tiver desempenho gráfico mais limitado, vale usar os campos "Evergreen". Já os campos "Eixos" mostram apenas os eixos XYZ na origem com o contorno da arena para dar noção de escala.
+Você pode escolher o modelo da arena no menu suspenso. Todos os jogos recentes da FRC e da FTC estão disponíveis. Se o computador tiver desempenho gráfico mais limitado, vale usar os campos "Perene". Já os campos "Eixos" mostram apenas os eixos XYZ na origem com o contorno da arena para dar noção de escala.
 
 :::info
 O sistema de coordenadas usado nesta guia pode ser personalizado. Confira a página de [Sistema de coordenadas](/more-features/coordinate-systems) para ver os detalhes.
