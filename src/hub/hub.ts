@@ -1013,6 +1013,35 @@ async function handleMainMessage(message: NamedMessage) {
       setLoading(null);
       break;
 
+    case "export-child-log":
+      {
+        let key: string = message.data.key;
+        let path: string = message.data.path;
+        let rawData = window.log.getField(key)?.getRaw(-Infinity, Infinity);
+        if (!rawData || rawData.values.length === 0) {
+          window.sendMainMessage("error", {
+            title: "Cannot export original log",
+            content: "The original log data is not available. Please wait for the log to finish loading and try again."
+          });
+        } else {
+          let totalLength = rawData.values.reduce((sum, arr) => sum + arr.length, 0);
+          let concatenated = new Uint8Array(totalLength);
+          let arrayOffset = 0;
+          for (let i = 0; i < rawData.values.length; i++) {
+            concatenated.set(rawData.values[i], arrayOffset);
+            arrayOffset += rawData.values[i].length;
+            if (i % 1000 === 0) {
+              await new Promise((resolve) => setTimeout(resolve, 0));
+            }
+          }
+          window.sendMainMessage("write-export", {
+            path: path,
+            content: concatenated
+          });
+        }
+      }
+      break;
+
     case "update-touch-bar-slider":
       let range = window.log.getTimestampRange();
       let liveTime = window.selection.getCurrentLiveTime();

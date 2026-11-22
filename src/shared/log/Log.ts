@@ -569,9 +569,6 @@ export default class Log {
     this.createBlankField(key, LoggableType.Raw);
     this.fields[key].putRaw(timestamp, value);
     this.changedFields.add(key);
-    if (this.fields[key].getType() === LoggableType.Raw) {
-      this.processTimestamp(key, timestamp); // Only update timestamp if type is correct
-    }
 
     // Check for struct schema
     let schemaType = getSchemaType(key);
@@ -585,6 +582,8 @@ export default class Log {
         this.photonDecoder.addSchema(schemaType.slice(PHOTON_PREFIX.length), value);
         this.attemptQueuedStructures();
       }
+    } else if (this.fields[key].getType() === LoggableType.Raw) {
+      this.processTimestamp(key, timestamp); // Only update timestamp if type is correct and not a schema
     }
   }
 
