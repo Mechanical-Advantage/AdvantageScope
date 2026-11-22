@@ -16,7 +16,11 @@ This feature is designed to streamline diagnostics by collecting **all of a robo
 - Status data from coprocessors and external services logged to CSV or WPILOG.
 - ...and more!
 
-All of this data appears in a single unified tree in AdvantageScope, as shown below with an AdvantageKit WPILOG containing device signals captured by multiple vendors.
+All of this data appears in a single unified tree in AdvantageScope, as shown below with a WPILOG containing device signals captured by multiple vendors.
+
+:::note
+On Systemcore, [URCL](https://github.com/Mechanical-Advantage/URCL) has been replaced by the official REV [status logger](https://docs.revrobotics.com/revlib/logs). Universal logging with AdvantageScope allows the official status logger to record data from all REV devices into a single WPILOG file (similar to URCL).
+:::
 
 <img src="/img/more-features/universal-logging-1.webp" alt="A WPILOG file showing multiple vendor logs in the sidebar." />
 
