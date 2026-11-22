@@ -148,7 +148,11 @@ Universal logging with WPILOG is not limited to vendor logs; any logging format 
 
 ### Exporting Vendor Data
 
-While data from vendor logs can be browsed directly in AdvantageScope, it may sometimes be necessary to extract the original vendor log as it was produced by the original library (e.g. for inspection in vendor-specific utilities). This can be accomplished using the [`extract_vendor_logs.py`](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/snippets/extract_vendor_logs.py) Python script, which searches one or more `.wpilog` or `.wpilogxz` files for all integrated vendor logs and exports them to separate files.
+While data from vendor logs can be browsed directly in AdvantageScope, it may sometimes be necessary to extract the original vendor log as it was produced by the original library (e.g. for inspection in vendor-specific utilities).
+
+To export an individual child log directly from AdvantageScope, right-click on the child log entry in the sidebar and select **Export Original Log...**.
+
+For batch extraction, you can also use the [`extract_vendor_logs.py`](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/snippets/extract_vendor_logs.py) Python script, which searches one or more `.wpilog` or `.wpilogxz` files for all integrated vendor logs and exports them to separate files:
 
 ```bash
 pip3 install robotpy-wpiutil # Required dependency
