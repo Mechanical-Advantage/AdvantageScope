@@ -340,6 +340,8 @@ hub:
     noLogs: "יש לפתוח קובץ יומן או להתחבר למקור חי, ולאחר מכן לנסות שוב."
     failedTitle: "ייצוא הנתונים נכשל"
     failedContent: "אירעה בעיה במהלך ההמרה לפורמט הייצוא. יש לנסות שוב."
+    cannotExportOriginalTitle: "לא ניתן לייצא את היומן המקורי"
+    cannotExportOriginalContent: "נתוני היומן המקורי אינם זמינים. יש להמתין לסיום טעינת היומן ולנסות שוב."
 
   playback:
     play: "ניגון"
@@ -771,6 +773,7 @@ menu:
     clearAll: "ניקוי הכול"
     copyToClipboard: 'העתקת "{{title}}" ללוח'
     copyTunedValues: "העתקת ערכים מכווננים"
+    exportOriginalLog: "ייצוא היומן המקורי..."
 
   help:
     heading: "עזרה"
@@ -909,6 +912,8 @@ main:
     mcapFilter: "יומן MCAP"
     exportConsoleTitle: "בחירת מיקום ייצוא עבור יומן המסוף"
     exportConsoleFilename: "מסוף {{date}}.txt"
+    exportOriginalTitle: "בחירת מיקום ייצוא עבור היומן המקורי"
+    originalLogFilter: "יומן {{extension}}"
     textFilter: "קובצי טקסט"
     openQuery: "לפתוח יומן?"
     openDetail: 'האם תרצו לפתוח את קובץ היומן "{{name}}"?'

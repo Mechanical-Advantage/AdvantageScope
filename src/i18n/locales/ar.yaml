@@ -364,6 +364,8 @@ hub:
     noLogs: "يرجى فتح ملف سجل أو الاتصال بمصدر مباشر، ثم المحاولة مرة أخرى."
     failedTitle: "فشل تصدير البيانات"
     failedContent: "حدثت مشكلة أثناء التحويل إلى تنسيق التصدير. يرجى المحاولة مرة أخرى."
+    cannotExportOriginalTitle: "تعذر تصدير السجل الأصلي"
+    cannotExportOriginalContent: "بيانات السجل الأصلي غير متوفرة. يرجى الانتظار حتى يكتمل تحميل السجل والمحاولة مرة أخرى."
 
   playback:
     play: "تشغيل"
@@ -806,6 +808,7 @@ menu:
     clearAll: "مسح الكل"
     copyToClipboard: "نسخ «{{title}}» إلى الحافظة"
     copyTunedValues: "نسخ القيم المضبوطة"
+    exportOriginalLog: "تصدير السجل الأصلي..."
 
   help:
     heading: "مساعدة"
@@ -944,6 +947,8 @@ main:
     mcapFilter: "سجل MCAP"
     exportConsoleTitle: "تحديد موقع التصدير لسجل وحدة التحكم"
     exportConsoleFilename: "وحدة التحكم {{date}}.txt"
+    exportOriginalTitle: "تحديد موقع التصدير للسجل الأصلي"
+    originalLogFilter: "سجل {{extension}}"
     textFilter: "ملفات نصية"
     openQuery: "فتح السجل؟"
     openDetail: "هل ترغب في فتح ملف السجل «{{name}}»؟"

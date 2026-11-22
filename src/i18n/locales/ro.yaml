@@ -340,6 +340,8 @@ hub:
     noLogs: "Deschide un fișier log sau conectează-te la o sursă live, apoi încearcă din nou."
     failedTitle: "Datele nu au putut fi exportate"
     failedContent: "A apărut o problemă la conversia în formatul de export. Încearcă din nou."
+    cannotExportOriginalTitle: "Nu se poate exporta logul original"
+    cannotExportOriginalContent: "Datele logului original nu sunt disponibile. Te rugăm să aștepți finalizarea încărcării logului și să încerci din nou."
 
   playback:
     play: "Redare"
@@ -771,6 +773,7 @@ menu:
     clearAll: "Șterge tot"
     copyToClipboard: "Copiază „{{title}}” în clipboard"
     copyTunedValues: "Copiază valorile ajustate"
+    exportOriginalLog: "Exportă logul original..."
 
   help:
     heading: "Ajutor"
@@ -909,6 +912,8 @@ main:
     mcapFilter: "Log MCAP"
     exportConsoleTitle: "Selectează locația de export pentru logul consolei"
     exportConsoleFilename: "Consolă {{date}}.txt"
+    exportOriginalTitle: "Selectează locația de export pentru logul original"
+    originalLogFilter: "Log {{extension}}"
     textFilter: "Fișiere text"
     openQuery: "Deschizi logul?"
     openDetail: "Vrei să deschizi fișierul log „{{name}}”?"

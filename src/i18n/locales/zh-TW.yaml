@@ -325,6 +325,8 @@ hub:
     noLogs: "請開啟日誌檔案或連線到即時來源，然後再試一次。"
     failedTitle: "無法匯出資料"
     failedContent: "轉換為匯出格式時發生問題。請再試一次。"
+    cannotExportOriginalTitle: "無法匯出原始日誌"
+    cannotExportOriginalContent: "原始日誌資料無法使用。請等待日誌載入完成後再試。"
 
   playback:
     play: "播放"
@@ -748,6 +750,7 @@ menu:
     clearAll: "全部清除"
     copyToClipboard: "將「{{title}}」複製到剪貼簿"
     copyTunedValues: "複製微調值"
+    exportOriginalLog: "匯出原始日誌..."
 
   help:
     heading: "說明"
@@ -886,6 +889,8 @@ main:
     mcapFilter: "MCAP 日誌"
     exportConsoleTitle: "選擇主控台日誌的匯出位置"
     exportConsoleFilename: "主控台 {{date}}.txt"
+    exportOriginalTitle: "選擇原始日誌的匯出位置"
+    originalLogFilter: "{{extension}} 日誌"
     textFilter: "文字檔案"
     openQuery: "開啟日誌？"
     openDetail: "你要開啟日誌檔案「{{name}}」嗎？"

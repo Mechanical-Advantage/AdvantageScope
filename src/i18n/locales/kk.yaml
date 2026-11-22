@@ -333,6 +333,8 @@ hub:
     noLogs: "Журнал файлын ашыңыз немесе тікелей дереккөзге қосылыңыз, содан кейін қайталап көріңіз."
     failedTitle: "Деректер экспортталмады"
     failedContent: "Экспорттау пішіміне түрлендіру кезінде мәселе туындады. Қайталап көріңіз."
+    cannotExportOriginalTitle: "Бастапқы журналды экспорттау мүмкін емес"
+    cannotExportOriginalContent: "Бастапқы журнал деректері қолжетімді емес. Журналдың жүктелуі аяқталғанын күтіп, қайталап көріңіз."
 
   playback:
     play: "Ойнату"
@@ -757,6 +759,7 @@ menu:
     clearAll: "Барлығын тазарту"
     copyToClipboard: "«{{title}}» алмасу буферіне көшіру"
     copyTunedValues: "Бапталған мәндерді көшіру"
+    exportOriginalLog: "Бастапқы журналды экспорттау..."
 
   help:
     heading: "Анықтама"
@@ -895,6 +898,8 @@ main:
     mcapFilter: "MCAP журналы"
     exportConsoleTitle: "Консоль журналын экспорттау орнын таңдау"
     exportConsoleFilename: "Консоль {{date}}.txt"
+    exportOriginalTitle: "Бастапқы журналды экспорттау орнын таңдау"
+    originalLogFilter: "{{extension}} журналы"
     textFilter: "Мәтіндік файлдар"
     openQuery: "Журналды ашу керек пе?"
     openDetail: "«{{name}}» журнал файлын ашқыңыз келе ме?"

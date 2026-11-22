@@ -332,6 +332,8 @@ hub:
     noLogs: "Abra um arquivo de log ou conecte-se a uma fonte ao vivo e tente novamente."
     failedTitle: "Falha ao exportar dados"
     failedContent: "Houve um problema ao converter para o formato de exportação. Tente novamente."
+    cannotExportOriginalTitle: "Não foi possível exportar o log original"
+    cannotExportOriginalContent: "Os dados do log original não estão disponíveis. Aguarde o término do carregamento do log e tente novamente."
 
   playback:
     play: "Reproduzir"
@@ -758,6 +760,7 @@ menu:
     clearAll: "Limpar tudo"
     copyToClipboard: 'Copiar "{{title}}" para a área de transferência'
     copyTunedValues: "Copiar valores ajustados"
+    exportOriginalLog: "Exportar log original..."
 
   help:
     heading: "Ajuda"
@@ -896,6 +899,8 @@ main:
     mcapFilter: "Log MCAP"
     exportConsoleTitle: "Selecione onde exportar o log do console"
     exportConsoleFilename: "Console {{date}}.txt"
+    exportOriginalTitle: "Selecione onde exportar o log original"
+    originalLogFilter: "Log {{extension}}"
     textFilter: "Arquivos de texto"
     openQuery: "Abrir log?"
     openDetail: 'Deseja abrir o arquivo de log "{{name}}"?'

@@ -338,6 +338,8 @@ hub:
     noLogs: "Please open a log file or connect to a live source, then try again." # Error content when export has no logs
     failedTitle: "Failed to export data" # Error title when conversion fails
     failedContent: "There was a problem while converting to the export format. Please try again." # Error content when conversion fails
+    cannotExportOriginalTitle: "Cannot export original log" # Error title when exporting an original child log fails
+    cannotExportOriginalContent: "The original log data is not available. Please wait for the log to finish loading and try again." # Error content when original child log data is not available
 
   playback:
     play: "Play" # Tooltip for playback play button
@@ -769,6 +771,7 @@ menu:
     clearAll: "Clear All" # Menu option to clear all items in source list
     copyToClipboard: 'Copy "{{title}}" to clipboard' # Menu option to copy a field name to clipboard
     copyTunedValues: "Copy Tuned Values" # Context menu option to copy all published tuning values to the clipboard
+    exportOriginalLog: "Export Original Log..." # Context menu option to export an embedded original log file
 
   help:
     heading: "Help" # Help menu option or button label
@@ -907,6 +910,8 @@ main:
     mcapFilter: "MCAP log" # File filter name for MCAP export
     exportConsoleTitle: "Select export location for console log" # Save dialog title for exporting console log
     exportConsoleFilename: "Console {{date}}.txt" # Default filename when exporting console log
+    exportOriginalTitle: "Select export location for the original log" # Save dialog title for exporting an original child log
+    originalLogFilter: "{{extension}} log" # File extension filter name for an original child log
     textFilter: "Text files" # File extension filter name for text files
     openQuery: "Open log?" # Question title when download finishes
     openDetail: 'Would you like to open the log file "{{name}}"?' # Question detail with downloaded filename

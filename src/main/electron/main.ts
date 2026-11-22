@@ -743,14 +743,19 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         fieldCopyMenu.append(new MenuItem({ type: "separator" }));
         fieldCopyMenu.append(
           new MenuItem({
-            label: "Export Original Log...",
+            label: t("menu.sidebar.exportOriginalLog"),
             click() {
               dialog
                 .showSaveDialog(window, {
-                  title: "Select export location for the original log",
+                  title: t("main.logs.exportOriginalTitle"),
                   defaultPath: defaultName,
                   properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
-                  filters: [{ name: extension.toUpperCase() + " log", extensions: [extension] }]
+                  filters: [
+                    {
+                      name: t("main.logs.originalLogFilter", { extension: extension.toUpperCase() }),
+                      extensions: [extension]
+                    }
+                  ]
                 })
                 .then((response) => {
                   if (!response.canceled && response.filePath) {

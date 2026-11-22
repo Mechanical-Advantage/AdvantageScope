@@ -332,6 +332,8 @@ hub:
     noLogs: "Abre un archivo de registro o conéctate a una fuente en vivo e intenta de nuevo."
     failedTitle: "No se pudieron exportar los datos"
     failedContent: "Hubo un problema al convertir al formato de exportación. Intenta de nuevo."
+    cannotExportOriginalTitle: "No se puede exportar el registro original"
+    cannotExportOriginalContent: "Los datos del registro original no están disponibles. Espere a que termine de cargarse el registro e inténtelo de nuevo."
 
   playback:
     play: "Reproducir"
@@ -759,6 +761,7 @@ menu:
     clearAll: "Borrar todo"
     copyToClipboard: 'Copiar "{{title}}" al portapapeles'
     copyTunedValues: "Copiar valores ajustados"
+    exportOriginalLog: "Exportar registro original..."
 
   help:
     heading: "Ayuda"
@@ -897,6 +900,8 @@ main:
     mcapFilter: "Registro MCAP"
     exportConsoleTitle: "Seleccionar ubicación de exportación para el registro de la consola"
     exportConsoleFilename: "Consola {{date}}.txt"
+    exportOriginalTitle: "Seleccionar ubicación de exportación para el registro original"
+    originalLogFilter: "Registro {{extension}}"
     textFilter: "Archivos de texto"
     openQuery: "¿Abrir registro?"
     openDetail: '¿Quieres abrir el archivo de registro "{{name}}"?'

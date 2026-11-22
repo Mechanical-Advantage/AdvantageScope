@@ -324,6 +324,8 @@ hub:
     noLogs: "请打开日志文件或连接到实时数据源，然后重试。"
     failedTitle: "导出数据失败"
     failedContent: "转换为导出格式时遇到问题。请重试。"
+    cannotExportOriginalTitle: "无法导出原始日志"
+    cannotExportOriginalContent: "原始日志数据不可用。请等待日志加载完成后再试。"
 
   playback:
     play: "播放"
@@ -754,6 +756,7 @@ menu:
     clearAll: "全部清除"
     copyToClipboard: "将“{{title}}”复制到剪贴板"
     copyTunedValues: "复制调参值"
+    exportOriginalLog: "导出原始日志..."
 
   help:
     heading: "帮助"
@@ -892,6 +895,8 @@ main:
     mcapFilter: "MCAP 日志"
     exportConsoleTitle: "选择控制台日志的导出位置"
     exportConsoleFilename: "控制台 {{date}}.txt"
+    exportOriginalTitle: "选择原始日志的导出位置"
+    originalLogFilter: "{{extension}} 日志"
     textFilter: "文本文件"
     openQuery: "打开日志？"
     openDetail: "是否打开日志文件“{{name}}”？"

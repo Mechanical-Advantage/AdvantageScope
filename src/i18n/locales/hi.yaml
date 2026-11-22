@@ -332,6 +332,8 @@ hub:
     noLogs: "कृपया एक लॉग फ़ाइल खोलें या लाइव स्रोत से कनेक्ट करें, फिर पुनः प्रयास करें।"
     failedTitle: "डेटा एक्सपोर्ट करने में विफल"
     failedContent: "एक्सपोर्ट फ़ॉर्मेट में परिवर्तित करते समय कोई समस्या हुई। कृपया पुनः प्रयास करें।"
+    cannotExportOriginalTitle: "मूल लॉग एक्सपोर्ट नहीं किया जा सकता"
+    cannotExportOriginalContent: "मूल लॉग डेटा उपलब्ध नहीं है। कृपया लॉग लोड होने की प्रतीक्षा करें और पुनः प्रयास करें।"
 
   playback:
     play: "चलाएँ"
@@ -759,6 +761,7 @@ menu:
     clearAll: "सभी साफ़ करें"
     copyToClipboard: '"{{title}}" को क्लिपबोर्ड पर कॉपी करें'
     copyTunedValues: "ट्यून किए गए मान कॉपी करें"
+    exportOriginalLog: "मूल लॉग एक्सपोर्ट करें..."
 
   help:
     heading: "सहायता"
@@ -897,6 +900,8 @@ main:
     mcapFilter: "MCAP लॉग"
     exportConsoleTitle: "कंसोल लॉग के लिए एक्सपोर्ट स्थान चुनें"
     exportConsoleFilename: "कंसोल {{date}}.txt"
+    exportOriginalTitle: "मूल लॉग के लिए एक्सपोर्ट स्थान चुनें"
+    originalLogFilter: "{{extension}} लॉग"
     textFilter: "टेक्स्ट फ़ाइलें"
     openQuery: "लॉग खोलें?"
     openDetail: 'क्या आप लॉग फ़ाइल "{{name}}" खोलना चाहेंगे?'

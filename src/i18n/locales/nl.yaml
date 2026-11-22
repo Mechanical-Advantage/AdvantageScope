@@ -332,6 +332,8 @@ hub:
     noLogs: "Open een logbestand of maak verbinding met een live-bron en probeer het vervolgens opnieuw."
     failedTitle: "Data exporteren mislukt"
     failedContent: "Er is een probleem opgetreden tijdens het converteren naar het exportformaat. Probeer het opnieuw."
+    cannotExportOriginalTitle: "Kan origineel logbestand niet exporteren"
+    cannotExportOriginalContent: "De gegevens van het originele logbestand zijn niet beschikbaar. Wacht tot het logbestand volledig is geladen en probeer het opnieuw."
 
   playback:
     play: "Afspelen"
@@ -759,6 +761,7 @@ menu:
     clearAll: "Alles wissen"
     copyToClipboard: '"{{title}}" naar klembord kopiëren'
     copyTunedValues: "Getunede waarden kopiëren"
+    exportOriginalLog: "Origineel logbestand exporteren..."
 
   help:
     heading: "Hulp"
@@ -897,6 +900,8 @@ main:
     mcapFilter: "MCAP-logbestand"
     exportConsoleTitle: "Selecteer exportlocatie voor consolelogbestand"
     exportConsoleFilename: "Console {{date}}.txt"
+    exportOriginalTitle: "Selecteer exportlocatie voor het originele logbestand"
+    originalLogFilter: "{{extension}}-logbestand"
     textFilter: "Tekstbestanden"
     openQuery: "Logbestand openen?"
     openDetail: 'Wil je het logbestand "{{name}}" openen?'

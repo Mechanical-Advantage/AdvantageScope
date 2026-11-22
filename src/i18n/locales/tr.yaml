@@ -327,6 +327,8 @@ hub:
     noLogs: "Lütfen bir log dosyası açın veya canlı bir kaynağa bağlanın, ardından tekrar deneyin."
     failedTitle: "Veri dışa aktarılamadı"
     failedContent: "Dışa aktarma formatına dönüştürülürken bir sorun oluştu. Lütfen tekrar deneyin."
+    cannotExportOriginalTitle: "Orijinal log dışa aktarılamıyor"
+    cannotExportOriginalContent: "Orijinal log verileri mevcut değil. Lütfen logun yüklenmesini bekleyin ve tekrar deneyin."
 
   playback:
     play: "Oynat"
@@ -750,6 +752,7 @@ menu:
     clearAll: "Tümünü temizle"
     copyToClipboard: "Panoya kopyala: “{{title}}”"
     copyTunedValues: "Ayarlanan değerleri kopyala"
+    exportOriginalLog: "Orijinal Logu Dışa Aktar..."
 
   help:
     heading: "Yardım"
@@ -888,6 +891,8 @@ main:
     mcapFilter: "MCAP logu"
     exportConsoleTitle: "Konsol logu için dışa aktarma konumunu seçin"
     exportConsoleFilename: "Konsol {{date}}.txt"
+    exportOriginalTitle: "Orijinal log için dışa aktarma konumunu seçin"
+    originalLogFilter: "{{extension}} logu"
     textFilter: "Metin dosyaları"
     openQuery: "Log açılsın mı?"
     openDetail: "“{{name}}” log dosyasını açmak ister misiniz?"

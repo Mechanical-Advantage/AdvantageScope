@@ -348,6 +348,8 @@ hub:
     noLogs: "Откройте файл лога или подключитесь к источнику в реальном времени, а затем попробуйте снова."
     failedTitle: "Сбой экспорта данных"
     failedContent: "Возникла проблема при преобразовании в формат экспорта. Попробуйте снова."
+    cannotExportOriginalTitle: "Не удалось экспортировать исходный лог"
+    cannotExportOriginalContent: "Данные исходного лога недоступны. Дождитесь завершения загрузки лога и повторите попытку."
 
   playback:
     play: "Воспроизвести"
@@ -783,6 +785,7 @@ menu:
     clearAll: "Очистить всё"
     copyToClipboard: "Скопировать «{{title}}» в буфер обмена"
     copyTunedValues: "Скопировать настроенные значения"
+    exportOriginalLog: "Экспортировать исходный лог..."
 
   help:
     heading: "Помощь"
@@ -921,6 +924,8 @@ main:
     mcapFilter: "Лог MCAP"
     exportConsoleTitle: "Выберите место экспорта для лога консоли"
     exportConsoleFilename: "Консоль {{date}}.txt"
+    exportOriginalTitle: "Выберите место экспорта для исходного лога"
+    originalLogFilter: "Лог {{extension}}"
     textFilter: "Текстовые файлы"
     openQuery: "Открыть лог?"
     openDetail: "Открыть файл лога «{{name}}»?"

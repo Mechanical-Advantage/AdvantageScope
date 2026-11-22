@@ -1020,8 +1020,8 @@ async function handleMainMessage(message: NamedMessage) {
         let rawData = window.log.getField(key)?.getRaw(-Infinity, Infinity);
         if (!rawData || rawData.values.length === 0) {
           window.sendMainMessage("error", {
-            title: "Cannot export original log",
-            content: "The original log data is not available. Please wait for the log to finish loading and try again."
+            title: t("hub.export.cannotExportOriginalTitle"),
+            content: t("hub.export.cannotExportOriginalContent")
           });
         } else {
           let totalLength = rawData.values.reduce((sum, arr) => sum + arr.length, 0);
