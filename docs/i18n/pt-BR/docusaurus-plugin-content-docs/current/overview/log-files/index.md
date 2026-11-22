@@ -2,7 +2,7 @@
 
 ## Formatos suportados {#supported-formats}
 
-- **WPILOG (.wpilog)** - Gerado pelo [logging de dados integrado](https://docs.wpilib.org/pt/stable/docs/software/telemetry/datalog.html) da WPILib e pelo AdvantageKit. Você também pode usar o [URCL](/more-features/urcl) para gravar sinais de controladores de motor da REV em um arquivo WPILOG.
+- **WPILOG (.wpilog)** - Gerado pelo [logging de dados integrado](https://docs.wpilib.org/pt/stable/docs/software/telemetry/datalog.html) da WPILib, pelo AdvantageKit e pela FIRST Driver Station. O [logging universal](/more-features/universal-logging) pode ser usado para capturar logs externos (por exemplo, logs de fabricantes) em um arquivo WPILOG.
 - **Hoot (.hoot)** - Gerado pelo [signal logger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) do Phoenix 6 da CTRE.
 - **REVLOG (.revlog)** - Gerado pelo [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) da REV Robotics.
 - **Road Runner (.log)** - Gerado pela biblioteca [Road Runner](https://github.com/acmerobotics/road-runner) para FTC.
@@ -31,6 +31,12 @@ _A interface em inglês é exibida acima._
 Depois de abrir um arquivo de log, você pode adicionar outros arquivos à visualização sem complicação. Os timestamps são realinhados automaticamente para sincronizar com os dados já abertos.
 
 Na barra de menus, clique em `Arquivo` > `Adicionar novo(s) log(s)...` e escolha um ou mais arquivos para incluir na visualização atual. Os campos de cada log aparecerão em tabelas chamadas `Log0`, `Log1`, etc.
+
+## Layout da Driver Station {#driver-station-layout}
+
+O AdvantageScope inclui um layout integrado projetado para visualizar logs e dados ao vivo da FIRST Driver Station, com guias pré-configuradas para saída do console, métricas de comunicação, tensão da bateria, utilização da CPU e entradas de joysticks.
+
+Ao abrir um arquivo WPILOG gerado pela FIRST Driver Station no desktop, o AdvantageScope pergunta se você deseja abrir o log em uma janela separada usando o layout da Driver Station. Qualquer janela também pode ser alternada para esse layout manualmente clicando em `Arquivo` > `Redefinir para o layout da DS`. No [AdvantageScope Lite](/more-features/advantagescope-lite) para a FIRST Driver Station, esse layout é usado por padrão (e pode ser restaurado clicando em `Guias` > `Redefinir para o layout padrão`).
 
 ## Baixando do robô {#downloading-from-the-robot}
 

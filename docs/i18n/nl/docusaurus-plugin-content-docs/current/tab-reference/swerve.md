@@ -36,14 +36,18 @@ Sleep een veld naar de sectie "Bronnen" om te beginnen. Met het kruisje verwijde
 - **Robotsnelheden:** De lineaire snelheid en hoeksnelheid, weergegeven in het midden van het diagram.
 - **Rotatie:** De hoek waarmee het hele diagram wordt gedraaid.
 
+:::tip
+De statussen van swerve-modules kunnen ook worden gevisualiseerd op de tabbladen 🗺️ [2D-veld](/tab-reference/2d-field) en 👀 [3D-veld](/tab-reference/3d-field).
+:::
+
 ## Dataformaat {#data-format}
 
 Log je data als een byte-gecodeerde struct of protobuf van het type `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d` of `Rotation3d`.
 
-Veel bibliotheken ondersteunen het struct-formaat, waaronder WPILib en AdvantageKit. Hieronder zie je hoe je de status van swerve-modules logt in Java.
+Veel bibliotheken ondersteunen het struct-formaat, waaronder WPILib en AdvantageKit. Hieronder zie je hoe je de status van swerve-modules logt.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
@@ -54,6 +58,37 @@ SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
 };
 
 Telemetry.log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+std::array<wpi::math::SwerveModuleVelocity, 4> states{
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{}
+};
+
+wpi::telemetry::Log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import SwerveModuleVelocity
+import telemetry
+
+states = [
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+]
+
+telemetry.log("MyStates", states, element_type=SwerveModuleVelocity)
 ```
 
 </TabItem>

@@ -7,9 +7,9 @@ sidebar_position: 5
 Vizualizarea de consolă este concepută pentru a afișa un singur câmp de tip șir de caractere (string) cu date de consolă. Mai jos găsești câteva câmpuri sugerate:
 
 - **DS:/Dscomm/Console** - Salvat de FIRST Driver Station.
-- **messages** - Salvat de sistemul de logging integrat din WPILib pe baza apelurilor la metoda [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>).
-- **/RealOutputs/Console** - Salvat automat de AdvantageKit în timpul funcționării robotului (folosește `System.out.println` ca de obicei).
-- **/ReplayOutputs/Console** - Salvat automat de AdvantageKit în timpul reluării logului (folosește `System.out.println` ca de obicei).
+- **messages** - Salvat automat de `DataLogManager` din WPILib.
+- **/RealOutputs/Console** - Salvat automat de AdvantageKit în timpul funcționării robotului.
+- **/ReplayOutputs/Console** - Salvat automat de AdvantageKit în timpul reluării logului.
 
 Trage câmpul dorit în vizualizarea principală pentru a începe. Fiecare rând reprezintă o actualizare a câmpului. Pentru logurile WPILib, se creează un rând nou pentru fiecare linie salvată. Pentru logurile AdvantageKit, se creează un rând nou pentru fiecare ciclu de buclă.
 

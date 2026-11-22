@@ -7,9 +7,9 @@ sidebar_position: 5
 कंसोल व्यू को कंसोल डेटा वाले किसी एक स्ट्रिंग फील्ड को देखने के लिए डिज़ाइन किया गया है। नीचे कुछ सुझाए गए फील्ड्स दिए गए हैं:
 
 - **DS:/Dscomm/Console** - FIRST ड्राइवर स्टेशन द्वारा सेव किया गया।
-- **messages** - [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>) मेथड को कॉल करने पर WPILib की बिल्ट-इन लॉगिंग द्वारा सेव किया गया।
-- **/RealOutputs/Console** - रोबोट चलने के दौरान AdvantageKit द्वारा अपने-आप सेव किया गया (सामान्य रूप से `System.out.println` का उपयोग करें)।
-- **/ReplayOutputs/Console** - लॉग रीप्ले के दौरान AdvantageKit द्वारा अपने-आप सेव किया गया (सामान्य रूप से `System.out.println` का उपयोग करें)।
+- **messages** - WPILib की बिल्ट-इन डेटा लॉगिंग द्वारा सेव किया गया।
+- **/RealOutputs/Console** - रोबोट चलने के दौरान AdvantageKit द्वारा अपने-आप सेव किया गया।
+- **/ReplayOutputs/Console** - लॉग रीप्ले के दौरान AdvantageKit द्वारा अपने-आप सेव किया गया।
 
 शुरू करने के लिए वांछित फील्ड को मुख्य व्यू में ड्रैग करें। हर रो (row) उस फील्ड के एक अपडेट को दिखाती है। WPILib लॉग्स के लिए, सेव की गई हर लाइन के लिए एक नई रो बनती है। AdvantageKit लॉग्स के लिए, हर लूप साइकिल के लिए एक नई रो बनती है।
 

@@ -32,10 +32,10 @@ _Жоғарыда ағылшын тіліндегі интерфейс көрс�
 
 ## Деректерді жариялау {#publishing-data}
 
-<Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+Механизм деректерін жариялау үшін `Mechanism2d` нысанын жүйелі түрде журналдаңыз (төменде көрсетілген). Бұл шақыру `Mechanism2d` нысанының тек ағымдағы күйін жазып алатынын ескеріңіз, сондықтан оны нысан жаңартылғаннан кейін әрбір цикл сайын шақыру қажет.
 
-WPILib көмегімен механизм деректерін жариялау үшін `Telemetry` арқылы `Mechanism2d` нысанын жүйелі түрде журналдаңыз (төменде көрсетілген). Бұл шақыру `Mechanism2d` нысанының тек ағымдағы күйін жазып алатынын ескеріңіз, сондықтан оны нысан жаңартылғаннан кейін әрбір цикл сайын шақыру қажет.
+<Tabs groupId="library">
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
@@ -46,9 +46,31 @@ periodic() {
 ```
 
 </TabItem>
-<TabItem value="advantagekit" label="AdvantageKit">
+<TabItem value="wpilib-cpp" label="C++">
 
-AdvantageKit көмегімен механизм деректерін жариялау үшін `Mechanism2d` нысанын шығыс өрісі ретінде жүйелі түрде жазып отырыңыз (төменде көрсетілген). Бұл шақыру `Mechanism2d` нысанының тек ағымдағы күйін жазып алатынын ескеріңіз, сондықтан оны нысан жаңартылғаннан кейін әрбір цикл сайын шақыру қажет.
+```cpp
+wpi::Mechanism2d mechanism{3, 3};
+
+void Periodic() {
+  wpi::telemetry::Log("MyMechanism", mechanism);
+}
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+import wpilib
+import telemetry
+
+mechanism = wpilib.Mechanism2d(3, 3)
+
+def periodic():
+    telemetry.log("MyMechanism", mechanism)
+```
+
+</TabItem>
+<TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
 LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);

@@ -36,14 +36,18 @@ Pour commencer, faites glisser un champ vers la section « Sources ». Vous po
 - **Vitesses du robot :** les vitesses linéaire et angulaire affichées au centre du schéma.
 - **Rotation :** l'angle utilisé pour orienter le schéma.
 
+:::tip
+Les états des modules _swerve_ peuvent également être visualisés dans les onglets 🗺️ [Terrain 2D](/tab-reference/2d-field) et 👀 [Terrain 3D](/tab-reference/3d-field).
+:::
+
 ## Format des données {#data-format}
 
 Les données doivent être publiées au format struct ou protobuf encodé en octets, à l'aide des types `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d` ou `Rotation3d`.
 
-De nombreuses bibliothèques prennent en charge le format struct, notamment WPILib et AdvantageKit. L'exemple ci-dessous montre comment enregistrer les états des modules _swerve_ en Java.
+De nombreuses bibliothèques prennent en charge le format struct, notamment WPILib et AdvantageKit. L'exemple ci-dessous montre comment enregistrer les états des modules _swerve_.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
@@ -54,6 +58,37 @@ SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
 };
 
 Telemetry.log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+std::array<wpi::math::SwerveModuleVelocity, 4> states{
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{}
+};
+
+wpi::telemetry::Log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import SwerveModuleVelocity
+import telemetry
+
+states = [
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+]
+
+telemetry.log("MyStates", states, element_type=SwerveModuleVelocity)
 ```
 
 </TabItem>

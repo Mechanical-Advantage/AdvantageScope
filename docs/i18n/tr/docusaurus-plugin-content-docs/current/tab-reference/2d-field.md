@@ -52,10 +52,10 @@ Desteklenen nesne türlerinin tam listesini görmek için `?` simgesine tıklay�
 
 Geometri verileri bayt kodlu struct veya protobuf olarak yayınlanmalıdır. `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` ve daha fazlası dahil olmak üzere çeşitli 2B ve 3B geometri türleri desteklenir.
 
-WPILib ve AdvantageKit dahil birçok kütüphane struct formatını destekler. Aşağıdaki örnek kod, Java'da 2B poz verilerinin nasıl loglanacağını gösterir.
+WPILib ve AdvantageKit dahil birçok kütüphane struct formatını destekler. Aşağıdaki örnek kod, 2B poz verilerinin nasıl loglanacağını gösterir.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Pose2d poseA = new Pose2d();
@@ -63,6 +63,31 @@ Pose2d poseB = new Pose2d();
 
 Telemetry.log("MyPose", poseA);
 Telemetry.log("MyPoseArray", new Pose2d[] {poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::math::Pose2d poseA;
+wpi::math::Pose2d poseB;
+
+wpi::telemetry::Log("MyPose", poseA);
+wpi::telemetry::Log("MyPoseArray", std::vector{poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import Pose2d
+import telemetry
+
+pose_a = Pose2d()
+pose_b = Pose2d()
+
+telemetry.log("MyPose", pose_a)
+telemetry.log("MyPoseArray", [pose_a, pose_b], element_type=Pose2d)
 ```
 
 </TabItem>

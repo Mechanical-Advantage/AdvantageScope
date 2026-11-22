@@ -30,5 +30,5 @@ _ऊपर अंग्रेजी इंटरफ़ेस दिखाया 
 AdvantageScope में सामान्य जॉयस्टिक्स का एक सेट शामिल है, जिसमें ऊपर दिखाया गया ग्रिड फॉर्मेट वाला "जेनेरिक जॉयस्टिक" भी शामिल है जिसमें सभी बटन, एक्सिस और POV दिखते हैं। कस्टम जॉयस्टिक जोड़ने के लिए [कस्टम एसेट्स](/more-features/custom-assets) देखें।
 
 :::warning
-**स्टॉक WPILib के साथ NetworkTables कनेक्शन के ज़रिए जॉयस्टिक डेटा उपलब्ध नहीं होता है।** WPILib लॉग फ़ाइलें ([जॉयस्टिक लॉगिंग इनेबल](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data) के साथ), AdvantageKit लॉग्स, और AdvantageKit स्ट्रीमिंग सपोर्टेड हैं।
+**स्टॉक WPILib के साथ NetworkTables कनेक्शन के ज़रिए जॉयस्टिक डेटा उपलब्ध नहीं होता है।** WPILib लॉग फ़ाइलें ([जॉयस्टिक लॉगिंग इनेबल](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data) के साथ), FIRST ड्राइवर स्टेशन डेटा, AdvantageKit लॉग्स, और AdvantageKit स्ट्रीमिंग सपोर्टेड हैं।
 :::

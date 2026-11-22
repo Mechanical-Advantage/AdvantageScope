@@ -18,7 +18,7 @@ By default, all values in AdvantageScope are read-only. To toggle tuning mode, *
 :::tip
 For users on iPhone and iPad, **AdvantageTune** is an alternative option created by the AdvantageScope developers for tuning NetworkTables values from mobile devices.
 
-[<img src="/img/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagetune/id6811453643)
+[<img src="/img/app-store_en-US.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagetune/id6811453643)
 :::
 
 ## WPILib Tunables {#wpilib-tunables}

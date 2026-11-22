@@ -2,7 +2,7 @@
 
 ## Formatos compatibles {#supported-formats}
 
-- **WPILOG (.wpilog)** - Generado por el [registro de datos integrado](https://docs.wpilib.org/es/stable/docs/software/telemetry/datalog.html) de WPILib y por AdvantageKit. También puedes usar [URCL](/more-features/urcl) para guardar señales de controladores de motores REV en un archivo WPILOG.
+- **WPILOG (.wpilog)** - Generado por el [registro de datos integrado](https://docs.wpilib.org/es/stable/docs/software/telemetry/datalog.html) de WPILib, AdvantageKit y la Driver Station de FIRST. Puedes usar el [registro universal](/more-features/universal-logging) para capturar registros externos (por ejemplo, de fabricantes) dentro de un archivo WPILOG.
 - **Hoot (.hoot)** - Generado por el [Signal Logger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) de Phoenix 6 de CTRE.
 - **REVLOG (.revlog)** - Generado por [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) de REV Robotics.
 - **Road Runner (.log)** - Generado por la biblioteca [Road Runner](https://github.com/acmerobotics/road-runner) para FTC.
@@ -31,6 +31,12 @@ _La imagen de arriba muestra la interfaz en inglés._
 Una vez que ya tienes un registro abierto, puedes sumar otros archivos a la misma visualización; sus marcas de tiempo se ajustarán automáticamente para sincronizarse con los datos actuales.
 
 Haz clic en `Archivo` > `Agregar nuevo(s) registro(s)...` en la barra de menú y selecciona los archivos que quieras incorporar. Los campos de cada archivo nuevo aparecerán agrupados en tablas llamadas `Log0`, `Log1`, etc.
+
+## Disposición de la Driver Station {#driver-station-layout}
+
+AdvantageScope incluye una disposición integrada diseñada para ver registros y datos en vivo de la Driver Station de FIRST, con pestañas preconfiguradas para la salida de consola, métricas de comunicación, voltaje de batería, uso de CPU y entradas de joysticks.
+
+Al abrir un archivo WPILOG generado por la Driver Station de FIRST en la versión de escritorio, AdvantageScope te preguntará si deseas abrir el registro en una ventana separada usando la disposición de la Driver Station. También puedes cambiar cualquier ventana a esta disposición manualmente haciendo clic en `Archivo` > `Restablecer a la disposición de DS`. En [AdvantageScope Lite](/more-features/advantagescope-lite) para la Driver Station de FIRST, esta disposición se usa de forma predeterminada (y se puede restaurar haciendo clic en `Pestañas` > `Restablecer disposición predeterminada`).
 
 ## Descarga desde el robot {#downloading-from-the-robot}
 

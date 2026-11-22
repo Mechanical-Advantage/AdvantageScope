@@ -30,5 +30,5 @@ Kies de juiste joysticktypen in de tabel onderaan het tabblad. De joystick-ID's 
 AdvantageScope heeft standaard een aantal bekende joysticks ingebouwd, plus een "Generieke joystick" die alle knoppen, assen en POV's in een overzichtelijk raster toont (zoals hierboven). Wil je een eigen controllerindeling toevoegen? Kijk dan bij [Aangepaste assets](/more-features/custom-assets).
 
 :::warning
-**Joystickdata is NIET beschikbaar via een NetworkTables-verbinding met standaard WPILib.** Wel ondersteund zijn WPILib-logbestanden (als [joysticklogging is ingeschakeld](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), AdvantageKit-logs en AdvantageKit-streaming.
+**Joystickdata is NIET beschikbaar via een NetworkTables-verbinding met standaard WPILib.** Wel ondersteund zijn WPILib-logbestanden (als [joysticklogging is ingeschakeld](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), AdvantageKit-logs, AdvantageKit-streaming en FIRST Driver Station-data.
 :::

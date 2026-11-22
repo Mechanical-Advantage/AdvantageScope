@@ -17,6 +17,11 @@ AdvantageScope este o aplicație de diagnosticare a robotului, analiză a loguri
 items={[
 {
 type: "category",
+label: "Tutoriale",
+href: "/category/tutorials"
+},
+{
+type: "category",
 label: "Prezentare generală",
 href: "/category/overview"
 },
@@ -24,11 +29,6 @@ href: "/category/overview"
 type: "category",
 label: "Referință file",
 href: "/category/tab-reference"
-},
-{
-type: "category",
-label: "Alte funcționalități",
-href: "/category/more-features"
 },
 {
 type: "link",

@@ -74,7 +74,7 @@ In het venster XR-bediening vind je verschillende opties voor de weergave in aug
 
 AdvantageScope XR heeft geen internetverbinding nodig. Wil je zeker weten dat de app altijd offline beschikbaar is, download AdvantageScope XR dan vooraf uit de App Store via de link hieronder. Om verbinding te maken met de desktopapp van AdvantageScope scan je de QR-code met de Camera-app van iOS, of tik je op de knop "Scan" in de AdvantageScope XR-app.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_nl.svg" alt="App Store" />](https://apps.apple.com/nl/app/advantagescope-xr/id6739718081)
 
 :::note
 Ook zonder internetverbinding **moeten de host en het mobiele apparaat op hetzelfde netwerk zitten** (bijvoorbeeld dat van de robot, een eigen wifinetwerk of via USB-tethering).

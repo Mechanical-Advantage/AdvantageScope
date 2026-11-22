@@ -17,6 +17,11 @@ AdvantageScope היא אפליקציה לאבחון רובוטים, ניתוח �
 items={[
 {
 type: "category",
+label: "מדריכים",
+href: "/category/tutorials"
+},
+{
+type: "category",
 label: "סקירה כללית",
 href: "/category/overview"
 },
@@ -24,11 +29,6 @@ href: "/category/overview"
 type: "category",
 label: "מדריך כרטיסיות",
 href: "/category/tab-reference"
-},
-{
-type: "category",
-label: "תכונות נוספות",
-href: "/category/more-features"
 },
 {
 type: "link",

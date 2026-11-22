@@ -30,5 +30,5 @@ _Жоғарыда ағылшын тіліндегі интерфейс көрс�
 AdvantageScope құрамында жиі қолданылатын джойстиктер жиынтығы бар, соның ішінде барлық түймелері, осьтері және POV қосқыштары тор түрінде орналасқан «Әмбебап джойстик» (жоғарыда көрсетілген). Арнайы джойстикті қосу үшін [Пайдаланушы активтері](/more-features/custom-assets) бетін қараңыз.
 
 :::warning
-**Джойстик деректері стандартты WPILib қолданатын NetworkTables қосылымы арқылы қолжетімді ЕМЕС.** Оның орнына WPILib журнал файлдарына ([джойстикті журналдау қосылған](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), AdvantageKit журналдарына және AdvantageKit трансляциясына қолдау көрсетіледі.
+**Джойстик деректері стандартты WPILib қолданатын NetworkTables қосылымы арқылы қолжетімді ЕМЕС.** Оның орнына WPILib журнал файлдарына ([джойстикті журналдау қосылған](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), AdvantageKit журналдарына, AdvantageKit трансляциясына және FIRST Driver Station деректеріне қолдау көрсетіледі.
 :::

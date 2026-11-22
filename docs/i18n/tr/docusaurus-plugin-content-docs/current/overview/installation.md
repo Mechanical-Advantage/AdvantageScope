@@ -16,10 +16,6 @@ AdvantageScope'u doğrudan Takım 6328'den indirdiğinizde şu avantajlara sahip
 - İndirilebilir yeni bir sürüm çıktığında uygulama içi bildirimler
 - 👀 [3B saha](/tab-reference/3d-field) sekmesinde kullanabileceğiniz güncel 6328 robot modellerinden oluşan yerleşik bir koleksiyon
 
-:::note
-Ubuntu 23.10 veya daha yeni sürümlerde AppImage paketini çalıştırmadan önce, sürümler sayfasından AppArmor profilini indirip /etc/apparmor.d dizinine kopyalamanız gerekir.
-:::
-
 :::info
 AdvantageScope'un her ana sürümü, FRC sezon açılışından (kickoff) önce ocak ayında, yıla karşılık gelen bir sürüm numarasıyla yayınlanır (örneğin v26.0.0, Ocak 2026'da yayınlandı). Yeni özellikleri denemek ve geri bildirim vermek isteyen takımlar için her ana sürüm öncesindeki aylarda alfa ve beta sürümleri de paylaşılabilir. **Bu ön sürümleri kullanan takımların kararlı sürümlerde olmayan sorunlarla ve hatalarla karşılaşabileceğini unutmayın.**
 :::

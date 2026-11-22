@@ -24,6 +24,12 @@ AdvantageScope 支持多种语言，旨在为全球队伍提供本地化体验�
 - 简体中文
 - 繁体中文
 
+感谢以下贡献者协助审校和改进 AdvantageScope 的翻译：
+
+- FRC Team 4400 Cerbotics
+- FRC Team 6907 The G.O.A.T.
+- Ata Baber
+
 ## 配置 {#configuration}
 
 如需更改 AdvantageScope 的界面语言，请点击 `应用程序` > `首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。在“语言”选项中，你可以选择任意受支持的语言，或选择“系统默认”以自动跟随系统语言。
@@ -37,10 +43,26 @@ AdvantageScope 支持的所有日志格式均完整兼容 Unicode 键名。也�
 以下是使用简体中文键名记录字符串的示例：
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Telemetry.log("驱动/右电机速度", "快");
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::telemetry::Log("驱动/右电机速度", "快");
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+import telemetry
+
+telemetry.log("驱动/右电机速度", "快")
 ```
 
 </TabItem>
@@ -61,4 +83,4 @@ Logger.recordOutput("驱动/右电机速度", "快");
 
 AdvantageScope 的本地化工作由人工智能与社区协作共同完成。由于 AdvantageScope 迭代迅速，借助 AI 对于让所有语言的应用界面和文档保持同步至关重要。这样一来，无论你选择哪种语言，都能第一时间用上新功能与更新。
 
-我们的本地化流程会尽量贴合各地队伍熟悉的专业词汇、借词和译法，但 AI 翻译仍可能出现生硬或不准确之处。欢迎随时向我们反馈：在应用中选择英语以外的任意语言时，点击标题栏中的紫色图标即可提交翻译意见。
+我们的本地化流程会尽量贴合各地队伍熟悉的专业词汇、借词和译法，但 **AI 翻译仍可能出现生硬或不准确之处**。欢迎随时向我们反馈：在应用中选择英语以外的任意语言时，点击标题栏中的紫色图标，或通过文档标题栏中的反馈链接即可提交翻译意见。

@@ -74,7 +74,7 @@ Fereastra de controale XR îți oferă câteva opțiuni pentru a controla modul 
 
 AdvantageScope XR nu are nevoie de conexiune la internet. Pentru a te asigura că aplicația este disponibilă offline, descarcă AdvantageScope XR din App Store folosind linkul de mai jos. Pentru a te conecta la aplicația desktop AdvantageScope, scanează codul QR cu aplicația de cameră iOS sau atinge butonul „Scan” din aplicația AdvantageScope XR.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_ro.svg" alt="App Store" />](https://apps.apple.com/ro/app/advantagescope-xr/id6739718081?l=ro)
 
 :::note
 Chiar și atunci când rulează fără conexiune la internet, dispozitivele gazdă și client **trebuie să fie conectate la aceeași rețea** (cum ar fi rețeaua unui robot, o rețea Wi-Fi dedicată sau prin partajare internet USB).

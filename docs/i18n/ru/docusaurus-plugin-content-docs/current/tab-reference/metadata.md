@@ -13,10 +13,10 @@ import TabItem from '@theme/TabItem';
 
 _Выше показан интерфейс на английском языке._
 
-Пример кода ниже показывает, как логировать метаданные на Java.
+Пример кода ниже показывает, как логировать метаданные.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 В WPILib логируйте значения в таблицу «/Metadata» в виде строк с помощью класса `Telemetry`.
 
@@ -24,6 +24,30 @@ _Выше показан интерфейс на английском языке
 TelemetryTable metadata = Telemetry.getTable("Metadata");
 metadata.log("RobotName", "Darwin");
 metadata.log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+В WPILib логируйте значения в таблицу `/Metadata` в виде строк с помощью функции `wpi::telemetry::GetTable`:
+
+```cpp
+wpi::telemetry::TelemetryTable& metadata = wpi::telemetry::GetTable("Metadata");
+metadata.Log("RobotName", "Darwin");
+metadata.Log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+В WPILib логируйте значения в таблицу «/Metadata» в виде строк с помощью модуля `telemetry`.
+
+```python
+import telemetry
+
+metadata = telemetry.get_table("Metadata")
+metadata.log("RobotName", "Darwin")
+metadata.log("Platform", "macOS")
 ```
 
 </TabItem>

@@ -1,133 +1,150 @@
 ---
-title: 2026 में नया क्या है?
+title: 2027 में नया क्या है?
 sidebar_position: 2
-draft: true
 ---
 
 #
 
-<img src="/img/whats-new/banner-light.webp" className="light-only" />
-<img src="/img/whats-new/banner-dark.webp" className="dark-only" />
+<img src="/img/whats-new/banner-2027-ltr-light.webp" className="light-only" />
+<img src="/img/whats-new/banner-2027-ltr-dark.webp" className="dark-only" />
 
-AdvantageScope का 2026 संस्करण अब उपलब्ध है! विवरण के लिए [इंस्टॉलेशन डॉक्यूमेंटेशन](/overview/installation) और [पूरा चेंजलॉग](https://github.com/Mechanical-Advantage/AdvantageScope/releases) देखें। यह रिलीज़ कई प्रमुख नए फ़ीचर्स और पूरे ऐप में ढेरों सुधार लेकर आई है। इस रिलीज़ के कई फ़ीचर्स मौजूदा कंट्रोल सिस्टम पर अनुभव बेहतर बनाने के लिए बनाए गए हैं, और साथ ही आने वाले सीज़न में [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) पर सहज शिफ्ट की तैयारी भी करते हैं।
+AdvantageScope का 2027 संस्करण अब उपलब्ध है! विवरण के लिए [इंस्टॉलेशन डॉक्स](/overview/installation) और [पूरा चेंजलॉग](https://github.com/Mechanical-Advantage/AdvantageScope/releases) देखें। इस रिलीज़ में कई प्रमुख नए फ़ीचर्स और पूरे एप्लिकेशन में अनेक सुधार शामिल हैं। यह Systemcore के पूर्ण समर्थन वाला AdvantageScope का पहला संस्करण भी है।
 
-**हम आपकी राय को महत्व देते हैं! [इश्यूज़ पेज](https://github.com/Mechanical-Advantage/AdvantageScope/issues) पर फ़ीडबैक, फ़ीचर अनुरोध और बग रिपोर्ट का स्वागत है।**
+**हम आपके फ़ीडबैक को महत्व देते हैं! [इश्यूज़ पेज](https://github.com/Mechanical-Advantage/AdvantageScope/issues) पर फ़ीडबैक, फ़ीचर अनुरोध और बग रिपोर्ट का स्वागत है।**
 
-## ✴️ प्रायोगिक: FTC सपोर्ट {#ftc-support}
+<img src="/img/screenshot-light.webp" className="light-only" />
+<img src="/img/screenshot-dark.webp" className="dark-only" />
 
-2027-2028 सीज़न में Systemcore के साथ पूर्ण सपोर्ट की तैयारी में, यह रिलीज़ मौजूदा FIRST Tech Challenge कंट्रोल सिस्टम के साथ कम्पैटिबिलिटी बेहतर करने के लिए कई फ़ीचर्स जोड़ती है:
+## 🍋‍🟩 Systemcore संगतता {#systemcore-compatibility}
 
-- 🗺️ [2D फील्ड](/tab-reference/2d-field) और 👀 [3D फील्ड](/tab-reference/3d-field) पर FTC फील्ड्स और रोबोट मॉडल
-- [मानक FTC कोऑर्डिनेट्स](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html) के साथ कम्पैटिबिलिटी के लिए नए [कोऑर्डिनेट सिस्टम](/more-features/coordinate-systems) विकल्प
-- [Road Runner](https://rr.brott.dev/docs/v1-0/installation/) लॉग फ़ाइलों के लिए सपोर्ट
-- [FTC डैशबोर्ड](https://github.com/acmerobotics/ftc-dashboard) लाइव स्ट्रीमिंग फ़ॉर्मेट के लिए सपोर्ट
+AdvantageScope 2027 नए Systemcore रोबोट कंट्रोलर और WPILib 2027 के साथ सहज संचालन के लिए बनाया गया है:
 
-:::tip
-FTC टीमों को आधिकारिक सीज़न के दौरान प्रायोगिक सॉफ़्टवेयर का उपयोग करते समय सावधानी बरतनी चाहिए। AdvantageScope के लिए FTC सपोर्ट अभी सक्रिय विकास में है।
-:::
+- डिफ़ॉल्ट रोबोट पता अब `robot.local` है, जिससे आप टीम नंबर कॉन्फ़िगर किए बिना लाइव कनेक्ट कर सकते हैं या लॉग डाउनलोड कर सकते हैं। मेनू बार से Systemcore USB और Wi-Fi पते भी चुने जा सकते हैं।
+- [लॉग डाउनलोडिंग](/overview/log-files#downloading-from-the-robot) अब लेगेसी roboRIO लॉग डाउनलोड के साथ-साथ Systemcore के लिए SFTP का समर्थन करती है।
+- 2027 से FRC फ़ील्ड्स और 2027–2028 से FTC फ़ील्ड्स द्वारा उपयोग की जाने वाली [सेंटर/रेड](/more-features/coordinate-systems#center-red) कोऑर्डिनेट सिस्टम जोड़ी गई।
+- WPILib 2027 के `Telemetry` और `Tunables` API के लिए समर्थन, अपडेटेड अलर्ट रंग, और Systemcore टाइमस्टैम्प्स को पढ़ने में आसान बनाने के लिए एक नई [टाइमस्टैम्प डिस्प्ले प्राथमिकता](/more-features/timestamps) जोड़ी गई।
+- एक नया [Systemcore डायग्नोस्टिक्स](/overview/live-sources) लाइव मोड बिना किसी उपयोगकर्ता कोड के रोबोट स्थिति और हार्डवेयर IO की निगरानी के लिए Systemcore के बिल्ट-इन NetworkTables सर्वर से सीधे जुड़ता है।
 
-<div className="image-gallery">
-  <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-2.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-3.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-4.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
-</div>
+## 💡 AdvantageScope लाइट {#advantagescope-lite}
 
-कई थर्ड-पार्टी FTC लॉगिंग/टेलीमेट्री लाइब्रेरी AdvantageScope के साथ कम्पैटिबल अन्य फ़ॉर्मेट सपोर्ट करती हैं, जैसे कि WPILOG और RLOG। इन लाइब्रेरी का डॉक्यूमेंटेशन संबंधित प्रोजेक्ट्स में मिल सकता है; AdvantageScope डेवलपर्स AdvantageScope के साथ उपयोग के लिए किसी विशेष FTC लॉगिंग समाधान की सिफारिश नहीं करते हैं।
+[AdvantageScope लाइट](/more-features/advantagescope-lite) AdvantageScope के विज़ुअलाइज़ेशन और विश्लेषण टूल्स को सीधे आपके वेब ब्राउज़र में लाता है। यह Systemcore वेब इंटरफ़ेस और FIRST ड्राइवर स्टेशन के अंदर से **बिना किसी इंस्टॉलेशन** के उपलब्ध है।
 
-:::info
-AdvantageScope को WPILib फ्रेमवर्क और उससे जुड़े लॉगिंग टूल्स के साथ सर्वोत्तम अनुभव देने के लिए डिज़ाइन किया गया है। अनौपचारिक लॉगिंग समाधानों का उपयोग करते समय आपको कम्पैटिबिलिटी की समस्याएँ या सीमित क्षमताएँ देखने को मिल सकती हैं।
+<iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="AdvantageScope Lite Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-2027-2028 सीज़न में Systemcore पर शिफ्ट होने के बाद AdvantageScope के सभी फ़ीचर्स आधिकारिक तौर पर FTC में समर्थित होंगे।
-:::
+## 🎮 FIRST ड्राइवर स्टेशन {#first-driver-station}
 
-## 🧮 यूनिट-अवेयर ग्राफिंग {#unit-aware-graphing}
+मैच डायग्नोस्टिक्स को सुव्यवस्थित करने के लिए AdvantageScope नए [FIRST ड्राइवर स्टेशन](https://docs.wpilib.org/en/latest/docs/software/firstdriverstation) के साथ गहराई से एकीकृत होता है:
 
-📉 [लाइन ग्राफ](/tab-reference/line-graph/) टैब को पूरी तरह से यूनिट-अवेयर बनाने के लिए फिर से डिज़ाइन किया गया है। इससे न्यूमेरिक फील्ड्स को ग्राफ़ करते समय कई नई सुविधाएँ मिलती हैं:
+- DS द्वारा बनाई गई WPILOG फ़ाइलों का विश्लेषण करने के लिए [AdvantageScope लाइट](/more-features/advantagescope-lite) सीधे FIRST ड्राइवर स्टेशन सेटिंग्स मेनू से उपलब्ध है।
+- बिना किसी कॉन्फ़िगरेशन के लोकल ड्राइवर स्टेशन से रीयल-टाइम मैच स्टेट, कॉम्स मेट्रिक्स, बैटरी वोल्टेज और जॉयस्टिक इनपुट स्ट्रीम करने के लिए डेस्कटॉप ऐप का उपयोग करें।
+- डेस्कटॉप पर ड्राइवर स्टेशन `.wpilog` फ़ाइल खोलने पर कंसोल आउटपुट, संचार मेट्रिक्स, पावर, CPU उपयोग और जॉयस्टिक टैब्स के साथ पहले से कॉन्फ़िगर की गई एक समर्पित विंडो खोलने का प्रॉम्प्ट आता है ([डॉक्स](/overview/log-files#driver-station-layout))। यह लेआउट ड्राइवर स्टेशन के लिए AdvantageScope लाइट में भी डिफ़ॉल्ट रूप से उपयोग होता है।
+- स्वचालित चेतावनी/त्रुटि हाइलाइटिंग और [ANSI एस्केप सीक्वेंस](/tab-reference/console#ansi-formatting) (रंग और टेक्स्ट शैलियाँ) के पूर्ण समर्थन के साथ 💬 [कंसोल](/tab-reference/console) टैब पर ड्राइवर स्टेशन कंसोल लॉग देखें।
 
-- Y एक्सिस और मान डिस्प्ले की सटीक लेबलिंग
-- कम्पैटिबल इकाइयों में तुरंत कन्वर्ज़न (बिना किसी पॉपअप विंडो के)
-- एक ही एक्सिस के भीतर कम्पैटिबल इकाई प्रकारों का स्वचालित कन्वर्ज़न
-- [इंटीग्रेटेड और डिफरेंशिएटेड](/tab-reference/line-graph/#integration-and-differentiation) इकाइयों का सटीक प्रदर्शन
-
-नीचे दिया गया स्क्रीनशॉट इन सभी फ़ीचर्स को काम करते हुए दिखाता है। ध्यान दें कि बाएँ एक्सिस में अलग-अलग कोणीय वेग इकाइयों वाले फील्ड हैं, और दाएँ एक्सिस में ऐसे मान हैं जो डिफरेंशिएटेड हैं और एक अन्य इकाई (डिग्री) में दिख रहे हैं। इकाइयों को चुनना भी पहले से कहीं आसान है, क्योंकि प्रत्येक एक्सिस के कंट्रोल मेनू में सीधे कम्पैटिबल इकाई विकल्प मौजूद हैं।
-
-_इकाई सपोर्ट के बारे में अधिक जानकारी [डॉक्यूमेंटेशन](/tab-reference/line-graph/units) में मिल सकती है।_
-
-<img src="/img/tab-reference/line-graph/units-1.webp" alt="Unit-aware graphing" />
+<img src="/img/tutorials/taking-control-1.webp" alt="FIRST ड्राइवर स्टेशन से AdvantageScope लाइट खोलना" />
 
 _ऊपर अंग्रेजी इंटरफ़ेस दिखाया गया है।_
 
-## 🏁 तेज़ लॉग डाउनलोड {#faster-log-downloads}
+## 🌐 बहु-भाषा समर्थन {#language-support}
 
-[roboRIO से लॉग्स डाउनलोड करना](/overview/log-files/#downloading-from-the-robot) अब पिछली रिलीज़ की तुलना में **2-4 गुना तेज़** है। यह नए प्रोटोकॉल (FTP) पर स्विच करने से संभव हुआ है, जिससे roboRIO कम CPU लोड के साथ लॉग डेटा ट्रांसफर कर पाता है।
+AdvantageScope अब डेस्कटॉप एप्लिकेशन, डॉक्यूमेंटेशन साइट, मोबाइल ऐप्स और AdvantageScope लाइट में **14 भाषाओं** में उपलब्ध है: English (US), Spanish (Latin America), French, Dutch, Portuguese (Brazil), Romanian, Turkish, Russian, Kazakh, Hebrew, Arabic, Hindi, Simplified Chinese, और Traditional Chinese।
 
-नीचे दी गई तालिका ईथरनेट से कनेक्ट होने पर AdvantageScope की 2025 और 2026 रिलीज़ पर मापी गई ट्रांसफर स्पीड दिखाती है (100 Mb/s की अधिकतम बैंडविड्थ)। ध्यान दें कि 2025 रिलीज़ का प्रदर्शन roboRIO पर CPU लोड से काफी प्रभावित होता है।
+:::info
+अनुवाद एक सतत प्रक्रिया है जो AI और कम्युनिटी योगदानकर्ताओं के सहयोग से तैयार किए गए हैं, और **इनमें अस्वाभाविक वाक्य या अशुद्धियाँ हो सकती हैं**। उन टीमों का धन्यवाद जिन्होंने पहले ही इन अनुवादों की समीक्षा और सुधार करने में मदद की है! हमारी अनुवाद प्रक्रिया और फ़ीडबैक सबमिट करने के तरीके के विवरण के लिए 🌐 [भाषा समर्थन](/overview/language-support) पेज देखें।
+:::
 
-|                                                    | 2025 (SFTP) | 2026 (FTP) | गति में वृद्धि (Speedup)                         |
-| -------------------------------------------------- | ----------- | ---------- | ------------------------------------------------ |
-| उच्च CPU लोड<br /><sub>जटिल रोबोट कोड</sub>        | 25 Mb/s     | 80 Mb/s    | <span style={{fontSize: '24px'}}>**3.2x**</span> |
-| औसत CPU लोड<br /><sub>सामान्य रोबोट कोड</sub>      | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**2.3x**</span> |
-| न्यूनतम CPU लोड<br /><sub>कोई रोबोट कोड नहीं</sub> | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**1.1x**</span> |
+<img src="/img/whats-new/multi-language-1.webp" alt="Simplified Chinese में लाइन ग्राफ टैब" />
 
-## 📁 सबफोल्डर्स से लॉग्स डाउनलोड करें {#download-logs-from-subfolders}
+## 📖 नए ट्यूटोरियल और डॉक्यूमेंटेशन {#new-tutorials-and-documentation}
 
-डाउनलोड विंडो अब सबफ़ोल्डर्स में रखे लॉग्स को सेव करने का सपोर्ट करती है। लॉग्स के प्रत्येक सबफ़ोल्डर को एक ग्रुप के रूप में डाउनलोड किया जा सकता है, जिससे CTRE के [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) की 2026 रिलीज़ से बने लॉग्स डाउनलोड करना आसान हो जाता है (जो एकल लॉग फ़ाइल में डेटा सेव न कर पाने की वजह से सबफ़ोल्डर्स का उपयोग करता है)।
+टीमों को WPILib 2027 और AdvantageScope के साथ शुरुआत करने में मदद करने के लिए डॉक्यूमेंटेशन को एक नई तीन-भागों वाली [ट्यूटोरियल श्रृंखला](/category/tutorials) के साथ विस्तारित किया गया है:
 
-<img src="/img/whats-new/subfolders.webp" alt="Downloading log subfolders" height="450" />
+1. **👋 [हैलो, टेलीमेट्री!](/tutorials/hello-telemetry):** `DataLogManager` और `Telemetry` API सेट अप करना, लाइव कनेक्ट करना, और लाइन ग्राफ, टेबल तथा आंकड़ों के साथ डेटा का विश्लेषण करना।
+2. **🤖 [फील्ड पर चलें: रोबोट विज़ुअलाइज़ेशन](/tutorials/to-the-field):** FRC और FTC फ़ील्ड्स पर 2D/3D पोज़, ट्रैजेक्टरी और `Mechanism2d` ऑब्जेक्ट्स पब्लिश करना।
+3. **🕹️ [नियंत्रण लें: DS और जॉयस्टिक्स](/tutorials/taking-control):** लाइव ड्राइवर स्टेशन डायग्नोस्टिक्स स्ट्रीम करना, रोबोट और DS लॉग सिंक्रनाइज़ करना, कंसोल आउटपुट देखना और कंट्रोलर इनपुट विज़ुअलाइज़ करना।
 
-## 🌈 नए विज़ुअलाइज़ेशन विकल्प {#new-visualization-options}
+कई भाषाओं में WPILib के टेलीमेट्री API के पूर्ण कवरेज के साथ पूरे डॉक्यूमेंटेशन में कोड उदाहरण भी अपडेट किए गए हैं।
 
-🗺️ [2D फील्ड](/tab-reference/2d-field) और 👀 [3D फील्ड](/tab-reference/3d-field) पर कई नए विज़ुअलाइज़ेशन विकल्प उपलब्ध हैं:
+<img src="/img/tutorials/to-the-field-4.webp" alt="फील्ड पर चलें ट्यूटोरियल से 3D फील्ड विज़ुअलाइज़ेशन" />
 
-- 2D फील्ड पर अब रोबोट बंपर्स के रंगों के कई नए विकल्प उपलब्ध हैं, और प्रत्येक ऑब्जेक्ट के लिए अलग रंग चुना जा सकता है। इससे कई रोबोट ऑब्जेक्ट्स के साथ घोस्ट्स का उपयोग करते समय अधिक लचीलापन मिलता है।
-- [3D फील्ड पर 2D मैकेनिज्म विज़ुअलाइज़ करते समय](/tab-reference/3d-field/#2d-mechanisms), मैकेनिज्म को अब XZ प्लेन के साथ-साथ YZ प्लेन पर भी रखा जा सकता है। इससे कई एक्सिस में चलने वाले जटिल मैकेनिज्म को विज़ुअलाइज़ करना आसान हो जाता है।
-- 3D फील्ड में अब रेंडर किए गए किनारों की गुणवत्ता बेहतर बनाने के लिए वैकल्पिक एंटीएलियासिंग का सपोर्ट है।
+_ऊपर अंग्रेजी इंटरफ़ेस दिखाया गया है।_
 
-<img src="/img/whats-new/field-viz.jpg" alt="New field visualizations" />
+## 📱 AdvantageTune {#advantagetune}
 
-## 🪵 REV Robotics CAN लॉग सपोर्ट {#rev-robotics-can-log-support}
+AdvantageTune एक नया स्टैंडअलोन iPhone और iPad एप्लिकेशन है जो AdvantageScope के पूरक के रूप में एक हल्का मोबाइल ट्यूनिंग अनुभव प्रदान करता है। आप सीधे अपने फ़ोन से लाइव [NetworkTables](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html) टॉपिक्स (प्रिमिटिव्स, एरेज़, WPILib structs और Protobufs सहित) देख और संशोधित कर सकते हैं, जिससे हर किसी के लिए रोबोट कोड ट्यूनिंग में शामिल होना आसान हो जाता है।
 
-अब आप REV Robotics के [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) से बनी `.revlog` फ़ाइलों को सीधे AdvantageScope में खोल सकते हैं। ये फ़ाइलें Spark Max और Spark Flex डिवाइस से CAN सिग्नल रिकॉर्ड करती हैं, और AdvantageScope की [URCL](/more-features/urcl) लाइब्रेरी का एक आधिकारिक विकल्प देती हैं।
+AdvantageTune और AdvantageScope दोनों साझा करने के लिए सभी ट्यून किए गए मानों को एक सूची में सहेजने के बटन के साथ ट्यून किए गए मानों को वापस रोबोट कोड में एक्सपोर्ट करने की प्रक्रिया को सुव्यवस्थित करते हैं ([डॉक्स](/overview/live-sources/tuning-mode))।
 
-सुचारु बदलाव और पिछले सीज़न जैसे फ़ीचर्स बनाए रखने के लिए 2026 सीज़न के दौरान URCL और आधिकारिक `StatusLogger` दोनों उपलब्ध रहेंगे। 2027 और उसके बाद के लॉगिंग विकल्पों की जानकारी हम बाद में साझा करेंगे।
-
-<img src="/img/whats-new/revlog.webp" alt="REVLOG visualization" />
-
-## 💿 CSV फ़ाइल इम्पोर्ट {#csv-file-imports}
-
-रोबोट लॉगिंग फ्रेमवर्क के बाहर बने डेटा के लचीले विज़ुअलाइज़ेशन के लिए, AdvantageScope में अब CSV फ़ाइलों को इम्पोर्ट करने का बुनियादी सपोर्ट शामिल है। समर्थित फ़ॉर्मेट और अन्य सीमाओं की पूरी जानकारी के लिए [डॉक्यूमेंटेशन](/overview/log-files/#csv-formatting) देखें।
-
-<img src="/img/overview/log-files/export-2.webp" alt="CSV data" />
-
-## 🤩 UI और डिज़ाइन में सुधार {#aesthetic-improvements}
-
-Windows 11 पर AdvantageScope UI को ट्रांसलूसेंट साइडबार के लिए अपडेट किया गया है, जो पहले केवल macOS रिलीज़ तक सीमित था। Apple के लिक्विड ग्लास मटेरियल पर आधारित macOS Tahoe के लिए एक नया ऐप आइकन भी उपलब्ध है।
-
-<img src="/img/whats-new/windows-ui.webp" alt="Windows UI" />
-
-## 📋 सुव्यवस्थित मेनू {#streamlined-menus}
-
-सभी प्लेटफ़ॉर्म पर कंट्रोल्स को अधिक सुलभ और एक जैसा बनाने के लिए मेनू बार और संबंधित कंट्रोल्स को सरल और पुनर्गठित किया गया है। मुख्य फ़ीचर्स में शामिल हैं:
-
-- प्राथमिकताएं विंडो खोले बिना लाइव स्रोतों (जैसे NetworkTables और [Phoenix डायग्नोस्टिक्स](/overview/live-sources/phoenix-diagnostics)) के बीच तेज़ी से स्विच करना।
-- किसी फील्ड का नाम (या पूरी फील्ड की) तुरंत कॉपी करने के लिए साइडबार पर राइट-क्लिक करना।
-- प्राथमिकताएं विंडो का पुनर्गठन, जिससे विकल्पों को जल्दी खोजना आसान हो गया है।
+[<img src="/img/app-store_hi.svg" alt="App Store" />](https://apps.apple.com/in/app/advantagetune/id6811453643?l=hi)
 
 <div className="image-gallery">
-  <img src="/img/whats-new/menus-1.webp" />
-  <img src="/img/whats-new/menus-2.webp" />
-  <img src="/img/prefs_hi.webp" />
+  <img src="/img/whats-new/advantagetune-1.webp" alt="AdvantageTune ब्राउज़ व्यू" />
+  <img src="/img/whats-new/advantagetune-2.webp" alt="AdvantageTune टॉपिक एडिटिंग" />
+  <img src="/img/whats-new/advantagetune-3.webp" alt="AdvantageTune struct एडिटिंग" />
+  <img src="/img/whats-new/advantagetune-4.webp" alt="AdvantageTune ट्यून किए गए मानों की सूची" />
+  <img src="/img/whats-new/advantagetune-5.webp" alt="AdvantageTune सर्च और फ़िल्टर" />
 </div>
 
-## 🐛 स्थिरता में सुधार {#stability-improvements}
+_ऊपर अंग्रेजी इंटरफ़ेस दिखाया गया है।_
 
-इस रिलीज़ में पूरे एप्लिकेशन में कई बग फिक्स और स्थिरता सुधार शामिल हैं। पूरी सूची रिलीज़ [चेंजलॉग](https://github.com/Mechanical-Advantage/AdvantageScope/releases) में मिल सकती है, लेकिन कुछ प्रमुख सुधार नीचे दिए गए हैं:
+## 🪐 WPILOG यूनिवर्सल लॉगिंग {#wpilog-universal-logging}
 
-- लंबे समय तक डेटा स्ट्रीम करते समय AdvantageScope के प्रदर्शन में काफी सुधार हुआ है, खासकर लाइन ग्राफ टैब का उपयोग करते समय।
-- AdvantageScope अब बड़ी लॉग फ़ाइलों और बड़े फील्ड मानों सहित असामान्य लॉग डेटा को बेहतर ढंग से संभालता है।
-- लॉग डेटा ब्राउज़ करते समय आने वाली विभिन्न विज़ुअल गड़बड़ियों को ठीक किया गया है, खासकर लाइन ग्राफ टैब पर फ़िल्टर का उपयोग करते समय।
-- डाउनलोड विंडो में AdvantageKit लॉग फ़ाइलों का क्रम ठीक किया गया है; बिना टाइमस्टैम्प वाले लॉग अब अन्य फ़ॉर्मेट की तरह सूची में सबसे नीचे दिखते हैं।
-- 3D फील्ड टैब पर, रोल एक्सिस में नॉन-ज़ीरो रोटेशन वाले रोबोट कैमरे अब सही ढंग से विज़ुअलाइज़ होते हैं।
-- AdvantageScope XR की स्थिरता में सुधार किया गया है, खासकर iOS/iPadOS 26 पर। ऑफ़लाइन इंस्टॉलेशन के लिए, उपलब्ध अपडेट के लिए ऐप स्टोर देखें।
+[यूनिवर्सल लॉगिंग](/more-features/universal-logging) के साथ, एक एकल WPILOG फ़ाइल अब वेंडर-विशिष्ट डिवाइस लॉग, CSV डेटा और चाइल्ड WPILOG फ़ाइलों सहित कई लॉग स्ट्रीम्स और फ़ॉर्मेट्स के लिए एक यूनिवर्सल कंटेनर के रूप में कार्य कर सकती है। यूनिवर्सल लॉगिंग एक लचीले, वेंडर-स्वतंत्र दृष्टिकोण के साथ URCL की जगह लेता है: हर स्रोत का डेटा स्वचालित रूप से सिंक्रनाइज़ होकर एक एकीकृत साइडबार ट्री में मर्ज हो जाता है। WPILib (Java, C++, और Python) और AdvantageKit में वेंडर लॉग कैप्चर के विवरण के लिए [यूनिवर्सल लॉगिंग डॉक्यूमेंटेशन](/more-features/universal-logging#experimental-vendor-logging) देखें।
+
+<img src="/img/more-features/universal-logging-1.webp" alt="साइडबार में कई वेंडर लॉग दिखाती एक WPILOG फ़ाइल" />
+
+_ऊपर अंग्रेजी इंटरफ़ेस दिखाया गया है।_
+
+## 🗺️ फील्ड टैब सुधार {#field-tab-improvements}
+
+🗺️ [2D फील्ड](/tab-reference/2d-field) और 👀 [3D फील्ड](/tab-reference/3d-field) टैब्स में कई उपयोगिता सुधार जोड़े गए हैं:
+
+- 2D फ़ील्ड पर पैन और ज़ूम करें, या रोबोट की स्थिति और रोटेशन का अनुसरण करने के लिए कैमरे को लॉक करने हेतु दायाँ-क्लिक करें ([डॉक्स](/tab-reference/2d-field#camera-controls))।
+- आसान स्थानिक संदर्भ के लिए 2D और 3D FTC फ़ील्ड्स पर टाइल ग्रिड लाइनें जोड़ी गईं।
+- नए 2D या 3D फ़ील्ड टैब खोलते समय AdvantageScope अब याद रखता है कि पिछली बार FRC या FTC फ़ील्ड का उपयोग किया गया था।
+
+<img src="/img/tab-reference/2d-field-1.webp" alt="2D फील्ड टैब अवलोकन" />
+
+_ऊपर अंग्रेजी इंटरफ़ेस दिखाया गया है।_
+
+## 📉 लाइन ग्राफ सुधार {#line-graph-improvements}
+
+📉 [लाइन ग्राफ](/tab-reference/line-graph) और टाइमलाइन में स्पष्ट विश्लेषण के लिए कई विज़ुअल सुधार शामिल हैं:
+
+- "रोबोट मोड दिखाएँ" सक्षम करने पर अब ऑटोनोमस, टेलीऑपरेटेड, यूटिलिटी और डिसेबल्ड अवधियों के लिए एक रंग-कोडित बार रेंडर होता है।
+- पॉइंट-शैली के ग्राफ ज़ूम के किसी भी स्तर पर बेहतर दृश्यता के लिए पॉइंट का आकार स्वचालित रूप से स्केल करते हैं।
+- नए उपयोगकर्ताओं को स्क्रॉलिंग और ज़ूमिंग जेस्चर पर मार्गदर्शन करने के लिए लाइन ग्राफ और टाइमलाइन पर उपयोगी संकेत दिखाई देते हैं।
+- टाइमलाइन और लाइन ग्राफ एक्सिस पर बड़े टाइमस्टैम्प मानों की रेंडरिंग और पठनीयता में सुधार किया गया।
+
+<img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="लाइन ग्राफ पर रंग-कोडित रोबोट मोड ओवरले" />
+
+_ऊपर अंग्रेजी इंटरफ़ेस दिखाया गया है।_
+
+## 🤝 एक्सेसिबिलिटी संवर्द्धन {#accessibility-enhancements}
+
+AdvantageScope 2027 में एप्लिकेशन को अधिक सुलभ बनाने के लिए कई अपडेट शामिल हैं:
+
+- सभी इनपुट्स के लिए कीबोर्ड टैब नेविगेशन और पूरे ऐप में सभी कंट्रोल्स के लिए वर्णनात्मक टूलटिप्स जोड़े गए।
+- AdvantageScope अब OS-स्तरीय reduce transparency और reduce motion सेटिंग्स का सम्मान करता है।
+- साइडबार में बूलियन संकेतक अब केवल रंग पर निर्भर हुए बिना स्थितियों में अंतर करते हैं।
+
+## 🥔 नए यूनिट प्रकार {#new-unit-types}
+
+AdvantageScope की [यूनिट-अवेयर ग्राफिंग](/tab-reference/line-graph/units) को अतिरिक्त यूनिट प्रकारों और पार्सिंग विकल्पों के साथ विस्तारित किया गया है:
+
+- पावर (वाट, हॉर्सपावर, आदि)
+- अनुपात (विमाहीन, प्रतिशत)
+- केल्विन में तापमान
+- पोटैटो एनर्जी (Potato energy)
+- ब्रिटिश अंग्रेज़ी यूनिट स्पेलिंग (जैसे `metres`)
+- WPILib की यूनिट लाइब्रेरी के लिए प्रत्यय (Suffixes)
+
+## 🧱 स्थिरता सुधार {#stability-improvements}
+
+इस रिलीज़ में पूरे एप्लिकेशन में अनेक बग फिक्स, परफॉर्मेंस ऑप्टिमाइज़ेशन और स्थिरता सुधार शामिल हैं। पूरी सूची रिलीज़ [चेंजलॉग](https://github.com/Mechanical-Advantage/AdvantageScope/releases) में देखी जा सकती है, जिसमें प्रमुख बिंदु नीचे दिए गए हैं:
+
+- आधिकारिक Windows रिलीज़ अब कोड-साइन की गई हैं, जिससे इंस्टॉलेशन के दौरान SmartScreen चेतावनियों की आवृत्ति कम हो गई है।
+- लॉग लोडिंग और ग्राफिंग परफॉर्मेंस में उल्लेखनीय सुधार हुआ है, विशेष रूप से Hoot (`.hoot`) लॉग्स के साथ काम करते समय।
+- कई स्रोतों से लॉग्स को अलाइन करते समय मल्टी-लॉग टाइमस्टैम्प सिंक्रनाइज़ेशन एल्गोरिदम में सुधार किया गया।
+- [Phoenix डायग्नोस्टिक्स](/overview/live-sources/phoenix-diagnostics) के लिए कनेक्शन विश्वसनीयता में सुधार किया गया।
+- पॉप-आउट विंडो पर मेनू बार और [AdvantageScope XR](/tab-reference/3d-field/advantagescope-xr) में रिकॉर्डिंग पॉपअप से जुड़े UI मुद्दों को ठीक किया गया।
+- स्पष्टता बढ़ाने के लिए पूरे एप्लिकेशन में UI टेक्स्ट और वाक्यांशों को परिष्कृत किया गया।

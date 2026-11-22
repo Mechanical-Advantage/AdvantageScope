@@ -52,18 +52,42 @@ _上图所示为英文界面。_
 
 几何数据需要以字节编码的 Struct 或 protobuf 格式发布，支持多种 2D 和 3D 几何类型，包括 `Pose2d`、`Pose3d`、`Translation2d`、`Translation3d` 等。
 
-WPILib、AdvantageKit 等众多库均支持 Struct 格式。以下示例代码演示了如何在 Java 中记录 2D 位姿数据。
+WPILib、AdvantageKit 等众多库均支持 Struct 格式。以下示例代码演示了如何记录 2D 位姿数据。
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Pose2d poseA = new Pose2d();
 Pose2d poseB = new Pose2d();
 
 Telemetry.log("MyPose", poseA);
-Telemetry.log("MyPoseArray", poseA, poseB);
 Telemetry.log("MyPoseArray", new Pose2d[] {poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::math::Pose2d poseA;
+wpi::math::Pose2d poseB;
+
+wpi::telemetry::Log("MyPose", poseA);
+wpi::telemetry::Log("MyPoseArray", std::vector{poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import Pose2d
+import telemetry
+
+pose_a = Pose2d()
+pose_b = Pose2d()
+
+telemetry.log("MyPose", pose_a)
+telemetry.log("MyPoseArray", [pose_a, pose_b], element_type=Pose2d)
 ```
 
 </TabItem>

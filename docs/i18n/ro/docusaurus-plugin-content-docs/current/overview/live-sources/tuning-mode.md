@@ -2,6 +2,9 @@
 sidebar_position: 1
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # Mod de ajustare {#tuning-mode}
 
 Unele surse live suportă ajustarea în timp real a valorilor numerice și booleene. De exemplu, această funcționalitate poate fi folosită pentru a [ajusta constantele (gains) controllerului](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) când ești conectat la o sursă NetworkTables. Reține că codul robotului trebuie să suporte primirea acestora prin NetworkTables.
@@ -12,9 +15,64 @@ Unele surse live suportă ajustarea în timp real a valorilor numerice și boole
 - Pentru a comuta un **câmp boolean**, dă clic pe cercul roșu sau verde din dreapta câmpului în bara laterală.
 - Pentru a copia toate valorile publicate în clipboard, **dă clic dreapta pe pictograma glisor** și selectează **„Copiază valorile ajustate”**.
 
-:::warning
-Această funcționalitate nu este destinată controlării robotului pe teren. Intrările în stil dashboard, cum ar fi meniurile de selecție (choosers), butoanele de declanșare etc. nu sunt suportate.
+:::tip
+Pentru utilizatorii de iPhone și iPad, **AdvantageTune** este o opțiune alternativă creată de dezvoltatorii AdvantageScope pentru ajustarea valorilor NetworkTables de pe dispozitive mobile.
+
+[<img src="/img/app-store_ro.svg" alt="App Store" />](https://apps.apple.com/ro/app/advantagetune/id6811453643?l=ro)
 :::
+
+## Tunables în WPILib {#wpilib-tunables}
+
+În WPILib, valori precum numerele și booleanii pot fi configurate folosind API-ul Tunable, permițând ajustarea lor din AdvantageScope în timp real. Valorile ajustabile sunt înregistrate o singură dată și pot fi citite periodic în codul robotului:
+
+<Tabs groupId="library">
+<TabItem value="wpilib-java" label="Java" default>
+
+```java
+import org.wpilib.tunable.TunableBoolean;
+import org.wpilib.tunable.TunableDouble;
+import org.wpilib.tunable.Tunables;
+
+TunableDouble tunableNumber = Tunables.addDouble("MyTunableNumber", 0.0);
+TunableBoolean tunableBoolean = Tunables.addBoolean("MyTunableBoolean", false);
+
+// Citește valorile periodic
+double num = tunableNumber.get();
+boolean bool = tunableBoolean.get();
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+#include <wpi/tunables/Tunables.hpp>
+
+wpi::tunables::TunableDouble tunableNumber =
+    wpi::tunables::Add<double>("MyTunableNumber", 0.0);
+wpi::tunables::TunableBool tunableBoolean =
+    wpi::tunables::Add<bool>("MyTunableBoolean", false);
+
+// Citește valorile periodic
+double num = tunableNumber.Get();
+bool boolVal = tunableBoolean.Get();
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+import tunables
+
+tunable_number = tunables.add_double("MyTunableNumber", 0.0)
+tunable_boolean = tunables.add_boolean("MyTunableBoolean", False)
+
+# Citește valorile periodic
+num = tunable_number.get()
+bool_val = tunable_boolean.get()
+```
+
+</TabItem>
+</Tabs>
 
 ## Ajustarea cu AdvantageKit {#tuning-with-advantagekit}
 

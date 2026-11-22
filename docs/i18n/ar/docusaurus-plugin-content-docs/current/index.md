@@ -17,6 +17,11 @@ AdvantageScope هو تطبيق من تطوير [فريق 6328](https://littleton
 items={[
 {
 type: "category",
+label: "الدروس التعليمية",
+href: "/category/tutorials"
+},
+{
+type: "category",
 label: "نظرة عامة",
 href: "/category/overview"
 },
@@ -24,11 +29,6 @@ href: "/category/overview"
 type: "category",
 label: "مرجع علامات التبويب",
 href: "/category/tab-reference"
-},
-{
-type: "category",
-label: "ميزات إضافية",
-href: "/category/more-features"
 },
 {
 type: "link",

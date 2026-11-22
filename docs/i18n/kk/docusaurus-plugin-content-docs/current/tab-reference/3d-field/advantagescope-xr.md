@@ -74,7 +74,7 @@ XR басқару элементтері терезесі үлгінің тол�
 
 AdvantageScope XR интернет қосылымын қажет етпейді. Қолданбаның офлайн режимде қолжетімді болуы үшін төмендегі сілтеме арқылы App Store дүкенінен AdvantageScope XR қолданбасын жүктеп алыңыз. AdvantageScope жұмыс үстелі қолданбасына қосылу үшін iOS камера қолданбасымен QR кодын сканерлеңіз немесе AdvantageScope XR қолданбасындағы «Scan» батырмасын түртіңіз.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_en-US.svg" alt="App Store" />](https://apps.apple.com/kz/app/advantagescope-xr/id6739718081)
 
 :::note
 Интернет қосылымынсыз жұмыс істегенде де хост пен клиенттік құрылғылар **бір желіге қосылған болуы тиіс** (мысалы, робот желісі, жеке Wi-Fi желісі немесе USB-модем арқылы).

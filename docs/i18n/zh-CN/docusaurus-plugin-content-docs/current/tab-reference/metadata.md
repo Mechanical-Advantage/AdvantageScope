@@ -13,10 +13,10 @@ import TabItem from '@theme/TabItem';
 
 _上图所示为英文界面。_
 
-下面的示例代码展示了如何使用 Java 记录元数据。
+下面的示例代码展示了如何记录元数据。
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 在 WPILib 中，使用 `Telemetry` 类将字符串值记录到 `/Metadata` 表中。
 
@@ -24,6 +24,30 @@ _上图所示为英文界面。_
 TelemetryTable metadata = Telemetry.getTable("Metadata");
 metadata.log("RobotName", "Darwin");
 metadata.log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+在 WPILib 中，使用 `Telemetry` 类将字符串值记录到 `/Metadata` 表中。
+
+```cpp
+wpi::telemetry::TelemetryTable& metadata = wpi::telemetry::GetTable("Metadata");
+metadata.Log("RobotName", "Darwin");
+metadata.Log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+在 WPILib 中，使用 `telemetry` 模块将字符串值记录到 `/Metadata` 表中。
+
+```python
+import telemetry
+
+metadata = telemetry.get_table("Metadata")
+metadata.log("RobotName", "Darwin")
+metadata.log("Platform", "macOS")
 ```
 
 </TabItem>

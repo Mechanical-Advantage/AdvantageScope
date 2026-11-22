@@ -30,5 +30,5 @@ Escolha o tipo de cada controle na tabela que fica na parte de baixo da guia. Os
 O AdvantageScope já traz vários modelos prontos de controles, além da opção "Joystick genérico", que exibe todos os botões, eixos e POVs em uma grade (como mostrado acima). Para adicionar um modelo próprio de controle, veja a página de [Recursos personalizados](/more-features/custom-assets).
 
 :::warning
-**Dados de joystick NÃO ficam disponíveis por NetworkTables na WPILib padrão.** Para visualizá-los aqui, você precisa usar arquivos de log da WPILib (com o [registro de joysticks ativado](https://docs.wpilib.org/pt/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), logs do AdvantageKit ou transmissão ao vivo pelo AdvantageKit.
+**Dados de joystick NÃO ficam disponíveis por NetworkTables na WPILib padrão.** Para visualizá-los aqui, você precisa usar arquivos de log da WPILib (com o [registro de joysticks ativado](https://docs.wpilib.org/pt/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), logs do AdvantageKit, transmissão ao vivo pelo AdvantageKit ou dados da FIRST Driver Station.
 :::

@@ -24,6 +24,12 @@ AdvantageScope ondersteunt meerdere talen zodat teams over de hele wereld de sof
 - Vereenvoudigd Chinees
 - Traditioneel Chinees
 
+Bedankt aan de volgende bijdragers voor hun hulp bij het controleren en verbeteren van de vertalingen van AdvantageScope:
+
+- FRC Team 4400 Cerbotics
+- FRC Team 6907 The G.O.A.T.
+- Ata Baber
+
 ## Configuratie {#configuration}
 
 Om de taal in AdvantageScope aan te passen, open je het voorkeurenvenster via `App` > `Voorkeuren tonen...` (Windows/Linux) of `AdvantageScope` > `Instellingen...` (macOS). Bij "Taal 🌐" kies je een van de ondersteunde talen, of je kiest "Systeemstandaard" om automatisch de taal van je besturingssysteem te volgen.
@@ -37,10 +43,26 @@ Alle formaten die AdvantageScope ondersteunt, bieden volledige Unicode-ondersteu
 Hier zie je een voorbeeld van het loggen van een string met een Nederlandstalige sleutel:
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Telemetry.log("Aandrijving/Geïntegreerde snelheid vóór", "Efficiënt");
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::telemetry::Log("Aandrijving/Geïntegreerde snelheid vóór", "Efficiënt");
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+import telemetry
+
+telemetry.log("Aandrijving/Geïntegreerde snelheid vóór", "Efficiënt")
 ```
 
 </TabItem>
@@ -61,4 +83,4 @@ Bekijk de pagina over [ondersteuning voor eenheden](/tab-reference/line-graph/un
 
 De vertalingen van AdvantageScope ontstaan door een combinatie van kunstmatige intelligentie en hulp vanuit de community. Omdat AdvantageScope volop in ontwikkeling is, hebben we AI nodig om de app en de documentatie in alle talen synchroon te houden. Zo komen nieuwe functies en updates altijd tegelijk uit, ongeacht welke taal je kiest.
 
-We stemmen het proces zo goed mogelijk af op het jargon en de Engelse termen die teams zelf gebruiken. Toch klinken AI-vertalingen soms onnatuurlijk of sluipen er foutjes in. Daarom stellen we jouw feedback enorm op prijs: klik op het paarse pictogram in de app (als je een andere taal dan Engels gebruikt) om opmerkingen door te geven.
+We stemmen het proces zo goed mogelijk af op het jargon en de Engelse termen die teams zelf gebruiken. Toch klinken **AI-vertalingen soms onnatuurlijk of sluipen er foutjes in**. Daarom stellen we jouw feedback enorm op prijs: klik op het paarse pictogram in de app of op de feedbacklink in de titelbalk van de documentatie (als je een andere taal dan Engels gebruikt) om opmerkingen door te geven.

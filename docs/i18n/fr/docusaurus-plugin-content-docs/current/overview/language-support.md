@@ -24,6 +24,12 @@ AdvantageScope est disponible en plusieurs langues pour offrir une interface ada
 - Chinois simplifié
 - Chinois traditionnel
 
+Merci aux contributeurs suivants d'avoir aidé à relire et améliorer les traductions d'AdvantageScope :
+
+- FRC Team 4400 Cerbotics
+- FRC Team 6907 The G.O.A.T.
+- Ata Baber
+
 ## Configuration {#configuration}
 
 Pour changer la langue d'affichage dans AdvantageScope, ouvrez les préférences en cliquant sur `App` > `Afficher les préférences...` (Windows/Linux) ou `AdvantageScope` > `Paramètres...` (macOS). Sous le paramètre « Langue », choisissez une langue dans la liste ou sélectionnez « Langue du système » pour utiliser automatiquement la langue de votre système d'exploitation.
@@ -37,10 +43,26 @@ Tous les formats pris en charge par AdvantageScope gèrent entièrement l'Unicod
 Voici un exemple d'enregistrement d'une chaîne avec une clé en français :
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Telemetry.log("Châssis/Vitesse moteur droit", "Rapide");
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::telemetry::Log("Châssis/Vitesse moteur droit", "Rapide");
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+import telemetry
+
+telemetry.log("Châssis/Vitesse moteur droit", "Rapide")
 ```
 
 </TabItem>
@@ -61,4 +83,4 @@ Consultez la page sur la [prise en charge des unités](/tab-reference/line-graph
 
 La traduction d'AdvantageScope repose sur l'intelligence artificielle et sur les contributions de la communauté. Comme AdvantageScope évolue très vite, l'IA est indispensable pour garder l'application et sa documentation à jour dans toutes les langues. Les nouveautés et mises à jour sont ainsi disponibles en même temps, quelle que soit la langue que vous utilisez.
 
-Nous veillons à employer le vocabulaire, les anglicismes courants et les termes que les équipes utilisent réellement au quotidien. Malgré tout, les traductions automatiques laissent parfois passer des tournures maladroites ou des imprécisions. Vos retours nous aident beaucoup : vous pouvez signaler toute erreur de traduction en cliquant sur l'icône violette dans l'application (dès qu'une autre langue que l'anglais est sélectionnée).
+Nous veillons à employer le vocabulaire, les anglicismes courants et les termes que les équipes utilisent réellement au quotidien. Malgré tout, **les traductions automatiques laissent parfois passer des tournures maladroites ou des imprécisions**. Vos retours sont les bienvenus : vous pouvez signaler toute erreur de traduction en cliquant sur l'icône violette dans l'application ou sur le lien de commentaires dans la barre de titre de la documentation (dès qu'une autre langue que l'anglais est sélectionnée).

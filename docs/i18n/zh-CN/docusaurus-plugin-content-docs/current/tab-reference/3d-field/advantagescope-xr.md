@@ -74,7 +74,7 @@ XR 控制窗口提供以下选项，用于控制模型在增强现实中的显�
 
 AdvantageScope XR 无需连接互联网即可使用。为确保离线可用，请通过下方链接从 App Store 下载 AdvantageScope XR 应用。连接 AdvantageScope 桌面端时，使用 iOS 相机应用扫描二维码，或在 AdvantageScope XR 应用中轻点“扫描”按钮即可。
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_zh-CN.svg" alt="App Store" />](https://apps.apple.com/cn/app/advantagescope-xr/id6739718081)
 
 :::note
 即使在离线环境下运行，主机和客户端设备仍**必须连接到同一网络**（例如机器人网络、自定义 Wi-Fi 网络或通过 USB 网络共享连接）。

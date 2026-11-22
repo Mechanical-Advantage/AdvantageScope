@@ -74,7 +74,7 @@ XR कंट्रोल्स विंडो में कई विकल्�
 
 AdvantageScope XR को इंटरनेट कनेक्शन की ज़रूरत नहीं है। यह सुनिश्चित करने के लिए कि ऐप ऑफ़लाइन उपलब्ध रहे, नीचे दिए गए लिंक से App Store से AdvantageScope XR डाउनलोड करें। AdvantageScope डेस्कटॉप एप्लिकेशन से कनेक्ट करने के लिए iOS कैमरा ऐप से QR कोड स्कैन करें या AdvantageScope XR ऐप में "Scan" बटन पर टैप करें।
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_hi.svg" alt="App Store" />](https://apps.apple.com/in/app/advantagescope-xr/id6739718081?l=hi)
 
 :::note
 इंटरनेट कनेक्शन के बिना भी, होस्ट और क्लाइंट डिवाइस **एक ही नेटवर्क से जुड़े होने चाहिए** (जैसे रोबोट नेटवर्क, कस्टम वाई-फ़ाई नेटवर्क, या USB टेदरिंग के माध्यम से)।

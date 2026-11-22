@@ -32,10 +32,10 @@ _ऊपर अंग्रेजी इंटरफ़ेस दिखाया 
 
 ## डेटा पब्लिश करना {#publishing-data}
 
-<Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+मैकेनिज्म डेटा पब्लिश करने के लिए, समय-समय पर `Mechanism2d` ऑब्जेक्ट को लॉग करें (जैसा नीचे दिखाया गया है)। ध्यान दें कि यह कॉल केवल `Mechanism2d` की मौजूदा स्थिति को रिकॉर्ड करता है, इसलिए ऑब्जेक्ट अपडेट होने के बाद इसे हर लूप साइकिल में कॉल करना ज़रूरी है।
 
-WPILib का उपयोग करके मैकेनिज्म डेटा पब्लिश करने के लिए, `Telemetry` की मदद से समय-समय पर `Mechanism2d` ऑब्जेक्ट को लॉग करें (जैसा नीचे दिखाया गया है)। ध्यान दें कि यह कॉल केवल `Mechanism2d` की मौजूदा स्थिति को रिकॉर्ड करता है, इसलिए ऑब्जेक्ट अपडेट होने के बाद इसे हर लूप साइकिल में कॉल करना ज़रूरी है।
+<Tabs groupId="library">
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
@@ -46,9 +46,31 @@ periodic() {
 ```
 
 </TabItem>
-<TabItem value="advantagekit" label="AdvantageKit">
+<TabItem value="wpilib-cpp" label="C++">
 
-AdvantageKit का उपयोग करके मैकेनिज्म डेटा पब्लिश करने के लिए, समय-समय पर `Mechanism2d` को एक आउटपुट फील्ड के रूप में रिकॉर्ड करें (जैसा नीचे दिखाया गया है)। ध्यान दें कि यह कॉल केवल `Mechanism2d` की मौजूदा स्थिति को रिकॉर्ड करता है, इसलिए ऑब्जेक्ट अपडेट होने के बाद इसे हर लूप साइकिल में कॉल करना ज़रूरी है।
+```cpp
+wpi::Mechanism2d mechanism{3, 3};
+
+void Periodic() {
+  wpi::telemetry::Log("MyMechanism", mechanism);
+}
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+import wpilib
+import telemetry
+
+mechanism = wpilib.Mechanism2d(3, 3)
+
+def periodic():
+    telemetry.log("MyMechanism", mechanism)
+```
+
+</TabItem>
+<TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
 LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);

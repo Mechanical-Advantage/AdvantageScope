@@ -36,14 +36,18 @@ _ממשק באנגלית מוצג למעלה._
 - **מהירויות רובוט:** מהירויות קוויות וזוויתיות שמוצגות במרכז הדיאגרמה.
 - **סיבוב:** זווית שמשמשת לסיבוב הדיאגרמה.
 
+:::tip
+ניתן להציג מצבי מודולי סווארב גם בכרטיסיות 🗺️ [מגרש 2D](/tab-reference/2d-field) ו-👀 [מגרש 3D](/tab-reference/3d-field).
+:::
+
 ## פורמט נתונים {#data-format}
 
 יש לפרסם את הנתונים כ-struct או protobuf מקודד בבתים, באמצעות הטיפוסים `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d`, או `Rotation3d`.
 
-ספריות רבות תומכות בפורמט struct, כולל WPILib ו-AdvantageKit. דוגמת הקוד למטה מראה איך לרשום מצבי מודולי סווארב ב-Java.
+ספריות רבות תומכות בפורמט struct, כולל WPILib ו-AdvantageKit. דוגמת הקוד למטה מראה איך לרשום מצבי מודולי סווארב.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
@@ -54,6 +58,37 @@ SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
 };
 
 Telemetry.log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+std::array<wpi::math::SwerveModuleVelocity, 4> states{
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{}
+};
+
+wpi::telemetry::Log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import SwerveModuleVelocity
+import telemetry
+
+states = [
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+]
+
+telemetry.log("MyStates", states, element_type=SwerveModuleVelocity)
 ```
 
 </TabItem>

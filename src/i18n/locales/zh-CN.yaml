@@ -1254,7 +1254,7 @@ units:
     caloriesSeconds: "{{value}} 卡路里·秒"
     potatoesPerSecond: "{{value}} 个土豆/秒"
     potatoesSeconds: "{{value}} 个土豆·秒"
-    ratioPerSecond: "{{value}} /秒"
+    ratioPerSecond: "{{value}}/秒"
     ratioSeconds: "{{value}} 秒"
     percentPerSecond: "{{value}}%/秒"
     percentSeconds: "{{value}}%·秒"

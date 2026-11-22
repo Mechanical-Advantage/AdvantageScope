@@ -74,7 +74,7 @@ AdvantageScope XR — ресурсоёмкое приложение, и его �
 
 AdvantageScope XR не требует подключения к интернету. Чтобы убедиться, что приложение доступно в автономном режиме, скачайте AdvantageScope XR из App Store по ссылке ниже. Чтобы подключиться к десктопному приложению AdvantageScope, отсканируйте QR-код с помощью приложения камеры iOS или нажмите кнопку «Сканировать» в приложении AdvantageScope XR.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_ru.svg" alt="App Store" />](https://apps.apple.com/kz/app/advantagescope-xr/id6739718081?l=ru)
 
 :::note
 Даже при работе без подключения к интернету устройства хоста и клиента **должны быть подключены к одной сети** (такой как робот, пользовательская сеть Wi-Fi или через USB-модем).

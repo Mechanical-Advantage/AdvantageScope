@@ -48,10 +48,10 @@ AdvantageScope suportă mai multe dimensiuni de AprilTags pentru terenurile FTC.
 
 Datele de geometrie trebuie publicate ca structură codificată pe octeți (byte-encoded struct) sau protobuf. Sunt suportate diverse tipuri de geometrie 2D și 3D, inclusiv `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` și altele.
 
-Multe biblioteci suportă formatul struct, inclusiv WPILib și AdvantageKit. Codul de exemplu de mai jos arată cum se înregistrează datele de pose 3D în Java.
+Multe biblioteci suportă formatul struct, inclusiv WPILib și AdvantageKit. Codul de exemplu de mai jos arată cum se înregistrează datele de pose 3D.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Pose3d poseA = new Pose3d();
@@ -59,6 +59,31 @@ Pose3d poseB = new Pose3d();
 
 Telemetry.log("MyPose", poseA);
 Telemetry.log("MyPoseArray", new Pose3d[] {poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::math::Pose3d poseA;
+wpi::math::Pose3d poseB;
+
+wpi::telemetry::Log("MyPose", poseA);
+wpi::telemetry::Log("MyPoseArray", std::vector{poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import Pose3d
+import telemetry
+
+pose_a = Pose3d()
+pose_b = Pose3d()
+
+telemetry.log("MyPose", pose_a)
+telemetry.log("MyPoseArray", [pose_a, pose_b], element_type=Pose3d)
 ```
 
 </TabItem>

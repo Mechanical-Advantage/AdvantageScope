@@ -2,6 +2,9 @@
 sidebar_position: 1
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # 微調模式 {#tuning-mode}
 
 部分即時來源支援在連線時直接微調數值與布林值。舉例來說，連線至 NetworkTables 來源時，你可以用這個功能來[微調控制器增益](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tutorial-intro.html)。請注意，機器人程式碼必須支援透過 NetworkTables 接收增益。
@@ -12,9 +15,64 @@ sidebar_position: 1
 - 若要切換**布林欄位**，請點擊側邊欄欄位右側的紅色或綠色圓點。
 - 若要將所有已發布的值複製到剪貼簿，請**在滑桿圖示上按右鍵**並選擇**「複製微調值」**。
 
-:::warning
-此功能並非設計用來在場地上操控機器人，也不支援選擇器 (chooser)、觸發按鈕等儀表板類型的輸入元件。
+:::tip
+對於 iPhone 與 iPad 使用者，**AdvantageTune** 是 AdvantageScope 開發團隊推出的另一項選擇，方便從行動裝置微調 NetworkTables 數值。
+
+[<img src="/img/app-store-zh-TW.svg" alt="App Store" />](https://apps.apple.com/tw/app/advantagetune/id6811453643)
 :::
+
+## WPILib 可微調參數 {#wpilib-tunables}
+
+在 WPILib 中，可以使用 Tunable API 設定數值與布林值等參數，以便在 AdvantageScope 中即時調整。可微調數值只需註冊一次，即可在機器人程式碼中定期讀取：
+
+<Tabs groupId="library">
+<TabItem value="wpilib-java" label="Java" default>
+
+```java
+import org.wpilib.tunable.TunableBoolean;
+import org.wpilib.tunable.TunableDouble;
+import org.wpilib.tunable.Tunables;
+
+TunableDouble tunableNumber = Tunables.addDouble("MyTunableNumber", 0.0);
+TunableBoolean tunableBoolean = Tunables.addBoolean("MyTunableBoolean", false);
+
+// 定期讀取數值
+double num = tunableNumber.get();
+boolean bool = tunableBoolean.get();
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+#include <wpi/tunables/Tunables.hpp>
+
+wpi::tunables::TunableDouble tunableNumber =
+    wpi::tunables::Add<double>("MyTunableNumber", 0.0);
+wpi::tunables::TunableBool tunableBoolean =
+    wpi::tunables::Add<bool>("MyTunableBoolean", false);
+
+// 定期讀取數值
+double num = tunableNumber.Get();
+bool boolVal = tunableBoolean.Get();
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+import tunables
+
+tunable_number = tunables.add_double("MyTunableNumber", 0.0)
+tunable_boolean = tunables.add_boolean("MyTunableBoolean", False)
+
+# 定期讀取數值
+num = tunable_number.get()
+bool_val = tunable_boolean.get()
+```
+
+</TabItem>
+</Tabs>
 
 ## 使用 AdvantageKit 進行微調 {#tuning-with-advantagekit}
 

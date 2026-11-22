@@ -32,10 +32,10 @@ _ממשק באנגלית מוצג למעלה._
 
 ## פרסום נתונים {#publishing-data}
 
-<Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+כדי לפרסם נתוני מנגנון, תעדו אובייקט `Mechanism2d` באופן מחזורי (כמוצג למטה). שימו לב שקריאה זו שומרת רק את המצב הנוכחי של ה-`Mechanism2d`, ולכן צריך לקרוא לה בכל מחזור לולאה אחרי שהאובייקט מתעדכן.
 
-כדי לפרסם נתוני מנגנון ב-WPILib, תעדו אובייקט `Mechanism2d` באופן מחזורי בעזרת `Telemetry` (כמו בדוגמה למטה). שימו לב שקריאה זו שומרת רק את המצב הנוכחי של ה-`Mechanism2d`, ולכן צריך לקרוא לה בכל מחזור לולאה אחרי שהאובייקט מתעדכן.
+<Tabs groupId="library">
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
@@ -46,9 +46,31 @@ periodic() {
 ```
 
 </TabItem>
-<TabItem value="advantagekit" label="AdvantageKit">
+<TabItem value="wpilib-cpp" label="C++">
 
-כדי לפרסם נתוני מנגנון ב-AdvantageKit, תעדו אובייקט `Mechanism2d` באופן מחזורי כשדה פלט (כמו בדוגמה למטה). שימו לב שקריאה זו שומרת רק את המצב הנוכחי של ה-`Mechanism2d`, ולכן צריך לקרוא לה בכל מחזור לולאה אחרי שהאובייקט מתעדכן.
+```cpp
+wpi::Mechanism2d mechanism{3, 3};
+
+void Periodic() {
+  wpi::telemetry::Log("MyMechanism", mechanism);
+}
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+import wpilib
+import telemetry
+
+mechanism = wpilib.Mechanism2d(3, 3)
+
+def periodic():
+    telemetry.log("MyMechanism", mechanism)
+```
+
+</TabItem>
+<TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
 LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);

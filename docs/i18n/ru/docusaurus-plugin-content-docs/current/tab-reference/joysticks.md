@@ -30,5 +30,5 @@ _Выше показан интерфейс на английском языке
 AdvantageScope включает набор распространенных джойстиков, включая «Универсальный джойстик» со всеми кнопками, осями и POV в формате сетки (показано выше). Чтобы добавить пользовательский джойстик, смотрите [Пользовательские ресурсы](/more-features/custom-assets).
 
 :::warning
-**Данные джойстиков НЕДОСТУПНЫ через подключение NetworkTables в стандартной WPILib.** Поддерживаются файлы логов WPILib (с [включённым логированием джойстиков](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), логи AdvantageKit и трансляция AdvantageKit.
+**Данные джойстиков НЕДОСТУПНЫ через подключение NetworkTables в стандартной WPILib.** Поддерживаются файлы логов WPILib (с [включённым логированием джойстиков](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), логи AdvantageKit, трансляция AdvantageKit и данные FIRST Driver Station.
 :::

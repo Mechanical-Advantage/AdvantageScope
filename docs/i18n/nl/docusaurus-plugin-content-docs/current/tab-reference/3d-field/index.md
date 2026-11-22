@@ -48,10 +48,10 @@ AdvantageScope ondersteunt verschillende formaten AprilTags voor FTC-velden. De 
 
 Geometriedata publiceer je als een byte-gecodeerde struct of protobuf. Allerlei 2D- en 3D-geometrietypen worden ondersteund, zoals `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` en meer.
 
-Veel bibliotheken ondersteunen het struct-formaat, waaronder WPILib en AdvantageKit. De voorbeeldcode hieronder laat zien hoe je 3D-posedata logt in Java.
+Veel bibliotheken ondersteunen het struct-formaat, waaronder WPILib en AdvantageKit. De voorbeeldcode hieronder laat zien hoe je 3D-posedata logt.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Pose3d poseA = new Pose3d();
@@ -59,6 +59,31 @@ Pose3d poseB = new Pose3d();
 
 Telemetry.log("MyPose", poseA);
 Telemetry.log("MyPoseArray", new Pose3d[] {poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::math::Pose3d poseA;
+wpi::math::Pose3d poseB;
+
+wpi::telemetry::Log("MyPose", poseA);
+wpi::telemetry::Log("MyPoseArray", std::vector{poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import Pose3d
+import telemetry
+
+pose_a = Pose3d()
+pose_b = Pose3d()
+
+telemetry.log("MyPose", pose_a)
+telemetry.log("MyPoseArray", [pose_a, pose_b], element_type=Pose3d)
 ```
 
 </TabItem>

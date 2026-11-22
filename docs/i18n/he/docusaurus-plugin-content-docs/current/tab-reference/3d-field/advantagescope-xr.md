@@ -74,7 +74,7 @@ AdvantageScope XR היא אפליקציה תובענית, וביצועיה על�
 
 AdvantageScope XR אינה דורשת חיבור לאינטרנט. כדי להבטיח שהאפליקציה תהיה זמינה גם אופליין, הורידו את AdvantageScope XR מה-App Store דרך הקישור למטה. כדי להתחבר לאפליקציית שולחן העבודה, סרקו את קוד ה-QR באפליקציית המצלמה של iOS או לחצו על כפתור הסריקה ("Scan") בתוך AdvantageScope XR.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_he.svg" alt="App Store" />](https://apps.apple.com/il/app/advantagescope-xr/id6739718081?l=he)
 
 :::note
 גם כשעובדים ללא חיבור לאינטרנט, המחשב המארח ומכשיר הלקוח **חייבים להיות מחוברים לאותה רשת** (למשל רשת הרובוט, רשת Wi-Fi ייעודית או שיתוף אינטרנט ב-USB).

@@ -38,10 +38,10 @@ _Выше показан интерфейс на английском языке
 
 ## Формат данных {#data-format}
 
-Данные точек должны публиковаться в виде закодированных в байты структур (struct) или protobuf с использованием типа `Translation2d[]`. Многие библиотеки поддерживают этот формат, включая WPILib и AdvantageKit. Пример кода ниже показывает, как логировать данные точек на Java.
+Данные точек должны публиковаться в виде закодированных в байты структур (struct) или protobuf с использованием типа `Translation2d[]`. Многие библиотеки поддерживают этот формат, включая WPILib и AdvantageKit. Пример кода ниже показывает, как логировать данные точек.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Telemetry.log("MyTranslations",
@@ -49,6 +49,33 @@ Telemetry.log("MyTranslations",
     new Translation2d(0.0, 1.0),
     new Translation2d(2.0, 3.0)
   });
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::telemetry::Log("MyTranslations", std::vector{
+  wpi::math::Translation2d{0_m, 1_m},
+  wpi::math::Translation2d{2_m, 3_m}
+});
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import Translation2d
+import telemetry
+
+telemetry.log(
+    "MyTranslations",
+    [
+        Translation2d(0.0, 1.0),
+        Translation2d(2.0, 3.0),
+    ],
+    element_type=Translation2d,
+)
 ```
 
 </TabItem>

@@ -17,6 +17,11 @@ AdvantageScope — это приложение для диагностики р�
 items={[
 {
 type: "category",
+label: "Руководства",
+href: "/category/tutorials"
+},
+{
+type: "category",
 label: "Обзор",
 href: "/category/overview"
 },
@@ -24,11 +29,6 @@ href: "/category/overview"
 type: "category",
 label: "Справочник по вкладкам",
 href: "/category/tab-reference"
-},
-{
-type: "category",
-label: "Другие функции",
-href: "/category/more-features"
 },
 {
 type: "link",

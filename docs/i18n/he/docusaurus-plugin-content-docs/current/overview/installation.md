@@ -16,10 +16,6 @@ sidebar_position: 1
 - התראות בתוך האפליקציה כשיוצאת גרסה חדשה להורדה.
 - אוסף מובנה של דגמי הרובוטים האחרונים של 6328 לשימוש בכרטיסיית 👀 [מגרש 3D](/tab-reference/3d-field).
 
-:::note
-לפני הפעלת קובצי AppImage ב-Ubuntu 23.10 ומעלה, יש להוריד את פרופיל ה-AppArmor מדף ההפצות ולהעתיק אותו לתיקייה `/etc/apparmor.d`.
-:::
-
 :::info
 כל גרסה ראשית של AdvantageScope יוצאת בינואר, לפני ה-Kickoff של FRC, ומספר הגרסה שלה תואם לשנה (למשל, v26.0.0 יצאה בינואר 2026). בחודשים שלפני השחרור הרשמי יוצאות לפעמים גרסאות אלפא ובטא עבור קבוצות שרוצות להתנסות ביכולות חדשות ולשלוח משוב. **קבוצות שבוחרות להשתמש בגרסאות המוקדמות האלה צריכות לקחת בחשבון שצפויים בהן באגים ובעיות שלא קיימים בגרסה היציבה.**
 :::
@@ -28,7 +24,7 @@ sidebar_position: 1
 
 ### התקנה: [תיעוד WPILib](https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html) {#wpilib-installation}
 
-המתקין של WPILib כולל גרסה עדכנית של AdvantageScope, אבל היא עלולה להיות מעט ישנה יותר מהגרסה האחרונה שזמינה להורדה ישירה. הסבר על פתיחת AdvantageScope מתוך גרסת ה-VSCode של WPILib תמצאו [כאן](https://docs.wpilib.org/en/stable/docs/software/dashboards/advantagescope.html).
+המתקין של WPILib כולל גרסה עדכנית של AdvantageScope, אבל היא עלולה להיות מעט ישנה יותר מהגרסה האחרונה שזמינה להורדה ישירה. הסבר על פתיחת AdvantageScope מתוך גרסת ה-VS Code של WPILib תמצאו [כאן](https://docs.wpilib.org/en/stable/docs/software/dashboards/advantagescope.html).
 
 ## הפצות לא רשמיות {#unofficial-distributions}
 

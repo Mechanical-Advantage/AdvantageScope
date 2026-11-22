@@ -1,133 +1,150 @@
 ---
-title: 2026 版本有哪些新功能？
+title: 2027 新功能？
 sidebar_position: 2
-draft: true
 ---
 
 #
 
-<img src="/img/whats-new/banner-light.webp" className="light-only" />
-<img src="/img/whats-new/banner-dark.webp" className="dark-only" />
+<img src="/img/whats-new/banner-2027-ltr-light.webp" className="light-only" />
+<img src="/img/whats-new/banner-2027-ltr-dark.webp" className="dark-only" />
 
-AdvantageScope 2026 版本現已推出！詳細資訊請查看[安裝文件](/overview/installation)與[完整更新日誌](https://github.com/Mechanical-Advantage/AdvantageScope/releases)。這個版本帶來多項重大新功能與全方位的改進，不僅能提升現有控制系統的操作體驗，也為未來賽季順利轉換至 [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) 做好準備。
+AdvantageScope 2027 版本現已推出！詳細資訊請參閱[安裝文件](/overview/installation)與[完整更新日誌](https://github.com/Mechanical-Advantage/AdvantageScope/releases)。此版本包含多項重大新功能與整體應用程式的眾多改進，同時也是第一個完整支援 Systemcore 的 AdvantageScope 版本。
 
-**我們非常重視你的回饋！歡迎到 [issues 頁面](https://github.com/Mechanical-Advantage/AdvantageScope/issues)提供回饋、提出功能需求與回報 Bug。**
+**我們重視你的意見！歡迎到 [issues 頁面](https://github.com/Mechanical-Advantage/AdvantageScope/issues)提供回饋、提出功能需求或回報 Bug。**
 
-## ✴️ 實驗性功能：FTC 支援 {#ftc-support}
+<img src="/img/screenshot-light.webp" className="light-only" />
+<img src="/img/screenshot-dark.webp" className="dark-only" />
 
-為了幫 2027-2028 賽季全面支援 Systemcore 預做準備，這個版本新增了幾項功能，提升與現有 FIRST Tech Challenge 控制系統的相容性：
+## 🍋‍🟩 Systemcore 相容性 {#systemcore-compatibility}
 
-- 🗺️ [2D 場地](/tab-reference/2d-field) 與 👀 [3D 場地](/tab-reference/3d-field) 上的 FTC 場地與機器人模型
-- 新增[座標系](/more-features/coordinate-systems)選項，相容於[標準 FTC 座標](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html)
-- 支援 [Road Runner](https://rr.brott.dev/docs/v1-0/installation/) 日誌檔案
-- 支援 [FTC Dashboard](https://github.com/acmerobotics/ftc-dashboard) 即時串流格式
+AdvantageScope 2027 專為與全新 Systemcore 機器人控制器及 WPILib 2027 無縫搭配而打造：
 
-:::tip
-FTC 隊伍在官方賽季期間使用實驗性軟體時請務必謹慎。AdvantageScope 的 FTC 支援仍在積極開發中。
-:::
+- 預設機器人位址現已改為 `robot.local`，無需設定隊號即可進行即時連線或下載日誌。選單列中亦可直接選取 Systemcore 的 USB 與 Wi-Fi 位址。
+- [日誌下載](/overview/log-files#downloading-from-the-robot)現已支援透過 SFTP 下載 Systemcore 日誌，並保留舊版 roboRIO 日誌下載功能。
+- 新增自 2027 年起用於 FRC 場地、自 2027–2028 年起用於 FTC 場地的[中心/紅方](/more-features/coordinate-systems#center-red)座標系。
+- 新增對 WPILib 2027 `Telemetry` 與 `Tunables` API 的支援、更新的警示顏色，以及新的[時間戳記顯示偏好設定](/more-features/timestamps)，讓 Systemcore 時間戳記更易於閱讀。
+- 全新的 [Systemcore 診斷](/overview/live-sources)即時模式可直接連線至 Systemcore 內建的 NetworkTables 伺服器，無需使用者程式碼即可監控機器人狀態與硬體 IO。
 
-<div className="image-gallery">
-  <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-2.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-3.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-4.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
-</div>
+## 💡 AdvantageScope Lite {#advantagescope-lite}
 
-目前已有數個第三方 FTC 日誌／遙測函式庫支援與 AdvantageScope 相容的格式（例如 WPILOG 和 RLOG）。你可以前往各專案查看詳細文件；AdvantageScope 開發團隊不為任何特定的 FTC 日誌解決方案背書或推薦。
+[AdvantageScope Lite](/more-features/advantagescope-lite) 將 AdvantageScope 的視覺化與分析工具直接帶入網頁瀏覽器，可從 Systemcore 網頁介面以及 FIRST Driver Station 內部直接存取，**無需安裝**。
 
-:::info
-搭配 WPILib 框架與相關日誌工具時，AdvantageScope 能提供最佳體驗。若使用非官方的日誌解決方案，可能會遇到相容性問題或部分功能受限。
+<iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="AdvantageScope Lite Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-在 2027-2028 賽季轉換至 Systemcore 後，AdvantageScope 的所有功能都將在 FTC 中獲得官方支援。
-:::
+## 🎮 FIRST Driver Station {#first-driver-station}
 
-## 🧮 單位感知圖表 {#unit-aware-graphing}
+AdvantageScope 與全新 [FIRST Driver Station](https://docs.wpilib.org/en/latest/docs/software/firstdriverstation) 緊密整合，簡化賽場診斷流程：
 
-📉 [折線圖](/tab-reference/line-graph/)分頁經過重新設計，現已完全支援單位感知，繪製數值欄位時可使用以下新功能：
+- 可直接從 FIRST Driver Station 設定選單存取 [AdvantageScope Lite](/more-features/advantagescope-lite)，分析由 DS 產生的 WPILOG 檔案。
+- 使用桌面應用程式無需任何設定，即可從本機駕駛站即時串流比賽狀態、通訊指標、電池電壓與搖桿輸入。
+- 在桌面版開啟駕駛站 `.wpilog` 檔案時，系統會提示是否要在預先配置好主控台輸出、通訊指標、電源、CPU 使用率與搖桿分頁的獨立視窗中開啟（[文件](/overview/log-files#driver-station-layout)）。此佈局也是 FIRST Driver Station 中 AdvantageScope Lite 的預設佈局。
+- 在 💬 [主控台](/tab-reference/console)分頁中檢視駕駛站主控台日誌，支援自動醒目提示警告／錯誤訊息，並完整支援 [ANSI 跳脫序列](/tab-reference/console#ansi-formatting)（顏色與文字樣式）。
 
-- 精確標示 Y 軸與數值
-- 快速轉換為相容單位（無彈出視窗）
-- 在同一個軸內自動轉換相容的單位類型
-- 精確顯示[積分與微分](/tab-reference/line-graph/#integration-and-differentiation)單位
-
-下圖展示了這些功能的實際效果。可以看到左軸包含了不同角速度單位的欄位，右軸則是經過微分、並以非原生單位（度）顯示的數值。切換單位也比以往更方便，相容的單位選項已直接整合進每個軸的控制選單中。
-
-_有關單位支援的更多資訊，請參閱[文件](/tab-reference/line-graph/units)。_
-
-<img src="/img/tab-reference/line-graph/units-1.webp" alt="單位感知圖表" />
+<img src="/img/tutorials/taking-control-1.webp" alt="從 FIRST Driver Station 開啟 AdvantageScope Lite" />
 
 _上圖所示為英文介面。_
 
-## 🏁 更快速的日誌下載 {#faster-log-downloads}
+## 🌐 多語言支援 {#language-support}
 
-從 roboRIO [下載日誌](/overview/log-files/#downloading-from-the-robot)現在比先前版本**快 2 到 4 倍**。這是因為改用了新的 FTP 協定，讓 roboRIO 能以更低的 CPU 負載來傳輸日誌資料。
+AdvantageScope 現已在桌面應用程式、文件網站、行動應用程式以及 AdvantageScope Lite 中提供 **14 種語言**：英語（美國）、西班牙語（拉丁美洲）、法語、荷蘭語、葡萄牙語（巴西）、羅馬尼亞語、土耳其語、俄語、哈薩克語、希伯來語、阿拉伯語、印地語、簡體中文與繁體中文。
 
-下表列出透過乙太網路連線（最大頻寬 100 Mb/s）時，AdvantageScope 2025 與 2026 版本的實測傳輸速度。可以看到 2025 版本的效能深受 roboRIO CPU 負載影響。
+:::info
+翻譯仍在持續改進中，由人工智慧與社群貢獻者共同完成，**可能包含不夠自然的用詞或不準確之處**。感謝已經協助審校並完善這些翻譯的隊伍！有關我們的翻譯流程以及如何提交意見回饋，請參閱 🌐 [語言支援](/overview/language-support)頁面。
+:::
 
-|                                                | 2025 (SFTP) | 2026 (FTP) | 加速倍率                                         |
-| ---------------------------------------------- | ----------- | ---------- | ------------------------------------------------ |
-| 高 CPU 負載<br /><sub>複雜機器人程式碼</sub>   | 25 Mb/s     | 80 Mb/s    | <span style={{fontSize: '24px'}}>**3.2x**</span> |
-| 平均 CPU 負載<br /><sub>一般機器人程式碼</sub> | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**2.3x**</span> |
-| 最小 CPU 負載<br /><sub>無機器人程式碼</sub>   | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**1.1x**</span> |
+<img src="/img/whats-new/multi-language-1.webp" alt="簡體中文介面的折線圖分頁" />
 
-## 📁 從子資料夾下載日誌 {#download-logs-from-subfolders}
+## 📖 全新教學課程與文件 {#new-tutorials-and-documentation}
 
-下載視窗現在支援抓取存放在子資料夾中的日誌，並可將每個子資料夾作為一個群組一次下載。這讓下載 CTRE 2026 版 [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) 產生的日誌變得更順暢（該工具因無法將所有資料寫入單一檔案，改以子資料夾存放）。
+文件已擴充全新的三部曲[教學課程系列](/category/tutorials)，協助隊伍快速上手 WPILib 2027 與 AdvantageScope：
 
-<img src="/img/whats-new/subfolders.webp" alt="下載日誌子資料夾" height="450" />
+1. **👋 [你好，遙測！](/tutorials/hello-telemetry)：** 設定 `DataLogManager` 與 `Telemetry` API、進行即時連線，並使用折線圖、表格與統計資料進行分析。
+2. **🤖 [踏上場地：機器人視覺化](/tutorials/to-the-field)：** 在 FRC 與 FTC 場地上發布 2D／3D 姿態、軌跡與 `Mechanism2d` 物件。
+3. **🕹️ [掌握控制：DS 與搖桿](/tutorials/taking-control)：** 串流即時駕駛站診斷資訊、同步機器人與 DS 日誌、檢視主控台輸出以及視覺化控制器輸入。
 
-## 🌈 全新視覺化選項 {#new-visualization-options}
+整份文件中的程式碼範例也已全面更新，涵蓋多種語言的 WPILib 遙測 API。
 
-🗺️ [2D 場地](/tab-reference/2d-field) 與 👀 [3D 場地](/tab-reference/3d-field) 支援數個全新視覺化選項：
+<img src="/img/tutorials/to-the-field-4.webp" alt="來自《踏上場地》教學課程的 3D 場地視覺化" />
 
-- 2D 場地上現在提供更多種機器人保險桿顏色，且每個物件都能單獨設定顏色，搭配殘影與多個機器人物件時更有彈性。
-- 在 [3D 場地上視覺化 2D 機構](/tab-reference/3d-field/#2d-mechanisms)時，機構除了 XZ 平面外，現在也能放置在 YZ 平面上，更容易視覺化多軸運動的複雜機構。
-- 3D 場地現在支援選填的反鋸齒功能，以提升渲染邊緣的品質。
+_上圖所示為英文介面。_
 
-<img src="/img/whats-new/field-viz.jpg" alt="全新場地視覺化" />
+## 📱 AdvantageTune {#advantagetune}
 
-## 🪵 REV Robotics CAN 日誌支援 {#rev-robotics-can-log-support}
+AdvantageTune 是一款全新的獨立 iPhone 與 iPad 應用程式，提供輕量級的行動裝置微調體驗，與 AdvantageScope 相輔相成。你可以直接從手機檢視並修改即時 [NetworkTables](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html) 主題（包含基本型別、陣列、WPILib 結構與 Protobuf），讓每個人都能輕鬆參與機器人程式碼的微調。
 
-你現在可以直接在 AdvantageScope 中開啟由 REV Robotics [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) 產生的 `.revlog` 檔案。這些檔案記錄了 Spark Max 與 Spark Flex 裝置的 CAN 訊號，是 AdvantageScope [URCL](/more-features/urcl) 函式庫的官方替代方案。
+AdvantageTune 與 AdvantageScope 皆簡化了將微調數值匯出回機器人程式碼的流程，提供按鈕可將所有已微調數值儲存為清單以便分享（[文件](/overview/live-sources/tuning-mode)）。
 
-URCL 與官方 `StatusLogger` 在 2026 賽季期間都會繼續提供，確保團隊能順利轉換並維持與先前賽季相同的功能。我們日後會再公布 2027 年及之後日誌記錄選項的更多細節。
-
-<img src="/img/whats-new/revlog.webp" alt="REVLOG 視覺化" />
-
-## 💿 CSV 檔案匯入 {#csv-file-imports}
-
-為了更彈性地視覺化機器人日誌框架之外產生的資料，AdvantageScope 現在提供匯入 CSV 檔案的基本支援。支援格式與其他限制請參閱[文件](/overview/log-files/#csv-formatting)。
-
-<img src="/img/overview/log-files/export-2.webp" alt="CSV 資料" />
-
-## 🤩 介面外觀改進 {#aesthetic-improvements}
-
-Windows 11 上的 AdvantageScope UI 已更新並支援半透明側邊欄，這項功能先前僅 macOS 版本獨享。macOS Tahoe 也同步換上基於 Apple Liquid Glass 材質設計的新版應用程式圖示。
-
-<img src="/img/whats-new/windows-ui.webp" alt="Windows UI" />
-
-## 📋 精簡的選單 {#streamlined-menus}
-
-選單列與相關控制項經過精簡與重新整理，讓各平台的操作更直覺一致。主要改進包括：
-
-- 在即時來源（例如 NetworkTables 與 [Phoenix 診斷](/overview/live-sources/phoenix-diagnostics)）之間更快速地切換，無需開啟偏好設定視窗。
-- 在側邊欄上按右鍵，即可快速複製欄位名稱（或完整的欄位鍵名）。
-- 重新整理偏好設定視窗，讓各項設定更好找。
+[<img src="/img/app-store-zh-TW.svg" alt="App Store" />](https://apps.apple.com/tw/app/advantagetune/id6811453643)
 
 <div className="image-gallery">
-  <img src="/img/whats-new/menus-1.webp" />
-  <img src="/img/whats-new/menus-2.webp" />
-  <img src="/img/prefs_zh-TW.webp" />
+  <img src="/img/whats-new/advantagetune-1.webp" alt="AdvantageTune 瀏覽檢視" />
+  <img src="/img/whats-new/advantagetune-2.webp" alt="AdvantageTune 主題編輯" />
+  <img src="/img/whats-new/advantagetune-3.webp" alt="AdvantageTune 結構編輯" />
+  <img src="/img/whats-new/advantagetune-4.webp" alt="AdvantageTune 已微調數值清單" />
+  <img src="/img/whats-new/advantagetune-5.webp" alt="AdvantageTune 搜尋與篩選" />
 </div>
 
-## 🐛 穩定性提升 {#stability-improvements}
+_上圖所示為英文介面。_
 
-此版本包含整個應用程式的多項 Bug 修復與穩定性提升。完整清單請見發布[更新日誌](https://github.com/Mechanical-Advantage/AdvantageScope/releases)，以下列出幾項重點修復：
+## 🪐 WPILOG 通用日誌記錄 {#wpilog-universal-logging}
 
-- 大幅提升 AdvantageScope 長時間串流資料時的效能，特別是在使用折線圖分頁時。
-- 提升對異常日誌資料的容錯度，包含體積較大的日誌檔案與資料量龐大的欄位值。
-- 修正瀏覽日誌資料時的各種畫面異常，特別是在折線圖分頁中使用篩選器時。
-- 修正下載視窗中 AdvantageKit 日誌檔案的排序；沒有時間戳記的日誌現在與其他格式一樣位於清單底部。
-- 在 3D 場地分頁中，滾轉軸 (roll axis) 旋轉角度非零的機器人攝影機現在能正確顯示。
-- 提升 AdvantageScope XR 的穩定性，特別是在 iOS/iPadOS 26 上執行時。若為離線安裝，請前往 App Store 檢查是否有可用更新。
+透過[通用日誌記錄](/more-features/universal-logging)，單一 WPILOG 檔案現在可以作為多種日誌串流與格式的通用容器，包含廠商專用裝置日誌、CSV 資料與子 WPILOG 檔案。通用日誌記錄以彈性且與廠商無關的方式取代了 URCL：來自各來源的資料會自動同步並合併至單一統一的側邊欄樹狀結構中。關於在 WPILib（Java、C++ 與 Python）及 AdvantageKit 中擷取廠商日誌的詳細說明，請參閱[通用日誌記錄文件](/more-features/universal-logging#experimental-vendor-logging)。
+
+<img src="/img/more-features/universal-logging-1.webp" alt="側邊欄中顯示多個廠商日誌的 WPILOG 檔案" />
+
+_上圖所示為英文介面。_
+
+## 🗺️ 場地分頁改進 {#field-tab-improvements}
+
+🗺️ [2D 場地](/tab-reference/2d-field)與 👀 [3D 場地](/tab-reference/3d-field)分頁新增了多項實用改進：
+
+- 在 2D 場地上平移與縮放，或按右鍵鎖定攝影機以跟隨機器人的位置與旋轉（[文件](/tab-reference/2d-field#camera-controls)）。
+- 在 2D 與 3D FTC 場地上新增地墊格線，方便空間參考。
+- 開啟新的 2D 或 3D 場地分頁時，AdvantageScope 現在會記住上次使用的是 FRC 還是 FTC 場地。
+
+<img src="/img/tab-reference/2d-field-1.webp" alt="2D 場地分頁概述" />
+
+_上圖所示為英文介面。_
+
+## 📉 折線圖改進 {#line-graph-improvements}
+
+📉 [折線圖](/tab-reference/line-graph)與時間軸包含多項視覺化最佳化，讓分析更清晰：
+
+- 啟用「顯示機器人模式」時，現在會針對自動、遙控、實用工具與停用階段繪製色彩編碼橫條。
+- 點狀圖表會依任意縮放層級自動調整點的大小，以維持最佳可視性。
+- 折線圖與時間軸上會顯示實用提示，引導新使用者操作捲動與縮放手勢。
+- 改進了時間軸與折線圖座標軸上較大時間戳記數值的渲染與可讀性。
+
+<img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="折線圖上色彩編碼的機器人模式疊加顯示" />
+
+_上圖所示為英文介面。_
+
+## 🤝 無障礙功能強化 {#accessibility-enhancements}
+
+AdvantageScope 2027 包含多項更新，提升應用程式的無障礙體驗：
+
+- 為所有輸入控制項新增鍵盤 Tab 導覽，並為全應用程式的所有控制項新增描述性工具提示。
+- AdvantageScope 現在會遵循作業系統層級的減少透明度與減少動態效果設定。
+- 側邊欄中的布林指示器現在不再僅依賴顏色來區分狀態。
+
+## 🥔 新增單位類型 {#new-unit-types}
+
+AdvantageScope 的[單位感知圖表](/tab-reference/line-graph/units)已擴充支援更多單位類型與解析選項：
+
+- 功率（瓦特、馬力等）
+- 比率（無因次、百分比）
+- 克耳文溫度
+- 馬鈴薯能量 (Potato energy)
+- 英式英語單位拼法（例如 `metres`）
+- WPILib 單位函式庫的後綴
+
+## 🧱 穩定性改進 {#stability-improvements}
+
+此版本包含大量 Bug 修復、效能最佳化以及全應用程式的穩定性改進。完整清單請見發布[更新日誌](https://github.com/Mechanical-Advantage/AdvantageScope/releases)，主要亮點如下：
+
+- 官方 Windows 發行版本現已進行程式碼簽章，降低安裝過程中出現 SmartScreen 警告的頻率。
+- 顯著提升日誌載入與繪圖效能，特別是在處理 Hoot (`.hoot`) 日誌時。
+- 改進對齊多來源日誌時的多日誌時間戳記同步演算法。
+- 提升 [Phoenix 診斷](/overview/live-sources/phoenix-diagnostics)的連線可靠性。
+- 修復彈出視窗選單列與 [AdvantageScope XR](/tab-reference/3d-field/advantagescope-xr) 中錄製彈出視窗的介面問題。
+- 最佳化全應用程式的介面文字與措辭以提升清晰度。

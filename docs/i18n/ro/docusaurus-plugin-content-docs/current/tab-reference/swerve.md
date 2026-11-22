@@ -36,14 +36,18 @@ Pentru a începe, trage un câmp în secțiunea „Surse”. Șterge o sursă fo
 - **Vitezele robotului:** Viteze liniare și unghiulare afișate în centrul diagramei.
 - **Rotație:** Poziția unghiulară folosită pentru a roti diagrama.
 
+:::tip
+Stările modulelor swerve pot fi vizualizate și pe filele 🗺️ [Teren 2D](/tab-reference/2d-field) și 👀 [Teren 3D](/tab-reference/3d-field).
+:::
+
 ## Formatul datelor {#data-format}
 
 Datele trebuie publicate ca structură codificată pe octeți (byte-encoded struct) sau protobuf, folosind tipurile `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d` sau `Rotation3d`.
 
-Multe biblioteci suportă formatul struct, inclusiv WPILib și AdvantageKit. Codul de exemplu de mai jos arată cum poți înregistra stările modulelor swerve în Java.
+Multe biblioteci suportă formatul struct, inclusiv WPILib și AdvantageKit. Codul de exemplu de mai jos arată cum poți înregistra stările modulelor swerve.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
@@ -54,6 +58,37 @@ SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
 };
 
 Telemetry.log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+std::array<wpi::math::SwerveModuleVelocity, 4> states{
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{}
+};
+
+wpi::telemetry::Log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import SwerveModuleVelocity
+import telemetry
+
+states = [
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+]
+
+telemetry.log("MyStates", states, element_type=SwerveModuleVelocity)
 ```
 
 </TabItem>

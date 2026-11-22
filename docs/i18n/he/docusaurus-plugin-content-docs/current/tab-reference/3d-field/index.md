@@ -48,10 +48,10 @@ AdvantageScope תומכת בכמה גדלים של AprilTags עבור מגרשי
 
 נתוני גיאומטריה צריכים להתפרסם בפורמט struct או protobuf בקידוד בינארי (byte-encoded). מגוון סוגי גיאומטריה ב-2D וב-3D נתמכים, כולל `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` ועוד.
 
-ספריות רבות תומכות בפורמט struct, כולל WPILib ו-AdvantageKit. דוגמאות הקוד למטה מראות איך לתעד נתוני תנוחה תלת-ממדיים ב-Java.
+ספריות רבות תומכות בפורמט struct, כולל WPILib ו-AdvantageKit. דוגמאות הקוד למטה מראות איך לתעד נתוני תנוחה תלת-ממדיים.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Pose3d poseA = new Pose3d();
@@ -59,6 +59,31 @@ Pose3d poseB = new Pose3d();
 
 Telemetry.log("MyPose", poseA);
 Telemetry.log("MyPoseArray", new Pose3d[] {poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::math::Pose3d poseA;
+wpi::math::Pose3d poseB;
+
+wpi::telemetry::Log("MyPose", poseA);
+wpi::telemetry::Log("MyPoseArray", std::vector{poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import Pose3d
+import telemetry
+
+pose_a = Pose3d()
+pose_b = Pose3d()
+
+telemetry.log("MyPose", pose_a)
+telemetry.log("MyPoseArray", [pose_a, pose_b], element_type=Pose3d)
 ```
 
 </TabItem>

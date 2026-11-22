@@ -16,10 +16,6 @@ sidebar_position: 1
 - 有新版本可供下載時，會在應用程式內收到通知。
 - 內建近期 6328 機器人模型，可用於 👀 [3D 場地](/tab-reference/3d-field) 分頁。
 
-:::note
-在 Ubuntu 23.10 或更新版本上執行 AppImage 之前，你必須先從 releases 頁面下載 AppArmor 設定檔並複製到 `/etc/apparmor.d`。
-:::
-
 :::info
 AdvantageScope 每年都會在 1 月 FRC 開賽 (kickoff) 前發布主要版本，版本號對應年份（例如 v26.0.0 於 2026 年 1 月發布）。在正式發布前的幾個月內，我們可能會提供 Beta 與 Alpha 版本，讓想搶先體驗新功能並提供回饋的隊伍試用。**使用這些預先發布版本時，可能會遇到穩定版中沒有的問題與 Bug。**
 :::
@@ -28,7 +24,7 @@ AdvantageScope 每年都會在 1 月 FRC 開賽 (kickoff) 前發布主要版本�
 
 ### 安裝：[WPILib 文件](https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html) {#wpilib-installation}
 
-WPILib 安裝程式內含近期版本的 AdvantageScope，但版本可能會比直接下載的最新版稍微落後。關於如何從 WPILib 版 VSCode 啟動 AdvantageScope，請參閱[這份文件](https://docs.wpilib.org/en/stable/docs/software/dashboards/advantagescope.html)。
+WPILib 安裝程式內含近期版本的 AdvantageScope，但版本可能會比直接下載的最新版稍微落後。關於如何從 WPILib 版 VS Code 啟動 AdvantageScope，請參閱[這份文件](https://docs.wpilib.org/en/stable/docs/software/dashboards/advantagescope.html)。
 
 ## 非官方發行版 {#unofficial-distributions}
 

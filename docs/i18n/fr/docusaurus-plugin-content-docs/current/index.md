@@ -17,6 +17,11 @@ AdvantageScope est une application d'analyse de journaux, de diagnostic et de vi
 items={[
 {
 type: "category",
+label: "Tutoriels",
+href: "/category/tutorials"
+},
+{
+type: "category",
 label: "Présentation",
 href: "/category/overview"
 },
@@ -24,11 +29,6 @@ href: "/category/overview"
 type: "category",
 label: "Référence des onglets",
 href: "/category/tab-reference"
-},
-{
-type: "category",
-label: "Plus de fonctionnalités",
-href: "/category/more-features"
 },
 {
 type: "link",

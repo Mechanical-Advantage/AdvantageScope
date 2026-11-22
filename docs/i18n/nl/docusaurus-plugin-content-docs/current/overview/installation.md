@@ -16,10 +16,6 @@ Als je AdvantageScope rechtstreeks bij Team 6328 downloadt, profiteer je van:
 - Een melding in de app zodra er een nieuwe versie klaarstaat om te downloaden.
 - Een ingebouwde verzameling recente robotmodellen van Team 6328 voor het tabblad 👀 [3D-veld](/tab-reference/3d-field).
 
-:::note
-Als je op Ubuntu 23.10 of nieuwer een AppImage wilt draaien, download dan eerst het AppArmor-profiel van de releasepagina en kopieer dat naar /etc/apparmor.d.
-:::
-
 :::info
 Elke hoofdversie van AdvantageScope komt in januari uit, nog vóór de FRC-kickoff, met het jaartal als versienummer (v26.0.0 verscheen bijvoorbeeld in januari 2026). In de maanden daarvoor zijn er soms al bèta- en alfaversies beschikbaar voor teams die nieuwe functies willen uitproberen en feedback willen geven. **Gebruik je zo'n prerelease, houd er dan rekening mee dat je problemen en bugs kunt tegenkomen die niet in stabiele releases zitten.**
 :::

@@ -2,7 +2,7 @@
 
 ## समर्थित फ़ॉर्मेट {#supported-formats}
 
-- **WPILOG (.wpilog)** - WPILib की [बिल्ट-इन डेटा लॉगिंग](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) और AdvantageKit द्वारा निर्मित। REV मोटर कंट्रोलर्स से सिग्नल्स को WPILOG फ़ाइल में कैप्चर करने के लिए [URCL](/more-features/urcl) का उपयोग किया जा सकता है।
+- **WPILOG (.wpilog)** - WPILib की [बिल्ट-इन डेटा लॉगिंग](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html), AdvantageKit और FIRST ड्राइवर स्टेशन द्वारा निर्मित। कई स्रोतों (जिसमें वेंडर लॉग फ़ाइलें भी शामिल हैं) से डेटा कैप्चर करने के तरीके जानने के लिए [यूनिवर्सल लॉगिंग](/more-features/universal-logging) पेज देखें।
 - **Hoot (.hoot)** - CTRE के Phoenix 6 [सिग्नल लॉगर](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) द्वारा निर्मित।
 - **REVLOG (.revlog)** - REV Robotics के [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) द्वारा निर्मित।
 - **Road Runner (.log)** - FTC के लिए [Road Runner](https://github.com/acmerobotics/road-runner) लाइब्रेरी द्वारा निर्मित।
@@ -63,3 +63,9 @@ CSV कॉलम के नाम या तो "Timestamp, Key, Value" या "
   - उदाहरण: `[1; 2; 3]`
 - **बाइट्स:** हेक्साडेसिमल, `-` द्वारा अलग किए गए
   - उदाहरण: `4d-41-36-33-32-38`
+
+## ड्राइवर स्टेशन लेआउट {#driver-station-layout}
+
+AdvantageScope में FIRST ड्राइवर स्टेशन से लॉग और लाइव डेटा देखने के लिए एक बिल्ट-इन लेआउट शामिल है, जिसमें कंसोल आउटपुट, संचार मेट्रिक्स, बैटरी वोल्टेज, CPU उपयोग और जॉयस्टिक इनपुट के लिए पहले से कॉन्फ़िगर किए गए टैब्स होते हैं।
+
+डेस्कटॉप पर FIRST ड्राइवर स्टेशन द्वारा बनाई गई WPILOG फ़ाइल खोलने पर, AdvantageScope ड्राइवर स्टेशन लेआउट का उपयोग करके एक अलग विंडो में लॉग खोलने के लिए पूछता है। किसी भी विंडो को `फ़ाइल` > `DS लेआउट पर रीसेट करें` पर क्लिक करके मैन्युअल रूप से भी इस लेआउट पर स्विच किया जा सकता है। FIRST ड्राइवर स्टेशन के लिए [AdvantageScope लाइट](/more-features/advantagescope-lite) में, यह लेआउट डिफ़ॉल्ट रूप से उपयोग होता है (और `टैब्स` > `डिफ़ॉल्ट लेआउट पर रीसेट करें` पर क्लिक करके इसे पुनर्स्थापित किया जा सकता है)।

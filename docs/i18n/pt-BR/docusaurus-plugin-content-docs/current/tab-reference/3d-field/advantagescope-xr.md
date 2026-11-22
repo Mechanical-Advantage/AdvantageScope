@@ -74,7 +74,7 @@ Na janela Controles de XR, você encontra várias opções para ajustar como o c
 
 O AdvantageScope XR não precisa de internet para funcionar. Para garantir que ele esteja disponível mesmo sem conexão, baixe o aplicativo AdvantageScope XR na App Store pelo link abaixo. Depois, para conectar ao AdvantageScope no computador, escaneie o QR code com a câmera do iOS ou toque no botão "Escanear" dentro do próprio app.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_pt-BR.svg" alt="App Store" />](https://apps.apple.com/br/app/advantagescope-xr/id6739718081)
 
 :::note
 Mesmo offline, o computador e o dispositivo móvel **precisam estar na mesma rede** (como a rede do robô, um Wi-Fi próprio ou via ancoragem USB).

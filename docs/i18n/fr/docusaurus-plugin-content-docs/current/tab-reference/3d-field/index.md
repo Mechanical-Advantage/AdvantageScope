@@ -48,10 +48,10 @@ AdvantageScope prend en charge plusieurs tailles d'AprilTags pour les terrains F
 
 Publiez vos données géométriques sous forme de _struct_ ou de _protobuf_ encodés en octets. Plusieurs types géométriques 2D et 3D sont pris en charge, notamment `Pose2d`, `Pose3d`, `Translation2d` et `Translation3d`.
 
-De nombreuses bibliothèques gèrent le format _struct_, dont WPILib et AdvantageKit. L'exemple ci-dessous montre comment enregistrer des poses 3D en Java.
+De nombreuses bibliothèques gèrent le format _struct_, dont WPILib et AdvantageKit. L'exemple ci-dessous montre comment enregistrer des poses 3D.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Pose3d poseA = new Pose3d();
@@ -59,6 +59,31 @@ Pose3d poseB = new Pose3d();
 
 Telemetry.log("MyPose", poseA);
 Telemetry.log("MyPoseArray", new Pose3d[] {poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::math::Pose3d poseA;
+wpi::math::Pose3d poseB;
+
+wpi::telemetry::Log("MyPose", poseA);
+wpi::telemetry::Log("MyPoseArray", std::vector{poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import Pose3d
+import telemetry
+
+pose_a = Pose3d()
+pose_b = Pose3d()
+
+telemetry.log("MyPose", pose_a)
+telemetry.log("MyPoseArray", [pose_a, pose_b], element_type=Pose3d)
 ```
 
 </TabItem>

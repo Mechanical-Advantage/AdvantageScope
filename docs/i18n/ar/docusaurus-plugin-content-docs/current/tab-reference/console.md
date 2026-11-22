@@ -7,9 +7,9 @@ sidebar_position: 5
 يتيح لك عرض وحدة التحكم استعراض حقل نصي واحد يحتوي على بيانات وحدة التحكم. وفيما يلي بعض الحقول المقترحة:
 
 - **DS:/Dscomm/Console** — يحفظه برنامج FIRST Driver Station.
-- **messages** — يحفظه نظام التسجيل المدمج في WPILib استنادًا إلى استدعاءات الدالة [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>).
-- **/RealOutputs/Console** — يحفظه AdvantageKit تلقائيًا أثناء تشغيل الروبوت (استخدم `System.out.println` كالمعتاد).
-- **/ReplayOutputs/Console** — يحفظه AdvantageKit تلقائيًا أثناء إعادة تشغيل السجل (استخدم `System.out.println` كالمعتاد).
+- **messages** — يحفظه `DataLogManager` في WPILib تلقائيًا.
+- **/RealOutputs/Console** — يحفظه AdvantageKit تلقائيًا أثناء تشغيل الروبوت.
+- **/ReplayOutputs/Console** — يحفظه AdvantageKit تلقائيًا أثناء إعادة تشغيل السجل.
 
 اسحب الحقل المطلوب إلى العرض الرئيسي للبدء. يمثل كل صف تحديثًا للحقل؛ ففي سجلات WPILib يُنشَأ صف جديد لكل سطر محفوظ، بينما في سجلات AdvantageKit يُنشَأ صف جديد لكل دورة حلقة (loop cycle).
 

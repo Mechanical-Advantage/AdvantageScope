@@ -2,7 +2,7 @@
 
 ## Formats pris en charge {#supported-formats}
 
-- **WPILOG (.wpilog)** : produit par l'[enregistreur de données intégré](https://docs.wpilib.org/fr/stable/docs/software/telemetry/datalog.html) de WPILib et par AdvantageKit. Vous pouvez aussi utiliser [URCL](/more-features/urcl) pour enregistrer les signaux des contrôleurs de moteur REV dans un fichier WPILOG.
+- **WPILOG (.wpilog)** : produit par l'[enregistreur de données intégré](https://docs.wpilib.org/fr/stable/docs/software/telemetry/datalog.html) de WPILib, AdvantageKit et la FIRST Driver Station. Vous pouvez utiliser la [journalisation universelle](/more-features/universal-logging) pour capturer des journaux externes (par exemple des journaux de fabricants) dans un fichier WPILOG.
 - **Hoot (.hoot)** : produit par le [_Signal Logger_](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) de Phoenix 6 (CTRE).
 - **REVLOG (.revlog)** : produit par le [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) de REV Robotics.
 - **Road Runner (.log)** : produit par la bibliothèque [Road Runner](https://github.com/acmerobotics/road-runner) pour FTC.
@@ -31,6 +31,12 @@ _L'interface en anglais est illustrée ci-dessus._
 Une fois un fichier journal ouvert, vous pouvez facilement en ajouter d'autres à la même session. Leurs horodatages seront automatiquement recalés sur les données déjà affichées.
 
 Dans la barre de menus, cliquez sur `Fichier` > `Ajouter de nouveaux journaux...`, puis choisissez un ou plusieurs fichiers à ajouter. Les champs de chaque journal seront regroupés dans des tables nommées `Log0`, `Log1`, etc.
+
+## Disposition Driver Station {#driver-station-layout}
+
+AdvantageScope inclut une disposition intégrée conçue pour afficher les journaux et les données en direct de la FIRST Driver Station, avec des onglets préconfigurés pour la sortie de console, les métriques de communication, la tension de la batterie, l'utilisation du processeur et les entrées des manettes.
+
+Lors de l'ouverture d'un fichier WPILOG généré par la FIRST Driver Station sur ordinateur, AdvantageScope vous propose d'ouvrir le journal dans une fenêtre distincte utilisant la disposition Driver Station. Vous pouvez également basculer manuellement n'importe quelle fenêtre vers cette disposition en cliquant sur `Fichier` > `Rétablir la disposition DS`. Dans [AdvantageScope Lite](/more-features/advantagescope-lite) pour la FIRST Driver Station, cette disposition est utilisée par défaut (et peut être restaurée en cliquant sur `Onglets` > `Rétablir la disposition par défaut`).
 
 ## Télécharger depuis le robot {#downloading-from-the-robot}
 

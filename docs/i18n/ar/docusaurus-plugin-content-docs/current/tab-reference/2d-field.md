@@ -52,10 +52,10 @@ _تظهر في الصورة أعلاه الواجهة باللغة الإنجل�
 
 يجب نشر البيانات الهندسية بصيغة struct أو protobuf مرمّزة بالبايت. يدعم التطبيق أنواعًا هندسية متنوعة ثنائية وثلاثية الأبعاد، بما في ذلك `Pose2d` و`Pose3d` و`Translation2d` و`Translation3d` وغيرها.
 
-تدعم مكتبات عديدة تنسيق struct، بما في ذلك WPILib وAdvantageKit. يوضح المثال البرمجي أدناه كيفية تسجيل بيانات الوضعيات ثنائية الأبعاد بلغة Java.
+تدعم مكتبات عديدة تنسيق struct، بما في ذلك WPILib وAdvantageKit. يوضح المثال البرمجي أدناه كيفية تسجيل بيانات الوضعيات ثنائية الأبعاد.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Pose2d poseA = new Pose2d();
@@ -63,6 +63,31 @@ Pose2d poseB = new Pose2d();
 
 Telemetry.log("MyPose", poseA);
 Telemetry.log("MyPoseArray", new Pose2d[] {poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::math::Pose2d poseA;
+wpi::math::Pose2d poseB;
+
+wpi::telemetry::Log("MyPose", poseA);
+wpi::telemetry::Log("MyPoseArray", std::vector{poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import Pose2d
+import telemetry
+
+pose_a = Pose2d()
+pose_b = Pose2d()
+
+telemetry.log("MyPose", pose_a)
+telemetry.log("MyPoseArray", [pose_a, pose_b], element_type=Pose2d)
 ```
 
 </TabItem>

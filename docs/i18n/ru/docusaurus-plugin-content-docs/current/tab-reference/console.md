@@ -7,9 +7,9 @@ sidebar_position: 5
 Представление «Консоль» предназначено для просмотра одного строкового поля с данными консоли. Ниже приведены некоторые рекомендуемые поля.
 
 - **DS:/Dscomm/Console** - Сохраняется FIRST Driver Station.
-- **messages** - Сохраняется встроенным логированием WPILib на основе вызовов метода [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>).
-- **/RealOutputs/Console** - Автоматически сохраняется AdvantageKit во время работы робота (используйте `System.out.println` как обычно).
-- **/ReplayOutputs/Console** - Автоматически сохраняется AdvantageKit во время повторного воспроизведения лога (используйте `System.out.println` как обычно).
+- **messages** - Автоматически сохраняется `DataLogManager` из WPILib.
+- **/RealOutputs/Console** - Автоматически сохраняется AdvantageKit во время работы робота.
+- **/ReplayOutputs/Console** - Автоматически сохраняется AdvantageKit во время повторного воспроизведения лога.
 
 Перетащите нужное поле в главное представление, чтобы начать работу. Каждая строка представляет обновление поля. Для логов WPILib новая строка создаётся для каждой сохранённой записи, а для логов AdvantageKit — для каждого цикла.
 

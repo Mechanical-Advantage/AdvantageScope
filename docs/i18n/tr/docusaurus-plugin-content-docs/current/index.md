@@ -17,6 +17,11 @@ AdvantageScope, [Takım 6328](https://littletonrobotics.org) tarafından FIRST t
 items={[
 {
 type: "category",
+label: "Eğitimler",
+href: "/category/tutorials"
+},
+{
+type: "category",
 label: "Genel bakış",
 href: "/category/overview"
 },
@@ -24,11 +29,6 @@ href: "/category/overview"
 type: "category",
 label: "Sekme referansı",
 href: "/category/tab-reference"
-},
-{
-type: "category",
-label: "Daha fazla özellik",
-href: "/category/more-features"
 },
 {
 type: "link",

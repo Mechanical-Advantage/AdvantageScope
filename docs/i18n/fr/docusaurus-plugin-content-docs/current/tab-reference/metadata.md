@@ -13,10 +13,10 @@ L'onglet Métadonnées affiche les valeurs publiées dans la table cachée `/Met
 
 _L'interface en anglais est illustrée ci-dessus._
 
-L'exemple ci-dessous montre comment enregistrer des métadonnées en Java.
+L'exemple ci-dessous montre comment enregistrer des métadonnées.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 Dans WPILib, enregistrez vos valeurs sous forme de chaînes de caractères dans la table `/Metadata` à l'aide de la classe `Telemetry`.
 
@@ -24,6 +24,30 @@ Dans WPILib, enregistrez vos valeurs sous forme de chaînes de caractères dans 
 TelemetryTable metadata = Telemetry.getTable("Metadata");
 metadata.log("RobotName", "Darwin");
 metadata.log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+Dans WPILib, enregistrez vos valeurs sous forme de chaînes de caractères dans la table `/Metadata` à l'aide de la classe `Telemetry`.
+
+```cpp
+wpi::telemetry::TelemetryTable& metadata = wpi::telemetry::GetTable("Metadata");
+metadata.Log("RobotName", "Darwin");
+metadata.Log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+Dans WPILib, enregistrez vos valeurs sous forme de chaînes de caractères dans la table `/Metadata` à l'aide du module `telemetry`.
+
+```python
+import telemetry
+
+metadata = telemetry.get_table("Metadata")
+metadata.log("RobotName", "Darwin")
+metadata.log("Platform", "macOS")
 ```
 
 </TabItem>

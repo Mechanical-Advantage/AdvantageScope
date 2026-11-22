@@ -70,7 +70,7 @@ AdvantageTune is a new standalone iPhone and iPad application that provides a li
 
 Both AdvantageTune and AdvantageScope streamline the process of exporting tuned values back to robot code with buttons to save all tuned values to a list for sharing ([docs](/overview/live-sources/tuning-mode)).
 
-[<img src="/img/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagetune/id6811453643)
+[<img src="_/img/app-store_en-US.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagetune/id6811453643)
 
 <div className="image-gallery">
   <img src="/img/whats-new/advantagetune-1.webp" alt="AdvantageTune browse view" />

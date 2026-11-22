@@ -24,6 +24,12 @@ AdvantageScope está disponible en varios idiomas para ofrecer una experiencia a
 - Chino simplificado
 - Chino tradicional
 
+Gracias a los siguientes colaboradores por ayudar a revisar y mejorar las traducciones de AdvantageScope:
+
+- FRC Team 4400 Cerbotics
+- FRC Team 6907 The G.O.A.T.
+- Ata Baber
+
 ## Configuración {#configuration}
 
 Para cambiar el idioma en AdvantageScope, abre la ventana de preferencias en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS). En la opción "Idioma", elige uno de la lista o selecciona "Predeterminado del sistema" para usar automáticamente el idioma de tu sistema operativo.
@@ -37,10 +43,26 @@ Todos los formatos compatibles con AdvantageScope admiten Unicode por completo a
 Aquí tienes un ejemplo de cómo registrar una cadena de texto con una clave en español:
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Telemetry.log("Tracción/Velocidad del motor derecho", "Rápido");
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::telemetry::Log("Tracción/Velocidad del motor derecho", "Rápido");
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+import telemetry
+
+telemetry.log("Tracción/Velocidad del motor derecho", "Rápido")
 ```
 
 </TabItem>
@@ -61,4 +83,4 @@ Consulta la página de [soporte de unidades](/tab-reference/line-graph/units) pa
 
 La traducción de AdvantageScope combina inteligencia artificial con el aporte de la comunidad. Como el proyecto avanza muy rápido, apoyarnos en la IA nos permite mantener sincronizadas la aplicación y la documentación en todos los idiomas, de modo que siempre tengas acceso a las nuevas funciones y actualizaciones al mismo tiempo, sin importar el idioma que uses.
 
-Diseñamos este proceso para respetar la terminología, los anglicismos habituales y las expresiones que ya usan los equipos en su día a día. Aun así, las traducciones generadas por IA a veces suenan poco naturales o tienen imprecisiones. Si notas algo que se pueda mejorar, cuéntanos haciendo clic en el ícono morado dentro de la aplicación (disponible cuando usas cualquier idioma distinto del inglés).
+Diseñamos este proceso para respetar la terminología, los anglicismos habituales y las expresiones que ya usan los equipos en su día a día. Aun así, **las traducciones generadas por IA a veces suenan poco naturales o tienen imprecisiones**. Agradecemos tus comentarios; puedes enviar sugerencias sobre las traducciones haciendo clic en el ícono morado dentro de la aplicación o en el enlace de comentarios en la barra de título de la documentación (cuando configures cualquier idioma distinto del inglés).

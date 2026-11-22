@@ -13,10 +13,10 @@ import TabItem from '@theme/TabItem';
 
 _تظهر في الصورة أعلاه الواجهة باللغة الإنجليزية._
 
-يوضح المثال البرمجي أدناه كيفية تسجيل البيانات الوصفية بلغة Java.
+يوضح المثال البرمجي أدناه كيفية تسجيل البيانات الوصفية.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 في WPILib، سجّل القيم في جدول `"/Metadata"` كسلاسل نصية باستخدام الفئة `Telemetry`.
 
@@ -24,6 +24,30 @@ _تظهر في الصورة أعلاه الواجهة باللغة الإنجل�
 TelemetryTable metadata = Telemetry.getTable("Metadata");
 metadata.log("RobotName", "Darwin");
 metadata.log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+في WPILib، سجّل القيم في جدول `"/Metadata"` كسلاسل نصية باستخدام الفئة `Telemetry`.
+
+```cpp
+wpi::telemetry::TelemetryTable& metadata = wpi::telemetry::GetTable("Metadata");
+metadata.Log("RobotName", "Darwin");
+metadata.Log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+في WPILib، سجّل القيم في جدول `"/Metadata"` كسلاسل نصية باستخدام الوحدة `telemetry`.
+
+```python
+import telemetry
+
+metadata = telemetry.get_table("Metadata")
+metadata.log("RobotName", "Darwin")
+metadata.log("Platform", "macOS")
 ```
 
 </TabItem>

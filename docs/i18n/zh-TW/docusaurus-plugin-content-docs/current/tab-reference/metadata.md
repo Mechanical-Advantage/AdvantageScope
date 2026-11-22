@@ -13,10 +13,10 @@ import TabItem from '@theme/TabItem';
 
 _上圖所示為英文介面。_
 
-以下範例程式示範如何在 Java 中記錄中繼資料：
+以下範例程式示範如何記錄中繼資料：
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 在 WPILib 中，請使用 `Telemetry` 類別將數值以字串形式記錄至「/Metadata」表格：
 
@@ -24,6 +24,30 @@ _上圖所示為英文介面。_
 TelemetryTable metadata = Telemetry.getTable("Metadata");
 metadata.log("RobotName", "Darwin");
 metadata.log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+在 WPILib 中，請使用 `Telemetry` 類別將數值以字串形式記錄至「/Metadata」表格：
+
+```cpp
+wpi::telemetry::TelemetryTable& metadata = wpi::telemetry::GetTable("Metadata");
+metadata.Log("RobotName", "Darwin");
+metadata.Log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+在 WPILib 中，請使用 `telemetry` 模組將數值以字串形式記錄至「/Metadata」表格：
+
+```python
+import telemetry
+
+metadata = telemetry.get_table("Metadata")
+metadata.log("RobotName", "Darwin")
+metadata.log("Platform", "macOS")
 ```
 
 </TabItem>

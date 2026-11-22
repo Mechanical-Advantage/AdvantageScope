@@ -13,10 +13,10 @@ import TabItem from '@theme/TabItem';
 
 _Yukarıda İngilizce arayüz gösteriliyor._
 
-Aşağıdaki örnek kod, Java kullanarak üst verilerin nasıl loglanacağını gösterir.
+Aşağıdaki örnek kod, üst verilerin nasıl loglanacağını gösterir.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 WPILib'de `Telemetry` sınıfını kullanarak değerleri “/Metadata” tablosuna metin (string) olarak loglayın.
 
@@ -24,6 +24,30 @@ WPILib'de `Telemetry` sınıfını kullanarak değerleri “/Metadata” tablosu
 TelemetryTable metadata = Telemetry.getTable("Metadata");
 metadata.log("RobotName", "Darwin");
 metadata.log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+WPILib'de `Telemetry` sınıfını kullanarak değerleri “/Metadata” tablosuna metin (string) olarak loglayın.
+
+```cpp
+wpi::telemetry::TelemetryTable& metadata = wpi::telemetry::GetTable("Metadata");
+metadata.Log("RobotName", "Darwin");
+metadata.Log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+WPILib'de `telemetry` modülünü kullanarak değerleri “/Metadata” tablosuna metin (string) olarak loglayın.
+
+```python
+import telemetry
+
+metadata = telemetry.get_table("Metadata")
+metadata.log("RobotName", "Darwin")
+metadata.log("Platform", "macOS")
 ```
 
 </TabItem>

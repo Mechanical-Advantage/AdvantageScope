@@ -17,6 +17,11 @@ AdvantageScope, [Team 6328](https://littletonrobotics.org) द्वारा FI
 items={[
 {
 type: "category",
+label: "ट्यूटोरियल्स",
+href: "/category/tutorials"
+},
+{
+type: "category",
 label: "अवलोकन",
 href: "/category/overview"
 },
@@ -24,11 +29,6 @@ href: "/category/overview"
 type: "category",
 label: "टैब संदर्भ",
 href: "/category/tab-reference"
-},
-{
-type: "category",
-label: "अन्य फ़ीचर्स",
-href: "/category/more-features"
 },
 {
 type: "link",

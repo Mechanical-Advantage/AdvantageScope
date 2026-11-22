@@ -74,7 +74,7 @@ XR kontrolleri penceresi, modelin artırılmış gerçeklikte nasıl görünece�
 
 AdvantageScope XR internet bağlantısı olmadan da çalışır. Uygulamanın çevrimdışı kullanıma hazır olması için aşağıdaki bağlantıyı kullanarak App Store'dan AdvantageScope XR'ı indirin. Masaüstü uygulamasına bağlanmak için iOS kamera uygulamasıyla QR kodunu okutabilir veya AdvantageScope XR uygulamasındaki “Tara” düğmesine dokunabilirsiniz.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_tr.svg" alt="App Store" />](https://apps.apple.com/tr/app/advantagescope-xr/id6739718081?l=tr)
 
 :::note
 İnternet bağlantısı olmadan çalışırken bile ana bilgisayar ve istemci cihaz **aynı ağa bağlı olmalıdır** (örneğin bir robot ağı, özel Wi-Fi ağı veya USB internet paylaşımı).

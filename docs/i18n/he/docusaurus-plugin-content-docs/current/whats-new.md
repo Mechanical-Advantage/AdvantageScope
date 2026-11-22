@@ -1,133 +1,150 @@
 ---
-title: מה חדש ב-2026?
+title: מה חדש ב-2027?
 sidebar_position: 2
-draft: true
 ---
 
 #
 
-<img src="/img/whats-new/banner-light.webp" className="light-only" />
-<img src="/img/whats-new/banner-dark.webp" className="dark-only" />
+<img src="/img/whats-new/banner-2027-rtl-light.webp" className="light-only" />
+<img src="/img/whats-new/banner-2027-rtl-dark.webp" className="dark-only" />
 
-גרסת 2026 של AdvantageScope זמינה כעת! פרטים נוספים אפשר למצוא ב[מדריך ההתקנה](/overview/installation) וב[יומן השינויים המלא](https://github.com/Mechanical-Advantage/AdvantageScope/releases). הגרסה הזו כוללת כמה יכולות חדשות מרכזיות ולא מעט שיפורים ברחבי האפליקציה. רבות מהיכולות החדשות נועדו לשפר את העבודה עם מערכות הבקרה הקיימות, ובמקביל להכין את הקרקע למעבר חלק ל-[Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) בעונות הבאות.
+גרסת 2027 של AdvantageScope זמינה כעת! עיינו ב[מדריך ההתקנה](/overview/installation) וב[רשימת השינויים המלאה](https://github.com/Mechanical-Advantage/AdvantageScope/releases) לפרטים נוספים. גרסה זו כוללת מספר תכונות חדשות ומרכזיות ושיפורים רבים ברחבי האפליקציה. זוהי גם הגרסה הראשונה של AdvantageScope עם תמיכה מלאה ב-Systemcore.
 
-**המשוב שלכם חשוב לנו! נשמח לקבל הערות, בקשות לתכונות חדשות ודיווחים על באגים ב[דף ה-issues](https://github.com/Mechanical-Advantage/AdvantageScope/issues).**
+**אנו מעריכים את המשוב שלכם! הערות, בקשות לתכונות ודיווחים על באגים יתקבלו בברכה ב[דף ה-issues](https://github.com/Mechanical-Advantage/AdvantageScope/issues).**
 
-## ✴️ ניסיוני: תמיכה ב-FTC {#ftc-support}
+<img src="/img/screenshot-light.webp" className="light-only" />
+<img src="/img/screenshot-dark.webp" className="dark-only" />
 
-כהכנה לתמיכה מלאה ב-Systemcore בעונת 2027-2028, גרסה זו מוסיפה כמה יכולות לשיפור התאימות למערכת הבקרה הקיימת של FIRST Tech Challenge:
+## 🍋‍🟩 תאימות ל-Systemcore {#systemcore-compatibility}
 
-- מגרשי FTC ודגמי רובוטים ב-🗺️ [מגרש 2D](/tab-reference/2d-field) ו-👀 [מגרש 3D](/tab-reference/3d-field)
-- אפשרויות [מערכת צירים](/more-features/coordinate-systems) חדשות לתאימות עם [מערכת הצירים הסטנדרטית ב-FTC](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html)
-- תמיכה בקובצי יומן של [Road Runner](https://rr.brott.dev/docs/v1-0/installation/)
-- תמיכה בפורמט הסטרימינג החי של [FTC Dashboard](https://github.com/acmerobotics/ftc-dashboard)
+AdvantageScope 2027 בנויה לפעולה חלקה עם בקר הרובוט החדש Systemcore ו-WPILib 2027:
 
-:::tip
-קבוצות FTC מתבקשות לנהוג בזהירות כשמשתמשים בתוכנה ניסיונית במהלך העונה הרשמית, כי התמיכה ב-FTC ב-AdvantageScope עדיין נמצאת בפיתוח פעיל.
-:::
+- כתובת הרובוט המוגדרת כברירת מחדל היא כעת `robot.local`, מה שמאפשר להתחבר בשידור חי או להוריד יומנים ללא הגדרת מספר קבוצה. ניתן לבחור גם כתובות USB ו-Wi-Fi של Systemcore משורת התפריטים.
+- [הורדת יומנים](/overview/log-files#downloading-from-the-robot) תומכת כעת ב-SFTP עבור Systemcore לצד הורדת יומנים מדור קודם של roboRIO.
+- נוספה מערכת הצירים [מרכז/אדום](/more-features/coordinate-systems#center-red) המשמשת במגרשי FRC החל מ-2027 ובמגרשי FTC החל מעונת 2027–2028.
+- נוספה תמיכה בממשקי ה-API של `Telemetry` ו-`Tunables` ב-WPILib 2027, צבעי התראה מעודכנים ו[העדפת תצוגת חותמות זמן](/more-features/timestamps) חדשה כדי לשמור על קריאות חותמות הזמן של Systemcore.
+- מצב חי חדש של [דיאגנוסטיקה של Systemcore](/overview/live-sources) מתחבר ישירות לשרת ה-NetworkTables המובנה של Systemcore לניטור מצב הרובוט וקלט/פלט חומרה ללא צורך בקוד משתמש.
 
-<div className="image-gallery">
-  <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-2.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-3.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-4.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
-</div>
+## 💡 AdvantageScope Lite {#advantagescope-lite}
 
-כמה ספריות תיעוד וטלמטריה של צד שלישי ב-FTC תומכות בפורמטים נוספים ש-AdvantageScope יודעת לקרוא, כמו WPILOG ו-RLOG. את התיעוד שלהן תמצאו בפרויקטים עצמם; מפתחי AdvantageScope אינם ממליצים על פתרון רישום מסוים לשימוש ב-FTC.
+[AdvantageScope Lite](/more-features/advantagescope-lite) מביאה את כלי הוויזואליזציה והניתוח של AdvantageScope ישירות לדפדפן האינטרנט שלכם. היא נגישה הן מממשק הווב של Systemcore והן מתוך FIRST Driver Station **ללא צורך בהתקנה**.
 
-:::info
-AdvantageScope מתוכננת לעבוד בצורה המיטבית לצד WPILib וכלי הלוגים שלה. כשמשתמשים בפתרונות רישום לא רשמיים, ייתכנו בעיות תאימות או מגבלות ביכולות.
+<iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="הדגמת AdvantageScope Lite" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-כל היכולות של AdvantageScope ייתמכו באופן רשמי ב-FTC לאחר המעבר ל-Systemcore בעונת 2027-2028.
-:::
+## 🎮 FIRST Driver Station {#first-driver-station}
 
-## 🧮 גרפים מודעי-יחידות {#unit-aware-graphing}
+AdvantageScope משתלבת באופן הדוק עם [FIRST Driver Station](https://docs.wpilib.org/en/latest/docs/software/firstdriverstation) החדשה כדי לייעל את אבחון המשחקים:
 
-הכרטיסייה 📉 [גרף קווי](/tab-reference/line-graph/) עוצבה מחדש וכעת היא מודעת ליחידות מידה באופן מלא. השינוי הזה מביא כמה יכולות חדשות כשמציגים שדות מספריים בגרף:
+- [AdvantageScope Lite](/more-features/advantagescope-lite) נגישה ישירות מתפריט ההגדרות של FIRST Driver Station לניתוח קובצי WPILOG שנוצרו על ידי ה-DS.
+- השתמשו באפליקציית שולחן העבודה כדי להזרים בזמן אמת את מצב המשחק, מדדי תקשורת, מתח סוללה וקלט ג'ויסטיקים מ-Driver Station מקומי ללא כל הגדרה.
+- פתיחת קובץ `.wpilog` של Driver Station בגרסת שולחן העבודה מציעה לפתוח חלון ייעודי המוגדר מראש עם כרטיסיות לפלט מסוף, מדדי תקשורת, הספק, ניצולת CPU וג'ויסטיקים ([תיעוד](/overview/log-files#driver-station-layout)). פריסה זו משמשת כברירת מחדל גם ב-AdvantageScope Lite עבור ה-Driver Station.
+- צפו ביומני המסוף של ה-Driver Station בכרטיסיית 💬 [מסוף](/tab-reference/console) עם הדגשה אוטומטית של אזהרות/שגיאות ותמיכה מלאה ב[רצפי בריחה של ANSI](/tab-reference/console#ansi-formatting) (צבעים וסגנונות טקסט).
 
-- תיוג מדויק של צירי ה-Y ושל תצוגות הערכים
-- המרה מהירה בין יחידות תואמות (בלי חלונות קופצים)
-- המרה אוטומטית בין יחידות תואמות על אותו ציר
-- תצוגה מדויקת של יחידות [שעברו אינטגרציה או גזירה](/tab-reference/line-graph/#integration-and-differentiation)
-
-בצילום המסך למטה רואים את כל היכולות האלה בפעולה: הציר השמאלי מציג שדות עם יחידות מהירות זוויתית שונות, והציר הימני מציג ערכים שנגזרו ומוצגים ביחידה שונה מיחידת המקור (מעלות). גם בחירת היחידות פשוטה מתמיד: אפשרויות ההמרה הרלוונטיות מופיעות ישירות בתפריט הבקרה של כל ציר.
-
-_מידע נוסף על תמיכה ביחידות מופיע ב[תיעוד](/tab-reference/line-graph/units)._
-
-<img src="/img/tab-reference/line-graph/units-1.webp" alt="גרפים מודעי-יחידות" />
+<img src="/img/tutorials/taking-control-1.webp" alt="פתיחת AdvantageScope Lite מתוך FIRST Driver Station" />
 
 _הממשק בתמונה מוצג באנגלית._
 
-## 🏁 הורדת יומנים מהירה יותר {#faster-log-downloads}
+## 🌐 תמיכה בשפות {#language-support}
 
-[הורדת יומנים מה-roboRIO](/overview/log-files/#downloading-from-the-robot) מהירה כעת **פי 2 עד 4** מבעבר, בזכות המעבר לפרוטוקול FTP שמאפשר ל-roboRIO להעביר נתונים עם הרבה פחות עומס על המעבד (CPU).
+AdvantageScope זמינה כעת ב-**14 שפות** באפליקציית שולחן העבודה, באתר התיעוד, באפליקציות המובייל וב-AdvantageScope Lite: אנגלית (ארה"ב), ספרדית (אמריקה הלטינית), צרפתית, הולנדית, פורטוגזית (ברזיל), רומנית, טורקית, רוסית, קזחית, עברית, ערבית, הינדי, סינית פשוטה וסינית מסורתית.
 
-הטבלה למטה מציגה את מהירות ההעברה שנמדדה בגרסאות 2025 ו-2026 של AdvantageScope בחיבור כבל רשת ישיר (Ethernet, רוחב פס מרבי של 100 Mb/s). אפשר לראות שביצועי גרסת 2025 נפגעו משמעותית כשמעבד ה-roboRIO היה עמוס.
+:::info
+התרגומים הם עבודה בתהליך שנוצרה בתמיכת בינה מלאכותית ותורמים מהקהילה, ו**עשויים לכלול ניסוחים לא טבעיים או אי-דיוקים**. תודה לקבוצות שכבר עזרו לסקור ולשפר תרגומים אלה! עיינו בדף 🌐 [תמיכה בשפות](/overview/language-support) לפרטים על תהליך התרגום שלנו וכיצד לשלוח משוב.
+:::
 
-|                                                 | 2025 (SFTP) | 2026 (FTP) | האצה                                               |
-| ----------------------------------------------- | ----------- | ---------- | -------------------------------------------------- |
-| עומס מעבד גבוה<br /><sub>קוד רובוט מורכב</sub>  | 25 Mb/s     | 80 Mb/s    | <span style={{fontSize: '24px'}}>**פי 3.2**</span> |
-| עומס מעבד ממוצע<br /><sub>קוד רובוט רגיל</sub>  | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**פי 2.3**</span> |
-| עומס מעבד מינימלי<br /><sub>ללא קוד רובוט</sub> | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**פי 1.1**</span> |
+<img src="/img/whats-new/multi-language-1.webp" alt="כרטיסיית גרף קווי בסינית פשוטה" />
 
-## 📁 הורדת יומנים מתתי-תיקיות {#download-logs-from-subfolders}
+## 📖 מדריכים ותיעוד חדשים {#new-tutorials-and-documentation}
 
-חלון ההורדה תומך כעת בשמירת יומנים שנמצאים בתוך תתי-תיקיות. אפשר להוריד כל תת-תיקייה כקבוצה אחת, פתרון נוח במיוחד עבור יומנים שנוצרו בגרסת 2026 של [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) מבית CTRE (שמפצלת נתונים לתתי-תיקיות כי היא לא שומרת הכול בקובץ יומן יחיד).
+התיעוד הורחב עם [סדרת מדריכים](/category/tutorials) חדשה בת שלושה חלקים שנועדה לעזור לקבוצות להתחיל עם WPILib 2027 ו-AdvantageScope:
 
-<img src="/img/whats-new/subfolders.webp" alt="הורדת תתי-תיקיות יומן" height="450" />
+1. **👋 [שלום, טלמטריה!](/tutorials/hello-telemetry):** הגדרת `DataLogManager` ו-`Telemetry` API, התחברות בשידור חי וניתוח נתונים באמצעות גרפים קוויים, טבלאות וסטטיסטיקה.
+2. **🤖 [אל המגרש: ויזואליזציית רובוט](/tutorials/to-the-field):** פרסום תנוחות 2D/3D, מסלולים מתוכננים ואובייקטי `Mechanism2d` במגרשי FRC ו-FTC.
+3. **🕹️ [לוקחים שליטה: DS וג'ויסטיקים](/tutorials/taking-control):** הזרמת דיאגנוסטיקה חיה של Driver Station, סנכרון יומני רובוט ו-DS, צפייה בפלט המסוף והצגת קלט בקרים.
 
-## 🌈 אפשרויות ויזואליזציה חדשות {#new-visualization-options}
+דוגמאות הקוד ברחבי התיעוד עודכנו גם הן עם כיסוי מלא של ה-API של טלמטריה ב-WPILib במספר שפות תכנות.
 
-כמה אפשרויות ויזואליזציה חדשות נתמכות כעת ב-🗺️ [מגרש 2D](/tab-reference/2d-field) וב-👀 [מגרש 3D](/tab-reference/3d-field):
+<img src="/img/tutorials/to-the-field-4.webp" alt="ויזואליזציית מגרש 3D מתוך המדריך אל המגרש" />
 
-- במגרש ה-2D יש עכשיו מבחר גדול יותר של צבעי באמפרים, ואפשר להגדיר צבע נפרד לכל אובייקט, מה שנותן הרבה יותר גמישות כשמשלבים רובוטי רפאים (Ghost) עם כמה רובוטים.
-- כשמציגים [מנגנוני 2D במגרש ה-3D](/tab-reference/3d-field/#2d-mechanisms), אפשר למקם אותם כעת גם במישור YZ בנוסף למישור XZ, וכך להציג בקלות מנגנונים מורכבים שזזים בכמה צירים.
-- מגרש ה-3D תומך כעת בהחלקת קצוות (Antialiasing) אופציונלית לשיפור חדות הקווים בתצוגה.
+_הממשק בתמונה מוצג באנגלית._
 
-<img src="/img/whats-new/field-viz.jpg" alt="הדמיות מגרש חדשות" />
+## 📱 AdvantageTune {#advantagetune}
 
-## 🪵 תמיכה ביומן CAN של REV Robotics {#rev-robotics-can-log-support}
+AdvantageTune היא אפליקציה עצמאית חדשה ל-iPhone ול-iPad המספקת חוויית כוונון ניידת וקלת משקל המשלימה את AdvantageScope. תוכלו לצפות ולשנות נושאי [NetworkTables](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html) חיים (כולל ערכים פרימיטיביים, מערכים, מבני WPILib ו-Protobufs) ישירות מהטלפון, מה שמקל על כולם לקחת חלק בכוונון קוד הרובוט.
 
-כעת אפשר לפתוח ישירות ב-AdvantageScope קובצי `.revlog` שנוצרו על ידי [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) של REV Robotics. הקבצים האלה מקליטים אותות CAN מבקרי Spark Max ו-Spark Flex, ומהווים חלופה רשמית לספריית [URCL](/more-features/urcl) של AdvantageScope.
+הן AdvantageTune והן AdvantageScope מייעלות את תהליך ייצוא הערכים המכווננים בחזרה לקוד הרובוט באמצעות כפתורים לשמירת כל הערכים המכווננים ברשימה לשיתוף ([תיעוד](/overview/live-sources/tuning-mode)).
 
-גם URCL וגם `StatusLogger` הרשמי ימשיכו להיות זמינים לאורך עונת 2026 כדי להבטיח מעבר חלק ותאימות מלאה לעונות קודמות. פרטים נוספים על אפשרויות הרישום ב-2027 ואילך יפורסמו בהמשך.
-
-<img src="/img/whats-new/revlog.webp" alt="הדמיית REVLOG" />
-
-## 💿 ייבוא קובצי CSV {#csv-file-imports}
-
-כדי לאפשר הצגה גמישה יותר של נתונים שלא הגיעו ממערכות רישום של רובוטים, AdvantageScope תומכת כעת בייבוא בסיסי של קובצי CSV. פרטים על הפורמטים הנתמכים והמגבלות מופיעים ב[תיעוד](/overview/log-files/#csv-formatting).
-
-<img src="/img/overview/log-files/export-2.webp" alt="נתוני CSV" />
-
-## 🤩 שיפורים אסתטיים {#aesthetic-improvements}
-
-ממשק המשתמש ב-Windows 11 עודכן עם סרגל צד חצי-שקוף, שעד עכשיו היה זמין רק ב-macOS. בנוסף, ל-macOS Tahoe יש סמל אפליקציה מעודכן בסגנון Liquid Glass של Apple.
-
-<img src="/img/whats-new/windows-ui.webp" alt="ממשק משתמש של Windows" />
-
-## 📋 תפריטים יעילים {#streamlined-menus}
-
-שורת התפריטים והבקרות שלה אורגנו מחדש כדי להפוך את הגישה לכלים למהירה ועקבית יותר בכל הפלטפורמות. בין השיפורים הבולטים:
-
-- מעבר מהיר יותר בין מקורות חיים (כמו NetworkTables ו-[דיאגנוסטיקה של Phoenix](/overview/live-sources/phoenix-diagnostics)), בלי צורך לפתוח את חלון ההעדפות.
-- לחיצה ימנית בסרגל הצד להעתקה מהירה של שם השדה (או של המפתח המלא שלו).
-- ארגון מחדש של חלון ההעדפות, כך שקל יותר למצוא את ההגדרות הדרושות.
+[<img src="/img/app-store_he.svg" alt="App Store" />](https://apps.apple.com/il/app/advantagetune/id6811453643?l=he)
 
 <div className="image-gallery">
-  <img src="/img/whats-new/menus-1.webp" />
-  <img src="/img/whats-new/menus-2.webp" />
-  <img src="/img/prefs_he.webp" />
+  <img src="/img/whats-new/advantagetune-1.webp" alt="תצוגת עיון ב-AdvantageTune" />
+  <img src="/img/whats-new/advantagetune-2.webp" alt="עריכת נושאים ב-AdvantageTune" />
+  <img src="/img/whats-new/advantagetune-3.webp" alt="עריכת מבנים ב-AdvantageTune" />
+  <img src="/img/whats-new/advantagetune-4.webp" alt="רשימת ערכים מכווננים ב-AdvantageTune" />
+  <img src="/img/whats-new/advantagetune-5.webp" alt="חיפוש וסינון ב-AdvantageTune" />
 </div>
 
-## 🐛 שיפורי יציבות {#stability-improvements}
+_הממשק בתמונה מוצג באנגלית._
 
-גרסה זו כוללת שורה של תיקוני באגים ושיפורי יציבות ברחבי האפליקציה. הרשימה המלאה מופיעה ב[יומן השינויים](https://github.com/Mechanical-Advantage/AdvantageScope/releases), והנה כמה מהתיקונים הבולטים:
+## 🪐 רישום אוניברסלי עם WPILOG {#wpilog-universal-logging}
 
-- שיפור משמעותי בביצועים בזמן הזרמת נתונים ממושכת, במיוחד בכרטיסיית הגרף הקווי.
-- עמידות טובה יותר לנתוני יומן חריגים, כולל קובצי יומן גדולים במיוחד וערכי שדות גדולים.
-- תיקון בעיות תצוגה שונות בעת דפדוף בנתוני יומן, במיוחד כשמפעילים מסננים בכרטיסיית הגרף הקווי.
-- תיקון סדר קובצי היומן של AdvantageKit בחלון ההורדה: יומנים ללא חותמות זמן מופיעים כעת בתחתית הרשימה, כמו בפורמטים האחרים.
-- בכרטיסיית מגרש 3D, מצלמות רובוט עם זווית גלגול (Roll) שאינה אפס מוצגות כעת בצורה תקינה.
-- שיפור היציבות של AdvantageScope XR, במיוחד ב-iOS ו-iPadOS 26. בהתקנות לא מקוונות, בדקו אם יש עדכון זמין ב-App Store.
+באמצעות [רישום אוניברסלי](/more-features/universal-logging), קובץ WPILOG יחיד יכול כעת לשמש כמכל אוניברסלי עבור מספר זרמי נתונים ופורמטים של יומנים, כולל יומני התקנים ייעודיים ליצרנים, נתוני CSV וקובצי WPILOG משניים. הרישום האוניברסלי מחליף את URCL בגישה גמישה ובלתי תלויה ביצרן: נתונים מכל מקור מסונכרנים אוטומטית וממוזגים לעץ מאוחד אחד בסרגל הצד. עיינו ב[תיעוד הרישום האוניברסלי](/more-features/universal-logging#experimental-vendor-logging) לפרטים על לכידת יומני יצרנים ב-WPILib (Java, C++ ו-Python) וב-AdvantageKit.
+
+<img src="/img/more-features/universal-logging-1.webp" alt="קובץ WPILOG המציג מספר יומני יצרנים בסרגל הצד" />
+
+_הממשק בתמונה מוצג באנגלית._
+
+## 🗺️ שיפורים בכרטיסיות המגרש {#field-tab-improvements}
+
+מספר שיפורי שימושיות נוספו לכרטיסיות 🗺️ [מגרש 2D](/tab-reference/2d-field) ו-👀 [מגרש 3D](/tab-reference/3d-field):
+
+- הזיזו והתקרבו ברחבי מגרש ה-2D, או לחצו לחיצה ימנית כדי לנעול את המצלמה כך שתעקוב אחר מיקום הרובוט והסיבוב שלו ([תיעוד](/tab-reference/2d-field#camera-controls)).
+- נוספו קווי רשת אריחים במגרשי FTC ב-2D וב-3D להתמצאות מרחבית קלה יותר.
+- AdvantageScope זוכרת כעת אם נעשה שימוש לאחרונה במגרש FRC או FTC בעת פתיחת כרטיסיות מגרש 2D או 3D חדשות.
+
+<img src="/img/tab-reference/2d-field-1.webp" alt="סקירת כרטיסיית מגרש 2D" />
+
+_הממשק בתמונה מוצג באנגלית._
+
+## 📉 שיפורים בגרף הקווי {#line-graph-improvements}
+
+ה-📉 [גרף קווי](/tab-reference/line-graph) וציר הזמן כוללים מספר ליטושים חזותיים לניתוח ברור יותר:
+
+- הפעלת "הצגת מצב רובוט" מציגה כעת סרגל מקודד-צבע עבור שלבי אוטונומי, Teleop, שירות ומושבת.
+- גרפים בסגנון נקודות מתאימים אוטומטית את גודל הנקודות לנראות טובה יותר בכל רמת זום.
+- רמזים מועילים מופיעים בגרף הקווי ובציר הזמן כדי להדריך משתמשים חדשים במחוות גלילה וזום.
+- שופרו העיבוד והקריאות של ערכי חותמות זמן גדולים על צירי ציר הזמן והגרף הקווי.
+
+<img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="שכבת מצב רובוט מקודדת-צבע על הגרף הקווי" />
+
+_הממשק בתמונה מוצג באנגלית._
+
+## 🤝 שיפורי נגישות {#accessibility-enhancements}
+
+AdvantageScope 2027 כוללת מספר עדכונים שהופכים את האפליקציה לנגישה יותר:
+
+- נוסף ניווט מקלדת באמצעות Tab לכל שדות הקלט ותיאורי כלים (tooltips) מפורטים לכל הפקדים ברחבי האפליקציה.
+- AdvantageScope מכבדת כעת הגדרות מערכת להפחתת שקיפות והפחתת תנועה.
+- מחוונים בוליאניים בסרגל הצד מבחינים כעת בין מצבים מבלי להסתמך על צבע בלבד.
+
+## 🥔 סוגי יחידות חדשים {#new-unit-types}
+
+ה[גרפים מודעי-היחידות](/tab-reference/line-graph/units) של AdvantageScope הורחבו עם סוגי יחידות ואפשרויות פענוח נוספים:
+
+- הספק (וואט, כוחות סוס וכו')
+- יחסים (חסר ממד, אחוזים)
+- טמפרטורה בקלווין
+- אנרגיית תפוח אדמה
+- איות יחידות באנגלית בריטית (למשל `metres`)
+- סיומות עבור ספריית היחידות של WPILib
+
+## 🧱 שיפורי יציבות {#stability-improvements}
+
+גרסה זו כוללת תיקוני באגים רבים, אופטימיזציות ביצועים ושיפורי יציבות ברחבי האפליקציה. הרשימה המלאה זמינה ב[רשימת השינויים](https://github.com/Mechanical-Advantage/AdvantageScope/releases), עם הדגשים בולטים להלן:
+
+- גרסאות Windows רשמיות חתומות כעת דיגיטלית, מה שמפחית את תדירות אזהרות SmartScreen במהלך ההתקנה.
+- שופרו משמעותית ביצועי טעינת היומנים והשרטוט, במיוחד בעבודה עם יומני Hoot (`.hoot`).
+- שופר אלגוריתם סנכרון חותמות הזמן של יומנים מרובים בעת יישור יומנים ממקורות שונים.
+- שופרה אמינות החיבור עבור [דיאגנוסטיקה Phoenix](/overview/live-sources/phoenix-diagnostics).
+- תוקנו בעיות ממשק עם שורת התפריטים בחלונות צפים ועם חלונית ההקלטה ב-[AdvantageScope XR](/tab-reference/3d-field/advantagescope-xr).
+- לוטשו טקסטים וניסוחי ממשק ברחבי האפליקציה לשיפור הבהירות.

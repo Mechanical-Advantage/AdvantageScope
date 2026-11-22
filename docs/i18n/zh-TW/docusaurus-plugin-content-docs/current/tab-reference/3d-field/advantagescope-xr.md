@@ -74,7 +74,7 @@ XR 控制視窗提供數個選項，可調整模型在擴增實境中的顯示�
 
 AdvantageScope XR 不需要網際網路連線。為確保離線時也能使用，請透過下方連結從 App Store 下載 AdvantageScope XR。若要連線至 AdvantageScope 桌面應用程式，請使用 iOS 相機應用程式掃描 QR Code，或點擊 AdvantageScope XR 應用程式中的「掃描」按鈕。
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_zh-TW.svg" alt="App Store" />](https://apps.apple.com/tw/app/advantagescope-xr/id6739718081)
 
 :::note
 即使在沒有網際網路連線的情況下執行，主機與用戶端裝置**仍必須連線到同一個網路**（例如機器人網路、自訂 Wi-Fi 網路，或透過 USB 網路共用）。

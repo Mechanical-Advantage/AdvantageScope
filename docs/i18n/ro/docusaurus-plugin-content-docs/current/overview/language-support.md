@@ -24,6 +24,12 @@ AdvantageScope suportă mai multe limbi pentru a oferi o experiență localizat�
 - Chineză simplificată
 - Chineză tradițională
 
+Mulțumim următorilor contribuitori pentru ajutorul acordat în revizuirea și îmbunătățirea traducerilor AdvantageScope:
+
+- FRC Team 4400 Cerbotics
+- FRC Team 6907 The G.O.A.T.
+- Ata Baber
+
 ## Configurare {#configuration}
 
 Pentru a schimba limba de afișare în AdvantageScope, deschide fereastra de preferințe dând clic pe `Aplicație` > `Afișează preferințele...` (Windows/Linux) sau `AdvantageScope` > `Setări...` (macOS). La setarea „Limbă”, poți alege din lista de limbi suportate sau poți selecta „Implicită a sistemului” pentru a folosi automat limba sistemului tău de operare.
@@ -37,10 +43,26 @@ Toate formatele suportate de AdvantageScope beneficiază de compatibilitate comp
 Iată un exemplu de înregistrare a unui șir de caractere cu o cheie în limba română:
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Telemetry.log("Tracțiune/Viteză motor dreapta", "Rapid");
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::telemetry::Log("Tracțiune/Viteză motor dreapta", "Rapid");
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+import telemetry
+
+telemetry.log("Tracțiune/Viteză motor dreapta", "Rapid")
 ```
 
 </TabItem>
@@ -61,4 +83,4 @@ Consultă pagina despre [suportul pentru unități](/tab-reference/line-graph/un
 
 Localizarea AdvantageScope este realizată printr-o combinație de inteligență artificială și colaborare comunitară. Deoarece AdvantageScope este un proiect în continuă evoluție, utilizarea AI este esențială pentru a menține aplicația tradusă și documentația sincronizate în fiecare limbă. Astfel, noile funcționalități și actualizări sunt disponibile simultan, indiferent de limba selectată.
 
-Procesul nostru este conceput pentru a se potrivi cu vocabularul specific, împrumuturile și transliterările cu care echipele locale sunt familiarizate. Cu toate acestea, traducerile generate de AI includ adesea formulări nenaturale sau alte inexactități. Apreciem feedback-ul tău; poți trimite observații despre traduceri dând clic pe pictograma mov din aplicație (atunci când este configurată pentru orice altă limbă în afară de engleză).
+Procesul nostru este conceput pentru a se potrivi cu vocabularul specific, împrumuturile și transliterările cu care echipele locale sunt familiarizate. Cu toate acestea, **traducerile generate de AI includ adesea formulări nenaturale sau alte inexactități**. Apreciem feedback-ul tău; poți trimite observații despre traduceri dând clic pe pictograma mov din aplicație sau pe linkul de feedback din bara de titlu a documentației (atunci când este configurată pentru orice altă limbă în afară de engleză).

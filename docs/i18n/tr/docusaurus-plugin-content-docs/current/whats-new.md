@@ -1,133 +1,150 @@
 ---
-title: 2026'da neler yeni?
+title: 2027'deki yenilikler neler?
 sidebar_position: 2
-draft: true
 ---
 
 #
 
-<img src="/img/whats-new/banner-light.webp" className="light-only" />
-<img src="/img/whats-new/banner-dark.webp" className="dark-only" />
+<img src="/img/whats-new/banner-2027-ltr-light.webp" className="light-only" />
+<img src="/img/whats-new/banner-2027-ltr-dark.webp" className="dark-only" />
 
-AdvantageScope'un 2026 sürümü çıktı! Ayrıntılar için [kurulum belgelerine](/overview/installation) ve [değişiklik günlüğünün tamamına](https://github.com/Mechanical-Advantage/AdvantageScope/releases) göz atabilirsiniz. Bu sürüm, uygulama genelinde önemli yeni özellikler ve pek çok iyileştirme getiriyor. Yeniliklerin büyük bölümü mevcut kontrol sistemlerindeki deneyimi geliştirirken, gelecek sezonlarda [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) sistemine geçişi de kolaylaştırmak üzere tasarlandı.
+AdvantageScope'un 2027 sürümü artık yayında! Ayrıntılar için [kurulum belgelerine](/overview/installation) ve [tam değişiklik günlüğüne](https://github.com/Mechanical-Advantage/AdvantageScope/releases) göz atın. Bu sürüm, birkaç önemli yeni özellik ve uygulama genelinde çok sayıda iyileştirme içerir. Ayrıca tam Systemcore desteğine sahip ilk AdvantageScope sürümüdür.
 
-**Görüşleriniz bizim için çok önemli! Geri bildirimlerinizi, özellik isteklerinizi ve hata raporlarınızı [GitHub Issues sayfasında](https://github.com/Mechanical-Advantage/AdvantageScope/issues) paylaşabilirsiniz.**
+**Geri bildirimlerinize değer veriyoruz! Görüşlerinizi, özellik isteklerinizi ve hata raporlarınızı [issues sayfasında](https://github.com/Mechanical-Advantage/AdvantageScope/issues) paylaşabilirsiniz.**
 
-## ✴️ Deneysel: FTC desteği {#ftc-support}
+<img src="/img/screenshot-light.webp" className="light-only" />
+<img src="/img/screenshot-dark.webp" className="dark-only" />
 
-2027-2028 sezonunda Systemcore ile gelecek tam desteğe hazırlık olarak, bu sürüm mevcut FIRST Tech Challenge kontrol sistemiyle uyumluluğu artıran çeşitli yenilikler ekliyor:
+## 🍋‍🟩 Systemcore uyumluluğu {#systemcore-compatibility}
 
-- 🗺️ [2B saha](/tab-reference/2d-field) ve 👀 [3B saha](/tab-reference/3d-field) sekmelerinde FTC sahaları ve robot modelleri
-- [Standart FTC koordinatlarıyla](/more-features/coordinate-systems) uyumlu yeni [koordinat sistemi](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html) seçenekleri
-- [Road Runner](https://rr.brott.dev/docs/v1-0/installation/) log dosyaları için destek
-- [FTC Dashboard](https://github.com/acmerobotics/ftc-dashboard) canlı veri akışı formatı desteği
+AdvantageScope 2027, yeni Systemcore robot kontrolcüsü ve WPILib 2027 ile sorunsuz çalışacak şekilde tasarlandı:
 
-:::tip
-FTC takımlarının resmi sezon boyunca deneysel yazılımları kullanırken dikkatli olması gerekir. AdvantageScope'un FTC desteği hâlâ aktif olarak geliştiriliyor.
-:::
+- Varsayılan robot adresi artık `robot.local`; böylece takım numarası yapılandırmadan canlı bağlanabilir veya log indirebilirsiniz. Systemcore USB ve Wi-Fi adresleri de menü çubuğundan seçilebilir.
+- [Log indirme](/overview/log-files#downloading-from-the-robot) artık eski roboRIO log indirmelerinin yanı sıra Systemcore için SFTP'yi de destekler.
+- 2027'den itibaren FRC sahaları ve 2027-2028'den itibaren FTC sahaları tarafından kullanılan [Merkez/kırmızı](/more-features/coordinate-systems#center-red) koordinat sistemi eklendi.
+- WPILib 2027'nin `Telemetry` ve `Tunables` API'leri için destek, güncellenmiş uyarı renkleri ve Systemcore zaman damgalarının kolay okunmasını sağlayan yeni bir [zaman damgası görüntüleme tercihi](/more-features/timestamps) eklendi.
+- Yeni bir [Systemcore tanılama](/overview/live-sources) canlı modu, kullanıcı kodu gerektirmeden robot durumunu ve donanım G/Ç'lerini izlemek için doğrudan Systemcore'un yerleşik NetworkTables sunucusuna bağlanır.
 
-<div className="image-gallery">
-  <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-2.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-3.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-4.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
-</div>
+## 💡 AdvantageScope Lite {#advantagescope-lite}
 
-Çeşitli üçüncü taraf FTC loglama ve telemetri kütüphaneleri, AdvantageScope ile uyumlu WPILOG ve RLOG gibi formatlarda çıktı üretebilir. Bu kütüphanelerin dokümantasyonuna kendi proje sayfalarından ulaşabilirsiniz; AdvantageScope geliştiricileri belirli bir FTC loglama çözümünü özel olarak önermez.
+[AdvantageScope Lite](/more-features/advantagescope-lite), AdvantageScope'un görselleştirme ve analiz araçlarını doğrudan web tarayıcınıza getirir. Hem Systemcore web arayüzünden hem de FIRST Driver Station içinden **kurulum gerektirmeden** erişilebilir.
 
-:::info
-AdvantageScope en iyi deneyimi WPILib ve ilgili loglama araçlarıyla birlikte sunar. Resmi olmayan loglama çözümlerini kullanırken uyumluluk sorunları yaşayabilir veya bazı özelliklerden yararlanamayabilirsiniz.
+<iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="AdvantageScope Lite Demosu" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-2027-2028 sezonunda Systemcore'a geçildikten sonra AdvantageScope'un tüm özellikleri FTC'de resmi olarak desteklenecektir.
-:::
+## 🎮 FIRST Driver Station {#first-driver-station}
 
-## 🧮 Birim duyarlı grafikleme {#unit-aware-graphing}
+AdvantageScope, maç tanılamasını kolaylaştırmak için yeni [FIRST Driver Station](https://docs.wpilib.org/tr/latest/docs/software/firstdriverstation) ile yakından entegre olur:
 
-📉 [Çizgi grafik](/tab-reference/line-graph/) sekmesi artık tamamen birim duyarlı olacak şekilde baştan tasarlandı. Sayısal alanların grafiğini çizerken şu yeni özelliklerden yararlanabilirsiniz:
+- DS tarafından üretilen WPILOG dosyalarını analiz etmek için FIRST Driver Station ayarlar menüsünden doğrudan [AdvantageScope Lite](/more-features/advantagescope-lite)'a erişilebilir.
+- Yerel bir Driver Station'dan gerçek zamanlı maç durumunu, iletişim metriklerini, akü voltajını ve joystick girişlerini sıfır yapılandırmayla aktarmak için masaüstü uygulamasını kullanın.
+- Masaüstünde bir Driver Station `.wpilog` dosyasını açtığınızda, konsol çıktısı, iletişim metrikleri, güç, CPU kullanımı ve joystickler için önceden yapılandırılmış sekmelerle ayrı bir pencere açmanız önerilir ([belgeler](/overview/log-files#driver-station-layout)). Bu düzen, Driver Station için AdvantageScope Lite'ta da varsayılan olarak kullanılır.
+- Otomatik uyarı/hata vurgulama ve [ANSI kaçış dizileri](/tab-reference/console#ansi-formatting) (renkler ve metin stilleri) için tam destekle Driver Station konsol loglarını 💬 [Konsol](/tab-reference/console) sekmesinde görüntüleyin.
 
-- Y eksenlerinin ve değer göstergelerinin doğru birimlerle etiketlenmesi
-- Açılır pencere açmadan uyumlu birimlere hızlı dönüştürme
-- Aynı eksen içindeki uyumlu birim türlerinin otomatik dönüştürülmesi
-- [İntegrali ve türevi alınmış](/tab-reference/line-graph/#integration-and-differentiation) birimlerin doğru gösterimi
-
-Aşağıdaki ekran görüntüsünde tüm bu özelliklerin bir arada nasıl çalıştığını görebilirsiniz. Sol eksende farklı açısal hız birimlerine sahip alanların yer aldığına, sağ eksende ise türevi alınmış ve orijinalinden farklı bir birimde (derece) gösterilen değerlerin bulunduğuna dikkat edin. Her eksenin kendi menüsüne doğrudan eklenen uyumlu birim seçenekleri sayesinde birim seçmek de artık her zamankinden daha kolay.
-
-_Birim desteği hakkında daha fazla bilgi için [ilgili dokümantasyona](/tab-reference/line-graph/units) göz atabilirsiniz._
-
-<img src="/img/tab-reference/line-graph/units-1.webp" alt="Birim duyarlı grafikleme" />
+<img src="/img/tutorials/taking-control-1.webp" alt="FIRST Driver Station'dan AdvantageScope Lite'ı açma" />
 
 _Yukarıda İngilizce arayüz gösteriliyor._
 
-## 🏁 Daha hızlı log indirmeleri {#faster-log-downloads}
+## 🌐 Çoklu dil desteği {#language-support}
 
-[roboRIO'dan log indirme](/overview/log-files/#downloading-from-the-robot) işlemi artık önceki sürümlere göre **2-4 kat daha hızlı**. Bu hız artışı, roboRIO'nun daha düşük CPU yüküyle log verisi aktarmasını sağlayan yeni FTP protokolüne geçilmesiyle elde edildi.
+AdvantageScope artık masaüstü uygulamasında, belge sitesinde, mobil uygulamalarda ve AdvantageScope Lite'ta **14 dilde** kullanılabilir: İngilizce (ABD), İspanyolca (Latin Amerika), Fransızca, Felemenkçe, Portekizce (Brezilya), Romence, Türkçe, Rusça, Kazakça, İbranice, Arapça, Hintçe, Basitleştirilmiş Çince ve Geleneksel Çince.
 
-Aşağıdaki tabloda, AdvantageScope'un 2025 ve 2026 sürümlerinde Ethernet üzerinden (maksimum 100 Mb/s bant genişliğiyle) ölçülen aktarım hızlarını görebilirsiniz. 2025 sürümünün performansının roboRIO üzerindeki CPU yükünden ciddi şekilde etkilendiğine dikkat edin.
+:::info
+Çeviriler, yapay zekâ ve topluluk katkıcılarının desteğiyle hazırlanmakta olan bir çalışmadır ve **doğal olmayan ifadeler veya hatalar içerebilir**. Bu çevirileri incelemeye ve iyileştirmeye şimdiden yardımcı olan takımlara teşekkür ederiz! Çeviri sürecimiz ve geri bildirim gönderme hakkında ayrıntılar için 🌐 [Dil Desteği](/overview/language-support) sayfasına bakın.
+:::
 
-|                                                     | 2025 (SFTP) | 2026 (FTP) | Hızlanma                                         |
-| --------------------------------------------------- | ----------- | ---------- | ------------------------------------------------ |
-| Yüksek CPU yükü<br /><sub>Karmaşık robot kodu</sub> | 25 Mb/s     | 80 Mb/s    | <span style={{fontSize: '24px'}}>**3,2x**</span> |
-| Ortalama CPU yükü<br /><sub>Normal robot kodu</sub> | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**2,3x**</span> |
-| Minimum CPU yükü<br /><sub>Robot kodu yok</sub>     | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**1,1x**</span> |
+<img src="/img/whats-new/multi-language-1.webp" alt="Basitleştirilmiş Çince Çizgi grafik sekmesi" />
 
-## 📁 Alt klasörlerden log indirme {#download-logs-from-subfolders}
+## 📖 Yeni eğitimler ve belgeler {#new-tutorials-and-documentation}
 
-İndirme penceresi artık alt klasörlerde tutulan logları da destekliyor. Log içeren her alt klasörü tek seferde indirebilirsiniz; bu da CTRE'nin verileri tek bir log dosyasında toplayamama sorununu aşmak için alt klasörleri kullanan [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) 2026 sürümünün ürettiği logları indirmeyi çok daha pratik hale getiriyor.
+Belgeler, takımların WPILib 2027 ve AdvantageScope ile başlamasına yardımcı olmak için tasarlanmış üç bölümlük yeni bir [eğitim serisiyle](/category/tutorials) genişletildi:
 
-<img src="/img/whats-new/subfolders.webp" alt="Log alt klasörlerini indirme" height="450" />
+1. **👋 [Merhaba, Telemetri!](/tutorials/hello-telemetry):** `DataLogManager` ve `Telemetry` API'sini kurma, canlı bağlanma ve çizgi grafikler, tablolar ve istatistiklerle veri analizi.
+2. **🤖 [Sahaya: Robot Görselleştirme](/tutorials/to-the-field):** FRC ve FTC sahalarında 2B/3B pozları, yörüngeleri ve `Mechanism2d` nesnelerini yayınlama.
+3. **🕹️ [Kontrolü Ele Alma: DS ve Joystickler](/tutorials/taking-control):** Canlı Driver Station tanılaması aktarma, robot ve DS loglarını senkronize etme, konsol çıktısını görüntüleme ve kontrolcü girişlerini görselleştirme.
 
-## 🌈 Yeni görselleştirme seçenekleri {#new-visualization-options}
+Belgelerdeki kod örnekleri de birden fazla dilde WPILib'in telemetri API'sini tam kapsayacak şekilde güncellendi.
 
-🗺️ [2B saha](/tab-reference/2d-field) ve 👀 [3B saha](/tab-reference/3d-field) sekmelerine çeşitli yeni görselleştirme seçenekleri eklendi:
+<img src="/img/tutorials/to-the-field-4.webp" alt="Sahaya eğitiminden 3B saha görselleştirmesi" />
 
-- 2B sahada artık daha fazla robot tamponu rengi seçeneği var ve her nesneye ayrı renk atanabiliyor. Bu sayede hayalet modelleri birden fazla robot nesnesiyle birleştirirken çok daha esnek çalışabilirsiniz.
-- [3B sahada 2B mekanizmaları görselleştirirken](/tab-reference/3d-field#2d-mechanisms), mekanizmaları artık XZ düzleminin yanı sıra YZ düzlemine de yerleştirebilirsiniz. Bu, birden fazla eksende hareket eden karmaşık mekanizmaları incelemeyi kolaylaştırır.
-- 3B sahada kenar kalitesini artırmak için isteğe bağlı kenar yumuşatma (antialiasing) desteği eklendi.
+_Yukarıda İngilizce arayüz gösteriliyor._
 
-<img src="/img/whats-new/field-viz.jpg" alt="Yeni saha görselleştirmeleri" />
+## 📱 AdvantageTune {#advantagetune}
 
-## 🪵 REV Robotics CAN log desteği {#rev-robotics-can-log-support}
+AdvantageTune, AdvantageScope'u tamamlamak için hafif bir mobil ayar deneyimi sunan yeni, bağımsız bir iPhone ve iPad uygulamasıdır. Canlı [NetworkTables](https://docs.wpilib.org/tr/stable/docs/software/networktables/index.html) konularını (temel türler, diziler, WPILib struct'ları ve Protobuf'lar dahil) doğrudan telefonunuzdan görüntüleyip değiştirebilir, böylece herkesin robot kodunu ayarlamaya katılmasını kolaylaştırabilirsiniz.
 
-REV Robotics'in [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) aracıyla oluşturulan `.revlog` dosyalarını artık doğrudan AdvantageScope'ta açabilirsiniz. Spark Max ve Spark Flex cihazlarından gelen CAN sinyallerini kaydeden bu dosyalar, AdvantageScope'un [URCL](/more-features/urcl) kütüphanesine resmi bir alternatif sunuyor.
+Hem AdvantageTune hem de AdvantageScope, ayarlanan tüm değerleri paylaşım için bir listeye kaydeden düğmelerle ayarlanan değerleri robot koduna geri aktarma sürecini kolaylaştırır ([belgeler](/overview/live-sources/tuning-mode)).
 
-Sorunsuz bir geçiş sağlamak ve önceki sezonlardaki tüm özellikleri korumak için hem URCL hem de resmi `StatusLogger` 2026 sezonu boyunca kullanılabilir olacak. 2027 ve sonrası için loglama seçenekleriyle ilgili ayrıntıları ilerleyen dönemde paylaşacağız.
-
-<img src="/img/whats-new/revlog.webp" alt="REVLOG görselleştirmesi" />
-
-## 💿 CSV dosyalarını içe aktarma {#csv-file-imports}
-
-Robot loglama kütüphaneleri dışında üretilen verileri de kolayca görselleştirebilmeniz için AdvantageScope artık CSV dosyalarını içe aktarmaya yönelik temel destek sunuyor. Desteklenen formatlar ve kısıtlamalar için [ilgili dokümantasyona](/overview/log-files/#csv-formatting) bakabilirsiniz.
-
-<img src="/img/overview/log-files/export-2.webp" alt="CSV verileri" />
-
-## 🤩 Estetik iyileştirmeler {#aesthetic-improvements}
-
-Windows 11'deki AdvantageScope arayüzü, daha önce yalnızca macOS sürümlerinde bulunan yarı saydam kenar çubuğunu destekleyecek şekilde güncellendi. Ayrıca macOS Tahoe için Apple'ın Liquid Glass tasarım diline uygun yenilenmiş bir uygulama simgesi eklendi.
-
-<img src="/img/whats-new/windows-ui.webp" alt="Windows kullanıcı arayüzü" />
-
-## 📋 Yalınlaştırılmış menüler {#streamlined-menus}
-
-Menü çubuğu ve ilgili kontroller, tüm platformlarda daha erişilebilir ve tutarlı bir deneyim sunmak için sadeleştirilip yeniden düzenlendi. Öne çıkan yenilikler şunlar:
-
-- Tercihler penceresini açmaya gerek kalmadan canlı kaynaklar (örneğin NetworkTables ve [Phoenix tanılama](/overview/live-sources/phoenix-diagnostics)) arasında hızlı geçiş.
-- Kenar çubuğuna sağ tıklayarak bir alanın adını (veya tam alan anahtarını) tek tıkla kopyalama.
-- Seçeneklerin çok daha hızlı bulunmasını sağlayan yenilenmiş Tercihler penceresi düzeni.
+[<img src="/img/app-store_tr.svg" alt="App Store" />](https://apps.apple.com/tr/app/advantagetune/id6811453643?l=tr)
 
 <div className="image-gallery">
-  <img src="/img/whats-new/menus-1.webp" />
-  <img src="/img/whats-new/menus-2.webp" />
-  <img src="/img/prefs_tr.webp" />
+  <img src="/img/whats-new/advantagetune-1.webp" alt="AdvantageTune göz atma görünümü" />
+  <img src="/img/whats-new/advantagetune-2.webp" alt="AdvantageTune konu düzenleme" />
+  <img src="/img/whats-new/advantagetune-3.webp" alt="AdvantageTune struct düzenleme" />
+  <img src="/img/whats-new/advantagetune-4.webp" alt="AdvantageTune ayarlanan değerler listesi" />
+  <img src="/img/whats-new/advantagetune-5.webp" alt="AdvantageTune arama ve filtreleme" />
 </div>
 
-## 🐛 Kararlılık iyileştirmeleri {#stability-improvements}
+_Yukarıda İngilizce arayüz gösteriliyor._
 
-Bu sürüm, uygulama genelinde pek çok hata düzeltmesi ve kararlılık iyileştirmesi içeriyor. Tam listeyi sürümün [değişiklik günlüğünde](https://github.com/Mechanical-Advantage/AdvantageScope/releases) bulabilirsiniz; öne çıkan bazı düzeltmeler ise şöyle:
+## 🪐 WPILOG evrensel loglama {#wpilog-universal-logging}
 
-- Özellikle çizgi grafik sekmesi kullanılırken uzun süreli canlı veri akışındaki performans büyük ölçüde iyileştirildi.
-- AdvantageScope artık büyük log dosyaları ve alışılmadık derecede büyük alan değerleri dahil olmak üzere olağandışı (beklenmedik) log verilerine karşı daha dayanıklı.
-- Log verileri incelenirken (özellikle çizgi grafik sekmesinde filtreler kullanılırken) ortaya çıkan çeşitli görsel hatalar giderildi.
-- İndirme penceresindeki AdvantageKit log dosyalarının sıralaması düzeltildi; zaman damgası olmayan loglar artık diğer formatlarda olduğu gibi listenin en altında yer alıyor.
-- 3B saha sekmesinde, sıfırdan farklı bir yalpalama (roll) açısına sahip robot kameraları artık doğru şekilde görüntüleniyor.
-- AdvantageScope XR'ın kararlılığı özellikle iOS/iPadOS 26 üzerinde artırıldı. Çevrimdışı kurulumlar için App Store'daki güncellemeleri kontrol etmeyi unutmayın.
+[Evrensel Loglama](/more-features/universal-logging) ile tek bir WPILOG dosyası artık üreticiye özel cihaz logları, CSV verileri ve alt WPILOG dosyaları dahil birden fazla log akışı ve formatı için evrensel bir kapsayıcı görevi görebilir. Evrensel loglama, URCL'in yerini esnek, üreticiden bağımsız bir yaklaşımla alır: her kaynaktan gelen veriler otomatik olarak senkronize edilir ve kenar çubuğunda tek bir birleşik ağaçta birleştirilir. WPILib (Java, C++ ve Python) ve AdvantageKit'te üretici log yakalama ayrıntıları için [Evrensel Loglama belgelerine](/more-features/universal-logging#experimental-vendor-logging) bakın.
+
+<img src="/img/more-features/universal-logging-1.webp" alt="Kenar çubuğunda birden fazla üretici logu gösteren bir WPILOG dosyası" />
+
+_Yukarıda İngilizce arayüz gösteriliyor._
+
+## 🗺️ Saha sekmesi iyileştirmeleri {#field-tab-improvements}
+
+🗺️ [2B saha](/tab-reference/2d-field) ve 👀 [3B saha](/tab-reference/3d-field) sekmelerine çeşitli kullanılabilirlik iyileştirmeleri eklendi:
+
+- 2B sahada kaydırın ve yakınlaştırın veya kamerayı robotun konumunu ve rotasyonunu takip edecek şekilde kilitlemek için sağ tıklayın ([belgeler](/tab-reference/2d-field#camera-controls)).
+- Daha kolay uzamsal referans için 2B ve 3B FTC sahalarına karo ızgara çizgileri eklendi.
+- AdvantageScope artık yeni 2B veya 3B saha sekmeleri açarken en son FRC mi yoksa FTC sahasının mı kullanıldığını hatırlar.
+
+<img src="/img/tab-reference/2d-field-1.webp" alt="2B saha sekmesi genel görünümü" />
+
+_Yukarıda İngilizce arayüz gösteriliyor._
+
+## 📉 Çizgi grafik iyileştirmeleri {#line-graph-improvements}
+
+📉 [Çizgi grafik](/tab-reference/line-graph) ve zaman çizelgesi, daha net analiz için çeşitli görsel iyileştirmeler içerir:
+
+- “Robot modunu göster” etkinleştirildiğinde artık otonom, teleop, test ve devre dışı dönemler için renk kodlu bir çubuk görüntülenir.
+- Nokta stilindeki grafikler, her yakınlaştırma düzeyinde daha iyi görünürlük için nokta boyutlarını otomatik olarak ölçekler.
+- Yeni kullanıcılara kaydırma ve yakınlaştırma hareketlerinde rehberlik etmek için çizgi grafikte ve zaman çizelgesinde faydalı ipuçları görünür.
+- Zaman çizelgesi ve çizgi grafik eksenlerindeki büyük zaman damgası değerlerinin işlenmesi ve okunabilirliği iyileştirildi.
+
+<img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="Çizgi grafik üzerinde renk kodlu robot modu katmanı" />
+
+_Yukarıda İngilizce arayüz gösteriliyor._
+
+## 🤝 Erişilebilirlik iyileştirmeleri {#accessibility-enhancements}
+
+AdvantageScope 2027, uygulamayı daha erişilebilir kılmak için çeşitli güncellemeler içerir:
+
+- Tüm girişler için klavyeyle Tab gezinmesi ve uygulama genelindeki tüm kontroller için açıklayıcı araç ipuçları eklendi.
+- AdvantageScope artık saydamlığı azaltma ve hareketi azaltma işletim sistemi ayarlarına uyar.
+- Kenar çubuğundaki boolean göstergeleri artık yalnızca renge bağlı kalmadan durumları ayırt eder.
+
+## 🥔 Yeni birim türleri {#new-unit-types}
+
+AdvantageScope'un [birim duyarlı grafikleme](/tab-reference/line-graph/units) özelliği ek birim türleri ve ayrıştırma seçenekleriyle genişletildi:
+
+- Güç (watt, beygir gücü vb.)
+- Oranlar (boyutsuz, yüzde)
+- Kelvin cinsinden sıcaklık
+- Patates enerjisi
+- İngiliz İngilizcesi birim yazımları (ör. `metres`)
+- WPILib'in birim kütüphanesi için son ekler
+
+## 🧱 Kararlılık iyileştirmeleri {#stability-improvements}
+
+Bu sürüm, uygulama genelinde çok sayıda hata düzeltmesi, performans optimizasyonu ve kararlılık iyileştirmesi içerir. Tam liste sürüm [değişiklik günlüğünde](https://github.com/Mechanical-Advantage/AdvantageScope/releases) bulunabilir; öne çıkanlar aşağıdadır:
+
+- Resmi Windows sürümleri artık dijital olarak imzalanmıştır; bu da kurulum sırasında SmartScreen uyarılarının sıklığını azaltır.
+- Özellikle Hoot (`.hoot`) loglarıyla çalışırken log yükleme ve grafik çizme performansı önemli ölçüde iyileştirildi.
+- Birden fazla kaynaktan gelen logları hizalarken çoklu log zaman damgası senkronizasyon algoritması iyileştirildi.
+- [Phoenix tanılama](/overview/live-sources/phoenix-diagnostics) için bağlantı güvenilirliği iyileştirildi.
+- Ayrılmış pencerelerdeki menü çubuğu ve [AdvantageScope XR](/tab-reference/3d-field/advantagescope-xr) içindeki kayıt açılır penceresiyle ilgili arayüz sorunları düzeltildi.
+- Netliği artırmak için uygulama genelindeki arayüz metinleri ve ifadeler iyileştirildi.

@@ -2,7 +2,7 @@
 
 ## Ondersteunde formaten {#supported-formats}
 
-- **WPILOG (.wpilog)** - Aangemaakt door WPILib's [ingebouwde datalogging](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) en AdvantageKit. Met [URCL](/more-features/urcl) kun je signalen van REV-motorcontrollers vastleggen in een WPILOG-bestand.
+- **WPILOG (.wpilog)** - Aangemaakt door WPILib's [ingebouwde datalogging](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html), AdvantageKit en het FIRST Driver Station. Met [universele logging](/more-features/universal-logging) kun je externe logs (bijv. logs van fabrikanten) vastleggen in een WPILOG-bestand.
 - **Hoot (.hoot)** - Aangemaakt door CTRE's Phoenix 6 [Signal Logger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html).
 - **REVLOG (.revlog)** - Aangemaakt door REV Robotics' [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger).
 - **Road Runner (.log)** - Aangemaakt door de [Road Runner](https://github.com/acmerobotics/road-runner)-bibliotheek voor FTC.
@@ -31,6 +31,12 @@ _Hierboven zie je de Engelstalige interface._
 Heb je al een logbestand openstaan, dan kun je daar makkelijk extra logs aan toevoegen. De tijdstempels worden automatisch opnieuw uitgelijnd zodat ze gelijklopen met de data die al is geladen.
 
 Klik in de menubalk op `Bestand` > `Nieuw(e) logbestand(en) toevoegen...` en selecteer een of meer logbestanden. De velden uit elk nieuw bestand worden ondergebracht in tabellen met de naam `Log0`, `Log1`, enz.
+
+## Driver Station-indeling {#driver-station-layout}
+
+AdvantageScope bevat een ingebouwde indeling die is ontworpen voor het bekijken van logbestanden en live-data van het FIRST Driver Station, met vooraf geconfigureerde tabbladen voor console-uitvoer, communicatiestatistieken, batterijspanning, CPU-gebruik en joystickinvoer.
+
+Wanneer je op de desktop een WPILOG-bestand opent dat door het FIRST Driver Station is gegenereerd, vraagt AdvantageScope of je het logbestand wilt openen in een apart venster met de Driver Station-indeling. Je kunt elk venster ook handmatig naar deze indeling overschakelen door te klikken op `Bestand` > `Resetten naar DS-indeling`. In [AdvantageScope Lite](/more-features/advantagescope-lite) voor het FIRST Driver Station wordt deze indeling standaard gebruikt (en kan deze worden hersteld via `Tabbladen` > `Standaardindeling herstellen`).
 
 ## Downloaden vanaf de robot {#downloading-from-the-robot}
 

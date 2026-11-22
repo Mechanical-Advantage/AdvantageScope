@@ -2,7 +2,7 @@
 
 ## التنسيقات المدعومة {#supported-formats}
 
-- **WPILOG (.wpilog)** - ينتجه [نظام تسجيل البيانات المدمج](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) في WPILib و AdvantageKit. ويمكنك استخدام [URCL](/more-features/urcl) لالتقاط الإشارات من وحدات تحكم محركات REV إلى ملف WPILOG.
+- **WPILOG (.wpilog)** - ينتجه [نظام تسجيل البيانات المدمج](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) في WPILib و AdvantageKit و FIRST Driver Station. ويمكن استخدام [التسجيل الشامل](/more-features/universal-logging) لالتقاط السجلات الخارجية (مثل سجلات الشركات المصنعة) في ملف WPILOG.
 - **Hoot (.hoot)** - ينتجه [مسجل الإشارات](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) Phoenix 6 من CTRE.
 - **REVLOG (.revlog)** - ينتجه [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) من REV Robotics.
 - **Road Runner (.log)** - تنتجه مكتبة [Road Runner](https://github.com/acmerobotics/road-runner) لـ FTC.
@@ -31,6 +31,12 @@ _تظهر في الصورة أعلاه الواجهة باللغة الإنجل�
 بعد فتح ملف سجل، يمكنك بسهولة إضافة سجلات أخرى إلى العرض؛ إذ تُعاد محاذاة الطوابع الزمنية تلقائيًا للمزامنة مع البيانات الحالية.
 
 في شريط القوائم، انقر على `ملف` > `إضافة سجل جديد...`، ثم اختر ملف سجل واحدًا أو أكثر لإضافته إلى العرض الحالي. تُسجَّل الحقول من كل سجل ضمن جداول مسماة `Log0` و `Log1` وهكذا.
+
+## تخطيط محطة السائق {#driver-station-layout}
+
+يتضمن AdvantageScope تخطيطًا مدمجًا مصممًا لعرض السجلات والبيانات المباشرة من FIRST Driver Station، مع علامات تبويب مهيأة مسبقًا لمخرجات وحدة التحكم ومقاييس الاتصال وجهد البطارية واستخدام المعالج وإدخالات أذرع التحكم.
+
+عند فتح ملف WPILOG تم إنشاؤه بواسطة FIRST Driver Station على سطح المكتب، يسألك AdvantageScope عما إذا كنت تريد فتح السجل في نافذة منفصلة باستخدام تخطيط محطة السائق. كما يمكن تبديل أي نافذة إلى هذا التخطيط يدويًا بالنقر على `ملف` > `إعادة التعيين إلى تخطيط DS`. في [AdvantageScope Lite](/more-features/advantagescope-lite) الخاص بـ FIRST Driver Station، يُستخدم هذا التخطيط افتراضيًا (ويمكن استعادته بالنقر على `علامات التبويب` > `إعادة التعيين إلى التخطيط الافتراضي`).
 
 ## التنزيل من الروبوت {#downloading-from-the-robot}
 

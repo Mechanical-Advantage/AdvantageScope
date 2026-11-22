@@ -3,6 +3,14 @@
     "message": "Келесі",
     "description": "The label for version current"
   },
+  "sidebar.sidebar.category.Tutorials": {
+    "message": "Оқулықтар",
+    "description": "The label for category 'Tutorials' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tutorials.link.generated-index.description": {
+    "message": "Бұл оқулықтар AdvantageScope қолданбасын пайдалану негіздерін көрсетеді.",
+    "description": "The generated-index page description for category 'Tutorials' in sidebar 'sidebar'"
+  },
   "sidebar.sidebar.category.Overview": {
     "message": "Шолу",
     "description": "The label for category 'Overview' in sidebar 'sidebar'"

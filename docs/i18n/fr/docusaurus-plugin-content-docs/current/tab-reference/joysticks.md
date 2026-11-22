@@ -30,5 +30,5 @@ Choisissez le type de chaque manette dans le tableau au bas de l'onglet. Les ide
 AdvantageScope inclut plusieurs modèles courants, ainsi qu'une « Manette générique » présentant tous les boutons, axes et croix directionnelles (POV) sous forme de grille (comme ci-dessus). Pour ajouter votre propre disposition de manette, consultez [Ressources personnalisées](/more-features/custom-assets).
 
 :::warning
-**Les données des manettes ne sont PAS disponibles via NetworkTables avec WPILib standard.** Vous devez utiliser des fichiers journaux WPILib (avec la [journalisation des manettes activée](https://docs.wpilib.org/fr/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), des journaux AdvantageKit ou la diffusion en direct AdvantageKit.
+**Les données des manettes ne sont PAS disponibles via NetworkTables avec WPILib standard.** Vous devez utiliser des fichiers journaux WPILib (avec la [journalisation des manettes activée](https://docs.wpilib.org/fr/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), des journaux AdvantageKit, la diffusion en direct AdvantageKit ou les données de la FIRST Driver Station.
 :::

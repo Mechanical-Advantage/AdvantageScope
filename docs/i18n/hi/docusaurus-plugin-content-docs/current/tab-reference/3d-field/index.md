@@ -48,10 +48,10 @@ AdvantageScope FTC फील्ड्स के लिए कई साइज़
 
 ज्योमेट्री डेटा को बाइट-एन्कोडेड struct या protobuf के रूप में पब्लिश किया जाना चाहिए। `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` आदि सहित कई 2D और 3D ज्योमेट्री टाइप्स सपोर्टेड हैं।
 
-WPILib और AdvantageKit सहित कई लाइब्रेरी struct फॉर्मेट को सपोर्ट करती हैं। नीचे दिए गए उदाहरण कोड में दिखाया गया है कि Java में 3D पोज़ डेटा कैसे लॉग किया जाता है।
+WPILib और AdvantageKit सहित कई लाइब्रेरी struct फॉर्मेट को सपोर्ट करती हैं। नीचे दिया गया उदाहरण कोड दिखाता है कि 3D पोज़ डेटा कैसे लॉग किया जाता है।
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Pose3d poseA = new Pose3d();
@@ -59,6 +59,31 @@ Pose3d poseB = new Pose3d();
 
 Telemetry.log("MyPose", poseA);
 Telemetry.log("MyPoseArray", new Pose3d[] {poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::math::Pose3d poseA;
+wpi::math::Pose3d poseB;
+
+wpi::telemetry::Log("MyPose", poseA);
+wpi::telemetry::Log("MyPoseArray", std::vector{poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import Pose3d
+import telemetry
+
+pose_a = Pose3d()
+pose_b = Pose3d()
+
+telemetry.log("MyPose", pose_a)
+telemetry.log("MyPoseArray", [pose_a, pose_b], element_type=Pose3d)
 ```
 
 </TabItem>

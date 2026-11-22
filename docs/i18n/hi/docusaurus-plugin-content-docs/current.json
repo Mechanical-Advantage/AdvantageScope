@@ -50,5 +50,13 @@
   "sidebar.sidebar.category.Legal": {
     "message": "कानूनी",
     "description": "The label for category 'Legal' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tutorials": {
+    "message": "ट्यूटोरियल्स",
+    "description": "The label for category 'Tutorials' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tutorials.link.generated-index.description": {
+    "message": "नए उपयोगकर्ताओं के लिए मुख्य AdvantageScope वर्कफ़्लो सिखाने वाली चरण-दर-चरण मार्गदर्शिकाएँ।",
+    "description": "The generated-index page description for category 'Tutorials' in sidebar 'sidebar'"
   }
 }
