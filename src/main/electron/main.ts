@@ -714,6 +714,38 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           }
         })
       );
+      if (message.data.childLogKey && message.data.childLogExtension) {
+        const extension: string = message.data.childLogExtension;
+        let defaultName: string | undefined = undefined;
+        if (message.data.logFilename) {
+          let pathComponents = (message.data.logFilename as string).split(".");
+          if (pathComponents.length > 1) pathComponents.pop();
+          defaultName = pathComponents.join(".") + "." + extension;
+        }
+        fieldCopyMenu.append(new MenuItem({ type: "separator" }));
+        fieldCopyMenu.append(
+          new MenuItem({
+            label: "Export Original Log...",
+            click() {
+              dialog
+                .showSaveDialog(window, {
+                  title: "Select export location for the original log",
+                  defaultPath: defaultName,
+                  properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
+                  filters: [{ name: extension.toUpperCase() + " log", extensions: [extension] }]
+                })
+                .then((response) => {
+                  if (!response.canceled && response.filePath) {
+                    sendMessage(window, "export-child-log", {
+                      key: message.data.childLogKey,
+                      path: response.filePath
+                    });
+                  }
+                });
+            }
+          })
+        );
+      }
       fieldCopyMenu.popup({
         window: window,
         x: Math.round(message.data.position[0]),
