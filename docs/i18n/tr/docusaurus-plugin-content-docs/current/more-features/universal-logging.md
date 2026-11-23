@@ -34,11 +34,12 @@ AdvantageKit kullanıcıları, bir WPILOG içinde depolanan üçüncü taraf log
 
 Birçok robot projesi aynı anda birden fazla log dosyası oluşturur: WPILib/AdvantageKit telemetrisi için standart bir WPILOG dosyası ve üretici kütüphanelerinden gelen özel dosyalar. Evrensel loglama, bu üretici loglarını doğrudan ana `.wpilog` dosyasına gömerek bu bölünmeyi ortadan kaldırır. WPILib ve AdvantageKit için aşağıdaki talimatlara bakın.
 
-:::warning
+:::note
 Bu yaklaşım üreticiler tarafından resmi olarak desteklenmediğinden, destek talepleri AdvantageScope [issues sayfasına](https://github.com/Mechanical-Advantage/AdvantageScope/issues) veya software@team6328.org adresine yönlendirilmelidir. Tanılama için orijinal log dosyalarını dışa aktarma ayrıntıları için [Üretici Verilerini Dışa Aktarma](#exporting-vendor-data) bölümüne bakın.
 :::
 
 <Tabs groupId="library">
+{/*
 <TabItem value="wpilib-java" label="Java" default>
 
 [`VendorLogCapture.java`](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/snippets/VendorLogCapture.java) sınıfını indirin ve robot projenize yerleştirin. Bu sınıf, üretici loglarındaki verileri otomatik olarak etkin `DataLog` içine yakalar ve aşağıda gösterildiği gibi `Robot` yapıcı metodunuzda yapılandırılmalıdır. Yakalama sırasında üretici loglarını geçici olarak hazırlamak için uygun bir dizin (`/home/systemcore/logs/` öneririz) seçmelisiniz. Ayrıntılar için [Nasıl Çalışır](#how-it-works) bölümüne bakın.
@@ -105,7 +106,19 @@ class Robot(wpilib.TimedRobot):
 ```
 
 </TabItem>
-<TabItem value="advantagekit" label="AdvantageKit (Yakında)">
+*/}
+<TabItem value="wpilib" label="WPILib">
+
+:::warning
+DataLogManager üzerinden üretici log yakalama, WPILib'de yapılacak üst akış (upstream) değişikliklerine bağlı olduğu için henüz kullanılamıyor. Yakında daha fazla bilgi paylaşacağız!
+:::
+
+</TabItem>
+<TabItem value="advantagekit" label="AdvantageKit">
+
+:::note
+Bu özellik yakında kullanıma sunulacak olan AdvantageKit v27.0.0-beta-1 sürümünü gerektirir. Güncel durumu GitHub [sürümler sayfasından](https://github.com/Mechanical-Advantage/AdvantageKit/releases) kontrol edebilirsiniz.
+:::
 
 Üretici log yakalama özelliği AdvantageKit'in içine yerleştirilmiştir ve aşağıda gösterildiği gibi etkinleştirilebilir. Yakalama sırasında üretici loglarını geçici olarak hazırlamak için uygun bir dizin (`/home/systemcore/logs/` öneririz) seçmelisiniz. Ayrıntılar için [Nasıl Çalışır](#how-it-works) bölümüne bakın.
 

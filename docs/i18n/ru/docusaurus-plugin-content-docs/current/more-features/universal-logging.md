@@ -34,11 +34,12 @@ _Выше показан интерфейс на английском языке
 
 Многие проекты роботов одновременно создают несколько файлов логов: стандартный файл WPILOG для телеметрии WPILib/AdvantageKit наряду с проприетарными файлами от библиотек производителей. Универсальное логирование устраняет это разделение, встраивая такие логи производителей непосредственно в основной файл `.wpilog`. Смотрите инструкции ниже для WPILib и AdvantageKit.
 
-:::warning
+:::note
 Поскольку этот подход официально не поддерживается производителями, запросы в поддержку следует направлять на [страницу Issues](https://github.com/Mechanical-Advantage/AdvantageScope/issues) AdvantageScope или на адрес software@team6328.org. Подробности об экспорте исходных файлов логов для диагностики смотрите в разделе [Экспорт данных производителей](#exporting-vendor-data).
 :::
 
 <Tabs groupId="library">
+{/*
 <TabItem value="wpilib-java" label="Java" default>
 
 Скачайте класс [`VendorLogCapture.java`](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/snippets/VendorLogCapture.java) и поместите его в проект Вашего робота. Этот класс автоматически захватывает данные из логов производителей в активный `DataLog` и должен быть настроен в конструкторе `Robot`, как показано ниже. Необходимо выбрать подходящую директорию (мы рекомендуем `/home/systemcore/logs/`) для временного размещения логов производителей во время захвата. Подробности смотрите в разделе [Как это работает](#how-it-works).
@@ -105,7 +106,19 @@ class Robot(wpilib.TimedRobot):
 ```
 
 </TabItem>
-<TabItem value="advantagekit" label="AdvantageKit (Скоро)">
+*/}
+<TabItem value="wpilib" label="WPILib">
+
+:::warning
+Захват логов производителей через DataLogManager пока недоступен, поскольку зависит от изменений в самой WPILib. Мы скоро поделимся подробностями!
+:::
+
+</TabItem>
+<TabItem value="advantagekit" label="AdvantageKit">
+
+:::note
+Для этой функции требуется AdvantageKit v27.0.0-beta-1, который станет доступен в ближайшее время. Вы можете проверить текущий статус на [странице релизов](https://github.com/Mechanical-Advantage/AdvantageKit/releases) GitHub.
+:::
 
 Захват логов производителей встроен в AdvantageKit и может быть включён, как показано ниже. Необходимо выбрать подходящую директорию (мы рекомендуем `/home/systemcore/logs/`) для временного размещения логов производителей во время захвата. Подробности смотрите в разделе [Как это работает](#how-it-works).
 

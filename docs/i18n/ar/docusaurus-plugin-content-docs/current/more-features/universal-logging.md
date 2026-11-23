@@ -34,11 +34,12 @@ _تظهر في الصورة أعلاه الواجهة باللغة الإنجل�
 
 تُنشئ العديد من مشاريع الروبوتات ملفات سجل متعددة في وقت واحد: ملف WPILOG قياسي لبيانات WPILib/AdvantageKit إلى جانب ملفات خاصة من مكتبات الشركات المصنعة. يلغي التسجيل الشامل هذا الانقسام من خلال تضمين سجلات الشركات المصنعة مباشرة في ملف `.wpilog` الرئيسي. راجع التعليمات أدناه لـ WPILib وAdvantageKit.
 
-:::warning
+:::note
 نظرًا لأن هذا النهج غير مدعوم رسميًا من قِبل الشركات المصنعة، يجب توجيه طلبات الدعم إلى [صفحة المشكلات (issues)](https://github.com/Mechanical-Advantage/AdvantageScope/issues) الخاصة بـ AdvantageScope أو إلى software@team6328.org. راجع [تصدير بيانات الشركات المصنعة](#exporting-vendor-data) للاطلاع على تفاصيل تصدير ملفات السجل الأصلية لأغراض التشخيص.
 :::
 
 <Tabs groupId="library">
+{/*
 <TabItem value="wpilib-java" label="Java" default>
 
 نزّل الفئة [`VendorLogCapture.java`](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/snippets/VendorLogCapture.java) وضعها في مشروع الروبوت الخاص بك. تلتقط هذه الفئة البيانات تلقائيًا من سجلات الشركات المصنعة إلى `DataLog` النشط ويجب تهيئتها في الدالة البانية `Robot` كما هو موضح أدناه. يجب اختيار مجلد مناسب (نوصي بـ `/home/systemcore/logs/`) لتخزين سجلات الشركات المصنعة مؤقتًا أثناء الالتقاط. راجع قسم [آلية العمل](#how-it-works) لمزيد من التفاصيل.
@@ -105,7 +106,19 @@ class Robot(wpilib.TimedRobot):
 ```
 
 </TabItem>
-<TabItem value="advantagekit" label="AdvantageKit (قريبًا)">
+*/}
+<TabItem value="wpilib" label="WPILib">
+
+:::warning
+التقاط سجلات الشركات المصنعة عبر DataLogManager غير متاح بعد، لأنه يعتمد على تغييرات في المشروع الأساسي (upstream) لـ WPILib. سنشارك المزيد من المعلومات قريبًا!
+:::
+
+</TabItem>
+<TabItem value="advantagekit" label="AdvantageKit">
+
+:::note
+تتطلب هذه الميزة الإصدار AdvantageKit v27.0.0-beta-1، الذي سيتوفر قريبًا. يمكنك التحقق من الحالة الحالية عبر [صفحة الإصدارات](https://github.com/Mechanical-Advantage/AdvantageKit/releases) على GitHub.
+:::
 
 التقاط سجلات الشركات المصنعة مدمج في AdvantageKit ويمكن تفعيله كما هو موضح أدناه. يجب اختيار مجلد مناسب (نوصي بـ `/home/systemcore/logs/`) لتخزين سجلات الشركات المصنعة مؤقتًا أثناء الالتقاط. راجع قسم [آلية العمل](#how-it-works) لمزيد من التفاصيل.
 

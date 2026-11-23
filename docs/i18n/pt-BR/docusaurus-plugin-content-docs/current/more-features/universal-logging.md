@@ -34,11 +34,12 @@ Usuários do AdvantageKit também podem aproveitar a compactação XZ para reduz
 
 Muitos projetos de robô geram vários arquivos de log simultaneamente: um arquivo WPILOG padrão para a telemetria da WPILib/AdvantageKit junto com arquivos proprietários de bibliotecas de fabricantes. O logging universal elimina essa divisão incorporando esses logs de fabricantes diretamente no `.wpilog` principal. Veja as instruções abaixo para WPILib e AdvantageKit.
 
-:::warning
+:::note
 Como essa abordagem não é oficialmente suportada pelos fabricantes, solicitações de suporte devem ser direcionadas à [página de issues](https://github.com/Mechanical-Advantage/AdvantageScope/issues) do AdvantageScope ou ao e-mail software@team6328.org. Consulte [Exportando dados de fabricantes](#exporting-vendor-data) para obter detalhes sobre como exportar os arquivos de log originais para diagnóstico.
 :::
 
 <Tabs groupId="library">
+{/*
 <TabItem value="wpilib-java" label="Java" default>
 
 Baixe a classe [`VendorLogCapture.java`](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/snippets/VendorLogCapture.java) e coloque-a no seu projeto do robô. Essa classe captura automaticamente os dados dos logs de fabricantes para o `DataLog` ativo e deve ser configurada no construtor `Robot`, conforme mostrado abaixo. Você deve selecionar um diretório apropriado (recomendamos `/home/systemcore/logs/`) para armazenar temporariamente os logs de fabricantes durante a captura. Consulte a seção [Como funciona](#how-it-works) para obter detalhes.
@@ -105,7 +106,19 @@ class Robot(wpilib.TimedRobot):
 ```
 
 </TabItem>
-<TabItem value="advantagekit" label="AdvantageKit (Em breve)">
+*/}
+<TabItem value="wpilib" label="WPILib">
+
+:::warning
+A captura de logs de fabricantes via DataLogManager ainda não está disponível, pois depende de alterações upstream na WPILib. Compartilharemos mais informações em breve!
+:::
+
+</TabItem>
+<TabItem value="advantagekit" label="AdvantageKit">
+
+:::note
+Esse recurso requer o AdvantageKit v27.0.0-beta-1, que estará disponível em breve. Você pode verificar o status atual na [página de releases](https://github.com/Mechanical-Advantage/AdvantageKit/releases) do GitHub.
+:::
 
 A captura de logs de fabricantes é integrada ao AdvantageKit e pode ser ativada conforme mostrado abaixo. Você deve selecionar um diretório apropriado (recomendamos `/home/systemcore/logs/`) para armazenar temporariamente os logs de fabricantes durante a captura. Consulte a seção [Como funciona](#how-it-works) para obter detalhes.
 

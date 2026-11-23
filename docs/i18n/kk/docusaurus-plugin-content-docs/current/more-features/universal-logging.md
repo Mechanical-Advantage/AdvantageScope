@@ -34,11 +34,12 @@ AdvantageKit пайдаланушылары WPILOG ішінде сақталға
 
 Көптеген робот жобалары бір уақытта бірнеше журнал файлын жасайды: WPILib/AdvantageKit телеметриясына арналған стандартты WPILOG файлымен қатар өндіруші кітапханаларынан меншікті файлдар. Әмбебап журналдау осы өндіруші журналдарын тікелей негізгі `.wpilog` файлына енгізу арқылы бұл бөлінуді жояды. WPILib және AdvantageKit үшін төмендегі нұсқауларды қараңыз.
 
-:::warning
+:::note
 Бұл тәсілді өндірушілер ресми түрде қолдамайтындықтан, қолдау сұрауларын AdvantageScope [мәселелер бетіне](https://github.com/Mechanical-Advantage/AdvantageScope/issues) немесе software@team6328.org мекенжайына жіберу керек. Диагностика үшін бастапқы журнал файлдарын экспорттау туралы толығырақ [Өндіруші деректерін экспорттау](#exporting-vendor-data) бөлімінен қараңыз.
 :::
 
 <Tabs groupId="library">
+{/*
 <TabItem value="wpilib-java" label="Java" default>
 
 [`VendorLogCapture.java`](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/snippets/VendorLogCapture.java) класын жүктеп алып, робот жобаңызға орналастырыңыз. Бұл класс өндіруші журналдарындағы деректерді белсенді `DataLog` ағынына автоматты түрде жазып алады және төменде көрсетілгендей `Robot` конструкторында бапталуы тиіс. Жазып алу кезінде өндіруші журналдарын уақытша орналастыру үшін қолайлы каталогты таңдауыңыз керек (`/home/systemcore/logs/` ұсынамыз). Толығырақ [Қалай жұмыс істейді](#how-it-works) бөлімінен қараңыз.
@@ -105,7 +106,19 @@ class Robot(wpilib.TimedRobot):
 ```
 
 </TabItem>
-<TabItem value="advantagekit" label="AdvantageKit (Жақында)">
+*/}
+<TabItem value="wpilib" label="WPILib">
+
+:::warning
+DataLogManager арқылы өндіруші журналдарын жазып алу әзірге қолжетімді емес, өйткені ол WPILib кітапханасындағы негізгі (upstream) өзгерістерге байланысты. Жақында қосымша ақпаратпен бөлісеміз!
+:::
+
+</TabItem>
+<TabItem value="advantagekit" label="AdvantageKit">
+
+:::note
+Бұл мүмкіндік жақында қолжетімді болатын AdvantageKit v27.0.0-beta-1 нұсқасын қажет етеді. Ағымдағы күйін GitHub [шығарылымдар бетінен](https://github.com/Mechanical-Advantage/AdvantageKit/releases) тексере аласыз.
+:::
 
 Өндіруші журналдарын жазып алу AdvantageKit ішіне кіріктірілген және төменде көрсетілгендей қосылуы мүмкін. Жазып алу кезінде өндіруші журналдарын уақытша орналастыру үшін қолайлы каталогты таңдауыңыз керек (`/home/systemcore/logs/` ұсынамыз). Толығырақ [Қалай жұмыс істейді](#how-it-works) бөлімінен қараңыз.
 

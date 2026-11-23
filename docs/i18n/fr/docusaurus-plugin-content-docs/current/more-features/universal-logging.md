@@ -34,11 +34,12 @@ Les utilisateurs d'AdvantageKit peuvent également profiter de la compression XZ
 
 De nombreux projets de robot génèrent plusieurs fichiers journaux simultanément : un fichier WPILOG standard pour la télémétrie WPILib/AdvantageKit ainsi que des fichiers propriétaires provenant de bibliothèques de fabricants. La journalisation universelle élimine cette séparation en intégrant ces journaux de fabricants directement dans le `.wpilog` principal. Consultez les instructions ci-dessous pour WPILib et AdvantageKit.
 
-:::warning
+:::note
 Comme cette approche n'est pas officiellement prise en charge par les fabricants, les demandes d'assistance doivent être adressées à la [page des problèmes](https://github.com/Mechanical-Advantage/AdvantageScope/issues) d'AdvantageScope ou à software@team6328.org. Consultez [Exporter les données des fabricants](#exporting-vendor-data) pour savoir comment exporter les fichiers journaux d'origine à des fins de diagnostic.
 :::
 
 <Tabs groupId="library">
+{/*
 <TabItem value="wpilib-java" label="Java" default>
 
 Téléchargez la classe [`VendorLogCapture.java`](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/snippets/VendorLogCapture.java) et placez-la dans votre projet de robot. Cette classe capture automatiquement les données des journaux de fabricants dans le `DataLog` actif et doit être configurée dans votre constructeur `Robot` comme indiqué ci-dessous. Vous devez choisir un répertoire approprié (nous recommandons `/home/systemcore/logs/`) pour stocker temporairement les journaux de fabricants pendant la capture. Consultez la section [Fonctionnement](#how-it-works) pour plus de détails.
@@ -105,7 +106,19 @@ class Robot(wpilib.TimedRobot):
 ```
 
 </TabItem>
-<TabItem value="advantagekit" label="AdvantageKit (Bientôt disponible)">
+*/}
+<TabItem value="wpilib" label="WPILib">
+
+:::warning
+La capture des journaux de fabricants via DataLogManager n'est pas encore disponible, car elle dépend de modifications en amont dans WPILib. Nous partagerons plus d'informations bientôt!
+:::
+
+</TabItem>
+<TabItem value="advantagekit" label="AdvantageKit">
+
+:::note
+Cette fonctionnalité nécessite AdvantageKit v27.0.0-beta-1, qui sera bientôt disponible. Vous pouvez vérifier l'état actuel sur la [page des versions](https://github.com/Mechanical-Advantage/AdvantageKit/releases) GitHub.
+:::
 
 La capture des journaux de fabricants est intégrée à AdvantageKit et peut être activée comme indiqué ci-dessous. Vous devez choisir un répertoire approprié (nous recommandons `/home/systemcore/logs/`) pour stocker temporairement les journaux de fabricants pendant la capture. Consultez la section [Fonctionnement](#how-it-works) pour plus de détails.
 

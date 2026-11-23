@@ -32,11 +32,12 @@ AdvantageKit users can also take advantage of XZ compression to significantly re
 
 Many robot projects generate multiple log files simultaneously: a standard WPILOG file for WPILib/AdvantageKit telemetry alongside proprietary files from vendor libraries. Universal logging eliminates this split by embedding those vendor logs directly into the main `.wpilog`. See the instructions below for WPILib and AdvantageKit.
 
-:::warning
+:::note
 As this approach is not officially supported by vendors, support requests should be directed to the AdvantageScope [issues page](https://github.com/Mechanical-Advantage/AdvantageScope/issues) or software@team6328.org. See [Exporting Vendor Data](#exporting-vendor-data) for details on exporting the original log files for diagnostics.
 :::
 
 <Tabs groupId="library">
+{/*
 <TabItem value="wpilib-java" label="Java" default>
 
 Download the [`VendorLogCapture.java`](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/snippets/VendorLogCapture.java) class and place it in your robot project. This class automatically captures data from vendor logs into the active `DataLog` and should be configured in your `Robot` constructor as shown below. You must select an appropriate directory (we recommend `/home/systemcore/logs/`) for temporarily staging vendor logs during capture. See the [How It Works](#how-it-works) section for details.
@@ -103,7 +104,19 @@ class Robot(wpilib.TimedRobot):
 ```
 
 </TabItem>
-<TabItem value="advantagekit" label="AdvantageKit (Coming Soon)">
+*/}
+<TabItem value="wpilib" label="WPILib">
+
+:::warning
+Vendor log capture via DataLogManager is not yet available as it depends on upstream changes to WPILib. We will share more information soon!
+:::
+
+</TabItem>
+<TabItem value="advantagekit" label="AdvantageKit">
+
+:::note
+This feature requires AdvantageKit v27.0.0-beta-1, which will be available soon. You can check the current status on the GitHub [releases page](https://github.com/Mechanical-Advantage/AdvantageKit/releases).
+:::
 
 Vendor log capture is built into AdvantageKit and can be enabled as shown below. You must select an appropriate directory (we recommend `/home/systemcore/logs/`) for temporarily staging vendor logs during capture. See the [How It Works](#how-it-works) section for details.
 

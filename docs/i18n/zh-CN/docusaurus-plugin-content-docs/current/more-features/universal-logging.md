@@ -34,11 +34,12 @@ AdvantageKit 用户还可以利用 XZ 压缩，大幅减小存储在 WPILOG 中�
 
 许多机器人项目会同时生成多个日志文件：一个用于 WPILib/AdvantageKit 遥测的标准 WPILOG 文件，以及来自厂商库的专有文件。通用日志记录消除了这种拆分，直接将这些厂商日志嵌入主 `.wpilog` 文件中。请参阅下方针对 WPILib 和 AdvantageKit 的说明。
 
-:::warning
+:::note
 由于此方法未获厂商官方支持，如需支持请前往 AdvantageScope 的 [Issues 页面](https://github.com/Mechanical-Advantage/AdvantageScope/issues)或发送邮件至 software@team6328.org。有关如何导出原始日志文件以进行诊断的详情，请参阅[导出厂商数据](#exporting-vendor-data)。
 :::
 
 <Tabs groupId="library">
+{/*
 <TabItem value="wpilib-java" label="Java" default>
 
 下载 [`VendorLogCapture.java`](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/snippets/VendorLogCapture.java) 类并将其放入你的机器人项目中。该类会自动将厂商日志数据采集到当前活动的 `DataLog` 中，应如下所示在 `Robot` 构造函数中进行配置。你必须选择一个合适的目录（推荐使用 `/home/systemcore/logs/`）用于在采集期间临时暂存厂商日志。详情请参阅[工作原理](#how-it-works)部分。
@@ -105,7 +106,19 @@ class Robot(wpilib.TimedRobot):
 ```
 
 </TabItem>
-<TabItem value="advantagekit" label="AdvantageKit（即将推出）">
+*/}
+<TabItem value="wpilib" label="WPILib">
+
+:::warning
+通过 DataLogManager 进行厂商日志采集的功能暂不可用，因为该功能依赖 WPILib 的上游更改。我们很快会分享更多信息！
+:::
+
+</TabItem>
+<TabItem value="advantagekit" label="AdvantageKit">
+
+:::note
+此功能需要 AdvantageKit v27.0.0-beta-1，该版本即将发布。你可以在 GitHub 的[发布页面](https://github.com/Mechanical-Advantage/AdvantageKit/releases)查看当前状态。
+:::
 
 厂商日志采集已内置于 AdvantageKit 中，可按如下方式启用。你必须选择一个合适的目录（推荐使用 `/home/systemcore/logs/`）用于在采集期间临时暂存厂商日志。详情请参阅[工作原理](#how-it-works)部分。
 

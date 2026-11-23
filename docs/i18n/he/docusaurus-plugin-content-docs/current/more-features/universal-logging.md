@@ -34,11 +34,12 @@ _הממשק בתמונה מוצג באנגלית._
 
 פרויקטי רובוט רבים יוצרים מספר קובצי יומן במקביל: קובץ WPILOG סטנדרטי עבור טלמטריית WPILib/AdvantageKit לצד קבצים קנייניים מספריות של יצרנים. רישום אוניברסלי מבטל פיצול זה על ידי הטמעת יומני היצרנים ישירות לתוך קובץ ה-`.wpilog` הראשי. ראו את ההנחיות להלן עבור WPILib ו-AdvantageKit.
 
-:::warning
+:::note
 מכיוון שגישה זו אינה נתמכת רשמית על ידי היצרנים, יש להפנות בקשות תמיכה אל [דף ה-issues](https://github.com/Mechanical-Advantage/AdvantageScope/issues) של AdvantageScope או אל software@team6328.org. ראו [ייצוא נתוני יצרנים](#exporting-vendor-data) לפרטים על ייצוא קובצי היומן המקוריים לצורך אבחון.
 :::
 
 <Tabs groupId="library">
+{/*
 <TabItem value="wpilib-java" label="Java" default>
 
 הורידו את המחלקה [`VendorLogCapture.java`](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/snippets/VendorLogCapture.java) ומקמו אותה בפרויקט הרובוט שלכם. מחלקה זו לוכדת אוטומטית נתונים מיומני יצרנים אל תוך ה-`DataLog` הפעיל, ויש להגדיר אותה בבנאי `Robot` כפי שמוצג להלן. עליכם לבחור תיקייה מתאימה (אנו ממליצים על `/home/systemcore/logs/`) לאחסון זמני של יומני היצרנים במהלך הלכידה. ראו את הסעיף [איך זה עובד](#how-it-works) לפרטים.
@@ -105,7 +106,19 @@ class Robot(wpilib.TimedRobot):
 ```
 
 </TabItem>
-<TabItem value="advantagekit" label="AdvantageKit (בקרוב)">
+*/}
+<TabItem value="wpilib" label="WPILib">
+
+:::warning
+לכידת יומני יצרנים דרך DataLogManager אינה זמינה עדיין, מאחר שהיא תלויה בשינויים במאגר הראשי (upstream) של WPILib. נשתף מידע נוסף בקרוב!
+:::
+
+</TabItem>
+<TabItem value="advantagekit" label="AdvantageKit">
+
+:::note
+תכונה זו דורשת את AdvantageKit v27.0.0-beta-1, שתהיה זמינה בקרוב. תוכלו לבדוק את הסטטוס העדכני ב[דף ה-releases](https://github.com/Mechanical-Advantage/AdvantageKit/releases) ב-GitHub.
+:::
 
 לכידת יומני יצרנים מובנית בתוך AdvantageKit וניתנת להפעלה כפי שמוצג להלן. עליכם לבחור תיקייה מתאימה (אנו ממליצים על `/home/systemcore/logs/`) לאחסון זמני של יומני היצרנים במהלך הלכידה. ראו את הסעיף [איך זה עובד](#how-it-works) לפרטים.
 
