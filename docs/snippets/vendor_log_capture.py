@@ -74,8 +74,9 @@ class VendorLogCapture:
     ```
     """
     _CHUNK_SIZE = 65536
-    _MAX_CHUNKS_PER_CYCLE = 6
-    _MAX_UNCAPTURED_BYTES = 1048576  # 1 MB
+    _MAX_CHUNKS_PER_CYCLE = 4
+    _MIN_FREE_BUFFER_BYTES = 262144  # 256 KB
+    _MAX_UNCAPTURED_BYTES = 524288  # 0.5 MB
 
     _data_log = None
     _capture_directory = None
@@ -175,7 +176,10 @@ class VendorLogCapture:
         for _, tracked_log in list(cls._tracked_logs.items()):
             updated = False
             try:
-                while total_chunks < cls._MAX_CHUNKS_PER_CYCLE:
+                while (
+                    total_chunks < cls._MAX_CHUNKS_PER_CYCLE
+                    and cls._data_log.get_buffer_free_space() >= cls._MIN_FREE_BUFFER_BYTES
+                ):
                     tracked_log.stream.seek(tracked_log.current_offset)
                     data_chunk = tracked_log.stream.read(cls._CHUNK_SIZE)
 
@@ -191,7 +195,10 @@ class VendorLogCapture:
                 pass
             if updated:
                 cls._write_marker_offset(tracked_log.file_path, tracked_log.current_offset)
-            if total_chunks >= cls._MAX_CHUNKS_PER_CYCLE:
+            if (
+                total_chunks >= cls._MAX_CHUNKS_PER_CYCLE
+                or cls._data_log.get_buffer_free_space() < cls._MIN_FREE_BUFFER_BYTES
+            ):
                 break
 
     @classmethod
@@ -277,10 +284,15 @@ class VendorLogCapture:
                         captured_offset = cls._read_marker_offset(marker_path)
                         try:
                             file_size = p.stat().st_size
-                            marker_path.unlink()
-                            if captured_offset >= 0 and file_size - captured_offset <= cls._MAX_UNCAPTURED_BYTES:
+                            if (
+                                captured_offset >= 0
+                                and file_size >= captured_offset
+                                and file_size - captured_offset <= cls._MAX_UNCAPTURED_BYTES
+                            ):
                                 p.unlink()
+                                marker_path.unlink()
                             else:
+                                marker_path.unlink()
                                 cls._ignored_logs.add(cls._get_file_key(p))
                         except OSError:
                             cls._ignored_logs.add(cls._get_file_key(p))

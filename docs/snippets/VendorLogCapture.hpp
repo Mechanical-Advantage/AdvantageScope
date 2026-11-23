@@ -93,8 +93,9 @@ public:
 
 private:
   static constexpr size_t CHUNK_SIZE = 65536;
-  static constexpr int MAX_CHUNKS_PER_CYCLE = 6;
-  static constexpr uint64_t MAX_UNCAPTURED_BYTES = 1048576; // 1 MB
+  static constexpr int MAX_CHUNKS_PER_CYCLE = 4;
+  static constexpr size_t MIN_FREE_BUFFER_BYTES = 262144; // 256 KB
+  static constexpr uint64_t MAX_UNCAPTURED_BYTES = 524288; // 0.5 MB
 
   using FileKey =
       std::variant<std::pair<uint64_t, uint64_t>, std::filesystem::path>;

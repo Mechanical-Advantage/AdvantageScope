@@ -80,8 +80,9 @@ import org.wpilib.system.Notifier;
  */
 public class VendorLogCapture {
   private static final int CHUNK_SIZE = 65536;
-  private static final int MAX_CHUNKS_PER_CYCLE = 6;
-  private static final long MAX_UNCAPTURED_BYTES = 1048576; // 1 MB
+  private static final int MAX_CHUNKS_PER_CYCLE = 4;
+  private static final int MIN_FREE_BUFFER_BYTES = 262144; // 256 KB
+  private static final long MAX_UNCAPTURED_BYTES = 524288; // 0.5 MB
 
   private static DataLog dataLog;
   private static Path captureDirectory;
@@ -206,7 +207,8 @@ public class VendorLogCapture {
     for (TrackedLog log : trackedLogs.values()) {
       boolean updated = false;
       try {
-        while (totalChunks < MAX_CHUNKS_PER_CYCLE) {
+        while (totalChunks < MAX_CHUNKS_PER_CYCLE
+            && dataLog.getBufferFreeSpace() >= MIN_FREE_BUFFER_BYTES) {
           readBuffer.clear();
           int bytesRead = log.channel.read(readBuffer, log.currentOffset);
 
@@ -229,7 +231,8 @@ public class VendorLogCapture {
       if (updated) {
         writeMarkerOffset(log.filePath, log.currentOffset);
       }
-      if (totalChunks >= MAX_CHUNKS_PER_CYCLE) {
+      if (totalChunks >= MAX_CHUNKS_PER_CYCLE
+          || dataLog.getBufferFreeSpace() < MIN_FREE_BUFFER_BYTES) {
         break;
       }
     }
@@ -313,17 +316,26 @@ public class VendorLogCapture {
         }
 
         @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
           String filename = file.getFileName().toString();
           if (isCapturable(file)) {
             Path markerPath = getMarkerPath(file);
             if (Files.exists(markerPath)) {
               long capturedOffset = readMarkerOffset(markerPath);
               long fileSize = attrs.size();
-              Files.deleteIfExists(markerPath);
-              if (capturedOffset >= 0 && fileSize - capturedOffset <= MAX_UNCAPTURED_BYTES) {
-                Files.deleteIfExists(file);
+              if (capturedOffset >= 0
+                  && fileSize >= capturedOffset
+                  && fileSize - capturedOffset <= MAX_UNCAPTURED_BYTES) {
+                try {
+                  Files.deleteIfExists(file);
+                  Files.deleteIfExists(markerPath);
+                } catch (IOException e) {
+                }
               } else {
+                try {
+                  Files.deleteIfExists(markerPath);
+                } catch (IOException e) {
+                }
                 ignoredLogs.add(getFileKey(file, attrs));
               }
             } else {
@@ -332,7 +344,10 @@ public class VendorLogCapture {
           } else if (filename.startsWith(".") && filename.endsWith(".captured")) {
             String originalName = filename.substring(1, filename.length() - 9);
             if (!Files.exists(file.resolveSibling(originalName))) {
-              Files.deleteIfExists(file);
+              try {
+                Files.deleteIfExists(file);
+              } catch (IOException e) {
+              }
             }
           }
           return FileVisitResult.CONTINUE;

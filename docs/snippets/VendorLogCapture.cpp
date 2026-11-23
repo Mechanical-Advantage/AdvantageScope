@@ -160,7 +160,8 @@ void VendorLogCapture::Periodic() {
   int totalChunks = 0;
   for (auto &[key, log] : trackedLogs) {
     bool updated = false;
-    while (totalChunks < MAX_CHUNKS_PER_CYCLE) {
+    while (totalChunks < MAX_CHUNKS_PER_CYCLE &&
+           dataLog->GetBufferFreeSpace() >= MIN_FREE_BUFFER_BYTES) {
       log.stream->clear();
       log.stream->seekg(log.currentOffset, std::ios::beg);
       if (log.stream->fail()) {
@@ -185,7 +186,8 @@ void VendorLogCapture::Periodic() {
     if (updated) {
       WriteMarkerOffset(log.filePath, log.currentOffset);
     }
-    if (totalChunks >= MAX_CHUNKS_PER_CYCLE) {
+    if (totalChunks >= MAX_CHUNKS_PER_CYCLE ||
+        dataLog->GetBufferFreeSpace() < MIN_FREE_BUFFER_BYTES) {
       break;
     }
   }
@@ -275,12 +277,13 @@ void VendorLogCapture::CleanCapturableLogs() {
           bool validOffset = ReadMarkerOffset(markerPath, capturedOffset);
           std::error_code sizeEc;
           uint64_t fileSize = std::filesystem::file_size(entry.path(), sizeEc);
-          std::filesystem::remove(markerPath, ec);
-          if (validOffset && !sizeEc &&
-              (fileSize <= capturedOffset ||
-               fileSize - capturedOffset <= MAX_UNCAPTURED_BYTES)) {
-            std::filesystem::remove(entry.path(), ec);
+          std::error_code removeEc;
+          if (validOffset && !sizeEc && fileSize >= capturedOffset &&
+              fileSize - capturedOffset <= MAX_UNCAPTURED_BYTES) {
+            std::filesystem::remove(entry.path(), removeEc);
+            std::filesystem::remove(markerPath, removeEc);
           } else {
+            std::filesystem::remove(markerPath, removeEc);
             ignoredLogs.insert(GetFileKey(entry.path()));
           }
         } else {
@@ -292,7 +295,8 @@ void VendorLogCapture::CleanCapturableLogs() {
         std::filesystem::path originalPath = entry.path();
         originalPath.replace_filename(originalName);
         if (!std::filesystem::exists(originalPath)) {
-          std::filesystem::remove(entry.path(), ec);
+          std::error_code removeEc;
+          std::filesystem::remove(entry.path(), removeEc);
         }
       }
     } else if (entry.is_directory()) {
