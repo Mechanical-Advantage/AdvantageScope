@@ -423,7 +423,10 @@ hub:
       model: "Model"
       plane: "Plan"
       variant: "Variantă"
+      fadeOut: "Estompare la inactivitate"
     optionValues:
+      off: "Dezactivat"
+      on: "Activat"
       robot_bumpers_: "Culoarea alianței"
       radians: "Radiani"
       degrees: "Grade"

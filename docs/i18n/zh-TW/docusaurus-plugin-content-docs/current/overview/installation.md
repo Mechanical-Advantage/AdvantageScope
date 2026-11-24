@@ -37,3 +37,4 @@ WPILib 安裝程式內含近期版本的 AdvantageScope，但版本可能會比�
 - [**適用於 REV 控制系統的 AdvantageScope Lite：**](https://github.com/j5155/AdvantageScope-Lite-FTC) [AdvantageScope Lite](/more-features/advantagescope-lite) 的修改版，適用於現有（Systemcore 之前）的 FTC 控制系統。
 - [**Homebrew 安裝程式：**](https://formulae.brew.sh/cask/advantagescope) 用於在 macOS 上透過命令列安裝 AdvantageScope 的 Homebrew cask。
 - [**Arch User Repository：**](https://aur.archlinux.org/packages/advantagescope) 配合 pacman 套件管理員使用的另一種發行方式（官方 Arch 版 AdvantageScope 可在[此處](#6328-downloads)取得）。
+- [**FRC-Nix：**](https://github.com/frc4451/frc-nix) 一組與 FIRST 相關的 Nix 套件與宣告式 NixOS 模組，其中包含 AdvantageScope，適用於 Nix 套件管理員與 NixOS Linux 發行版。

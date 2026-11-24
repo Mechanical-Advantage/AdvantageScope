@@ -459,7 +459,10 @@ hub:
       model: "النموذج"
       plane: "المستوى"
       variant: "المتغير"
+      fadeOut: "تلاشي عند عدم التحديث"
     optionValues:
+      off: "إيقاف"
+      on: "تشغيل"
       robot_bumpers_: "لون التحالف"
       radians: "راديان"
       degrees: "درجات"

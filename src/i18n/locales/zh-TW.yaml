@@ -400,7 +400,10 @@ hub:
       model: "模型"
       plane: "平面"
       variant: "變體"
+      fadeOut: "無更新時淡出"
     optionValues:
+      off: "關閉"
+      on: "開啟"
       robot_bumpers_: "聯盟顏色"
       radians: "弧度"
       degrees: "度"

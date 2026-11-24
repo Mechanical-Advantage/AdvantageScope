@@ -411,7 +411,10 @@ hub:
       model: "मॉडल"
       plane: "प्लेन"
       variant: "वेरिएंट"
+      fadeOut: "अपडेट न होने पर धुंधला करें"
     optionValues:
+      off: "बंद"
+      on: "चालू"
       robot_bumpers_: "एलायंस रंग"
       radians: "रेडियन्स"
       degrees: "डिग्री"

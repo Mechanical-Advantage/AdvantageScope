@@ -37,3 +37,4 @@ AdvantageScope'un resmi olmayan dağıtımları da çeşitli kaynaklarda mevcutt
 - [**REV Kontrol Sistemi için AdvantageScope Lite:**](https://github.com/j5155/AdvantageScope-Lite-FTC) Mevcut (Systemcore öncesi) FTC kontrol sisteminde kullanılmak üzere [AdvantageScope Lite](/more-features/advantagescope-lite) uygulamasının bir uyarlamasıdır.
 - [**Homebrew Yükleyicisi:**](https://formulae.brew.sh/cask/advantagescope) macOS'ta komut satırından AdvantageScope kurmak için kullanılan bir Homebrew cask paketidir.
 - [**Arch Kullanıcı Deposu (AUR):**](https://aur.archlinux.org/packages/advantagescope) pacman paket yöneticisiyle kullanabileceğiniz alternatif bir dağıtım yöntemidir (AdvantageScope'un resmi Arch dağıtımına [buradan](#6328-downloads) ulaşabilirsiniz).
+- [**FRC-Nix:**](https://github.com/frc4451/frc-nix) Nix paket yöneticisi ve NixOS Linux dağıtımı için AdvantageScope'u da içeren, FIRST ile ilgili bir dizi Nix paketi ve bildirimsel NixOS modülüdür.

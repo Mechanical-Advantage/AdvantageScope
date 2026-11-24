@@ -402,7 +402,10 @@ hub:
       model: "Model"
       plane: "Düzlem"
       variant: "Varyant"
+      fadeOut: "Güncellenmezse soldur"
     optionValues:
+      off: "Kapalı"
+      on: "Açık"
       robot_bumpers_: "İttifak rengi"
       radians: "Radyan"
       degrees: "Derece"

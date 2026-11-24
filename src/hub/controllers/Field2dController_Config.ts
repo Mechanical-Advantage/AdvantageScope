@@ -65,12 +65,8 @@ const Field2dController_Config: SourceListConfig = {
         },
         {
           key: "fadeOut",
-          display: "Fade When Stale",
           showInTypeName: false,
-          values: [
-            { key: "off", display: "Off" },
-            { key: "on", display: "On" }
-          ]
+          values: ["off", "on"]
         }
       ],
       initialSelectionOption: "color",
