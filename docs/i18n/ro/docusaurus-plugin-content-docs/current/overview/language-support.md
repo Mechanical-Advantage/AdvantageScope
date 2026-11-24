@@ -24,11 +24,7 @@ AdvantageScope suportă mai multe limbi pentru a oferi o experiență localizat�
 - Chineză simplificată
 - Chineză tradițională
 
-Mulțumim următorilor contribuitori pentru ajutorul acordat în revizuirea și îmbunătățirea traducerilor AdvantageScope:
-
-- FRC Team 4400 Cerbotics
-- FRC Team 6907 The G.O.A.T.
-- Ata Baber
+Mulțumim echipei FRC Team 6907 The G.O.A.T. pentru ajutorul acordat în revizuirea și îmbunătățirea traducerilor AdvantageScope!
 
 ## Configurare {#configuration}
 

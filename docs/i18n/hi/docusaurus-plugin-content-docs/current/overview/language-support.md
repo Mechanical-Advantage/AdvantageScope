@@ -24,11 +24,7 @@ AdvantageScope दुनिया भर की टीमों को स्थ
 - Simplified Chinese
 - Traditional Chinese
 
-AdvantageScope अनुवादों की समीक्षा और सुधार करने में मदद करने के लिए निम्नलिखित योगदानकर्ताओं का धन्यवाद!
-
-- FRC Team 4400 Cerbotics
-- FRC Team 6907 The G.O.A.T.
-- Ata Baber
+AdvantageScope अनुवादों की समीक्षा और सुधार करने में मदद के लिए FRC Team 6907 The G.O.A.T. का धन्यवाद!
 
 ## कॉन्फ़िगरेशन {#configuration}
 

@@ -24,11 +24,7 @@ AdvantageScope поддерживает несколько языков в до�
 - Упрощённый китайский
 - Традиционный китайский
 
-Благодарим следующих участников за помощь в проверке и улучшении переводов AdvantageScope:
-
-- FRC Team 4400 Cerbotics
-- FRC Team 6907 The G.O.A.T.
-- Ata Baber
+Благодарим FRC Team 6907 The G.O.A.T. за помощь в проверке и улучшении переводов AdvantageScope!
 
 ## Настройка {#configuration}
 

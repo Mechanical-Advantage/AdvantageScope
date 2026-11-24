@@ -24,11 +24,7 @@ AdvantageScope supports multiple languages to provide a localized experience for
 - Simplified Chinese
 - Traditional Chinese
 
-Thank you to the following contributors for helping review and improve AdvantageScope translations!
-
-- FRC Team 4400 Cerbotics
-- FRC Team 6907 The G.O.A.T.
-- Ata Baber
+Thank you to FRC Team 6907 The G.O.A.T. for their help reviewing and improving AdvantageScope translations!
 
 ## Configuration {#configuration}
 

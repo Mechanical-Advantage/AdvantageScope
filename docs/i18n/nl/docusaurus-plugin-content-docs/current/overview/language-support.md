@@ -24,11 +24,7 @@ AdvantageScope ondersteunt meerdere talen zodat teams over de hele wereld de sof
 - Vereenvoudigd Chinees
 - Traditioneel Chinees
 
-Bedankt aan de volgende bijdragers voor hun hulp bij het controleren en verbeteren van de vertalingen van AdvantageScope:
-
-- FRC Team 4400 Cerbotics
-- FRC Team 6907 The G.O.A.T.
-- Ata Baber
+Bedankt aan FRC Team 6907 The G.O.A.T. voor hun hulp bij het controleren en verbeteren van de vertalingen van AdvantageScope!
 
 ## Configuratie {#configuration}
 

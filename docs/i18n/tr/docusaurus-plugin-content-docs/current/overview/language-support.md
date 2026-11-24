@@ -24,11 +24,7 @@ AdvantageScope, dünyanın dört bir yanındaki takımlara kendi dillerinde bir 
 - Basitleştirilmiş Çince
 - Geleneksel Çince
 
-AdvantageScope çevirilerini incelemeye ve geliştirmeye yardımcı oldukları için aşağıdaki katkıda bulunanlara teşekkür ederiz:
-
-- FRC Team 4400 Cerbotics
-- FRC Team 6907 The G.O.A.T.
-- Ata Baber
+AdvantageScope çevirilerini incelemeye ve geliştirmeye yardımcı olduğu için FRC Team 6907 The G.O.A.T. ekibine teşekkür ederiz!
 
 ## Yapılandırma {#configuration}
 

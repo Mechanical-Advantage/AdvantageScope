@@ -24,11 +24,7 @@ O AdvantageScope oferece suporte a vários idiomas para proporcionar uma experi�
 - Chinês simplificado
 - Chinês tradicional
 
-Agradecemos aos seguintes colaboradores por ajudarem a revisar e aprimorar as traduções do AdvantageScope:
-
-- FRC Team 4400 Cerbotics
-- FRC Team 6907 The G.O.A.T.
-- Ata Baber
+Agradecemos à equipe FRC Team 6907 The G.O.A.T. pela ajuda na revisão e melhoria das traduções do AdvantageScope!
 
 ## Configuração {#configuration}
 

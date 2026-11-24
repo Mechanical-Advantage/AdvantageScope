@@ -24,11 +24,7 @@ AdvantageScope תומכת במגוון שפות כדי להציע חוויית �
 - סינית פשוטה
 - סינית מסורתית
 
-תודה לתורמים הבאים על העזרה בסקירה ובשיפור התרגומים של AdvantageScope:
-
-- FRC Team 4400 Cerbotics
-- FRC Team 6907 The G.O.A.T.
-- Ata Baber
+תודה ל-FRC Team 6907 The G.O.A.T. על העזרה בסקירה ובשיפור התרגומים של AdvantageScope!
 
 ## הגדרות {#configuration}
 

@@ -24,11 +24,7 @@ import TabItem from '@theme/TabItem';
 - الصينية المبسطة
 - الصينية التقليدية
 
-شكرًا للمساهمين التاليين على مساعدتهم في مراجعة وتحسين ترجمات AdvantageScope:
-
-- FRC Team 4400 Cerbotics
-- FRC Team 6907 The G.O.A.T.
-- Ata Baber
+شكرًا لفريق FRC Team 6907 The G.O.A.T. على مساعدتهم في مراجعة وتحسين ترجمات AdvantageScope!
 
 ## الإعدادات {#configuration}
 

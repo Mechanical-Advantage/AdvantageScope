@@ -24,11 +24,7 @@ AdvantageScope 支持多种语言，旨在为全球队伍提供本地化体验�
 - 简体中文
 - 繁体中文
 
-感谢以下贡献者协助审校和改进 AdvantageScope 的翻译：
-
-- FRC Team 4400 Cerbotics
-- FRC Team 6907 The G.O.A.T.
-- Ata Baber
+感谢 FRC Team 6907 The G.O.A.T. 协助审校和改进 AdvantageScope 的翻译！
 
 ## 配置 {#configuration}
 

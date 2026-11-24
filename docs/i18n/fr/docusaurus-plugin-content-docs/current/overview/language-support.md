@@ -24,11 +24,7 @@ AdvantageScope est disponible en plusieurs langues pour offrir une interface ada
 - Chinois simplifié
 - Chinois traditionnel
 
-Merci aux contributeurs suivants d'avoir aidé à relire et améliorer les traductions d'AdvantageScope :
-
-- FRC Team 4400 Cerbotics
-- FRC Team 6907 The G.O.A.T.
-- Ata Baber
+Merci à FRC Team 6907 The G.O.A.T. pour son aide à la relecture et à l'amélioration des traductions d'AdvantageScope!
 
 ## Configuration {#configuration}
 
