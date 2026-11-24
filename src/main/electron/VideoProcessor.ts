@@ -517,32 +517,36 @@ export class VideoProcessor {
           .catch(() => {});
         break;
       case VideoSource.YouTube:
-        let clipboardText = clipboard.readText();
-        if (!clipboardText.includes("youtube.com") && !clipboardText.includes("youtu.be")) {
-          dataCallback({ uuid: uuid, error: true });
-          dialog.showMessageBox(window, {
-            type: "error",
-            title: "Error",
-            message: "Copy URL to clipboard",
-            detail: "Please copy a YouTube URL to the clipboard, then try again.",
-            icon: WINDOW_ICON
-          });
-        } else {
-          this.getDirectUrlFromYouTubeUrl(clipboardText, window)
-            .then((result) => loadPath(result.url, VIDEO_CACHE, result.httpHeaders))
-            .catch((silent) => {
+        clipboard
+          .readText()
+          .catch(() => "")
+          .then((clipboardText) => {
+            if (!clipboardText.includes("youtube.com") && !clipboardText.includes("youtu.be")) {
               dataCallback({ uuid: uuid, error: true });
-              if (silent === true) return;
               dialog.showMessageBox(window, {
                 type: "error",
                 title: "Error",
-                message: "YouTube download failed",
-                detail:
-                  "There was an error while trying to open the YouTube video. Note that this feature may fail unexpectedly due to changes on YouTube's servers. Please check for updates or choose a local video file instead.",
+                message: "Copy URL to clipboard",
+                detail: "Please copy a YouTube URL to the clipboard, then try again.",
                 icon: WINDOW_ICON
               });
-            });
-        }
+            } else {
+              this.getDirectUrlFromYouTubeUrl(clipboardText, window)
+                .then((result) => loadPath(result.url, VIDEO_CACHE, result.httpHeaders))
+                .catch((silent) => {
+                  dataCallback({ uuid: uuid, error: true });
+                  if (silent === true) return;
+                  dialog.showMessageBox(window, {
+                    type: "error",
+                    title: "Error",
+                    message: "YouTube download failed",
+                    detail:
+                      "There was an error while trying to open the YouTube video. Note that this feature may fail unexpectedly due to changes on YouTube's servers. Please check for updates or choose a local video file instead.",
+                    icon: WINDOW_ICON
+                  });
+                });
+            }
+          });
         break;
       case VideoSource.TheBlueAlliance:
         this.getYouTubeUrlFromMatchInfo(matchInfo!, window, menuCoordinates!)

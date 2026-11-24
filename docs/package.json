@@ -24,6 +24,11 @@
     "@docusaurus/types": "^3.10.2",
     "typescript": "~5.5.2"
   },
+  "allowScripts": {
+    "@swc/core": false,
+    "core-js": false,
+    "fsevents": false
+  },
   "browserslist": {
     "production": [
       ">0.5%",

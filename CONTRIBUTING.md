@@ -21,8 +21,8 @@ Please remember to behave with **Gracious Professionalism** in all interactions.
 
 AdvantageScope is a Node.js application using Electron and TypeScript. It also uses C++ (via WebAssembly) for high-performance tasks, which requires Emscripten.
 
-1. **Node.js Version:** Ensure you have Node.js installed (LTS version recommended).
-2. **Emscripten:** Install _Emscripten 4.0.12_. This is required to compile the WebAssembly logic used in the application.
+1. **Node.js Version:** Ensure you have Node.js 24 installed.
+2. **Emscripten:** Install _Emscripten 7.0.1_. This is required to compile the WebAssembly logic used in the application.
 3. **Clone the Repository:**
 
 ```bash

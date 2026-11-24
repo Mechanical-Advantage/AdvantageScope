@@ -118,7 +118,8 @@ export default (cliArgs) => {
             "download",
             "youtube-dl-exec",
             "tesseract.js",
-            "lzma-native",
+            "@napi-rs/lzma",
+            "@napi-rs/lzma/xz",
             "@rev-robotics/revlog-converter"
           ]),
           bundle(["preload.ts"], true, false, ["electron"])

@@ -8,7 +8,7 @@
 import { exec } from "child_process";
 import fs from "fs";
 
-const EMSCRIPTEN_VERSION = "4.0.12";
+const EMSCRIPTEN_VERSION = "7.0.1";
 
 try {
   await new Promise(async (resolve, reject) => {

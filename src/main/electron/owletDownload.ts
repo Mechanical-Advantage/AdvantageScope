@@ -41,8 +41,6 @@ function getOwletPlatform(electronPlatform: string): string {
       return "linuxx86-64";
     case "linux-arm64":
       return "linuxarm64";
-    case "linux-armv7l":
-      return "linuxarm32";
     case "win-x64":
       return "windowsx86-64";
     case "win-arm64":

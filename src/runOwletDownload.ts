@@ -20,6 +20,5 @@ download("mac-x64");
 download("mac-arm64");
 download("linux-x64");
 download("linux-arm64");
-download("linux-armv7l");
 download("win-x64");
 download("win-arm64");
