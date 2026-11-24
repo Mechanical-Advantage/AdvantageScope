@@ -84,6 +84,10 @@ Zo publiceer je bijvoorbeeld een instelbaar getal met de klasse [`LoggedNetworkN
 LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNumber", 0.0);
 ```
 
+:::note
+Let op: sleutels moeten de voorloopslash bevatten (bijvoorbeeld `/Tuning/MyTunableNumber`, niet `Tuning/MyTunableNumber`).
+:::
+
 :::warning
 De subtabel `NetworkInputs` **kun je niet bewerken**, omdat AdvantageKit die gebruikt om netwerkwaarden vast te leggen voor logging en replay. Gebruik daarom de tabel `Tuning` als je live netwerkinvoer wilt aanpassen.
 :::

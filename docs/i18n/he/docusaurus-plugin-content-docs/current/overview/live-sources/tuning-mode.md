@@ -84,6 +84,10 @@ bool_val = tunable_boolean.get()
 LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNumber", 0.0);
 ```
 
+:::note
+שימו לב שהמפתחות חייבים לכלול את הלוכסן המוביל (לדוגמה `/Tuning/MyTunableNumber`, ולא `Tuning/MyTunableNumber`).
+:::
+
 :::warning
 תת-הטבלה `NetworkInputs` **אינה ניתנת לעריכה**, כי AdvantageKit משתמשת בה כדי להקליט ערכי רשת לצורך שמירת יומן ושחזור (Replay). כדי לשנות ערכים בזמן אמת, השתמשו בטבלה `Tuning`.
 :::

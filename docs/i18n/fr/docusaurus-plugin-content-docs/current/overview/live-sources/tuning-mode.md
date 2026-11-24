@@ -84,6 +84,10 @@ Par exemple, vous pouvez créer un nombre réglable avec la classe [`LoggedNetwo
 LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNumber", 0.0);
 ```
 
+:::note
+Notez que les clés doivent inclure le slash initial (par exemple `/Tuning/MyTunableNumber`, et non `Tuning/MyTunableNumber`).
+:::
+
 :::warning
 La sous-table `NetworkInputs` **ne peut pas être modifiée**, car AdvantageKit l'utilise pour enregistrer les entrées réseau en vue de la journalisation et de la relecture. Utilisez toujours la table `Tuning` pour ajuster des paramètres en temps réel.
 :::

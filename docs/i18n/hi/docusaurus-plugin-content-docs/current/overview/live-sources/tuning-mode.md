@@ -84,6 +84,10 @@ AdvantageKit द्वारा `AdvantageKit` सब-टेबल में प
 LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNumber", 0.0);
 ```
 
+:::note
+ध्यान दें कि कीज़ में शुरुआती स्लैश शामिल होना आवश्यक है (उदाहरण के लिए `/Tuning/MyTunableNumber`, न कि `Tuning/MyTunableNumber`)।
+:::
+
 :::warning
 `NetworkInputs` सब-टेबल को **बदला नहीं जा सकता**, क्योंकि AdvantageKit इसका उपयोग लॉगिंग और रीप्ले के लिए नेटवर्क मान रिकॉर्ड करने में करता है। रीयल-टाइम में नेटवर्क इनपुट्स के साथ काम करने के लिए `Tuning` टेबल का उपयोग करें।
 :::

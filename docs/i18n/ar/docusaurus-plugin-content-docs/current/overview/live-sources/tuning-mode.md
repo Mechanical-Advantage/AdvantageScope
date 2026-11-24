@@ -84,6 +84,10 @@ bool_val = tunable_boolean.get()
 LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNumber", 0.0);
 ```
 
+:::note
+لاحظ أن المفاتيح يجب أن تتضمن الشرطة المائلة البادئة (مثل `/Tuning/MyTunableNumber` وليس `Tuning/MyTunableNumber`).
+:::
+
 :::warning
 **لا يمكن تعديل** الجدول الفرعي `NetworkInputs`، إذ يستخدمه AdvantageKit لتسجيل قيم الشبكة لأغراض التسجيل وإعادة التشغيل. استخدم جدول `Tuning` للتفاعل مع مدخلات الشبكة في الوقت الفعلي.
 :::

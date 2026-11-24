@@ -84,6 +84,10 @@ AdvantageKit арқылы `AdvantageKit` ішкі кестесіне жария�
 LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNumber", 0.0);
 ```
 
+:::note
+Кілттерде бастапқы қиғаш сызық болуы керек екенін ескеріңіз (мысалы, `Tuning/MyTunableNumber` емес, `/Tuning/MyTunableNumber`).
+:::
+
 :::warning
 `NetworkInputs` ішкі кестесін **өңдеуге болмайды**, өйткені оны AdvantageKit журналдау және қайта ойнату үшін желілік мәндерді жазуға пайдаланады. Нақты уақытта желілік енгізулермен өзара әрекеттесу үшін `Tuning` кестесін пайдаланыңыз.
 :::

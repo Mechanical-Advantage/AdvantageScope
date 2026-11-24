@@ -84,6 +84,10 @@ For example, a tunable number can be published using the [`LoggedNetworkNumber`]
 LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNumber", 0.0);
 ```
 
+:::note
+Note that keys must include the leading slash (e.g. `/Tuning/MyTunableNumber`, not `Tuning/MyTunableNumber`).
+:::
+
 :::warning
 The `NetworkInputs` subtable **cannot be edited**, since it is used by AdvantageKit to record network values for logging and replay. Use the `Tuning` table to interact with network inputs in real time.
 :::

@@ -84,6 +84,10 @@ De exemplu, un număr ajustabil poate fi publicat folosind clasa [`LoggedNetwork
 LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNumber", 0.0);
 ```
 
+:::note
+Reține că cheile trebuie să includă bara oblică de la început (de exemplu `/Tuning/MyTunableNumber`, nu `Tuning/MyTunableNumber`).
+:::
+
 :::warning
 Subtabelul `NetworkInputs` **nu poate fi editat**, deoarece este folosit de AdvantageKit pentru a înregistra valori de rețea pentru logare și reluare. Folosește tabelul `Tuning` pentru a interacționa cu intrările de rețea în timp real.
 :::

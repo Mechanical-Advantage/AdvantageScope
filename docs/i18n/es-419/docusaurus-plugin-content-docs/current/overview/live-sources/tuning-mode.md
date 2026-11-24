@@ -84,6 +84,10 @@ Por ejemplo, puedes publicar un número ajustable con la clase [`LoggedNetworkNu
 LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNumber", 0.0);
 ```
 
+:::note
+Ten en cuenta que las claves deben incluir la barra inicial (por ejemplo, `/Tuning/MyTunableNumber`, no `Tuning/MyTunableNumber`).
+:::
+
 :::warning
 La subtabla `NetworkInputs` **no se puede editar**, ya que AdvantageKit la usa para guardar las entradas de red y poder reproducirlas después. Usa la tabla `Tuning` para interactuar con entradas en tiempo real.
 :::

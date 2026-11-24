@@ -84,6 +84,10 @@ bool_val = tunable_boolean.get()
 LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNumber", 0.0);
 ```
 
+:::note
+Обратите внимание, что ключи должны начинаться с ведущего слеша (например, `/Tuning/MyTunableNumber`, а не `Tuning/MyTunableNumber`).
+:::
+
 :::warning
 Подтаблица `NetworkInputs` **не может редактироваться**, так как она используется AdvantageKit для записи сетевых значений для логирования и воспроизведения. Для взаимодействия с сетевыми входными параметрами в реальном времени используйте таблицу `Tuning`.
 :::

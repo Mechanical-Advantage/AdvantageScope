@@ -84,6 +84,10 @@ AdvantageKit 发布到 `AdvantageKit` 子表的字段均为只读输出，无法
 LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNumber", 0.0);
 ```
 
+:::note
+请注意，键名必须包含前导斜杠（例如 `/Tuning/MyTunableNumber`，而不是 `Tuning/MyTunableNumber`）。
+:::
+
 :::warning
 `NetworkInputs` 子表**不可编辑**，因为它专门用于 AdvantageKit 记录网络输入以供日志保存与重放。如需实时调整网络输入参数，请使用 `Tuning` 表。
 :::

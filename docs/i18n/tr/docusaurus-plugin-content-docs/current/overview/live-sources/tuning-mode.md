@@ -84,6 +84,10 @@ AdvantageKit'in `AdvantageKit` alt tablosuna yayınladığı alanlar yalnızca �
 LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNumber", 0.0);
 ```
 
+:::note
+Anahtarların baştaki eğik çizgiyi içermesi gerektiğini unutmayın (örneğin `Tuning/MyTunableNumber` değil, `/Tuning/MyTunableNumber`).
+:::
+
 :::warning
 `NetworkInputs` alt tablosu **düzenlenemez**; çünkü AdvantageKit bu tabloyu loglama ve yeniden oynatma amacıyla ağ değerlerini kaydetmek için kullanır. Ağ girdileriyle gerçek zamanlı etkileşim kurmak için `Tuning` tablosunu kullanın.
 :::

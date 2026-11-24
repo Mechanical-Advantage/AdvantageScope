@@ -84,6 +84,10 @@ bool_val = tunable_boolean.get()
 LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNumber", 0.0);
 ```
 
+:::note
+請注意，鍵名必須包含前導斜線（例如 `/Tuning/MyTunableNumber`，而非 `Tuning/MyTunableNumber`）。
+:::
+
 :::warning
 `NetworkInputs` 子表格**無法編輯**，因為 AdvantageKit 會用它來記錄網路輸入以供日誌儲存與重播。若要與網路輸入進行即時互動，請使用 `Tuning` 表格。
 :::
