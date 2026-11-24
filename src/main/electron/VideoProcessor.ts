@@ -692,10 +692,10 @@ export class VideoProcessor {
             },
             window
           );
-          return (output as string).trim() || "Unknown Video";
+          return (output as string).trim() || t("main.video.unknownVideo");
         } catch (e) {
           if (String(e) === "Error: Python missing") throw e; // Stop immediately if python is missing
-          return "Unknown Video";
+          return t("main.video.unknownVideo");
         }
       });
 

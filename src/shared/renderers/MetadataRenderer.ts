@@ -86,7 +86,7 @@ export default class MetadataRenderer implements TabRenderer {
           if (value !== null) {
             cell.innerText = value;
           } else {
-            cell.innerText = "NA";
+            cell.innerText = t("hub.metadata.notAvailable");
             cell.classList.add("no-data");
           }
           visibleTypesIdx++;

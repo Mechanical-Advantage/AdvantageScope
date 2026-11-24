@@ -120,14 +120,19 @@ let dragData: any = null;
 // WINDOW UTILITIES
 
 function setWindowTitle(name: string, status?: string) {
-  let title =
-    "\u2066" +
-    htmlEncode(name) +
-    "\u2069" +
-    (status ? " (" + htmlEncode(status) + ")" : "") +
-    " &mdash; AdvantageScope" +
-    (IS_LITE ? " Lite" : "") +
-    (DISTRIBUTION === Distribution.LiteDS ? " (DS)" : "");
+  let appTitle =
+    DISTRIBUTION === Distribution.LiteDS ? t("hub.titleLiteDs") : IS_LITE ? t("hub.titleLite") : t("hub.title");
+  let isolatedName = "\u2066" + htmlEncode(name) + "\u2069";
+  let title = status
+    ? t("hub.titleWithStatus", {
+        name: isolatedName,
+        status: htmlEncode(status),
+        app: htmlEncode(appTitle)
+      })
+    : t("hub.titleWithName", {
+        name: isolatedName,
+        app: htmlEncode(appTitle)
+      });
   document.getElementsByTagName("title")[0].innerHTML = title;
   document.getElementsByClassName("title-bar-text")[0].innerHTML = title;
 }
@@ -374,7 +379,7 @@ function startHistorical(path: string, clear = true, merge = false) {
         let components = historicalSources[0].path.split(window.platform === "win32" ? "\\" : "/");
         logFriendlyName = components[components.length - 1];
       } else {
-        logFriendlyName = historicalSources.length.toLocaleString(undefined, { useGrouping: false }) + " Log Files";
+        logFriendlyName = t("hub.logs.multipleFiles", { count: historicalSources.length });
       }
       switch (status) {
         case HistoricalDataSourceStatus.Reading:
@@ -641,8 +646,8 @@ async function handleMainMessage(message: NamedMessage) {
         }
         if (newHasFailed && !oldHadFailed) {
           window.sendMainMessage("error", {
-            title: "Failed to load assets",
-            content: "Some asset files failed to load. Check the developer console for details."
+            title: t("hub.assets.loadFailedTitle"),
+            content: t("hub.assets.loadFailedContent")
           });
         }
         if (!newHasFailed && oldHadFailed) {

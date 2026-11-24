@@ -335,7 +335,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         if (extension.includes("/") || extension.includes("\\") || extension.includes("..")) {
           sendMessage(window, "historical-data", {
             files: [null],
-            error: "Invalid log extension",
+            error: t("main.logs.invalidExtension"),
             uuid: uuid
           });
           break;
@@ -811,7 +811,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       Array(0.25, 0.5, 1, 1.5, 2, 4, 8).forEach((value) => {
         playbackOptionsMenu.append(
           new MenuItem({
-            label: (value * 100).toString() + "%",
+            label: value.toLocaleString(lang, { style: "percent" }),
             type: "checkbox",
             checked: value === message.data.speed,
             click() {
@@ -2094,25 +2094,16 @@ function downloadSave(files: string[]) {
                       let message: string;
                       let newCount = completeCount - skipCount;
                       if (skipCount > 0) {
-                        message =
-                          "Saved " +
-                          newCount.toString() +
-                          " new log" +
-                          (newCount === 1 ? "" : "s") +
-                          " (" +
-                          skipCount.toString() +
-                          " skipped) to <u>" +
-                          savePath +
-                          "</u>";
+                        message = t("download.alertSavedSkipped", {
+                          count: newCount,
+                          skipped: skipCount,
+                          path: savePath
+                        });
                       } else {
-                        message =
-                          "Saved " +
-                          completeCount.toString() +
-                          " log" +
-                          (completeCount === 1 ? "" : "s") +
-                          " to <u>" +
-                          savePath +
-                          "</u>";
+                        message = t("download.alertSaved", {
+                          count: completeCount,
+                          path: savePath
+                        });
                       }
                       if (!downloadWindow) return;
                       sendMessage(downloadWindow, "set-progress", 1);
@@ -2793,7 +2784,10 @@ function createAboutWindow() {
       title: t("menu.app.aboutTitle"),
       message: "AdvantageScope",
       detail: COPYRIGHT + "\n\n" + detail,
-      buttons: ["Close", process.platform === "win32" ? "Copy and Close" : "Copy & Close"],
+      buttons: [
+        t("main.buttons.close"),
+        process.platform === "win32" ? t("main.buttons.copyCloseWin") : t("main.buttons.copyCloseMac")
+      ],
       defaultId: 0,
       icon: WINDOW_ICON
     })

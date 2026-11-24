@@ -213,7 +213,10 @@ export default class StatisticsRenderer implements TabRenderer {
         const x = item.parsed.x!;
         const min = x - command.stepSize / 2;
         const max = x + command.stepSize / 2;
-        return formatNumber(cleanFloat(min)) + " to " + formatNumber(cleanFloat(max));
+        return t("hub.statistics.histogramRange", {
+          min: formatNumber(cleanFloat(min)),
+          max: formatNumber(cleanFloat(max))
+        });
       };
       this.histogram.update();
     }

@@ -17,7 +17,7 @@ const REQUIRED_SPACE_GB = 8;
 const FAILURE_TIMEOUT_MS = 30 * 1000; // 30 seconds
 const SUCCESS_TIMEOUT_MS = 6 * 60 * 60 * 1000; // 6 hours
 
-let statusText = "No status available.";
+let statusText: string | null = null;
 
 /** Updates the local set of automatic assets and retries periodically in case of network issues. */
 export async function startAssetDownloadLoop(updateCallback: () => Promise<void>) {
@@ -54,7 +54,7 @@ export async function startAssetDownloadLoop(updateCallback: () => Promise<void>
 
 /** Returns a string for the current status of the download. */
 export function getAssetDownloadStatus() {
-  return statusText;
+  return statusText ?? t("main.assets.noStatus");
 }
 
 interface AssetDownloadInfo {

@@ -719,7 +719,7 @@ export default class LineGraphController implements TabController {
         discreteFieldsCommand.push({
           timestamps: timestamps,
           values: values,
-          color: colorMap["Disabled"], // fallback color
+          color: colorMap[t("hub.lineGraph.robotMode.disabled")], // fallback color
           colorMap: colorMap,
           type: "stripes",
           toggleReference: false

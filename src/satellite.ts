@@ -152,9 +152,10 @@ window.addEventListener("message", (event) => {
             const windowTitleSuffix = t("satellite.title");
             titleElement.innerHTML =
               (type !== null ? getTabIcon(type) + " " : "") +
-              htmlEncode(newTitle) +
-              " — " +
-              htmlEncode(windowTitleSuffix);
+              t("satellite.windowTitle", {
+                title: htmlEncode(newTitle),
+                app: htmlEncode(windowTitleSuffix)
+              });
             title = newTitle;
           }
 

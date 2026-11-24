@@ -580,7 +580,7 @@ async function handleHubMessage(message: NamedMessage) {
     case "open-app-menu":
       {
         let menuItems: (MenuItem | Submenu | "-")[] = [];
-        const modifier = KeyboardUtil.isMac() ? "⌘" : "Ctrl";
+        const modifier = KeyboardUtil.isMac() ? "⌘" : t("menu.keys.ctrl");
         switch (message.data.index) {
           case 0:
             {
@@ -734,20 +734,20 @@ async function handleHubMessage(message: NamedMessage) {
             // View menu
             menuItems = [
               {
-                content: t("menu.lineGraph.zoomEnabled") + ` (${modifier} \\ )`,
+                content: t("menu.lineGraph.zoomEnabledShortcut", { shortcut: `${modifier} \\ ` }),
                 callback() {
                   sendMessage(hubPort, "zoom-enabled");
                 }
               },
               "-",
               {
-                content: t("menu.view.toggleSidebar") + ` (${modifier} . )`,
+                content: t("menu.view.toggleSidebarShortcut", { shortcut: `${modifier} . ` }),
                 callback() {
                   sendMessage(hubPort, "toggle-sidebar");
                 }
               },
               {
-                content: t("menu.view.toggleControls") + ` (${modifier} / )`,
+                content: t("menu.view.toggleControlsShortcut", { shortcut: `${modifier} / ` }),
                 callback() {
                   sendMessage(hubPort, "toggle-controls");
                 }
@@ -765,9 +765,13 @@ async function handleHubMessage(message: NamedMessage) {
                   .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
                   .map((tabType) => {
                     return {
-                      content: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)} (${getTabAccelerator(
-                        tabType
-                      ).replace("Alt+", KeyboardUtil.isMac() ? "⌥ " : "Alt+")})`,
+                      content: t("menu.tabs.tabShortcut", {
+                        tab: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)}`,
+                        shortcut: getTabAccelerator(tabType).replace(
+                          "Alt+",
+                          KeyboardUtil.isMac() ? "⌥ " : `${t("menu.keys.alt")}+`
+                        )
+                      }),
                       callback() {
                         sendMessage(hubPort, "new-tab", tabType);
                       }
@@ -888,7 +892,7 @@ async function handleHubMessage(message: NamedMessage) {
       let menuItems: (MenuItem | Submenu | "-")[] = [];
       Array(0.25, 0.5, 1, 1.5, 2, 4, 8).forEach((value) => {
         menuItems.push({
-          content: (value === message.data.speed ? "\u2714 " : "") + (value * 100).toString() + "%",
+          content: (value === message.data.speed ? "\u2714 " : "") + value.toLocaleString(lang, { style: "percent" }),
           callback() {
             sendMessage(hubPort, "set-playback-options", { speed: value, looping: message.data.looping });
           }
@@ -912,10 +916,13 @@ async function handleHubMessage(message: NamedMessage) {
           .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
           .map((tabType) => {
             return {
-              content: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)} (${getTabAccelerator(tabType).replace(
-                "Alt+",
-                KeyboardUtil.isMac() ? "⌥ " : "Alt+"
-              )})`,
+              content: t("menu.tabs.tabShortcut", {
+                tab: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)}`,
+                shortcut: getTabAccelerator(tabType).replace(
+                  "Alt+",
+                  KeyboardUtil.isMac() ? "⌥ " : `${t("menu.keys.alt")}+`
+                )
+              }),
               callback() {
                 sendMessage(hubPort, "new-tab", tabType);
               }
@@ -1581,7 +1588,7 @@ function processKeydown(event: KeyboardEvent): boolean {
 window.addEventListener("load", () => {
   // Set tab title
   if (DISTRIBUTION === Distribution.LiteDS) {
-    document.title = "AdvantageScope Lite (DS)";
+    document.title = t("hub.titleLiteDs");
   }
 
   // Load assets

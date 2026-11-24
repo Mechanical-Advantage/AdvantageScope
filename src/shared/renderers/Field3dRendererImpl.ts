@@ -1002,7 +1002,9 @@ export default class Field3dRendererImpl implements TabRenderer {
       } else {
         this.alert.hidden = this.primaryRobotGroup.visible || this.fixedCameraOverrideObj.visible;
         this.alert.innerHTML = t("hub.field.cameraAlert", {
-          name: robotConfig ? robotConfig.cameras[this.cameraIndex].name : "???"
+          name: robotConfig
+            ? getAssetName(robotConfig.cameras[this.cameraIndex], window.lang)
+            : t("hub.field.cameraUnknown")
         });
       }
 

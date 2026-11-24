@@ -29,6 +29,8 @@ download:
   sizeValue: "（{{size}} MB）"
   alertSelectLog: "请选择要下载的日志。"
   alertNoNewLogs: "未找到新日志。"
+  alertSaved: "已将 {{count}} 个日志保存至 <u>{{path}}</u>"
+  alertSavedSkipped: "已将 {{count}} 个新日志（已跳过 {{skipped}} 个）保存至 <u>{{path}}</u>"
 
 editFov:
   title: "编辑视野 — AdvantageScope"
@@ -141,6 +143,7 @@ renameTab:
 
 satellite:
   title: "AdvantageScope"
+  windowTitle: "{{title}} — {{app}}"
   metadataNone: "未找到元数据。请参阅文档以了解元数据发布的详细信息。"
   tableDelete: "从视图中移除"
   tableJumpTitle: "跳转到时间戳"
@@ -213,6 +216,7 @@ xrControls:
   showRobotsTitle: "显示/隐藏机器人模型"
 
 tabs:
+  documentation: "文档"
   console: "控制台"
   joysticks: "控制器"
   lineGraph: "折线图"
@@ -243,10 +247,13 @@ sourceList:
   infos: "{{count}} 条信息"
   alerts: "{{errors}}，{{warnings}}，{{infos}}"
   values: "{{count}} 个值"
+  arrayListSeparator: "，"
+  arraySummary: "{{count}} — {{values}}"
   toggleVisibility: "显示/隐藏字段"
   hideField: "隐藏字段"
   showField: "显示字段"
   typeName: "{{name}}："
+  typeNameSeparator: "/"
   previews:
     moduleVelocities: "ν：{{speed}}，θ：{{angle}}"
     robotVelocities: "νx：{{vx}}，νy：{{vy}}，Ω：{{omega}}"
@@ -288,6 +295,10 @@ licenses:
 
 hub:
   title: "AdvantageScope"
+  titleLite: "AdvantageScope Lite"
+  titleLiteDs: "AdvantageScope Lite (DS)"
+  titleWithName: "{{name}} — {{app}}"
+  titleWithStatus: "{{name}} ({{status}}) — {{app}}"
   updateAvailable: "有可用更新"
   shareFeedback: "分享反馈"
   timelineScrollToZoom: "滚动时间轴以缩放"
@@ -302,6 +313,11 @@ hub:
     waitExport: "请等待导出完成，然后重试。"
     cannotInsertTitle: "无法插入文件"
     noLogsLoaded: "当前未加载任何日志文件。选择“打开日志”以加载新文件。"
+    multipleFiles: "{{count}} 个日志文件"
+
+  assets:
+    loadFailedTitle: "加载资源失败"
+    loadFailedContent: "部分资源文件加载失败。请查看开发者控制台以了解详细信息。"
 
   live:
     statusSearching: "搜索中"
@@ -343,6 +359,7 @@ hub:
     searchPlaceholder: "搜索"
     searchTitle: "搜索字段"
     tuningTitle: "开启或关闭调参模式"
+    setValueTitle: "设置值"
     fields: "{{count}} 个字段"
     titleSeconds: "{{fields}}，{{duration}} 秒"
     titleMinutes: "{{fields}}，{{duration}} 分钟"
@@ -357,6 +374,7 @@ hub:
     selectTitle3d: "选择场地模型"
     dsAlert: "操控站位置<br>不可用。"
     cameraAlert: "相机“{{name}}”的<br>机器人位姿不可用。"
+    cameraUnknown: "???"
     frc: "FRC 场地"
     ftc: "FTC 场地"
     sourceTitle: "打开场地图像源 URL"
@@ -403,6 +421,7 @@ hub:
     optionValues:
       off: "关"
       on: "开"
+      gamePiece_variant_None: "无"
       robot_bumpers_: "联盟颜色"
       radians: "弧度"
       degrees: "度"
@@ -506,6 +525,7 @@ hub:
     dataRangeMax: "直方图最大值"
     stepSize: "组距"
     stepSizeTitle: "直方图组距"
+    histogramRange: "{{min}} 至 {{max}}"
 
   video:
     local: "打开本地视频文件"
@@ -607,6 +627,7 @@ hub:
     value: "值"
     real: "原始运行"
     replay: "重放"
+    notAvailable: "不适用"
 
   console:
     exportLog: "导出控制台日志"
@@ -622,6 +643,7 @@ hub:
       table: "表格"
 
 xrClient:
+  title: "XR 客户端 — AdvantageScope XR"
   miniature:
     placeRedFRC: "点击以放置红方联盟墙。"
     placeBlueFRC: "点击以放置蓝方联盟墙。"
@@ -721,7 +743,9 @@ menu:
 
   view:
     toggleSidebar: "显示/隐藏侧边栏"
+    toggleSidebarShortcut: "显示/隐藏侧边栏 ({{shortcut}})"
     toggleControls: "显示/隐藏控制面板"
+    toggleControlsShortcut: "显示/隐藏控制面板 ({{shortcut}})"
     resetLayout: "重置布局"
     loopVisible: "循环可见范围"
     showRobotMode: "显示机器人模式"
@@ -747,7 +771,12 @@ menu:
     closeTab: "关闭选项卡"
     closeTabShortcut: "关闭选项卡 ({{shortcut}})"
     newTabShortcut: "新建选项卡（快捷键）"
+    tabShortcut: "{{tab}} ({{shortcut}})"
     renameTab: "重命名选项卡"
+
+  keys:
+    ctrl: "Ctrl"
+    alt: "Alt"
 
   window:
     heading: "窗口"
@@ -782,6 +811,7 @@ menu:
     disableAutoUnits: "禁用自动单位"
     resetUnits: "重置单位"
     zoomEnabled: "缩放至启用范围"
+    zoomEnabledShortcut: "缩放至启用范围 ({{shortcut}})"
     differentiate: "求导"
     integrate: "积分"
 
@@ -818,6 +848,7 @@ main:
     restartTitle: "重新启动 AdvantageScope？"
 
   assets:
+    noStatus: "暂无状态信息。"
     downloadStarted: "下载已于 {{time}} 开始，请等待几分钟直至完成。"
     downloadFinished: "所有资源已下载。AdvantageScope 将定期检查更新。"
     connectFailed: "无法连接到 GitHub，请稍后重试。"
@@ -825,6 +856,7 @@ main:
     readme: "此文件夹包含 2D 场地、3D 场地和控制器视图的额外资源。如需了解更多信息，请参阅 AdvantageScope 文档（可通过应用内的文档选项卡或下方链接访问）。"
 
   owlet:
+    noStatus: "暂无状态信息。"
     upToDate: "Owlet 是最新的。AdvantageScope 将定期检查更新。"
     offlineCache: "正在使用离线 Owlet 缓存，稍后将检查更新。"
     noDiskSpace: "磁盘空间不足，请稍后重试。"
@@ -911,6 +943,7 @@ main:
     openDsInThisWindow: "在此窗口中打开"
     unsupportedFormatLite: "AdvantageScope Lite 不支持的文件格式。"
     decompressFailed: "解压 WPILOG 文件失败。"
+    invalidExtension: "无效的日志扩展名"
     limitedSignals: "可用信号有限"
     limitedSignalsDetail: "此日志文件仅包含部分 Phoenix 设备信号。详情请参阅 Phoenix 文档。"
 
@@ -943,6 +976,7 @@ main:
     tbaFailedDetail: "在 The Blue Alliance 上查找比赛视频时遇到问题。请检查你的 API 密钥，或改用 YouTube URL 或本地文件加载视频。"
     openTitle: "选择要打开的视频"
     filter: "视频"
+    unknownVideo: "未知视频"
 
   warnings:
     error: "错误"

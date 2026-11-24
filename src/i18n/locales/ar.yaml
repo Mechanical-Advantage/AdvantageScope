@@ -29,6 +29,18 @@ download:
   sizeValue: "({{size}} ميجابايت)"
   alertSelectLog: "يرجى تحديد سجل لتنزيله."
   alertNoNewLogs: "لم يتم العثور على سجلات جديدة."
+  alertSaved_zero: "تم حفظ {{count}} سجل في <u>{{path}}</u>"
+  alertSaved_one: "تم حفظ {{count}} سجل في <u>{{path}}</u>"
+  alertSaved_two: "تم حفظ {{count}} سجلان في <u>{{path}}</u>"
+  alertSaved_few: "تم حفظ {{count}} سجلات في <u>{{path}}</u>"
+  alertSaved_many: "تم حفظ {{count}} سجلاً في <u>{{path}}</u>"
+  alertSaved_other: "تم حفظ {{count}} سجل في <u>{{path}}</u>"
+  alertSavedSkipped_zero: "تم حفظ {{count}} سجل جديد (تم تخطي {{skipped}}) في <u>{{path}}</u>"
+  alertSavedSkipped_one: "تم حفظ {{count}} سجل جديد (تم تخطي {{skipped}}) في <u>{{path}}</u>"
+  alertSavedSkipped_two: "تم حفظ {{count}} سجلان جديدان (تم تخطي {{skipped}}) في <u>{{path}}</u>"
+  alertSavedSkipped_few: "تم حفظ {{count}} سجلات جديدة (تم تخطي {{skipped}}) في <u>{{path}}</u>"
+  alertSavedSkipped_many: "تم حفظ {{count}} سجلاً جديدًا (تم تخطي {{skipped}}) في <u>{{path}}</u>"
+  alertSavedSkipped_other: "تم حفظ {{count}} سجل جديد (تم تخطي {{skipped}}) في <u>{{path}}</u>"
 
 editFov:
   title: "تعديل FOV — AdvantageScope"
@@ -141,6 +153,7 @@ renameTab:
 
 satellite:
   title: "AdvantageScope"
+  windowTitle: "{{title}} — {{app}}"
   metadataNone: "لم يتم العثور على بيانات وصفية. راجع الوثائق للحصول على تفاصيل حول نشر البيانات الوصفية."
   tableDelete: "إزالة من العرض"
   tableJumpTitle: "الانتقال إلى الطابع الزمني"
@@ -218,6 +231,7 @@ xrControls:
   showRobotsTitle: "إظهار/إخفاء نماذج الروبوتات"
 
 tabs:
+  documentation: "الوثائق"
   console: "وحدة التحكم"
   joysticks: "أذرع التحكم"
   lineGraph: "رسم بياني خطي"
@@ -273,10 +287,13 @@ sourceList:
   values_few: "{{count}} قيم"
   values_many: "{{count}} قيمة"
   values_other: "{{count}} قيمة"
+  arrayListSeparator: "، "
+  arraySummary: "{{count}} — {{values}}"
   toggleVisibility: "إظهار/إخفاء الحقل"
   hideField: "إخفاء الحقل"
   showField: "إظهار الحقل"
   typeName: "{{name}}:"
+  typeNameSeparator: "/"
   previews:
     moduleVelocities: "ν: {{speed}}، θ: {{angle}}"
     robotVelocities: "νx: {{vx}}، νy: {{vy}}، Ω: {{omega}}"
@@ -318,6 +335,10 @@ licenses:
 
 hub:
   title: "AdvantageScope"
+  titleLite: "AdvantageScope Lite"
+  titleLiteDs: "AdvantageScope Lite (DS)"
+  titleWithName: "{{name}} — {{app}}"
+  titleWithStatus: "{{name}} ({{status}}) — {{app}}"
   updateAvailable: "تحديث متاح"
   shareFeedback: "مشاركة الملاحظات"
   timelineScrollToZoom: "مرّر على المخطط الزمني للتكبير/التصغير"
@@ -342,6 +363,16 @@ hub:
     cannotInsertTitle_many: "لا يمكن إدراج الملفات"
     cannotInsertTitle_other: "لا يمكن إدراج الملفات"
     noLogsLoaded: "لم يتم تحميل أي ملفات سجل حاليًا. اختر «فتح ملفات سجل...» لتحميل ملفات جديدة."
+    multipleFiles_zero: "{{count}} ملف سجل"
+    multipleFiles_one: "{{count}} ملف سجل"
+    multipleFiles_two: "{{count}} ملفا سجل"
+    multipleFiles_few: "{{count}} ملفات سجل"
+    multipleFiles_many: "{{count}} ملف سجل"
+    multipleFiles_other: "{{count}} ملف سجل"
+
+  assets:
+    loadFailedTitle: "فشل تحميل الأصول"
+    loadFailedContent: "فشل تحميل بعض ملفات الأصول. راجع وحدة تحكم المطور للحصول على التفاصيل."
 
   live:
     statusSearching: "جاري البحث"
@@ -383,6 +414,7 @@ hub:
     searchPlaceholder: "بحث"
     searchTitle: "بحث في الحقول"
     tuningTitle: "تشغيل/إيقاف وضع الضبط"
+    setValueTitle: "تعيين القيمة"
     fields_zero: "{{count}} حقل"
     fields_one: "{{count}} حقل"
     fields_two: "{{count}} حقلان"
@@ -417,6 +449,7 @@ hub:
     selectTitle3d: "تحديد نموذج الملعب"
     dsAlert: "موقع محطة السائق<br>غير متوفر."
     cameraAlert: "وضعية الروبوت غير متوفرة<br>للكاميرا «{{name}}»."
+    cameraUnknown: "???"
     frc: "ملاعب FRC"
     ftc: "ملاعب FTC"
     sourceTitle: "فتح عنوان URL لمصدر صورة الملعب"
@@ -463,6 +496,7 @@ hub:
     optionValues:
       off: "إيقاف"
       on: "تشغيل"
+      gamePiece_variant_None: "لا يوجد"
       robot_bumpers_: "لون التحالف"
       radians: "راديان"
       degrees: "درجات"
@@ -566,6 +600,7 @@ hub:
     dataRangeMax: "الحد الأقصى لقيمة المدرج التكراري"
     stepSize: "حجم الخطوة"
     stepSizeTitle: "حجم خطوة المدرج التكراري"
+    histogramRange: "{{min}} إلى {{max}}"
 
   video:
     local: "فتح ملف فيديو محلي"
@@ -667,6 +702,7 @@ hub:
     value: "القيمة"
     real: "حقيقي"
     replay: "إعادة"
+    notAvailable: "غير متوفر"
 
   console:
     exportLog: "تصدير سجل وحدة التحكم"
@@ -674,6 +710,7 @@ hub:
     addConsoleData: "يرجى إضافة حقل يحتوي على بيانات وحدة التحكم، ثم المحاولة مرة أخرى."
 
 xrClient:
+  title: "عميل XR — AdvantageScope XR"
   miniature:
     placeRedFRC: "انقر لوضع جدار التحالف الأحمر."
     placeBlueFRC: "انقر لوضع جدار التحالف الأزرق."
@@ -773,7 +810,9 @@ menu:
 
   view:
     toggleSidebar: "إظهار/إخفاء الشريط الجانبي"
+    toggleSidebarShortcut: "إظهار/إخفاء الشريط الجانبي ({{shortcut}})"
     toggleControls: "إظهار/إخفاء عناصر التحكم"
+    toggleControlsShortcut: "إظهار/إخفاء عناصر التحكم ({{shortcut}})"
     resetLayout: "إعادة تعيين التخطيط"
     loopVisible: "تكرار النطاق المرئي"
     showRobotMode: "إظهار وضع الروبوت"
@@ -799,7 +838,12 @@ menu:
     closeTab: "إغلاق علامة التبويب"
     closeTabShortcut: "إغلاق علامة التبويب ({{shortcut}})"
     newTabShortcut: "علامة تبويب جديدة (اختصار)"
+    tabShortcut: "{{tab}} ({{shortcut}})"
     renameTab: "إعادة تسمية علامة التبويب"
+
+  keys:
+    ctrl: "Ctrl"
+    alt: "Alt"
 
   window:
     heading: "نافذة"
@@ -834,6 +878,7 @@ menu:
     disableAutoUnits: "تعطيل الوحدات التلقائية"
     resetUnits: "إعادة تعيين الوحدات"
     zoomEnabled: "تكبير إلى النطاق المُمكّن"
+    zoomEnabledShortcut: "تكبير إلى النطاق المُمكّن ({{shortcut}})"
     differentiate: "تفاضل"
     integrate: "تكامل"
 
@@ -870,6 +915,7 @@ main:
     restartTitle: "إعادة تشغيل AdvantageScope؟"
 
   assets:
+    noStatus: "لا توجد حالة متوفرة."
     downloadStarted: "بدأ التنزيل في {{time}}. يرجى الانتظار بضع دقائق حتى يكتمل التنزيل."
     downloadFinished: "تم تنزيل جميع الأصول. سيتحقق AdvantageScope من التحديثات بشكل دوري."
     connectFailed: "لا يمكن الاتصال بـ GitHub. سنحاول مرة أخرى قريبًا."
@@ -877,6 +923,7 @@ main:
     readme: "يحتوي هذا المجلد على أصول إضافية للملعب ثنائي الأبعاد، والملعب ثلاثي الأبعاد، وعروض أذرع التحكم. لمزيد من التفاصيل، راجع وثائق AdvantageScope (متوفرة من خلال علامة تبويب الوثائق في التطبيق أو عنوان URL أدناه)."
 
   owlet:
+    noStatus: "لا توجد حالة متوفرة."
     upToDate: "Owlet مُحدّث. سيتحقق AdvantageScope من التحديثات بشكل دوري."
     offlineCache: "استخدام ذاكرة التخزين المؤقت لـ Owlet دون اتصال. سيتم التحقق من التحديثات قريبًا."
     noDiskSpace: "لا توجد مساحة كافية على القرص. سنحاول مرة أخرى قريبًا."
@@ -963,6 +1010,7 @@ main:
     openDsInThisWindow: "فتح في هذه النافذة"
     unsupportedFormatLite: "تنسيق ملف غير مدعوم في AdvantageScope Lite."
     decompressFailed: "فشل فك ضغط ملف WPILOG."
+    invalidExtension: "امتداد سجل غير صالح"
     limitedSignals: "إشارات محدودة متاحة"
     limitedSignalsDetail: "يتضمن ملف السجل هذا عددًا محدودًا من الإشارات من أجهزة Phoenix. راجع وثائق Phoenix للحصول على التفاصيل."
 
@@ -995,6 +1043,7 @@ main:
     tbaFailedDetail: "حدثت مشكلة في العثور على فيديو المباراة على The Blue Alliance. يرجى التحقق من مفتاح واجهة برمجة التطبيقات الخاص بك، أو تحميل الفيديو باستخدام رابط YouTube أو ملف محلي بدلاً من ذلك."
     openTitle: "حدد مقطع فيديو لفتحه"
     filter: "مقاطع فيديو"
+    unknownVideo: "فيديو غير معروف"
 
   warnings:
     error: "خطأ"

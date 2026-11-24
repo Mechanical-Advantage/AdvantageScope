@@ -29,6 +29,8 @@ download:
   sizeValue: "({{size}} MB)"
   alertSelectLog: "Lütfen indirmek için bir log seçin."
   alertNoNewLogs: "Yeni log bulunamadı."
+  alertSaved: "{{count}} log <u>{{path}}</u> konumuna kaydedildi"
+  alertSavedSkipped: "{{count}} yeni log ({{skipped}} atlandı) <u>{{path}}</u> konumuna kaydedildi"
 
 editFov:
   title: "FOV düzenle — AdvantageScope"
@@ -141,6 +143,7 @@ renameTab:
 
 satellite:
   title: "AdvantageScope"
+  windowTitle: "{{title}} — {{app}}"
   metadataNone: "Üst veri bulunamadı. Üst veri yayınlama hakkında detaylar için belgelere bakın."
   tableDelete: "Görünümden kaldır"
   tableJumpTitle: "Zaman damgasına git"
@@ -214,6 +217,7 @@ xrControls:
   showRobotsTitle: "Robot modeli görünürlüğünü aç/kapat"
 
 tabs:
+  documentation: "Belgeler"
   console: "Konsol"
   joysticks: "Joystickler"
   lineGraph: "Çizgi grafik"
@@ -244,10 +248,13 @@ sourceList:
   infos: "{{count}} bilgi"
   alerts: "{{errors}}, {{warnings}}, {{infos}}"
   values: "{{count}} değer"
+  arrayListSeparator: ", "
+  arraySummary: "{{count}} — {{values}}"
   toggleVisibility: "Alan görünürlüğünü aç/kapat"
   hideField: "Alanı gizle"
   showField: "Alanı göster"
   typeName: "{{name}}:"
+  typeNameSeparator: "/"
   previews:
     moduleVelocities: "ν: {{speed}}, θ: {{angle}}"
     robotVelocities: "νx: {{vx}}, νy: {{vy}}, Ω: {{omega}}"
@@ -289,6 +296,10 @@ licenses:
 
 hub:
   title: "AdvantageScope"
+  titleLite: "AdvantageScope Lite"
+  titleLiteDs: "AdvantageScope Lite (DS)"
+  titleWithName: "{{name}} — {{app}}"
+  titleWithStatus: "{{name}} ({{status}}) — {{app}}"
   updateAvailable: "Güncelleme mevcut"
   shareFeedback: "Geri bildirim gönder"
   timelineScrollToZoom: "Yakınlaştırmak için zaman çizelgesini kaydırın"
@@ -305,6 +316,11 @@ hub:
     cannotInsertTitle_one: "Dosya eklenemiyor"
     cannotInsertTitle_other: "Dosyalar eklenemiyor"
     noLogsLoaded: "Şu anda yüklü log dosyası yok. Yeni dosyalar yüklemek için “Log aç” seçeneğini kullanın."
+    multipleFiles: "{{count}} log dosyası"
+
+  assets:
+    loadFailedTitle: "Varlıklar yüklenemedi"
+    loadFailedContent: "Bazı varlık dosyaları yüklenemedi. Detaylar için geliştirici konsolunu kontrol edin."
 
   live:
     statusSearching: "Aranıyor"
@@ -346,6 +362,7 @@ hub:
     searchPlaceholder: "Ara"
     searchTitle: "Alanları ara"
     tuningTitle: "Ayar modunu aç/kapat"
+    setValueTitle: "Değer ayarla"
     fields: "{{count}} alan"
     titleSeconds: "{{fields}}, {{duration}} saniye"
     titleMinutes: "{{fields}}, {{duration}} dakika"
@@ -360,6 +377,7 @@ hub:
     selectTitle3d: "Saha modelini seçin"
     dsAlert: "Sürücü İstasyonu konumu<br>kullanılamıyor."
     cameraAlert: "“{{name}}” kamerası için<br>robot pozu kullanılamıyor."
+    cameraUnknown: "???"
     frc: "FRC sahaları"
     ftc: "FTC sahaları"
     sourceTitle: "Saha resmi kaynak URL'sini aç"
@@ -406,6 +424,7 @@ hub:
     optionValues:
       off: "Kapalı"
       on: "Açık"
+      gamePiece_variant_None: "Yok"
       robot_bumpers_: "İttifak rengi"
       radians: "Radyan"
       degrees: "Derece"
@@ -509,6 +528,7 @@ hub:
     dataRangeMax: "Maksimum histogram değeri"
     stepSize: "Adım boyutu"
     stepSizeTitle: "Histogram adım boyutu"
+    histogramRange: "{{min}} ile {{max}} arası"
 
   video:
     local: "Yerel video dosyasını aç"
@@ -610,6 +630,7 @@ hub:
     value: "Değer"
     real: "Gerçek"
     replay: "Tekrar oynatma"
+    notAvailable: "Yok"
 
   console:
     exportLog: "Konsol logunu dışa aktar"
@@ -617,6 +638,7 @@ hub:
     addConsoleData: "Lütfen konsol verisi içeren bir alan ekleyin, ardından tekrar deneyin."
 
 xrClient:
+  title: "XR istemcisi — AdvantageScope XR"
   miniature:
     placeRedFRC: "Kırmızı ittifak duvarını yerleştirmek için dokunun."
     placeBlueFRC: "Mavi ittifak duvarını yerleştirmek için dokunun."
@@ -717,7 +739,9 @@ menu:
 
   view:
     toggleSidebar: "Kenar çubuğunu aç/kapat"
+    toggleSidebarShortcut: "Kenar çubuğunu aç/kapat ({{shortcut}})"
     toggleControls: "Kontrolleri aç/kapat"
+    toggleControlsShortcut: "Kontrolleri aç/kapat ({{shortcut}})"
     resetLayout: "Düzeni sıfırla"
     loopVisible: "Görünür aralığı döngüye al"
     showRobotMode: "Robot modunu göster"
@@ -743,7 +767,12 @@ menu:
     closeTab: "Sekmeyi kapat"
     closeTabShortcut: "Sekmeyi kapat ({{shortcut}})"
     newTabShortcut: "Yeni sekme (kısayol)"
+    tabShortcut: "{{tab}} ({{shortcut}})"
     renameTab: "Sekmeyi yeniden adlandır"
+
+  keys:
+    ctrl: "Ctrl"
+    alt: "Alt"
 
   window:
     heading: "Pencere"
@@ -778,6 +807,7 @@ menu:
     disableAutoUnits: "Otomatik birimleri devre dışı bırak"
     resetUnits: "Birimleri sıfırla"
     zoomEnabled: "Etkin aralığa yakınlaştır"
+    zoomEnabledShortcut: "Etkin aralığa yakınlaştır ({{shortcut}})"
     differentiate: "Türevini al"
     integrate: "İntegralini al"
 
@@ -814,6 +844,7 @@ main:
     restartTitle: "AdvantageScope yeniden başlatılsın mı?"
 
   assets:
+    noStatus: "Durum bilgisi mevcut değil."
     downloadStarted: "İndirme saat {{time}} itibarıyla başlatıldı. İndirmenin tamamlanması için lütfen birkaç dakika bekleyin."
     downloadFinished: "Tüm varlıklar indirildi. AdvantageScope güncellemeleri periyodik olarak kontrol eder."
     connectFailed: "GitHub'a bağlanılamıyor. Yakında tekrar denenecek."
@@ -821,6 +852,7 @@ main:
     readme: "Bu klasör 2B saha, 3B saha ve joystick görünümleri için ekstra varlıklar içerir. Daha fazla detay için AdvantageScope belgelerine bakın (uygulamadaki belgeler sekmesi veya aşağıdaki URL aracılığıyla ulaşabilirsiniz)."
 
   owlet:
+    noStatus: "Durum bilgisi mevcut değil."
     upToDate: "Owlet güncel. AdvantageScope güncellemeleri periyodik olarak kontrol eder."
     offlineCache: "Çevrimdışı Owlet önbelleği kullanılıyor. Yakında güncellemeler kontrol edilecek."
     noDiskSpace: "Yeterli disk alanı yok. Yakında tekrar denenecek."
@@ -907,6 +939,7 @@ main:
     openDsInThisWindow: "Bu pencerede aç"
     unsupportedFormatLite: "AdvantageScope Lite'ta desteklenmeyen dosya formatı."
     decompressFailed: "WPILOG dosyasının sıkıştırması açılamadı."
+    invalidExtension: "Geçersiz log uzantısı"
     limitedSignals: "Sınırlı sinyal mevcut"
     limitedSignalsDetail: "Bu log dosyası Phoenix cihazlarından sınırlı sayıda sinyal içeriyor. Detaylar için Phoenix belgelerine bakın."
 
@@ -939,6 +972,7 @@ main:
     tbaFailedDetail: "The Blue Alliance'ta maç videosu bulunurken bir sorun oluştu. Lütfen API anahtarınızı kontrol edin ya da videoyu YouTube URL'si veya yerel bir dosya üzerinden yükleyin."
     openTitle: "Açılacak bir video seçin"
     filter: "Videolar"
+    unknownVideo: "Bilinmeyen video"
 
   warnings:
     error: "Hata"
