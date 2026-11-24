@@ -325,32 +325,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           break;
         }
 
-        if (extension === "revlog") {
-          let chunks: Buffer[] = [];
-          let writable = new Writable({
-            write(chunk, encoding, callback) {
-              chunks.push(chunk);
-              callback();
-            }
-          });
-          parseREVLOG(Buffer.from(data), writable)
-            .then(() => {
-              sendMessage(window, "historical-data", {
-                files: [Buffer.concat(chunks)],
-                error: null,
-                uuid: uuid
-              });
-            })
-            .catch((err: any) => {
-              sendMessage(window, "historical-data", {
-                files: [null],
-                error: err.message,
-                uuid: uuid
-              });
-            });
-          break;
-        }
-
         let tempPath = path.join(app.getPath("temp"), "child_" + createUUID() + "." + extension);
         fs.writeFile(tempPath, data, (err) => {
           if (!err) {
@@ -602,6 +576,56 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       }
       break;
 
+    case "frc-coordinate-system-warning":
+      {
+        let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+        if (prefs.skipFRCCoordinateSystemWarning) return;
+        dialog
+          .showMessageBox(window, {
+            type: "info",
+            title: "Alert",
+            message: "Legacy Coordinate System",
+            detail:
+              'This field uses a legacy coordinate system by default for compatibility with pre-2027 WPILib. If your robot code uses 2027 WPILib, you can change the "Coordinate System" option in the AdvantageScope preferences. See the documentation for details.',
+            buttons: ["OK"],
+            checkboxLabel: "Don't Show Again",
+            icon: WINDOW_ICON
+          })
+          .then((response) => {
+            if (response.checkboxChecked) {
+              prefs.skipFRCCoordinateSystemWarning = true;
+              jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+              sendAllPreferences();
+            }
+          });
+      }
+      break;
+
+    case "ftc-coordinate-system-warning":
+      {
+        let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+        if (prefs.skipFTCCoordinateSystemWarning) return;
+        dialog
+          .showMessageBox(window, {
+            type: "info",
+            title: "Alert",
+            message: "Systemcore Coordinate System",
+            detail:
+              'This field uses the Systemcore coordinate system by default. If your robot code uses the traditional FTC coordinate system, you can change the "Coordinate System" option in the AdvantageScope preferences. See the documentation for details.',
+            buttons: ["OK"],
+            checkboxLabel: "Don't Show Again",
+            icon: WINDOW_ICON
+          })
+          .then((response) => {
+            if (response.checkboxChecked) {
+              prefs.skipFTCCoordinateSystemWarning = true;
+              jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+              sendAllPreferences();
+            }
+          });
+      }
+      break;
+
     case "live-rlog-start":
       rlogSockets[windowId]?.destroy();
       rlogSockets[windowId] = net.createConnection({
@@ -690,6 +714,38 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           }
         })
       );
+      if (message.data.childLogKey && message.data.childLogExtension) {
+        const extension: string = message.data.childLogExtension;
+        let defaultName: string | undefined = undefined;
+        if (message.data.logFilename) {
+          let pathComponents = (message.data.logFilename as string).split(".");
+          if (pathComponents.length > 1) pathComponents.pop();
+          defaultName = pathComponents.join(".") + "." + extension;
+        }
+        fieldCopyMenu.append(new MenuItem({ type: "separator" }));
+        fieldCopyMenu.append(
+          new MenuItem({
+            label: "Export Original Log...",
+            click() {
+              dialog
+                .showSaveDialog(window, {
+                  title: "Select export location for the original log",
+                  defaultPath: defaultName,
+                  properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
+                  filters: [{ name: extension.toUpperCase() + " log", extensions: [extension] }]
+                })
+                .then((response) => {
+                  if (!response.canceled && response.filePath) {
+                    sendMessage(window, "export-child-log", {
+                      key: message.data.childLogKey,
+                      path: response.filePath
+                    });
+                  }
+                });
+            }
+          })
+        );
+      }
       fieldCopyMenu.popup({
         window: window,
         x: Math.round(message.data.position[0]),

@@ -120,6 +120,8 @@ window.addEventListener("message", (event) => {
             tbaApiKey: TBA_API_KEY.value,
             userAssetsFolder: oldPrefs.userAssetsFolder,
             skipHootNonProWarning: oldPrefs.skipHootNonProWarning,
+            skipFRCCoordinateSystemWarning: oldPrefs.skipFRCCoordinateSystemWarning,
+            skipFTCCoordinateSystemWarning: oldPrefs.skipFTCCoordinateSystemWarning,
             ctreLicenseAccepted: oldPrefs.ctreLicenseAccepted,
             systemcoreStaticAddress: oldPrefs.systemcoreStaticAddress,
             hasScrolledLineGraph: oldPrefs.hasScrolledLineGraph,

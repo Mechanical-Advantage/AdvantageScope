@@ -11,7 +11,7 @@ fi
 
 PACKAGE_NAME=$(grep "^Package:" control/control | cut -d' ' -f2- | tr -d ' ')
 PACKAGE_VERSION=$(jq -r .version ../../package.json)
-PYTHON_SITE_PACKAGES="usr/lib/python3.11/site-packages"
+PYTHON_SITE_PACKAGES="usr/local/bin/advantagescope-lite"
 
 # Validate required fields
 if [ -z "$PACKAGE_NAME" ] || [ -z "$PACKAGE_VERSION" ]; then
@@ -79,7 +79,8 @@ echo "Creating control.tar.gz"
 tar -czf control.tar.gz -C "$PACKAGE_DIR/CONTROL" .
 
 echo "Creating IPK..."
-ar r "../${PACKAGE_NAME}_${PACKAGE_VERSION}.ipk" control.tar.gz data.tar.gz
+rm -f "../${PACKAGE_NAME}_${PACKAGE_VERSION}.ipk"
+ar -rcS "../${PACKAGE_NAME}_${PACKAGE_VERSION}.ipk" control.tar.gz data.tar.gz
 
 cd ..
 

@@ -15,6 +15,66 @@ export function arraysEqual(a: any[], b: any[]): boolean {
   );
 }
 
+/**
+ * Returns the first index `i >= startIndex` in a sorted array where `array[i] >= target`,
+ * or `array.length` if no such element exists.
+ */
+export function lowerBound(array: number[], target: number, startIndex = 0): number {
+  let length = array.length;
+  if (length === 0 || startIndex >= length || !(array[length - 1] >= target)) {
+    return length;
+  }
+  if (startIndex > 0) {
+    if (array[startIndex] >= target) {
+      return startIndex;
+    }
+    if (startIndex + 1 < length && array[startIndex + 1] >= target) {
+      return startIndex + 1;
+    }
+  }
+  let low = startIndex;
+  let high = length - 1;
+  while (low < high) {
+    let mid = (low + high) >>> 1;
+    if (array[mid] >= target) {
+      high = mid;
+    } else {
+      low = mid + 1;
+    }
+  }
+  return low;
+}
+
+/**
+ * Returns the first index `i >= startIndex` in a sorted array where `array[i] > target`,
+ * or `array.length` if no such element exists.
+ */
+export function upperBound(array: number[], target: number, startIndex = 0): number {
+  let length = array.length;
+  if (length === 0 || startIndex >= length || !(array[length - 1] > target)) {
+    return length;
+  }
+  if (startIndex > 0) {
+    if (array[startIndex] > target) {
+      return startIndex;
+    }
+    if (startIndex + 1 < length && array[startIndex + 1] > target) {
+      return startIndex + 1;
+    }
+  }
+  let low = startIndex;
+  let high = length - 1;
+  while (low < high) {
+    let mid = (low + high) >>> 1;
+    if (array[mid] > target) {
+      high = mid;
+    } else {
+      low = mid + 1;
+    }
+  }
+  return low;
+}
+
 /** Checks whether two sets are equal. */
 export function setsEqual(a: Set<any>, b: Set<any>): boolean {
   return (

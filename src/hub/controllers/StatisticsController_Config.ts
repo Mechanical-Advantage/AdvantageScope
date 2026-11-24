@@ -11,7 +11,7 @@ import { SourceListConfig } from "../../shared/SourceListConfig";
 const StatisticsController_Config: SourceListConfig = {
   title: "Measurements",
   autoAdvance: "color",
-  allowChildrenFromDrag: false,
+  allowChildrenFromDrag: true,
   typeMemoryId: "statistics",
   types: [
     {

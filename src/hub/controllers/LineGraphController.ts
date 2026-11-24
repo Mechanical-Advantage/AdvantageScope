@@ -20,7 +20,7 @@ import {
   LineGraphRendererCommand_NumericField
 } from "../../shared/renderers/LineGraphRenderer";
 import { Units } from "../../shared/units";
-import { clampValue, createUUID, scaleValueClamped } from "../../shared/util";
+import { clampValue, createUUID, lowerBound, scaleValueClamped, upperBound } from "../../shared/util";
 import SourceList from "../SourceList";
 import { LineGraphController_DiscreteConfig, LineGraphController_NumericConfig } from "./LineGraphController_Config";
 import TabController from "./TabController";
@@ -352,7 +352,7 @@ export default class LineGraphController implements TabController {
       return null;
     }
     let command = commandCache[key];
-    let index = command.timestamps.findLastIndex((sample) => sample <= time);
+    let index = upperBound(command.timestamps, time) - 1;
     if (index === -1) {
       return null;
     }
@@ -480,7 +480,7 @@ export default class LineGraphController implements TabController {
           if (fieldItem.type !== "stepped" || filter !== LineGraphFilter.None) {
             let newData: LogValueSetNumber = { timestamps: [], values: [] };
             let sourceIndex = 0;
-            let akitIndex = akitTimestamps.findIndex((akitTime) => akitTime >= data!.timestamps[0]);
+            let akitIndex = lowerBound(akitTimestamps, data!.timestamps[0]);
             while (
               akitIndex < akitTimestamps.length &&
               akitTimestamps[akitIndex] <= data!.timestamps[data!.timestamps.length - 1]

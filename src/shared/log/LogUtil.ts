@@ -67,8 +67,15 @@ export function logValuesEqual(type: LoggableType, a: any, b: any): boolean {
     case LoggableType.NumberArray:
     case LoggableType.StringArray:
       return arraysEqual(a, b);
-    case LoggableType.Raw:
-      return arraysEqual(Array.from(a as Uint8Array), Array.from(b as Uint8Array));
+    case LoggableType.Raw: {
+      let aRaw = a as Uint8Array;
+      let bRaw = b as Uint8Array;
+      if (aRaw.byteLength !== bRaw.byteLength) return false;
+      for (let i = 0; i < aRaw.byteLength; i++) {
+        if (aRaw[i] !== bRaw[i]) return false;
+      }
+      return true;
+    }
     default:
       return false;
   }

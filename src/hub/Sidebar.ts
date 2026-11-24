@@ -9,6 +9,7 @@ import { IS_LITE } from "../shared/buildConstants";
 import { SidebarState } from "../shared/HubState";
 import LogFieldTree from "../shared/log/LogFieldTree";
 import LoggableType from "../shared/log/LoggableType";
+import { getChildLogExtension, isChildLog } from "../shared/log/LogKeyUtils";
 import { getOrDefault, searchFields, TYPE_KEY } from "../shared/log/LogUtil";
 import { SelectionMode } from "../shared/Selection";
 import { arraysEqual, htmlEncode, setsEqual } from "../shared/util";
@@ -634,14 +635,41 @@ export default class Sidebar {
       }
     }
 
-    // Right-click context menu for copying field paths
+    // Right-click context menu for copying field paths and exporting child logs
     let mouseDownInfo: [number, number, number, number] | null = null;
     label.addEventListener("contextmenu", (event) => {
       event.preventDefault();
       mouseDownInfo = null;
+      let childLogExtension: string | null = null;
+      let logFilename: string | null = null;
+      if (field.fullKey !== null && window.log.getType(field.fullKey) === LoggableType.Raw) {
+        let wpilibType = window.log.getWpilibType(field.fullKey);
+        let structuredType = window.log.getStructuredType(field.fullKey);
+        if (isChildLog(wpilibType, structuredType)) {
+          childLogExtension = getChildLogExtension(wpilibType, structuredType);
+          if (childLogExtension !== null) {
+            let mergeIndex = 0;
+            if (fullTitle.startsWith("/" + this.MERGED_KEY)) {
+              let nextSlash = fullTitle.indexOf("/", 1);
+              let rootSegment = nextSlash === -1 ? fullTitle.slice(1) : fullTitle.slice(1, nextSlash);
+              let parsedIndex = Number(rootSegment.slice(this.MERGED_KEY.length));
+              if (!Number.isNaN(parsedIndex)) {
+                mergeIndex = parsedIndex;
+              }
+            }
+            let filenames = this.getFilenames();
+            if (mergeIndex < filenames.length) {
+              logFilename = filenames[mergeIndex];
+            }
+          }
+        }
+      }
       window.sendMainMessage("ask-open-sidebar-context-menu", {
         title: title,
         fullTitle: fullTitle,
+        childLogKey: childLogExtension !== null ? field.fullKey : null,
+        childLogExtension: childLogExtension,
+        logFilename: logFilename,
         position: [event.clientX, event.clientY]
       });
     });

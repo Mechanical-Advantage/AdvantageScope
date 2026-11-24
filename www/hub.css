@@ -1026,6 +1026,7 @@ div.controls-content {
   width: 100%;
   bottom: 0%;
   height: var(--tab-controls-height);
+  z-index: 2;
   box-shadow: 0px 0px 3px 2px #00000022;
   background-color: #fff;
 }

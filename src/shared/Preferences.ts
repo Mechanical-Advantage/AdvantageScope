@@ -24,6 +24,8 @@ export default interface Preferences {
   tbaApiKey: string;
   userAssetsFolder: string | null;
   skipHootNonProWarning: boolean;
+  skipFRCCoordinateSystemWarning: boolean;
+  skipFTCCoordinateSystemWarning: boolean;
   ctreLicenseAccepted: boolean;
   systemcoreStaticAddress: "" | "usb" | "wifi";
   hasScrolledLineGraph: boolean;
@@ -48,6 +50,8 @@ export const DEFAULT_PREFS: Preferences = {
   tbaApiKey: "",
   userAssetsFolder: null,
   skipHootNonProWarning: false,
+  skipFRCCoordinateSystemWarning: false,
+  skipFTCCoordinateSystemWarning: false,
   ctreLicenseAccepted: false,
   systemcoreStaticAddress: "",
   hasScrolledLineGraph: false,
@@ -189,6 +193,12 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   }
   if ("skipHootNonProWarning" in newPrefs && typeof newPrefs.skipHootNonProWarning === "boolean") {
     basePrefs.skipHootNonProWarning = newPrefs.skipHootNonProWarning;
+  }
+  if ("skipFRCCoordinateSystemWarning" in newPrefs && typeof newPrefs.skipFRCCoordinateSystemWarning === "boolean") {
+    basePrefs.skipFRCCoordinateSystemWarning = newPrefs.skipFRCCoordinateSystemWarning;
+  }
+  if ("skipFTCCoordinateSystemWarning" in newPrefs && typeof newPrefs.skipFTCCoordinateSystemWarning === "boolean") {
+    basePrefs.skipFTCCoordinateSystemWarning = newPrefs.skipFTCCoordinateSystemWarning;
   }
   if ("ctreLicenseAccepted" in newPrefs && typeof newPrefs.ctreLicenseAccepted === "boolean") {
     basePrefs.ctreLicenseAccepted = newPrefs.ctreLicenseAccepted;

@@ -14,7 +14,7 @@ import { filterFieldByPrefixes } from "../shared/log/LogKeyUtils";
 import { getLogValueText } from "../shared/log/LogUtil";
 import LoggableType from "../shared/log/LoggableType";
 import { AKIT_TIMESTAMP_KEYS } from "../shared/log/RobotState";
-import { cleanFloat } from "../shared/util";
+import { cleanFloat, upperBound } from "../shared/util";
 import { WPILOGEncoder, WPILOGEncoderRecord } from "./dataSources/wpilog/WPILOGEncoder";
 
 self.onmessage = async (event) => {
@@ -128,10 +128,10 @@ function generateCsvTable(
     let fieldData = log.getRange(field, -Infinity, Infinity);
     let fieldType = log.getType(field);
 
+    let nextIndex = 0;
     timestamps!.forEach((timestamp, timestampIndex) => {
       if (fieldData === undefined || fieldType === null) return;
-      let nextIndex = fieldData.timestamps.findIndex((value) => value > timestamp);
-      if (nextIndex === -1) nextIndex = fieldData.timestamps.length;
+      nextIndex = upperBound(fieldData.timestamps, timestamp, nextIndex);
       let value: any = null;
       if (nextIndex !== 0) {
         value = fieldData.values[nextIndex - 1];
@@ -174,10 +174,10 @@ function generateCsvList(
       });
     } else {
       // Add samples at timestamps
+      let nextIndex = 0;
       timestamps.forEach((timestamp, timestampIndex) => {
         if (fieldData === undefined) return;
-        let nextIndex = fieldData.timestamps.findIndex((value) => value > timestamp);
-        if (nextIndex === -1) nextIndex = fieldData.timestamps.length;
+        nextIndex = upperBound(fieldData.timestamps, timestamp, nextIndex);
         let value: any = null;
         if (nextIndex !== 0) {
           value = fieldData.values[nextIndex - 1];
@@ -315,10 +315,10 @@ function generateWPILOG(
       });
     } else {
       // Add samples at timestamps
+      let nextIndex = 0;
       timestamps.forEach((timestamp, timestampIndex) => {
         if (fieldData === undefined) return;
-        let nextIndex = fieldData.timestamps.findIndex((value) => value > timestamp);
-        if (nextIndex === -1) nextIndex = fieldData.timestamps.length;
+        nextIndex = upperBound(fieldData.timestamps, timestamp, nextIndex);
         if (nextIndex !== 0) {
           addValue(timestamp, fieldData.values[nextIndex - 1]);
         }
@@ -411,10 +411,10 @@ async function generateMCAP(
         progress((fieldIndex + i / fieldData.values.length) / filteredFields.length);
       }
     } else {
+      let nextIndex = 0;
       for (let i = 0; i < timestamps.length; i++) {
         let timestamp = timestamps[i];
-        let nextIndex = fieldData.timestamps.findIndex((value) => value > timestamp);
-        if (nextIndex === -1) nextIndex = fieldData.timestamps.length;
+        nextIndex = upperBound(fieldData.timestamps, timestamp, nextIndex);
         if (nextIndex !== 0) {
           addValue(timestamp, fieldData.values[nextIndex - 1], i);
         }

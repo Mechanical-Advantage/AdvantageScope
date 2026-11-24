@@ -17,9 +17,10 @@ import LoggableType from "../../../shared/log/LoggableType";
 import {
   AUTONOMOUS_KEYS,
   ENABLED_KEYS,
+  PROGRAM_START_TIME_KEYS,
   UTILITY_KEYS,
   getEnabledKey,
-  getProgramStartTimeKey
+  getProgramStartTime
 } from "../../../shared/log/RobotState";
 import {
   HistoricalDataSource_WorkerFieldResponse,
@@ -173,7 +174,7 @@ async function start(data: Uint8Array) {
       parseField(key, true);
     }
   });
-  const ALL_EAGER_KEYS = [...ENABLED_KEYS, ...AUTONOMOUS_KEYS, ...UTILITY_KEYS];
+  const ALL_EAGER_KEYS = [...ENABLED_KEYS, ...AUTONOMOUS_KEYS, ...UTILITY_KEYS, ...PROGRAM_START_TIME_KEYS];
   log.getFieldKeys().forEach((key) => {
     const isEager = ALL_EAGER_KEYS.some((eagerKey) => eagerKey.startsWith(key + "/") || eagerKey === key);
     if (isEager) {
@@ -188,17 +189,9 @@ async function start(data: Uint8Array) {
   }
 
   // Find program start time to clear old data
-  let programStartTimeKey = getProgramStartTimeKey(log);
-  if (programStartTimeKey !== undefined) {
-    parseField(programStartTimeKey, true);
-    let field = log.getField(programStartTimeKey);
-    if (field !== null && field.getType() === LoggableType.Number) {
-      let values = field.toSerialized().values as number[];
-      if (values.length > 0) {
-        clearTime = values[values.length - 1] / 1e9;
-        log.clearBeforeTime(clearTime);
-      }
-    }
+  clearTime = getProgramStartTime(log);
+  if (clearTime !== null) {
+    log.clearBeforeTime(clearTime);
   }
 
   // Send message

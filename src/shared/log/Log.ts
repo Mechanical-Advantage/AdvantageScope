@@ -8,7 +8,7 @@
 import { Decoder } from "@msgpack/msgpack";
 import { Pose2d, Translation2d } from "../geometry";
 import { Units } from "../units";
-import { arraysEqual, checkArrayType } from "../util";
+import { arraysEqual, checkArrayType, lowerBound } from "../util";
 import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
 import { PHOTON_PREFIX, STRUCT_PREFIX, applyKeyPrefix, getSchemaType, splitLogKey } from "./LogKeyUtils";
@@ -24,9 +24,9 @@ import {
   LogValueSetStringArray
 } from "./LogValueSets";
 import LoggableType from "./LoggableType";
+import { getMergeOffset } from "./MergeCalculator";
 import PhotonStructDecoder from "./PhotonStructDecoder";
 import ProtoDecoder from "./ProtoDecoder";
-import { getEnabledData } from "./RobotState";
 import StructDecoder from "./StructDecoder";
 
 /** Represents a collection of log fields. */
@@ -159,12 +159,15 @@ export default class Log {
     // Update timestamp set caches
     if (this.enableTimestampSetCache) {
       Object.values(this.timestampSetCache).forEach((cache) => {
-        if (cache.keys.includes(key) && !cache.timestamps.includes(timestamp)) {
-          let insertIndex = cache.timestamps.findIndex((x) => x > timestamp);
-          if (insertIndex === -1) {
-            insertIndex = cache.timestamps.length;
+        if (cache.keys.includes(key)) {
+          let insertIndex = lowerBound(cache.timestamps, timestamp);
+          if (cache.timestamps[insertIndex] !== timestamp) {
+            if (insertIndex === cache.timestamps.length) {
+              cache.timestamps.push(timestamp);
+            } else {
+              cache.timestamps.splice(insertIndex, 0, timestamp);
+            }
           }
-          cache.timestamps.splice(insertIndex, 0, timestamp);
         }
       });
     }
@@ -329,12 +332,13 @@ export default class Log {
       if (parentKey === null) return null;
       let parentType = this.getType(parentKey);
       if (parentType !== LoggableType.NumberArray) return null;
-      return Units.getUnitForField(parentKey);
+      return this.getUnit(parentKey);
     };
 
     // Apply cache
     if (!(key in this.fields)) return null;
-    if (this.fields[key].getType() !== LoggableType.Number) return null;
+    const type = this.fields[key].getType();
+    if (!(type == LoggableType.Number || type == LoggableType.NumberArray)) return null;
     if (!(key in this.fieldUnitCache)) this.fieldUnitCache[key] = getUnitImpl() ?? null;
     return this.fieldUnitCache[key];
   }
@@ -566,9 +570,6 @@ export default class Log {
     this.createBlankField(key, LoggableType.Raw);
     this.fields[key].putRaw(timestamp, value);
     this.changedFields.add(key);
-    if (this.fields[key].getType() === LoggableType.Raw) {
-      this.processTimestamp(key, timestamp); // Only update timestamp if type is correct
-    }
 
     // Check for struct schema
     let schemaType = getSchemaType(key);
@@ -582,6 +583,8 @@ export default class Log {
         this.photonDecoder.addSchema(schemaType.slice(PHOTON_PREFIX.length), value);
         this.attemptQueuedStructures();
       }
+    } else if (this.fields[key].getType() === LoggableType.Raw) {
+      this.processTimestamp(key, timestamp); // Only update timestamp if type is correct and not a schema
     }
   }
 
@@ -853,7 +856,12 @@ export default class Log {
       this.setStructuredType(key, schemaType + (isArray ? "[]" : ""));
 
       if (
-        (schemaType === "Translation3d" || schemaType === "Pose3d" || schemaType === "Transform3d") &&
+        (schemaType === "Translation2d" ||
+          schemaType === "Pose2d" ||
+          schemaType === "Transform2d" ||
+          schemaType === "Translation3d" ||
+          schemaType === "Pose3d" ||
+          schemaType === "Transform3d") &&
         value.length > 5000
       ) {
         // Special case: skip full decoding for large arrays of game piece poses (#477 workaround)
@@ -979,19 +987,7 @@ export default class Log {
   /** Merges a new log into this log. Returns the timestamp offset. */
   mergeWith(source: Log, prefix = ""): number {
     // Serialize source and adjust timestamps
-    let offset = 0;
-    let targetEnabledData = getEnabledData(this);
-    let sourceEnabledData = getEnabledData(source);
-    if (
-      targetEnabledData &&
-      sourceEnabledData &&
-      targetEnabledData.values.includes(true) &&
-      sourceEnabledData.values.includes(true)
-    ) {
-      offset =
-        targetEnabledData.timestamps[targetEnabledData.values.indexOf(true)] -
-        sourceEnabledData.timestamps[sourceEnabledData.values.indexOf(true)];
-    }
+    let offset = this.timestampRange !== null && source.timestampRange !== null ? getMergeOffset(this, source) : 0;
     let sourceSerialized = source.toSerialized();
     Object.values(sourceSerialized.fields).forEach((field) => {
       let typedField = field as { timestamps: number[]; values: number[] };
