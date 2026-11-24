@@ -7,7 +7,7 @@
 
 export const BETA_CONFIG: BetaConfig | null = {
   year: "2027",
-  isAlpha: true,
+  isAlpha: false,
   expiration: new Date(2027, 0, 9),
   surveyUrl: null
 };
