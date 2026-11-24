@@ -411,7 +411,10 @@ hub:
       model: "Model"
       plane: "Vlak"
       variant: "Variant"
+      fadeOut: "Vervagen bij inactiviteit"
     optionValues:
+      off: "Uit"
+      on: "Aan"
       robot_bumpers_: "Alliantiekleur"
       radians: "Radialen"
       degrees: "Graden"

@@ -435,7 +435,10 @@ hub:
       model: "Модель"
       plane: "Плоскость"
       variant: "Вариант"
+      fadeOut: "Затухание без обновлений"
     optionValues:
+      off: "Выкл."
+      on: "Вкл."
       robot_bumpers_: "Цвет альянса"
       radians: "Радианы"
       degrees: "Градусы"

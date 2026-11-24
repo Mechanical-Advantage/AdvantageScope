@@ -69,6 +69,11 @@ const Field3dController_Config: SourceListConfig = {
           key: "color",
           showInTypeName: false,
           values: NeonColors
+        },
+        {
+          key: "fadeOut",
+          showInTypeName: false,
+          values: ["off", "on"]
         }
       ],
       initialSelectionOption: "model",

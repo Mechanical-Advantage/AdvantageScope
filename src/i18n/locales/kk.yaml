@@ -409,7 +409,10 @@ hub:
       model: "Үлгі"
       plane: "Жазықтық"
       variant: "Нұсқа"
+      fadeOut: "Жаңартылмаса өшу"
     optionValues:
+      off: "Өшірулі"
+      on: "Қосулы"
       robot_bumpers_: "Альянс түсі"
       radians: "Радиан"
       degrees: "Градус"

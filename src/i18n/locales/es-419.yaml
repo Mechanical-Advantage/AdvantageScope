@@ -411,7 +411,10 @@ hub:
       model: "Modelo"
       plane: "Plano"
       variant: "Variante"
+      fadeOut: "Atenuar por inactividad"
     optionValues:
+      off: "Desactivado"
+      on: "Activado"
       robot_bumpers_: "Color de alianza"
       radians: "Radianes"
       degrees: "Grados"

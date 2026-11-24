@@ -417,7 +417,10 @@ hub:
       model: "Model" # Model option label for 3D robot/ghost
       plane: "Plane" # Plane option label for 3D mechanism
       variant: "Variant" # Variant option label for 3D game piece or AprilTag
+      fadeOut: "Fade When Stale" # Fade when stale option label for ghost robot
     optionValues:
+      off: "Off" # Off option value for fade when stale
+      on: "On" # On option value for fade when stale
       robot_bumpers_: "Alliance Color" # Default alliance color option for bumpers
       radians: "Radians" # Radians unit option value
       degrees: "Degrees" # Degrees unit option value

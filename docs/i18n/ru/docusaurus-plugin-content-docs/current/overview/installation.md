@@ -33,3 +33,4 @@ sidebar_position: 1
 - [**AdvantageScope Lite для системы управления REV:**](https://github.com/j5155/AdvantageScope-Lite-FTC) Модификация [AdvantageScope Lite](/more-features/advantagescope-lite) для использования в существующей (до Systemcore) системе управления FTC.
 - [**Установщик Homebrew:**](https://formulae.brew.sh/cask/advantagescope) Cask Homebrew для установки AdvantageScope из командной строки на macOS.
 - [**Пользовательский репозиторий Arch (AUR):**](https://aur.archlinux.org/packages/advantagescope) Альтернативный способ распространения для использования с пакетным менеджером pacman (официальный дистрибутив Arch AdvantageScope доступен [здесь](#6328-downloads)).
+- [**FRC-Nix:**](https://github.com/frc4451/frc-nix) Набор пакетов Nix и декларативных модулей NixOS, связанных с FIRST, включая AdvantageScope, для использования с пакетным менеджером Nix и дистрибутивом Linux NixOS.

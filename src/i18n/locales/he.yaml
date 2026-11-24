@@ -423,7 +423,10 @@ hub:
       model: "מודל"
       plane: "מישור"
       variant: "גרסה"
+      fadeOut: "עמעום בחוסר פעילות"
     optionValues:
+      off: "כבוי"
+      on: "מופעל"
       robot_bumpers_: "צבע הברית"
       radians: "רדיאנים"
       degrees: "מעלות"
