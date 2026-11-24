@@ -83,7 +83,6 @@
     "github:jwbonner/youtube-dl-exec#cf57cd14eb1d1865e7d329c36ccc291a5ae9ec52": true,
     "cpu-features": false,
     "electron-winstaller": false,
-    "protobufjs": false,
     "ssh2": false,
     "tesseract.js": false
   },
