@@ -893,6 +893,10 @@ async function handleMainMessage(message: NamedMessage) {
       window.tabs.setRobotModeVisible(message.data.showRobotMode);
       break;
 
+    case "add-from-all-logs":
+      window.tabs.addFromAllLogs(message.data);
+      break;
+
     case "edit-axis":
       window.tabs.editAxis(
         message.data.legend,
