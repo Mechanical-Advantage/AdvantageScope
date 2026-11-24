@@ -1,6 +1,7 @@
 {
   "name": "advantagescope",
   "productName": "AdvantageScope",
+  "desktopName": "advantagescope.desktop",
   "version": "27.0.0-beta-1",
   "description": "Robot telemetry application",
   "author": {
@@ -213,7 +214,6 @@
         }
       }
     },
-    "desktopName": "advantagescope.desktop",
     "linux": {
       "target": [
         "AppImage",
