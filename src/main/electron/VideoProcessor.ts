@@ -6,7 +6,6 @@
 // at the root directory of this project.
 
 import { ChildProcess, spawn } from "child_process";
-import download from "download";
 import { BrowserWindow, Menu, MenuItem, app, clipboard, dialog } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
@@ -142,12 +141,7 @@ export class VideoProcessor {
         "bin",
         process.platform === "win32" ? "yt-dlp.exe" : process.platform === "darwin" ? "yt-dlp_macos" : "yt-dlp"
       );
-      const binaryDir = path.dirname(fullBinaryPath);
-      const binaryName = `.${path.sep}${path.basename(fullBinaryPath)}`;
-      const rawYt = youtubedl.create(binaryName);
-      this.ytInst = (url, flags, options) => {
-        return rawYt(url, flags, { cwd: binaryDir, ...options });
-      };
+      this.ytInst = youtubedl.create(fullBinaryPath);
     } else {
       this.ytInst = youtubedl;
     }
@@ -164,10 +158,11 @@ export class VideoProcessor {
       const errorStr = String(e);
       // Check for common error indicators that Python is missing or invalid
       if (
-        errorStr.includes("python3") ||
-        errorStr.includes("Python") ||
-        errorStr.includes("ENOENT") ||
-        (e.code && e.code === "ENOENT")
+        process.platform === "linux" &&
+        (errorStr.includes("python3") ||
+          errorStr.includes("Python") ||
+          errorStr.includes("ENOENT") ||
+          (e.code && e.code === "ENOENT"))
       ) {
         console.error(e);
         if (window && !window.isDestroyed()) {
@@ -176,7 +171,7 @@ export class VideoProcessor {
             title: "Error",
             message: "Python Installation Required",
             detail:
-              "This feature requires Python 3.10 or above available in your system. Please install Python and try again.",
+              "This feature requires Python 3.11 or above available in your system. Please install Python and try again.",
             icon: WINDOW_ICON
           });
         }
@@ -259,9 +254,11 @@ export class VideoProcessor {
     let filenameTemp = "ffmpeg-download";
     let filename = process.platform === "win32" ? "ffmpeg.exe" : "ffmpeg";
     let downloadInfo = this.FFMPEG_DOWNLOAD_INFO[getElectronPlatform()];
-    await download(downloadInfo.url, folder, {
-      filename: filenameTemp
-    });
+    const response = await fetch(downloadInfo.url);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    await fs.promises.writeFile(path.join(folder, filenameTemp), Buffer.from(await response.arrayBuffer()));
 
     // Verify hash
     let hash = crypto
@@ -517,32 +514,36 @@ export class VideoProcessor {
           .catch(() => {});
         break;
       case VideoSource.YouTube:
-        let clipboardText = clipboard.readText();
-        if (!clipboardText.includes("youtube.com") && !clipboardText.includes("youtu.be")) {
-          dataCallback({ uuid: uuid, error: true });
-          dialog.showMessageBox(window, {
-            type: "error",
-            title: "Error",
-            message: "Copy URL to clipboard",
-            detail: "Please copy a YouTube URL to the clipboard, then try again.",
-            icon: WINDOW_ICON
-          });
-        } else {
-          this.getDirectUrlFromYouTubeUrl(clipboardText, window)
-            .then((result) => loadPath(result.url, VIDEO_CACHE, result.httpHeaders))
-            .catch((silent) => {
+        clipboard
+          .readText()
+          .catch(() => "")
+          .then((clipboardText) => {
+            if (!clipboardText.includes("youtube.com") && !clipboardText.includes("youtu.be")) {
               dataCallback({ uuid: uuid, error: true });
-              if (silent === true) return;
               dialog.showMessageBox(window, {
                 type: "error",
                 title: "Error",
-                message: "YouTube download failed",
-                detail:
-                  "There was an error while trying to open the YouTube video. Note that this feature may fail unexpectedly due to changes on YouTube's servers. Please check for updates or choose a local video file instead.",
+                message: "Copy URL to clipboard",
+                detail: "Please copy a YouTube URL to the clipboard, then try again.",
                 icon: WINDOW_ICON
               });
-            });
-        }
+            } else {
+              this.getDirectUrlFromYouTubeUrl(clipboardText, window)
+                .then((result) => loadPath(result.url, VIDEO_CACHE, result.httpHeaders))
+                .catch((silent) => {
+                  dataCallback({ uuid: uuid, error: true });
+                  if (silent === true) return;
+                  dialog.showMessageBox(window, {
+                    type: "error",
+                    title: "Error",
+                    message: "YouTube download failed",
+                    detail:
+                      "There was an error while trying to open the YouTube video. Note that this feature may fail unexpectedly due to changes on YouTube's servers. Please check for updates or choose a local video file instead.",
+                    icon: WINDOW_ICON
+                  });
+                });
+            }
+          });
         break;
       case VideoSource.TheBlueAlliance:
         this.getYouTubeUrlFromMatchInfo(matchInfo!, window, menuCoordinates!)

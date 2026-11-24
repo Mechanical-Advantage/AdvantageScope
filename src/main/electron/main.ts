@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { createDecompressStream } from "@napi-rs/lzma/xz";
 import { parseREVLOG } from "@rev-robotics/revlog-converter";
 import { hex } from "color-convert";
 import {
@@ -92,12 +93,6 @@ import {
 } from "./betaUtil";
 import { getOwletDownloadStatus, startOwletDownloadLoop } from "./owletDownloadLoop";
 import { checkHootIsPro, convertHoot, CTRE_LICENSE_URL } from "./owletInterface";
-
-// Dynamically load lzma-native to handle platforms without prebuilt binaries
-let lzma: typeof import("lzma-native") | null = null;
-try {
-  lzma = require("lzma-native");
-} catch (e) {}
 
 // Global variables
 let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
@@ -530,44 +525,39 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         } else if (logPath.endsWith(".wpilogxz")) {
           // Externally compressed WPILOG, decompress
           targetCount += 1;
-          if (lzma === null) {
-            errorMessage = "Compressed WPILOG files (.wpilogxz) are not supported on this platform.";
-            completedCount++;
-            sendIfReady();
-          } else {
-            fs.open(logPath, "r", (error, file) => {
+          fs.open(logPath, "r", (error, file) => {
+            if (error) {
+              completedCount++;
+              sendIfReady();
+              return;
+            }
+            fs.readFile(file, (error, compressedBuffer) => {
               if (error) {
                 completedCount++;
                 sendIfReady();
                 return;
               }
-              fs.readFile(file, (error, compressedBuffer) => {
-                if (error) {
-                  completedCount++;
-                  sendIfReady();
-                }
-                const inputStream = Readable.from(compressedBuffer);
-                const decompressor = lzma.createDecompressor();
-                const chunks: any[] = [];
-                let totalLength = 0;
-                inputStream.pipe(decompressor);
-                decompressor.on("data", (chunk) => {
-                  chunks.push(chunk);
-                  totalLength += chunk.length;
-                });
-                decompressor.on("error", () => {
-                  results[0] = Buffer.concat(chunks, totalLength);
-                  completedCount++;
-                  sendIfReady();
-                });
-                decompressor.on("end", () => {
-                  results[0] = Buffer.concat(chunks, totalLength);
-                  completedCount++;
-                  sendIfReady();
-                });
+              const inputStream = Readable.from(compressedBuffer);
+              const decompressor = createDecompressStream();
+              const chunks: Buffer[] = [];
+              let totalLength = 0;
+              let completed = false;
+              const finish = () => {
+                if (completed) return;
+                completed = true;
+                results[0] = Buffer.concat(chunks, totalLength);
+                completedCount++;
+                sendIfReady();
+              };
+              inputStream.pipe(decompressor);
+              decompressor.on("data", (chunk: Buffer) => {
+                chunks.push(chunk);
+                totalLength += chunk.length;
               });
+              decompressor.on("error", finish);
+              decompressor.on("end", finish);
             });
-          }
+          });
         } else {
           // Normal log, open normally
           targetCount += 1;

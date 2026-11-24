@@ -18,6 +18,5 @@ export default function getElectronPlatform(): string {
       platform = "win";
       break;
   }
-  let arch = process.arch === "arm" ? "armv7l" : process.arch;
-  return platform + "-" + arch;
+  return platform + "-" + process.arch;
 }

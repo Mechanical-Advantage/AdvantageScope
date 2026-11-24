@@ -93,7 +93,6 @@ export default (cliArgs) => {
           format: "cjs"
         },
         context: "this",
-        external: ["download"],
         plugins: [typescript()],
         onwarn() {}
       }
@@ -115,10 +114,10 @@ export default (cliArgs) => {
             "http",
             "path",
             "ssh2",
-            "download",
             "youtube-dl-exec",
             "tesseract.js",
-            "lzma-native",
+            "@napi-rs/lzma",
+            "@napi-rs/lzma/xz",
             "@rev-robotics/revlog-converter"
           ]),
           bundle(["preload.ts"], true, false, ["electron"])
