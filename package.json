@@ -77,10 +77,10 @@
     "ssh2": "^1.17.0",
     "tesseract.js": "^6.0.0",
     "ws": "^8.23.0",
-    "youtube-dl-exec": "github:jwbonner/youtube-dl-exec#708fe6410c4c9fa22cf09ab424b15546b178bdbe"
+    "youtube-dl-exec": "github:jwbonner/youtube-dl-exec#cf57cd14eb1d1865e7d329c36ccc291a5ae9ec52"
   },
   "allowScripts": {
-    "github:jwbonner/youtube-dl-exec#708fe6410c4c9fa22cf09ab424b15546b178bdbe": true,
+    "github:jwbonner/youtube-dl-exec#cf57cd14eb1d1865e7d329c36ccc291a5ae9ec52": true,
     "cpu-features": false,
     "electron-winstaller": false,
     "protobufjs": false,

@@ -175,7 +175,7 @@ export class VideoProcessor {
             title: "Error",
             message: "Python Installation Required",
             detail:
-              "This feature requires Python 3.10 or above available in your system. Please install Python and try again.",
+              "This feature requires Python 3.11 or above available in your system. Please install Python and try again.",
             icon: WINDOW_ICON
           });
         }
