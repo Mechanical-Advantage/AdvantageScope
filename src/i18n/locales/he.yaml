@@ -945,7 +945,7 @@ main:
 
   video:
     pythonRequired: "נדרשת התקנת Python"
-    pythonRequiredDetail: "תכונה זו דורשת ש-Python 3.10 ומעלה יהיה זמין במערכת שלכם. יש להתקין Python ולנסות שוב."
+    pythonRequiredDetail: "תכונה זו דורשת ש-Python 3.11 ומעלה יהיה זמין במערכת שלכם. יש להתקין Python ולנסות שוב."
     ffmpegRequired: "נדרשת התקנת FFmpeg"
     ffmpegRequiredDetail: "FFmpeg נדרש כדי לעבד קובצי וידאו. יש להתקין את FFmpeg ולהוסיפו למשתנה הסביבה PATH."
     downloadFfmpeg: "להוריד FFmpeg?"

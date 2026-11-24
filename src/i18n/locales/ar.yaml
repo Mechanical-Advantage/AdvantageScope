@@ -980,7 +980,7 @@ main:
 
   video:
     pythonRequired: "يلزم تثبيت Python"
-    pythonRequiredDetail: "تتطلب هذه الميزة توفر Python 3.10 أو أعلى في نظامك. يرجى تثبيت Python والمحاولة مرة أخرى."
+    pythonRequiredDetail: "تتطلب هذه الميزة توفر Python 3.11 أو أعلى في نظامك. يرجى تثبيت Python والمحاولة مرة أخرى."
     ffmpegRequired: "يلزم تثبيت FFmpeg"
     ffmpegRequiredDetail: "FFmpeg مطلوب لمعالجة ملفات الفيديو. يرجى تثبيت FFmpeg وإضافته إلى PATH."
     downloadFfmpeg: "تنزيل FFmpeg؟"

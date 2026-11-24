@@ -928,7 +928,7 @@ main:
 
   video:
     pythonRequired: "需要安装 Python"
-    pythonRequiredDetail: "此功能需要系统安装 Python 3.10 或更高版本。请安装 Python 后重试。"
+    pythonRequiredDetail: "此功能需要系统安装 Python 3.11 或更高版本。请安装 Python 后重试。"
     ffmpegRequired: "需要安装 FFmpeg"
     ffmpegRequiredDetail: "处理视频文件需要 FFmpeg。请安装 FFmpeg 并将其添加到 PATH 环境变量中。"
     downloadFfmpeg: "下载 FFmpeg？"

@@ -931,7 +931,7 @@ main:
 
   video:
     pythonRequired: "Python орнату қажет"
-    pythonRequiredDetail: "Бұл мүмкіндік жүйеңізде Python 3.10 немесе одан жаңа нұсқасының болуын талап етеді. Python орнатып, қайталап көріңіз."
+    pythonRequiredDetail: "Бұл мүмкіндік жүйеңізде Python 3.11 немесе одан жаңа нұсқасының болуын талап етеді. Python орнатып, қайталап көріңіз."
     ffmpegRequired: "FFmpeg орнату қажет"
     ffmpegRequiredDetail: "Бейне файлдарын өңдеу үшін FFmpeg қажет. FFmpeg орнатып, оны PATH ортасына қосыңыз."
     downloadFfmpeg: "FFmpeg жүктеп аласыз ба?"

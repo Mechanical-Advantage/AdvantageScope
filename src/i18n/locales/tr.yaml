@@ -924,7 +924,7 @@ main:
 
   video:
     pythonRequired: "Python kurulumu gerekli"
-    pythonRequiredDetail: "Bu özellik için sisteminizde Python 3.10 veya üzeri bir sürümün kurulu olması gerekir. Lütfen Python'u yükleyip tekrar deneyin."
+    pythonRequiredDetail: "Bu özellik için sisteminizde Python 3.11 veya üzeri bir sürümün kurulu olması gerekir. Lütfen Python'u yükleyip tekrar deneyin."
     ffmpegRequired: "FFmpeg kurulumu gerekli"
     ffmpegRequiredDetail: "Video dosyalarını işlemek için FFmpeg gereklidir. Lütfen FFmpeg'i yükleyin ve PATH'e ekleyin."
     downloadFfmpeg: "FFmpeg indirilsin mi?"

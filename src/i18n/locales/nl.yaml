@@ -933,7 +933,7 @@ main:
 
   video:
     pythonRequired: "Python-installatie vereist"
-    pythonRequiredDetail: "Deze functie vereist Python 3.10 of hoger op je systeem. Installeer Python en probeer het opnieuw."
+    pythonRequiredDetail: "Deze functie vereist Python 3.11 of hoger op je systeem. Installeer Python en probeer het opnieuw."
     ffmpegRequired: "FFmpeg-installatie vereist"
     ffmpegRequiredDetail: "FFmpeg is vereist om videobestanden te verwerken. Installeer FFmpeg en voeg dit toe aan PATH."
     downloadFfmpeg: "FFmpeg downloaden?"

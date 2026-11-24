@@ -957,7 +957,7 @@ main:
 
   video:
     pythonRequired: "Требуется установка Python"
-    pythonRequiredDetail: "Для этой функции требуется Python 3.10 или выше. Установите Python и попробуйте снова."
+    pythonRequiredDetail: "Для этой функции требуется Python 3.11 или выше. Установите Python и попробуйте снова."
     ffmpegRequired: "Требуется установка FFmpeg"
     ffmpegRequiredDetail: "FFmpeg требуется для обработки видеофайлов. Установите FFmpeg и добавьте его в PATH."
     downloadFfmpeg: "Скачать FFmpeg?"

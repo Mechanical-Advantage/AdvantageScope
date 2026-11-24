@@ -943,7 +943,7 @@ main:
 
   video:
     pythonRequired: "Python Installation Required" # Error title for Python missing
-    pythonRequiredDetail: "This feature requires Python 3.10 or above available in your system. Please install Python and try again." # Error detail for Python missing
+    pythonRequiredDetail: "This feature requires Python 3.11 or above available in your system. Please install Python and try again." # Error detail for Python missing
     ffmpegRequired: "FFmpeg Installation Required" # Error title for FFmpeg missing on Linux
     ffmpegRequiredDetail: "FFmpeg is required to process videos files. Please install FFmpeg and add to the PATH." # Error detail for FFmpeg missing on Linux (PATH refers to the Linux environment variable)
     downloadFfmpeg: "Download FFmpeg?" # Question title for downloading FFmpeg

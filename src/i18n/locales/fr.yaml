@@ -933,7 +933,7 @@ main:
 
   video:
     pythonRequired: "Installation de Python requise"
-    pythonRequiredDetail: "Cette fonctionnalité nécessite que Python 3.10 ou une version ultérieure soit installé sur votre système. Veuillez installer Python et réessayer."
+    pythonRequiredDetail: "Cette fonctionnalité nécessite que Python 3.11 ou une version ultérieure soit installé sur votre système. Veuillez installer Python et réessayer."
     ffmpegRequired: "Installation de FFmpeg requise"
     ffmpegRequiredDetail: "FFmpeg est requis pour traiter les fichiers vidéo. Veuillez installer FFmpeg et l'ajouter au PATH."
     downloadFfmpeg: "Télécharger FFmpeg?"

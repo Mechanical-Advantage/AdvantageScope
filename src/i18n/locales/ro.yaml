@@ -945,7 +945,7 @@ main:
 
   video:
     pythonRequired: "Este necesară instalarea Python"
-    pythonRequiredDetail: "Această funcționalitate necesită Python 3.10 sau o versiune ulterioară disponibilă pe sistemul tău. Instalează Python și încearcă din nou."
+    pythonRequiredDetail: "Această funcționalitate necesită Python 3.11 sau o versiune ulterioară disponibilă pe sistemul tău. Instalează Python și încearcă din nou."
     ffmpegRequired: "Este necesară instalarea FFmpeg"
     ffmpegRequiredDetail: "FFmpeg este necesar pentru procesarea fișierelor video. Instalează FFmpeg și adaugă-l la PATH."
     downloadFfmpeg: "Descarci FFmpeg?"

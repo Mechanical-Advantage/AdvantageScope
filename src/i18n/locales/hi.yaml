@@ -933,7 +933,7 @@ main:
 
   video:
     pythonRequired: "Python इंस्टॉलेशन आवश्यक है"
-    pythonRequiredDetail: "इस फीचर के लिए आपके सिस्टम में Python 3.10 या इसके बाद के वर्ज़न का होना आवश्यक है। कृपया Python इंस्टॉल करें और पुनः प्रयास करें।"
+    pythonRequiredDetail: "इस फीचर के लिए आपके सिस्टम में Python 3.11 या इसके बाद के वर्ज़न का होना आवश्यक है। कृपया Python इंस्टॉल करें और पुनः प्रयास करें।"
     ffmpegRequired: "FFmpeg इंस्टॉलेशन आवश्यक है"
     ffmpegRequiredDetail: "वीडियो फ़ाइलों को प्रोसेस करने के लिए FFmpeg की आवश्यकता है। कृपया FFmpeg इंस्टॉल करें और PATH में जोड़ें।"
     downloadFfmpeg: "FFmpeg डाउनलोड करें?"
