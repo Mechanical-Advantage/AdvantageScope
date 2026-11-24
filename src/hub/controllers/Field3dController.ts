@@ -319,7 +319,9 @@ export default class Field3dController implements TabController {
         if (values !== undefined && values.timestamps.length > 0) {
           const ageSeconds = time - values.timestamps[0];
 
-          fadeFactor = clampValue(Field3dController.FADE_LENGTH_SECS - ageSeconds, 0, Field3dController.FADE_LENGTH_SECS) / Field3dController.FADE_LENGTH_SECS;
+          fadeFactor =
+            clampValue(Field3dController.FADE_LENGTH_SECS - ageSeconds, 0, Field3dController.FADE_LENGTH_SECS) /
+            Field3dController.FADE_LENGTH_SECS;
         }
       }
 

@@ -73,7 +73,7 @@ const Field2dController_Config: SourceListConfig = {
           showInTypeName: false,
           values: [
             { key: "off", display: "Off" },
-            { key: "on", display: "On" },
+            { key: "on", display: "On" }
           ]
         }
       ],

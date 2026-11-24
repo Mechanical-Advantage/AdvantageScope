@@ -345,7 +345,7 @@ export default class Field2dController implements TabController {
           });
         }
       }
-      
+
       // Get time since update and fade opacity for ghost
       let fadeFactor: number = 1;
       if (time !== null && source.type === "ghost" && source.options.fadeOut === "on") {
@@ -354,7 +354,9 @@ export default class Field2dController implements TabController {
         if (values !== undefined && values.timestamps.length > 0) {
           const ageSeconds = time - values.timestamps[0];
 
-          fadeFactor = clampValue(Field2dController.FADE_LENGTH_SECS - ageSeconds, 0, Field2dController.FADE_LENGTH_SECS) / Field2dController.FADE_LENGTH_SECS;
+          fadeFactor =
+            clampValue(Field2dController.FADE_LENGTH_SECS - ageSeconds, 0, Field2dController.FADE_LENGTH_SECS) /
+            Field2dController.FADE_LENGTH_SECS;
         }
       }
 
