@@ -42,14 +42,14 @@ AdvantageScope қолдайтын барлық пішімдер журнал к�
 <TabItem value="wpilib-java" label="Java" default>
 
 ```java
-Telemetry.log("Қозғалыс/Оң жақ мотор жылдамдығы", "Жылдам");
+Telemetry.log("Қозғалыс/ОңЖылдамдық", "Жылдам");
 ```
 
 </TabItem>
 <TabItem value="wpilib-cpp" label="C++">
 
 ```cpp
-wpi::telemetry::Log("Қозғалыс/Оң жақ мотор жылдамдығы", "Жылдам");
+wpi::telemetry::Log("Қозғалыс/ОңЖылдамдық", "Жылдам");
 ```
 
 </TabItem>
@@ -58,14 +58,14 @@ wpi::telemetry::Log("Қозғалыс/Оң жақ мотор жылдамдығ�
 ```python
 import telemetry
 
-telemetry.log("Қозғалыс/Оң жақ мотор жылдамдығы", "Жылдам")
+telemetry.log("Қозғалыс/ОңЖылдамдық", "Жылдам")
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
-Logger.recordOutput("Қозғалыс/Оң жақ мотор жылдамдығы", "Жылдам");
+Logger.recordOutput("Қозғалыс/ОңЖылдамдық", "Жылдам");
 ```
 
 </TabItem>

@@ -42,14 +42,14 @@ Aşağıda Türkçe bir anahtarla metin (string) kaydetme örneğini görebilirs
 <TabItem value="wpilib-java" label="Java" default>
 
 ```java
-Telemetry.log("Sürüş/Sağ motor hızı", "Hızlı");
+Telemetry.log("Sürüş/SağMotorHızı", "Hızlı");
 ```
 
 </TabItem>
 <TabItem value="wpilib-cpp" label="C++">
 
 ```cpp
-wpi::telemetry::Log("Sürüş/Sağ motor hızı", "Hızlı");
+wpi::telemetry::Log("Sürüş/SağMotorHızı", "Hızlı");
 ```
 
 </TabItem>
@@ -58,14 +58,14 @@ wpi::telemetry::Log("Sürüş/Sağ motor hızı", "Hızlı");
 ```python
 import telemetry
 
-telemetry.log("Sürüş/Sağ motor hızı", "Hızlı")
+telemetry.log("Sürüş/SağMotorHızı", "Hızlı")
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
-Logger.recordOutput("Sürüş/Sağ motor hızı", "Hızlı");
+Logger.recordOutput("Sürüş/SağMotorHızı", "Hızlı");
 ```
 
 </TabItem>

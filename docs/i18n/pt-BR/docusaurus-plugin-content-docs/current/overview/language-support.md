@@ -42,14 +42,14 @@ Veja um exemplo de registro de texto usando uma chave em português:
 <TabItem value="wpilib-java" label="Java" default>
 
 ```java
-Telemetry.log("Tração/Velocidade do motor direito", "Rápido");
+Telemetry.log("Tração/PosiçãoRobô", "Rápido");
 ```
 
 </TabItem>
 <TabItem value="wpilib-cpp" label="C++">
 
 ```cpp
-wpi::telemetry::Log("Tração/Velocidade do motor direito", "Rápido");
+wpi::telemetry::Log("Tração/PosiçãoRobô", "Rápido");
 ```
 
 </TabItem>
@@ -58,14 +58,14 @@ wpi::telemetry::Log("Tração/Velocidade do motor direito", "Rápido");
 ```python
 import telemetry
 
-telemetry.log("Tração/Velocidade do motor direito", "Rápido")
+telemetry.log("Tração/PosiçãoRobô", "Rápido")
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
-Logger.recordOutput("Tração/Velocidade do motor direito", "Rápido");
+Logger.recordOutput("Tração/PosiçãoRobô", "Rápido");
 ```
 
 </TabItem>

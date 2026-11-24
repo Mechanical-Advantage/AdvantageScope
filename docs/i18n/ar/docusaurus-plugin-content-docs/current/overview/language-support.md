@@ -42,14 +42,14 @@ import TabItem from '@theme/TabItem';
 <TabItem value="wpilib-java" label="Java" default>
 
 ```java
-Telemetry.log("القيادة/سرعة المحرك الأيمن", "سريع");
+Telemetry.log("القيادة/سرعة المحرك", "سريع");
 ```
 
 </TabItem>
 <TabItem value="wpilib-cpp" label="C++">
 
 ```cpp
-wpi::telemetry::Log("القيادة/سرعة المحرك الأيمن", "سريع");
+wpi::telemetry::Log("القيادة/سرعة المحرك", "سريع");
 ```
 
 </TabItem>
@@ -58,14 +58,14 @@ wpi::telemetry::Log("القيادة/سرعة المحرك الأيمن", "سري
 ```python
 import telemetry
 
-telemetry.log("القيادة/سرعة المحرك الأيمن", "سريع")
+telemetry.log("القيادة/سرعة المحرك", "سريع")
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
-Logger.recordOutput("القيادة/سرعة المحرك الأيمن", "سريع");
+Logger.recordOutput("القيادة/سرعة المحرك", "سريع");
 ```
 
 </TabItem>

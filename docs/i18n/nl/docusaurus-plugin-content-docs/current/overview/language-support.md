@@ -42,14 +42,14 @@ Hier zie je een voorbeeld van het loggen van een string met een Nederlandstalige
 <TabItem value="wpilib-java" label="Java" default>
 
 ```java
-Telemetry.log("Aandrijving/Geïntegreerde snelheid vóór", "Efficiënt");
+Telemetry.log("Aandrijving/SnelheidVóór", "Efficiënt");
 ```
 
 </TabItem>
 <TabItem value="wpilib-cpp" label="C++">
 
 ```cpp
-wpi::telemetry::Log("Aandrijving/Geïntegreerde snelheid vóór", "Efficiënt");
+wpi::telemetry::Log("Aandrijving/SnelheidVóór", "Efficiënt");
 ```
 
 </TabItem>
@@ -58,14 +58,14 @@ wpi::telemetry::Log("Aandrijving/Geïntegreerde snelheid vóór", "Efficiënt");
 ```python
 import telemetry
 
-telemetry.log("Aandrijving/Geïntegreerde snelheid vóór", "Efficiënt")
+telemetry.log("Aandrijving/SnelheidVóór", "Efficiënt")
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
-Logger.recordOutput("Aandrijving/Geïntegreerde snelheid vóór", "Efficiënt");
+Logger.recordOutput("Aandrijving/SnelheidVóór", "Efficiënt");
 ```
 
 </TabItem>

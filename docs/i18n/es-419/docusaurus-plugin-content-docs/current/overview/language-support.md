@@ -42,14 +42,14 @@ Aquí tienes un ejemplo de cómo registrar una cadena de texto con una clave en 
 <TabItem value="wpilib-java" label="Java" default>
 
 ```java
-Telemetry.log("Tracción/Velocidad del motor derecho", "Rápido");
+Telemetry.log("Tracción/VelocidadPiñón", "Rápido");
 ```
 
 </TabItem>
 <TabItem value="wpilib-cpp" label="C++">
 
 ```cpp
-wpi::telemetry::Log("Tracción/Velocidad del motor derecho", "Rápido");
+wpi::telemetry::Log("Tracción/VelocidadPiñón", "Rápido");
 ```
 
 </TabItem>
@@ -58,14 +58,14 @@ wpi::telemetry::Log("Tracción/Velocidad del motor derecho", "Rápido");
 ```python
 import telemetry
 
-telemetry.log("Tracción/Velocidad del motor derecho", "Rápido")
+telemetry.log("Tracción/VelocidadPiñón", "Rápido")
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
-Logger.recordOutput("Tracción/Velocidad del motor derecho", "Rápido");
+Logger.recordOutput("Tracción/VelocidadPiñón", "Rápido");
 ```
 
 </TabItem>

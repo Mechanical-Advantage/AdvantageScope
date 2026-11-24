@@ -42,14 +42,14 @@ Voici un exemple d'enregistrement d'une chaîne avec une clé en français :
 <TabItem value="wpilib-java" label="Java" default>
 
 ```java
-Telemetry.log("Châssis/Vitesse moteur droit", "Rapide");
+Telemetry.log("Châssis/VitesseArrière", "Déjà prêt");
 ```
 
 </TabItem>
 <TabItem value="wpilib-cpp" label="C++">
 
 ```cpp
-wpi::telemetry::Log("Châssis/Vitesse moteur droit", "Rapide");
+wpi::telemetry::Log("Châssis/VitesseArrière", "Déjà prêt");
 ```
 
 </TabItem>
@@ -58,14 +58,14 @@ wpi::telemetry::Log("Châssis/Vitesse moteur droit", "Rapide");
 ```python
 import telemetry
 
-telemetry.log("Châssis/Vitesse moteur droit", "Rapide")
+telemetry.log("Châssis/VitesseArrière", "Déjà prêt")
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
-Logger.recordOutput("Châssis/Vitesse moteur droit", "Rapide");
+Logger.recordOutput("Châssis/VitesseArrière", "Déjà prêt");
 ```
 
 </TabItem>

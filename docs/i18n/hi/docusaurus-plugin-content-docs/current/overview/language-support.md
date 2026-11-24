@@ -42,14 +42,14 @@ AdvantageScope द्वारा समर्थित सभी फ़ॉर�
 <TabItem value="wpilib-java" label="Java" default>
 
 ```java
-Telemetry.log("ड्राइव/दायां मोटर वेग", "तेज़");
+Telemetry.log("ड्राइव/मोटर गति", "तेज़");
 ```
 
 </TabItem>
 <TabItem value="wpilib-cpp" label="C++">
 
 ```cpp
-wpi::telemetry::Log("ड्राइव/दायां मोटर वेग", "तेज़");
+wpi::telemetry::Log("ड्राइव/मोटर गति", "तेज़");
 ```
 
 </TabItem>
@@ -58,14 +58,14 @@ wpi::telemetry::Log("ड्राइव/दायां मोटर वेग",
 ```python
 import telemetry
 
-telemetry.log("ड्राइव/दायां मोटर वेग", "तेज़")
+telemetry.log("ड्राइव/मोटर गति", "तेज़")
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
-Logger.recordOutput("ड्राइव/दायां मोटर वेग", "तेज़");
+Logger.recordOutput("ड्राइव/मोटर गति", "तेज़");
 ```
 
 </TabItem>

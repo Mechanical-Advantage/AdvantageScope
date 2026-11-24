@@ -42,14 +42,14 @@ AdvantageScope поддерживает несколько языков в до�
 <TabItem value="wpilib-java" label="Java" default>
 
 ```java
-Telemetry.log("Привод/Скорость правого мотора", "Быстро");
+Telemetry.log("Шасси/СкоростьПривода", "Быстро");
 ```
 
 </TabItem>
 <TabItem value="wpilib-cpp" label="C++">
 
 ```cpp
-wpi::telemetry::Log("Привод/Скорость правого мотора", "Быстро");
+wpi::telemetry::Log("Шасси/СкоростьПривода", "Быстро");
 ```
 
 </TabItem>
@@ -58,14 +58,14 @@ wpi::telemetry::Log("Привод/Скорость правого мотора",
 ```python
 import telemetry
 
-telemetry.log("Привод/Скорость правого мотора", "Быстро")
+telemetry.log("Шасси/СкоростьПривода", "Быстро")
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
-Logger.recordOutput("Привод/Скорость правого мотора", "Быстро");
+Logger.recordOutput("Шасси/СкоростьПривода", "Быстро");
 ```
 
 </TabItem>

@@ -42,14 +42,14 @@ Iată un exemplu de înregistrare a unui șir de caractere cu o cheie în limba 
 <TabItem value="wpilib-java" label="Java" default>
 
 ```java
-Telemetry.log("Tracțiune/Viteză motor dreapta", "Rapid");
+Telemetry.log("Tracțiune/VitezăFață", "Ușor");
 ```
 
 </TabItem>
 <TabItem value="wpilib-cpp" label="C++">
 
 ```cpp
-wpi::telemetry::Log("Tracțiune/Viteză motor dreapta", "Rapid");
+wpi::telemetry::Log("Tracțiune/VitezăFață", "Ușor");
 ```
 
 </TabItem>
@@ -58,14 +58,14 @@ wpi::telemetry::Log("Tracțiune/Viteză motor dreapta", "Rapid");
 ```python
 import telemetry
 
-telemetry.log("Tracțiune/Viteză motor dreapta", "Rapid")
+telemetry.log("Tracțiune/VitezăFață", "Ușor")
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
-Logger.recordOutput("Tracțiune/Viteză motor dreapta", "Rapid");
+Logger.recordOutput("Tracțiune/VitezăFață", "Ușor");
 ```
 
 </TabItem>
