@@ -428,7 +428,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        format: ${{ fromJson(github.event_name == 'release' && '["deb", "rpm", "pacman", "AppImage", "snap", "flatpak"]' || '["AppImage"]') }}
+        # format: ${{ fromJson(github.event_name == 'release' && '["deb", "rpm", "pacman", "AppImage", "snap", "flatpak"]' || '["AppImage"]') }}
+        format: ["deb", "rpm", "pacman", "AppImage", "snap", "flatpak"]
         arch:
           - { electronArch: "x64", flatpakArch: "x86_64" }
           - { electronArch: "arm64", flatpakArch: "aarch64" }
