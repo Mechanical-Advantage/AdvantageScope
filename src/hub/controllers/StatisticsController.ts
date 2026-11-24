@@ -7,6 +7,7 @@
 
 import * as stats from "simple-statistics";
 import { SourceListItemState, SourceListState } from "../../shared/SourceListConfig";
+import { findKey } from "../../shared/log/LogKeyUtils";
 import { AKIT_TIMESTAMP_KEYS, getRobotStateRanges } from "../../shared/log/RobotState";
 import { StatisticsRendererCommand, StatisticsRendererCommand_Stats } from "../../shared/renderers/StatisticsRenderer";
 import { arraysEqual, cleanFloat, createUUID } from "../../shared/util";
@@ -188,7 +189,7 @@ export default class StatisticsController implements TabController {
         return false;
       };
 
-      const akitTimestampKey = window.log.getFieldKeys().find((key) => AKIT_TIMESTAMP_KEYS.includes(key));
+      const akitTimestampKey = findKey(window.log, AKIT_TIMESTAMP_KEYS);
       let sampleTimes: number[] = [];
       if (akitTimestampKey !== undefined) {
         // Use synced AdvantageKit timestamps :)

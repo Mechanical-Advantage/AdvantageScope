@@ -382,7 +382,7 @@ export class HistoricalDataSource {
           ...EVENT_KEYS,
           ...MATCH_TYPE_KEYS,
           ...MATCH_NUMBER_KEYS
-        ].forEach((key) => requestFields.add(key));
+        ].forEach((key) => requestFields.add(applyKeyPrefix(this.keyPrefix, key)));
 
         // Compare to existing fields
         let initialRequestFields = Array.from(requestFields);

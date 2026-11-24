@@ -14,7 +14,7 @@ import Selection from "../shared/Selection";
 import { SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
 import { Distribution, DISTRIBUTION, IS_LITE } from "../shared/buildConstants";
 import Log from "../shared/log/Log";
-import { MERGE_PREFIX } from "../shared/log/LogKeyUtils";
+import { findKey, MERGE_PREFIX } from "../shared/log/LogKeyUtils";
 import { AKIT_TIMESTAMP_KEYS, getEnabledData } from "../shared/log/RobotState";
 import { calcMockProgress, clampValue, htmlEncode, scaleValue } from "../shared/util";
 import SelectionImpl from "./SelectionImpl";
@@ -956,7 +956,7 @@ async function handleMainMessage(message: NamedMessage) {
         const incompleteWarning =
           liveConnected &&
           (window.preferences?.liveSubscribeMode === "low-bandwidth" || window.preferences?.liveMode === "phoenix");
-        const supportsAkit = window.log.getFieldKeys().find((key) => AKIT_TIMESTAMP_KEYS.includes(key)) !== undefined;
+        const supportsAkit = findKey(window.log, AKIT_TIMESTAMP_KEYS) !== undefined;
         window.sendMainMessage("prompt-export", {
           path: logPath,
           incompleteWarning: incompleteWarning,

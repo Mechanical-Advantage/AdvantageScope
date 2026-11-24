@@ -9,9 +9,10 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
+import { isChildLog } from "../../shared/log/LogKeyUtils";
 import { getLogValueText } from "../../shared/log/LogUtil";
 import { LogValueSetNumber } from "../../shared/log/LogValueSets";
-import { AKIT_TIMESTAMP_KEYS, getRobotStateRanges } from "../../shared/log/RobotState";
+import { getAkitTimestampKeyForField, getRobotStateRanges } from "../../shared/log/RobotState";
 import {
   LineGraphRendererCommand,
   LineGraphRendererCommand_Alert,
@@ -446,11 +447,10 @@ export default class LineGraphController implements TabController {
     this.rightNumericCommandCache = {};
     this.leftUnitCache = null;
     this.rightUnitCache = null;
-    const akitTimestampField = window.log.getFieldKeys().find((key) => AKIT_TIMESTAMP_KEYS.includes(key));
-    const akitTimestamps =
-      akitTimestampField === undefined
-        ? undefined
-        : window.log.getNumber(akitTimestampField, -Infinity, Infinity)?.timestamps;
+    const childLogKeys = window.log
+      .getFieldKeys()
+      .filter((key) => isChildLog(window.log.getWpilibType(key), window.log.getStructuredType(key)));
+    const akitTimestampsCache = new Map<string, number[] | undefined>();
     let addNumeric = (
       source: SourceListState,
       dataRange: [number, number],
@@ -480,9 +480,20 @@ export default class LineGraphController implements TabController {
         if (data === undefined) return;
 
         // Add AdvantageKit samples
-        if (akitTimestamps !== undefined) {
-          // Only if its needed for rendering intermediate points, or for a filter.
-          if (fieldItem.type !== "stepped" || filter !== LineGraphFilter.None) {
+        // Only if it's needed for rendering intermediate points, or for a filter.
+        if (data.timestamps.length > 0 && (fieldItem.type !== "stepped" || filter !== LineGraphFilter.None)) {
+          const akitTimestampField = getAkitTimestampKeyForField(window.log, fieldItem.logKey, childLogKeys);
+          let akitTimestamps: number[] | undefined = undefined;
+          if (akitTimestampField !== undefined) {
+            if (!akitTimestampsCache.has(akitTimestampField)) {
+              akitTimestampsCache.set(
+                akitTimestampField,
+                window.log.getNumber(akitTimestampField, -Infinity, Infinity)?.timestamps
+              );
+            }
+            akitTimestamps = akitTimestampsCache.get(akitTimestampField);
+          }
+          if (akitTimestamps !== undefined && akitTimestamps.length > 0) {
             let newData: LogValueSetNumber = { timestamps: [], values: [] };
             let sourceIndex = 0;
             let akitIndex = lowerBound(akitTimestamps, data!.timestamps[0]);

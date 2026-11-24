@@ -8,6 +8,7 @@
 import { KeyboardUtil } from "../shared/KeyboardUtil";
 import Selection, { SelectionMode } from "../shared/Selection";
 import TabType from "../shared/TabType";
+import { findKey } from "../shared/log/LogKeyUtils";
 import { AKIT_TIMESTAMP_KEYS } from "../shared/log/RobotState";
 
 export default class SelectionImpl implements Selection {
@@ -262,7 +263,7 @@ export default class SelectionImpl implements Selection {
 
   /** Steps forward or backward by one cycle. */
   stepCycle(isForward: boolean) {
-    const akitTimestampKey = window.log.getFieldKeys().find((key) => AKIT_TIMESTAMP_KEYS.includes(key));
+    const akitTimestampKey = findKey(window.log, AKIT_TIMESTAMP_KEYS);
     if (akitTimestampKey !== undefined) {
       const timestampData = window.log.getNumber(akitTimestampKey, -Infinity, Infinity);
       if (timestampData === undefined) return;
