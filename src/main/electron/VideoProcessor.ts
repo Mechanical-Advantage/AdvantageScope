@@ -141,12 +141,7 @@ export class VideoProcessor {
         "bin",
         process.platform === "win32" ? "yt-dlp.exe" : process.platform === "darwin" ? "yt-dlp_macos" : "yt-dlp"
       );
-      const binaryDir = path.dirname(fullBinaryPath);
-      const binaryName = `.${path.sep}${path.basename(fullBinaryPath)}`;
-      const rawYt = youtubedl.create(binaryName);
-      this.ytInst = (url, flags, options) => {
-        return rawYt(url, flags, { cwd: binaryDir, ...options });
-      };
+      this.ytInst = youtubedl.create(fullBinaryPath);
     } else {
       this.ytInst = youtubedl;
     }
@@ -163,10 +158,11 @@ export class VideoProcessor {
       const errorStr = String(e);
       // Check for common error indicators that Python is missing or invalid
       if (
-        errorStr.includes("python3") ||
-        errorStr.includes("Python") ||
-        errorStr.includes("ENOENT") ||
-        (e.code && e.code === "ENOENT")
+        process.platform === "linux" &&
+        (errorStr.includes("python3") ||
+          errorStr.includes("Python") ||
+          errorStr.includes("ENOENT") ||
+          (e.code && e.code === "ENOENT"))
       ) {
         console.error(e);
         if (window && !window.isDestroyed()) {

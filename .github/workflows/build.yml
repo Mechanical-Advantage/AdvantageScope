@@ -306,8 +306,11 @@ jobs:
         run: |
           if [ "$(node -p process.arch)" != "${{ matrix.arch }}" ]; then
             LZMA_VERSION=$(node -p "require('./node_modules/@napi-rs/lzma/package.json').version")
-            rm -rf node_modules/@napi-rs/lzma-*
-            npm install --no-save --no-package-lock --ignore-scripts --force "@napi-rs/lzma-win32-${{ matrix.arch }}-msvc@${LZMA_VERSION}"
+            rm -rf node_modules/@napi-rs/lzma-* .lzma-tmp
+            mkdir -p .lzma-tmp "node_modules/@napi-rs/lzma-win32-${{ matrix.arch }}-msvc"
+            npm pack "@napi-rs/lzma-win32-${{ matrix.arch }}-msvc@${LZMA_VERSION}" --pack-destination .lzma-tmp
+            tar -xzf .lzma-tmp/*.tgz --strip-components=1 -C "node_modules/@napi-rs/lzma-win32-${{ matrix.arch }}-msvc"
+            rm -rf .lzma-tmp
           fi
       - name: Download bundles
         uses: actions/download-artifact@v8
@@ -373,8 +376,11 @@ jobs:
         run: |
           if [ "$(node -p process.arch)" != "${{ matrix.arch }}" ]; then
             LZMA_VERSION=$(node -p "require('./node_modules/@napi-rs/lzma/package.json').version")
-            rm -rf node_modules/@napi-rs/lzma-*
-            npm install --no-save --no-package-lock --ignore-scripts --force "@napi-rs/lzma-darwin-${{ matrix.arch }}@${LZMA_VERSION}"
+            rm -rf node_modules/@napi-rs/lzma-* .lzma-tmp
+            mkdir -p .lzma-tmp "node_modules/@napi-rs/lzma-darwin-${{ matrix.arch }}"
+            npm pack "@napi-rs/lzma-darwin-${{ matrix.arch }}@${LZMA_VERSION}" --pack-destination .lzma-tmp
+            tar -xzf .lzma-tmp/*.tgz --strip-components=1 -C "node_modules/@napi-rs/lzma-darwin-${{ matrix.arch }}"
+            rm -rf .lzma-tmp
           fi
       - name: Download bundles
         uses: actions/download-artifact@v8
@@ -453,8 +459,11 @@ jobs:
         run: |
           if [ "$(node -p process.arch)" != "${{ matrix.arch.electronArch }}" ]; then
             LZMA_VERSION=$(node -p "require('./node_modules/@napi-rs/lzma/package.json').version")
-            rm -rf node_modules/@napi-rs/lzma-*
-            npm install --no-save --no-package-lock --ignore-scripts --force "@napi-rs/lzma-linux-${{ matrix.arch.electronArch }}-gnu@${LZMA_VERSION}"
+            rm -rf node_modules/@napi-rs/lzma-* .lzma-tmp
+            mkdir -p .lzma-tmp "node_modules/@napi-rs/lzma-linux-${{ matrix.arch.electronArch }}-gnu"
+            npm pack "@napi-rs/lzma-linux-${{ matrix.arch.electronArch }}-gnu@${LZMA_VERSION}" --pack-destination .lzma-tmp
+            tar -xzf .lzma-tmp/*.tgz --strip-components=1 -C "node_modules/@napi-rs/lzma-linux-${{ matrix.arch.electronArch }}-gnu"
+            rm -rf .lzma-tmp
           fi
       - name: Install Linux packages
         run: |
@@ -520,8 +529,11 @@ jobs:
         run: |
           if [ "$(node -p process.arch)" != "${{ matrix.arch }}" ]; then
             LZMA_VERSION=$(node -p "require('./node_modules/@napi-rs/lzma/package.json').version")
-            rm -rf node_modules/@napi-rs/lzma-*
-            npm install --no-save --no-package-lock --ignore-scripts --force "@napi-rs/lzma-win32-${{ matrix.arch }}-msvc@${LZMA_VERSION}"
+            rm -rf node_modules/@napi-rs/lzma-* .lzma-tmp
+            mkdir -p .lzma-tmp "node_modules/@napi-rs/lzma-win32-${{ matrix.arch }}-msvc"
+            npm pack "@napi-rs/lzma-win32-${{ matrix.arch }}-msvc@${LZMA_VERSION}" --pack-destination .lzma-tmp
+            tar -xzf .lzma-tmp/*.tgz --strip-components=1 -C "node_modules/@napi-rs/lzma-win32-${{ matrix.arch }}-msvc"
+            rm -rf .lzma-tmp
           fi
       - name: Download bundles
         uses: actions/download-artifact@v8
@@ -590,8 +602,11 @@ jobs:
         run: |
           if [ "$(node -p process.arch)" != "${{ matrix.arch }}" ]; then
             LZMA_VERSION=$(node -p "require('./node_modules/@napi-rs/lzma/package.json').version")
-            rm -rf node_modules/@napi-rs/lzma-*
-            npm install --no-save --no-package-lock --ignore-scripts --force "@napi-rs/lzma-darwin-${{ matrix.arch }}@${LZMA_VERSION}"
+            rm -rf node_modules/@napi-rs/lzma-* .lzma-tmp
+            mkdir -p .lzma-tmp "node_modules/@napi-rs/lzma-darwin-${{ matrix.arch }}"
+            npm pack "@napi-rs/lzma-darwin-${{ matrix.arch }}@${LZMA_VERSION}" --pack-destination .lzma-tmp
+            tar -xzf .lzma-tmp/*.tgz --strip-components=1 -C "node_modules/@napi-rs/lzma-darwin-${{ matrix.arch }}"
+            rm -rf .lzma-tmp
           fi
       - name: Download bundles
         uses: actions/download-artifact@v8
@@ -669,8 +684,11 @@ jobs:
         run: |
           if [ "$(node -p process.arch)" != "${{ matrix.arch }}" ]; then
             LZMA_VERSION=$(node -p "require('./node_modules/@napi-rs/lzma/package.json').version")
-            rm -rf node_modules/@napi-rs/lzma-*
-            npm install --no-save --no-package-lock --ignore-scripts --force "@napi-rs/lzma-linux-${{ matrix.arch }}-gnu@${LZMA_VERSION}"
+            rm -rf node_modules/@napi-rs/lzma-* .lzma-tmp
+            mkdir -p .lzma-tmp "node_modules/@napi-rs/lzma-linux-${{ matrix.arch }}-gnu"
+            npm pack "@napi-rs/lzma-linux-${{ matrix.arch }}-gnu@${LZMA_VERSION}" --pack-destination .lzma-tmp
+            tar -xzf .lzma-tmp/*.tgz --strip-components=1 -C "node_modules/@napi-rs/lzma-linux-${{ matrix.arch }}-gnu"
+            rm -rf .lzma-tmp
           fi
       - name: Download bundles
         uses: actions/download-artifact@v8
