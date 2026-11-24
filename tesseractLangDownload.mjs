@@ -5,9 +5,13 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import download from "download";
+import fs from "fs";
 
 const FILENAME = "eng.traineddata.gz";
 const URL = "https://cdn.jsdelivr.net/npm/@tesseract.js-data/eng/4.0.0_best_int/" + FILENAME;
 
-await download(URL, process.cwd(), { filename: FILENAME });
+const response = await fetch(URL);
+if (!response.ok) {
+  throw new Error(`Failed to download ${FILENAME}: ${response.status} ${response.statusText}`);
+}
+await fs.promises.writeFile(FILENAME, Buffer.from(await response.arrayBuffer()));

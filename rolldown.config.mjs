@@ -93,7 +93,6 @@ export default (cliArgs) => {
           format: "cjs"
         },
         context: "this",
-        external: ["download"],
         plugins: [typescript()],
         onwarn() {}
       }
@@ -115,7 +114,6 @@ export default (cliArgs) => {
             "http",
             "path",
             "ssh2",
-            "download",
             "youtube-dl-exec",
             "tesseract.js",
             "@napi-rs/lzma",

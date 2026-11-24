@@ -6,7 +6,6 @@
 // at the root directory of this project.
 
 import { ChildProcess, spawn } from "child_process";
-import download from "download";
 import { BrowserWindow, Menu, MenuItem, app, clipboard, dialog } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
@@ -259,9 +258,11 @@ export class VideoProcessor {
     let filenameTemp = "ffmpeg-download";
     let filename = process.platform === "win32" ? "ffmpeg.exe" : "ffmpeg";
     let downloadInfo = this.FFMPEG_DOWNLOAD_INFO[getElectronPlatform()];
-    await download(downloadInfo.url, folder, {
-      filename: filenameTemp
-    });
+    const response = await fetch(downloadInfo.url);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    await fs.promises.writeFile(path.join(folder, filenameTemp), Buffer.from(await response.arrayBuffer()));
 
     // Verify hash
     let hash = crypto

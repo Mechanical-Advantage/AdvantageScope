@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import download from "download";
+import AdmZip from "adm-zip";
 import fs from "fs";
 import path from "path";
 
@@ -69,10 +69,15 @@ if (!isDS) {
 }
 
 // Download GitHub assets
-githubAssetNames.forEach((asset) => {
-  const url = `https://github.com/${githubAssetsRepository}/releases/download/${githubAssetsTag}/${asset}.zip`;
-  const destination = path.join(liteAssetsPath, asset);
-  download(url, destination, { extract: true }).then(() => {
+await Promise.all(
+  githubAssetNames.map(async (asset) => {
+    const url = `https://github.com/${githubAssetsRepository}/releases/download/${githubAssetsTag}/${asset}.zip`;
+    const destination = path.join(liteAssetsPath, asset);
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to download '${asset}': HTTP ${response.status}`);
+    }
+    new AdmZip(Buffer.from(await response.arrayBuffer())).extractAllTo(destination, true);
     console.log("Finished downloading '" + asset + "'");
-  });
-});
+  })
+);

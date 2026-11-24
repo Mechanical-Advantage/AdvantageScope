@@ -6,7 +6,6 @@
 // at the root directory of this project.
 
 import { compareVersions } from "compare-versions";
-import download from "download";
 import fs from "fs";
 import crypto from "node:crypto";
 import path from "path";
@@ -118,7 +117,11 @@ export async function downloadOwletInternal(target: string, platform: string, st
         );
 
         // Download file to temporary location
-        await download(downloadVersion.Urls[owletPlatform], target, { filename: tempFilename });
+        const response = await fetch(downloadVersion.Urls[owletPlatform]);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        await fs.promises.writeFile(path.join(target, tempFilename), Buffer.from(await response.arrayBuffer()));
 
         // Verify hash
         const hash = crypto.createHash("sha1");
