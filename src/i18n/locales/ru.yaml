@@ -29,6 +29,14 @@ download:
   sizeValue: "({{size}} МБ)"
   alertSelectLog: "Выберите лог для скачивания."
   alertNoNewLogs: "Новых логов не найдено."
+  alertSaved_one: "Сохранён {{count}} лог в <u>{{path}}</u>"
+  alertSaved_few: "Сохранено {{count}} лога в <u>{{path}}</u>"
+  alertSaved_many: "Сохранено {{count}} логов в <u>{{path}}</u>"
+  alertSaved_other: "Сохранено {{count}} лога в <u>{{path}}</u>"
+  alertSavedSkipped_one: "Сохранён {{count}} новый лог (пропущено: {{skipped}}) в <u>{{path}}</u>"
+  alertSavedSkipped_few: "Сохранено {{count}} новых лога (пропущено: {{skipped}}) в <u>{{path}}</u>"
+  alertSavedSkipped_many: "Сохранено {{count}} новых логов (пропущено: {{skipped}}) в <u>{{path}}</u>"
+  alertSavedSkipped_other: "Сохранено {{count}} новых лога (пропущено: {{skipped}}) в <u>{{path}}</u>"
 
 editFov:
   title: "Изменить поле зрения — AdvantageScope"
@@ -141,6 +149,7 @@ renameTab:
 
 satellite:
   title: "AdvantageScope"
+  windowTitle: "{{title}} — {{app}}"
   metadataNone: "Метаданные не найдены. Подробнее о публикации метаданных см. в документации."
   tableDelete: "Убрать с панели"
   tableJumpTitle: "Перейти к метке времени"
@@ -216,6 +225,7 @@ xrControls:
   showRobotsTitle: "Переключить видимость моделей роботов"
 
 tabs:
+  documentation: "Документация"
   console: "Консоль"
   joysticks: "Джойстики"
   lineGraph: "Линейный график"
@@ -261,10 +271,13 @@ sourceList:
   values_few: "{{count}} значения"
   values_many: "{{count}} значений"
   values_other: "{{count}} значения"
+  arrayListSeparator: ", "
+  arraySummary: "{{count}} — {{values}}"
   toggleVisibility: "Переключить видимость поля"
   hideField: "Скрыть поле"
   showField: "Показать поле"
   typeName: "{{name}}:"
+  typeNameSeparator: "/"
   previews:
     moduleVelocities: "ν: {{speed}}, θ: {{angle}}"
     robotVelocities: "νx: {{vx}}, νy: {{vy}}, Ω: {{omega}}"
@@ -306,6 +319,10 @@ licenses:
 
 hub:
   title: "AdvantageScope"
+  titleLite: "AdvantageScope Lite"
+  titleLiteDs: "AdvantageScope Lite (DS)"
+  titleWithName: "{{name}} — {{app}}"
+  titleWithStatus: "{{name}} ({{status}}) — {{app}}"
   updateAvailable: "Доступно обновление"
   shareFeedback: "Оставить отзыв"
   timelineScrollToZoom: "Прокручивайте шкалу времени для масштабирования"
@@ -326,6 +343,14 @@ hub:
     cannotInsertTitle_many: "Не удалось вставить файлы"
     cannotInsertTitle_other: "Не удалось вставить файлы"
     noLogsLoaded: "В данный момент файлы логов не загружены. Выберите «Открыть лог(и)», чтобы загрузить новые файлы."
+    multipleFiles_one: "{{count}} файл лога"
+    multipleFiles_few: "{{count}} файла лога"
+    multipleFiles_many: "{{count}} файлов лога"
+    multipleFiles_other: "{{count}} файла лога"
+
+  assets:
+    loadFailedTitle: "Не удалось загрузить ресурсы"
+    loadFailedContent: "Не удалось загрузить некоторые файлы ресурсов. Подробности см. в консоли разработчика."
 
   live:
     statusSearching: "Поиск"
@@ -367,6 +392,7 @@ hub:
     searchPlaceholder: "Поиск"
     searchTitle: "Искать поля"
     tuningTitle: "Переключить режим настройки"
+    setValueTitle: "Установить значение"
     fields_one: "{{count}} поле"
     fields_few: "{{count}} поля"
     fields_many: "{{count}} полей"
@@ -393,6 +419,7 @@ hub:
     selectTitle3d: "Выбрать модель поля"
     dsAlert: "Позиция станции управления<br>недоступна."
     cameraAlert: "Поза робота недоступна<br>для камеры «{{name}}»."
+    cameraUnknown: "???"
     frc: "Поля FRC"
     ftc: "Поля FTC"
     sourceTitle: "Открыть URL источника изображения поля"
@@ -439,6 +466,7 @@ hub:
     optionValues:
       off: "Выкл."
       on: "Вкл."
+      gamePiece_variant_None: "Нет"
       robot_bumpers_: "Цвет альянса"
       radians: "Радианы"
       degrees: "Градусы"
@@ -542,6 +570,7 @@ hub:
     dataRangeMax: "Максимальное значение гистограммы"
     stepSize: "Размер шага"
     stepSizeTitle: "Размер шага гистограммы"
+    histogramRange: "от {{min}} до {{max}}"
 
   video:
     local: "Открыть локальный видеофайл"
@@ -643,6 +672,7 @@ hub:
     value: "Значение"
     real: "Реальный"
     replay: "Повтор"
+    notAvailable: "Н/Д"
 
   console:
     exportLog: "Экспортировать лог консоли"
@@ -650,6 +680,7 @@ hub:
     addConsoleData: "Добавьте поле с данными консоли и попробуйте снова."
 
 xrClient:
+  title: "XR-клиент — AdvantageScope XR"
   miniature:
     placeRedFRC: "Коснитесь экрана, чтобы разместить стену красного альянса."
     placeBlueFRC: "Коснитесь экрана, чтобы разместить стену синего альянса."
@@ -750,7 +781,9 @@ menu:
 
   view:
     toggleSidebar: "Переключить боковую панель"
+    toggleSidebarShortcut: "Переключить боковую панель ({{shortcut}})"
     toggleControls: "Переключить элементы управления"
+    toggleControlsShortcut: "Переключить элементы управления ({{shortcut}})"
     resetLayout: "Сбросить макет"
     loopVisible: "Зациклить видимый диапазон"
     showRobotMode: "Показывать режим робота"
@@ -776,7 +809,12 @@ menu:
     closeTab: "Закрыть вкладку"
     closeTabShortcut: "Закрыть вкладку ({{shortcut}})"
     newTabShortcut: "Новая вкладка (сочетание клавиш)"
+    tabShortcut: "{{tab}} ({{shortcut}})"
     renameTab: "Переименовать вкладку"
+
+  keys:
+    ctrl: "Ctrl"
+    alt: "Alt"
 
   window:
     heading: "Окно"
@@ -811,6 +849,7 @@ menu:
     disableAutoUnits: "Отключить автоматические единицы"
     resetUnits: "Сбросить единицы"
     zoomEnabled: "Масштабировать до включённого диапазона"
+    zoomEnabledShortcut: "Масштабировать до включённого диапазона ({{shortcut}})"
     differentiate: "Дифференцировать"
     integrate: "Интегрировать"
 
@@ -847,6 +886,7 @@ main:
     restartTitle: "Перезапустить AdvantageScope?"
 
   assets:
+    noStatus: "Статус недоступен."
     downloadStarted: "Загрузка началась в {{time}}. Подождите несколько минут до завершения загрузки."
     downloadFinished: "Все ресурсы загружены. AdvantageScope будет периодически проверять наличие обновлений."
     connectFailed: "Не удалось подключиться к GitHub. Повторная попытка будет выполнена в ближайшее время."
@@ -854,6 +894,7 @@ main:
     readme: "В этой папке содержатся дополнительные ресурсы для 2D-поля, 3D-поля и видов джойстиков. Подробнее см. в документации AdvantageScope (доступна через вкладку документации в приложении или по URL-адресу ниже)."
 
   owlet:
+    noStatus: "Статус недоступен."
     upToDate: "Owlet обновлён. AdvantageScope будет периодически проверять наличие обновлений."
     offlineCache: "Используется автономный кэш Owlet. Проверка обновлений будет выполнена в ближайшее время."
     noDiskSpace: "Недостаточно места на диске. Повторная попытка будет выполнена в ближайшее время."
@@ -940,6 +981,7 @@ main:
     openDsInThisWindow: "Открыть в этом окне"
     unsupportedFormatLite: "Неподдерживаемый формат файла в AdvantageScope Lite."
     decompressFailed: "Не удалось распаковать файл WPILOG."
+    invalidExtension: "Недопустимое расширение лога"
     limitedSignals: "Доступен ограниченный набор сигналов"
     limitedSignalsDetail: "Этот файл лога включает ограниченный набор сигналов от устройств Phoenix. Подробнее см. в документации Phoenix."
 
@@ -957,7 +999,7 @@ main:
 
   video:
     pythonRequired: "Требуется установка Python"
-    pythonRequiredDetail: "Для этой функции требуется Python 3.10 или выше. Установите Python и попробуйте снова."
+    pythonRequiredDetail: "Для этой функции требуется Python 3.11 или выше. Установите Python и попробуйте снова."
     ffmpegRequired: "Требуется установка FFmpeg"
     ffmpegRequiredDetail: "FFmpeg требуется для обработки видеофайлов. Установите FFmpeg и добавьте его в PATH."
     downloadFfmpeg: "Скачать FFmpeg?"
@@ -972,6 +1014,7 @@ main:
     tbaFailedDetail: "Возникла проблема при поиске видео матча на The Blue Alliance. Проверьте API-ключ или загрузите видео по URL-адресу YouTube или из локального файла."
     openTitle: "Выберите видео для открытия"
     filter: "Видео"
+    unknownVideo: "Неизвестное видео"
 
   warnings:
     error: "Ошибка"

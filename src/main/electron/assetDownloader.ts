@@ -5,8 +5,8 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import AdmZip from "adm-zip";
 import checkDiskSpace from "check-disk-space";
-import download from "download";
 import fs from "fs";
 import path from "path";
 import { DISTRIBUTION, Distribution } from "../../shared/buildConstants";
@@ -17,7 +17,7 @@ const REQUIRED_SPACE_GB = 8;
 const FAILURE_TIMEOUT_MS = 30 * 1000; // 30 seconds
 const SUCCESS_TIMEOUT_MS = 6 * 60 * 60 * 1000; // 6 hours
 
-let statusText = "No status available.";
+let statusText: string | null = null;
 
 /** Updates the local set of automatic assets and retries periodically in case of network issues. */
 export async function startAssetDownloadLoop(updateCallback: () => Promise<void>) {
@@ -54,7 +54,7 @@ export async function startAssetDownloadLoop(updateCallback: () => Promise<void>
 
 /** Returns a string for the current status of the download. */
 export function getAssetDownloadStatus() {
-  return statusText;
+  return statusText ?? t("main.assets.noStatus");
 }
 
 interface AssetDownloadInfo {
@@ -107,11 +107,14 @@ async function updateLocalAssets(downloadInfo: AssetDownloadInfo[]) {
   await Promise.all(
     downloadInfo
       .filter((assetInfo) => !assetInfo.optional && !fs.existsSync(assetInfo.target))
-      .map((assetInfo) =>
-        download(assetInfo.source, assetInfo.target + "_download", { extract: true }).then(() =>
-          fs.renameSync(assetInfo.target + "_download", assetInfo.target)
-        )
-      )
+      .map(async (assetInfo) => {
+        const response = await fetch(assetInfo.source);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        new AdmZip(Buffer.from(await response.arrayBuffer())).extractAllTo(assetInfo.target + "_download", true);
+        fs.renameSync(assetInfo.target + "_download", assetInfo.target);
+      })
   );
 
   // Delete old assets

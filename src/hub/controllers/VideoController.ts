@@ -187,9 +187,9 @@ export default class VideoController implements TabController {
         return;
 
       if (event.code === "ArrowUp" || event.code === "ArrowDown") {
-        toggleLock();
+        if (!event.repeat) toggleLock();
       } else if (KeyboardUtil.matchesKey(event, "/")) {
-        togglePlayPause();
+        if (!event.repeat) togglePlayPause();
       } else if (KeyboardUtil.matchesKey(event, ",")) {
         skipTime(-5);
       } else if (KeyboardUtil.matchesKey(event, ".")) {

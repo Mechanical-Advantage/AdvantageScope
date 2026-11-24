@@ -21,8 +21,8 @@ Please remember to behave with **Gracious Professionalism** in all interactions.
 
 AdvantageScope is a Node.js application using Electron and TypeScript. It also uses C++ (via WebAssembly) for high-performance tasks, which requires Emscripten.
 
-1. **Node.js Version:** Ensure you have Node.js installed (LTS version recommended).
-2. **Emscripten:** Install _Emscripten 4.0.12_. This is required to compile the WebAssembly logic used in the application.
+1. **Node.js Version:** Ensure you have Node.js 24 installed.
+2. **Emscripten:** Install _Emscripten 7.0.1_. This is required to compile the WebAssembly logic used in the application.
 3. **Clone the Repository:**
 
 ```bash
@@ -78,7 +78,6 @@ The following tasks are defined in `package.json` to assist with development:
 
 - `npm start`: Runs the application in development mode.
 - `npm run build`: Full production build. Compiles code, builds WebAssembly, builds documentation, and packages the Electron app.
-- `npm run build-linux`: Full production build for Linux. Runs an alternative version of Electron that works correctly on Wayland (to be fixed in the future).
 - `npm run fast-build`: Compiles and packages the application into a directory (unpacked) rather than an installer. Useful for quick local testing of the production build.
 - `npm run compile`: Runs Rollup to compile the TypeScript source bundles.
 - `npm run wasm:compile`: Compiles the C++ logic to WebAssembly (requires Emscripten).

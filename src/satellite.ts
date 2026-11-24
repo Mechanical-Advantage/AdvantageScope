@@ -152,9 +152,10 @@ window.addEventListener("message", (event) => {
             const windowTitleSuffix = t("satellite.title");
             titleElement.innerHTML =
               (type !== null ? getTabIcon(type) + " " : "") +
-              htmlEncode(newTitle) +
-              " — " +
-              htmlEncode(windowTitleSuffix);
+              t("satellite.windowTitle", {
+                title: htmlEncode(newTitle),
+                app: htmlEncode(windowTitleSuffix)
+              });
             title = newTitle;
           }
 
@@ -242,10 +243,10 @@ window.addEventListener("keydown", (event) => {
   }
   if (event.code === "Space") {
     event.preventDefault();
-    window.selection.togglePlayback();
+    if (!event.repeat) window.selection.togglePlayback();
   } else if (KeyboardUtil.matchesKey(event, "l")) {
     event.preventDefault();
-    window.selection.toggleLock();
+    if (!event.repeat) window.selection.toggleLock();
   } else if (event.code === "ArrowLeft" || event.code === "ArrowRight") {
     event.preventDefault();
     window.selection.stepCycle(event.code === "ArrowRight");

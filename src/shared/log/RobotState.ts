@@ -7,7 +7,7 @@
 
 import MatchInfo, { MatchType } from "../MatchInfo";
 import Log from "./Log";
-import { findKey } from "./LogKeyUtils";
+import { applyKeyPrefix, extractMergePrefix, findKey, isChildLog } from "./LogKeyUtils";
 import { getOrDefault } from "./LogUtil";
 import { LogValueSetBoolean } from "./LogValueSets";
 import LoggableType from "./LoggableType";
@@ -122,6 +122,41 @@ export type RobotStateRange = { start: number; end?: number; mode: RobotMode };
 /** Finds the first matching key that indicates enabled state. */
 export function getEnabledKey(log: Log): string | undefined {
   return findKey(log, ENABLED_KEYS);
+}
+
+/** Finds the AdvantageKit timestamp key that applies to a specific field key, if any. */
+export function getAkitTimestampKeyForField(log: Log, fieldKey: string, childLogKeys?: string[]): string | undefined {
+  // Determine the root log prefix (longest matching child log prefix, or merge prefix)
+  let logPrefix = extractMergePrefix(fieldKey);
+  const allChildLogs =
+    childLogKeys ?? log.getFieldKeys().filter((key) => isChildLog(log.getWpilibType(key), log.getStructuredType(key)));
+  for (let i = 0; i < allChildLogs.length; i++) {
+    const childKey = allChildLogs[i];
+    if (childKey.length > logPrefix.length && fieldKey.startsWith(childKey + "/")) {
+      logPrefix = childKey;
+    }
+  }
+
+  // Determine which AdvantageKit timestamp key matches this field's namespace
+  const localKey = fieldKey.slice(logPrefix.length);
+  let candidateKey: string | undefined = undefined;
+  if (localKey.startsWith("NT:/AdvantageKit/") || localKey.startsWith("/NT:/AdvantageKit/")) {
+    candidateKey = applyKeyPrefix(logPrefix, "NT:/AdvantageKit/Timestamp");
+  } else if (
+    localKey.startsWith("NT:") ||
+    localKey.startsWith("/NT:") ||
+    localKey.startsWith("DS:") ||
+    localKey.startsWith("/DS:")
+  ) {
+    return undefined;
+  } else if (localKey.startsWith("/")) {
+    candidateKey = applyKeyPrefix(logPrefix, "/Timestamp");
+  }
+
+  if (candidateKey !== undefined && log.getField(candidateKey) !== null) {
+    return candidateKey;
+  }
+  return undefined;
 }
 
 /** Retrieves the timestamp when the robot program started. */

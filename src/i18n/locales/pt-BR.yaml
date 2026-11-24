@@ -29,6 +29,10 @@ download:
   sizeValue: "({{size}} MB)"
   alertSelectLog: "Selecione um log para baixar."
   alertNoNewLogs: "Nenhum novo log encontrado."
+  alertSaved_one: "{{count}} log salvo em <u>{{path}}</u>"
+  alertSaved_other: "{{count}} logs salvos em <u>{{path}}</u>"
+  alertSavedSkipped_one: "{{count}} novo log salvo ({{skipped}} ignorados) em <u>{{path}}</u>"
+  alertSavedSkipped_other: "{{count}} novos logs salvos ({{skipped}} ignorados) em <u>{{path}}</u>"
 
 editFov:
   title: "Editar FOV — AdvantageScope"
@@ -141,6 +145,7 @@ renameTab:
 
 satellite:
   title: "AdvantageScope"
+  windowTitle: "{{title}} — {{app}}"
   metadataNone: "Nenhum metadado encontrado. Verifique a documentação para obter detalhes sobre a publicação de metadados."
   tableDelete: "Remover da visualização"
   tableJumpTitle: "Ir para timestamp"
@@ -214,6 +219,7 @@ xrControls:
   showRobotsTitle: "Alternar visibilidade dos modelos de robôs"
 
 tabs:
+  documentation: "Documentação"
   console: "Console"
   joysticks: "Joysticks"
   lineGraph: "Gráfico de linha"
@@ -249,10 +255,13 @@ sourceList:
   alerts: "{{errors}}, {{warnings}}, {{infos}}"
   values_one: "{{count}} valor"
   values_other: "{{count}} valores"
+  arrayListSeparator: ", "
+  arraySummary: "{{count}} — {{values}}"
   toggleVisibility: "Alternar visibilidade do campo"
   hideField: "Ocultar campo"
   showField: "Mostrar campo"
   typeName: "{{name}}:"
+  typeNameSeparator: "/"
   previews:
     moduleVelocities: "ν: {{speed}}, θ: {{angle}}"
     robotVelocities: "νx: {{vx}}, νy: {{vy}}, Ω: {{omega}}"
@@ -294,6 +303,10 @@ licenses:
 
 hub:
   title: "AdvantageScope"
+  titleLite: "AdvantageScope Lite"
+  titleLiteDs: "AdvantageScope Lite (DS)"
+  titleWithName: "{{name}} — {{app}}"
+  titleWithStatus: "{{name}} ({{status}}) — {{app}}"
   updateAvailable: "Atualização disponível"
   shareFeedback: "Compartilhar feedback"
   timelineScrollToZoom: "Role a linha do tempo para dar zoom"
@@ -310,6 +323,12 @@ hub:
     cannotInsertTitle_one: "Não é possível inserir o arquivo"
     cannotInsertTitle_other: "Não é possível inserir os arquivos"
     noLogsLoaded: 'Nenhum arquivo de log carregado no momento. Escolha "Abrir log(s)" para carregar novos arquivos.'
+    multipleFiles_one: "{{count}} arquivo de log"
+    multipleFiles_other: "{{count}} arquivos de log"
+
+  assets:
+    loadFailedTitle: "Falha ao carregar recursos"
+    loadFailedContent: "Falha ao carregar alguns arquivos de recursos. Verifique o console de desenvolvedor para mais detalhes."
 
   live:
     statusSearching: "Buscando"
@@ -351,6 +370,7 @@ hub:
     searchPlaceholder: "Pesquisar"
     searchTitle: "Pesquisar campos"
     tuningTitle: "Alternar modo de ajuste (tuning)"
+    setValueTitle: "Definir valor"
     fields_one: "{{count}} campo"
     fields_other: "{{count}} campos"
     titleSeconds_one: "{{fields}}, {{duration}} segundo"
@@ -369,6 +389,7 @@ hub:
     selectTitle3d: "Selecionar modelo do campo"
     dsAlert: "Posição da Driver Station<br>não disponível."
     cameraAlert: 'Pose do robô não disponível<br>para a câmera "{{name}}".'
+    cameraUnknown: "???"
     frc: "Campos da FRC"
     ftc: "Campos da FTC"
     sourceTitle: "Abrir URL de origem da imagem do campo"
@@ -415,6 +436,7 @@ hub:
     optionValues:
       off: "Desligado"
       on: "Ligado"
+      gamePiece_variant_None: "Nenhuma"
       robot_bumpers_: "Cor da aliança"
       radians: "Radianos"
       degrees: "Graus"
@@ -518,6 +540,7 @@ hub:
     dataRangeMax: "Valor máximo do histograma"
     stepSize: "Largura do intervalo"
     stepSizeTitle: "Largura do intervalo do histograma"
+    histogramRange: "{{min}} a {{max}}"
 
   video:
     local: "Abrir arquivo de vídeo local"
@@ -619,6 +642,7 @@ hub:
     value: "Valor"
     real: "Real"
     replay: "Repetição"
+    notAvailable: "ND"
 
   console:
     exportLog: "Exportar log do console"
@@ -626,6 +650,7 @@ hub:
     addConsoleData: "Adicione um campo com dados do console e tente novamente."
 
 xrClient:
+  title: "Cliente XR — AdvantageScope XR"
   miniature:
     placeRedFRC: "Toque para posicionar a parede da aliança vermelha."
     placeBlueFRC: "Toque para posicionar a parede da aliança azul."
@@ -725,7 +750,9 @@ menu:
 
   view:
     toggleSidebar: "Alternar barra lateral"
+    toggleSidebarShortcut: "Alternar barra lateral ({{shortcut}})"
     toggleControls: "Alternar controles"
+    toggleControlsShortcut: "Alternar controles ({{shortcut}})"
     resetLayout: "Redefinir layout"
     loopVisible: "Reproduzir intervalo visível em loop"
     showRobotMode: "Mostrar modo do robô"
@@ -751,7 +778,12 @@ menu:
     closeTab: "Fechar guia"
     closeTabShortcut: "Fechar guia ({{shortcut}})"
     newTabShortcut: "Nova guia (atalho)"
+    tabShortcut: "{{tab}} ({{shortcut}})"
     renameTab: "Renomear guia"
+
+  keys:
+    ctrl: "Ctrl"
+    alt: "Alt"
 
   window:
     heading: "Janela"
@@ -786,6 +818,7 @@ menu:
     disableAutoUnits: "Desativar unidades automáticas"
     resetUnits: "Redefinir unidades"
     zoomEnabled: "Dar zoom no período habilitado"
+    zoomEnabledShortcut: "Dar zoom no período habilitado ({{shortcut}})"
     differentiate: "Diferenciar"
     integrate: "Integrar"
 
@@ -822,6 +855,7 @@ main:
     restartTitle: "Reiniciar o AdvantageScope?"
 
   assets:
+    noStatus: "Nenhum status disponível."
     downloadStarted: "Download iniciado às {{time}}. Aguarde alguns minutos até que o download seja concluído."
     downloadFinished: "Todos os recursos foram baixados. O AdvantageScope verificará periodicamente se há atualizações."
     connectFailed: "Não é possível conectar ao GitHub. Tentando novamente em breve."
@@ -829,6 +863,7 @@ main:
     readme: "Esta pasta contém recursos extras para as visualizações de campo 2D, campo 3D e joystick. Para mais detalhes, você pode consultar a documentação do AdvantageScope (disponível na guia de documentação no aplicativo ou na URL abaixo)."
 
   owlet:
+    noStatus: "Nenhum status disponível."
     upToDate: "O Owlet está atualizado. O AdvantageScope verificará periodicamente se há atualizações."
     offlineCache: "Usando cache offline do Owlet. Verificando atualizações em breve."
     noDiskSpace: "Espaço em disco insuficiente. Tentando novamente em breve."
@@ -915,6 +950,7 @@ main:
     openDsInThisWindow: "Abrir nesta janela"
     unsupportedFormatLite: "Formato de arquivo não suportado no AdvantageScope Lite."
     decompressFailed: "Falha ao descompactar arquivo WPILOG."
+    invalidExtension: "Extensão de log inválida"
     limitedSignals: "Sinais limitados disponíveis"
     limitedSignalsDetail: "Este arquivo de log inclui um número limitado de sinais de dispositivos Phoenix. Verifique a documentação do Phoenix para mais detalhes."
 
@@ -932,7 +968,7 @@ main:
 
   video:
     pythonRequired: "Instalação do Python necessária"
-    pythonRequiredDetail: "Este recurso exige o Python 3.10 ou superior instalado no seu sistema. Instale o Python e tente novamente."
+    pythonRequiredDetail: "Este recurso exige o Python 3.11 ou superior instalado no seu sistema. Instale o Python e tente novamente."
     ffmpegRequired: "Instalação do FFmpeg necessária"
     ffmpegRequiredDetail: "O FFmpeg é necessário para processar arquivos de vídeo. Instale o FFmpeg e adicione-o ao PATH."
     downloadFfmpeg: "Baixar o FFmpeg?"
@@ -947,6 +983,7 @@ main:
     tbaFailedDetail: "Houve um problema ao encontrar o vídeo da partida no The Blue Alliance. Verifique sua chave de API ou carregue o vídeo usando uma URL do YouTube ou um arquivo local."
     openTitle: "Selecione um vídeo para abrir"
     filter: "Vídeos"
+    unknownVideo: "Vídeo desconhecido"
 
   warnings:
     error: "Erro"

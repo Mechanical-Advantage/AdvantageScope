@@ -29,6 +29,10 @@ download:
   sizeValue: "({{size}} Mo)"
   alertSelectLog: "Veuillez sélectionner un journal à télécharger."
   alertNoNewLogs: "Aucun nouveau journal trouvé."
+  alertSaved_one: "{{count}} journal enregistré dans <u>{{path}}</u>"
+  alertSaved_other: "{{count}} journaux enregistrés dans <u>{{path}}</u>"
+  alertSavedSkipped_one: "{{count}} nouveau journal enregistré ({{skipped}} ignorés) dans <u>{{path}}</u>"
+  alertSavedSkipped_other: "{{count}} nouveaux journaux enregistrés ({{skipped}} ignorés) dans <u>{{path}}</u>"
 
 editFov:
   title: "Modifier le champ de vision — AdvantageScope"
@@ -141,6 +145,7 @@ renameTab:
 
 satellite:
   title: "AdvantageScope"
+  windowTitle: "{{title}} — {{app}}"
   metadataNone: "Aucune métadonnée trouvée. Consultez la documentation pour plus de détails sur la publication de métadonnées."
   tableDelete: "Retirer de la vue"
   tableJumpTitle: "Aller à l'horodatage"
@@ -214,6 +219,7 @@ xrControls:
   showRobotsTitle: "Activer ou désactiver la visibilité des modèles de robot"
 
 tabs:
+  documentation: "Documentation"
   console: "Console"
   joysticks: "Manettes"
   lineGraph: "Graphique linéaire"
@@ -249,10 +255,13 @@ sourceList:
   alerts: "{{errors}}, {{warnings}}, {{infos}}"
   values_one: "{{count}} valeur"
   values_other: "{{count}} valeurs"
+  arrayListSeparator: ", "
+  arraySummary: "{{count}} — {{values}}"
   toggleVisibility: "Activer ou désactiver la visibilité du champ"
   hideField: "Masquer le champ"
   showField: "Afficher le champ"
   typeName: "{{name}} :"
+  typeNameSeparator: "/"
   previews:
     moduleVelocities: "ν : {{speed}}, θ : {{angle}}"
     robotVelocities: "νx : {{vx}}, νy : {{vy}}, Ω : {{omega}}"
@@ -294,6 +303,10 @@ licenses:
 
 hub:
   title: "AdvantageScope"
+  titleLite: "AdvantageScope Lite"
+  titleLiteDs: "AdvantageScope Lite (DS)"
+  titleWithName: "{{name}} — {{app}}"
+  titleWithStatus: "{{name}} ({{status}}) — {{app}}"
   updateAvailable: "Mise à jour disponible"
   shareFeedback: "Donner votre avis"
   timelineScrollToZoom: "Faites défiler la chronologie pour zoomer"
@@ -310,6 +323,12 @@ hub:
     cannotInsertTitle_one: "Impossible d'insérer le fichier"
     cannotInsertTitle_other: "Impossible d'insérer les fichiers"
     noLogsLoaded: "Aucun fichier journal n'est actuellement chargé. Choisissez « Ouvrir un ou plusieurs journaux » pour charger de nouveaux fichiers."
+    multipleFiles_one: "{{count}} fichier journal"
+    multipleFiles_other: "{{count}} fichiers journaux"
+
+  assets:
+    loadFailedTitle: "Échec du chargement des ressources"
+    loadFailedContent: "Certains fichiers de ressources n'ont pas pu être chargés. Consultez la console de développement pour plus de détails."
 
   live:
     statusSearching: "Recherche"
@@ -351,6 +370,7 @@ hub:
     searchPlaceholder: "Rechercher"
     searchTitle: "Rechercher des champs"
     tuningTitle: "Activer ou désactiver le mode de réglage"
+    setValueTitle: "Définir la valeur"
     fields_one: "{{count}} champ"
     fields_other: "{{count}} champs"
     titleSeconds_one: "{{fields}}, {{duration}} seconde"
@@ -369,6 +389,7 @@ hub:
     selectTitle3d: "Sélectionner le modèle de terrain"
     dsAlert: "Position du poste de pilotage<br>non disponible."
     cameraAlert: "Pose du robot non disponible<br>pour la caméra « {{name}} »."
+    cameraUnknown: "???"
     frc: "Terrains FRC"
     ftc: "Terrains FTC"
     sourceTitle: "Ouvrir l'URL source de l'image du terrain"
@@ -415,6 +436,7 @@ hub:
     optionValues:
       off: "Désactivé"
       on: "Activé"
+      gamePiece_variant_None: "Aucun"
       robot_bumpers_: "Couleur de l'alliance"
       radians: "Radians"
       degrees: "Degrés"
@@ -518,6 +540,7 @@ hub:
     dataRangeMax: "Valeur maximale de l'histogramme"
     stepSize: "Taille du pas"
     stepSizeTitle: "Taille du pas de l'histogramme"
+    histogramRange: "{{min}} à {{max}}"
 
   video:
     local: "Ouvrir un fichier vidéo local"
@@ -619,6 +642,7 @@ hub:
     value: "Valeur"
     real: "Réel"
     replay: "Relecture"
+    notAvailable: "ND"
 
   console:
     exportLog: "Exporter le journal de la console"
@@ -626,6 +650,7 @@ hub:
     addConsoleData: "Veuillez ajouter un champ avec des données de console, puis réessayer."
 
 xrClient:
+  title: "Client XR — AdvantageScope XR"
   miniature:
     placeRedFRC: "Appuyez pour placer le mur de l'alliance rouge."
     placeBlueFRC: "Appuyez pour placer le mur de l'alliance bleue."
@@ -726,7 +751,9 @@ menu:
 
   view:
     toggleSidebar: "Afficher ou masquer la barre latérale"
+    toggleSidebarShortcut: "Afficher ou masquer la barre latérale ({{shortcut}})"
     toggleControls: "Afficher ou masquer les contrôles"
+    toggleControlsShortcut: "Afficher ou masquer les contrôles ({{shortcut}})"
     resetLayout: "Réinitialiser la disposition"
     loopVisible: "Mettre en boucle la plage visible"
     showRobotMode: "Afficher le mode du robot"
@@ -752,7 +779,12 @@ menu:
     closeTab: "Fermer l'onglet"
     closeTabShortcut: "Fermer l'onglet ({{shortcut}})"
     newTabShortcut: "Nouvel onglet (raccourci)"
+    tabShortcut: "{{tab}} ({{shortcut}})"
     renameTab: "Renommer l'onglet"
+
+  keys:
+    ctrl: "Ctrl"
+    alt: "Alt"
 
   window:
     heading: "Fenêtre"
@@ -787,6 +819,7 @@ menu:
     disableAutoUnits: "Désactiver les unités automatiques"
     resetUnits: "Réinitialiser les unités"
     zoomEnabled: "Zoomer sur la plage activée"
+    zoomEnabledShortcut: "Zoomer sur la plage activée ({{shortcut}})"
     differentiate: "Différencier"
     integrate: "Intégrer"
 
@@ -823,6 +856,7 @@ main:
     restartTitle: "Redémarrer AdvantageScope?"
 
   assets:
+    noStatus: "Aucun état disponible."
     downloadStarted: "Téléchargement démarré à {{time}}. Veuillez patienter quelques minutes jusqu'à la fin du téléchargement."
     downloadFinished: "Toutes les ressources ont été téléchargées. AdvantageScope vérifiera périodiquement les mises à jour."
     connectFailed: "Impossible de se connecter à GitHub. Nouvel essai prochainement."
@@ -830,6 +864,7 @@ main:
     readme: "Ce dossier contient des ressources supplémentaires pour les vues de terrain 2D, de terrain 3D et de manette. Pour plus de détails, consultez la documentation d'AdvantageScope (disponible via l'onglet documentation de l'application ou l'URL ci-dessous)."
 
   owlet:
+    noStatus: "Aucun état disponible."
     upToDate: "Owlet est à jour. AdvantageScope vérifiera périodiquement les mises à jour."
     offlineCache: "Utilisation du cache Owlet hors ligne. Vérification des mises à jour prochainement."
     noDiskSpace: "Espace disque insuffisant. Nouvel essai prochainement."
@@ -916,6 +951,7 @@ main:
     openDsInThisWindow: "Ouvrir dans cette fenêtre"
     unsupportedFormatLite: "Format de fichier non pris en charge dans AdvantageScope Lite."
     decompressFailed: "Échec de la décompression du fichier WPILOG."
+    invalidExtension: "Extension de journal non valide"
     limitedSignals: "Signaux limités disponibles"
     limitedSignalsDetail: "Ce fichier journal inclut un nombre limité de signaux provenant des appareils Phoenix. Consultez la documentation Phoenix pour plus de détails."
 
@@ -933,7 +969,7 @@ main:
 
   video:
     pythonRequired: "Installation de Python requise"
-    pythonRequiredDetail: "Cette fonctionnalité nécessite que Python 3.10 ou une version ultérieure soit installé sur votre système. Veuillez installer Python et réessayer."
+    pythonRequiredDetail: "Cette fonctionnalité nécessite que Python 3.11 ou une version ultérieure soit installé sur votre système. Veuillez installer Python et réessayer."
     ffmpegRequired: "Installation de FFmpeg requise"
     ffmpegRequiredDetail: "FFmpeg est requis pour traiter les fichiers vidéo. Veuillez installer FFmpeg et l'ajouter au PATH."
     downloadFfmpeg: "Télécharger FFmpeg?"
@@ -948,6 +984,7 @@ main:
     tbaFailedDetail: "Un problème est survenu lors de la recherche de la vidéo du match sur The Blue Alliance. Veuillez vérifier votre clé API ou charger la vidéo à l'aide d'une URL YouTube ou d'un fichier local."
     openTitle: "Sélectionner une vidéo à ouvrir"
     filter: "Vidéos"
+    unknownVideo: "Vidéo inconnue"
 
   warnings:
     error: "Erreur"

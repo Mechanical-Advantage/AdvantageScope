@@ -29,6 +29,10 @@ download:
   sizeValue: "({{size}} MB)"
   alertSelectLog: "Selecteer een logbestand om te downloaden."
   alertNoNewLogs: "Geen nieuwe logs gevonden."
+  alertSaved_one: "{{count}} log opgeslagen in <u>{{path}}</u>"
+  alertSaved_other: "{{count}} logs opgeslagen in <u>{{path}}</u>"
+  alertSavedSkipped_one: "{{count}} nieuwe log opgeslagen ({{skipped}} overgeslagen) in <u>{{path}}</u>"
+  alertSavedSkipped_other: "{{count}} nieuwe logs opgeslagen ({{skipped}} overgeslagen) in <u>{{path}}</u>"
 
 editFov:
   title: "FOV bewerken — AdvantageScope"
@@ -141,6 +145,7 @@ renameTab:
 
 satellite:
   title: "AdvantageScope"
+  windowTitle: "{{title}} — {{app}}"
   metadataNone: "Geen metadata gevonden. Bekijk de documentatie voor details over het publiceren van metadata."
   tableDelete: "Verwijderen uit weergave"
   tableJumpTitle: "Ga naar tijdstempel"
@@ -214,6 +219,7 @@ xrControls:
   showRobotsTitle: "Zichtbaarheid van robotmodel in-/uitschakelen"
 
 tabs:
+  documentation: "Documentatie"
   console: "Console"
   joysticks: "Joysticks"
   lineGraph: "Lijngrafiek"
@@ -249,10 +255,13 @@ sourceList:
   alerts: "{{errors}}, {{warnings}}, {{infos}}"
   values_one: "{{count}} waarde"
   values_other: "{{count}} waarden"
+  arrayListSeparator: ", "
+  arraySummary: "{{count}} — {{values}}"
   toggleVisibility: "Zichtbaarheid veld in-/uitschakelen"
   hideField: "Veld verbergen"
   showField: "Veld tonen"
   typeName: "{{name}}:"
+  typeNameSeparator: "/"
   previews:
     moduleVelocities: "ν: {{speed}}, θ: {{angle}}"
     robotVelocities: "νx: {{vx}}, νy: {{vy}}, Ω: {{omega}}"
@@ -294,6 +303,10 @@ licenses:
 
 hub:
   title: "AdvantageScope"
+  titleLite: "AdvantageScope Lite"
+  titleLiteDs: "AdvantageScope Lite (DS)"
+  titleWithName: "{{name}} — {{app}}"
+  titleWithStatus: "{{name}} ({{status}}) — {{app}}"
   updateAvailable: "Update beschikbaar"
   shareFeedback: "Feedback geven"
   timelineScrollToZoom: "Scrol tijdlijn om te zoomen"
@@ -310,6 +323,12 @@ hub:
     cannotInsertTitle_one: "Kan bestand niet invoegen"
     cannotInsertTitle_other: "Kan bestanden niet invoegen"
     noLogsLoaded: 'Er zijn momenteel geen logbestanden geladen. Kies "Logbestand(en) openen" om nieuwe bestanden te laden.'
+    multipleFiles_one: "{{count}} logbestand"
+    multipleFiles_other: "{{count}} logbestanden"
+
+  assets:
+    loadFailedTitle: "Assets laden mislukt"
+    loadFailedContent: "Sommige assetbestanden konden niet worden geladen. Bekijk de ontwikkelaarsconsole voor details."
 
   live:
     statusSearching: "Zoeken"
@@ -351,6 +370,7 @@ hub:
     searchPlaceholder: "Zoeken"
     searchTitle: "Velden zoeken"
     tuningTitle: "Tuning-modus in-/uitschakelen"
+    setValueTitle: "Waarde instellen"
     fields_one: "{{count}} veld"
     fields_other: "{{count}} velden"
     titleSeconds_one: "{{fields}}, {{duration}} seconde"
@@ -369,6 +389,7 @@ hub:
     selectTitle3d: "Veldmodel selecteren"
     dsAlert: "Driver Station-positie<br>niet beschikbaar."
     cameraAlert: 'Robotpose niet beschikbaar<br>voor camera "{{name}}".'
+    cameraUnknown: "???"
     frc: "FRC-velden"
     ftc: "FTC-velden"
     sourceTitle: "Bron-URL veldafbeelding openen"
@@ -415,6 +436,7 @@ hub:
     optionValues:
       off: "Uit"
       on: "Aan"
+      gamePiece_variant_None: "Geen"
       robot_bumpers_: "Alliantiekleur"
       radians: "Radialen"
       degrees: "Graden"
@@ -518,6 +540,7 @@ hub:
     dataRangeMax: "Maximum histogramwaarde"
     stepSize: "Stapgrootte"
     stepSizeTitle: "Stapgrootte histogram"
+    histogramRange: "{{min}} tot {{max}}"
 
   video:
     local: "Lokaal videobestand openen"
@@ -619,6 +642,7 @@ hub:
     value: "Waarde"
     real: "Echt"
     replay: "Replay"
+    notAvailable: "N/B"
 
   console:
     exportLog: "Consolelogbestand exporteren"
@@ -626,6 +650,7 @@ hub:
     addConsoleData: "Voeg een veld met consoledata toe en probeer het vervolgens opnieuw."
 
 xrClient:
+  title: "XR-client — AdvantageScope XR"
   miniature:
     placeRedFRC: "Tik om de rode alliantiemuur te plaatsen."
     placeBlueFRC: "Tik om de blauwe alliantiemuur te plaatsen."
@@ -726,7 +751,9 @@ menu:
 
   view:
     toggleSidebar: "Zijbalk in-/uitschakelen"
+    toggleSidebarShortcut: "Zijbalk in-/uitschakelen ({{shortcut}})"
     toggleControls: "Bediening in-/uitschakelen"
+    toggleControlsShortcut: "Bediening in-/uitschakelen ({{shortcut}})"
     resetLayout: "Indeling resetten"
     loopVisible: "Zichtbaar bereik herhalen"
     showRobotMode: "Robotmodus tonen"
@@ -752,7 +779,12 @@ menu:
     closeTab: "Tabblad sluiten"
     closeTabShortcut: "Tabblad sluiten ({{shortcut}})"
     newTabShortcut: "Nieuw tabblad (sneltoets)"
+    tabShortcut: "{{tab}} ({{shortcut}})"
     renameTab: "Tabblad hernoemen"
+
+  keys:
+    ctrl: "Ctrl"
+    alt: "Alt"
 
   window:
     heading: "Venster"
@@ -787,6 +819,7 @@ menu:
     disableAutoUnits: "Automatische eenheden uitschakelen"
     resetUnits: "Eenheden resetten"
     zoomEnabled: "Inzoomen op ingeschakelde periode"
+    zoomEnabledShortcut: "Inzoomen op ingeschakelde periode ({{shortcut}})"
     differentiate: "Differentiëren"
     integrate: "Integreren"
 
@@ -823,6 +856,7 @@ main:
     restartTitle: "AdvantageScope opnieuw starten?"
 
   assets:
+    noStatus: "Geen status beschikbaar."
     downloadStarted: "Download gestart om {{time}}. Wacht een paar minuten tot de download is voltooid."
     downloadFinished: "Alle assets gedownload. AdvantageScope controleert periodiek op updates."
     connectFailed: "Kan geen verbinding maken met GitHub. Er wordt binnenkort een nieuwe poging gedaan."
@@ -830,6 +864,7 @@ main:
     readme: "Deze map bevat extra assets voor het 2D-veld, het 3D-veld en de joystickweergaven. Bekijk de AdvantageScope-documentatie voor meer details (beschikbaar via het tabblad documentatie in de app of de onderstaande URL)."
 
   owlet:
+    noStatus: "Geen status beschikbaar."
     upToDate: "Owlet is up-to-date. AdvantageScope controleert periodiek op updates."
     offlineCache: "Offline Owlet-cache in gebruik. Er wordt binnenkort gecontroleerd op updates."
     noDiskSpace: "Niet genoeg schijfruimte. Er wordt binnenkort een nieuwe poging gedaan."
@@ -916,6 +951,7 @@ main:
     openDsInThisWindow: "Openen in dit venster"
     unsupportedFormatLite: "Niet-ondersteund bestandsformaat in AdvantageScope Lite."
     decompressFailed: "Het decomprimeren van het WPILOG-bestand is mislukt."
+    invalidExtension: "Ongeldige logextensie"
     limitedSignals: "Beperkte signalen beschikbaar"
     limitedSignalsDetail: "Dit logbestand bevat een beperkt aantal signalen van Phoenix-apparaten. Bekijk de Phoenix-documentatie voor details."
 
@@ -933,7 +969,7 @@ main:
 
   video:
     pythonRequired: "Python-installatie vereist"
-    pythonRequiredDetail: "Deze functie vereist Python 3.10 of hoger op je systeem. Installeer Python en probeer het opnieuw."
+    pythonRequiredDetail: "Deze functie vereist Python 3.11 of hoger op je systeem. Installeer Python en probeer het opnieuw."
     ffmpegRequired: "FFmpeg-installatie vereist"
     ffmpegRequiredDetail: "FFmpeg is vereist om videobestanden te verwerken. Installeer FFmpeg en voeg dit toe aan PATH."
     downloadFfmpeg: "FFmpeg downloaden?"
@@ -948,6 +984,7 @@ main:
     tbaFailedDetail: "Er is een probleem opgetreden bij het vinden van de wedstrijdvideo op The Blue Alliance. Controleer je API-sleutel of laad de video in plaats daarvan met een YouTube-URL of een lokaal bestand."
     openTitle: "Selecteer een video om te openen"
     filter: "Video's"
+    unknownVideo: "Onbekende video"
 
   warnings:
     error: "Fout"

@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { createDecompressStream } from "@napi-rs/lzma/xz";
 import { parseREVLOG } from "@rev-robotics/revlog-converter";
 import { hex } from "color-convert";
 import {
@@ -106,16 +107,9 @@ import { buildAppMenuSystemItems, buildEditMenu, buildViewMenu, buildWindowMenu 
 import { getOwletDownloadStatus, startOwletDownloadLoop } from "./owletDownloadLoop";
 import { checkHootIsPro, convertHoot, CTRE_LICENSE_URL } from "./owletInterface";
 
-// Global variables
 declare global {
   var t: TFunction;
 }
-
-// Dynamically load lzma-native to handle platforms without prebuilt binaries
-let lzma: typeof import("lzma-native") | null = null;
-try {
-  lzma = require("lzma-native");
-} catch (e) {}
 
 // Global variables
 let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
@@ -341,7 +335,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         if (extension.includes("/") || extension.includes("\\") || extension.includes("..")) {
           sendMessage(window, "historical-data", {
             files: [null],
-            error: "Invalid log extension",
+            error: t("main.logs.invalidExtension"),
             uuid: uuid
           });
           break;
@@ -550,44 +544,39 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         } else if (logPath.endsWith(".wpilogxz")) {
           // Externally compressed WPILOG, decompress
           targetCount += 1;
-          if (lzma === null) {
-            errorMessage = "Compressed WPILOG files (.wpilogxz) are not supported on this platform.";
-            completedCount++;
-            sendIfReady();
-          } else {
-            fs.open(logPath, "r", (error, file) => {
+          fs.open(logPath, "r", (error, file) => {
+            if (error) {
+              completedCount++;
+              sendIfReady();
+              return;
+            }
+            fs.readFile(file, (error, compressedBuffer) => {
               if (error) {
                 completedCount++;
                 sendIfReady();
                 return;
               }
-              fs.readFile(file, (error, compressedBuffer) => {
-                if (error) {
-                  completedCount++;
-                  sendIfReady();
-                }
-                const inputStream = Readable.from(compressedBuffer);
-                const decompressor = lzma.createDecompressor();
-                const chunks: any[] = [];
-                let totalLength = 0;
-                inputStream.pipe(decompressor);
-                decompressor.on("data", (chunk) => {
-                  chunks.push(chunk);
-                  totalLength += chunk.length;
-                });
-                decompressor.on("error", () => {
-                  results[0] = Buffer.concat(chunks, totalLength);
-                  completedCount++;
-                  sendIfReady();
-                });
-                decompressor.on("end", () => {
-                  results[0] = Buffer.concat(chunks, totalLength);
-                  completedCount++;
-                  sendIfReady();
-                });
+              const inputStream = Readable.from(compressedBuffer);
+              const decompressor = createDecompressStream();
+              const chunks: Buffer[] = [];
+              let totalLength = 0;
+              let completed = false;
+              const finish = () => {
+                if (completed) return;
+                completed = true;
+                results[0] = Buffer.concat(chunks, totalLength);
+                completedCount++;
+                sendIfReady();
+              };
+              inputStream.pipe(decompressor);
+              decompressor.on("data", (chunk: Buffer) => {
+                chunks.push(chunk);
+                totalLength += chunk.length;
               });
+              decompressor.on("error", finish);
+              decompressor.on("end", finish);
             });
-          }
+          });
         } else {
           // Normal log, open normally
           targetCount += 1;
@@ -822,7 +811,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       Array(0.25, 0.5, 1, 1.5, 2, 4, 8).forEach((value) => {
         playbackOptionsMenu.append(
           new MenuItem({
-            label: (value * 100).toString() + "%",
+            label: value.toLocaleString(lang, { style: "percent" }),
             type: "checkbox",
             checked: value === message.data.speed,
             click() {
@@ -2105,25 +2094,16 @@ function downloadSave(files: string[]) {
                       let message: string;
                       let newCount = completeCount - skipCount;
                       if (skipCount > 0) {
-                        message =
-                          "Saved " +
-                          newCount.toString() +
-                          " new log" +
-                          (newCount === 1 ? "" : "s") +
-                          " (" +
-                          skipCount.toString() +
-                          " skipped) to <u>" +
-                          savePath +
-                          "</u>";
+                        message = t("download.alertSavedSkipped", {
+                          count: newCount,
+                          skipped: skipCount,
+                          path: savePath
+                        });
                       } else {
-                        message =
-                          "Saved " +
-                          completeCount.toString() +
-                          " log" +
-                          (completeCount === 1 ? "" : "s") +
-                          " to <u>" +
-                          savePath +
-                          "</u>";
+                        message = t("download.alertSaved", {
+                          count: completeCount,
+                          path: savePath
+                        });
                       }
                       if (!downloadWindow) return;
                       sendMessage(downloadWindow, "set-progress", 1);
@@ -2804,7 +2784,10 @@ function createAboutWindow() {
       title: t("menu.app.aboutTitle"),
       message: "AdvantageScope",
       detail: COPYRIGHT + "\n\n" + detail,
-      buttons: ["Close", process.platform === "win32" ? "Copy and Close" : "Copy & Close"],
+      buttons: [
+        t("main.buttons.close"),
+        process.platform === "win32" ? t("main.buttons.copyCloseWin") : t("main.buttons.copyCloseMac")
+      ],
       defaultId: 0,
       icon: WINDOW_ICON
     })

@@ -379,7 +379,7 @@ export default class Tabs {
           if (activeSatellite) {
             let title =
               tab.type === TabType.Documentation
-                ? "Documentation"
+                ? t("tabs.documentation")
                 : tab.title === ""
                 ? getDefaultTabTitle(tab.type)
                 : tab.title;

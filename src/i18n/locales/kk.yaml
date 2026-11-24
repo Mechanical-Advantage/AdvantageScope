@@ -29,6 +29,10 @@ download:
   sizeValue: "({{size}} МБ)"
   alertSelectLog: "Жүктеп алу үшін журналды таңдаңыз."
   alertNoNewLogs: "Жаңа журналдар табылмады."
+  alertSaved_one: "{{count}} журнал <u>{{path}}</u> мекенжайына сақталды"
+  alertSaved_other: "{{count}} журнал <u>{{path}}</u> мекенжайына сақталды"
+  alertSavedSkipped_one: "{{count}} жаңа журнал ({{skipped}} өткізіп жіберілді) <u>{{path}}</u> мекенжайына сақталды"
+  alertSavedSkipped_other: "{{count}} жаңа журнал ({{skipped}} өткізіп жіберілді) <u>{{path}}</u> мекенжайына сақталды"
 
 editFov:
   title: "FOV өңдеу — AdvantageScope"
@@ -141,6 +145,7 @@ renameTab:
 
 satellite:
   title: "AdvantageScope"
+  windowTitle: "{{title}} — {{app}}"
   metadataNone: "Метадеректер табылмады. Метадеректерді жариялау туралы мәліметтер алу үшін құжаттаманы қараңыз."
   tableDelete: "Көріністен жою"
   tableJumpTitle: "Уақыт белгісіне өту"
@@ -214,6 +219,7 @@ xrControls:
   showRobotsTitle: "Робот үлгісінің көрінуін қосу немесе өшіру"
 
 tabs:
+  documentation: "Құжаттама"
   console: "Консоль"
   joysticks: "Джойстиктер"
   lineGraph: "Сызықтық график"
@@ -250,10 +256,13 @@ sourceList:
   alerts: "{{errors}}, {{warnings}}, {{infos}}"
   values_one: "{{count}} мән"
   values_other: "{{count}} мән"
+  arrayListSeparator: ", "
+  arraySummary: "{{count}} — {{values}}"
   toggleVisibility: "Өрістің көрінуін қосу немесе өшіру"
   hideField: "Өрісті жасыру"
   showField: "Өрісті көрсету"
   typeName: "{{name}}:"
+  typeNameSeparator: "/"
   previews:
     moduleVelocities: "ν: {{speed}}, θ: {{angle}}"
     robotVelocities: "νx: {{vx}}, νy: {{vy}}, Ω: {{omega}}"
@@ -295,6 +304,10 @@ licenses:
 
 hub:
   title: "AdvantageScope"
+  titleLite: "AdvantageScope Lite"
+  titleLiteDs: "AdvantageScope Lite (DS)"
+  titleWithName: "{{name}} — {{app}}"
+  titleWithStatus: "{{name}} ({{status}}) — {{app}}"
   updateAvailable: "Жаңарту қолжетімді"
   shareFeedback: "Пікір қалдыру"
   timelineScrollToZoom: "Масштабтау үшін хронологияны дөңгелекпен айналдыру"
@@ -311,6 +324,12 @@ hub:
     cannotInsertTitle_one: "Файлды кірістіру мүмкін емес"
     cannotInsertTitle_other: "Файлдарды кірістіру мүмкін емес"
     noLogsLoaded: "Әзірге ешқандай журнал файлы ашылмаған. Файл жүктеу үшін «Журнал(дар)ды ашу» пәрменін таңдаңыз."
+    multipleFiles_one: "{{count}} журнал файлы"
+    multipleFiles_other: "{{count}} журнал файлы"
+
+  assets:
+    loadFailedTitle: "Активтерді жүктеу сәтсіз аяқталды"
+    loadFailedContent: "Кейбір актив файлдарын жүктеу сәтсіз аяқталды. Мәліметтер алу үшін әзірлеуші консолін тексеріңіз."
 
   live:
     statusSearching: "Ізделуде"
@@ -352,6 +371,7 @@ hub:
     searchPlaceholder: "Іздеу"
     searchTitle: "Өрістерді іздеу"
     tuningTitle: "Баптау режимін қосу немесе өшіру"
+    setValueTitle: "Мәнді орнату"
     fields_one: "{{count}} өріс"
     fields_other: "{{count}} өріс"
     titleSeconds: "{{fields}}, {{duration}} секунд"
@@ -367,6 +387,7 @@ hub:
     selectTitle3d: "Алаң үлгісін таңдау"
     dsAlert: "Жүргізуші станциясының позициясы<br>қолжетімсіз."
     cameraAlert: "«{{name}}» камерасы үшін<br>робот позасы қолжетімсіз."
+    cameraUnknown: "???"
     frc: "FRC алаңдары"
     ftc: "FTC алаңдары"
     sourceTitle: "Алаң кескінінің бастапқы URL мекенжайын ашу"
@@ -413,6 +434,7 @@ hub:
     optionValues:
       off: "Өшірулі"
       on: "Қосулы"
+      gamePiece_variant_None: "Жоқ"
       robot_bumpers_: "Альянс түсі"
       radians: "Радиан"
       degrees: "Градус"
@@ -516,6 +538,7 @@ hub:
     dataRangeMax: "Максималды гистограмма мәні"
     stepSize: "Қадам өлшемі"
     stepSizeTitle: "Гистограмманың қадам өлшемі"
+    histogramRange: "{{min}} бастап {{max}} дейін"
 
   video:
     local: "Жергілікті бейне файлын ашу"
@@ -617,6 +640,7 @@ hub:
     value: "Мән"
     real: "Нақты"
     replay: "Қайталау"
+    notAvailable: "Қолжетімсіз"
 
   console:
     exportLog: "Консоль журналын экспорттау"
@@ -624,6 +648,7 @@ hub:
     addConsoleData: "Консоль деректері бар өрісті қосып, қайталап көріңіз."
 
 xrClient:
+  title: "XR клиенті — AdvantageScope XR"
   miniature:
     placeRedFRC: "Қызыл альянс қабырғасын орналастыру үшін түртіңіз."
     placeBlueFRC: "Көк альянс қабырғасын орналастыру үшін түртіңіз."
@@ -724,7 +749,9 @@ menu:
 
   view:
     toggleSidebar: "Бүйірлік тақтаны қосу/өшіру"
+    toggleSidebarShortcut: "Бүйірлік тақтаны қосу/өшіру ({{shortcut}})"
     toggleControls: "Басқару элементтерін қосу/өшіру"
+    toggleControlsShortcut: "Басқару элементтерін қосу/өшіру ({{shortcut}})"
     resetLayout: "Орналасуды қалпына келтіру"
     loopVisible: "Көрінетін ауқымды қайталау"
     showRobotMode: "Робот режимін көрсету"
@@ -750,7 +777,12 @@ menu:
     closeTab: "Қойындыны жабу"
     closeTabShortcut: "Қойындыны жабу ({{shortcut}})"
     newTabShortcut: "Жаңа қойынды (пернелер тіркесімі)"
+    tabShortcut: "{{tab}} ({{shortcut}})"
     renameTab: "Қойынды атауын өзгерту"
+
+  keys:
+    ctrl: "Ctrl"
+    alt: "Alt"
 
   window:
     heading: "Терезе"
@@ -785,6 +817,7 @@ menu:
     disableAutoUnits: "Автоматты өлшем бірліктерін өшіру"
     resetUnits: "Өлшем бірліктерін қалпына келтіру"
     zoomEnabled: "Қосулы ауқымға масштабтау"
+    zoomEnabledShortcut: "Қосулы ауқымға масштабтау ({{shortcut}})"
     differentiate: "Дифференциалдау"
     integrate: "Интегралдау"
 
@@ -821,6 +854,7 @@ main:
     restartTitle: "AdvantageScope қолданбасын қайта іске қосу керек пе?"
 
   assets:
+    noStatus: "Күй қолжетімді емес."
     downloadStarted: "Жүктеп алу {{time}} басталды. Жүктеп алу аяқталғанша бірнеше минут күтіңіз."
     downloadFinished: "Барлық активтер жүктеп алынды. AdvantageScope жаңартуларды жүйелі түрде тексеріп тұрады."
     connectFailed: "GitHub-қа қосылу мүмкін емес. Сәлден соң қайта қосылу әрекеті жасалады."
@@ -828,6 +862,7 @@ main:
     readme: "Бұл қалтада 2D алаңы, 3D алаңы және джойстик көріністеріне арналған қосымша активтер бар. Қосымша мәліметтер алу үшін AdvantageScope құжаттамасын қараңыз (қолданбадағы құжаттама қойындысы арқылы немесе төмендегі URL мекенжайында қолжетімді)."
 
   owlet:
+    noStatus: "Күй қолжетімді емес."
     upToDate: "Owlet жаңартылған. AdvantageScope жаңартуларды жүйелі түрде тексеріп тұрады."
     offlineCache: "Офлайн Owlet кэші пайдаланылуда. Сәлден соң жаңартулар тексеріледі."
     noDiskSpace: "Дискіде орын жеткіліксіз. Сәлден соң қайталап көру әрекеті жасалады."
@@ -914,6 +949,7 @@ main:
     openDsInThisWindow: "Осы терезеде ашу"
     unsupportedFormatLite: "AdvantageScope Lite нұсқасында қолдау көрсетілмейтін файл пішімі."
     decompressFailed: "WPILOG файлы қысудан шығарылмады."
+    invalidExtension: "Жарамсыз журнал кеңейтімі"
     limitedSignals: "Шектеулі сигналдар қолжетімді"
     limitedSignalsDetail: "Бұл журнал файлында Phoenix құрылғыларының шектеулі сигналдары бар. Мәліметтер алу үшін Phoenix құжаттамасын қараңыз."
 
@@ -931,7 +967,7 @@ main:
 
   video:
     pythonRequired: "Python орнату қажет"
-    pythonRequiredDetail: "Бұл мүмкіндік жүйеңізде Python 3.10 немесе одан жаңа нұсқасының болуын талап етеді. Python орнатып, қайталап көріңіз."
+    pythonRequiredDetail: "Бұл мүмкіндік жүйеңізде Python 3.11 немесе одан жаңа нұсқасының болуын талап етеді. Python орнатып, қайталап көріңіз."
     ffmpegRequired: "FFmpeg орнату қажет"
     ffmpegRequiredDetail: "Бейне файлдарын өңдеу үшін FFmpeg қажет. FFmpeg орнатып, оны PATH ортасына қосыңыз."
     downloadFfmpeg: "FFmpeg жүктеп аласыз ба?"
@@ -946,6 +982,7 @@ main:
     tbaFailedDetail: "The Blue Alliance сервисінде матч бейнесін табу кезінде мәселе туындады. API кілтіңізді тексеріңіз немесе оның орнына YouTube URL мекенжайын немесе жергілікті файлды пайдаланып бейнені жүктеңіз."
     openTitle: "Ашылатын бейнені таңдау"
     filter: "Бейнелер"
+    unknownVideo: "Белгісіз бейне"
 
   warnings:
     error: "Қате"

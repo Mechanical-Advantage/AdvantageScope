@@ -29,6 +29,10 @@ download:
   sizeValue: "({{size}} MB)" # Size label for files with their size in MB
   alertSelectLog: "Please select a log to download." # Dialog alert when clicking download without selecting files
   alertNoNewLogs: "No new logs found." # Dialog alert when all files to download are already present
+  alertSaved_one: "Saved {{count}} log to <u>{{path}}</u>" # Dialog alert when saving a single log finishes
+  alertSaved_other: "Saved {{count}} logs to <u>{{path}}</u>" # Dialog alert when saving multiple logs finishes
+  alertSavedSkipped_one: "Saved {{count}} new log ({{skipped}} skipped) to <u>{{path}}</u>" # Dialog alert when saving a single new log with some skipped finishes
+  alertSavedSkipped_other: "Saved {{count}} new logs ({{skipped}} skipped) to <u>{{path}}</u>" # Dialog alert when saving multiple new logs with some skipped finishes
 
 editFov:
   title: "Edit FOV — AdvantageScope" # Window title for camera FOV configuration
@@ -141,6 +145,7 @@ renameTab:
 
 satellite:
   title: "AdvantageScope" # Default window title for satellite visualizer
+  windowTitle: "{{title}} — {{app}}" # Window title format for satellite visualizer window
   metadataNone: "No metadata found. Check the documentation for details on metadata publishing." # Message shown when no metadata is present
   tableDelete: "Remove from view" # Tooltip for table column delete button
   tableJumpTitle: "Go to timestamp" # Tooltip for table time jump input and button
@@ -214,6 +219,7 @@ xrControls:
   showRobotsTitle: "Toggle robot model visibility" # Tooltip for robot model visibility checkbox
 
 tabs:
+  documentation: "Documentation" # Documentation tab name, displayed in satellite window title
   console: "Console" # Console tab name, displayed in the tab bar
   joysticks: "Joysticks" # Joysticks tab name, displayed in the tab bar
   lineGraph: "Line Graph" # Line Graph tab name, displayed in the tab bar
@@ -251,10 +257,13 @@ sourceList:
   alerts: "{{errors}}, {{warnings}}, {{infos}}" # Combined alerts list description
   values_one: "{{count}} value" # Singular description for array values
   values_other: "{{count}} values" # Plural description for array values
+  arrayListSeparator: ", " # Separator between elements in an array preview
+  arraySummary: "{{count}} — {{values}}" # Combined count and values preview for an array
   toggleVisibility: "Toggle field visibility" # Tooltip to hide/show a field
   hideField: "Hide field" # Tooltip to hide a field
   showField: "Show field" # Tooltip to show a field
   typeName: "{{name}}:" # Template for field type name label
+  typeNameSeparator: "/" # Separator between type and option names in a field type label
   previews:
     moduleVelocities: "ν: {{speed}}, θ: {{angle}}" # Preview template for swerve module velocities
     robotVelocities: "νx: {{vx}}, νy: {{vy}}, Ω: {{omega}}" # Preview template for robot velocities
@@ -300,6 +309,10 @@ licenses:
 
 hub:
   title: "AdvantageScope" # Main application window title
+  titleLite: "AdvantageScope Lite" # Main application window title for AdvantageScope Lite
+  titleLiteDs: "AdvantageScope Lite (DS)" # Main application window title for AdvantageScope Lite (Driver Station)
+  titleWithName: "{{name}} — {{app}}" # Window title format with log/source name
+  titleWithStatus: "{{name}} ({{status}}) — {{app}}" # Window title format with log/source name and status
   updateAvailable: "Update available" # Tooltip for app update button
   shareFeedback: "Share feedback" # Tooltip for developer feedback button
   timelineScrollToZoom: "Scroll timeline to zoom" # Help text explaining that the user should scroll up and down to zoom in on the timeline
@@ -316,6 +329,12 @@ hub:
     cannotInsertTitle_one: "Cannot insert file" # Title when inserting one file fails
     cannotInsertTitle_other: "Cannot insert files" # Title when inserting multiple files fails
     noLogsLoaded: 'No log files are currently loaded. Choose "Open Log(s)" to load new files.' # Help content when no logs are loaded
+    multipleFiles_one: "{{count}} Log File" # Friendly name in window title when one log file is loaded
+    multipleFiles_other: "{{count}} Log Files" # Friendly name in window title when multiple log files are loaded
+
+  assets:
+    loadFailedTitle: "Failed to load assets" # Error title when custom/bundled assets fail to load
+    loadFailedContent: "Some asset files failed to load. Check the developer console for details." # Error content when assets fail to load
 
   live:
     statusSearching: "Searching" # Searching status for live connections
@@ -357,6 +376,7 @@ hub:
     searchPlaceholder: "Search" # Sidebar search field placeholder
     searchTitle: "Search fields" # Sidebar search field tooltip
     tuningTitle: "Toggle tuning mode" # Sidebar tuning button tooltip
+    setValueTitle: "Set value" # Tooltip for numeric tuning input in sidebar
     fields_one: "{{count}} field" # Singular field count
     fields_other: "{{count}} fields" # Plural fields count
     titleSeconds_one: "{{fields}}, {{duration}} second" # Sidebar title format for log duration measured in seconds
@@ -375,6 +395,7 @@ hub:
     selectTitle3d: "Select field model" # Tooltip for 3D field selector dropdown
     dsAlert: "Driver Station position<br>not available." # Alert shown in 3D view when driver station position is not available
     cameraAlert: 'Robot pose not available<br>for camera "{{name}}".' # Alert shown in 3D view when robot/camera pose is missing
+    cameraUnknown: "???" # Fallback camera name when robot config is unavailable
     frc: "FRC Fields" # Optgroup label for FRC fields
     ftc: "FTC Fields" # Optgroup label for FTC fields
     sourceTitle: "Open field image source URL" # Field image source link tooltip
@@ -421,6 +442,7 @@ hub:
     optionValues:
       off: "Off" # Off option value for fade when stale
       on: "On" # On option value for fade when stale
+      gamePiece_variant_None: "None" # Option value when a 3D field has no game pieces
       robot_bumpers_: "Alliance Color" # Default alliance color option for bumpers
       radians: "Radians" # Radians unit option value
       degrees: "Degrees" # Degrees unit option value
@@ -526,6 +548,7 @@ hub:
     dataRangeMax: "Maximum histogram value" # Tooltip for histogram max input
     stepSize: "Step Size" # Label for statistics step size input
     stepSizeTitle: "Histogram step size" # Tooltip for histogram step size input
+    histogramRange: "{{min}} to {{max}}" # Range label in histogram tooltip
 
   video:
     local: "Open local video file" # Tooltip for open local video file button
@@ -627,6 +650,7 @@ hub:
     value: "Value" # Column header for generic metadata value
     real: "Real" # Column header for metadata values produced on the real robot
     replay: "Replay" # Column header for metadata values produced when replaying a log file in simulation
+    notAvailable: "NA" # Text shown in metadata table cell when no value is available
 
   console:
     exportLog: "Export console log" # Tooltip for exporting console logs
@@ -634,6 +658,7 @@ hub:
     addConsoleData: "Please add a field with console data, then try again." # Error content when console export fails
 
 xrClient:
+  title: "XR Client — AdvantageScope XR" # Page title for the XR client overlay
   # Banner text displayed when calibrating the position and size of a miniature version of field in augmented reality. FRC uses "alliance wall" and FTC uses "barrier near alliance area" since the alliance stations (Driver Stations) are only built-in to the wall in FRC. Some parts of the fields are short and can be stepped over ("barriers") and some parts of the field are tall ("walls").
   miniature:
     placeRedFRC: "Tap to place the red alliance wall."
@@ -736,7 +761,9 @@ menu:
 
   view:
     toggleSidebar: "Toggle Sidebar" # Menu option to show/hide sidebar
+    toggleSidebarShortcut: "Toggle Sidebar ({{shortcut}})" # Toggle sidebar menu option with shortcut in Lite
     toggleControls: "Toggle Controls" # Menu option to show/hide playback controls
+    toggleControlsShortcut: "Toggle Controls ({{shortcut}})" # Toggle controls menu option with shortcut in Lite
     resetLayout: "Reset Layout" # Menu option to reset DS layout in Lite
     loopVisible: "Loop Visible Range" # Checkbox menu option to loop playback range
     showRobotMode: "Show Robot Mode" # Checkbox menu option to show robot mode overlay
@@ -762,7 +789,12 @@ menu:
     closeTab: "Close Tab" # Menu option to close current tab
     closeTabShortcut: "Close Tab ({{shortcut}})" # Close tab menu item with shortcut in Lite
     newTabShortcut: "New Tab (Shortcut)" # Hidden menu option for new tab shortcut
+    tabShortcut: "{{tab}} ({{shortcut}})" # New tab menu item with keyboard shortcut in Lite
     renameTab: "Rename Tab" # Menu option to rename tab
+
+  keys:
+    ctrl: "Ctrl" # Control modifier key name for keyboard shortcuts in Lite menus
+    alt: "Alt" # Alt modifier key name for keyboard shortcuts in Lite menus
 
   window:
     heading: "Window" # Window menu heading
@@ -797,6 +829,7 @@ menu:
     disableAutoUnits: "Disable Automatic Units" # Menu option to disable auto unit conversion
     resetUnits: "Reset Units" # Menu option to clear unit configuration
     zoomEnabled: "Zoom to Enabled Range" # Menu option to zoom graph to enabled range
+    zoomEnabledShortcut: "Zoom to Enabled Range ({{shortcut}})" # Zoom to enabled range menu option with shortcut in Lite
     differentiate: "Differentiate" # Menu option to differentiate graph data
     integrate: "Integrate" # Menu option to integrate graph data
 
@@ -833,6 +866,7 @@ main:
     restartTitle: "Restart AdvantageScope?" # Title for restart confirmation dialog
 
   assets:
+    noStatus: "No status available." # Fallback status message before asset download status has been updated
     downloadStarted: "Download started at {{time}}. Please wait a few minutes for the download to complete." # Status message when asset download starts
     downloadFinished: "All assets downloaded. AdvantageScope will check for updates periodically." # Status message when all assets are downloaded
     connectFailed: "Cannot connect to GitHub. Trying again soon." # Error message when GitHub connection fails
@@ -840,6 +874,7 @@ main:
     readme: "This folder contains extra assets for the 2D field, 3D field, and joystick views. For more details, see the AdvantageScope documentation (available through the documentation tab in the app or the URL below)." # Content for custom assets folder readme file
 
   owlet:
+    noStatus: "No status available." # Fallback status message before Owlet download status has been updated
     upToDate: "Owlet is up-to-date. AdvantageScope will check for updates periodically." # Status message when Owlet is fully updated
     offlineCache: "Using offline Owlet cache. Checking for updates soon." # Status message when offline cache is used
     noDiskSpace: "Not enough disk space. Trying again soon." # Error message when disk space is low
@@ -926,6 +961,7 @@ main:
     openDsInThisWindow: "Open in This Window" # Button option to open log in the current window
     unsupportedFormatLite: "Unsupported file format in AdvantageScope Lite." # Error message when attempting to open an unsupported file format in Lite
     decompressFailed: "Failed to decompress WPILOG file." # Error message when decompressing a WPILOGXZ file fails
+    invalidExtension: "Invalid log extension" # Error message when a child log has an invalid file extension
     limitedSignals: "Limited Signals Available" # Warning message for limited Phoenix signals in a log file
     limitedSignalsDetail: "This log file includes a limited number of signals from Phoenix devices. Check the Phoenix documentation for details." # Detail warning for Phoenix signals
 
@@ -943,7 +979,7 @@ main:
 
   video:
     pythonRequired: "Python Installation Required" # Error title for Python missing
-    pythonRequiredDetail: "This feature requires Python 3.10 or above available in your system. Please install Python and try again." # Error detail for Python missing
+    pythonRequiredDetail: "This feature requires Python 3.11 or above available in your system. Please install Python and try again." # Error detail for Python missing
     ffmpegRequired: "FFmpeg Installation Required" # Error title for FFmpeg missing on Linux
     ffmpegRequiredDetail: "FFmpeg is required to process videos files. Please install FFmpeg and add to the PATH." # Error detail for FFmpeg missing on Linux (PATH refers to the Linux environment variable)
     downloadFfmpeg: "Download FFmpeg?" # Question title for downloading FFmpeg
@@ -958,6 +994,7 @@ main:
     tbaFailedDetail: "There was a problem finding the match video on The Blue Alliance. Please check your API key, or load the video using a YouTube URL or local file instead." # Error detail for TBA download error
     openTitle: "Select a video to open" # Open dialog title for videos
     filter: "Videos" # File filter name for videos
+    unknownVideo: "Unknown Video" # Fallback menu label when a YouTube video title cannot be fetched
 
   warnings:
     error: "Error" # Error dialog title

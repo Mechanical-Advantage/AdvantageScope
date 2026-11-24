@@ -10,7 +10,7 @@ import { IReadable } from "@mcap/core/dist/esm/src/types";
 import ExportOptions from "../shared/ExportOptions";
 import Log from "../shared/log/Log";
 import LogFieldTree from "../shared/log/LogFieldTree";
-import { filterFieldByPrefixes } from "../shared/log/LogKeyUtils";
+import { filterFieldByPrefixes, findKey } from "../shared/log/LogKeyUtils";
 import { getLogValueText } from "../shared/log/LogUtil";
 import LoggableType from "../shared/log/LoggableType";
 import { AKIT_TIMESTAMP_KEYS } from "../shared/log/RobotState";
@@ -70,7 +70,7 @@ self.onmessage = async (event) => {
         break;
 
       case "akit":
-        let timestampField = log.getFieldKeys().find((key) => AKIT_TIMESTAMP_KEYS.includes(key));
+        let timestampField = findKey(log, AKIT_TIMESTAMP_KEYS);
         if (timestampField === undefined) {
           reject();
           return;

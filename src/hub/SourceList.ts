@@ -1002,7 +1002,9 @@ export default class SourceList {
     });
     let typeNameElement = item.getElementsByClassName("type-name")[0] as HTMLElement;
     typeNameElement.innerText =
-      typeNameComponents.length > 0 ? t("sourceList.typeName", { name: typeNameComponents.join("/") }) : "";
+      typeNameComponents.length > 0
+        ? t("sourceList.typeName", { name: typeNameComponents.join(t("sourceList.typeNameSeparator")) })
+        : "";
 
     // Update log key
     let keyContainer = item.getElementsByClassName("key-container")[0] as HTMLElement;
@@ -1196,10 +1198,14 @@ export default class SourceList {
                 text = t("sourceList.noValues");
               } else {
                 let countText = t("sourceList.values", { count: poseStrings.length });
-                let arrayText = "[" + poseStrings.map((str) => "(" + str + ")").join(", ") + "]";
+                let arrayText =
+                  "[" + poseStrings.map((str) => "(" + str + ")").join(t("sourceList.arrayListSeparator")) + "]";
                 // The array flows in the interface direction so that a single pose and an
                 // array of poses are read in the same order
-                text = isolateAuto(countText) + " \u2014 " + isolateRtl(arrayText);
+                text = t("sourceList.arraySummary", {
+                  count: isolateAuto(countText),
+                  values: isolateRtl(arrayText)
+                });
               }
             }
           } else if (structuredType === "Mechanism2d") {
@@ -1249,7 +1255,10 @@ export default class SourceList {
             let arrayText = getLogValueText(value, logType, true);
             // Raw log values keep their own direction, which leaves them left-to-right to
             // match the table view, the exported CSV, and the source code they came from
-            text = isolateAuto(countText) + " \u2014 " + isolateAuto(arrayText);
+            text = t("sourceList.arraySummary", {
+              count: isolateAuto(countText),
+              values: isolateAuto(arrayText)
+            });
           } else {
             text = getLogValueText(value, logType, true);
           }

@@ -580,7 +580,7 @@ async function handleHubMessage(message: NamedMessage) {
     case "open-app-menu":
       {
         let menuItems: (MenuItem | Submenu | "-")[] = [];
-        const modifier = KeyboardUtil.isMac() ? "⌘" : "Ctrl";
+        const modifier = KeyboardUtil.isMac() ? "⌘" : t("menu.keys.ctrl");
         switch (message.data.index) {
           case 0:
             {
@@ -734,20 +734,20 @@ async function handleHubMessage(message: NamedMessage) {
             // View menu
             menuItems = [
               {
-                content: t("menu.lineGraph.zoomEnabled") + ` (${modifier} \\ )`,
+                content: t("menu.lineGraph.zoomEnabledShortcut", { shortcut: `${modifier} \\ ` }),
                 callback() {
                   sendMessage(hubPort, "zoom-enabled");
                 }
               },
               "-",
               {
-                content: t("menu.view.toggleSidebar") + ` (${modifier} . )`,
+                content: t("menu.view.toggleSidebarShortcut", { shortcut: `${modifier} . ` }),
                 callback() {
                   sendMessage(hubPort, "toggle-sidebar");
                 }
               },
               {
-                content: t("menu.view.toggleControls") + ` (${modifier} / )`,
+                content: t("menu.view.toggleControlsShortcut", { shortcut: `${modifier} / ` }),
                 callback() {
                   sendMessage(hubPort, "toggle-controls");
                 }
@@ -765,9 +765,13 @@ async function handleHubMessage(message: NamedMessage) {
                   .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
                   .map((tabType) => {
                     return {
-                      content: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)} (${getTabAccelerator(
-                        tabType
-                      ).replace("Alt+", KeyboardUtil.isMac() ? "⌥ " : "Alt+")})`,
+                      content: t("menu.tabs.tabShortcut", {
+                        tab: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)}`,
+                        shortcut: getTabAccelerator(tabType).replace(
+                          "Alt+",
+                          KeyboardUtil.isMac() ? "⌥ " : `${t("menu.keys.alt")}+`
+                        )
+                      }),
                       callback() {
                         sendMessage(hubPort, "new-tab", tabType);
                       }
@@ -888,7 +892,7 @@ async function handleHubMessage(message: NamedMessage) {
       let menuItems: (MenuItem | Submenu | "-")[] = [];
       Array(0.25, 0.5, 1, 1.5, 2, 4, 8).forEach((value) => {
         menuItems.push({
-          content: (value === message.data.speed ? "\u2714 " : "") + (value * 100).toString() + "%",
+          content: (value === message.data.speed ? "\u2714 " : "") + value.toLocaleString(lang, { style: "percent" }),
           callback() {
             sendMessage(hubPort, "set-playback-options", { speed: value, looping: message.data.looping });
           }
@@ -912,10 +916,13 @@ async function handleHubMessage(message: NamedMessage) {
           .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
           .map((tabType) => {
             return {
-              content: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)} (${getTabAccelerator(tabType).replace(
-                "Alt+",
-                KeyboardUtil.isMac() ? "⌥ " : "Alt+"
-              )})`,
+              content: t("menu.tabs.tabShortcut", {
+                tab: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)}`,
+                shortcut: getTabAccelerator(tabType).replace(
+                  "Alt+",
+                  KeyboardUtil.isMac() ? "⌥ " : `${t("menu.keys.alt")}+`
+                )
+              }),
               callback() {
                 sendMessage(hubPort, "new-tab", tabType);
               }
@@ -1529,15 +1536,15 @@ function processKeydown(event: KeyboardEvent): boolean {
   let triggered = true;
   let modifier = KeyboardUtil.isPrimaryModifier(event);
   if (event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "o")) {
-    openDownload();
+    if (!event.repeat) openDownload();
   } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "k")) {
-    sendMessage(hubPort, "start-live", false);
+    if (!event.repeat) sendMessage(hubPort, "start-live", false);
   } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "\\")) {
-    sendMessage(hubPort, "zoom-enabled");
+    if (!event.repeat) sendMessage(hubPort, "zoom-enabled");
   } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, ".")) {
-    sendMessage(hubPort, "toggle-sidebar");
+    if (!event.repeat) sendMessage(hubPort, "toggle-sidebar");
   } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "/")) {
-    sendMessage(hubPort, "toggle-controls");
+    if (!event.repeat) sendMessage(hubPort, "toggle-controls");
   } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "arrowleft")) {
     sendMessage(hubPort, "move-tab", -1);
   } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "arrowright")) {
@@ -1547,14 +1554,14 @@ function processKeydown(event: KeyboardEvent): boolean {
   } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "]")) {
     sendMessage(hubPort, "shift-tab", 1);
   } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "e")) {
-    sendMessage(hubPort, "close-tab", false);
+    if (!event.repeat) sendMessage(hubPort, "close-tab", false);
   } else if (
     event.shiftKey &&
     modifier &&
     KeyboardUtil.matchesKey(event, ",") &&
     DISTRIBUTION !== Distribution.LiteDS
   ) {
-    openPreferences();
+    if (!event.repeat) openPreferences();
   } else if (!event.shiftKey && !modifier && event.altKey && !event.code.startsWith("Alt")) {
     triggered = false;
     getAllTabTypes()
@@ -1562,12 +1569,12 @@ function processKeydown(event: KeyboardEvent): boolean {
       .forEach((tabType) => {
         let accelerator = getTabAccelerator(tabType).replace("Alt+", "").toLowerCase();
         if (accelerator.length > 0 && KeyboardUtil.matchesKey(event, accelerator)) {
-          sendMessage(hubPort, "new-tab", tabType);
+          if (!event.repeat) sendMessage(hubPort, "new-tab", tabType);
           triggered = true;
         }
       });
   } else if (event.code === "Escape") {
-    closePopupWindow();
+    if (!event.repeat) closePopupWindow();
   } else {
     triggered = false;
   }
@@ -1581,7 +1588,7 @@ function processKeydown(event: KeyboardEvent): boolean {
 window.addEventListener("load", () => {
   // Set tab title
   if (DISTRIBUTION === Distribution.LiteDS) {
-    document.title = "AdvantageScope Lite (DS)";
+    document.title = t("hub.titleLiteDs");
   }
 
   // Load assets
@@ -1626,7 +1633,8 @@ window.addEventListener("load", () => {
             metaKey: event.metaKey,
             ctrlKey: event.ctrlKey,
             altKey: event.altKey,
-            shiftKey: event.shiftKey
+            shiftKey: event.shiftKey,
+            repeat: event.repeat
           })
         );
       }

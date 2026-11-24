@@ -8,6 +8,7 @@
 import { KeyboardUtil } from "../shared/KeyboardUtil";
 import Selection, { SelectionMode } from "../shared/Selection";
 import TabType from "../shared/TabType";
+import { findKey } from "../shared/log/LogKeyUtils";
 import { AKIT_TIMESTAMP_KEYS } from "../shared/log/RobotState";
 
 export default class SelectionImpl implements Selection {
@@ -70,14 +71,14 @@ export default class SelectionImpl implements Selection {
 
       if (event.code === "Space") {
         event.preventDefault();
-        this.togglePlayback();
+        if (!event.repeat) this.togglePlayback();
       } else if (KeyboardUtil.matchesKey(event, "l")) {
         if (window.tabs.getSelectedTabType() === TabType.Field3d && !KeyboardUtil.isPrimaryModifier(event)) {
           return;
         }
 
         event.preventDefault();
-        this.toggleLock();
+        if (!event.repeat) this.toggleLock();
       } else if (event.code === "ArrowLeft" || event.code === "ArrowRight") {
         // Unlocked video uses arrow keys to navigate by frame
         if (
@@ -262,7 +263,7 @@ export default class SelectionImpl implements Selection {
 
   /** Steps forward or backward by one cycle. */
   stepCycle(isForward: boolean) {
-    const akitTimestampKey = window.log.getFieldKeys().find((key) => AKIT_TIMESTAMP_KEYS.includes(key));
+    const akitTimestampKey = findKey(window.log, AKIT_TIMESTAMP_KEYS);
     if (akitTimestampKey !== undefined) {
       const timestampData = window.log.getNumber(akitTimestampKey, -Infinity, Infinity);
       if (timestampData === undefined) return;

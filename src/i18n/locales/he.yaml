@@ -29,6 +29,12 @@ download:
   sizeValue: "({{size}} MB)"
   alertSelectLog: "יש לבחור יומן להורדה."
   alertNoNewLogs: "לא נמצאו יומנים חדשים."
+  alertSaved_one: "נשמר {{count}} יומן ב-<u>{{path}}</u>"
+  alertSaved_two: "נשמרו {{count}} יומנים ב-<u>{{path}}</u>"
+  alertSaved_other: "נשמרו {{count}} יומנים ב-<u>{{path}}</u>"
+  alertSavedSkipped_one: "נשמר {{count}} יומן חדש ({{skipped}} דולגו) ב-<u>{{path}}</u>"
+  alertSavedSkipped_two: "נשמרו {{count}} יומנים חדשים ({{skipped}} דולגו) ב-<u>{{path}}</u>"
+  alertSavedSkipped_other: "נשמרו {{count}} יומנים חדשים ({{skipped}} דולגו) ב-<u>{{path}}</u>"
 
 editFov:
   title: "עריכת שדה ראייה (FOV) — AdvantageScope"
@@ -141,6 +147,7 @@ renameTab:
 
 satellite:
   title: "AdvantageScope"
+  windowTitle: "{{title}} — {{app}}"
   metadataNone: "לא נמצאו נתוני מטא-דאטה. יש לבדוק בתיעוד פרטים על פרסום מטא-דאטה."
   tableDelete: "הסרה מהתצוגה"
   tableJumpTitle: "מעבר אל חותמת זמן"
@@ -215,6 +222,7 @@ xrControls:
   showRobotsTitle: "הצגה/הסתרה של מודלי הרובוטים"
 
 tabs:
+  documentation: "תיעוד"
   console: "מסוף"
   joysticks: "ג'ויסטיקים"
   lineGraph: "גרף קווי"
@@ -255,10 +263,13 @@ sourceList:
   values_one: "{{count}} ערך"
   values_two: "{{count}} ערכים"
   values_other: "{{count}} ערכים"
+  arrayListSeparator: ", "
+  arraySummary: "{{count}} — {{values}}"
   toggleVisibility: "הצגה/הסתרה של השדה"
   hideField: "הסתרת שדה"
   showField: "הצגת שדה"
   typeName: "{{name}}:"
+  typeNameSeparator: "/"
   previews:
     moduleVelocities: "ν: {{speed}}, θ: {{angle}}"
     robotVelocities: "νx: {{vx}}, νy: {{vy}}, Ω: {{omega}}"
@@ -300,6 +311,10 @@ licenses:
 
 hub:
   title: "AdvantageScope"
+  titleLite: "AdvantageScope Lite"
+  titleLiteDs: "AdvantageScope Lite (DS)"
+  titleWithName: "{{name}} — {{app}}"
+  titleWithStatus: "{{name}} ({{status}}) — {{app}}"
   updateAvailable: "עדכון זמין"
   shareFeedback: "שיתוף משוב"
   timelineScrollToZoom: "יש לגלול על ציר הזמן כדי להתקרב/להתרחק"
@@ -318,6 +333,13 @@ hub:
     cannotInsertTitle_two: "לא ניתן להוסיף קבצים"
     cannotInsertTitle_other: "לא ניתן להוסיף קבצים"
     noLogsLoaded: 'כרגע לא טעונים קובצי יומן. יש לבחור "פתיחת יומן(ים)" כדי לטעון קבצים חדשים.'
+    multipleFiles_one: "{{count}} קובץ יומן"
+    multipleFiles_two: "{{count}} קובצי יומן"
+    multipleFiles_other: "{{count}} קובצי יומן"
+
+  assets:
+    loadFailedTitle: "טעינת הנכסים נכשלה"
+    loadFailedContent: "טעינת חלק מקובצי הנכסים נכשלה. יש לבדוק במסוף המפתחים לפרטים נוספים."
 
   live:
     statusSearching: "מחפש"
@@ -359,6 +381,7 @@ hub:
     searchPlaceholder: "חיפוש"
     searchTitle: "חיפוש שדות"
     tuningTitle: "הפעלה/כיבוי של מצב כוונון (Tuning)"
+    setValueTitle: "הגדרת ערך"
     fields_one: "{{count}} שדה"
     fields_two: "{{count}} שדות"
     fields_other: "{{count}} שדות"
@@ -381,6 +404,7 @@ hub:
     selectTitle3d: "בחירת מודל מגרש"
     dsAlert: "מיקום ה-Driver Station<br>אינו זמין."
     cameraAlert: 'תנוחת הרובוט אינה זמינה<br>עבור המצלמה "{{name}}".'
+    cameraUnknown: "???"
     frc: "מגרשי FRC"
     ftc: "מגרשי FTC"
     sourceTitle: "פתיחת כתובת ה-URL של מקור תמונת המגרש"
@@ -427,6 +451,7 @@ hub:
     optionValues:
       off: "כבוי"
       on: "מופעל"
+      gamePiece_variant_None: "ללא"
       robot_bumpers_: "צבע הברית"
       radians: "רדיאנים"
       degrees: "מעלות"
@@ -530,6 +555,7 @@ hub:
     dataRangeMax: "ערך מקסימלי של היסטוגרמה"
     stepSize: "גודל צעד"
     stepSizeTitle: "גודל צעד של היסטוגרמה"
+    histogramRange: "{{min}} עד {{max}}"
 
   video:
     local: "פתיחת קובץ וידאו מקומי"
@@ -631,6 +657,7 @@ hub:
     value: "ערך"
     real: "אמיתי"
     replay: "שחזור"
+    notAvailable: "לא זמין"
 
   console:
     exportLog: "ייצוא יומן המסוף"
@@ -638,6 +665,7 @@ hub:
     addConsoleData: "יש להוסיף שדה עם נתוני מסוף, ולאחר מכן לנסות שוב."
 
 xrClient:
+  title: "לקוח XR — AdvantageScope XR"
   miniature:
     placeRedFRC: "יש להקיש כדי להציב את קיר הברית האדומה."
     placeBlueFRC: "יש להקיש כדי להציב את קיר הברית הכחולה."
@@ -738,7 +766,9 @@ menu:
 
   view:
     toggleSidebar: "הפעלה/כיבוי של סרגל צד"
+    toggleSidebarShortcut: "הפעלה/כיבוי של סרגל צד ({{shortcut}})"
     toggleControls: "הפעלה/כיבוי של בקרות"
+    toggleControlsShortcut: "הפעלה/כיבוי של בקרות ({{shortcut}})"
     resetLayout: "איפוס פריסה"
     loopVisible: "ניגון מחזורי של הטווח הגלוי"
     showRobotMode: "הצגת מצב רובוט"
@@ -764,7 +794,12 @@ menu:
     closeTab: "סגירת כרטיסייה"
     closeTabShortcut: "סגירת כרטיסייה ({{shortcut}})"
     newTabShortcut: "כרטיסייה חדשה (קיצור דרך)"
+    tabShortcut: "{{tab}} ({{shortcut}})"
     renameTab: "שינוי שם כרטיסייה"
+
+  keys:
+    ctrl: "Ctrl"
+    alt: "Alt"
 
   window:
     heading: "חלון"
@@ -799,6 +834,7 @@ menu:
     disableAutoUnits: "השבתת יחידות אוטומטיות"
     resetUnits: "איפוס יחידות"
     zoomEnabled: "התמקדות בטווח הפעיל"
+    zoomEnabledShortcut: "התמקדות בטווח הפעיל ({{shortcut}})"
     differentiate: "גזירה"
     integrate: "אינטגרציה"
 
@@ -835,6 +871,7 @@ main:
     restartTitle: "להפעיל מחדש את AdvantageScope?"
 
   assets:
+    noStatus: "אין סטטוס זמין."
     downloadStarted: "ההורדה התחילה ב-{{time}}. יש להמתין מספר דקות לסיום ההורדה."
     downloadFinished: "כל הנכסים ירדו. AdvantageScope תבדוק עדכונים מעת לעת."
     connectFailed: "לא ניתן להתחבר ל-GitHub. ננסה שוב בקרוב."
@@ -842,6 +879,7 @@ main:
     readme: "תיקייה זו מכילה נכסים נוספים עבור תצוגות המגרש הדו-ממדי, המגרש התלת-ממדי והבקרים. לפרטים נוספים, יש לעיין בתיעוד של AdvantageScope (זמין דרך כרטיסיית התיעוד באפליקציה או בכתובת ה-URL למטה)."
 
   owlet:
+    noStatus: "אין סטטוס זמין."
     upToDate: "Owlet מעודכן. AdvantageScope תבדוק עדכונים מעת לעת."
     offlineCache: "שימוש במטמון לא מקוון של Owlet. נבדוק עדכונים בקרוב."
     noDiskSpace: "אין מספיק מקום בדיסק. ננסה שוב בקרוב."
@@ -928,6 +966,7 @@ main:
     openDsInThisWindow: "פתיחה בחלון זה"
     unsupportedFormatLite: "פורמט קובץ שאינו נתמך ב-AdvantageScope Lite."
     decompressFailed: "חילוץ קובץ ה-WPILOG נכשל."
+    invalidExtension: "סיומת יומן לא חוקית"
     limitedSignals: "זמינות אותות מוגבלת"
     limitedSignalsDetail: "קובץ יומן זה כולל מספר מוגבל של אותות ממכשירי Phoenix. יש לבדוק את התיעוד של Phoenix לפרטים נוספים."
 
@@ -945,7 +984,7 @@ main:
 
   video:
     pythonRequired: "נדרשת התקנת Python"
-    pythonRequiredDetail: "תכונה זו דורשת ש-Python 3.10 ומעלה יהיה זמין במערכת שלכם. יש להתקין Python ולנסות שוב."
+    pythonRequiredDetail: "תכונה זו דורשת ש-Python 3.11 ומעלה יהיה זמין במערכת שלכם. יש להתקין Python ולנסות שוב."
     ffmpegRequired: "נדרשת התקנת FFmpeg"
     ffmpegRequiredDetail: "FFmpeg נדרש כדי לעבד קובצי וידאו. יש להתקין את FFmpeg ולהוסיפו למשתנה הסביבה PATH."
     downloadFfmpeg: "להוריד FFmpeg?"
@@ -960,6 +999,7 @@ main:
     tbaFailedDetail: "אירעה בעיה במציאת סרטון המשחק ב-The Blue Alliance. יש לבדוק את מפתח ה-API שלכם, או לטעון את הווידאו באמצעות כתובת URL של YouTube או קובץ מקומי במקום זאת."
     openTitle: "בחירת וידאו לפתיחה"
     filter: "סרטונים"
+    unknownVideo: "סרטון לא ידוע"
 
   warnings:
     error: "שגיאה"

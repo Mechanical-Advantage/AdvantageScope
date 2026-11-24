@@ -29,6 +29,12 @@ download:
   sizeValue: "({{size}} MB)"
   alertSelectLog: "Selectează un log pentru descărcare."
   alertNoNewLogs: "Nu s-au găsit loguri noi."
+  alertSaved_one: "S-a salvat {{count}} log în <u>{{path}}</u>"
+  alertSaved_few: "S-au salvat {{count}} loguri în <u>{{path}}</u>"
+  alertSaved_other: "S-au salvat {{count}} de loguri în <u>{{path}}</u>"
+  alertSavedSkipped_one: "S-a salvat {{count}} log nou ({{skipped}} omise) în <u>{{path}}</u>"
+  alertSavedSkipped_few: "S-au salvat {{count}} loguri noi ({{skipped}} omise) în <u>{{path}}</u>"
+  alertSavedSkipped_other: "S-au salvat {{count}} de loguri noi ({{skipped}} omise) în <u>{{path}}</u>"
 
 editFov:
   title: "Editare FOV — AdvantageScope"
@@ -141,6 +147,7 @@ renameTab:
 
 satellite:
   title: "AdvantageScope"
+  windowTitle: "{{title}} — {{app}}"
   metadataNone: "Nu s-au găsit metadate. Consultă documentația pentru detalii despre publicarea metadatelor."
   tableDelete: "Elimină din vizualizare"
   tableJumpTitle: "Mergi la marcajul de timp"
@@ -215,6 +222,7 @@ xrControls:
   showRobotsTitle: "Afișează/ascunde modelele roboților"
 
 tabs:
+  documentation: "Documentație"
   console: "Consolă"
   joysticks: "Joystick-uri"
   lineGraph: "Grafic liniar"
@@ -255,10 +263,13 @@ sourceList:
   values_one: "{{count}} valoare"
   values_few: "{{count}} valori"
   values_other: "{{count}} de valori"
+  arrayListSeparator: ", "
+  arraySummary: "{{count}} — {{values}}"
   toggleVisibility: "Afișează/ascunde câmpul"
   hideField: "Ascunde câmp"
   showField: "Afișează câmp"
   typeName: "{{name}}:"
+  typeNameSeparator: "/"
   previews:
     moduleVelocities: "ν: {{speed}}, θ: {{angle}}"
     robotVelocities: "νx: {{vx}}, νy: {{vy}}, Ω: {{omega}}"
@@ -300,6 +311,10 @@ licenses:
 
 hub:
   title: "AdvantageScope"
+  titleLite: "AdvantageScope Lite"
+  titleLiteDs: "AdvantageScope Lite (DS)"
+  titleWithName: "{{name}} — {{app}}"
+  titleWithStatus: "{{name}} ({{status}}) — {{app}}"
   updateAvailable: "Actualizare disponibilă"
   shareFeedback: "Trimite feedback"
   timelineScrollToZoom: "Derulează cronologia pentru a mări"
@@ -318,6 +333,13 @@ hub:
     cannotInsertTitle_few: "Nu se pot insera fișierele"
     cannotInsertTitle_other: "Nu se pot insera fișierele"
     noLogsLoaded: "Nu este încărcat niciun fișier log. Alege „Deschide log(uri)” pentru a încărca fișiere noi."
+    multipleFiles_one: "{{count}} fișier log"
+    multipleFiles_few: "{{count}} fișiere log"
+    multipleFiles_other: "{{count}} de fișiere log"
+
+  assets:
+    loadFailedTitle: "Resursele nu au putut fi încărcate"
+    loadFailedContent: "Unele fișiere de resurse nu au putut fi încărcate. Verifică consola de dezvoltare pentru detalii."
 
   live:
     statusSearching: "Se caută"
@@ -359,6 +381,7 @@ hub:
     searchPlaceholder: "Căutare"
     searchTitle: "Căutare câmpuri"
     tuningTitle: "Activează/dezactivează modul de ajustare"
+    setValueTitle: "Setează valoarea"
     fields_one: "{{count}} câmp"
     fields_few: "{{count}} câmpuri"
     fields_other: "{{count}} de câmpuri"
@@ -381,6 +404,7 @@ hub:
     selectTitle3d: "Selectează modelul terenului"
     dsAlert: "Poziția Driver Station<br>indisponibilă."
     cameraAlert: "Poziția robotului indisponibilă<br>pentru camera „{{name}}”."
+    cameraUnknown: "???"
     frc: "Terenuri FRC"
     ftc: "Terenuri FTC"
     sourceTitle: "Deschide URL-ul sursei imaginii terenului"
@@ -427,6 +451,7 @@ hub:
     optionValues:
       off: "Dezactivat"
       on: "Activat"
+      gamePiece_variant_None: "Niciuna"
       robot_bumpers_: "Culoarea alianței"
       radians: "Radiani"
       degrees: "Grade"
@@ -530,6 +555,7 @@ hub:
     dataRangeMax: "Valoare maximă histogramă"
     stepSize: "Dimensiune pas"
     stepSizeTitle: "Dimensiune pas histogramă"
+    histogramRange: "{{min}} la {{max}}"
 
   video:
     local: "Deschide fișier video local"
@@ -631,6 +657,7 @@ hub:
     value: "Valoare"
     real: "Real"
     replay: "Reluare"
+    notAvailable: "Indisponibil"
 
   console:
     exportLog: "Exportă logul consolei"
@@ -638,6 +665,7 @@ hub:
     addConsoleData: "Adaugă un câmp cu date de consolă, apoi încearcă din nou."
 
 xrClient:
+  title: "Client XR — AdvantageScope XR"
   miniature:
     placeRedFRC: "Atinge pentru a plasa peretele alianței roșii."
     placeBlueFRC: "Atinge pentru a plasa peretele alianței albastre."
@@ -738,7 +766,9 @@ menu:
 
   view:
     toggleSidebar: "Afișează/ascunde bara laterală"
+    toggleSidebarShortcut: "Afișează/ascunde bara laterală ({{shortcut}})"
     toggleControls: "Afișează/ascunde controalele"
+    toggleControlsShortcut: "Afișează/ascunde controalele ({{shortcut}})"
     resetLayout: "Resetează aranjamentul"
     loopVisible: "Redă în buclă intervalul vizibil"
     showRobotMode: "Afișează modul robotului"
@@ -764,7 +794,12 @@ menu:
     closeTab: "Închide fila"
     closeTabShortcut: "Închide fila ({{shortcut}})"
     newTabShortcut: "Filă nouă (comandă rapidă)"
+    tabShortcut: "{{tab}} ({{shortcut}})"
     renameTab: "Redenumește fila"
+
+  keys:
+    ctrl: "Ctrl"
+    alt: "Alt"
 
   window:
     heading: "Fereastră"
@@ -799,6 +834,7 @@ menu:
     disableAutoUnits: "Dezactivează unitățile automate"
     resetUnits: "Resetează unitățile"
     zoomEnabled: "Mărește la intervalul activ"
+    zoomEnabledShortcut: "Mărește la intervalul activ ({{shortcut}})"
     differentiate: "Derivează"
     integrate: "Integrează"
 
@@ -835,6 +871,7 @@ main:
     restartTitle: "Repornești AdvantageScope?"
 
   assets:
+    noStatus: "Nicio stare disponibilă."
     downloadStarted: "Descărcarea a început la {{time}}. Așteaptă câteva minute pentru finalizarea descărcării."
     downloadFinished: "Toate resursele au fost descărcate. AdvantageScope va verifica actualizările periodic."
     connectFailed: "Nu se poate realiza conexiunea la GitHub. Vom încerca din nou în curând."
@@ -842,6 +879,7 @@ main:
     readme: "Acest folder conține resurse suplimentare pentru terenul 2D, terenul 3D și vizualizările pentru joystick. Pentru mai multe detalii, consultă documentația AdvantageScope (disponibilă prin fila de documentație din aplicație sau la URL-ul de mai jos)."
 
   owlet:
+    noStatus: "Nicio stare disponibilă."
     upToDate: "Owlet este actualizat. AdvantageScope va verifica actualizările periodic."
     offlineCache: "Se utilizează memoria cache offline Owlet. Vom verifica actualizările în curând."
     noDiskSpace: "Spațiu insuficient pe disc. Vom încerca din nou în curând."
@@ -928,6 +966,7 @@ main:
     openDsInThisWindow: "Deschide în această fereastră"
     unsupportedFormatLite: "Format de fișier neacceptat în AdvantageScope Lite."
     decompressFailed: "Nu s-a putut decomprima fișierul WPILOG."
+    invalidExtension: "Extensie de log nevalidă"
     limitedSignals: "Semnale limitate disponibile"
     limitedSignalsDetail: "Acest fișier log include un număr limitat de semnale de la dispozitivele Phoenix. Consultă documentația Phoenix pentru detalii."
 
@@ -945,7 +984,7 @@ main:
 
   video:
     pythonRequired: "Este necesară instalarea Python"
-    pythonRequiredDetail: "Această funcționalitate necesită Python 3.10 sau o versiune ulterioară disponibilă pe sistemul tău. Instalează Python și încearcă din nou."
+    pythonRequiredDetail: "Această funcționalitate necesită Python 3.11 sau o versiune ulterioară disponibilă pe sistemul tău. Instalează Python și încearcă din nou."
     ffmpegRequired: "Este necesară instalarea FFmpeg"
     ffmpegRequiredDetail: "FFmpeg este necesar pentru procesarea fișierelor video. Instalează FFmpeg și adaugă-l la PATH."
     downloadFfmpeg: "Descarci FFmpeg?"
@@ -960,6 +999,7 @@ main:
     tbaFailedDetail: "A apărut o problemă la găsirea videoclipului meciului pe The Blue Alliance. Verifică-ți cheia API sau încarcă videoclipul folosind un URL YouTube ori un fișier local."
     openTitle: "Selectează un videoclip pentru deschidere"
     filter: "Videoclipuri"
+    unknownVideo: "Videoclip necunoscut"
 
   warnings:
     error: "Eroare"
