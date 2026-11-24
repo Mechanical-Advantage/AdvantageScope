@@ -68,7 +68,7 @@ export function setupKeyboardControls(element: HTMLElement) {
   element.addEventListener("keydown", (event: KeyboardEvent) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      element.click();
+      if (!event.repeat) element.click();
     }
   });
 }

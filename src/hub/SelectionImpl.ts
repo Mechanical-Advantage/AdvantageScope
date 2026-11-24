@@ -70,14 +70,14 @@ export default class SelectionImpl implements Selection {
 
       if (event.code === "Space") {
         event.preventDefault();
-        this.togglePlayback();
+        if (!event.repeat) this.togglePlayback();
       } else if (KeyboardUtil.matchesKey(event, "l")) {
         if (window.tabs.getSelectedTabType() === TabType.Field3d && !KeyboardUtil.isPrimaryModifier(event)) {
           return;
         }
 
         event.preventDefault();
-        this.toggleLock();
+        if (!event.repeat) this.toggleLock();
       } else if (event.code === "ArrowLeft" || event.code === "ArrowRight") {
         // Unlocked video uses arrow keys to navigate by frame
         if (

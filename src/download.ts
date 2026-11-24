@@ -338,6 +338,7 @@ EXIT_BUTTON.addEventListener("click", () => {
 });
 DOWNLOAD_BUTTON.addEventListener("click", save);
 window.addEventListener("keydown", (event) => {
+  if (event.repeat) return;
   if (event.code === "Enter") {
     save();
   } else if (!IS_LITE && KeyboardUtil.isPrimaryModifier(event) && KeyboardUtil.matchesKey(event, "a")) {

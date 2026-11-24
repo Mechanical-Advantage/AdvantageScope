@@ -1529,15 +1529,15 @@ function processKeydown(event: KeyboardEvent): boolean {
   let triggered = true;
   let modifier = KeyboardUtil.isPrimaryModifier(event);
   if (event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "o")) {
-    openDownload();
+    if (!event.repeat) openDownload();
   } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "k")) {
-    sendMessage(hubPort, "start-live", false);
+    if (!event.repeat) sendMessage(hubPort, "start-live", false);
   } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "\\")) {
-    sendMessage(hubPort, "zoom-enabled");
+    if (!event.repeat) sendMessage(hubPort, "zoom-enabled");
   } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, ".")) {
-    sendMessage(hubPort, "toggle-sidebar");
+    if (!event.repeat) sendMessage(hubPort, "toggle-sidebar");
   } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "/")) {
-    sendMessage(hubPort, "toggle-controls");
+    if (!event.repeat) sendMessage(hubPort, "toggle-controls");
   } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "arrowleft")) {
     sendMessage(hubPort, "move-tab", -1);
   } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "arrowright")) {
@@ -1547,14 +1547,14 @@ function processKeydown(event: KeyboardEvent): boolean {
   } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "]")) {
     sendMessage(hubPort, "shift-tab", 1);
   } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "e")) {
-    sendMessage(hubPort, "close-tab", false);
+    if (!event.repeat) sendMessage(hubPort, "close-tab", false);
   } else if (
     event.shiftKey &&
     modifier &&
     KeyboardUtil.matchesKey(event, ",") &&
     DISTRIBUTION !== Distribution.LiteDS
   ) {
-    openPreferences();
+    if (!event.repeat) openPreferences();
   } else if (!event.shiftKey && !modifier && event.altKey && !event.code.startsWith("Alt")) {
     triggered = false;
     getAllTabTypes()
@@ -1562,12 +1562,12 @@ function processKeydown(event: KeyboardEvent): boolean {
       .forEach((tabType) => {
         let accelerator = getTabAccelerator(tabType).replace("Alt+", "").toLowerCase();
         if (accelerator.length > 0 && KeyboardUtil.matchesKey(event, accelerator)) {
-          sendMessage(hubPort, "new-tab", tabType);
+          if (!event.repeat) sendMessage(hubPort, "new-tab", tabType);
           triggered = true;
         }
       });
   } else if (event.code === "Escape") {
-    closePopupWindow();
+    if (!event.repeat) closePopupWindow();
   } else {
     triggered = false;
   }
@@ -1626,7 +1626,8 @@ window.addEventListener("load", () => {
             metaKey: event.metaKey,
             ctrlKey: event.ctrlKey,
             altKey: event.altKey,
-            shiftKey: event.shiftKey
+            shiftKey: event.shiftKey,
+            repeat: event.repeat
           })
         );
       }
