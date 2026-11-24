@@ -6,7 +6,7 @@
 
 ## المتطلبات {#requirements}
 
-- **الجهاز المضيف (Host):** تطبيق AdvantageScope لسطح المكتب على Windows أو macOS أو Linux (الإصدار v4.1.0 أو أحدث). يجب [تعطيل](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) أي جدران حماية على الجهاز.
+- **الجهاز المضيف (Host):** تطبيق AdvantageScope لسطح المكتب على Windows أو macOS أو Linux (الإصدار v4.1.0 أو أحدث). يجب [تعطيل](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) أي جدران حماية على الجهاز أو تهيئتها للسماح بالاتصالات الواردة على منفذ TCP رقم 56328.
 - **جهاز العميل (Client):** جهاز iPhone أو iPad يعمل بنظام iOS/iPadOS 16 أو أحدث، دون الحاجة إلى تثبيت أي تطبيق.
 - **الشبكة:** يجب توصيل الجهازين بالشبكة نفسها (مثل Wi-Fi أو التوصيل عبر USB أو غيرهما). ومع مراعاة الشرط أدناه، لا يلزم أن تكون هذه الشبكة متصلة بالإنترنت.
 - **الإنترنت:** إذا لم تستخدم AdvantageScope XR مؤخرًا، فيجب أن يكون الجهاز المحمول متصلًا بالإنترنت (مثل بيانات الهاتف المحمول). للاستغناء عن هذا الشرط، راجع قسم [الاستخدام بدون اتصال بالإنترنت](#offline-usage) أدناه.

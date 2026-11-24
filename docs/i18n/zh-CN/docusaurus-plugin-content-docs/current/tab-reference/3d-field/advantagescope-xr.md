@@ -6,7 +6,7 @@ AdvantageScope XR 将 👀 [3D 场地](/tab-reference/3d-field)视图带入增�
 
 ## 要求 {#requirements}
 
-- **主机：** 运行在 Windows、macOS 或 Linux 上的 AdvantageScope 桌面应用程序（v4.1.0 或更高版本）。请确保[关闭](https://docs.wpilib.org/zh-cn/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall)设备上的防火墙。
+- **主机：** 运行在 Windows、macOS 或 Linux 上的 AdvantageScope 桌面应用程序（v4.1.0 或更高版本）。请确保[关闭](https://docs.wpilib.org/zh-cn/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall)设备上的防火墙，或将其配置为允许 TCP 56328 端口的入站连接。
 - **客户端：** 运行 iOS/iPadOS 16 或更高版本的 iPhone 或 iPad，无需安装额外应用。
 - **网络：** 两台设备必须连接至同一网络（如 Wi-Fi、USB 网络共享等）。除下述情况外，该网络无需连接互联网。
 - **互联网：** 如果近期未曾使用过 AdvantageScope XR，移动设备需要联网（例如通过蜂窝数据）。如需免除联网要求，请参阅下方的[离线使用](#offline-usage)部分。

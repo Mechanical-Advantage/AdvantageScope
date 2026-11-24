@@ -6,7 +6,7 @@ AdvantageScope XR aduce la viață vizualizarea 👀 [Teren 3D](/tab-reference/3
 
 ## Cerințe {#requirements}
 
-- **Gazdă (Host):** Aplicația desktop AdvantageScope pe Windows, macOS sau Linux (v4.1.0 sau mai recentă). Orice firewall de pe dispozitiv trebuie să fie [dezactivat](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
+- **Gazdă (Host):** Aplicația desktop AdvantageScope pe Windows, macOS sau Linux (v4.1.0 sau mai recentă). Orice firewall de pe dispozitiv trebuie să fie [dezactivat](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) sau configurat pentru a permite conexiuni de intrare pe portul TCP 56328.
 - **Client:** Un iPhone sau iPad cu iOS/iPadOS 16 sau mai recent. Nu trebuie să instalezi nicio aplicație.
 - **Rețea:** Ambele dispozitive trebuie să fie conectate la aceeași rețea (Wi-Fi, partajare internet prin USB etc.). Cu excepția situației de mai jos, această rețea nu are nevoie de conexiune la internet.
 - **Internet:** Dacă AdvantageScope XR nu a fost folosit recent, dispozitivul mobil trebuie să aibă conexiune la internet (de ex., date mobile). Pentru a elimina această cerință, consultă secțiunea [Utilizare offline](#offline-usage) de mai jos.

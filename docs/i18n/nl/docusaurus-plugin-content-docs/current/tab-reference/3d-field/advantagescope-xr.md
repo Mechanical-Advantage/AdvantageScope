@@ -6,7 +6,7 @@ AdvantageScope XR brengt het 👀 [3D-veld](/tab-reference/3d-field) tot leven i
 
 ## Vereisten {#requirements}
 
-- **Host:** De desktopversie van AdvantageScope op Windows, macOS of Linux (v4.1.0 of nieuwer). Eventuele firewalls op het apparaat moet je [uitschakelen](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
+- **Host:** De desktopversie van AdvantageScope op Windows, macOS of Linux (v4.1.0 of nieuwer). Eventuele firewalls op het apparaat moet je [uitschakelen](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) of zo instellen dat inkomende verbindingen op TCP-poort 56328 worden toegestaan.
 - **Client:** Een iPhone of iPad met iOS/iPadOS 16 of nieuwer. Je hoeft geen app te installeren.
 - **Netwerk:** Beide apparaten moeten op hetzelfde netwerk zitten (wifi, USB-tethering, enz.). Behalve voor de voorwaarde hieronder hoeft dit netwerk geen internetverbinding te hebben.
 - **Internet:** Heb je AdvantageScope XR al een tijdje niet gebruikt, dan heeft het mobiele apparaat even internet nodig (bijvoorbeeld via mobiele data). Wil je dat vermijden? Lees dan het stukje over [offline gebruik](#offline-usage) hieronder.

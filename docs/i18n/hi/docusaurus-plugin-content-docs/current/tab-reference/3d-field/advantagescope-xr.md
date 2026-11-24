@@ -6,7 +6,7 @@ AdvantageScope XR 👀 [3D फील्ड](/tab-reference/3d-field) व्य�
 
 ## आवश्यकताएं {#requirements}
 
-- **होस्ट (Host):** Windows, macOS, या Linux पर AdvantageScope डेस्कटॉप एप्लिकेशन (v4.1.0 या नया)। डिवाइस पर कोई भी फ़ायरवॉल [बंद (disabled)](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) होना चाहिए।
+- **होस्ट (Host):** Windows, macOS, या Linux पर AdvantageScope डेस्कटॉप एप्लिकेशन (v4.1.0 या नया)। डिवाइस पर कोई भी फ़ायरवॉल [बंद (disabled)](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) होना चाहिए या TCP पोर्ट 56328 पर इनकमिंग कनेक्शन की अनुमति देने के लिए कॉन्फ़िगर होना चाहिए।
 - **क्लाइंट (Client):** iOS/iPadOS 16 या उसके बाद के वर्ज़न वाला iPhone या iPad। इसके लिए किसी ऐप इंस्टॉलेशन की ज़रूरत नहीं है।
 - **नेटवर्क (Network):** दोनों डिवाइस एक ही नेटवर्क (वाई-फ़ाई, USB टेदरिंग, आदि) से जुड़े होने चाहिए। नीचे दी गई शर्त को छोड़कर, इस नेटवर्क का इंटरनेट से जुड़ा होना ज़रूरी नहीं है।
 - **इंटरनेट (Internet):** अगर हाल ही में AdvantageScope XR का उपयोग नहीं किया गया है, तो मोबाइल डिवाइस में इंटरनेट कनेक्शन (जैसे सेल्युलर डेटा) होना ज़रूरी है। बिना इंटरनेट के उपयोग करने के लिए नीचे [ऑफ़लाइन उपयोग](#offline-usage) सेक्शन देखें।

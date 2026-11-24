@@ -6,7 +6,7 @@ AdvantageScope XR 將 👀 [3D 場地](/tab-reference/3d-field)帶入擴增實�
 
 ## 系統需求 {#requirements}
 
-- **主機：** Windows、macOS 或 Linux 上的 AdvantageScope 桌面應用程式（v4.1.0 或更高版本）。請先[停用](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall)裝置上的防火牆。
+- **主機：** Windows、macOS 或 Linux 上的 AdvantageScope 桌面應用程式（v4.1.0 或更高版本）。請先[停用](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall)裝置上的防火牆，或將其設定為允許 TCP 連接埠 56328 的連入連線。
 - **用戶端：** 搭載 iOS / iPadOS 16 或更高版本的 iPhone 或 iPad，無需安裝應用程式。
 - **網路：** 兩台裝置必須連線到同一個網路（Wi-Fi、USB 網路共用等）。除下列特定情況外，此網路不需要連接網際網路。
 - **網際網路：** 若近期未曾使用過 AdvantageScope XR，行動裝置需具備網際網路連線（例如行動數據）。若想省去這項需求，請參考下方的[離線使用](#offline-usage)說明。

@@ -6,7 +6,7 @@ AdvantageScope XR оживляет вид 👀 [3D-поле](/tab-reference/3d-f
 
 ## Требования {#requirements}
 
-- **Хост:** Десктопное приложение AdvantageScope на Windows, macOS или Linux (v4.1.0 или более поздняя). Любые брандмауэры на устройстве должны быть [отключены](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
+- **Хост:** Десктопное приложение AdvantageScope на Windows, macOS или Linux (v4.1.0 или более поздняя). Любые брандмауэры на устройстве должны быть [отключены](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) или настроены так, чтобы разрешать входящие подключения по TCP-порту 56328.
 - **Клиент:** iPhone или iPad под управлением iOS/iPadOS 16 или более поздней версии. Установка приложения не требуется.
 - **Сеть:** Оба устройства должны быть подключены к одной сети (Wi-Fi, USB-модем и т. д.). С учётом требования ниже эта сеть может не иметь подключения к интернету.
 - **Интернет:** Если AdvantageScope XR не использовался в последнее время, мобильное устройство должно иметь подключение к интернету (например, сотовые данные). Чтобы устранить это требование, ознакомьтесь с разделом [автономное использование](#offline-usage) ниже.
