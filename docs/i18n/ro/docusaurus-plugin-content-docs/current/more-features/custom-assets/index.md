@@ -39,7 +39,7 @@ Fiecare folder trebuie să conțină un fișier numit „config.json” și unul
 
 ### Prezentare generală {#overview}
 
-Folderul trebuie să conțină un model numit „model.glb”. Fișierele CAD trebuie convertite în glTF; consultă [această pagină](gltf-convert) pentru detalii. Fișierul de configurare trebuie să respecte următorul format:
+Folderul trebuie să conțină un model numit „model.glb”. Fișierele CAD trebuie convertite în glTF binar (`.glb`); consultă [această pagină](gltf-convert) pentru detalii. Fișierul de configurare trebuie să respecte următorul format:
 
 ```json
 {
@@ -79,7 +79,7 @@ AdvantageScope simplifică automat geometria modelului pentru a îmbunătăți p
 Configurarea componentelor articulate poate fi complexă și consumatoare de timp. Ia în considerare folosirea suportului [3D `Mechanism2d`](/tab-reference/3d-field#2d-mechanisms) din AdvantageScope, care oferă o abordare mult mai simplă pentru **vizualizarea mecanismelor pe terenul 3D**.
 :::
 
-Modelele de roboți pot conține componente articulate pentru vizualizarea datelor mecanismelor (vezi [această pagină](/tab-reference/3d-field) pentru detalii). Modelul glTF de bază nu trebuie să includă componentele; fiecare componentă se exportă separat ca model glTF. Modelele componentelor urmează convenția de denumire „model_INDEX.glb”, astfel încât prima componentă articulată va fi „model_0.glb”.
+Modelele de roboți pot conține componente articulate pentru vizualizarea datelor mecanismelor (vezi [această pagină](/tab-reference/3d-field) pentru detalii). Modelul glTF (`.glb`) de bază nu trebuie să includă componentele; fiecare componentă se exportă separat ca model glTF (`.glb`). Modelele componentelor urmează convenția de denumire „model_INDEX.glb”, astfel încât prima componentă articulată va fi „model_0.glb”.
 
 Configurarea componentelor se face în fișierul de configurare al robotului, furnizând un tablou (array) sub cheia „components”. Dacă nu furnizezi pose-uri pentru componente în AdvantageScope, modelele acestora vor fi poziționate folosind rotațiile și poziția implicite ale robotului (vezi mai sus). Dacă furnizezi pose-uri pentru componente, se aplică mai întâi rotațiile și poziția „aduse la zero” (zeroed) pentru a aduce fiecare componentă în originea robotului, apoi se aplică pose-urile tale pentru a muta fiecare componentă la locul ei pe robot.
 
@@ -225,7 +225,7 @@ Folderul trebuie să conțină o imagine numită „image.png”, orientată cu 
 
 ## Modele de teren 3D {#3d-field-models}
 
-Folderul trebuie să conțină un model numit „model.glb”. După aplicarea tuturor rotațiilor, terenul trebuie să fie orientat cu alianța roșie în stânga. Fișierele CAD trebuie convertite în glTF; consultă [această pagină](gltf-convert) pentru detalii. Modelele pieselor de joc urmează convenția de denumire „model_INDEX.glb”, în ordinea în care apar în tabloul „gamePieces”. AprilTag-urile declarate aici sunt întotdeauna poziționate folosind sistemul de coordonate [centru/roșu](/more-features/coordinate-systems#center-red), indiferent de orice alte opțiuni de configurare.
+Folderul trebuie să conțină un model numit „model.glb”. După aplicarea tuturor rotațiilor, terenul trebuie să fie orientat cu alianța roșie în stânga. Fișierele CAD trebuie convertite în glTF binar (`.glb`); consultă [această pagină](gltf-convert) pentru detalii. Modelele pieselor de joc urmează convenția de denumire „model_INDEX.glb”, în ordinea în care apar în tabloul „gamePieces”. AprilTag-urile declarate aici sunt întotdeauna poziționate folosind sistemul de coordonate [centru/roșu](/more-features/coordinate-systems#center-red), indiferent de orice alte opțiuni de configurare.
 
 Fișierul de configurare trebuie să respecte următorul format:
 

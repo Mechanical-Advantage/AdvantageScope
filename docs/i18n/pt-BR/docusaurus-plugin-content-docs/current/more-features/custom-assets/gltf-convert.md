@@ -1,10 +1,14 @@
 # Convertendo arquivos Onshape e STEP para glTF {#converting-onshape-and-step-files-to-gltf}
 
-A visualização 3D do AdvantageScope aceita modelos personalizados de campos e robôs, que você pode instalar seguindo o passo a passo [desta página](/more-features/custom-assets). Todos os modelos precisam estar no formato [glTF](https://www.khronos.org/gltf/), escolhido pela eficiência na hora de armazenar e carregar os arquivos. Vale notar que o AdvantageScope usa a versão binária (`.glb`), que reúne todos os recursos em um único arquivo, em vez da versão em JSON puro (`.gltf`).
+A visualização 3D do AdvantageScope aceita modelos personalizados de campos e robôs, que você pode instalar seguindo o passo a passo [desta página](/more-features/custom-assets). Todos os modelos precisam usar o formato binário de [glTF](https://www.khronos.org/gltf/) (`.glb`), escolhido pelos arquivos menores e pelo carregamento rápido.
+
+:::info
+Os arquivos glTF existem em dois formatos: JSON (`.gltf`) e binário (`.glb`). O AdvantageScope exige o formato binário **`.glb`**, que reúne todos os dados do modelo em um único arquivo.
+:::
 
 ## Convertendo Onshape para STEP {#converting-onshape-to-step}
 
-Embora o Onshape tenha uma opção para exportar direto em glTF, isso costuma gerar arquivos enormes e difíceis de gerenciar. O melhor caminho é exportar do Onshape como STEP e depois seguir as instruções da próxima seção para converter para glTF.
+Embora o Onshape tenha uma opção para exportar direto em glTF, isso costuma gerar arquivos enormes e difíceis de gerenciar. O melhor caminho é exportar do Onshape como STEP e depois seguir as instruções da próxima seção para converter para glTF binário (`.glb`).
 
 1. Com o arquivo aberto no Onshape, clique com o botão direito na montagem principal e escolha "Export...":
 
@@ -16,9 +20,9 @@ Embora o Onshape tenha uma opção para exportar direto em glTF, isso costuma ge
 
 3. Aguarde a conversão e o download do arquivo. Isso pode levar alguns minutos.
 
-## Convertendo STEP para glTF {#converting-step-to-gltf}
+## Convertendo STEP para glTF (.glb) {#converting-step-to-gltf}
 
-1. Baixe o [CAD Assistant](https://www.opencascade.com/products/cad-assistant/). Esse aplicativo gratuito converte entre vários formatos 3D, incluindo STEP e glTF.
+1. Baixe o [CAD Assistant](https://www.opencascade.com/products/cad-assistant/). Esse aplicativo gratuito converte entre vários formatos 3D, incluindo STEP e glTF (`.glb`).
 
 2. Abra o CAD Assistant e selecione o arquivo STEP que você quer converter:
 
@@ -30,7 +34,7 @@ Embora o Onshape tenha uma opção para exportar direto em glTF, isso costuma ge
 
 <img src="/img/more-features/custom-assets/gltf-convert-4.webp" alt="Clicando no ícone &quot;Save&quot;" />
 
-5. Escolha onde salvar e use o menu suspenso para mudar o formato de exportação para "glb":
+5. Escolha onde salvar e use o menu suspenso para mudar o formato de exportação para "glb" (glTF binário):
 
 <img src="/img/more-features/custom-assets/gltf-convert-5.webp" alt="Alterando o formato de exportação" />
 
@@ -41,3 +45,5 @@ Embora o Onshape tenha uma opção para exportar direto em glTF, isso costuma ge
 7. Clique no ícone "Save" e espere a exportação terminar:
 
 <img src="/img/more-features/custom-assets/gltf-convert-7.webp" alt="Clicando no ícone &quot;Save&quot;" />
+
+Depois de exportar, renomeie o arquivo `.glb` (por exemplo, `model.glb`) e adicione-o à sua pasta de recursos personalizados conforme descrito na página [Recursos personalizados](/more-features/custom-assets).

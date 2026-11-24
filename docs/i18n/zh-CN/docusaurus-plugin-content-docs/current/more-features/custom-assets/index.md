@@ -39,7 +39,7 @@ AdvantageScope 内置了一套默认的平面场地图像、场地模型、机�
 
 ### 概述 {#overview}
 
-文件夹中必须包含名为“model.glb”的模型文件。CAD 文件需先转换为 glTF 格式，详情请参阅 [此页面](gltf-convert)。配置文件格式如下：
+文件夹中必须包含名为“model.glb”的模型文件。CAD 文件需先转换为二进制 glTF（`.glb`）格式，详情请参阅 [此页面](gltf-convert)。配置文件格式如下：
 
 ```json
 {
@@ -79,7 +79,7 @@ AdvantageScope 会自动简化模型几何结构以提升性能，简化程度�
 配置关节组件可能较为复杂且耗时。你可以考虑使用 AdvantageScope 的 3D [`Mechanism2d` 支持](/tab-reference/3d-field#2d-mechanisms)，它能以更简单的方式 **在 3D 场地上可视化机构**。
 :::
 
-机器人模型可以包含用于可视化机构数据的关节组件（详情参阅 [此处](/tab-reference/3d-field)）。基础 glTF 模型不应包含任何组件，每个组件都应单独导出为独立的 glTF 模型。组件模型按“model_INDEX.glb”命名，例如第一个关节组件应命名为“model_0.glb”。
+机器人模型可以包含用于可视化机构数据的关节组件（详情参阅 [此处](/tab-reference/3d-field)）。基础 glTF（`.glb`）模型不应包含任何组件，每个组件都应单独导出为独立的 glTF（`.glb`）模型。组件模型按“model_INDEX.glb”命名，例如第一个关节组件应命名为“model_0.glb”。
 
 组件配置在机器人的配置文件中完成，需要在“components”键下提供一个组件数组。如果用户在 AdvantageScope 中未指定任何组件位姿，组件模型将沿用机器人的默认旋转和位置（见上文）；如果指定了组件位姿，系统则会先应用“归零”旋转和位置，将每个组件移至机器人原点，然后再应用用户提供的位姿，将组件移动到机器人上的正确位置。
 
@@ -225,7 +225,7 @@ AdvantageScope 会自动简化模型几何结构以提升性能，简化程度�
 
 ## 3D 场地模型 {#3d-field-models}
 
-文件夹中必须包含名为“model.glb”的模型文件。应用所有旋转后，场地朝向应为红方联盟在左侧。CAD 文件需先转换为 glTF 格式，详情请参阅 [此页面](gltf-convert)。游戏元素模型按它们在“gamePieces”数组中出现的顺序，遵循“model_INDEX.glb”命名规范。无论其他配置项如何设置，此处声明的 AprilTag 始终使用 [中心/红方](/more-features/coordinate-systems#center-red) 坐标系进行定位。
+文件夹中必须包含名为“model.glb”的模型文件。应用所有旋转后，场地朝向应为红方联盟在左侧。CAD 文件需先转换为二进制 glTF（`.glb`）格式，详情请参阅 [此页面](gltf-convert)。游戏元素模型按它们在“gamePieces”数组中出现的顺序，遵循“model_INDEX.glb”命名规范。无论其他配置项如何设置，此处声明的 AprilTag 始终使用 [中心/红方](/more-features/coordinate-systems#center-red) 坐标系进行定位。
 
 配置文件格式如下：
 
