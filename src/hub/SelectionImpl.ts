@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { KeyboardUtil } from "../shared/KeyboardUtil";
 import Selection, { SelectionMode } from "../shared/Selection";
 import TabType from "../shared/TabType";
 import { findKey } from "../shared/log/LogKeyUtils";
@@ -48,6 +49,7 @@ export default class SelectionImpl implements Selection {
         window.sendMainMessage("ask-playback-options", {
           speed: this.playbackSpeed,
           looping: this.playbackLooping,
+          isRtl: document.documentElement.dir === "rtl",
           rect: {
             x: rect.x,
             y: rect.y,
@@ -66,38 +68,29 @@ export default class SelectionImpl implements Selection {
       ) {
         return;
       }
-      switch (event.code) {
-        case "Space":
-          event.preventDefault();
-          this.togglePlayback();
-          break;
 
-        case "KeyL":
-          if (
-            window.tabs.getSelectedTabType() === TabType.Field3d &&
-            !(window.platform === "darwin" ? event.metaKey : event.ctrlKey)
-          ) {
-            return;
-          }
+      if (event.code === "Space") {
+        event.preventDefault();
+        if (!event.repeat) this.togglePlayback();
+      } else if (KeyboardUtil.matchesKey(event, "l")) {
+        if (window.tabs.getSelectedTabType() === TabType.Field3d && !KeyboardUtil.isPrimaryModifier(event)) {
+          return;
+        }
 
-          event.preventDefault();
-          this.toggleLock();
-          break;
+        event.preventDefault();
+        if (!event.repeat) this.toggleLock();
+      } else if (event.code === "ArrowLeft" || event.code === "ArrowRight") {
+        // Unlocked video uses arrow keys to navigate by frame
+        if (
+          window.tabs.isUnlockedVideoSelected() ||
+          this.mode !== SelectionMode.Static ||
+          KeyboardUtil.isPrimaryModifier(event)
+        ) {
+          return;
+        }
 
-        case "ArrowLeft":
-        case "ArrowRight":
-          // Unlocked video uses arrow keys to navigate by frame
-          if (
-            window.tabs.isUnlockedVideoSelected() ||
-            this.mode !== SelectionMode.Static ||
-            (window.platform === "darwin" ? event.metaKey : event.ctrlKey)
-          ) {
-            return;
-          }
-
-          event.preventDefault();
-          this.stepCycle(event.code === "ArrowRight");
-          break;
+        event.preventDefault();
+        this.stepCycle(event.code === "ArrowRight");
       }
     });
   }

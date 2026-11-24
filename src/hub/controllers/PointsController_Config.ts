@@ -9,14 +9,13 @@ import { SourceListConfig } from "../../shared/SourceListConfig";
 import { indexArray } from "../../shared/util";
 
 const PointsController_Config: SourceListConfig = {
-  title: "Sources",
+  title: "hub.points.sources",
   autoAdvance: false,
   allowChildrenFromDrag: false,
   typeMemoryId: "points",
   types: [
     {
       key: "plus",
-      display: "Plus",
       symbol: "add",
       showInTypeName: true,
       color: "#000000",
@@ -26,31 +25,19 @@ const PointsController_Config: SourceListConfig = {
       options: [
         {
           key: "size",
-          display: "Size",
           showInTypeName: false,
-          values: [
-            { key: "medium", display: "Medium" },
-            { key: "large", display: "Large" },
-            { key: "small", display: "Small" }
-          ]
+          values: ["medium", "large", "small"]
         },
         {
           key: "groupSize",
-          display: "Group Size",
           showInTypeName: false,
-          values: indexArray(10).map((num) => {
-            return {
-              key: num.toString(),
-              display: num.toString()
-            };
-          })
+          values: indexArray(10).map((num) => num.toString())
         }
       ],
       previewType: null
     },
     {
       key: "cross",
-      display: "Cross",
       symbol: "close",
       showInTypeName: true,
       color: "#000000",
@@ -60,31 +47,19 @@ const PointsController_Config: SourceListConfig = {
       options: [
         {
           key: "size",
-          display: "Size",
           showInTypeName: false,
-          values: [
-            { key: "medium", display: "Medium" },
-            { key: "large", display: "Large" },
-            { key: "small", display: "Small" }
-          ]
+          values: ["medium", "large", "small"]
         },
         {
           key: "groupSize",
-          display: "Group Size",
           showInTypeName: false,
-          values: indexArray(10).map((num) => {
-            return {
-              key: num.toString(),
-              display: num.toString()
-            };
-          })
+          values: indexArray(10).map((num) => num.toString())
         }
       ],
       previewType: null
     },
     {
       key: "circle",
-      display: "Circle",
       symbol: "circle",
       showInTypeName: true,
       color: "#000000",
@@ -94,31 +69,19 @@ const PointsController_Config: SourceListConfig = {
       options: [
         {
           key: "size",
-          display: "Size",
           showInTypeName: false,
-          values: [
-            { key: "medium", display: "Medium" },
-            { key: "large", display: "Large" },
-            { key: "small", display: "Small" }
-          ]
+          values: ["medium", "large", "small"]
         },
         {
           key: "groupSize",
-          display: "Group Size",
           showInTypeName: false,
-          values: indexArray(10).map((num) => {
-            return {
-              key: num.toString(),
-              display: num.toString()
-            };
-          })
+          values: indexArray(10).map((num) => num.toString())
         }
       ],
       previewType: null
     },
     {
       key: "plusSplit",
-      display: "Plus/Split",
       symbol: "add",
       showInTypeName: true,
       color: "#000000",
@@ -129,33 +92,18 @@ const PointsController_Config: SourceListConfig = {
       options: [
         {
           key: "component",
-          display: "Component",
           showInTypeName: true,
-          values: [
-            { key: "x", display: "X" },
-            { key: "y", display: "Y" }
-          ]
+          values: ["x", "y"]
         },
         {
           key: "size",
-          display: "Size",
           showInTypeName: false,
-          values: [
-            { key: "medium", display: "Medium" },
-            { key: "large", display: "Large" },
-            { key: "small", display: "Small" }
-          ]
+          values: ["medium", "large", "small"]
         },
         {
           key: "groupSize",
-          display: "Group Size",
           showInTypeName: false,
-          values: indexArray(10).map((num) => {
-            return {
-              key: num.toString(),
-              display: num.toString()
-            };
-          })
+          values: indexArray(10).map((num) => num.toString())
         }
       ],
       initialSelectionOption: "component",
@@ -163,7 +111,6 @@ const PointsController_Config: SourceListConfig = {
     },
     {
       key: "crossSplit",
-      display: "Cross/Split",
       symbol: "close",
       showInTypeName: true,
       color: "#000000",
@@ -174,33 +121,18 @@ const PointsController_Config: SourceListConfig = {
       options: [
         {
           key: "component",
-          display: "Component",
           showInTypeName: true,
-          values: [
-            { key: "x", display: "X" },
-            { key: "y", display: "Y" }
-          ]
+          values: ["x", "y"]
         },
         {
           key: "size",
-          display: "Size",
           showInTypeName: false,
-          values: [
-            { key: "medium", display: "Medium" },
-            { key: "large", display: "Large" },
-            { key: "small", display: "Small" }
-          ]
+          values: ["medium", "large", "small"]
         },
         {
           key: "groupSize",
-          display: "Group Size",
           showInTypeName: false,
-          values: indexArray(10).map((num) => {
-            return {
-              key: num.toString(),
-              display: num.toString()
-            };
-          })
+          values: indexArray(10).map((num) => num.toString())
         }
       ],
       initialSelectionOption: "component",
@@ -208,7 +140,6 @@ const PointsController_Config: SourceListConfig = {
     },
     {
       key: "circleSplit",
-      display: "Circle/Split",
       symbol: "circle",
       showInTypeName: true,
       color: "#000000",
@@ -219,33 +150,18 @@ const PointsController_Config: SourceListConfig = {
       options: [
         {
           key: "component",
-          display: "Component",
           showInTypeName: true,
-          values: [
-            { key: "x", display: "X" },
-            { key: "y", display: "Y" }
-          ]
+          values: ["x", "y"]
         },
         {
           key: "size",
-          display: "Size",
           showInTypeName: false,
-          values: [
-            { key: "medium", display: "Medium" },
-            { key: "large", display: "Large" },
-            { key: "small", display: "Small" }
-          ]
+          values: ["medium", "large", "small"]
         },
         {
           key: "groupSize",
-          display: "Group Size",
           showInTypeName: false,
-          values: indexArray(10).map((num) => {
-            return {
-              key: num.toString(),
-              display: num.toString()
-            };
-          })
+          values: indexArray(10).map((num) => num.toString())
         }
       ],
       initialSelectionOption: "component",
@@ -253,7 +169,6 @@ const PointsController_Config: SourceListConfig = {
     },
     {
       key: "component",
-      display: "Component",
       symbol: "numbers",
       showInTypeName: false,
       color: "#000000",
@@ -264,12 +179,8 @@ const PointsController_Config: SourceListConfig = {
       options: [
         {
           key: "component",
-          display: "Component",
           showInTypeName: true,
-          values: [
-            { key: "x", display: "X" },
-            { key: "y", display: "Y" }
-          ]
+          values: ["x", "y"]
         }
       ],
       previewType: null

@@ -4,6 +4,7 @@
 // Use of this source code is governed by a BSD
 // license that can be found in the LICENSE file
 // at the root directory of this project.
+import { isolateValue } from "../shared/bidi";
 import { getRobotStateRanges } from "../shared/log/RobotState";
 import { calcAxisStepSize, clampValue, cleanFloat, scaleValue } from "../shared/util";
 import ScrollSensor from "./ScrollSensor";
@@ -233,7 +234,7 @@ export default class Timeline {
     if (selectedTime !== null) markTime(selectedTime, 1);
 
     // Draw tick marks
-    let helpText = "Scroll timeline to zoom";
+    let helpText = t("hub.timelineScrollToZoom");
     context.font = helpFont;
     let helpTextWidth = context.measureText(helpText).width;
 
@@ -273,10 +274,17 @@ export default class Timeline {
         break;
       }
 
-      let text = cleanFloat(stepPos).toString() + "s";
+      let value = cleanFloat(stepPos);
+      let formattedValue = value.toLocaleString(undefined, { useGrouping: false });
       if (isStartAt0) {
-        text = "+" + text;
+        formattedValue = t("units.relativeValue", { value: formattedValue });
       }
+      let text = isolateValue(
+        t("units.values.seconds", {
+          value: formattedValue,
+          count: value
+        })
+      );
       context.font = labelFont;
       let textWidth = context.measureText(text).width;
       let textX = clampValue(x, textWidth / 2 + 3, width - textWidth / 2 - 3);

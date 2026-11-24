@@ -11,8 +11,6 @@ import { charIsCapital } from "./util";
 export namespace Units {
   export type UnitConfig = {
     value: number;
-    suffix: string;
-    pluralizeSuffix: boolean;
     names: string[];
   };
 
@@ -24,78 +22,54 @@ export namespace Units {
     length: {
       meters: {
         value: 1,
-        suffix: "m",
-        pluralizeSuffix: false,
-        names: ["m", "meter", "meters"]
+        names: ["m", "meter", "meters", "metre", "metres"]
       },
       inches: {
         value: 1 / 0.0254,
-        suffix: "in",
-        pluralizeSuffix: false,
         names: ["in", "inch", "inches"]
       },
       millimeters: {
         value: 1000,
-        suffix: "mm",
-        pluralizeSuffix: false,
-        names: ["mm", "millimeter", "millimeters"]
+        names: ["mm", "millimeter", "millimeters", "millimetre", "millimetres"]
       },
       centimeters: {
         value: 100,
-        suffix: "cm",
-        pluralizeSuffix: false,
-        names: ["cm", "centimeter", "centimeters"]
+        names: ["cm", "centimeter", "centimeters", "centimetre", "centimetres"]
       },
       kilometers: {
         value: 0.001,
-        suffix: "km",
-        pluralizeSuffix: false,
-        names: ["km", "kilometer", "kilometers"]
+        names: ["km", "kilometer", "kilometers", "kilometre", "kilometres"]
       },
       feet: {
         value: 1 / (0.0254 * 12),
-        suffix: "ft",
-        pluralizeSuffix: false,
         names: ["ft", "foot", "feet"]
       },
       yards: {
         value: 1 / (0.0254 * 12 * 3),
-        suffix: "yd",
-        pluralizeSuffix: false,
         names: ["yd", "yard", "yards"]
       },
       miles: {
         value: 1 / (0.0254 * 12 * 3 * 1760),
-        suffix: "mi",
-        pluralizeSuffix: false,
         names: ["mi", "mile", "miles"]
       }
     },
     angle: {
       radians: {
         value: 1,
-        suffix: "rad",
-        pluralizeSuffix: true,
         names: ["rad", "rads", "radian", "radians"]
       },
       degrees: {
         value: 180 / Math.PI,
-        suffix: "°",
-        pluralizeSuffix: false,
         names: ["°", "deg", "degs", "degree", "degrees"]
       },
       rotations: {
         value: 1 / (Math.PI * 2),
-        suffix: "rot",
-        pluralizeSuffix: true,
         names: ["rot", "rots", "rotation", "rotations"]
       }
     },
     velocity: {
-      "meters/second": {
+      metersPerSecond: {
         value: 1,
-        suffix: "m/s",
-        pluralizeSuffix: false,
         names: [
           "mps",
           "meterpersec",
@@ -106,19 +80,23 @@ export namespace Units {
           "meter per second",
           "meterspersecond",
           "meters per second",
+          "metrepersec",
+          "metre per sec",
+          "metrespersec",
+          "metres per sec",
+          "metrepersecond",
+          "metre per second",
+          "metrespersecond",
+          "metres per second",
           "m/s" // WPILib unit name
         ]
       },
-      "inches/second": {
+      inchesPerSecond: {
         value: 1 / 0.0254,
-        suffix: "in/s",
-        pluralizeSuffix: false,
         names: ["inch per sec", "inches per sec", "inch per second", "inches per second", "in per sec", "in per second"]
       },
-      "feet/second": {
+      feetPerSecond: {
         value: 1 / (0.0254 * 12),
-        suffix: "ft/s",
-        pluralizeSuffix: false,
         names: [
           "fps",
           "ftps",
@@ -130,24 +108,25 @@ export namespace Units {
           "ft per second"
         ]
       },
-      "miles/hour": {
+      milesPerHour: {
         value: 3600 / (0.0254 * 12 * 3 * 1760),
-        suffix: "mph",
-        pluralizeSuffix: false,
         names: ["mph", "mile per hour", "miles per hour", "mi per hour"]
       },
-      "kilometers/hour": {
+      kilometersPerHour: {
         value: 3600 / 1000,
-        suffix: "kph",
-        pluralizeSuffix: false,
-        names: ["kph", "kilometer per hour", "kilometers per hour", "ki per hour"]
+        names: [
+          "kph",
+          "kilometer per hour",
+          "kilometers per hour",
+          "ki per hour",
+          "kilometre per hour",
+          "kilometres per hour"
+        ]
       }
     },
-    "angular velocity": {
-      "radians/second": {
+    angularVelocity: {
+      radiansPerSecond: {
         value: 1,
-        suffix: "rad/s",
-        pluralizeSuffix: false,
         names: [
           "radian per sec",
           "radians per sec",
@@ -160,10 +139,8 @@ export namespace Units {
           "rad/s" // WPILib unit name
         ]
       },
-      "degrees/second": {
+      degreesPerSecond: {
         value: 180 / Math.PI,
-        suffix: "°/s",
-        pluralizeSuffix: false,
         names: [
           "dps",
           "degree per sec",
@@ -176,10 +153,8 @@ export namespace Units {
           "degs per second"
         ]
       },
-      "rotations/second": {
+      rotationsPerSecond: {
         value: 1 / (Math.PI * 2),
-        suffix: "rps",
-        pluralizeSuffix: false,
         names: [
           "rps",
           "rotation per sec",
@@ -192,10 +167,8 @@ export namespace Units {
           "rots per second"
         ]
       },
-      "rotations/minute": {
+      rotationsPerMinute: {
         value: 60 / (Math.PI * 2),
-        suffix: "rpm",
-        pluralizeSuffix: false,
         names: [
           "rpm",
           "rotation per min",
@@ -210,10 +183,8 @@ export namespace Units {
       }
     },
     acceleration: {
-      "meters/second²": {
+      metersPerSecondSquared: {
         value: 1,
-        suffix: "m/s²",
-        pluralizeSuffix: false,
         names: [
           "mps 2",
           "mps2",
@@ -238,13 +209,31 @@ export namespace Units {
           "meters per second squared",
           "meter per second per second",
           "meters per second per second",
+          "metre per sec 2",
+          "metres per sec 2",
+          "metre per sec2",
+          "metres per sec2",
+          "metre per sec²",
+          "metres per sec²",
+          "metre per sec squared",
+          "metres per sec squared",
+          "metre per sec per sec",
+          "metres per sec per sec",
+          "metre per second 2",
+          "metres per second 2",
+          "metre per second2",
+          "metres per second2",
+          "metre per second²",
+          "metres per second²",
+          "metre per second squared",
+          "metres per second squared",
+          "metre per second per second",
+          "metres per second per second",
           "m/s/s" // WPILib unit name
         ]
       },
-      "inches/second²": {
+      inchesPerSecondSquared: {
         value: 1 / 0.0254,
-        suffix: "in/s²",
-        pluralizeSuffix: false,
         names: [
           "ips 2",
           "ips2",
@@ -281,10 +270,8 @@ export namespace Units {
           "in per second per second"
         ]
       },
-      "feet/second²": {
+      feetPerSecondSquared: {
         value: 1 / (0.0254 * 12),
-        suffix: "ft/s²",
-        pluralizeSuffix: false,
         names: [
           "fps 2",
           "fps2",
@@ -313,7 +300,7 @@ export namespace Units {
           "foot per second squared",
           "feet per second squared",
           "foot per second per second",
-          "feet per second per second",
+          "foot per second per second",
           "ft per second 2",
           "ft per second2",
           "ft per second²",
@@ -321,18 +308,14 @@ export namespace Units {
           "ft per second per second"
         ]
       },
-      "standard gravity": {
+      standardGravity: {
         value: 1 / 9.80665,
-        suffix: "g",
-        pluralizeSuffix: false,
         names: ["g", "gravity", "gs"]
       }
     },
-    "angular acceleration": {
-      "radians/second²": {
+    angularAcceleration: {
+      radiansPerSecondSquared: {
         value: 1,
-        suffix: "rad/s²",
-        pluralizeSuffix: false,
         names: [
           "radian per sec 2",
           "radians per sec 2",
@@ -377,10 +360,8 @@ export namespace Units {
           "rad/s/s" // WPILib unit name
         ]
       },
-      "degrees/second²": {
+      degreesPerSecondSquared: {
         value: 180 / Math.PI,
-        suffix: "°/s²",
-        pluralizeSuffix: false,
         names: [
           "dps 2",
           "dps2",
@@ -427,10 +408,8 @@ export namespace Units {
           "degs per second per second"
         ]
       },
-      "rotations/second²": {
+      rotationsPerSecondSquared: {
         value: 1 / (Math.PI * 2),
-        suffix: "rot/s²",
-        pluralizeSuffix: false,
         names: [
           "rps 2",
           "rps2",
@@ -462,7 +441,7 @@ export namespace Units {
           "rotation per second²",
           "rotations per second²",
           "rotation per second squared",
-          "rotations per second squared",
+          "rotation per second squared",
           "rotation per second per second",
           "rotations per second per second",
           "rot per second 2",
@@ -481,146 +460,100 @@ export namespace Units {
     time: {
       seconds: {
         value: 1,
-        suffix: "s",
-        pluralizeSuffix: false,
         names: ["s", "sec", "secs", "second", "seconds"]
       },
       milliseconds: {
         value: 1000,
-        suffix: "ms",
-        pluralizeSuffix: false,
         names: ["ms", "msec", "msecs", "milli", "millis", "millisecond", "milliseconds"]
       },
       microseconds: {
         value: 1000000,
-        suffix: "μs",
-        pluralizeSuffix: false,
         names: ["us", "usec", "usecs", "micro", "micros", "microsecond", "microseconds"]
       },
       nanoseconds: {
         value: 1000000000,
-        suffix: "ns",
-        pluralizeSuffix: false,
         names: ["ns", "nsec", "nsecs", "nano", "nanos", "nanosecond", "nanoseconds"]
       },
       minutes: {
         value: 1 / 60,
-        suffix: "min",
-        pluralizeSuffix: true,
         names: ["min", "mins", "minute", "minutes"]
       },
       hours: {
         value: 1 / 3600,
-        suffix: "hr",
-        pluralizeSuffix: true,
         names: ["hr", "hrs", "hour", "hours"]
       },
       days: {
         value: 1 / 86400,
-        suffix: "day",
-        pluralizeSuffix: true,
         names: ["day", "days"]
       }
     },
     bytes: {
       bytes: {
         value: 1,
-        suffix: "B",
-        pluralizeSuffix: false,
         names: ["byte", "bytes"]
       },
       kilobytes: {
         value: 1 / 1024,
-        suffix: "KB",
-        pluralizeSuffix: false,
         names: ["kb", "kilobyte", "kilobytes"]
       },
       megabytes: {
         value: 1 / (1024 * 1024),
-        suffix: "MB",
-        pluralizeSuffix: false,
         names: ["mb", "megabyte", "megabytes"]
       },
       gigabytes: {
         value: 1 / (1024 * 1024 * 1024),
-        suffix: "GB",
-        pluralizeSuffix: false,
         names: ["gb", "gigabyte", "gigabytes"]
       },
       terabytes: {
         value: 1 / (1024 * 1024 * 1024 * 1024),
-        suffix: "TB",
-        pluralizeSuffix: false,
         names: ["tb", "terabyte", "terabytes"]
       }
     },
     bandwidth: {
-      "bits/second": {
+      bitsPerSecond: {
         value: 1,
-        suffix: "b/s",
-        pluralizeSuffix: false,
         names: ["bps", "bit per second", "bits per second"]
       },
-      "bytes/second": {
+      bytesPerSecond: {
         value: 1 / 8,
-        suffix: "B/s",
-        pluralizeSuffix: false,
         names: ["Bps", "byte per second", "bytes per second"]
       },
-      "kilobits/second": {
+      kilobitsPerSecond: {
         value: 1 / 1024,
-        suffix: "kb/s",
-        pluralizeSuffix: false,
         names: ["Kbps", "kilobit per second", "kilobits per second"]
       },
-      "kilobytes/second": {
+      kilobytesPerSecond: {
         value: 1 / (1024 * 8),
-        suffix: "KB/s",
-        pluralizeSuffix: false,
         names: ["KBps", "kilobyte per second", "kilobytes per second"]
       },
-      "megabits/second": {
+      megabitsPerSecond: {
         value: 1 / (1024 * 1024),
-        suffix: "Mb/s",
-        pluralizeSuffix: false,
         names: ["Mbps", "megabit per second", "megabits per second"]
       },
-      "megabytes/second": {
+      megabytesPerSecond: {
         value: 1 / (1024 * 1024 * 8),
-        suffix: "MB/s",
-        pluralizeSuffix: false,
         names: ["MBps", "megabyte per second", "megabytes per second"]
       },
-      "gigabits/second": {
+      gigabitsPerSecond: {
         value: 1 / (1024 * 1024 * 1024),
-        suffix: "Gb/s",
-        pluralizeSuffix: false,
         names: ["Gbps", "gigabit per second", "gigabits per second"]
       },
-      "gigabytes/second": {
+      gigabytesPerSecond: {
         value: 1 / (1024 * 1024 * 1024 * 8),
-        suffix: "GB/s",
-        pluralizeSuffix: false,
         names: ["GBps", "gigabyte per second", "gigabytes per second"]
       },
-      "terabits/second": {
+      terabitsPerSecond: {
         value: 1 / (1024 * 1024 * 1024 * 1024),
-        suffix: "Tb/s",
-        pluralizeSuffix: false,
         names: ["Tbps", "terabit per second", "terabits per second"]
       },
-      "terabytes/second": {
+      terabytesPerSecond: {
         value: 1 / (1024 * 1024 * 1024 * 1024 * 8),
-        suffix: "TB/s",
-        pluralizeSuffix: false,
         names: ["TBps", "terabyte per second", "terabytes per second"]
       }
     },
     frequency: {
       hertz: {
         value: 1,
-        suffix: "Hz",
-        pluralizeSuffix: false,
         names: [
           "hz",
           "hertz",
@@ -630,70 +563,60 @@ export namespace Units {
       },
       kilohertz: {
         value: 1e-3,
-        suffix: "kHz",
-        pluralizeSuffix: false,
         names: ["khz", "kilohertz"]
       },
       megahertz: {
         value: 1e-6,
-        suffix: "MHz",
-        pluralizeSuffix: false,
         names: ["mhz", "megahertz"]
+      }
+    },
+    ratio: {
+      ratio: {
+        value: 1,
+        names: ["ratio", "ratios", "fraction", "proportion", "duty cycle", "dutycycle", "<?>"]
+      },
+      percent: {
+        value: 100,
+        names: ["%", "pct", "pcts", "percent", "percentage", "percents", "percentages"]
       }
     },
     temperature: {
       celsius: {
         value: 1,
-        suffix: "°C",
-        pluralizeSuffix: false,
         names: ["c", "°c", "\u2103", "celsius", "celcius"] // Includes common misspelling
       },
       fahrenheit: {
         value: 1, // Requires custom conversion
-        suffix: "°F",
-        pluralizeSuffix: false,
         names: ["f", "°f", "\u2109", "fahrenheit"]
       },
       kelvin: {
         value: 1, // Requires custom conversion
-        suffix: "K",
-        pluralizeSuffix: false,
         names: ["k", "\u212A", "kelvin"]
       }
     },
     voltage: {
       volts: {
         value: 1,
-        suffix: "V",
-        pluralizeSuffix: false,
         names: ["v", "volt", "volts", "voltage"]
       },
       millivolts: {
         value: 1000,
-        suffix: "mV",
-        pluralizeSuffix: false,
         names: ["mv", "millivolt", "millivolts"]
       }
     },
     current: {
       amps: {
         value: 1,
-        suffix: "A",
-        pluralizeSuffix: false,
         names: ["a", "amp", "amps", "amperage", "current"]
       },
       milliamps: {
         value: 1000,
-        suffix: "mA",
-        pluralizeSuffix: false,
         names: ["ma", "milliamp", "milliamps"]
       }
     },
     power: {
       watts: {
         value: 1,
-        suffix: "W",
-        pluralizeSuffix: false,
         names: [
           "w",
           "watt",
@@ -704,69 +627,33 @@ export namespace Units {
       },
       milliwatts: {
         value: 1000,
-        suffix: "mW",
-        pluralizeSuffix: false,
         names: ["mw", "milliwatt", "milliwatts"]
       },
       kilowatts: {
         value: 0.001,
-        suffix: "kW",
-        pluralizeSuffix: false,
         names: ["kw", "kilowatt", "kilowatts"]
       },
       horsepower: {
         value: 1 / 745.6998715822702,
-        suffix: "hp",
-        pluralizeSuffix: false,
         names: ["hp", "horsepower"]
       }
     },
     energy: {
-      joule: {
+      joules: {
         value: 1,
-        suffix: "J",
-        pluralizeSuffix: false,
         names: ["j", "joule", "joules"]
       },
-      "watt hour": {
+      wattHours: {
         value: 1 / 3600,
-        suffix: "Wh",
-        pluralizeSuffix: false,
         names: ["wh", "watt hour", "watt hours"]
       },
-      calorie: {
+      calories: {
         value: 1 / 4.184,
-        suffix: "cal",
-        pluralizeSuffix: true,
         names: ["cal", "calorie", "calories"]
       },
-      potato: {
+      potatoes: {
         value: 1 / 4.184 / 1000 / 110,
-        suffix: "pot",
-        pluralizeSuffix: false,
         names: ["pot", "potato", "potatoes"]
-      }
-    },
-    ratio: {
-      ratio: {
-        value: 1,
-        suffix: "",
-        pluralizeSuffix: false,
-        names: [
-          "ratio",
-          "ratios",
-          "fraction",
-          "proportion",
-          "duty cycle",
-          "dutycycle",
-          "<?>" // WPILib unit name
-        ]
-      },
-      percent: {
-        value: 100,
-        suffix: "%",
-        pluralizeSuffix: false,
-        names: ["%", "pct", "pcts", "percent", "percentage", "percents", "percentages"]
       }
     }
   };
@@ -798,19 +685,19 @@ export namespace Units {
       rz: "radians"
     },
     ChassisVelocities: {
-      vx: "meters/second",
-      vy: "meters/second",
-      omega: "radians/second"
+      vx: "metersPerSecond",
+      vy: "metersPerSecond",
+      omega: "radiansPerSecond"
     },
     ChassisSpeeds: {
-      vx: "meters/second",
-      vy: "meters/second",
-      omega: "radians/second"
+      vx: "metersPerSecond",
+      vy: "metersPerSecond",
+      omega: "radiansPerSecond"
     },
     ChassisAccelerations: {
-      ax: "meters/second²",
-      ay: "meters/second²",
-      alpha: "radians/second²"
+      ax: "metersPerSecondSquared",
+      ay: "metersPerSecondSquared",
+      alpha: "radiansPerSecondSquared"
     },
     DifferentialDriveKinematics: {
       track_width: "meters"
@@ -820,16 +707,16 @@ export namespace Units {
       right: "meters"
     },
     DifferentialDriveWheelVelocities: {
-      left: "meters/second",
-      right: "meters/second"
+      left: "metersPerSecond",
+      right: "metersPerSecond"
     },
     DifferentialDriveWheelSpeeds: {
-      left: "meters/second",
-      right: "meters/second"
+      left: "metersPerSecond",
+      right: "metersPerSecond"
     },
     DifferentialDriveWheelAccelerations: {
-      left: "meters/second²",
-      right: "meters/second²"
+      left: "metersPerSecondSquared",
+      right: "metersPerSecondSquared"
     },
     DifferentialDriveWheelVoltages: {
       left: "volts",
@@ -842,36 +729,36 @@ export namespace Units {
       rear_right: "meters"
     },
     MecanumDriveWheelVelocities: {
-      front_left: "meters/second",
-      front_right: "meters/second",
-      rear_left: "meters/second",
-      rear_right: "meters/second"
+      front_left: "metersPerSecond",
+      front_right: "metersPerSecond",
+      rear_left: "metersPerSecond",
+      rear_right: "metersPerSecond"
     },
     MecanumDriveWheelSpeeds: {
-      front_left: "meters/second",
-      front_right: "meters/second",
-      rear_left: "meters/second",
-      rear_right: "meters/second"
+      front_left: "metersPerSecond",
+      front_right: "metersPerSecond",
+      rear_left: "metersPerSecond",
+      rear_right: "metersPerSecond"
     },
     MecanumDriveWheelAccelerations: {
-      front_left: "meters/second²",
-      front_right: "meters/second²",
-      rear_left: "meters/second²",
-      rear_right: "meters/second²"
+      front_left: "metersPerSecondSquared",
+      front_right: "metersPerSecondSquared",
+      rear_left: "metersPerSecondSquared",
+      rear_right: "metersPerSecondSquared"
     },
     SwerveModulePosition: {
       distance: "meters"
     },
     SwerveModuleVelocity: {
-      velocity: "meters/second",
-      speed: "meters/second"
+      velocity: "metersPerSecond",
+      speed: "metersPerSecond"
     },
     SwerveModuleState: {
-      speed: "meters/second"
+      speed: "metersPerSecond"
     },
     SwerveModuleAcceleration: {
-      acceleration: "meters/second²",
-      speed: "meters/second²"
+      acceleration: "metersPerSecondSquared",
+      speed: "metersPerSecondSquared"
     },
     ArmFeedforward: {
       dt: "seconds"
@@ -886,7 +773,7 @@ export namespace Units {
       nominal_voltage: "volts",
       stall_current: "amps",
       free_current: "amps",
-      free_speed: "radians/second"
+      free_speed: "radiansPerSecond"
     }
   };
 
@@ -924,27 +811,29 @@ export namespace Units {
     }
   }
 
-  /** Returns a modified suffix for a differentiated or integrated unit type. */
-  export function getSuffixForFilter(suffix: string, filter: LineGraphFilter): string {
+  /** Returns the unit key for a differentiated or integrated unit type. */
+  export function getFilteredUnitKey(unitKey: string, filter: LineGraphFilter): string {
     switch (filter) {
       case LineGraphFilter.Differentiate:
-        if (suffix.endsWith("²")) {
-          return suffix.slice(0, -1) + "³";
-        } else if (suffix.endsWith("ps") || suffix.endsWith("/s")) {
-          return suffix + "²";
+        if (unitKey.endsWith("PerSecondSquared")) {
+          return unitKey.slice(0, -"PerSecondSquared".length) + "PerSecondCubed";
+        } else if (unitKey.endsWith("PerSecond")) {
+          return unitKey + "Squared";
         } else {
-          return suffix + "/s";
+          return unitKey + "PerSecond";
         }
       case LineGraphFilter.Integrate:
-        if (suffix.endsWith("²")) {
-          return suffix.slice(0, -1);
-        } else if (suffix.endsWith("/s")) {
-          return suffix.slice(0, -2);
+        if (unitKey.endsWith("PerSecondCubed")) {
+          return unitKey.slice(0, -"PerSecondCubed".length) + "PerSecondSquared";
+        } else if (unitKey.endsWith("PerSecondSquared")) {
+          return unitKey.slice(0, -"Squared".length);
+        } else if (unitKey.endsWith("PerSecond")) {
+          return unitKey.slice(0, -"PerSecond".length);
         } else {
-          return suffix + "·s";
+          return unitKey + "Seconds";
         }
       default:
-        return suffix;
+        return unitKey;
     }
   }
 

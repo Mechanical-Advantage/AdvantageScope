@@ -19,7 +19,7 @@ body {
 
 div.qr-container {
   position: absolute;
-  left: 0px;
+  inset-inline-start: 0px;
   top: 0px;
   height: 100%;
   max-width: 50%;
@@ -35,7 +35,7 @@ div.qr-container {
 
 div.controls {
   position: absolute;
-  right: 0px;
+  inset-inline-end: 0px;
   top: 0px;
   height: 100%;
   overflow-x: hidden;
@@ -70,7 +70,7 @@ td {
 }
 
 td.right {
-  text-align: right;
+  text-align: end;
 }
 
 select {

@@ -23,13 +23,13 @@ body {
 
 body > * {
   position: relative;
-  left: 42px;
+  inset-inline-start: 42px;
   width: calc(100% - 42px - 5px);
   padding-bottom: 8px;
 }
 
 div.type-header {
-  left: 0%;
+  inset-inline-start: 0%;
   height: 40px;
   width: 100%;
   padding: 0px;
@@ -63,8 +63,8 @@ div.type-title {
   position: absolute;
   top: 0%;
   height: 40px;
-  left: 42px;
-  right: 0%;
+  inset-inline-start: 42px;
+  inset-inline-end: 0%;
 
   font-weight: 800;
   font-size: 20px;
@@ -95,16 +95,16 @@ table.options td {
 }
 
 table.options td:first-child {
-  padding-left: 0px;
-  text-align: right;
+  padding-inline-start: 0px;
+  text-align: end;
   white-space: nowrap;
   font-weight: 600;
 }
 
 table.options td:last-child {
   width: 100%;
-  padding-left: 5px;
-  padding-right: 0px;
-  text-align: left;
+  padding-inline-start: 5px;
+  padding-inline-end: 0px;
+  text-align: start;
   word-break: break-word;
 }

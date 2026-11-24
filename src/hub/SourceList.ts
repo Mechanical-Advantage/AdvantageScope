@@ -10,11 +10,14 @@ import { ensureThemeContrast } from "../shared/Colors";
 import {
   SourceListConfig,
   SourceListItemState,
-  SourceListOptionValueConfig,
   SourceListState,
   SourceListTypeConfig,
-  SourceListTypeMemoryEntry
+  SourceListTypeMemoryEntry,
+  getSourceListPrefix,
+  tType,
+  tValue
 } from "../shared/SourceListConfig";
+import { isolateAuto, isolateListComponents, isolateRtl, isolateValue } from "../shared/bidi";
 import {
   grabModuleVelocities,
   grabPosesAuto,
@@ -26,7 +29,7 @@ import { getMechanismState } from "../shared/log/LogMechanismState";
 import { getLogValueText, getOrDefault } from "../shared/log/LogUtil";
 import LoggableType from "../shared/log/LoggableType";
 import { Units } from "../shared/units";
-import { createUUID, jsonCopy } from "../shared/util";
+import { createUUID, formatNumber, jsonCopy } from "../shared/util";
 
 export default class SourceList {
   private DRAG_THRESHOLD_PX = 5;
@@ -48,6 +51,7 @@ export default class SourceList {
 
   private stopped = false;
   private config: SourceListConfig;
+  private prefix: string;
   private configStr: string;
   private state: SourceListState = [];
   private independentAllowedTypes: Set<string> = new Set(); // Types that are not only children
@@ -74,6 +78,7 @@ export default class SourceList {
     getNumberPreview?: (key: string, time: number) => string | null
   ) {
     this.config = jsonCopy(config);
+    this.prefix = getSourceListPrefix(this.config.title);
     this.configStr = JSON.stringify(config);
     this.supplementalStateSuppliers = supplementalStateSuppliers;
     this.getNumberPreview = getNumberPreview;
@@ -83,14 +88,14 @@ export default class SourceList {
     this.TITLE = document.createElement("div");
     this.ROOT.appendChild(this.TITLE);
     this.TITLE.classList.add("title");
-    this.TITLE.innerText = config.title;
+    this.TITLE.innerText = t(config.title);
     this.TITLE.style.left = editButtonCallback === undefined ? "55px" : "30px";
     this.TITLE.style.right = editButtonCallback === undefined ? "55px" : "30px";
 
     this.EDIT_BUTTON = document.createElement("button");
     this.ROOT.appendChild(this.EDIT_BUTTON);
     this.EDIT_BUTTON.classList.add("edit");
-    this.EDIT_BUTTON.title = "Edit settings";
+    this.EDIT_BUTTON.title = t("sourceList.editSettings");
     let editIcon = document.createElement("img");
     this.EDIT_BUTTON.appendChild(editIcon);
     editIcon.src = "symbols/morehoriz.svg";
@@ -99,7 +104,7 @@ export default class SourceList {
     this.CLEAR_BUTTON = document.createElement("button");
     this.ROOT.appendChild(this.CLEAR_BUTTON);
     this.CLEAR_BUTTON.classList.add("clear");
-    this.CLEAR_BUTTON.title = "Clear all fields";
+    this.CLEAR_BUTTON.title = t("sourceList.clearFields");
     let clearButton = document.createElement("img");
     this.CLEAR_BUTTON.appendChild(clearButton);
     clearButton.src = "symbols/delete.svg";
@@ -108,7 +113,7 @@ export default class SourceList {
     this.HELP_BUTTON = document.createElement("button");
     this.ROOT.appendChild(this.HELP_BUTTON);
     this.HELP_BUTTON.classList.add("help");
-    this.HELP_BUTTON.title = "Help";
+    this.HELP_BUTTON.title = t("sourceList.help");
     let helpIcon = document.createElement("img");
     this.HELP_BUTTON.appendChild(helpIcon);
     helpIcon.src = "symbols/help.svg";
@@ -162,7 +167,8 @@ export default class SourceList {
           y: rect.y,
           width: rect.width,
           height: rect.height
-        }
+        },
+        isRtl: document.documentElement.dir === "rtl"
       });
       SourceList.clearPromptCallbacks[this.UUID] = () => {
         delete SourceList.clearPromptCallbacks[this.UUID];
@@ -223,6 +229,7 @@ export default class SourceList {
         dragContainer.style.width = element.clientWidth.toString() + "px";
         dragContainer.style.height = "30px";
         dragContainer.style.left = "0px";
+        dragContainer.style.right = "auto";
         dragContainer.style.top = "0px";
         dragContainer.style.pointerEvents = "none";
         dragContainer.style.margin = "none";
@@ -379,18 +386,18 @@ export default class SourceList {
   /**
    * Updates a set of option values and validates that all items are valid.
    */
-  setOptionValues(type: string, option: string, values: SourceListOptionValueConfig[]) {
+  setOptionValues(type: string, option: string, values: string[], titles?: (string | null)[]) {
     let typeConfig = this.config.types.find((typeConfig) => typeConfig.key === type);
     if (typeConfig === undefined) return;
     let optionConfig = typeConfig!.options.find((optionConfig) => optionConfig.key === option);
     if (optionConfig === undefined) return;
     optionConfig.values = values;
+    optionConfig.titles = titles;
 
     // Verify that all items have a valid selection
-    let possibleValues = values.map((x) => x.key);
     this.state.forEach((item, index) => {
-      if (item.type === type && !possibleValues.includes(item.options[option])) {
-        item.options[option] = values[0].key;
+      if (item.type === type && !values.includes(item.options[option])) {
+        item.options[option] = values[0];
         this.updateItem(this.LIST.children[index] as HTMLElement, item);
       }
     });
@@ -466,29 +473,26 @@ export default class SourceList {
     bestType.typeConfig.options.forEach((optionConfig) => {
       if (this.config.autoAdvance === optionConfig.key) {
         // Select least used value
-        let useCounts: { valueConfig: SourceListOptionValueConfig; uses: number }[] = optionConfig.values.map(
-          (valueConfig) => {
-            return {
-              valueConfig: valueConfig,
-              uses: stateWithSupplemental.filter(
-                (itemState) =>
-                  optionConfig.key in itemState.options && itemState.options[optionConfig.key] === valueConfig.key
-              ).length
-            };
-          }
-        );
+        let useCounts: { value: string; uses: number }[] = optionConfig.values.map((value) => {
+          return {
+            value: value,
+            uses: stateWithSupplemental.filter(
+              (itemState) => optionConfig.key in itemState.options && itemState.options[optionConfig.key] === value
+            ).length
+          };
+        });
         useCounts.sort((a, b) => a.uses - b.uses);
-        options[optionConfig.key] = useCounts[0].valueConfig.key;
+        options[optionConfig.key] = useCounts[0].value;
       } else if (
         memory !== null &&
         optionConfig.key in memory.options &&
-        optionConfig.values.map((valueConfig) => valueConfig.key).includes(memory.options[optionConfig.key])
+        optionConfig.values.includes(memory.options[optionConfig.key])
       ) {
         // Select value from type memory
         options[optionConfig.key] = memory.options[optionConfig.key];
       } else {
         // Select first value
-        options[optionConfig.key] = optionConfig.values[0].key;
+        options[optionConfig.key] = optionConfig.values[0];
       }
     });
     let state: SourceListItemState = {
@@ -783,7 +787,7 @@ export default class SourceList {
 
     // Type controls
     let typeButton = item.getElementsByClassName("type")[0] as HTMLButtonElement;
-    typeButton.title = "Edit field configuration";
+    typeButton.title = t("sourceList.editConfig");
     let typeNameElement = item.getElementsByClassName("type-name")[0] as HTMLElement;
     let promptType = (rect: ButtonRect) => {
       let index = Array.from(this.LIST.children).indexOf(item);
@@ -791,7 +795,8 @@ export default class SourceList {
         uuid: this.UUID,
         config: this.config,
         state: this.state[index],
-        rect: rect
+        rect: rect,
+        isRtl: document.documentElement.dir === "rtl"
       });
       let originalType = this.state[index].type;
       SourceList.typePromptCallbacks[this.UUID] = (newState) => {
@@ -897,7 +902,7 @@ export default class SourceList {
 
     // Remove button
     let removeButton = item.getElementsByClassName("remove")[0] as HTMLButtonElement;
-    removeButton.title = "Remove field";
+    removeButton.title = t("sourceList.removeField");
     let removeIcon = removeButton.firstElementChild as HTMLElement;
     removeButton.addEventListener("click", () => {
       let index = Array.from(this.LIST.children).indexOf(item);
@@ -980,18 +985,26 @@ export default class SourceList {
     // Update type name
     let typeNameComponents: string[] = [];
     if (typeConfig.showInTypeName) {
-      typeNameComponents.push(typeConfig.display);
+      typeNameComponents.push(tType(this.prefix, typeConfig.key));
     }
     typeConfig.options.forEach((optionConfig) => {
       if (optionConfig.showInTypeName) {
         let valueKey = state.options[optionConfig.key];
-        let valueConfig = optionConfig.values.find((value) => value.key === valueKey);
-        if (valueConfig === undefined) return;
-        typeNameComponents.push(valueConfig.display);
+        let index = optionConfig.values.indexOf(valueKey);
+        if (index !== -1) {
+          if (optionConfig.titles && optionConfig.titles[index]) {
+            typeNameComponents.push(optionConfig.titles[index] as string);
+          } else {
+            typeNameComponents.push(tValue(this.prefix, typeConfig.key, optionConfig.key, valueKey));
+          }
+        }
       }
     });
     let typeNameElement = item.getElementsByClassName("type-name")[0] as HTMLElement;
-    typeNameElement.innerText = typeNameComponents.join("/") + (typeNameComponents.length > 0 ? ":" : "");
+    typeNameElement.innerText =
+      typeNameComponents.length > 0
+        ? t("sourceList.typeName", { name: typeNameComponents.join(t("sourceList.typeNameSeparator")) })
+        : "";
 
     // Update log key
     let keyContainer = item.getElementsByClassName("key-container")[0] as HTMLElement;
@@ -1015,7 +1028,7 @@ export default class SourceList {
     let hideButton = item.getElementsByClassName("hide")[0] as HTMLButtonElement;
     let hideIcon = hideButton.firstElementChild as HTMLImageElement;
     hideIcon.src = "symbols/" + (state.visible ? "visibility.svg" : "visibilityoff.svg");
-    let titleText = state.visible ? "Hide field" : "Show field";
+    let titleText = state.visible ? t("sourceList.hideField") : t("sourceList.showField");
     hideButton.title = titleText;
     if (state.visible) {
       item.classList.remove("hidden");
@@ -1075,28 +1088,43 @@ export default class SourceList {
               if ("units" in state.options) {
                 numberRotationUnits = state.options.units === "degrees" ? "degrees" : "radians";
               }
+              // The number in each value is isolated so that a minus sign or attached
+              // symbol cannot be reordered away from its digits, while a unit written as a
+              // separate word still flows with the interface direction
+              let metersText = (meters: number) =>
+                isolateValue(t("units.values.meters", { value: formatNumber(meters, 3) }));
+              let degreesText = (radians: number) =>
+                isolateValue(
+                  t("units.values.degrees", { value: formatNumber(Units.convert(radians, "radians", "degrees"), 2) })
+                );
+              let metersPerSecondText = (metersPerSecond: number) =>
+                isolateValue(t("units.values.metersPerSecond", { value: formatNumber(metersPerSecond, 2) }));
+              let degreesPerSecondText = (radiansPerSecond: number) =>
+                isolateValue(
+                  t("units.values.degreesPerSecond", {
+                    value: formatNumber(Units.convert(radiansPerSecond, "radians", "degrees"), 2)
+                  })
+                );
+
               let poseStrings: string[] = [];
               if (typeConfig?.previewType === "ModuleVelocities") {
                 let moduleVelocities = grabModuleVelocities(window.log, state.logKey, time, undefined, this.UUID);
                 moduleVelocities.forEach((state) => {
                   poseStrings.push(
-                    "\u03bd: " +
-                      state.velocity.toFixed(2) +
-                      "m/s, \u03b8: " +
-                      Units.convert(state.angle, "radians", "degrees").toFixed(2) +
-                      "\u00b0"
+                    t("sourceList.previews.moduleVelocities", {
+                      speed: metersPerSecondText(state.velocity),
+                      angle: degreesText(state.angle)
+                    })
                   );
                 });
               } else if (typeConfig?.previewType === "RobotVelocities") {
                 let robotVelocities = grabRobotVelocities(window.log, state.logKey, time, this.UUID);
                 poseStrings.push(
-                  "\u03bdx: " +
-                    robotVelocities.vx.toFixed(2) +
-                    "m/s, \u03bdy: " +
-                    robotVelocities.vy.toFixed(2) +
-                    "m/s, \u03a9: " +
-                    Units.convert(robotVelocities.omega, "radians", "degrees").toFixed(2) +
-                    "\u00b0/s"
+                  t("sourceList.previews.robotVelocities", {
+                    vx: metersPerSecondText(robotVelocities.vx),
+                    vy: metersPerSecondText(robotVelocities.vy),
+                    omega: degreesPerSecondText(robotVelocities.omega)
+                  })
                 );
               } else {
                 let poses = grabPosesAuto(
@@ -1110,72 +1138,49 @@ export default class SourceList {
                 poseStrings = poses.map((annotatedPose) => {
                   switch (typeConfig?.previewType) {
                     case "Rotation2d": {
-                      return (
-                        Units.convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) +
-                        "\u00b0"
-                      );
+                      return t("sourceList.previews.rotation2d", {
+                        rotation: degreesText(rotation3dTo2d(annotatedPose.pose.rotation))
+                      });
                     }
                     case "Translation2d": {
-                      return (
-                        "X: " +
-                        annotatedPose.pose.translation[0].toFixed(3) +
-                        "m, Y: " +
-                        annotatedPose.pose.translation[1].toFixed(3) +
-                        "m"
-                      );
+                      return t("sourceList.previews.translation2d", {
+                        x: metersText(annotatedPose.pose.translation[0]),
+                        y: metersText(annotatedPose.pose.translation[1])
+                      });
                     }
                     case "Pose2d":
                     case "Transform2d": {
-                      return (
-                        "X: " +
-                        annotatedPose.pose.translation[0].toFixed(3) +
-                        "m, Y: " +
-                        annotatedPose.pose.translation[1].toFixed(3) +
-                        "m, \u03b8: " +
-                        Units.convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) +
-                        "\u00b0"
-                      );
+                      return t("sourceList.previews.pose2d", {
+                        x: metersText(annotatedPose.pose.translation[0]),
+                        y: metersText(annotatedPose.pose.translation[1]),
+                        rotation: degreesText(rotation3dTo2d(annotatedPose.pose.rotation))
+                      });
                     }
                     case "Rotation3d": {
                       let rpy = rotation3dToRPY(annotatedPose.pose.rotation);
-                      return (
-                        "Roll: " +
-                        Units.convert(rpy[0], "radians", "degrees").toFixed(2) +
-                        "\u00b0, Pitch: " +
-                        Units.convert(rpy[1], "radians", "degrees").toFixed(2) +
-                        "\u00b0, Yaw: " +
-                        Units.convert(rpy[2], "radians", "degrees").toFixed(2) +
-                        "\u00b0"
-                      );
+                      return t("sourceList.previews.rotation3d", {
+                        roll: degreesText(rpy[0]),
+                        pitch: degreesText(rpy[1]),
+                        yaw: degreesText(rpy[2])
+                      });
                     }
                     case "Translation3d": {
-                      return (
-                        "X: " +
-                        annotatedPose.pose.translation[0].toFixed(3) +
-                        "m, Y: " +
-                        annotatedPose.pose.translation[1].toFixed(3) +
-                        "m, Z: " +
-                        annotatedPose.pose.translation[2].toFixed(3) +
-                        "m"
-                      );
+                      return t("sourceList.previews.translation3d", {
+                        x: metersText(annotatedPose.pose.translation[0]),
+                        y: metersText(annotatedPose.pose.translation[1]),
+                        z: metersText(annotatedPose.pose.translation[2])
+                      });
                     }
                     case "Pose3d": {
                       let rpy = rotation3dToRPY(annotatedPose.pose.rotation);
-                      return (
-                        "X: " +
-                        annotatedPose.pose.translation[0].toFixed(3) +
-                        "m, Y: " +
-                        annotatedPose.pose.translation[1].toFixed(3) +
-                        "m, Z: " +
-                        annotatedPose.pose.translation[2].toFixed(3) +
-                        "m, Roll: " +
-                        Units.convert(rpy[0], "radians", "degrees").toFixed(2) +
-                        "\u00b0, Pitch: " +
-                        Units.convert(rpy[1], "radians", "degrees").toFixed(2) +
-                        "\u00b0, Yaw: " +
-                        Units.convert(rpy[2], "radians", "degrees").toFixed(2) +
-                        "\u00b0"
-                      );
+                      return t("sourceList.previews.pose3d", {
+                        x: metersText(annotatedPose.pose.translation[0]),
+                        y: metersText(annotatedPose.pose.translation[1]),
+                        z: metersText(annotatedPose.pose.translation[2]),
+                        roll: degreesText(rpy[0]),
+                        pitch: degreesText(rpy[1]),
+                        yaw: degreesText(rpy[2])
+                      });
                     }
                     default: {
                       return "";
@@ -1183,25 +1188,31 @@ export default class SourceList {
                   }
                 });
               }
+
+              // Isolate each component so that bidi reordering cannot separate a label
+              // from its value, or a value from its unit
+              poseStrings = poseStrings.map(isolateListComponents);
               if (poseStrings.length === 1) {
                 text = poseStrings[0];
               } else if (poseStrings.length === 0) {
-                text = "No values";
+                text = t("sourceList.noValues");
               } else {
-                text = text =
-                  poseStrings.length.toString() +
-                  " value" +
-                  (poseStrings.length === 1 ? "" : "s") +
-                  " \u2014 [" +
-                  poseStrings.map((str) => "(" + str + ")").join(", ") +
-                  "]";
+                let countText = t("sourceList.values", { count: poseStrings.length });
+                let arrayText =
+                  "[" + poseStrings.map((str) => "(" + str + ")").join(t("sourceList.arrayListSeparator")) + "]";
+                // The array flows in the interface direction so that a single pose and an
+                // array of poses are read in the same order
+                text = t("sourceList.arraySummary", {
+                  count: isolateAuto(countText),
+                  values: isolateRtl(arrayText)
+                });
               }
             }
           } else if (structuredType === "Mechanism2d") {
             let mechanismState = getMechanismState(window.log, state.logKey, time);
             if (mechanismState !== null) {
               let count = mechanismState.lines.length;
-              text = count.toString() + " segment" + (count === 1 ? "" : "s");
+              text = t("sourceList.segments", { count: count });
             }
           } else if (structuredType === "Alerts") {
             let errorCount: number = getOrDefault(
@@ -1225,31 +1236,31 @@ export default class SourceList {
               time,
               []
             ).length;
-            text =
-              errorCount.toString() +
-              " error" +
-              (errorCount === 1 ? "" : "s") +
-              ", " +
-              warningCount.toString() +
-              " warning" +
-              (warningCount === 1 ? "" : "s") +
-              ", " +
-              infoCount.toString() +
-              " info" +
-              (infoCount === 1 ? "" : "s");
+            let errorsText = t("sourceList.errors", { count: errorCount });
+            let warningsText = t("sourceList.warnings", { count: warningCount });
+            let infosText = t("sourceList.infos", { count: infoCount });
+            text = isolateListComponents(
+              t("sourceList.alerts", {
+                errors: errorsText,
+                warnings: warningsText,
+                infos: infosText
+              })
+            );
           } else if (
             logType === LoggableType.BooleanArray ||
             logType === LoggableType.NumberArray ||
             logType === LoggableType.StringArray
           ) {
-            text =
-              value.length.toString() +
-              " value" +
-              (value.length === 1 ? "" : "s") +
-              " \u2014 " +
-              getLogValueText(value, logType);
+            let countText = t("sourceList.values", { count: value.length });
+            let arrayText = getLogValueText(value, logType, true);
+            // Raw log values keep their own direction, which leaves them left-to-right to
+            // match the table view, the exported CSV, and the source code they came from
+            text = t("sourceList.arraySummary", {
+              count: isolateAuto(countText),
+              values: isolateAuto(arrayText)
+            });
           } else {
-            text = getLogValueText(value, logType);
+            text = getLogValueText(value, logType, true);
           }
         }
       }

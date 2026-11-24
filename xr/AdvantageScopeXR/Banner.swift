@@ -35,15 +35,16 @@ struct Banner: View {
     
     private func text() -> String {
         if (appState.scanningQR) {
-            return "Scan QR code displayed in AdvantageScope."
+            return String(localized: "Scan QR code displayed in AdvantageScope.")
         } else if (appState.serverIncompatibility == .serverTooOld) {
-            return "Update AdvantageScope to the latest version, then try again."
+            return String(localized: "Update AdvantageScope to the latest version, then try again.")
         } else if (appState.serverIncompatibility == .serverTooNew) {
-            return "Update AdvantageScope XR to the latest version, then try again."
+            return String(localized: "Update AdvantageScope XR to the latest version, then try again.")
         } else if (!appState.serverConnected ) {
-            return "Searching for server..."
+            return String(localized: "Searching for server...")
         } else if (!appState.trackingReady || appState.calibrationText == "$TRACKING_WARNING") {
-            return "Move " + UIDevice.current.model + " to detect environment."
+            let deviceModel = UIDevice.current.model
+            return String(localized: "Move \(deviceModel) to detect environment.")
         } else if (!appState.calibrationText.isEmpty) {
             return appState.calibrationText
         } else {

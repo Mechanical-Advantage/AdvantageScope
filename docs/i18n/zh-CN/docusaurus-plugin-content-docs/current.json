@@ -1,0 +1,54 @@
+{
+  "version.label": {
+    "message": "下一版本",
+    "description": "The label for version current"
+  },
+  "sidebar.sidebar.category.Overview": {
+    "message": "概述",
+    "description": "The label for category 'Overview' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Overview.link.generated-index.description": {
+    "message": "这些页面介绍了 AdvantageScope 的基本操作以及如何访问数据。",
+    "description": "The generated-index page description for category 'Overview' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.🧭 App Navigation": {
+    "message": "🧭 应用导航",
+    "description": "The label for category '🧭 App Navigation' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.📂 Log Files": {
+    "message": "📂 日志文件",
+    "description": "The label for category '📂 Log Files' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.🛜 Live Sources": {
+    "message": "🛜 实时数据源",
+    "description": "The label for category '🛜 Live Sources' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tab Reference": {
+    "message": "选项卡参考",
+    "description": "The label for category 'Tab Reference' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tab Reference.link.generated-index.description": {
+    "message": "AdvantageScope 通过选项卡来组织数据的查看与分析。每次新建选项卡时，你都可以自由选择可视化类型，也可以同时打开多个同类型的选项卡。你还可以重命名选项卡以便分类整理，或将其弹出到独立窗口，实现多视图同步查看。",
+    "description": "The generated-index page description for category 'Tab Reference' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.📉 Line Graph": {
+    "message": "📉 折线图",
+    "description": "The label for category '📉 Line Graph' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.👀 3D Field": {
+    "message": "👀 3D 场地",
+    "description": "The label for category '👀 3D Field' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.More Features": {
+    "message": "更多功能",
+    "description": "The label for category 'More Features' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.⚙️ Custom Assets": {
+    "message": "⚙️ 自定义资源",
+    "description": "The label for category '⚙️ Custom Assets' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Legal": {
+    "message": "法律声明",
+    "description": "The label for category 'Legal' in sidebar 'sidebar'"
+  }
+}

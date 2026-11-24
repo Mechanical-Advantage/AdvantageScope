@@ -5,7 +5,7 @@ sidebar_position: 3
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📝 Unofficial REV-Compatible Logger
+# 📝 Unofficial REV-Compatible Logger {#unofficial-rev-compatible-logger}
 
 :::info
 New in 2026, REVLib includes an official logging solution for saving data from the Spark Max and Spark Flex to a REV CAN log (`.revlog`). See [here](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) for details. These files can be opened directly in AdvantageScope, but cannot be precisely synchronized to other data sources.
@@ -27,7 +27,7 @@ After setup, periodic CAN frames from all Spark Max and Spark Flex devices are p
 As this library is not an official REV tool, support queries should be directed to the URCL [issues page](https://github.com/Mechanical-Advantage/URCL/issues) or software@team6328.org rather than REV's support contact.
 :::
 
-## Setup
+## Setup {#setup}
 
 Install the URCL vendordep by following the instructions to install [3rd party libraries](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html) using the dependency manager in VSCode. Alternatively, you can use the following vendor JSON URL:
 
@@ -111,7 +111,7 @@ To minimize CAN utilization, most status frames for Spark devices are **disabled
 For more details, check the [REVLib documentation](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods). We recommend using the [`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) when configuring the Spark to manually enable any signals you wish to include in the log file.
 :::
 
-## SysId Usage
+## SysId Usage {#sysid-usage}
 
 1. After setting up URCL as shown above, configure the SysId routine using `null` for the mechanism log consumer. An example is shown below for Java. This configuration can be performed within the subsystem class.
 
@@ -171,9 +171,9 @@ sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
 The log file from the robot must be opened and exported by AdvantageScope _before opening it using the SysId analyzer_. This is required to convert the CAN data recorded by URCL to a format compatible with SysId.
 :::
 
-3. Open the SysId analyzer by searching for "WPILib: Start Tool" in the VSCode command palette and choosing "SysId" (or using the desktop launcher on Windows). Open the exported log file by clicking "Open data log file..."
+4. Open the SysId analyzer by searching for "WPILib: Start Tool" in the VSCode command palette and choosing "SysId" (or using the desktop launcher on Windows). Open the exported log file by clicking "Open data log file..."
 
-4. Choose the following fields below to run the analysis using the default encoder. Position and velocity data from secondary encoders can also be used (alternate, external, analog, absolute, etc).
+5. Choose the following fields below to run the analysis using the default encoder. Position and velocity data from secondary encoders can also be used (alternate, external, analog, absolute, etc).
 
    - Position = "NT:/URCL/&lt;Device&gt;/MotorPositionRotations"
    - Velocity = "NT:/URCL/&lt;Device&gt;/MotorVelocityRPM"

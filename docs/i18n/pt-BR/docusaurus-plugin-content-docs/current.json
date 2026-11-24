@@ -1,0 +1,54 @@
+{
+  "version.label": {
+    "message": "Próxima",
+    "description": "The label for version current"
+  },
+  "sidebar.sidebar.category.Overview": {
+    "message": "Visão geral",
+    "description": "The label for category 'Overview' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Overview.link.generated-index.description": {
+    "message": "Estas páginas cobrem o básico sobre como navegar no AdvantageScope e acessar dados.",
+    "description": "The generated-index page description for category 'Overview' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.🧭 App Navigation": {
+    "message": "🧭 Navegação do aplicativo",
+    "description": "The label for category '🧭 App Navigation' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.📂 Log Files": {
+    "message": "📂 Arquivos de log",
+    "description": "The label for category '📂 Log Files' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.🛜 Live Sources": {
+    "message": "🛜 Fontes ao vivo",
+    "description": "The label for category '🛜 Live Sources' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tab Reference": {
+    "message": "Referência de guias",
+    "description": "The label for category 'Tab Reference' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tab Reference.link.generated-index.description": {
+    "message": "O AdvantageScope oferece várias maneiras de visualizar e analisar dados, organizadas em guias. Você pode escolher o tipo de visualização ao abrir cada nova guia e manter várias guias do mesmo tipo abertas ao mesmo tempo. Também é possível renomear as guias para facilitar a organização e destacá-las em janelas separadas para visualizar dados de forma simultânea e sincronizada.",
+    "description": "The generated-index page description for category 'Tab Reference' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.📉 Line Graph": {
+    "message": "📉 Gráfico de linha",
+    "description": "The label for category '📉 Line Graph' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.👀 3D Field": {
+    "message": "👀 Campo 3D",
+    "description": "The label for category '👀 3D Field' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.More Features": {
+    "message": "Mais recursos",
+    "description": "The label for category 'More Features' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.⚙️ Custom Assets": {
+    "message": "⚙️ Recursos personalizados",
+    "description": "The label for category '⚙️ Custom Assets' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Legal": {
+    "message": "Informações legais",
+    "description": "The label for category 'Legal' in sidebar 'sidebar'"
+  }
+}

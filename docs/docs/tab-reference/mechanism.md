@@ -5,11 +5,11 @@ sidebar_position: 10
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# ⚙️ Mechanism
+# ⚙️ Mechanism {#mechanism}
 
 The mechanism tab displays a a jointed mechanism created with one or more [Mechanism2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html) objects.
 
-![Overview of mechanism tab](./img/mechanism-1.png)
+<img src="/img/tab-reference/mechanism-1.webp" alt="Overview of mechanism tab" />
 
 <details>
 <summary>Timeline Controls</summary>
@@ -20,15 +20,15 @@ Yellow sections indicate when the robot is autonomous, blue sections indicate wh
 
 To zoom, place the cursor over the timeline and scroll up or down. A range can also be selecting by clicking and dragging while holding `Shift`. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the timeline. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again. Press `Ctrl+\` to zoom to the period where the robot is enabled.
 
-![Timeline](./img/timeline.png)
+<img src="/img/tab-reference/timeline.webp" alt="Timeline" />
 
 </details>
 
-## Adding Mechanisms
+## Adding Mechanisms {#adding-mechanisms}
 
 To get started, drag a `Mechanism2d` to the control pane. Delete a mechanism using the X button, or hide it temporarily by clicking the eye icon or double-clicking the field name. To remove all mechanisms, click the trash can near the axis title and then `Clear All`. Mechanisms can be rearranged in the list by clicking and dragging.
 
-## Publishing Data
+## Publishing Data {#publishing-data}
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>

@@ -8,6 +8,7 @@
 import { CoordinateSystem } from "./shared/AdvantageScopeAssets";
 import Preferences from "./shared/Preferences";
 
+const LANGUAGE = document.getElementById("language") as HTMLInputElement;
 const THEME = document.getElementById("theme") as HTMLInputElement;
 const ROBOT_ADDRESS = document.getElementById("robotAddress") as HTMLInputElement;
 const REMOTE_PATH = document.getElementById("remotePath") as HTMLInputElement;
@@ -48,15 +49,16 @@ window.addEventListener("message", (event) => {
       switch (platform) {
         case "linux":
           (THEME.children[0] as HTMLElement).hidden = true;
-          (THEME.children[1] as HTMLElement).innerText = "Light";
-          (THEME.children[2] as HTMLElement).innerText = "Dark";
+          (THEME.children[1] as HTMLElement).innerText = t("preferences.themeLightSimple");
+          (THEME.children[2] as HTMLElement).innerText = t("preferences.themeDarkSimple");
           break;
 
         case "lite":
           document.body.classList.add("lite");
-          FIELD_3D_MODE_AC_LABEL.innerText = "3D Mode";
+          FIELD_3D_MODE_AC_LABEL.innerText = t("preferences.mode3dSimple");
           break;
       }
+      LANGUAGE.value = oldPrefs.language;
       THEME.value = oldPrefs.theme;
       ROBOT_ADDRESS.value = oldPrefs.robotAddress;
       REMOTE_PATH.value = oldPrefs.remotePath;
@@ -105,6 +107,7 @@ window.addEventListener("message", (event) => {
           if (TIMESTAMPS.value === "original") timestamps = "original";
 
           let newPrefs: Preferences = {
+            language: LANGUAGE.value,
             theme: theme,
             robotAddress: ROBOT_ADDRESS.value,
             remotePath: REMOTE_PATH.value,
@@ -120,6 +123,7 @@ window.addEventListener("message", (event) => {
             tbaApiKey: TBA_API_KEY.value,
             userAssetsFolder: oldPrefs.userAssetsFolder,
             skipHootNonProWarning: oldPrefs.skipHootNonProWarning,
+            skipLanguageWarning: oldPrefs.skipLanguageWarning,
             skipFRCCoordinateSystemWarning: oldPrefs.skipFRCCoordinateSystemWarning,
             skipFTCCoordinateSystemWarning: oldPrefs.skipFTCCoordinateSystemWarning,
             ctreLicenseAccepted: oldPrefs.ctreLicenseAccepted,

@@ -5,11 +5,11 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🗺 2D Field
+# 🗺 2D Field {#2d-field}
 
 The 2D field tab shows a 2D visualization of the robot overlayed on a map of the field. It can also show extra data like vision targeting status and reference poses.
 
-![Overview of 2D field tab](./img/2d-field-1.png)
+<img src="/img/tab-reference/2d-field-1.webp" alt="Overview of 2D field tab" />
 
 <details>
 <summary>Timeline Controls</summary>
@@ -20,11 +20,11 @@ Yellow sections indicate when the robot is autonomous, blue sections indicate wh
 
 To zoom, place the cursor over the timeline and scroll up or down. A range can also be selecting by clicking and dragging while holding `Shift`. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the timeline. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again. Press `Ctrl+\` to zoom to the period where the robot is enabled.
 
-![Timeline](./img/timeline.png)
+<img src="/img/tab-reference/timeline.webp" alt="Timeline" />
 
 </details>
 
-## Camera Controls
+## Camera Controls {#camera-controls}
 
 Scroll up and down over the field to zoom in and out. Click and drag to pan across the field. Right-click anywhere on the field to open the camera menu with the following options:
 
@@ -34,7 +34,7 @@ Scroll up and down over the field to zoom in and out. Click and drag to pan acro
 
 In either locked mode, the camera can be freely panned away from the robot. The orientation buttons in the control pane can be used to rotate the camera in any mode.
 
-## Adding Objects
+## Adding Objects {#adding-objects}
 
 To get started, drag a field to the "Poses" section. Delete an object using the X button, or hide it temporarily by clicking the eye icon or double-clicking the field name. To remove all objects, click the trash can near the axis title and then `Clear All`. Objects can be rearranged in the list by clicking and dragging.
 
@@ -44,9 +44,9 @@ To get started, drag a field to the "Poses" section. Delete an object using the 
 To see a full list of supported object types, click the `?` icon. This list also includes the supported data types and whether the objects must be added as children.
 :::
 
-![2D field with objects](./img/2d-field-2.png)
+<img src="/img/tab-reference/2d-field-2.webp" alt="2D field with objects" />
 
-## Data Format
+## Data Format {#data-format}
 
 Geometry data should be published as a byte-encoded struct or protobuf. Various 2D and 3D geometry types are supported, including `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, and more.
 
@@ -113,7 +113,7 @@ telemetry.update();
 </TabItem>
 </Tabs>
 
-## Configuration
+## Configuration {#configuration}
 
 - **Field:** The field image to use. All recent FRC and FTC games are supported. To add a custom field image, see [Custom Assets](/more-features/custom-assets).
 - **Orientation:** The orientation of the field image in the viewer pane.

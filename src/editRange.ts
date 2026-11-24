@@ -41,7 +41,7 @@ window.addEventListener("message", (event) => {
         let min = Number(MIN_INPUT.value);
         let max = Number(MAX_INPUT.value);
         if (min >= max) {
-          alert("Maximum must be greater than minimum.");
+          alert(t("editRange.alertError"));
         } else {
           messagePort.postMessage([min, max]);
         }

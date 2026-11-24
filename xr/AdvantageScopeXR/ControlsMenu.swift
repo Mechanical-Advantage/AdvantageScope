@@ -28,19 +28,52 @@ struct ControlsMenu: View {
         .animation(.easeInOut(duration: 0.25), value: appState.showControls)
     }
     
+    #if !APPCLIP
+    private var scanButton: some View {
+        Button("Scan", systemImage: "qrcode") {
+            appState.scanningQR.toggle()
+        }.buttonStyle(ControlButton(highlight: appState.scanningQR ? .blue : .none))
+    }
+    #endif
+    
+    private var recordButton: some View {
+        RecordButton()
+    }
+    
+    private var calibrateButton: some View {
+        Button("Calibrate", systemImage: "scope") {
+            requestCalibration()
+        }.buttonStyle(ControlButton(highlight: .none))
+    }
+    
+    @ViewBuilder
+    private var allButtons: some View {
+    #if !APPCLIP
+        scanButton
+    #endif
+        recordButton
+        calibrateButton
+    }
+    
     private var buttonStack: some View {
-        HStack(spacing: 14) {
-#if !APPCLIP
-            Button("Scan", systemImage: "qrcode") {
-                appState.scanningQR.toggle()
-            }.buttonStyle(ControlButton(highlight: appState.scanningQR ? .blue : .none))
-#endif
-            
-            RecordButton()
-            
-            Button("Calibrate", systemImage: "scope") {
-                requestCalibration()
-            }.buttonStyle(ControlButton(highlight: .none))
+        ViewThatFits {
+            HStack(spacing: 14) {
+                allButtons
+            }
+            VStack(spacing: 14) {
+            #if !APPCLIP
+                HStack(spacing: 14) {
+                    scanButton
+                    recordButton
+                }
+                calibrateButton
+            #else
+                allButtons
+            #endif
+            }
+            VStack(spacing: 14) {
+                allButtons
+            }
         }
     }
 }
@@ -51,12 +84,16 @@ struct ControlButton : ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         if #available(iOS 26.0, *) {
             configuration.label
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
                 .padding(10)
                 .glassEffect(.regular.interactive())
                 .contentShape(Rectangle())
                 .foregroundStyle(highlight ?? .primary)
         } else {
             configuration.label
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
                 .padding(10)
                 .controlSize(.large)
                 .background(highlight == .none ? AnyShapeStyle(.thinMaterial) : AnyShapeStyle(highlight!))

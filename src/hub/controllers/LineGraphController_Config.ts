@@ -9,13 +9,12 @@ import { GraphColors } from "../../shared/Colors";
 import { SourceListConfig } from "../../shared/SourceListConfig";
 
 export const LineGraphController_NumericConfig: SourceListConfig = {
-  title: "Numeric Axis",
+  title: "hub.lineGraph.numericAxis",
   autoAdvance: "color",
   allowChildrenFromDrag: true,
   types: [
     {
       key: "stepped",
-      display: "Stepped",
       symbol: "floor",
       showInTypeName: false,
       color: "color",
@@ -24,25 +23,18 @@ export const LineGraphController_NumericConfig: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: GraphColors
         },
         {
           key: "size",
-          display: "Thickness",
           showInTypeName: false,
-          values: [
-            { key: "normal", display: "Normal" },
-            { key: "bold", display: "Bold" },
-            { key: "verybold", display: "Very Bold" }
-          ]
+          values: ["normal", "bold", "verybold"]
         }
       ]
     },
     {
       key: "smooth",
-      display: "Smooth",
       symbol: "gesture",
       showInTypeName: false,
       color: "color",
@@ -51,25 +43,18 @@ export const LineGraphController_NumericConfig: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: GraphColors
         },
         {
           key: "size",
-          display: "Thickness",
           showInTypeName: false,
-          values: [
-            { key: "normal", display: "Normal" },
-            { key: "bold", display: "Bold" },
-            { key: "verybold", display: "Very Bold" }
-          ]
+          values: ["normal", "bold", "verybold"]
         }
       ]
     },
     {
       key: "points",
-      display: "Points",
       symbol: "scatterplot",
       showInTypeName: false,
       color: "color",
@@ -78,7 +63,6 @@ export const LineGraphController_NumericConfig: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: GraphColors
         }
@@ -88,13 +72,12 @@ export const LineGraphController_NumericConfig: SourceListConfig = {
 };
 
 export const LineGraphController_DiscreteConfig: SourceListConfig = {
-  title: "Discrete Fields",
+  title: "hub.lineGraph.discreteFields",
   autoAdvance: "color",
   allowChildrenFromDrag: false,
   types: [
     {
       key: "stripes",
-      display: "Stripes",
       symbol: "barcode",
       showInTypeName: false,
       color: "color",
@@ -103,7 +86,6 @@ export const LineGraphController_DiscreteConfig: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: GraphColors
         }
@@ -111,7 +93,6 @@ export const LineGraphController_DiscreteConfig: SourceListConfig = {
     },
     {
       key: "graph",
-      display: "Graph",
       symbol: "earthquake",
       showInTypeName: false,
       color: "color",
@@ -120,7 +101,6 @@ export const LineGraphController_DiscreteConfig: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: GraphColors
         }
@@ -128,7 +108,6 @@ export const LineGraphController_DiscreteConfig: SourceListConfig = {
     },
     {
       key: "alerts",
-      display: "Alerts",
       symbol: "list",
       showInTypeName: false,
       color: "#ffaa00",

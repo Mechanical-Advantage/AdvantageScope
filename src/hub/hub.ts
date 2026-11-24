@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { TFunction } from "i18next";
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { HubState } from "../shared/HubState";
 import NamedMessage from "../shared/NamedMessage";
@@ -40,6 +41,9 @@ const FEEDBACK_BUTTON = document.getElementsByClassName("feedback")[0] as HTMLEl
 // Global variables
 declare global {
   interface Window {
+    t: TFunction;
+    lang: string;
+
     log: Log;
     preferences: Preferences | null;
     assets: AdvantageScopeAssets | null;
@@ -116,12 +120,19 @@ let dragData: any = null;
 // WINDOW UTILITIES
 
 function setWindowTitle(name: string, status?: string) {
-  let title =
-    htmlEncode(name) +
-    (status ? " (" + htmlEncode(status) + ")" : "") +
-    " &mdash; AdvantageScope" +
-    (IS_LITE ? " Lite" : "") +
-    (DISTRIBUTION === Distribution.LiteDS ? " (DS)" : "");
+  let appTitle =
+    DISTRIBUTION === Distribution.LiteDS ? t("hub.titleLiteDs") : IS_LITE ? t("hub.titleLite") : t("hub.title");
+  let isolatedName = "\u2066" + htmlEncode(name) + "\u2069";
+  let title = status
+    ? t("hub.titleWithStatus", {
+        name: isolatedName,
+        status: htmlEncode(status),
+        app: htmlEncode(appTitle)
+      })
+    : t("hub.titleWithName", {
+        name: isolatedName,
+        app: htmlEncode(appTitle)
+      });
   document.getElementsByTagName("title")[0].innerHTML = title;
   document.getElementsByClassName("title-bar-text")[0].innerHTML = title;
 }
@@ -285,7 +296,9 @@ let periodic = () => {
   }
   fpsDiv.hidden = !window.fps;
   if (window.fps) {
-    fpsDiv.innerText = "FPS: " + fps.toFixed(1);
+    fpsDiv.innerText =
+      "FPS: " +
+      fps.toLocaleString(undefined, { useGrouping: false, minimumFractionDigits: 1, maximumFractionDigits: 1 });
   }
   window.requestAnimationFrame(periodic);
 };
@@ -366,12 +379,12 @@ function startHistorical(path: string, clear = true, merge = false) {
         let components = historicalSources[0].path.split(window.platform === "win32" ? "\\" : "/");
         logFriendlyName = components[components.length - 1];
       } else {
-        logFriendlyName = historicalSources.length.toString() + " Log Files";
+        logFriendlyName = t("hub.logs.multipleFiles", { count: historicalSources.length });
       }
       switch (status) {
         case HistoricalDataSourceStatus.Reading:
         case HistoricalDataSourceStatus.DecodingInitial:
-          setWindowTitle(logFriendlyName, "Loading");
+          setWindowTitle(logFriendlyName, t("hub.logs.statusLoading"));
           break;
         case HistoricalDataSourceStatus.DecodingField:
         case HistoricalDataSourceStatus.Idle:
@@ -390,20 +403,16 @@ function startHistorical(path: string, clear = true, merge = false) {
           }
           break;
         case HistoricalDataSourceStatus.Error:
-          setWindowTitle(logFriendlyName, "Error");
+          setWindowTitle(logFriendlyName, t("hub.logs.statusError"));
           sourceEntry.progress = null;
           updateLoading();
           let isCSV = path.endsWith(".csv");
-          let message =
-            "There was a problem while reading the log file. " +
-            (isCSV
-              ? "Please check the documentation for more information on the required format of CSV files."
-              : "Please try again.");
+          let message = isCSV ? t("hub.logs.openErrorCsv") : t("hub.logs.openErrorFallback");
           if (source.getCustomError() !== null) {
             message = source.getCustomError()!;
           }
           window.sendMainMessage("error", {
-            title: "Failed to open log",
+            title: t("hub.logs.openErrorTitle"),
             content: message
           });
           break;
@@ -473,17 +482,16 @@ function startLive(sourceType: "robot" | "sim" | "ds") {
     (status: LiveDataSourceStatus) => {
       switch (status) {
         case LiveDataSourceStatus.Connecting:
-          setWindowTitle(address, "Searching");
+          setWindowTitle(address, t("hub.live.statusSearching"));
           break;
         case LiveDataSourceStatus.Active:
           setWindowTitle(address);
           break;
         case LiveDataSourceStatus.Error:
-          setWindowTitle(address, "Error");
+          setWindowTitle(address, t("hub.live.statusError"));
           window.sendMainMessage("error", {
-            title: "Problem with live source",
-            content:
-              "There was a problem while connecting to the live source. Please check your connection settings and try again."
+            title: t("hub.live.connectErrorTitle"),
+            content: t("hub.live.connectErrorContent")
           });
           break;
       }
@@ -548,6 +556,11 @@ UPDATE_BUTTON.addEventListener("click", () => {
 FEEDBACK_BUTTON.addEventListener("click", () => {
   window.sendMainMessage("open-feedback");
 });
+
+if (window.lang !== "en-US") {
+  document.documentElement.style.setProperty("--show-feedback-button", "1");
+  FEEDBACK_BUTTON.hidden = false;
+}
 
 // Update touch bar slider position
 setInterval(() => {
@@ -633,8 +646,8 @@ async function handleMainMessage(message: NamedMessage) {
         }
         if (newHasFailed && !oldHadFailed) {
           window.sendMainMessage("error", {
-            title: "Failed to load assets",
-            content: "Some asset files failed to load. Check the developer console for details."
+            title: t("hub.assets.loadFailedTitle"),
+            content: t("hub.assets.loadFailedContent")
           });
         }
         if (!newHasFailed && oldHadFailed) {
@@ -732,8 +745,13 @@ async function handleMainMessage(message: NamedMessage) {
       break;
 
     case "show-feedback-button":
-      document.documentElement.style.setProperty("--show-feedback-button", message.data ? "1" : "0");
-      FEEDBACK_BUTTON.hidden = !message.data;
+      if (window.lang !== "en-US") {
+        document.documentElement.style.setProperty("--show-feedback-button", "1");
+        FEEDBACK_BUTTON.hidden = false;
+      } else {
+        document.documentElement.style.setProperty("--show-feedback-button", message.data ? "1" : "0");
+        FEEDBACK_BUTTON.hidden = !message.data;
+      }
       break;
 
     case "historical-data":
@@ -754,13 +772,13 @@ async function handleMainMessage(message: NamedMessage) {
 
       if (isExporting) {
         window.sendMainMessage("error", {
-          title: "Cannot open file" + (files.length !== 1 ? "s" : ""),
-          content: "Please wait for the export to finish, then try again."
+          title: t("hub.logs.cannotOpenTitle", { count: files.length }),
+          content: t("hub.logs.waitExport")
         });
       } else if (merge && (liveActive || historicalSources.length === 0)) {
         window.sendMainMessage("error", {
-          title: "Cannot insert file" + (files.length !== 1 ? "s" : ""),
-          content: 'No log files are currently loaded. Choose "Open Log(s)" to load new files.'
+          title: t("hub.logs.cannotInsertTitle", { count: files.length }),
+          content: t("hub.logs.noLogsLoaded")
         });
       } else {
         files.forEach((file, index) => {
@@ -776,8 +794,8 @@ async function handleMainMessage(message: NamedMessage) {
     case "start-live":
       if (isExporting) {
         window.sendMainMessage("error", {
-          title: "Cannot connect",
-          content: "Please wait for the export to finish, then try again."
+          title: t("hub.live.cannotConnectTitle"),
+          content: t("hub.live.cannotConnectContent")
         });
       } else {
         startLive(message.data);
@@ -787,13 +805,13 @@ async function handleMainMessage(message: NamedMessage) {
     case "start-publish":
       if (liveActive) {
         window.sendMainMessage("error", {
-          title: "Cannot publish",
-          content: "Publishing is not allowed from a live source."
+          title: t("hub.live.cannotPublishTitle"),
+          content: t("hub.live.cannotPublishLive")
         });
       } else if (!("NT" in window.log.getFieldTree())) {
         window.sendMainMessage("error", {
-          title: "Cannot publish",
-          content: "Please open a log file with NetworkTables data, then try again."
+          title: t("hub.live.cannotPublishTitle"),
+          content: t("hub.live.cannotPublishNoNt")
         });
       } else {
         // Start mock progress
@@ -816,10 +834,10 @@ async function handleMainMessage(message: NamedMessage) {
           if (logFriendlyName === null) return;
           switch (status) {
             case NT4PublisherStatus.Connecting:
-              setWindowTitle(logFriendlyName, "Searching");
+              setWindowTitle(logFriendlyName, t("hub.live.publishSearching"));
               break;
             case NT4PublisherStatus.Active:
-              setWindowTitle(logFriendlyName, "Publishing");
+              setWindowTitle(logFriendlyName, t("hub.live.publishActive"));
               break;
             case NT4PublisherStatus.Stopped:
               setWindowTitle(logFriendlyName);
@@ -930,13 +948,13 @@ async function handleMainMessage(message: NamedMessage) {
       let logPath = historicalSources.length > 0 ? historicalSources[0].path : null;
       if (isExporting) {
         window.sendMainMessage("error", {
-          title: "Cannot export data",
-          content: "Please wait for the previous export to finish, then try again."
+          title: t("hub.export.cannotExportTitle"),
+          content: t("hub.export.waitExport")
         });
       } else if (logPath === null && !liveConnected) {
         window.sendMainMessage("error", {
-          title: "Cannot export data",
-          content: "Please open a log file or connect to a live source, then try again."
+          title: t("hub.export.cannotExportTitle"),
+          content: t("hub.export.noLogs")
         });
       } else {
         setExporting(true);
@@ -987,8 +1005,8 @@ async function handleMainMessage(message: NamedMessage) {
         });
       } catch {
         window.sendMainMessage("error", {
-          title: "Failed to export data",
-          content: "There was a problem while converting to the export format. Please try again."
+          title: t("hub.export.failedTitle"),
+          content: t("hub.export.failedContent")
         });
         setLoading(null);
       } finally {
@@ -1007,8 +1025,8 @@ async function handleMainMessage(message: NamedMessage) {
         let rawData = window.log.getField(key)?.getRaw(-Infinity, Infinity);
         if (!rawData || rawData.values.length === 0) {
           window.sendMainMessage("error", {
-            title: "Cannot export original log",
-            content: "The original log data is not available. Please wait for the log to finish loading and try again."
+            title: t("hub.export.cannotExportOriginalTitle"),
+            content: t("hub.export.cannotExportOriginalContent")
           });
         } else {
           let totalLength = rawData.values.reduce((sum, arr) => sum + arr.length, 0);

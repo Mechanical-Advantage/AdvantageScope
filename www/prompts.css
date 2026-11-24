@@ -24,7 +24,7 @@ body.lite .hide-lite {
 table {
   position: absolute;
   top: 10px;
-  left: 10px;
+  inset-inline-start: 10px;
   width: calc(100% - 20px);
   border-spacing: 0px;
 }
@@ -71,25 +71,28 @@ td.info {
 
 td.label {
   white-space: nowrap;
-  width: 0px;
-  text-align: right;
+  text-align: end;
   font-size: 14px;
+}
+
+td.input {
+  width: 100%;
+  padding-inline-start: 5px;
 }
 
 input,
 select {
   box-sizing: border-box;
   display: block;
-  margin-left: 5px;
-  width: calc(100% - 5px);
+  margin: 0px;
+  width: 100%;
 }
 
 input[type="file"] {
   text-align: center;
 }
 
-button,
-div.help-div {
+button {
   position: absolute;
   bottom: 8px;
   width: 30px;
@@ -97,21 +100,38 @@ div.help-div {
 }
 
 #exit {
-  right: 43px;
+  inset-inline-end: 43px;
 }
 
 #confirm {
-  right: 8px;
+  inset-inline-end: 8px;
 }
 
 div.help-div {
-  right: 78px;
-  width: 50px;
+  position: absolute;
+  bottom: 8px;
+  inset-inline-end: 78px;
+  height: 30px;
+  display: flex;
+  align-items: center;
 }
 
 div.help-div > a {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
+
+#tbaApiKey,
+#remotePath,
+#robotAddress,
+#publishFilter,
+#prefixes {
+  direction: ltr;
+}
+
+html[dir="rtl"] #tbaApiKey,
+html[dir="rtl"] #remotePath,
+html[dir="rtl"] #robotAddress,
+html[dir="rtl"] #publishFilter,
+html[dir="rtl"] #prefixes {
+  text-align: right;
 }

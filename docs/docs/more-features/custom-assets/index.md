@@ -1,4 +1,4 @@
-# ⚙️ Custom Assets
+# ⚙️ Custom Assets {#custom-assets}
 
 AdvantageScope uses a default set of flat field images, field models, robot models, and joystick configurations. Simple assets (e.g. evergreen fields) are included in the initial installation. Detailed assets (e.g. season-specific fields) are downloaded automatically in the background when AdvantageScope is connected to the internet. To check the status of these downloads, click `App`/`AdvantageScope` > `Asset Download Status...`.
 
@@ -8,7 +8,7 @@ The set of assets can be customized to add more options if desired. To open the 
 To load assets from an alternative location, click `App`/`AdvantageScope` > `Use Custom Assets Folder`. The selected folder should be the _parent folder_ where multiple assets in separate subfolders could be placed. This feature allows custom assets to be stored under version control alongside robot code.
 :::
 
-## General Format
+## General Format {#general-format}
 
 All assets are stored in folders with the naming convention "TYPE_NAME". The NAME used for the folder is not displayed by AdvantageScope. The possible asset types are:
 
@@ -21,28 +21,30 @@ All assets are stored in folders with the naming convention "TYPE_NAME". The NAM
 Example folder names would be "Field2d_2023Field", "Joystick_OperatorButtons", or "Robot_Dozer".
 :::
 
-This folder should contain a file named "config.json" and one or more asset files, as described below. The config file always includes the name of the asset to be displayed by AdvantageScope. This name must be unique for each asset type.
+This folder should contain a file named "config.json" and one or more asset files, as described below. The config file always includes the name of the asset to be displayed by AdvantageScope. This name must be unique for each asset type. Assets can also optionally include a "locales" object mapping locale keys (e.g. "es-419", "fr", "zh-CN") to translated names. The root-level "name" is treated as the default name if the selected locale is not provided or "locales" is omitted.
 
 ```json
 {
-  "name": string // Unique name, required for all asset types
+  "name": string, // Unique default name, required for all asset types
+  "locales": { [locale: string]: string } // Optional localized names mapping language codes (e.g. "es-419", "fr") to translations
   ... // Type-dependent configuration, described below
 }
 ```
 
-## 3D Robot Models
+## 3D Robot Models {#3d-robot-models}
 
-### Video Tutorial
+### Video Tutorial {#video-tutorial}
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/unX1PsPi0VA" title="Configuring Custom Robot Models for AdvantageScope" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-### Overview
+### Overview {#overview}
 
 A model must be included in the folder with the name "model.glb". CAD files must be converted to glTF; see [this page](gltf-convert) for details. The config file must be in the following format:
 
 ```json
 {
   "name": string // Unique name, required for all asset types
+  "locales": { [locale: string]: string } // Optional translations for asset name
   "isFTC": boolean // Whether the model is intended for use on FTC fields instead of FRC fields (default "false")
   "disableSimplification": boolean // Whether to disable model simplification, optional
   "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
@@ -50,6 +52,7 @@ A model must be included in the folder with the name "model.glb". CAD files must
   "cameras": [ // Fixed camera positions, can be empty
     {
       "name": string // Camera name
+      "locales": { [locale: string]: string } // Optional translations for camera name
       "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
       "position": [number, number, number] // Position offset in meters relative to the robot, applied after rotation
       "resolution": [number, number] // Resolution in pixels, used to set the fixed aspect ratio
@@ -70,7 +73,7 @@ AdvantageScope simplifies model geometry automatically to improve performance, w
 
 :::
 
-### Articulated Components
+### Articulated Components {#articulated-components}
 
 :::warning
 Setting up articulated components can be complex and time-consuming. Consider utilizing AdvantageScope's 3D [`Mechanism2d` support](/tab-reference/3d-field#2d-mechanisms), which offers a more streamlined approach to **visualize mechanisms on the 3D field**.
@@ -93,7 +96,7 @@ When positioning 3D components relative to the robot, the origin of the coordina
 ]
 ```
 
-#### Setup Process
+#### Setup Process {#setup-process}
 
 To calibrate the positions of the articulated components, we recommend the following process:
 
@@ -109,13 +112,14 @@ To calibrate the positions of the articulated components, we recommend the follo
 
 6. Publish the real component poses from the robot code, which will be based on the newly-defined origins for each component. For example, the pose for an arm segment would be positioned at the joint of the arm pointed in the direction of the segment.
 
-## Joysticks
+## Joysticks {#joysticks}
 
 An image must be included in the folder with the name "image.png". The config file must be in the following format:
 
 ```json
 {
   "name": string // Unique name, required for all asset types
+  "locales": { [locale: string]: string } // Optional translations for asset name
   "components": [...] // Array of component configurations, see below
 }
 ```
@@ -126,7 +130,7 @@ Buttons, joysticks, and axis values support both [SDL](https://www.libsdl.org) b
 For NI bindings, AdvantageScope is backwards compatible with the old non-prefixed configuration keys (e.g. `sourceIndex`). **All new joysticks should use explicit SDL bindings (e.g. `sdlSourceIndex`) for compatibility with the current FIRST Driver Station.**
 :::
 
-### Single Button / POV Value
+### Single Button / POV Value {#single-button-pov-value}
 
 ```json
 {
@@ -144,7 +148,7 @@ For NI bindings, AdvantageScope is backwards compatible with the old non-prefixe
 }
 ```
 
-### Two-Axis Joystick
+### Two-Axis Joystick {#two-axis-joystick}
 
 ```json
 {
@@ -167,7 +171,7 @@ For NI bindings, AdvantageScope is backwards compatible with the old non-prefixe
 }
 ```
 
-### Single Axis
+### Single Axis {#single-axis}
 
 ```json
 {
@@ -184,7 +188,7 @@ For NI bindings, AdvantageScope is backwards compatible with the old non-prefixe
 }
 ```
 
-### Touchpad
+### Touchpad {#touchpad}
 
 ```json
 {
@@ -196,13 +200,14 @@ For NI bindings, AdvantageScope is backwards compatible with the old non-prefixe
 }
 ```
 
-## Flat Field Images
+## Flat Field Images {#flat-field-images}
 
 An image must be included in the folder with the name "image.png". It should be oriented with the red alliance on the left. The config file must be in the following format:
 
 ```json
 {
   "name": string // Unique name, required for all asset types
+  "locales": { [locale: string]: string } // Optional translations for asset name
   "isFTC": boolean // Whether this is an FTC field instead of an FRC field
   "coordinateSystem": // The default coordinate system to use (see below)
       "wall-alliance" |  // FRC 2022
@@ -218,15 +223,16 @@ An image must be included in the folder with the name "image.png". It should be 
 }
 ```
 
-## 3D Field Models
+## 3D Field Models {#3d-field-models}
 
-A model must be included in the folder with the name "model.glb". After all rotations are applied, the field should be oriented with the red alliance on the left. CAD files must be converted to glTF; see [this page](gltf-convert) for details. Game piece models follow the naming convention "model_INDEX.glb" based on the order that they appear in the "gamePieces" array. AprilTags declared here are always positioned using a [center/red](/more-features/coordinate-systems#centerred-systemcore) coordinate system, regardless of any other configuration options.
+A model must be included in the folder with the name "model.glb". After all rotations are applied, the field should be oriented with the red alliance on the left. CAD files must be converted to glTF; see [this page](gltf-convert) for details. Game piece models follow the naming convention "model_INDEX.glb" based on the order that they appear in the "gamePieces" array. AprilTags declared here are always positioned using a [center/red](/more-features/coordinate-systems#center-red) coordinate system, regardless of any other configuration options.
 
 The config file must be in the following format:
 
 ```json
 {
   "name": string // Unique name, required for all asset types
+  "locales": { [locale: string]: string } // Optional translations for asset name
   "isFTC": boolean // Whether this is an FTC field instead of an FRC field
   "coordinateSystem": // The default coordinate system to use (see below)
       "wall-alliance" |  // FRC 2022
@@ -245,6 +251,7 @@ The config file must be in the following format:
   "gamePieces": [ // List of game piece types
     {
       "name": string // Game piece name
+      "locales": { [locale: string]: string } // Optional translations for game piece name
       "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
       "position": [number, number, number] // Position offset in meters, applied after rotation
       "stagedObjects": string[] // Names of staged game piece objects, to hide if user poses are supplied

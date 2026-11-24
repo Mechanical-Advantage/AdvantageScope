@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { KeyboardUtil } from "../../shared/KeyboardUtil";
 import { MatchType } from "../../shared/MatchInfo";
 import VideoSource from "../../shared/VideoSource";
 import { getEnabledData, getMatchInfo } from "../../shared/log/RobotState";
@@ -92,26 +93,23 @@ export default class VideoController implements TabController {
     this.TBA_SOURCE.addEventListener("click", () => {
       if (!window.preferences?.tbaApiKey) {
         window.sendMainMessage("error", {
-          title: "No API key",
-          content:
-            "Please enter an API key for The Blue Alliance in the AdvantageScope preferences. An API key can be obtained from the Account page on The Blue Alliance website."
+          title: t("hub.video.noApiKeyTitle"),
+          content: t("hub.video.noApiKeyContent")
         });
         return;
       }
       let matchInfo = getMatchInfo(window.log);
       if (matchInfo === null) {
         window.sendMainMessage("error", {
-          title: "No match info",
-          content:
-            "Failed to read event and match info from the log. Please load the video using a YouTube URL or local file instead."
+          title: t("hub.video.noMatchInfoTitle"),
+          content: t("hub.video.noMatchInfoContent")
         });
         return;
       }
       if (matchInfo.matchType === MatchType.Practice) {
         window.sendMainMessage("error", {
-          title: "No videos for practice match",
-          content:
-            "This is a practice match. No data is available on The Blue Alliance for practice matches, please load the video using a YouTube URL or local file instead."
+          title: t("hub.video.noPracticeTitle"),
+          content: t("hub.video.noPracticeContent")
         });
         return;
       }
@@ -122,7 +120,7 @@ export default class VideoController implements TabController {
         uuid: this.UUID,
         source: VideoSource.TheBlueAlliance,
         matchInfo: matchInfo,
-        menuCoordinates: [rect.right, rect.top]
+        menuCoordinates: [document.documentElement.dir === "rtl" ? rect.left : rect.right, rect.top]
       });
     });
 
@@ -184,29 +182,22 @@ export default class VideoController implements TabController {
         event.target instanceof HTMLInputElement ||
         event.target instanceof HTMLTextAreaElement ||
         (event.target instanceof HTMLElement && event.target.isContentEditable) ||
-        (window.platform === "darwin" ? event.metaKey : event.ctrlKey)
+        KeyboardUtil.isPrimaryModifier(event)
       )
         return;
-      switch (event.code) {
-        case "ArrowUp":
-        case "ArrowDown":
-          toggleLock();
-          break;
-        case "Slash":
-          togglePlayPause();
-          break;
-        case "Comma":
-          skipTime(-5);
-          break;
-        case "Period":
-          skipTime(5);
-          break;
-        case "ArrowLeft":
-          changeFrame(-1);
-          break;
-        case "ArrowRight":
-          changeFrame(1);
-          break;
+
+      if (event.code === "ArrowUp" || event.code === "ArrowDown") {
+        if (!event.repeat) toggleLock();
+      } else if (KeyboardUtil.matchesKey(event, "/")) {
+        if (!event.repeat) togglePlayPause();
+      } else if (KeyboardUtil.matchesKey(event, ",")) {
+        skipTime(-5);
+      } else if (KeyboardUtil.matchesKey(event, ".")) {
+        skipTime(5);
+      } else if (event.code === "ArrowLeft") {
+        changeFrame(-1);
+      } else if (event.code === "ArrowRight") {
+        changeFrame(1);
       }
     });
     this.updateButtons();

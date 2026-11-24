@@ -35,7 +35,7 @@ export default class LineGraphController implements TabController {
   private MIN_AXIS_RANGE = 1e-5;
   private MAX_AXIS_RANGE = 1e20;
   private MAX_VALUE = 1e20;
-  private PREVIEW_FORMAT = new Intl.NumberFormat("en-US", {
+  private PREVIEW_FORMAT = new Intl.NumberFormat(undefined, {
     maximumFractionDigits: 6,
     useGrouping: false
   });
@@ -91,13 +91,14 @@ export default class LineGraphController implements TabController {
           autoUnitDefault: sourceVisible.length === 1 ? window.log.getUnit(sourceVisible[0].logKey) : null,
           unitConversion: this.leftUnitConversion,
           filter: this.leftFilter,
-          config: LineGraphController_NumericConfig
+          config: LineGraphController_NumericConfig,
+          isRtl: document.documentElement.dir === "rtl"
         });
       },
       (key: string, time: number) =>
         this.getPreview(key, time, this.leftNumericCommandCache, this.leftUnitCache, this.leftFilter)
     );
-    this.leftSourceList.setTitle("Left Axis");
+    this.leftSourceList.setTitle(t("hub.lineGraph.leftAxis"));
 
     this.rightSourceList = new SourceList(
       root.getElementsByClassName("line-graph-right")[0] as HTMLElement,
@@ -131,13 +132,14 @@ export default class LineGraphController implements TabController {
           autoUnitSelected: autoUnitSelected,
           autoUnitDefault: sourceVisible.length === 1 ? window.log.getUnit(sourceVisible[0].logKey) : null,
           filter: this.rightFilter,
-          config: LineGraphController_NumericConfig
+          config: LineGraphController_NumericConfig,
+          isRtl: document.documentElement.dir === "rtl"
         });
       },
       (key: string, time: number) =>
         this.getPreview(key, time, this.rightNumericCommandCache, this.rightUnitCache, this.rightFilter)
     );
-    this.rightSourceList.setTitle("Right Axis");
+    this.rightSourceList.setTitle(t("hub.lineGraph.rightAxis"));
 
     this.discreteSourceList = new SourceList(
       root.getElementsByClassName("line-graph-discrete")[0] as HTMLElement,
@@ -148,7 +150,8 @@ export default class LineGraphController implements TabController {
           rect: rect,
           legend: "discrete",
           showRobotMode: this.showRobotMode,
-          config: LineGraphController_DiscreteConfig
+          config: LineGraphController_DiscreteConfig,
+          isRtl: document.documentElement.dir === "rtl"
         });
       }
     );
@@ -213,52 +216,52 @@ export default class LineGraphController implements TabController {
   private updateAxisLabels() {
     let leftLabels: string[] = [];
     if (this.leftLockedRange !== null) {
-      leftLabels.push("Locked");
+      leftLabels.push(t("hub.lineGraph.locked"));
     }
     if (this.leftUnitConversion.preset !== null) {
       if (this.leftUnitConversion.preset.type !== null || this.leftUnitConversion.preset.factor !== 1) {
-        leftLabels.push("Converted");
+        leftLabels.push(t("hub.lineGraph.converted"));
       } else {
-        leftLabels.push("No Units");
+        leftLabels.push(t("hub.lineGraph.noUnits"));
       }
     }
     switch (this.leftFilter) {
       case LineGraphFilter.Differentiate:
-        leftLabels.push("Differentiated");
+        leftLabels.push(t("hub.lineGraph.differentiated"));
         break;
       case LineGraphFilter.Integrate:
-        leftLabels.push("Integrated");
+        leftLabels.push(t("hub.lineGraph.integrated"));
         break;
     }
     if (leftLabels.length > 0) {
-      this.leftSourceList.setTitle("Left Axis [" + leftLabels.join(", ") + "]");
+      this.leftSourceList.setTitle(t("hub.lineGraph.leftAxisWithModifiers", { modifiers: leftLabels }));
     } else {
-      this.leftSourceList.setTitle("Left Axis");
+      this.leftSourceList.setTitle(t("hub.lineGraph.leftAxis"));
     }
 
     let rightLabels: string[] = [];
     if (this.rightLockedRange !== null) {
-      rightLabels.push("Locked");
+      rightLabels.push(t("hub.lineGraph.locked"));
     }
     if (this.rightUnitConversion.preset !== null) {
       if (this.rightUnitConversion.preset.type !== null || this.rightUnitConversion.preset.factor !== 1) {
-        rightLabels.push("Converted");
+        rightLabels.push(t("hub.lineGraph.converted"));
       } else {
-        rightLabels.push("No Units");
+        rightLabels.push(t("hub.lineGraph.noUnits"));
       }
     }
     switch (this.rightFilter) {
       case LineGraphFilter.Differentiate:
-        rightLabels.push("Differentiated");
+        rightLabels.push(t("hub.lineGraph.differentiated"));
         break;
       case LineGraphFilter.Integrate:
-        rightLabels.push("Integrated");
+        rightLabels.push(t("hub.lineGraph.integrated"));
         break;
     }
     if (rightLabels.length > 0) {
-      this.rightSourceList.setTitle("Right Axis [" + rightLabels.join(", ") + "]");
+      this.rightSourceList.setTitle(t("hub.lineGraph.rightAxisWithModifiers", { modifiers: rightLabels }));
     } else {
-      this.rightSourceList.setTitle("Right Axis");
+      this.rightSourceList.setTitle(t("hub.lineGraph.rightAxis"));
     }
   }
 
@@ -357,14 +360,15 @@ export default class LineGraphController implements TabController {
     if (index === -1) {
       return null;
     }
-    let output = this.PREVIEW_FORMAT.format(command.values[index]);
+    let formattedValue = this.PREVIEW_FORMAT.format(command.values[index]);
     if (unitCache !== null && command.hasUnit) {
-      let suffix = Units.getSuffixForFilter(unitCache.suffix, filter);
-      output += suffix.length > 1 ? " " : "";
-      output += suffix;
-      if (filter === LineGraphFilter.None && unitCache.pluralizeSuffix && command.values[index] !== 1) output += "s";
+      let unitKey = Object.keys(Units.ALL_UNITS).find((k) => Units.ALL_UNITS[k] === unitCache) ?? null;
+      if (unitKey !== null) {
+        let filteredKey = Units.getFilteredUnitKey(unitKey, filter);
+        return t(`units.values.${filteredKey}`, { value: formattedValue, count: command.values[index] });
+      }
     }
-    return output;
+    return formattedValue;
   }
 
   /** Returns the auto target type for an axis, based on a manual override or field selection. */
@@ -436,6 +440,7 @@ export default class LineGraphController implements TabController {
     let rightFieldsCommand: LineGraphRendererCommand_NumericField[] = [];
     let discreteFieldsCommand: LineGraphRendererCommand_DiscreteField[] = [];
     const timeRange = window.selection.getTimelineRange();
+    const isRtl = document.documentElement.dir === "rtl";
 
     // Add numeric fields
     this.leftNumericCommandCache = {};
@@ -687,7 +692,7 @@ export default class LineGraphController implements TabController {
 
         relevantRanges.forEach((range) => {
           let start = Math.max(range.start, timeRange[0]);
-          let value = range.mode.charAt(0).toUpperCase() + range.mode.slice(1);
+          let value = t(`hub.lineGraph.robotMode.${range.mode}`);
           if (timestamps.length > 0 && start <= timestamps[timestamps.length - 1]) {
             // Same timestamp, later range wins
             values[values.length - 1] = value;
@@ -705,17 +710,16 @@ export default class LineGraphController implements TabController {
         }
 
         let light = !window.matchMedia("(prefers-color-scheme: dark)").matches;
-        let colorMap: { [key: string]: string } = {
-          Disabled: light ? "#dddddd" : "#444444",
-          Teleop: light ? "#5a83ff" : "#3957dd",
-          Auto: light ? "#efab28" : "#c38615",
-          Utility: light ? "#888888" : "#777777"
-        };
+        let colorMap: { [key: string]: string } = {};
+        colorMap[t("hub.lineGraph.robotMode.disabled")] = light ? "#dddddd" : "#444444";
+        colorMap[t("hub.lineGraph.robotMode.teleop")] = light ? "#5a83ff" : "#3957dd";
+        colorMap[t("hub.lineGraph.robotMode.auto")] = light ? "#efab28" : "#c38615";
+        colorMap[t("hub.lineGraph.robotMode.utility")] = light ? "#888888" : "#777777";
 
         discreteFieldsCommand.push({
           timestamps: timestamps,
           values: values,
-          color: colorMap["Disabled"], // fallback color
+          color: colorMap[t("hub.lineGraph.robotMode.disabled")], // fallback color
           colorMap: colorMap,
           type: "stripes",
           toggleReference: false
@@ -748,7 +752,7 @@ export default class LineGraphController implements TabController {
       // Convert to text
       let logType = window.log.getType(fieldItem.logKey);
       if (logType === null) return;
-      data.values = data.values.map((value) => getLogValueText(value, logType!));
+      data.values = data.values.map((value) => getLogValueText(value, logType!, true));
 
       // Add field command
       discreteFieldsCommand.push({
@@ -848,7 +852,27 @@ export default class LineGraphController implements TabController {
     let showLeftAxis = this.leftLockedRange !== null || leftFieldsCommand.length > 0;
     let showRightAxis = this.rightLockedRange !== null || rightFieldsCommand.length > 0;
     if (!showLeftAxis && !showRightAxis) {
-      showLeftAxis = true;
+      if (isRtl) {
+        showRightAxis = true;
+      } else {
+        showLeftAxis = true;
+      }
+    }
+
+    // Get priority axis
+    let priorityAxis: "left" | "right";
+    if (isRtl) {
+      priorityAxis =
+        (this.rightLockedRange === null && this.leftLockedRange !== null) ||
+        (rightFieldsCommand.length === 0 && leftFieldsCommand.length > 0)
+          ? "left"
+          : "right";
+    } else {
+      priorityAxis =
+        (this.leftLockedRange === null && this.rightLockedRange !== null) ||
+        (leftFieldsCommand.length === 0 && rightFieldsCommand.length > 0)
+          ? "right"
+          : "left";
     }
 
     // Return command
@@ -870,11 +894,7 @@ export default class LineGraphController implements TabController {
       rightUnits: this.rightUnitCache,
       leftFilter: this.leftFilter,
       rightFilter: this.rightFilter,
-      priorityAxis:
-        (this.leftLockedRange === null && this.rightLockedRange !== null) ||
-        (leftFieldsCommand.length === 0 && rightFieldsCommand.length > 0)
-          ? "right"
-          : "left",
+      priorityAxis: priorityAxis,
       leftFields: leftFieldsCommand,
       rightFields: rightFieldsCommand,
       discreteFields: discreteFieldsCommand,

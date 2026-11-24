@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import ExportOptions from "./shared/ExportOptions";
+import { getDocsUrl } from "./shared/util";
 
 const HELP_URL = "https://docs.advantagescope.org/more-features/export/#options";
 
@@ -90,7 +91,7 @@ window.addEventListener("message", (event) => {
 
     // Help button
     HELP_BUTTON.addEventListener("click", () => {
-      messagePort.postMessage(HELP_URL);
+      messagePort.postMessage(getDocsUrl(HELP_URL, window.lang));
     });
   }
 });

@@ -49,15 +49,15 @@ export default class MetadataRenderer implements TabRenderer {
       if (value.replay !== null) visibleTypes.add("replay");
     });
     if (visibleTypes.has("generic")) {
-      this.TABLE_BODY.firstElementChild!.appendChild(document.createElement("th")).innerText = "Value";
+      this.TABLE_BODY.firstElementChild!.appendChild(document.createElement("th")).innerText = t("hub.metadata.value");
       visibleTypesArr.push("generic");
     }
     if (visibleTypes.has("real")) {
-      this.TABLE_BODY.firstElementChild!.appendChild(document.createElement("th")).innerText = "Real";
+      this.TABLE_BODY.firstElementChild!.appendChild(document.createElement("th")).innerText = t("hub.metadata.real");
       visibleTypesArr.push("real");
     }
     if (visibleTypes.has("replay")) {
-      this.TABLE_BODY.firstElementChild!.appendChild(document.createElement("th")).innerText = "Replay";
+      this.TABLE_BODY.firstElementChild!.appendChild(document.createElement("th")).innerText = t("hub.metadata.replay");
       visibleTypesArr.push("replay");
     }
 
@@ -86,7 +86,7 @@ export default class MetadataRenderer implements TabRenderer {
           if (value !== null) {
             cell.innerText = value;
           } else {
-            cell.innerText = "NA";
+            cell.innerText = t("hub.metadata.notAvailable");
             cell.classList.add("no-data");
           }
           visibleTypesIdx++;

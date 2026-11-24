@@ -11,7 +11,7 @@
 
 div.documentation-container {
   position: absolute;
-  left: 0px;
+  inset-inline-start: 0px;
   top: 0px;
   width: 100%;
   height: 100%;
@@ -20,7 +20,7 @@ div.documentation-container {
 
 div.documentation-container > * {
   position: absolute;
-  left: 0px;
+  inset-inline-start: 0px;
   top: 0px;
   width: 100%;
   height: 100%;
@@ -32,7 +32,7 @@ div.documentation-container > * {
 canvas.line-graph-canvas {
   position: absolute;
   top: 0%;
-  left: 0%;
+  inset-inline-start: 0%;
   width: 100%;
   height: 100%;
 }
@@ -40,8 +40,8 @@ canvas.line-graph-canvas {
 div.line-graph-scroll {
   position: absolute;
   z-index: 9;
-  left: 0px;
-  right: 0px;
+  inset-inline-start: 0px;
+  inset-inline-end: 0px;
   top: 8px;
   bottom: 35px;
   overflow: scroll;
@@ -127,7 +127,7 @@ img.line-graph-help-icon {
 div.field-2d-canvas-container {
   position: absolute;
   bottom: 0%;
-  left: 0%;
+  inset-inline-start: 0%;
   width: 100%;
   height: calc(100% + 26px);
   overflow: hidden;
@@ -172,7 +172,7 @@ div.field-2d-scroll-content {
 div.field-3d-canvas-container {
   position: absolute;
   bottom: 0%;
-  left: 0%;
+  inset-inline-start: 0%;
   width: 100%;
   height: calc(100% + 26px);
   overflow: hidden;
@@ -192,7 +192,7 @@ body.satellite div.field-3d-canvas-container.fixed {
 
 canvas.field-3d-canvas:not(.fixed) {
   position: absolute;
-  left: 0%;
+  inset-inline-start: 0%;
   top: 0%;
   width: 100%;
   height: 100%;
@@ -241,6 +241,7 @@ div.spinner-cubes-container {
   user-select: none;
   transition: all 0.1s ease-in-out;
   opacity: 0;
+  direction: ltr;
 }
 
 div.spinner-cubes-container.visible {
@@ -339,13 +340,13 @@ div.data-table-container {
   position: absolute;
   top: 0px;
   bottom: 0px;
-  left: 0px;
-  right: 0px;
+  inset-inline-start: 0px;
+  inset-inline-end: 0px;
   overflow: auto;
 }
 
 table.data-table {
-  text-align: left;
+  text-align: start;
   white-space: nowrap;
   border-collapse: separate;
   border-spacing: 0;
@@ -359,7 +360,7 @@ table.data-table th {
   top: 0px;
   height: 30px;
   padding: 0px;
-  border-right: 1px solid #eee;
+  border-inline-end: 1px solid #eee;
   border-bottom: 1px solid #222;
 
   background-color: #fff;
@@ -367,14 +368,14 @@ table.data-table th {
 }
 
 table.data-table th:first-child {
-  left: 0px;
+  inset-inline-start: 0px;
   min-width: 97px;
   z-index: 10;
 }
 
 table.data-table th:first-child input {
   position: absolute;
-  left: 4px;
+  inset-inline-start: 4px;
   top: 4.5px;
   height: 15px;
   width: 56px;
@@ -382,7 +383,7 @@ table.data-table th:first-child input {
 
 table.data-table th:first-child button {
   position: absolute;
-  left: 70px;
+  inset-inline-start: 70px;
   top: 2.5px;
   height: 25px;
   width: 25px;
@@ -400,13 +401,26 @@ div.data-table-key-container {
   height: 30px;
   line-height: 30px;
 
+  text-align: left;
   direction: rtl;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+[dir="rtl"] div.data-table-key-container {
+  left: 6px;
+  right: 6px;
+  text-align: right;
 }
 
 div.data-table-key-container.has-close-button {
   right: 30px;
+}
+
+[dir="rtl"] div.data-table-key-container.has-close-button {
+  left: 30px;
+  right: 6px;
 }
 
 div.data-table-key-container span {
@@ -421,8 +435,13 @@ button.data-table-key-delete {
   right: 2px;
 }
 
+[dir="rtl"] button.data-table-key-delete {
+  left: 2px;
+  right: auto;
+}
+
 table.data-table th:last-child {
-  border-right: none;
+  border-inline-end: none;
 }
 
 table.data-table td {
@@ -431,21 +450,21 @@ table.data-table td {
   padding: 4px;
   font-family: Courier, monospace;
   user-select: text;
-  border-right: 1px solid #eee;
+  border-inline-end: 1px solid #eee;
   border-bottom: 1px solid #eee;
 }
 
 table.data-table td:first-child {
   position: sticky;
-  left: 0px;
-  text-align: right;
+  inset-inline-start: 0px;
+  text-align: end;
   font-weight: bold;
 
   background-color: #fff;
 }
 
 table.data-table td:last-child {
-  border-right: none;
+  border-inline-end: none;
 }
 
 table.data-table tr:last-child td {
@@ -462,13 +481,13 @@ table.data-table tr.selected td {
 
 @media (prefers-color-scheme: dark) {
   table.data-table th {
-    border-right: 1px solid #333;
+    border-inline-end: 1px solid #333;
     border-bottom: 1px solid #eee;
     background-color: #222;
   }
 
   table.data-table td {
-    border-right: 1px solid #333;
+    border-inline-end: 1px solid #333;
     border-bottom: 1px solid #333;
   }
 
@@ -499,7 +518,7 @@ div.data-table-drag-highlight {
 
 div.console-table-drag-highlight {
   position: absolute;
-  left: 0px;
+  inset-inline-start: 0px;
   top: 0px;
   width: 100%;
   height: 100%;
@@ -512,8 +531,8 @@ div.console-table-container {
   position: absolute;
   top: 0px;
   bottom: 0px;
-  left: 0px;
-  right: 0px;
+  inset-inline-start: 0px;
+  inset-inline-end: 0px;
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -533,7 +552,7 @@ table.console-table th {
   top: 0px;
   height: 30px;
   padding: 0px;
-  border-right: 1px solid #eee;
+  border-inline-end: 1px solid #eee;
   border-bottom: 1px solid #222;
   font-size: 14px;
 
@@ -548,7 +567,7 @@ table.console-table th:first-child {
 
 table.console-table th:first-child input {
   position: absolute;
-  left: 4px;
+  inset-inline-start: 4px;
   top: 4.5px;
   height: 15px;
   width: 56px;
@@ -556,7 +575,7 @@ table.console-table th:first-child input {
 
 table.console-table th:first-child button {
   position: absolute;
-  left: 70px;
+  inset-inline-start: 70px;
   top: 2.5px;
   height: 25px;
   width: 25px;
@@ -567,35 +586,40 @@ button.console-table-key-delete {
   height: 25px;
   width: 25px;
   top: 2.5px;
-  margin-left: 5px;
+  margin-inline-start: 5px;
 }
 
 table.console-table th:not(:first-child) {
-  border-right: none;
+  border-inline-end: none;
 }
 
 table.console-table th:not(:first-child) div {
   position: absolute;
-  left: 0px;
+  inset-inline-start: 0px;
   top: 0px;
   height: 30px;
-  right: 246px;
-  padding-left: 5px;
+  inset-inline-end: 246px;
+  padding-inline-start: 5px;
   overflow: hidden;
   font-size: 14px;
   line-height: 30px;
-  text-align: left;
+  text-align: start;
   white-space: nowrap;
 }
 
+[dir="rtl"] table.console-table th:not(:first-child) div span {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
 table.console-table th:not(:first-child) div.wide {
-  right: 218px;
+  inset-inline-end: 218px;
 }
 
 table.console-table button.export-button {
   position: absolute;
   top: 50%;
-  right: 216px;
+  inset-inline-end: 216px;
   height: 25px;
   width: 25px;
   padding-top: 9px;
@@ -606,7 +630,7 @@ table.console-table button.export-button {
 table.console-table button.highlight-button {
   position: absolute;
   top: 50%;
-  right: 188px;
+  inset-inline-end: 188px;
   height: 25px;
   width: 25px;
   padding-top: 9px;
@@ -622,7 +646,7 @@ table.console-table button.highlight-button.active img {
 table.console-table input.filter {
   position: absolute;
   top: 50%;
-  right: 5px;
+  inset-inline-end: 5px;
   height: 15px;
   width: 180px;
   padding-top: 9px;
@@ -656,13 +680,14 @@ table.console-table td span.highlight {
 }
 
 table.console-table td:first-child {
-  text-align: right;
+  text-align: end;
   font-weight: bold;
   user-select: none;
 }
 
 table.console-table td:last-child {
-  border-right: none;
+  border-inline-end: none;
+  direction: ltr;
 }
 
 table.console-table tr.hovered td {
@@ -699,7 +724,7 @@ table.console-table tr.error.selected td {
 
 @media (prefers-color-scheme: dark) {
   table.console-table th {
-    border-right: 1px solid #333;
+    border-inline-end: 1px solid #333;
     border-bottom: 1px solid #eee;
     background-color: #222;
   }
@@ -725,7 +750,7 @@ table.console-table tr.error.selected td {
 
 div.stats-values-container {
   position: absolute;
-  left: 0px;
+  inset-inline-start: 0px;
   top: 0px;
   bottom: 0px;
   max-width: 50%;
@@ -773,7 +798,7 @@ table.stats-values tr.section:not(:first-child) td {
 }
 
 table.stats-values tr.values td:first-child {
-  text-align: right;
+  text-align: end;
   font-size: 12px;
   width: 100px;
 }
@@ -786,7 +811,7 @@ table.stats-values tr.values td:not(:first-child) {
 
 div.stats-histogram-container {
   position: absolute;
-  right: 10px;
+  inset-inline-end: 10px;
   top: 0px;
   bottom: 10px;
   overflow: hidden;
@@ -798,7 +823,7 @@ div.video-container {
   position: absolute;
   top: 0%;
   height: 100%;
-  left: 0%;
+  inset-inline-start: 0%;
   width: 100%;
   overflow: hidden;
 }
@@ -813,7 +838,7 @@ div.video-container img {
 
 canvas.joysticks-canvas {
   position: absolute;
-  left: 0%;
+  inset-inline-start: 0%;
   top: 0%;
   width: 100%;
   height: 100%;
@@ -825,7 +850,7 @@ div.swerve-canvas-container {
   position: absolute;
   bottom: 0%;
   height: calc(100% + 10px);
-  left: 0px;
+  inset-inline-start: 0px;
   width: 100%;
 }
 
@@ -854,7 +879,7 @@ canvas.swerve-canvas {
 
 div.mechanism-svg-container {
   position: absolute;
-  left: 0%;
+  inset-inline-start: 0%;
   bottom: 0%;
   width: 100%;
   height: calc(100% + 10px);
@@ -877,7 +902,7 @@ div.points-background-container {
   position: absolute;
   bottom: 0%;
   height: calc(100% + 10px);
-  left: 0px;
+  inset-inline-start: 0px;
   width: 100%;
 }
 
@@ -921,7 +946,7 @@ div.metadata-table-container {
 table.metadata-table {
   width: 100%;
   table-layout: fixed;
-  text-align: left;
+  text-align: start;
   word-wrap: break-word;
   border-collapse: separate;
   border-spacing: 0;
@@ -937,13 +962,14 @@ table.metadata-table th {
   top: 0px;
   border-bottom: 1px solid #222;
   background-color: #fff;
+  text-align: start;
 }
 
 table.metadata-table td:first-child {
   padding: 6px;
-  text-align: right;
+  text-align: end;
   font-weight: bold;
-  border-right: 1px solid #222;
+  border-inline-end: 1px solid #222;
 }
 
 table.metadata-table td:not(:first-child) {
@@ -964,6 +990,6 @@ table.metadata-table td.no-data {
   }
 
   table.metadata-table td:first-child {
-    border-right: 1px solid #eee;
+    border-inline-end: 1px solid #eee;
   }
 }

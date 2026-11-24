@@ -17,7 +17,7 @@ const REQUIRED_SPACE_GB = 8;
 const FAILURE_TIMEOUT_MS = 30 * 1000; // 30 seconds
 const SUCCESS_TIMEOUT_MS = 6 * 60 * 60 * 1000; // 6 hours
 
-let statusText = "No status available.";
+let statusText: string | null = null;
 
 /** Updates the local set of automatic assets and retries periodically in case of network issues. */
 export async function startAssetDownloadLoop(updateCallback: () => Promise<void>) {
@@ -28,27 +28,24 @@ export async function startAssetDownloadLoop(updateCallback: () => Promise<void>
         throw new Error();
       }
     } catch {
-      statusText = "Not enough disk space. Trying again soon.";
+      statusText = t("main.assets.noDiskSpace");
       setTimeout(() => check(), FAILURE_TIMEOUT_MS);
       return;
     }
     try {
       const assetInfo = await getAssetInfo();
-      statusText =
-        "Download started at " +
-        new Date().toLocaleTimeString() +
-        ". Please wait a few minutes for the download to complete.";
+      statusText = t("main.assets.downloadStarted", { time: new Date().toLocaleTimeString() });
       try {
         await updateLocalAssets(assetInfo);
-        statusText = "All assets downloaded. AdvantageScope will check for updates periodically.";
+        statusText = t("main.assets.downloadFinished");
         await updateCallback();
         setTimeout(() => check(), SUCCESS_TIMEOUT_MS);
       } catch {
-        statusText = "Cannot connect to GitHub. Trying again soon.";
+        statusText = t("main.assets.connectFailed");
         setTimeout(() => check(), FAILURE_TIMEOUT_MS);
       }
     } catch {
-      statusText = "Cannot connect to GitHub. Trying again soon.";
+      statusText = t("main.assets.connectFailed");
       setTimeout(() => check(), FAILURE_TIMEOUT_MS);
     }
   };
@@ -57,7 +54,7 @@ export async function startAssetDownloadLoop(updateCallback: () => Promise<void>
 
 /** Returns a string for the current status of the download. */
 export function getAssetDownloadStatus() {
-  return statusText;
+  return statusText ?? t("main.assets.noStatus");
 }
 
 interface AssetDownloadInfo {

@@ -15,7 +15,7 @@ body {
 
 div.container {
   position: absolute;
-  left: 0;
+  inset-inline-start: 0;
   top: 0;
   width: 100vw;
   height: 100vh;
@@ -39,6 +39,7 @@ div.spinner-cubes-container {
   user-select: none;
   transition: all 0.1s ease-in-out;
   opacity: 0;
+  direction: ltr;
 }
 
 div.spinner-cubes-container.visible {

@@ -9,6 +9,7 @@ import licenses from "./licenses.json";
 import { IS_LITE } from "./shared/buildConstants";
 
 window.addEventListener("load", () => {
+  document.documentElement.dir = "ltr";
   document.body.innerHTML = "";
   (licenses as { module: string; text: string }[]).forEach((license) => {
     let moduleElement = document.createElement("div");

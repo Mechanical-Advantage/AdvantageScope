@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import { IS_LITE } from "./shared/buildConstants";
+import { KeyboardUtil } from "./shared/KeyboardUtil";
 import NamedMessage from "./shared/NamedMessage";
 import Preferences, { getRobotAddress } from "./shared/Preferences";
 import { zfill } from "./shared/util";
@@ -105,17 +106,17 @@ function handleMainMessage(message: NamedMessage) {
       console.warn(message.data);
       let friendlyText = "";
       if (message.data === "No such file") {
-        friendlyText = "Failed to open log folder at <u>" + preferences?.remotePath + "</u>";
+        friendlyText = t("download.errorNoFolder", { path: preferences?.remotePath });
       } else if (message.data === "Timed out while waiting for handshake" || message.data === "Fetch failed") {
-        friendlyText = "Robot not found at <u>" + address + "</u> (check connection)";
+        friendlyText = t("download.errorNotFound", { address: address });
       } else if (message.data.includes("ENOTFOUND")) {
-        friendlyText = "Unknown address <u>" + address + "</u>";
+        friendlyText = t("download.errorUnknownAddress", { address: address });
       } else if (message.data === "All configured authentication methods failed") {
-        friendlyText = "Failed to authenticate to robot at <u>" + address + "</u>";
+        friendlyText = t("download.errorAuthFailed", { address: address });
       } else if (message.data === "Not connected") {
-        friendlyText = "Lost connection to robot";
+        friendlyText = t("download.errorNotConnected");
       } else {
-        friendlyText = "Unknown error: " + message.data;
+        friendlyText = t("download.errorUnknown", { error: message.data });
       }
       alertIsError = true;
       ALERT_TEXT.innerHTML = friendlyText;
@@ -140,17 +141,18 @@ function handleMainMessage(message: NamedMessage) {
       alertIsError = false;
       if (message.data === 0) {
         PROGRESS_BAR.value = 0;
-        PROGRESS_DETAILS.innerText = "Preparing";
+        PROGRESS_DETAILS.innerText = t("download.statusPreparing");
       } else if (message.data === 1) {
         PROGRESS_BAR.value = 1;
-        PROGRESS_DETAILS.innerText = "Finished";
+        PROGRESS_DETAILS.innerText = t("download.statusFinished");
       } else {
         let currentSize: number = message.data.current;
         let totalSize: number = message.data.total;
         if (startTime === null) startTime = new Date().getTime() / 1000;
 
-        let detailsText =
-          Math.floor(currentSize / 1e6).toString() + "MB / " + Math.floor(totalSize / 1e6).toString() + "MB";
+        let currentMB = Math.floor(currentSize / 1e6).toLocaleString(undefined, { useGrouping: false });
+        let totalMB = Math.floor(totalSize / 1e6).toLocaleString(undefined, { useGrouping: false });
+        let detailsText = "";
         if (new Date().getTime() / 1000 - startTime > 0.5 && currentSize > 1e6) {
           // Wait to establish speed
           let speed = Math.round((currentSize / (new Date().getTime() / 1000 - startTime) / 1e6) * 8);
@@ -159,14 +161,18 @@ function handleMainMessage(message: NamedMessage) {
           );
           let remainingMinutes = Math.floor(remainingSeconds / 60);
           remainingSeconds -= remainingMinutes * 60;
-          detailsText +=
-            " (" +
-            speed.toString() +
-            "Mb/s, " +
-            remainingMinutes.toString() +
-            "m" +
-            zfill(remainingSeconds.toString(), 2) +
-            "s)";
+          detailsText = t("download.progressDetailed", {
+            current: currentMB,
+            total: totalMB,
+            speed: speed.toLocaleString(undefined, { useGrouping: false }),
+            minutes: remainingMinutes.toLocaleString(undefined, { useGrouping: false }),
+            seconds: zfill(remainingSeconds.toString(), 2)
+          });
+        } else {
+          detailsText = t("download.progressSimple", {
+            current: currentMB,
+            total: totalMB
+          });
         }
 
         PROGRESS_BAR.value = totalSize === 0 ? 0 : currentSize / totalSize;
@@ -273,7 +279,11 @@ function handleMainMessage(message: NamedMessage) {
         filenameSpan.innerText = file.name;
         let sizeSpan = document.createElement("span");
         item.appendChild(sizeSpan);
-        sizeSpan.innerText = " (" + (file.size < 1e5 ? "<0.1" : Math.round(file.size / 1e5) / 10) + " MB)";
+        sizeSpan.innerText =
+          " " +
+          (file.size < 1e5
+            ? t("download.sizeLessThanMinimum")
+            : t("download.sizeValue", { size: (Math.round(file.size / 1e5) / 10).toString() }));
       });
 
       updateFiller();
@@ -315,7 +325,7 @@ function updateFiller() {
 /** Starts the download process for the selected files. */
 function save() {
   if (selectedFiles.length === 0) {
-    alert("Please select a log to download.");
+    alert(t("download.alertSelectLog"));
   } else {
     sendMainMessage("save", selectedFiles);
   }
@@ -328,9 +338,10 @@ EXIT_BUTTON.addEventListener("click", () => {
 });
 DOWNLOAD_BUTTON.addEventListener("click", save);
 window.addEventListener("keydown", (event) => {
+  if (event.repeat) return;
   if (event.code === "Enter") {
     save();
-  } else if (!IS_LITE && event.key === "a" && (platform === "darwin" ? event.metaKey : event.ctrlKey)) {
+  } else if (!IS_LITE && KeyboardUtil.isPrimaryModifier(event) && KeyboardUtil.matchesKey(event, "a")) {
     if (filenames.length === selectedFiles.length) {
       // Deselect all
       selectedFiles = [];

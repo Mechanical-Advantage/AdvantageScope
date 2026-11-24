@@ -9,14 +9,13 @@ import { GraphColors } from "../../shared/Colors";
 import { SourceListConfig } from "../../shared/SourceListConfig";
 
 const StatisticsController_Config: SourceListConfig = {
-  title: "Measurements",
+  title: "hub.statistics.measurements",
   autoAdvance: "color",
   allowChildrenFromDrag: true,
   typeMemoryId: "statistics",
   types: [
     {
       key: "independent",
-      display: "Independent",
       symbol: "menu",
       showInTypeName: true,
       color: "color",
@@ -25,7 +24,6 @@ const StatisticsController_Config: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: GraphColors
         }
@@ -34,7 +32,6 @@ const StatisticsController_Config: SourceListConfig = {
     },
     {
       key: "reference",
-      display: "Reference",
       symbol: "anchor",
       showInTypeName: true,
       color: "#000000",
@@ -47,7 +44,6 @@ const StatisticsController_Config: SourceListConfig = {
     },
     {
       key: "relativeError",
-      display: "Relative Error",
       symbol: "verticalaligncenter",
       showInTypeName: true,
       color: "color",
@@ -57,7 +53,6 @@ const StatisticsController_Config: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: GraphColors
         }
@@ -66,7 +61,6 @@ const StatisticsController_Config: SourceListConfig = {
     },
     {
       key: "absoluteError",
-      display: "Absolute Error",
       symbol: "verticalalignbottom",
       showInTypeName: true,
       color: "color",
@@ -76,7 +70,6 @@ const StatisticsController_Config: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: GraphColors
         }

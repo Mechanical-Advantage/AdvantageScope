@@ -1,0 +1,54 @@
+{
+  "version.label": {
+    "message": "הבא",
+    "description": "The label for version current"
+  },
+  "sidebar.sidebar.category.Overview": {
+    "message": "סקירה כללית",
+    "description": "The label for category 'Overview' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Overview.link.generated-index.description": {
+    "message": "דפים אלו מכסים את היסודות של התמצאות ב-AdvantageScope וגישה לנתונים.",
+    "description": "The generated-index page description for category 'Overview' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.🧭 App Navigation": {
+    "message": "🧭 ניווט באפליקציה",
+    "description": "The label for category '🧭 App Navigation' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.📂 Log Files": {
+    "message": "📂 קובצי יומן",
+    "description": "The label for category '📂 Log Files' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.🛜 Live Sources": {
+    "message": "🛜 מקורות חיים",
+    "description": "The label for category '🛜 Live Sources' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tab Reference": {
+    "message": "מדריך כרטיסיות",
+    "description": "The label for category 'Tab Reference' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tab Reference.link.generated-index.description": {
+    "message": "AdvantageScope מציע מגוון דרכים להצגה ולניתוח של נתונים, המאורגנות בכרטיסיות. בכל כרטיסייה חדשה אפשר לבחור את סוג התצוגה הרצוי, ואף לפתוח כמה כרטיסיות מאותו סוג במקביל. אפשר גם לתת שמות לכרטיסיות לצורך ארגון נוח, והן יכולות להיפתח בחלון צף לצפייה סימולטנית ומסונכרנת בנתונים.",
+    "description": "The generated-index page description for category 'Tab Reference' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.📉 Line Graph": {
+    "message": "📉 גרף קווי",
+    "description": "The label for category '📉 Line Graph' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.👀 3D Field": {
+    "message": "👀 מגרש 3D",
+    "description": "The label for category '👀 3D Field' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.More Features": {
+    "message": "תכונות נוספות",
+    "description": "The label for category 'More Features' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.⚙️ Custom Assets": {
+    "message": "⚙️ נכסים מותאמים אישית",
+    "description": "The label for category '⚙️ Custom Assets' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Legal": {
+    "message": "משפטי",
+    "description": "The label for category 'Legal' in sidebar 'sidebar'"
+  }
+}

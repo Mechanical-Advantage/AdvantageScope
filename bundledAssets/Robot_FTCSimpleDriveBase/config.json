@@ -18,7 +18,23 @@
       "rotations": [],
       "position": [0.2, 0, 0.2],
       "resolution": [640, 480],
-      "fov": 54.5
+      "fov": 54.5,
+      "locales": {
+        "en-US": "Front Camera",
+        "es-419": "Cámara frontal",
+        "fr": "Caméra avant",
+        "nl": "Camera voor",
+        "pt-BR": "Câmera frontal",
+        "ro": "Cameră frontală",
+        "tr": "Ön Kamera",
+        "ru": "Передняя камера",
+        "kk": "Алдыңғы камера",
+        "he": "מצלמה קדמית",
+        "ar": "كاميرا أمامية",
+        "hi": "सामने का कैमरा",
+        "zh-CN": "前置相机",
+        "zh-TW": "前置攝影機"
+      }
     },
     {
       "name": "Back Camera",
@@ -30,8 +46,40 @@
       ],
       "position": [-0.2, 0, 0.2],
       "resolution": [640, 480],
-      "fov": 54.5
+      "fov": 54.5,
+      "locales": {
+        "en-US": "Back Camera",
+        "es-419": "Cámara trasera",
+        "fr": "Caméra arrière",
+        "nl": "Camera achter",
+        "pt-BR": "Câmera traseira",
+        "ro": "Cameră spate",
+        "tr": "Arka Kamera",
+        "ru": "Задняя камера",
+        "kk": "Артқы камера",
+        "he": "מצלמה אחורית",
+        "ar": "كاميرا خلفية",
+        "hi": "पीछे का कैमरा",
+        "zh-CN": "后置相机",
+        "zh-TW": "後置攝影機"
+      }
     }
   ],
-  "components": []
+  "components": [],
+  "locales": {
+    "en-US": "Drive Base (Simple)",
+    "es-419": "Base motriz (simple)",
+    "fr": "Base motrice (simple)",
+    "nl": "Aandrijfbasis (eenvoudig)",
+    "pt-BR": "Base motriz (simples)",
+    "ro": "Bază de deplasare (simplă)",
+    "tr": "Sürüş Tabanı (Basit)",
+    "ru": "Приводная база (простая)",
+    "kk": "Жетек базасы (қарапайым)",
+    "he": "בסיס הנעה (פשוט)",
+    "ar": "قاعدة التسيير (بسيطة)",
+    "hi": "ड्राइव बेस (सरल)",
+    "zh-CN": "底盘 (简单)",
+    "zh-TW": "底盤 (簡單)"
+  }
 }

@@ -5,8 +5,8 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { BuiltIn3dFields } from "../../shared/AdvantageScopeAssets";
-import { SourceListItemState, SourceListOptionValueConfig, SourceListState } from "../../shared/SourceListConfig";
+import { BuiltIn3dFields, getAssetName } from "../../shared/AdvantageScopeAssets";
+import { SourceListItemState, SourceListState } from "../../shared/SourceListConfig";
 import { IS_LITE } from "../../shared/buildConstants";
 import {
   APRIL_TAG_16H5_COUNT,
@@ -100,7 +100,7 @@ export default class Field3dController implements TabController {
     if (window.assets !== null) {
       [...window.assets.field3ds, ...BuiltIn3dFields].forEach((field) => {
         let option = document.createElement("option");
-        option.innerText = field.name;
+        option.innerText = getAssetName(field, window.lang);
         option.value = field.id;
         options.push(field.id);
         (field.isFTC ? ftcGroup : frcGroup).appendChild(option);
@@ -141,17 +141,21 @@ export default class Field3dController implements TabController {
     );
     let isFTC = fieldConfig !== undefined && fieldConfig.isFTC;
     let robotList: string[] = [];
+    let robotTitles: (string | null)[] = [];
     if (window.assets !== null) {
-      robotList = window.assets.robots.filter((robot) => robot.isFTC === isFTC).map((robot) => robot.name);
+      window.assets.robots
+        .filter((robot) => robot.isFTC === isFTC)
+        .forEach((robot) => {
+          robotList.push(robot.name);
+          robotTitles.push(getAssetName(robot, window.lang));
+        });
     }
     if (robotList.length === 0) {
       robotList.push("KitBot");
+      robotTitles.push(null);
     }
-    let sourceListValues: SourceListOptionValueConfig[] = robotList.map((name) => {
-      return { key: name, display: name };
-    });
-    this.sourceList.setOptionValues("robot", "model", sourceListValues);
-    this.sourceList.setOptionValues("ghost", "model", sourceListValues);
+    this.sourceList.setOptionValues("robot", "model", robotList, robotTitles);
+    this.sourceList.setOptionValues("ghost", "model", robotList, robotTitles);
   }
 
   /** Updates the robots, source button, and other options based on the selected value. */
@@ -163,32 +167,34 @@ export default class Field3dController implements TabController {
 
     // Update game piece options
     let gamePieces: string[] = [];
+    let gamePieceTitles: (string | null)[] = [];
     if (fieldConfig !== undefined) {
-      gamePieces = fieldConfig.gamePieces.map((x) => x.name);
+      fieldConfig.gamePieces.forEach((x) => {
+        gamePieces.push(x.name);
+        gamePieceTitles.push(getAssetName(x, window.lang));
+      });
     }
     if (gamePieces.length === 0) {
       gamePieces.push("None");
+      gamePieceTitles.push(null);
     }
-    let sourceListValues: SourceListOptionValueConfig[] = gamePieces.map((name) => {
-      return { key: name, display: name };
-    });
-    this.sourceList.setOptionValues("gamePiece", "variant", sourceListValues);
+    this.sourceList.setOptionValues("gamePiece", "variant", gamePieces, gamePieceTitles);
 
     // Update AprilTag variants
-    let aprilTagVariants: { key: string; display: string }[] = fieldConfig?.isFTC
+    let aprilTagVariants: string[] = fieldConfig?.isFTC
+      ? ["36h11-2in", "36h11-3in", "36h11-3.25in", "36h11-4in", "36h11-5in", "36h11-6.5in"]
+      : ["36h11-6.5in", "16h5-6in"];
+    let aprilTagTitles: (string | null)[] = fieldConfig?.isFTC
       ? [
-          { key: "36h11-2in", display: "2 in" },
-          { key: "36h11-3in", display: "3 in" },
-          { key: "36h11-3.25in", display: "3.25 in" },
-          { key: "36h11-4in", display: "4 in" },
-          { key: "36h11-5in", display: "5 in" },
-          { key: "36h11-6.5in", display: "6.5 in" }
+          t("hub.field.optionValues.variant_36h11-2in"),
+          t("hub.field.optionValues.variant_36h11-3in"),
+          t("hub.field.optionValues.variant_36h11-3.25in"),
+          t("hub.field.optionValues.variant_36h11-4in"),
+          t("hub.field.optionValues.variant_36h11-5in"),
+          t("hub.field.optionValues.variant_36h11-6.5in-ftc")
         ]
-      : [
-          { key: "36h11-6.5in", display: "36h11" },
-          { key: "16h5-6in", display: "16h5" }
-        ];
-    this.sourceList.setOptionValues("aprilTag", "variant", aprilTagVariants);
+      : [t("hub.field.optionValues.variant_36h11-6.5in"), t("hub.field.optionValues.variant_16h5-6in")];
+    this.sourceList.setOptionValues("aprilTag", "variant", aprilTagVariants, aprilTagTitles);
 
     this.updateRobotOptions();
   }

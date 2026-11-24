@@ -32,10 +32,10 @@ function updateUnitOptions() {
     TO_UNIT.disabled = true;
 
     let option = document.createElement("option");
-    option.innerText = "NA";
+    option.innerText = t("unitConversion.notAvailable");
     FROM_UNIT.appendChild(option);
     option = document.createElement("option");
-    option.innerText = "NA";
+    option.innerText = t("unitConversion.notAvailable");
     TO_UNIT.appendChild(option);
   } else {
     FROM_UNIT.disabled = false;
@@ -43,10 +43,12 @@ function updateUnitOptions() {
 
     Object.keys(Units.UNIT_GROUPS[type]).forEach((unit, index) => {
       let option = document.createElement("option");
-      option.innerText = unit;
+      option.innerText = t(`units.names.${unit}`);
+      option.value = unit;
       FROM_UNIT.appendChild(option);
       option = document.createElement("option");
-      option.innerText = unit;
+      option.innerText = t(`units.names.${unit}`);
+      option.value = unit;
       TO_UNIT.appendChild(option);
       if (index === 1) TO_UNIT.value = unit;
     });
@@ -75,7 +77,8 @@ window.addEventListener("message", (event) => {
       // Add type options
       ["none", ...Object.keys(Units.UNIT_GROUPS)].forEach((unitType) => {
         let option = document.createElement("option");
-        option.innerText = unitType;
+        option.innerText = t(`units.groups.${unitType}`);
+        option.value = unitType;
         UNIT_TYPE.appendChild(option);
       });
       UNIT_TYPE.addEventListener("change", () => updateUnitOptions());
@@ -108,7 +111,7 @@ window.addEventListener("message", (event) => {
           factorSuccess = false;
         }
         if (!factorSuccess) {
-          alert("Failed to parse extra factor.");
+          alert(t("unitConversion.alertError"));
           return;
         }
 

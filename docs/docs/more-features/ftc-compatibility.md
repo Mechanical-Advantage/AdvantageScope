@@ -1,19 +1,12 @@
 ---
-title: ✴️ FTC Compatibility
 sidebar_position: 1
 ---
 
-import FTC1 from "./img/ftc-compatibility/ftc-1.jpg";
-import FTC2 from "./img/ftc-compatibility/ftc-2.jpg";
-import FTC3 from "./img/ftc-compatibility/ftc-3.png";
-import FTC4 from "./img/ftc-compatibility/ftc-4.png";
-import FTC5 from "./img/ftc-compatibility/ftc-5.png";
-
-# ✴️ FTC Compatibility
+# ✴️ FTC Compatibility {#ftc-compatibility}
 
 AdvantageScope includes features to provide a smooth experience on the existing FIRST Tech Challenge control system, while setting up a transition to [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) in future seasons. All features of AdvantageScope will be officially supported in FTC after the transition to Systemcore starting in the 2027-2028 season.
 
-## Fields & Robots
+## Fields & Robots {#fields-and-robots}
 
 FTC fields and robot models are fully supported natively.
 
@@ -21,14 +14,14 @@ FTC fields and robot models are fully supported natively.
 - **Coordinate Systems:** Configure the [coordinate system](/more-features/coordinate-systems) for compatibility with [standard FTC coordinates](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html) on any field. This coordiante system is used by default on FTC fields.
 
 <div className="image-gallery">
-  <img src={FTC1} />
-  <img src={FTC2} />
-  <img src={FTC3} />
-  <img src={FTC4} />
-  <img src={FTC5} />
+  <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-2.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-3.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-4.webp" />
+  <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
 </div>
 
-## Supported Formats
+## Supported Formats {#supported-formats}
 
 AdvantageScope includes native support for the **FTC Dashboard** live streaming format and **Road Runner** `.log` files, in addition to WPILib-compatible formats such as WPILOG and NetworkTables.
 
@@ -46,7 +39,7 @@ The list below provides a starting point but is not exhaustive:
 Teams should take care to comply with R704 while at competition. Third-party telemetry services such as FTC Dashboard are prohibited when connected over Wi-Fi at competitions.
 :::
 
-### AdvantageScope Lite for FTC
+### AdvantageScope Lite for FTC {#advantagescope-lite-for-ftc}
 
 An unofficial distribution of [AdvantageScope Lite](/more-features/advantagescope-lite) optimized for FTC is available: [**AdvantageScope Lite for REV Control System**](https://github.com/j5155/AdvantageScope-Lite-FTC). This distribution is unofficial and is not supported by the AdvantageScope developers.
 

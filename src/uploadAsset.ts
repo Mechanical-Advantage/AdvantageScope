@@ -5,6 +5,8 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+export {};
+
 window.addEventListener("message", (event) => {
   const ASSET_INPUT = document.getElementById("asset") as HTMLInputElement;
   const EXIT_BUTTON = document.getElementById("exit") as HTMLInputElement;
@@ -28,7 +30,7 @@ window.addEventListener("message", (event) => {
   // Close function
   function confirm() {
     if (ASSET_INPUT.files !== null && ASSET_INPUT.files.length > 0) {
-      PROGRESS_TEXT.innerText = "Uploading file...";
+      PROGRESS_TEXT.innerText = t("uploadAsset.progressUploading");
       const API_ENDPOINT = "../uploadAsset";
       const request = new XMLHttpRequest();
       const formData = new FormData();
@@ -39,7 +41,9 @@ window.addEventListener("message", (event) => {
           messagePort.postMessage(null); // close window
         } else {
           PROGRESS_TEXT.innerText =
-            request.statusText.length > 0 ? `Upload failed: ${request.statusText}` : "Upload failed";
+            request.statusText.length > 0
+              ? t("uploadAsset.progressFailedWithStatus", { status: request.statusText })
+              : t("uploadAsset.progressFailed");
         }
       };
       // HTML prevents selecting multiple files

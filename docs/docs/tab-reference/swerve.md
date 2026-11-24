@@ -5,11 +5,11 @@ sidebar_position: 9
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🦀 Swerve
+# 🦀 Swerve {#swerve}
 
 The swerve tab shows the state of four swerve modules, including the velocity vectors, idle positions, robot rotation, and chassis speeds.
 
-![Overview of swerve tab](./img/swerve-1.png)
+<img src="/img/tab-reference/swerve-1.webp" alt="Overview of swerve tab" />
 
 <details>
 <summary>Timeline Controls</summary>
@@ -20,11 +20,11 @@ Yellow sections indicate when the robot is autonomous, blue sections indicate wh
 
 To zoom, place the cursor over the timeline and scroll up or down. A range can also be selecting by clicking and dragging while holding `Shift`. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the timeline. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again. Press `Ctrl+\` to zoom to the period where the robot is enabled.
 
-![Timeline](./img/timeline.png)
+<img src="/img/tab-reference/timeline.webp" alt="Timeline" />
 
 </details>
 
-## Adding Sources
+## Adding Sources {#adding-sources}
 
 To get started, drag a field to the "Sources" section. Delete a source using the X button, or hide it temporarily by clicking the eye icon or double-clicking the field name. To remove all sources, click the trash can near the axis title and then `Clear All`. Sources can be rearranged in the list by clicking and dragging.
 
@@ -34,7 +34,7 @@ To get started, drag a field to the "Sources" section. Delete a source using the
 - **Robot Velocities:** Linear and angular speeds displayed in the center of the diagram.
 - **Rotation:** Angular position used to rotate the diagram.
 
-## Data Format
+## Data Format {#data-format}
 
 Data should be published as a byte-encoded struct or protobuf, using the `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d`, or `Rotation3d` types.
 
@@ -76,7 +76,7 @@ In 2027, this data structure was renamed from `SwerveModuleState` to `SwerveModu
 For log files created before WPILib 2027 and Systemcore, legacy `SwerveModuleState` types are still supported for visualization.
 :::
 
-## Configuration
+## Configuration {#configuration}
 
 The following configuration options are available:
 

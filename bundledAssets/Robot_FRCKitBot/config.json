@@ -19,7 +19,23 @@
       ],
       "position": [0.2, 0, 0.8],
       "resolution": [960, 720],
-      "fov": 100
+      "fov": 100,
+      "locales": {
+        "en-US": "Front Camera",
+        "es-419": "Cámara frontal",
+        "fr": "Caméra avant",
+        "nl": "Camera voor",
+        "pt-BR": "Câmera frontal",
+        "ro": "Cameră frontală",
+        "tr": "Ön Kamera",
+        "ru": "Передняя камера",
+        "kk": "Алдыңғы камера",
+        "he": "מצלמה קדמית",
+        "ar": "كاميرا أمامية",
+        "hi": "सामने का कैमरा",
+        "zh-CN": "前置相机",
+        "zh-TW": "前置攝影機"
+      }
     },
     {
       "name": "Back Camera",
@@ -35,7 +51,23 @@
       ],
       "position": [-0.2, 0, 0.8],
       "resolution": [960, 720],
-      "fov": 100
+      "fov": 100,
+      "locales": {
+        "en-US": "Back Camera",
+        "es-419": "Cámara trasera",
+        "fr": "Caméra arrière",
+        "nl": "Camera achter",
+        "pt-BR": "Câmera traseira",
+        "ro": "Cameră spate",
+        "tr": "Arka Kamera",
+        "ru": "Задняя камера",
+        "kk": "Артқы камера",
+        "he": "מצלמה אחורית",
+        "ar": "كاميرا خلفية",
+        "hi": "पीछे का कैमरा",
+        "zh-CN": "后置相机",
+        "zh-TW": "後置攝影機"
+      }
     },
     {
       "name": "Left Camera",
@@ -51,7 +83,23 @@
       ],
       "position": [0, 0.2, 0.8],
       "resolution": [960, 720],
-      "fov": 90
+      "fov": 90,
+      "locales": {
+        "en-US": "Left Camera",
+        "es-419": "Cámara izquierda",
+        "fr": "Caméra gauche",
+        "nl": "Camera links",
+        "pt-BR": "Câmera esquerda",
+        "ro": "Cameră stânga",
+        "tr": "Sol Kamera",
+        "ru": "Левая камера",
+        "kk": "Сол жақ камера",
+        "he": "מצלמה שמאלית",
+        "ar": "كاميرا يسارية",
+        "hi": "बायां कैमरा",
+        "zh-CN": "左侧相机",
+        "zh-TW": "左側攝影機"
+      }
     },
     {
       "name": "Right Camera",
@@ -67,8 +115,40 @@
       ],
       "position": [0, -0.2, 0.8],
       "resolution": [960, 720],
-      "fov": 90
+      "fov": 90,
+      "locales": {
+        "en-US": "Right Camera",
+        "es-419": "Cámara derecha",
+        "fr": "Caméra droite",
+        "nl": "Camera rechts",
+        "pt-BR": "Câmera direita",
+        "ro": "Cameră dreapta",
+        "tr": "Sağ Kamera",
+        "ru": "Правая камера",
+        "kk": "Оң жақ камера",
+        "he": "מצלמה ימנית",
+        "ar": "كاميرا يمينية",
+        "hi": "दायां कैमरा",
+        "zh-CN": "右侧相机",
+        "zh-TW": "右側攝影機"
+      }
     }
   ],
-  "components": []
+  "components": [],
+  "locales": {
+    "en-US": "KitBot",
+    "es-419": "KitBot",
+    "fr": "KitBot",
+    "nl": "KitBot",
+    "pt-BR": "KitBot",
+    "ro": "KitBot",
+    "tr": "KitBot",
+    "ru": "KitBot",
+    "kk": "KitBot",
+    "he": "KitBot",
+    "ar": "KitBot",
+    "hi": "KitBot",
+    "zh-CN": "KitBot",
+    "zh-TW": "KitBot"
+  }
 }

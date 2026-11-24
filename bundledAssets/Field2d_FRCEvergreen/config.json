@@ -5,5 +5,21 @@
   "topLeft": [267, 132],
   "bottomRight": [4733, 2356],
   "widthInches": 648,
-  "heightInches": 324
+  "heightInches": 324,
+  "locales": {
+    "en-US": "Evergreen",
+    "es-419": "Perenne",
+    "fr": "Permanent",
+    "nl": "Permanent",
+    "pt-BR": "Perene",
+    "ro": "Permanent",
+    "tr": "Kalıcı",
+    "ru": "Постоянное",
+    "kk": "Тұрақты",
+    "he": "רב-שנתי",
+    "ar": "دائم",
+    "hi": "सदाबहार",
+    "zh-CN": "常青",
+    "zh-TW": "常青"
+  }
 }

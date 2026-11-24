@@ -7,6 +7,7 @@
 
 import { getBabelOutputPlugin } from "@rollup/plugin-babel";
 import typescript from "@rollup/plugin-typescript";
+import yaml from "@rollup/plugin-yaml";
 import fs from "fs";
 import { replacePlugin } from "rolldown/plugins";
 import cleanup from "rollup-plugin-cleanup";
@@ -16,6 +17,8 @@ const isDS = process.env.ASCOPE_DISTRIBUTION === "LITEDS";
 const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE" || isDS;
 const licenseHeader =
   "// Copyright (c) 2021-2026 Littleton Robotics\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the resources directory of this application.\n";
+const liteI18nLoader =
+  "if (typeof window !== 'undefined' ) {window.t = window.parent.t; window.lang = window.parent.lang}";
 
 /**
  * @import { RolldownOptions } from "rolldown"
@@ -37,7 +40,7 @@ function bundle(input, isMain, isXRClient, external = []) {
       dir: (isLite ? "lite/static/" : "") + "bundles/",
       chunkFileNames: "chunk/[name].js",
       format: isMain ? "cjs" : "es",
-      banner: licenseHeader,
+      banner: licenseHeader + (isLite && !isMain ? liteI18nLoader : ""),
       minify: isXRClient || isLite || "dce-only",
       minifyInternalExports: isXRClient || isLite
     },
@@ -48,6 +51,7 @@ function bundle(input, isMain, isXRClient, external = []) {
     },
     plugins: [
       typescript(),
+      yaml(),
       isXRClient
         ? getBabelOutputPlugin({
             presets: [["@babel/preset-env", { modules: false }]],

@@ -5,17 +5,21 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { TFunction } from "i18next";
 import TinyPopupMenu, { MenuItem, Submenu } from "tiny-popup-menu";
 import WorkerManager from "../../hub/WorkerManager";
+import { getBestLanguage, setupI18n, translateHTML } from "../../i18n/i18n";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import { BUILD_DATE, COPYRIGHT, Distribution, DISTRIBUTION, LITE_VERSION } from "../../shared/buildConstants";
 import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
 import { Field2dCameraMode } from "../../shared/Field2dCameraMode";
 import { HubState } from "../../shared/HubState";
+import { KeyboardUtil } from "../../shared/KeyboardUtil";
 import LineGraphFilter from "../../shared/LineGraphFilter";
+import { LOCALIZATION_FEEDBACK_FORMS } from "../../shared/LocalizationFeedbackForms";
 import NamedMessage from "../../shared/NamedMessage";
-import {
+import Preferences, {
   DEFAULT_PREFS,
   DEFAULT_PREFS_LITEDS,
   getLiveModeName,
@@ -23,7 +27,15 @@ import {
   LiveMode,
   mergePreferences
 } from "../../shared/Preferences";
-import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
+import {
+  getSourceListPrefix,
+  SourceListConfig,
+  SourceListItemState,
+  SourceListTypeMemory,
+  tOption,
+  tType,
+  tValue
+} from "../../shared/SourceListConfig";
 import {
   getAllTabTypes,
   getDefaultTabTitle,
@@ -32,10 +44,11 @@ import {
   LITE_COMPATIBLE_TABS
 } from "../../shared/TabType";
 import { Units } from "../../shared/units";
+import { getDocsUrl, getWpilibDocsUrl } from "../../shared/util";
 import { GITHUB_REPOSITORY } from "../github";
 import { loadAssets } from "./assetLoader";
 import { isAlpha, isBeta, isBetaExpired, isBetaWelcomeComplete, saveBetaWelcomeComplete } from "./betaUtil";
-import DEFAULT_DS_LAYOUT from "./dsLayout";
+import { getDefaultDsLayout } from "./dsLayout";
 import { LocalStorageKeys } from "./localStorageKeys";
 
 let HUB_FRAME: HTMLIFrameElement;
@@ -45,11 +58,56 @@ let TOO_SMALL_WARNING: HTMLElement;
 let MOBILE_WARNING: HTMLElement;
 let MENU_ANCHOR: HTMLElement;
 
+let lang = getLocale();
+let isRtl = false;
 let hubPort: MessagePort | null = null;
+
+// Global variables
+declare global {
+  interface Window {
+    t: TFunction;
+    lang: string;
+  }
+}
+
 let popupMenu = new TinyPopupMenu();
 let assetsPromise: Promise<AdvantageScopeAssets>;
 let downloadInterval: number | null = null;
 let popupRequiresForceClose = false;
+let isReloading = false;
+
+// Set up locale
+function getLocale(prefs: Preferences | null = null): string {
+  if (prefs === null) {
+    prefs = DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS;
+    let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
+    if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+  }
+  if (prefs !== null && prefs.language !== "") {
+    return prefs.language;
+  }
+  return getBestLanguage(navigator.languages || (navigator.language ? [navigator.language] : []));
+}
+
+window.t = setupI18n(lang);
+window.lang = lang;
+document.documentElement.lang = lang;
+translateHTML(document, t);
+
+// Set up RTL layout
+try {
+  const locale = new Intl.Locale(lang) as any;
+  const direction = locale.textInfo
+    ? locale.textInfo.direction
+    : locale.getTextInfo
+    ? locale.getTextInfo().direction
+    : undefined;
+  if (direction === "rtl") {
+    isRtl = true;
+  }
+} catch (e) {}
+document.documentElement.dir = isRtl ? "rtl" : "ltr";
+localStorage.setItem(LocalStorageKeys.DIRECTION, document.documentElement.dir);
 
 /**
  * Open a new popup menu
@@ -103,8 +161,16 @@ function openPopupWindow(
     POPUP_FRAME.style.width = size[0].toString() + (type === "pixels" ? "px" : "%");
     POPUP_FRAME.style.height = size[1].toString() + (type === "pixels" ? "px" : "%");
     POPUP_FRAME.onload = () => {
+      if (POPUP_FRAME.contentDocument?.documentElement) {
+        POPUP_FRAME.contentDocument.documentElement.lang = lang;
+        POPUP_FRAME.contentDocument.documentElement.dir = isRtl ? "rtl" : "ltr";
+      }
       POPUP_FRAME.hidden = false;
       HUB_FRAME.classList.add("background");
+      if (POPUP_FRAME.contentWindow) {
+        (POPUP_FRAME.contentWindow as any).t = window.t;
+        translateHTML(POPUP_FRAME.contentWindow.document, window.t);
+      }
 
       // Set up message ports
       const channel = new MessageChannel();
@@ -178,13 +244,30 @@ function openSourceListHelp(config: SourceListConfig) {
 /** Opens a popup window for preferences. */
 function openPreferences() {
   const width = 400;
-  const optionRows = 8;
+  const optionRows = 9;
   const titleRows = 2;
   const height = optionRows * 27 + titleRows * 34 + 54;
   openPopupWindow("www/preferences.html", [width, height], "pixels", (message) => {
+    // Check if language has changed
+    let newLang = getLocale(message);
+    let reload = false;
+    if (newLang !== lang) {
+      if (confirm(t("main.language.reloadLite", { lng: newLang }) + "\n\n" + t("main.language.reloadLite"))) {
+        reload = true;
+      } else {
+        return;
+      }
+    }
+
+    // Update preferences
     closePopupWindow();
     sendMessage(hubPort, "set-preferences", message);
     localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(message));
+
+    // Reload if needed
+    if (reload) {
+      location.reload();
+    }
   }).then((port) => {
     let prefs = DEFAULT_PREFS;
     let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
@@ -272,6 +355,12 @@ async function initHub() {
     syncTitle();
   }
 
+  // Set up locale
+  if (HUB_FRAME.contentWindow) {
+    (HUB_FRAME.contentWindow as any).t = window.t;
+    translateHTML(HUB_FRAME.contentWindow.document, window.t);
+  }
+
   // Init messages
   sendMessage(hubPort, "set-version", {
     platform: "lite",
@@ -292,7 +381,7 @@ async function initHub() {
   if (stateStr !== null) {
     state = JSON.parse(stateStr);
   } else if (DISTRIBUTION === Distribution.LiteDS) {
-    state = DEFAULT_DS_LAYOUT;
+    state = getDefaultDsLayout();
   }
   if (state !== null) sendMessage(hubPort, "restore-state", state);
   sendMessage(hubPort, "show-when-ready");
@@ -320,6 +409,12 @@ async function initHub() {
   HUB_FRAME.contentWindow?.addEventListener("keydown", (event) => processKeydown(event as KeyboardEvent), {
     capture: true
   });
+
+  // Set up document attributes
+  if (HUB_FRAME.contentDocument?.documentElement) {
+    HUB_FRAME.contentDocument.documentElement.lang = lang;
+    HUB_FRAME.contentDocument.documentElement.dir = isRtl ? "rtl" : "ltr";
+  }
 }
 
 async function handleHubMessage(message: NamedMessage) {
@@ -338,6 +433,7 @@ async function handleHubMessage(message: NamedMessage) {
       break;
 
     case "save-state":
+      if (isReloading) break;
       localStorage.setItem(LocalStorageKeys.STATE, JSON.stringify(message.data));
       localStorage.setItem(LocalStorageKeys.SIDEBAR_WIDTH, JSON.stringify(message.data.sidebar.width));
       break;
@@ -371,7 +467,11 @@ async function handleHubMessage(message: NamedMessage) {
       break;
 
     case "open-feedback":
-      window.open("https://github.com/" + GITHUB_REPOSITORY + "/issues/new/choose", "_blank");
+      if (lang !== "en-US") {
+        window.open(LOCALIZATION_FEEDBACK_FORMS[lang], "_blank");
+      } else {
+        window.open("https://github.com/" + GITHUB_REPOSITORY + "/issues/new/choose", "_blank");
+      }
       break;
 
     case "frc-coordinate-system-warning":
@@ -380,11 +480,7 @@ async function handleHubMessage(message: NamedMessage) {
         let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
         if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
         if (prefs.skipFRCCoordinateSystemWarning) return;
-        if (
-          confirm(
-            'This field uses a legacy coordinate system by default for compatibility with pre-2027 WPILib. If your robot code uses 2027 WPILib, you can change the "Coordinate System" option in the AdvantageScope preferences. See the documentation for details.'
-          )
-        ) {
+        if (confirm(window.t("main.coordinateSystem.legacyFrcDetail"))) {
           prefs.skipFRCCoordinateSystemWarning = true;
           localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
           sendMessage(hubPort, "set-preferences", prefs);
@@ -398,11 +494,7 @@ async function handleHubMessage(message: NamedMessage) {
         let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
         if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
         if (prefs.skipFTCCoordinateSystemWarning) return;
-        if (
-          confirm(
-            'This field uses the Systemcore coordinate system by default. If your robot code uses the traditional FTC coordinate system, you can change the "Coordinate System" option in the AdvantageScope preferences. See the documentation for details.'
-          )
-        ) {
+        if (confirm(window.t("main.coordinateSystem.systemcoreFtcDetail"))) {
           prefs.skipFTCCoordinateSystemWarning = true;
           localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
           sendMessage(hubPort, "set-preferences", prefs);
@@ -419,7 +511,7 @@ async function handleHubMessage(message: NamedMessage) {
         if (extension === "hoot" || extension === "revlog") {
           sendMessage(hubPort, "historical-data", {
             files: [null],
-            error: "Unsupported file format in AdvantageScope Lite.",
+            error: window.t("main.logs.unsupportedFormatLite"),
             uuid: uuid
           });
           break;
@@ -435,7 +527,7 @@ async function handleHubMessage(message: NamedMessage) {
         let error: string | null = null;
         if (extension === "wpilogxz") {
           array = await WorkerManager.request("bundles/xzWorker.js", array);
-          if (array.length === 0) error = "Failed to decompress WPILOG file.";
+          if (array.length === 0) error = window.t("main.logs.decompressFailed");
         }
 
         sendMessage(hubPort, "historical-data", {
@@ -454,14 +546,14 @@ async function handleHubMessage(message: NamedMessage) {
         if (extension === "hoot" || extension === "revlog") {
           sendMessage(hubPort, "historical-data", {
             files: [null],
-            error: "Unsupported file format in AdvantageScope Lite.",
+            error: window.t("main.logs.unsupportedFormatLite"),
             uuid: uuid
           });
         } else if (extension === "wpilogxz") {
           const decompressed = await WorkerManager.request("bundles/xzWorker.js", message.data.data);
           sendMessage(hubPort, "historical-data", {
             files: [decompressed],
-            error: decompressed.length === 0 ? "Failed to decompress WPILOG file." : null,
+            error: decompressed.length === 0 ? window.t("main.logs.decompressFailed") : null,
             uuid: uuid
           });
         } else {
@@ -488,107 +580,174 @@ async function handleHubMessage(message: NamedMessage) {
     case "open-app-menu":
       {
         let menuItems: (MenuItem | Submenu | "-")[] = [];
-        const modifier = navigator.userAgent.includes("Macintosh") ? "\u2318" : "Ctrl";
+        const modifier = KeyboardUtil.isMac() ? "⌘" : t("menu.keys.ctrl");
         switch (message.data.index) {
           case 0:
-            // App menu
-            menuItems = [
-              {
-                content: "About AdvantageScope Lite",
-                callback() {
-                  let detailLines: string[] = [];
-                  detailLines.push("Version: " + LITE_VERSION);
-                  detailLines.push(
-                    "Distribution: " + (DISTRIBUTION === Distribution.Lite ? "Lite" : "Lite (Driver Station)")
-                  );
-                  detailLines.push("Build Date: " + BUILD_DATE);
-                  detailLines.push("User Agent: " + navigator.userAgent);
-                  let detail = detailLines.join("\n");
-                  window.alert("======= AdvantageScope Lite =======\n" + COPYRIGHT + "\n\n" + detail);
-                }
-              },
-              ...(DISTRIBUTION === Distribution.LiteDS
-                ? []
-                : [
-                    {
-                      content: `Show Preferences (\u21e7 ${modifier} ,)`,
-                      callback() {
-                        openPreferences();
+            {
+              // App menu
+              let prefs = Object.assign(
+                {},
+                DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS
+              );
+              let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
+              if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+              menuItems = [
+                {
+                  content: t("menu.app.aboutAppLite"),
+                  callback() {
+                    let detailLines: string[] = [];
+                    detailLines.push("Version: " + LITE_VERSION);
+                    detailLines.push(
+                      "Distribution: " + (DISTRIBUTION === Distribution.Lite ? "Lite" : "Lite (Driver Station)")
+                    );
+                    detailLines.push("Build Date: " + BUILD_DATE);
+                    detailLines.push("Language: " + lang);
+                    detailLines.push("User Agent: " + navigator.userAgent);
+                    let detail = detailLines.join("\n");
+                    window.alert("======= AdvantageScope Lite =======\n" + COPYRIGHT + "\n\n" + detail);
+                  }
+                },
+                ...(DISTRIBUTION === Distribution.LiteDS
+                  ? [
+                      {
+                        content: t("menu.app.setLanguage"),
+                        items: [
+                          { name: t("preferences.languageSystemDefault"), value: "" },
+                          { name: "English (US)", value: "en-US" },
+                          { name: "Español (Latinoamérica)", value: "es-419" },
+                          { name: "Français", value: "fr" },
+                          { name: "Nederlands", value: "nl" },
+                          { name: "Português (Brasil)", value: "pt-BR" },
+                          { name: "Românǎ", value: "ro" },
+                          { name: "Türkçe", value: "tr" },
+                          { name: "Русский", value: "ru" },
+                          { name: "Қазақ тілі", value: "kk" },
+                          { name: "עִברִית", value: "he" },
+                          { name: "العربية", value: "ar" },
+                          { name: "हिन्दी", value: "hi" },
+                          { name: "简体中文", value: "zh-CN" },
+                          { name: "繁體中文", value: "zh-TW" }
+                        ].map((langOpt) => {
+                          let isSelected = prefs.language === langOpt.value;
+                          return {
+                            content: (isSelected ? "\u2714 " : "") + langOpt.name,
+                            callback() {
+                              let newPrefs = Object.assign({}, prefs);
+                              newPrefs.language = langOpt.value;
+                              let newLang = getLocale(newPrefs);
+                              let reload = false;
+                              if (newLang !== lang) {
+                                if (
+                                  confirm(
+                                    t("main.language.reloadResetLite", { lng: newLang }) +
+                                      "\n\n" +
+                                      t("main.language.reloadResetLite")
+                                  )
+                                ) {
+                                  reload = true;
+                                } else {
+                                  return;
+                                }
+                              }
+                              localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(newPrefs));
+                              sendMessage(hubPort, "set-preferences", newPrefs);
+                              if (reload) {
+                                // Reset layout so the tab names are updated for the new language
+                                isReloading = true;
+                                localStorage.removeItem(LocalStorageKeys.STATE);
+                                location.reload();
+                              }
+                            }
+                          };
+                        })
                       }
-                    }
-                  ]),
-              {
-                content: `Show Licenses`,
-                callback() {
-                  openPopupWindow("www/licenses.html", [50, 75], "percent");
+                    ]
+                  : [
+                      {
+                        content: t("menu.app.preferencesShortcut", { shortcut: `\u21e7 ${modifier} ,` }),
+                        callback() {
+                          openPreferences();
+                        }
+                      }
+                    ]),
+                {
+                  content: t("menu.app.licenses"),
+                  callback() {
+                    openPopupWindow("www/licenses.html", [50, 75], "percent");
+                  }
                 }
-              }
-            ];
+              ];
+            }
             break;
 
           case 1:
-            // File menu
-            let prefs = DEFAULT_PREFS;
-            let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
-            if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
-            menuItems = [
-              {
-                content: `Open Log (\u21e7 ${modifier} O)`,
-                callback() {
-                  openDownload();
-                }
-              },
-              {
-                content: `Connect Live (${modifier} K)`,
-                callback() {
-                  sendMessage(hubPort, "start-live", DISTRIBUTION === Distribution.LiteDS ? "ds" : "robot");
-                }
-              },
-              ...(DISTRIBUTION === Distribution.LiteDS
-                ? []
-                : [
-                    {
-                      content: "Set Live Mode",
-                      items: LITE_ALLOWED_LIVE_MODES.map((liveMode: LiveMode) => {
-                        return {
-                          content: (prefs.liveMode === liveMode ? "\u2714 " : "") + getLiveModeName(liveMode),
-                          callback() {
-                            prefs.liveMode = liveMode;
-                            localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
-                            sendMessage(hubPort, "set-preferences", prefs);
-                            sendMessage(hubPort, "start-live", "robot");
-                          }
-                        };
-                      })
-                    },
-                    {
-                      content: `Upload Asset`,
-                      callback() {
-                        openUploadAsset();
+            {
+              // File menu
+              let prefs = Object.assign(
+                {},
+                DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS
+              );
+              let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
+              if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+              menuItems = [
+                {
+                  content: t("menu.file.openLog", { shortcut: `\u21e7 ${modifier} O` }),
+                  callback() {
+                    openDownload();
+                  }
+                },
+                {
+                  content: t("menu.file.connectRobotShortcut", { shortcut: `${modifier} K` }),
+                  callback() {
+                    sendMessage(hubPort, "start-live", DISTRIBUTION === Distribution.LiteDS ? "ds" : "robot");
+                  }
+                },
+                ...(DISTRIBUTION === Distribution.LiteDS
+                  ? []
+                  : [
+                      {
+                        content: t("menu.app.setLiveMode"),
+                        items: LITE_ALLOWED_LIVE_MODES.map((liveMode: LiveMode) => {
+                          return {
+                            content: (prefs.liveMode === liveMode ? "\u2714 " : "") + getLiveModeName(liveMode),
+                            callback() {
+                              prefs.liveMode = liveMode;
+                              localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
+                              sendMessage(hubPort, "set-preferences", prefs);
+                              sendMessage(hubPort, "start-live", "robot");
+                            }
+                          };
+                        })
+                      },
+                      {
+                        content: t("uploadAsset.menuTitle"),
+                        callback() {
+                          openUploadAsset();
+                        }
                       }
-                    }
-                  ])
-            ];
+                    ])
+              ];
+            }
             break;
 
           case 2:
             // View menu
             menuItems = [
               {
-                content: `Zoom to Enabled Range (${modifier} \\ )`,
+                content: t("menu.lineGraph.zoomEnabledShortcut", { shortcut: `${modifier} \\ ` }),
                 callback() {
                   sendMessage(hubPort, "zoom-enabled");
                 }
               },
               "-",
               {
-                content: `Toggle Sidebar (${modifier} . )`,
+                content: t("menu.view.toggleSidebarShortcut", { shortcut: `${modifier} . ` }),
                 callback() {
                   sendMessage(hubPort, "toggle-sidebar");
                 }
               },
               {
-                content: `Toggle Controls (${modifier} / )`,
+                content: t("menu.view.toggleControlsShortcut", { shortcut: `${modifier} / ` }),
                 callback() {
                   sendMessage(hubPort, "toggle-controls");
                 }
@@ -600,15 +759,19 @@ async function handleHubMessage(message: NamedMessage) {
             // Tabs menu
             menuItems = [
               {
-                content: "New Tab",
+                content: t("menu.tabs.newTab"),
                 items: getAllTabTypes()
                   .slice(1)
                   .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
                   .map((tabType) => {
                     return {
-                      content: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)} (${getTabAccelerator(
-                        tabType
-                      ).replace("Alt+", "\u2325 ")})`,
+                      content: t("menu.tabs.tabShortcut", {
+                        tab: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)}`,
+                        shortcut: getTabAccelerator(tabType).replace(
+                          "Alt+",
+                          KeyboardUtil.isMac() ? "⌥ " : `${t("menu.keys.alt")}+`
+                        )
+                      }),
                       callback() {
                         sendMessage(hubPort, "new-tab", tabType);
                       }
@@ -618,42 +781,42 @@ async function handleHubMessage(message: NamedMessage) {
               ...((DISTRIBUTION === Distribution.LiteDS
                 ? [
                     {
-                      content: "Reset Layout",
+                      content: t("menu.view.resetLayout"),
                       callback() {
-                        sendMessage(hubPort, "restore-state", DEFAULT_DS_LAYOUT);
+                        sendMessage(hubPort, "restore-state", getDefaultDsLayout());
                       }
                     }
                   ]
                 : []) as (MenuItem | Submenu | "-")[]),
               "-",
               {
-                content: `Previous Tab (${modifier} \u2190 )`,
+                content: t("menu.tabs.prevTabShortcut", { shortcut: `${modifier} \u2190` }),
                 callback() {
                   sendMessage(hubPort, "move-tab", -1);
                 }
               },
               {
-                content: `Next Tab (${modifier} \u2192 )`,
+                content: t("menu.tabs.nextTabShortcut", { shortcut: `${modifier} \u2192` }),
                 callback() {
                   sendMessage(hubPort, "move-tab", 1);
                 }
               },
               "-",
               {
-                content: `Shift Left (${modifier} [ )`,
+                content: t("menu.tabs.shiftLeftShortcut", { shortcut: `${modifier} [` }),
                 callback() {
                   sendMessage(hubPort, "shift-tab", -1);
                 }
               },
               {
-                content: `Shift Right (${modifier} ] )`,
+                content: t("menu.tabs.shiftRightShortcut", { shortcut: `${modifier} ]` }),
                 callback() {
                   sendMessage(hubPort, "shift-tab", 1);
                 }
               },
               "-",
               {
-                content: `Close Tab (${modifier} E)`,
+                content: t("menu.tabs.closeTabShortcut", { shortcut: `${modifier} E` }),
                 callback() {
                   sendMessage(hubPort, "close-tab", false);
                 }
@@ -665,19 +828,19 @@ async function handleHubMessage(message: NamedMessage) {
             // Help menu
             menuItems = [
               {
-                content: "Report a Problem",
+                content: t("menu.help.reportProblem"),
                 callback() {
                   window.open("https://github.com/" + GITHUB_REPOSITORY + "/issues", "_blank");
                 }
               },
               {
-                content: "Contact Us",
+                content: t("menu.help.contactUs"),
                 callback() {
                   window.open("mailto:software@team6328.org");
                 }
               },
               {
-                content: "GitHub Repository",
+                content: t("menu.help.githubRepo"),
                 callback() {
                   window.open("https://github.com/" + GITHUB_REPOSITORY, "_blank");
                 }
@@ -687,13 +850,13 @@ async function handleHubMessage(message: NamedMessage) {
                     // Add additional documentation links for the DS distribution (AdvantageScope docs are not bundled)
                     "-",
                     {
-                      content: "AdvantageScope Documentation",
+                      content: t("menu.help.advantagescopeDocs"),
                       callback() {
-                        window.open("https://docs.advantagescope.org", "_blank");
+                        window.open(getDocsUrl("https://docs.advantagescope.org", window.lang), "_blank");
                       }
                     },
                     {
-                      content: "Driver Station Documentation",
+                      content: t("menu.help.dsDocs"),
                       callback() {
                         window.open("https://github.com/wpilibsuite/FirstDriverStation-Public", "_blank");
                       }
@@ -701,14 +864,14 @@ async function handleHubMessage(message: NamedMessage) {
                   ]
                 : []) as (MenuItem | Submenu | "-")[]),
               {
-                content: "WPILib Documentation",
+                content: t("menu.help.wpilibDocs"),
                 callback() {
-                  window.open("https://docs.wpilib.org", "_blank");
+                  window.open(getWpilibDocsUrl("https://docs.wpilib.org", window.lang), "_blank");
                 }
               },
               ...((DISTRIBUTION === Distribution.LiteDS ? ["-"] : []) as (MenuItem | Submenu | "-")[]),
               {
-                content: "Littleton Robotics",
+                content: t("menu.help.littletonRobotics"),
                 callback() {
                   window.open("https://littletonrobotics.org", "_blank");
                 }
@@ -729,7 +892,7 @@ async function handleHubMessage(message: NamedMessage) {
       let menuItems: (MenuItem | Submenu | "-")[] = [];
       Array(0.25, 0.5, 1, 1.5, 2, 4, 8).forEach((value) => {
         menuItems.push({
-          content: (value === message.data.speed ? "\u2714 " : "") + (value * 100).toString() + "%",
+          content: (value === message.data.speed ? "\u2714 " : "") + value.toLocaleString(lang, { style: "percent" }),
           callback() {
             sendMessage(hubPort, "set-playback-options", { speed: value, looping: message.data.looping });
           }
@@ -737,7 +900,7 @@ async function handleHubMessage(message: NamedMessage) {
       });
       menuItems.push("-");
       menuItems.push({
-        content: (message.data.looping ? "\u2714 " : "") + "Loop Visible Range",
+        content: (message.data.looping ? "\u2714 " : "") + t("menu.view.loopVisible"),
         callback() {
           sendMessage(hubPort, "set-playback-options", { speed: message.data.speed, looping: !message.data.looping });
         }
@@ -753,10 +916,13 @@ async function handleHubMessage(message: NamedMessage) {
           .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
           .map((tabType) => {
             return {
-              content: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)} (${getTabAccelerator(tabType).replace(
-                "Alt+",
-                "\u2325 "
-              )})`,
+              content: t("menu.tabs.tabShortcut", {
+                tab: `${getTabIcon(tabType)} ${getDefaultTabTitle(tabType)}`,
+                shortcut: getTabAccelerator(tabType).replace(
+                  "Alt+",
+                  KeyboardUtil.isMac() ? "⌥ " : `${t("menu.keys.alt")}+`
+                )
+              }),
               callback() {
                 sendMessage(hubPort, "new-tab", tabType);
               }
@@ -790,16 +956,22 @@ async function handleHubMessage(message: NamedMessage) {
           }
         };
 
+        let prefix = getSourceListPrefix(config.title);
+
         // Add options
         let currentTypeConfig = config.types.find((typeConfig) => typeConfig.key === state.type)!;
         if (currentTypeConfig.options.length === 1) {
           let optionConfig = currentTypeConfig.options[0];
-          optionConfig.values.forEach((optionValue) => {
+          optionConfig.values.forEach((valueKey, index) => {
             menuItems.push({
-              content: (optionValue.key === state.options[optionConfig.key] ? "\u2714 " : "") + optionValue.display,
-              style: getStyle(optionValue.key),
+              content:
+                (valueKey === state.options[optionConfig.key] ? "\u2714 " : "") +
+                (optionConfig.titles && optionConfig.titles[index]
+                  ? optionConfig.titles[index]!
+                  : tValue(prefix, currentTypeConfig.key, optionConfig.key, valueKey)),
+              style: getStyle(valueKey),
               callback() {
-                state.options[optionConfig.key] = optionValue.key;
+                state.options[optionConfig.key] = valueKey;
                 respond();
               }
             });
@@ -807,13 +979,17 @@ async function handleHubMessage(message: NamedMessage) {
         } else {
           currentTypeConfig.options.forEach((optionConfig) => {
             menuItems.push({
-              content: optionConfig.display,
-              items: optionConfig.values.map((optionValue) => {
+              content: tOption(prefix, currentTypeConfig.key, optionConfig.key),
+              items: optionConfig.values.map((valueKey, index) => {
                 return {
-                  content: (optionValue.key === state.options[optionConfig.key] ? "\u2714 " : "") + optionValue.display,
-                  style: getStyle(optionValue.key),
+                  content:
+                    (valueKey === state.options[optionConfig.key] ? "\u2714 " : "") +
+                    (optionConfig.titles && optionConfig.titles[index]
+                      ? optionConfig.titles[index]!
+                      : tValue(prefix, currentTypeConfig.key, optionConfig.key, valueKey)),
+                  style: getStyle(valueKey),
                   callback() {
-                    state.options[optionConfig.key] = optionValue.key;
+                    state.options[optionConfig.key] = valueKey;
                     respond();
                   }
                 };
@@ -838,20 +1014,18 @@ async function handleHubMessage(message: NamedMessage) {
               : typeConfig.options.find((optionConfig) => optionConfig.key === typeConfig.initialSelectionOption);
             if (optionConfig === undefined) {
               menuItems.push({
-                content: (current ? "\u2714 " : "") + typeConfig.display,
+                content: (current ? "\u2714 " : "") + tType(prefix, typeConfig.key),
                 callback() {
                   state.type = typeConfig.key;
                   let newOptions: { [key: string]: string } = {};
                   typeConfig.options.forEach((optionConfig) => {
                     if (
                       optionConfig.key in state.options &&
-                      optionConfig.values
-                        .map((valueConfig) => valueConfig.key)
-                        .includes(state.options[optionConfig.key])
+                      optionConfig.values.includes(state.options[optionConfig.key])
                     ) {
                       newOptions[optionConfig.key] = state.options[optionConfig.key];
                     } else {
-                      newOptions[optionConfig.key] = optionConfig.values[0].key;
+                      newOptions[optionConfig.key] = optionConfig.values[0];
                     }
                   });
                   state.options = newOptions;
@@ -860,28 +1034,29 @@ async function handleHubMessage(message: NamedMessage) {
               });
             } else {
               menuItems.push({
-                content: (current ? "\u2714 " : "") + typeConfig.display,
-                items: optionConfig.values.map((optionValue) => {
+                content: (current ? "\u2714 " : "") + tType(prefix, typeConfig.key),
+                items: optionConfig.values.map((valueKey, index) => {
                   return {
-                    content: optionValue.display,
-                    style: getStyle(optionValue.key),
+                    content:
+                      optionConfig.titles && optionConfig.titles[index]
+                        ? optionConfig.titles[index]!
+                        : tValue(prefix, typeConfig.key, optionConfig.key, valueKey),
+                    style: getStyle(valueKey),
                     callback() {
                       state.type = typeConfig.key;
                       let newOptions: { [key: string]: string } = {};
                       typeConfig.options.forEach((optionConfig) => {
                         if (
                           optionConfig.key in state.options &&
-                          optionConfig.values
-                            .map((valueConfig) => valueConfig.key)
-                            .includes(state.options[optionConfig.key])
+                          optionConfig.values.includes(state.options[optionConfig.key])
                         ) {
                           newOptions[optionConfig.key] = state.options[optionConfig.key];
                         } else {
-                          newOptions[optionConfig.key] = optionConfig.values[0].key;
+                          newOptions[optionConfig.key] = optionConfig.values[0];
                         }
                       });
                       state.options = newOptions;
-                      state.options[typeConfig.initialSelectionOption!] = optionValue.key;
+                      state.options[typeConfig.initialSelectionOption!] = valueKey;
                       respond();
                     }
                   };
@@ -893,14 +1068,14 @@ async function handleHubMessage(message: NamedMessage) {
 
         if (menuItems.length === 0) {
           menuItems.push({
-            content: "No Options",
+            content: t("menu.help.noOptions"),
             className: "disabled"
           });
         }
 
         menuItems.push("-");
         menuItems.push({
-          content: "Help",
+          content: t("menu.help.heading"),
           callback() {
             openSourceListHelp(config);
           }
@@ -912,7 +1087,7 @@ async function handleHubMessage(message: NamedMessage) {
     case "source-list-clear-prompt":
       openMenu(message.data.rect, [
         {
-          content: "Clear All",
+          content: t("menu.sidebar.clearAll"),
           callback() {
             sendMessage(hubPort, "source-list-clear-response", {
               uuid: message.data.uuid
@@ -920,6 +1095,7 @@ async function handleHubMessage(message: NamedMessage) {
           }
         }
       ]);
+
       break;
 
     case "source-list-help":
@@ -935,7 +1111,7 @@ async function handleHubMessage(message: NamedMessage) {
           let showRobotMode: boolean = message.data.showRobotMode;
           // Discrete controls
           menuItems.push({
-            content: (showRobotMode ? "\u2714 " : "") + "Show Robot Mode",
+            content: (showRobotMode ? "\u2714 " : "") + t("menu.view.showRobotMode"),
             callback() {
               sendMessage(hubPort, "set-robot-mode-visible", { showRobotMode: !showRobotMode });
             }
@@ -950,7 +1126,7 @@ async function handleHubMessage(message: NamedMessage) {
           let filter: LineGraphFilter = message.data.filter;
 
           menuItems.push({
-            content: (lockedRange !== null ? "\u2714 " : "") + "Lock Axis",
+            content: (lockedRange !== null ? "\u2714 " : "") + t("menu.lineGraph.lockAxis"),
             callback() {
               sendMessage(hubPort, "edit-axis", {
                 legend: legend,
@@ -961,7 +1137,7 @@ async function handleHubMessage(message: NamedMessage) {
             }
           });
           menuItems.push({
-            content: "Edit Range",
+            content: t("menu.lineGraph.editRange"),
             className: lockedRange !== null ? "" : "disabled",
             async callback() {
               let port = await openPopupWindow("www/editRange.html", [300, 108], "pixels", (message) => {
@@ -993,14 +1169,14 @@ async function handleHubMessage(message: NamedMessage) {
           switch (autoUnitGroup) {
             case "none":
               menuItems.push({
-                content: "(No Unit Metadata)",
+                content: t("menu.lineGraph.noUnitMetadata"),
                 className: "disabled"
               });
               break;
 
             case "inconsistent":
               menuItems.push({
-                content: "(Inconsistent Units)",
+                content: t("menu.lineGraph.inconsistentUnits"),
                 className: "disabled"
               });
               break;
@@ -1010,9 +1186,9 @@ async function handleHubMessage(message: NamedMessage) {
                 menuItems.push({
                   content:
                     (autoUnitSelected === unit ? "\u2714 " : "") +
-                    unit.charAt(0).toUpperCase() +
-                    unit.slice(1) +
-                    (unit === autoUnitDefault ? " [Default]" : ""),
+                    (unit === autoUnitDefault
+                      ? t("units.defaultLabel", { unit: t(`units.names.${unit}`) })
+                      : t(`units.names.${unit}`)),
                   callback() {
                     unitConversion.autoTarget = unit;
                     unitConversion.preset = null;
@@ -1030,10 +1206,10 @@ async function handleHubMessage(message: NamedMessage) {
           let recentUnitsRaw = localStorage.getItem(LocalStorageKeys.RECENT_UNITS);
           let recentUnits: Units.UnitConversionPreset[] = recentUnitsRaw === null ? [] : JSON.parse(recentUnitsRaw);
           menuItems.push({
-            content: "Manual Units",
+            content: t("menu.lineGraph.manualUnits"),
             items: [
               {
-                content: "Edit Conversion",
+                content: t("menu.lineGraph.editConversion"),
                 async callback() {
                   let port = await openPopupWindow("www/unitConversion.html", [300, 162], "pixels", (message) => {
                     closePopupWindow();
@@ -1051,8 +1227,9 @@ async function handleHubMessage(message: NamedMessage) {
                   port.postMessage(unitConversion.preset ?? Units.NoopUnitConversion);
                 }
               },
+
               {
-                content: (unitConversion.preset !== null ? "\u2714 " : "") + "Disable Automatic Units",
+                content: (unitConversion.preset !== null ? "\u2714 " : "") + t("menu.lineGraph.disableAutoUnits"),
                 callback() {
                   unitConversion.autoTarget = null;
                   if (unitConversion.preset === null) {
@@ -1069,7 +1246,7 @@ async function handleHubMessage(message: NamedMessage) {
                 }
               },
               {
-                content: "Reset Units",
+                content: t("menu.lineGraph.resetUnits"),
                 className:
                   unitConversion.preset !== null &&
                   JSON.stringify(unitConversion.preset) !== JSON.stringify(Units.NoopUnitConversion)
@@ -1089,22 +1266,28 @@ async function handleHubMessage(message: NamedMessage) {
               ...(recentUnits.length > 0
                 ? [
                     {
-                      content: "\u2014 Recent Presets \u2014",
+                      content: t("menu.file.recentPresetsLite"),
                       className: "disabled"
                     }
                   ]
                 : []),
               ...recentUnits.map((preset) => {
-                let fromToText =
-                  preset.from === undefined || preset.to === undefined
-                    ? ""
-                    : preset.from?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase()) +
-                      " \u2192 " +
-                      preset.to?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase());
-                let factorText = preset.factor === 1 ? "" : "x" + preset.factor.toString();
-                let bothPresent = fromToText.length > 0 && factorText.length > 0;
+                let label = "";
+                if (preset.from !== undefined && preset.to !== undefined) {
+                  let fromName = t("units.names." + preset.from);
+                  let toName = t("units.names." + preset.to);
+                  let fromToText = t("units.presetFormatting.fromTo", { from: fromName, to: toName });
+                  if (preset.factor !== 1) {
+                    let factorText = t("units.presetFormatting.factor", { factor: preset.factor });
+                    label = t("units.presetFormatting.both", { fromTo: fromToText, factor: factorText });
+                  } else {
+                    label = fromToText;
+                  }
+                } else if (preset.factor !== 1) {
+                  label = t("units.presetFormatting.factor", { factor: preset.factor });
+                }
                 return {
-                  content: fromToText + (bothPresent ? ", " : "") + factorText,
+                  content: label,
                   callback() {
                     unitConversion.autoTarget = null;
                     unitConversion.preset = preset;
@@ -1122,7 +1305,7 @@ async function handleHubMessage(message: NamedMessage) {
           });
           menuItems.push("-");
           menuItems.push({
-            content: (filter === LineGraphFilter.Differentiate ? "\u2714 " : "") + "Differentiate",
+            content: (filter === LineGraphFilter.Differentiate ? "\u2714 " : "") + t("menu.lineGraph.differentiate"),
             callback() {
               sendMessage(hubPort, "edit-axis", {
                 legend: legend,
@@ -1133,7 +1316,7 @@ async function handleHubMessage(message: NamedMessage) {
             }
           });
           menuItems.push({
-            content: (filter === LineGraphFilter.Integrate ? "\u2714 " : "") + "Integrate",
+            content: (filter === LineGraphFilter.Integrate ? "\u2714 " : "") + t("menu.lineGraph.integrate"),
             callback() {
               sendMessage(hubPort, "edit-axis", {
                 legend: legend,
@@ -1148,13 +1331,13 @@ async function handleHubMessage(message: NamedMessage) {
 
         // Always include help and clear buttons
         menuItems.push({
-          content: "Help",
+          content: t("menu.help.heading"),
           callback() {
             openSourceListHelp(message.data.config);
           }
         });
         menuItems.push({
-          content: "Clear All",
+          content: t("menu.sidebar.clearAll"),
           callback() {
             sendMessage(hubPort, "clear-axis", legend);
           }
@@ -1169,7 +1352,8 @@ async function handleHubMessage(message: NamedMessage) {
         const rect = message.data.rect;
         openMenu(rect, [
           {
-            content: "Rename Tab",
+            content: t("menu.tabs.renameTab"),
+
             async callback() {
               let port = await openPopupWindow("www/renameTab.html", [300, 81], "pixels", (renameMessage) => {
                 closePopupWindow();
@@ -1196,41 +1380,41 @@ async function handleHubMessage(message: NamedMessage) {
 
         let menuItems: (MenuItem | Submenu | "-")[] = [
           {
-            content: (selectedIndex === -1 ? "\u2714 " : "") + "Orbit Field",
+            content: (selectedIndex === -1 ? "\u2714 " : "") + t("menu.field3d.orbitField"),
             callback() {
               sendMessage(hubPort, "set-3d-camera", -1);
             }
           },
           {
-            content: (selectedIndex === -2 ? "\u2714 " : "") + "Orbit Robot",
+            content: (selectedIndex === -2 ? "\u2714 " : "") + t("menu.field3d.orbitRobot"),
             callback() {
               sendMessage(hubPort, "set-3d-camera", -2);
             }
           },
           {
-            content: isFTC ? "Driver View" : "Driver Station",
+            content: isFTC ? t("menu.field3d.driverView") : t("menu.field3d.driverStation"),
             items: isFTC
               ? [
                   {
-                    content: (selectedIndex === -4 ? "\u2714 " : "") + "Blue Left",
+                    content: (selectedIndex === -4 ? "\u2714 " : "") + t("menu.field3d.blueLeft"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -4);
                     }
                   },
                   {
-                    content: (selectedIndex === -5 ? "\u2714 " : "") + "Blue Right",
+                    content: (selectedIndex === -5 ? "\u2714 " : "") + t("menu.field3d.blueRight"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -5);
                     }
                   },
                   {
-                    content: (selectedIndex === -6 ? "\u2714 " : "") + "Red Left",
+                    content: (selectedIndex === -6 ? "\u2714 " : "") + t("menu.field3d.redLeft"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -6);
                     }
                   },
                   {
-                    content: (selectedIndex === -7 ? "\u2714 " : "") + "Red Right",
+                    content: (selectedIndex === -7 ? "\u2714 " : "") + t("menu.field3d.redRight"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -7);
                     }
@@ -1238,43 +1422,43 @@ async function handleHubMessage(message: NamedMessage) {
                 ]
               : [
                   {
-                    content: (selectedIndex === -3 ? "\u2714 " : "") + "Auto",
+                    content: (selectedIndex === -3 ? "\u2714 " : "") + t("menu.field3d.auto"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -3);
                     }
                   },
                   {
-                    content: (selectedIndex === -4 ? "\u2714 " : "") + "Blue 1",
+                    content: (selectedIndex === -4 ? "\u2714 " : "") + t("menu.field3d.blue1"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -4);
                     }
                   },
                   {
-                    content: (selectedIndex === -5 ? "\u2714 " : "") + "Blue 2",
+                    content: (selectedIndex === -5 ? "\u2714 " : "") + t("menu.field3d.blue2"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -5);
                     }
                   },
                   {
-                    content: (selectedIndex === -6 ? "\u2714 " : "") + "Blue 3",
+                    content: (selectedIndex === -6 ? "\u2714 " : "") + t("menu.field3d.blue3"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -6);
                     }
                   },
                   {
-                    content: (selectedIndex === -7 ? "\u2714 " : "") + "Red 1",
+                    content: (selectedIndex === -7 ? "\u2714 " : "") + t("menu.field3d.red1"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -7);
                     }
                   },
                   {
-                    content: (selectedIndex === -8 ? "\u2714 " : "") + "Red 2",
+                    content: (selectedIndex === -8 ? "\u2714 " : "") + t("menu.field3d.red2"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -8);
                     }
                   },
                   {
-                    content: (selectedIndex === -9 ? "\u2714 " : "") + "Red 3",
+                    content: (selectedIndex === -9 ? "\u2714 " : "") + t("menu.field3d.red3"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -9);
                     }
@@ -1282,7 +1466,7 @@ async function handleHubMessage(message: NamedMessage) {
                 ]
           },
           {
-            content: "Set FOV",
+            content: t("menu.field3d.setFov"),
             async callback() {
               let port = await openPopupWindow("www/editFov.html", [300, 81], "pixels", (message) => {
                 closePopupWindow();
@@ -1313,20 +1497,21 @@ async function handleHubMessage(message: NamedMessage) {
         let selectedIndex: Field2dCameraMode = message.data.selectedIndex;
         let menuItems: (MenuItem | Submenu | "-")[] = [
           {
-            content: (selectedIndex === Field2dCameraMode.Unlocked ? "\u2714 " : "") + "Unlocked",
+            content: (selectedIndex === Field2dCameraMode.Unlocked ? "\u2714 " : "") + t("menu.field2d.unlocked"),
             callback() {
               sendMessage(hubPort, "set-2d-camera", Field2dCameraMode.Unlocked);
             }
           },
           {
-            content: (selectedIndex === Field2dCameraMode.Robot ? "\u2714 " : "") + "Locked to Robot",
+            content: (selectedIndex === Field2dCameraMode.Robot ? "\u2714 " : "") + t("menu.field2d.lockedRobot"),
             callback() {
               sendMessage(hubPort, "set-2d-camera", Field2dCameraMode.Robot);
             }
           },
           {
             content:
-              (selectedIndex === Field2dCameraMode.RobotAndRotation ? "\u2714 " : "") + "Locked to Robot & Rotation",
+              (selectedIndex === Field2dCameraMode.RobotAndRotation ? "\u2714 " : "") +
+              t("menu.field2d.lockedRobotRotation"),
             callback() {
               sendMessage(hubPort, "set-2d-camera", Field2dCameraMode.RobotAndRotation);
             }
@@ -1349,43 +1534,47 @@ async function handleHubMessage(message: NamedMessage) {
  */
 function processKeydown(event: KeyboardEvent): boolean {
   let triggered = true;
-  let modifier = event.metaKey || event.ctrlKey;
-  let lowerKey = event.key.toLowerCase();
-  if (event.shiftKey && modifier && lowerKey === "o") {
-    openDownload();
-  } else if (!event.shiftKey && modifier && lowerKey === "k") {
-    sendMessage(hubPort, "start-live", false);
-  } else if (!event.shiftKey && modifier && lowerKey === "\\") {
-    sendMessage(hubPort, "zoom-enabled");
-  } else if (!event.shiftKey && modifier && lowerKey === ".") {
-    sendMessage(hubPort, "toggle-sidebar");
-  } else if (!event.shiftKey && modifier && lowerKey === "/") {
-    sendMessage(hubPort, "toggle-controls");
-  } else if (!event.shiftKey && modifier && lowerKey === "arrowleft") {
+  let modifier = KeyboardUtil.isPrimaryModifier(event);
+  if (event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "o")) {
+    if (!event.repeat) openDownload();
+  } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "k")) {
+    if (!event.repeat) sendMessage(hubPort, "start-live", false);
+  } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "\\")) {
+    if (!event.repeat) sendMessage(hubPort, "zoom-enabled");
+  } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, ".")) {
+    if (!event.repeat) sendMessage(hubPort, "toggle-sidebar");
+  } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "/")) {
+    if (!event.repeat) sendMessage(hubPort, "toggle-controls");
+  } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "arrowleft")) {
     sendMessage(hubPort, "move-tab", -1);
-  } else if (!event.shiftKey && modifier && lowerKey === "arrowright") {
+  } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "arrowright")) {
     sendMessage(hubPort, "move-tab", 1);
-  } else if (!event.shiftKey && modifier && lowerKey === "[") {
+  } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "[")) {
     sendMessage(hubPort, "shift-tab", -1);
-  } else if (!event.shiftKey && modifier && lowerKey === "]") {
+  } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "]")) {
     sendMessage(hubPort, "shift-tab", 1);
-  } else if (!event.shiftKey && modifier && lowerKey === "e") {
-    sendMessage(hubPort, "close-tab", false);
-  } else if (event.shiftKey && modifier && lowerKey === "," && DISTRIBUTION !== Distribution.LiteDS) {
-    openPreferences();
+  } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "e")) {
+    if (!event.repeat) sendMessage(hubPort, "close-tab", false);
+  } else if (
+    event.shiftKey &&
+    modifier &&
+    KeyboardUtil.matchesKey(event, ",") &&
+    DISTRIBUTION !== Distribution.LiteDS
+  ) {
+    if (!event.repeat) openPreferences();
   } else if (!event.shiftKey && !modifier && event.altKey && !event.code.startsWith("Alt")) {
     triggered = false;
     getAllTabTypes()
       .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
       .forEach((tabType) => {
         let accelerator = getTabAccelerator(tabType).replace("Alt+", "").toLowerCase();
-        if (accelerator.length > 0 && event.code.slice(-1).toLowerCase() === accelerator) {
-          sendMessage(hubPort, "new-tab", tabType);
+        if (accelerator.length > 0 && KeyboardUtil.matchesKey(event, accelerator)) {
+          if (!event.repeat) sendMessage(hubPort, "new-tab", tabType);
           triggered = true;
         }
       });
   } else if (event.code === "Escape") {
-    closePopupWindow();
+    if (!event.repeat) closePopupWindow();
   } else {
     triggered = false;
   }
@@ -1399,7 +1588,7 @@ function processKeydown(event: KeyboardEvent): boolean {
 window.addEventListener("load", () => {
   // Set tab title
   if (DISTRIBUTION === Distribution.LiteDS) {
-    document.title = "AdvantageScope Lite (DS)";
+    document.title = t("hub.titleLiteDs");
   }
 
   // Load assets
@@ -1444,7 +1633,8 @@ window.addEventListener("load", () => {
             metaKey: event.metaKey,
             ctrlKey: event.ctrlKey,
             altKey: event.altKey,
-            shiftKey: event.shiftKey
+            shiftKey: event.shiftKey,
+            repeat: event.repeat
           })
         );
       }
@@ -1478,32 +1668,45 @@ window.addEventListener("load", () => {
   }
 
   // Beta init
+  let allowLocalizationPopup = true;
   if (isBeta()) {
     if (isBetaExpired()) {
+      allowLocalizationPopup = false;
       if (
         DISTRIBUTION != Distribution.LiteDS &&
-        confirm(
-          `The AdvantageScope Lite ${
-            isAlpha() ? "alpha" : "beta"
-          } is complete. Please follow the instructions in the documentation to update to the latest stable release.`
-        )
+        confirm(isAlpha() ? t("main.survey.expiredLiteAlpha") : t("main.survey.expiredLiteBeta"))
       ) {
         // Redirect to Systemcore home page
         location.href = "http://" + location.hostname;
       }
     } else if (!isBetaWelcomeComplete()) {
-      openPopupWindow(
-        "www/betaWelcome.html",
-        [450, 490],
-        "pixels",
-        () => {
-          closePopupWindow(true); // Force close
-          saveBetaWelcomeComplete();
-        },
-        true // Require force close
-      ).then((port) => {
-        port.postMessage(isAlpha());
-      });
+      if (lang === "en-US") {
+        openPopupWindow(
+          "www/betaWelcome.html",
+          [450, 490],
+          "pixels",
+          () => {
+            closePopupWindow(true); // Force close
+            saveBetaWelcomeComplete();
+          },
+          true // Require force close
+        ).then((port) => {
+          port.postMessage(isAlpha());
+        });
+      }
     }
+  }
+
+  // Localization feedback popup
+  let prefs = DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS;
+  let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
+  if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+
+  if (lang !== "en-US" && !prefs.skipLanguageWarning && allowLocalizationPopup) {
+    alert(t("main.language.welcomeDetail"));
+    saveBetaWelcomeComplete(); // Mark beta welcome as complete so that the user doesn't get another popup later
+    prefs.skipLanguageWarning = true;
+    localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
+    sendMessage(hubPort, "set-preferences", prefs);
   }
 });

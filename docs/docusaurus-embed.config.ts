@@ -7,13 +7,17 @@
 
 import type * as Preset from "@docusaurus/preset-classic";
 import type { Config } from "@docusaurus/types";
+import { liteWarningAnnouncement } from "./announcements";
 import config from "./docusaurus.config";
 
 const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE" || process.env.ASCOPE_DISTRIBUTION === "LITEDS";
+const locale = process.env.DOCUSAURUS_CURRENT_LOCALE || "en-US";
+
 const configEmbed: Config = Object.assign(config, {
   future: Object.assign({}, config.future, {
     experimental_router: "hash"
   }),
+  headTags: [],
 
   presets: [
     [
@@ -47,8 +51,7 @@ const configEmbed: Config = Object.assign(config, {
     announcementBar: isLite
       ? {
           id: "ascope_lite_warning",
-          content:
-            "This documentation describes the desktop version of AdvantageScope, which includes some features not available in AdvantageScope Lite.",
+          content: liteWarningAnnouncement[locale],
           backgroundColor: "#446ce3",
           textColor: "#ffffff",
           isCloseable: false

@@ -1,6 +1,4 @@
-import Image1 from './img/export-1.png';
-
-# Exporting Log Data
+# Exporting Log Data {#exporting-log-data}
 
 AdvantageScope includes a flexible system for exporting log data as a CSV, WPILOG, or MCAP file. The export functions work when viewing a log file or when connected to a live data source. Possible use cases include:
 
@@ -10,7 +8,7 @@ AdvantageScope includes a flexible system for exporting log data as a CSV, WPILO
 
 To view options for exporting, click `File` > `Export Data...`.
 
-<img src={Image1} alt="Export options" height="250" />
+<img src="/img/overview/log-files/export-1.webp" alt="Export options" />
 
 :::tip
 In addition to the full-log export described here, the 💬 [Console](/tab-reference/console) tab allows console data to be exported to a text file.
@@ -24,7 +22,7 @@ We do not recommend using this feature to export log data **generated in simulat
 _This warning **does not apply** to logs produced by AdvantageKit, which can be exported with no data loss by selecting the "AdvantageKit Cycles" option. See [this page](https://docs.advantagekit.org/data-flow/sysid-compatibility) for details._
 :::
 
-## Options
+## Options {#options}
 
 The following options are provided when exporting:
 
@@ -48,4 +46,4 @@ The following options are provided when exporting:
 
 An example CSV file exported from AdvantageScope is shown below, in the "CSV (Table)" format with timestamps set to "All Changes":
 
-![CSV table](./img/export-2.png)
+<img src="/img/overview/log-files/export-2.webp" alt="CSV table" />

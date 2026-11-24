@@ -19,6 +19,10 @@
 		8C6767DB2C11551C00277484 /* QRScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6767DA2C11551C00277484 /* QRScanner.swift */; };
 		8C6FB4002E41588B00167EFB /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 8C6FB3FF2E41588B00167EFB /* AppIcon.icon */; };
 		8C6FB4012E41588B00167EFB /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 8C6FB3FF2E41588B00167EFB /* AppIcon.icon */; };
+		8C76ED5E302C316D00F7973C /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 8C76ED5D302C316D00F7973C /* InfoPlist.xcstrings */; };
+		8C76ED5F302C316D00F7973C /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 8C76ED5D302C316D00F7973C /* InfoPlist.xcstrings */; };
+		8C87F0AD2FF1C40F00BB7081 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 8C87F0AC2FF1C40F00BB7081 /* Localizable.xcstrings */; };
+		8C87F0AE2FF1C40F00BB7081 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 8C87F0AC2FF1C40F00BB7081 /* Localizable.xcstrings */; };
 		8CBC9A722D140E6A000EFB70 /* AdvantageScopeXR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CBC9A712D140E68000EFB70 /* AdvantageScopeXR.swift */; };
 		8CBC9A732D140E6A000EFB70 /* AdvantageScopeXR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CBC9A712D140E68000EFB70 /* AdvantageScopeXR.swift */; };
 		8CBC9A742D14B355000EFB70 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8CBFA6DF2BF8663E009AA8CD /* Assets.xcassets */; };
@@ -83,6 +87,8 @@
 		8C362AC32C0B600400AD3091 /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
 		8C6767DA2C11551C00277484 /* QRScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScanner.swift; sourceTree = "<group>"; };
 		8C6FB3FF2E41588B00167EFB /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		8C76ED5D302C316D00F7973C /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
+		8C87F0AC2FF1C40F00BB7081 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		8CBC9A712D140E68000EFB70 /* AdvantageScopeXR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvantageScopeXR.swift; sourceTree = "<group>"; };
 		8CBFA6D82BF8663D009AA8CD /* AdvantageScopeXR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AdvantageScopeXR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CBFA6DD2BF8663D009AA8CD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -162,6 +168,8 @@
 				8C6FB3FF2E41588B00167EFB /* AppIcon.icon */,
 				8CBFA6DF2BF8663E009AA8CD /* Assets.xcassets */,
 				8CBFA6DD2BF8663D009AA8CD /* ContentView.swift */,
+				8C87F0AC2FF1C40F00BB7081 /* Localizable.xcstrings */,
+				8C76ED5D302C316D00F7973C /* InfoPlist.xcstrings */,
 				8C2759A12C0995BD0067FD80 /* ControlsMenu.swift */,
 				8C2759A32C09960A0067FD80 /* Banner.swift */,
 				8C362AC32C0B600400AD3091 /* Networking.swift */,
@@ -256,7 +264,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1620;
-				LastUpgradeCheck = 2600;
+				LastUpgradeCheck = 2720;
 				TargetAttributes = {
 					8CBFA6D72BF8663D009AA8CD = {
 						CreatedOnToolsVersion = 15.4;
@@ -273,6 +281,19 @@
 			knownRegions = (
 				en,
 				Base,
+				"es-419",
+				"pt-BR",
+				fr,
+				tr,
+				ro,
+				he,
+				kk,
+				ru,
+				ar,
+				"zh-Hans",
+				"zh-Hant",
+				nl,
+				hi,
 			);
 			mainGroup = 8CBFA6CF2BF8663C009AA8CD;
 			packageReferences = (
@@ -296,6 +317,8 @@
 				8CBFA6E02BF8663E009AA8CD /* Assets.xcassets in Resources */,
 				8CDF923C305900BD008E48F8 /* Settings.bundle in Resources */,
 				8C6FB4012E41588B00167EFB /* AppIcon.icon in Resources */,
+				8C76ED5F302C316D00F7973C /* InfoPlist.xcstrings in Resources */,
+				8C87F0AD2FF1C40F00BB7081 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -305,6 +328,8 @@
 			files = (
 				8CBC9A742D14B355000EFB70 /* Assets.xcassets in Resources */,
 				8C6FB4002E41588B00167EFB /* AppIcon.icon in Resources */,
+				8C76ED5E302C316D00F7973C /* InfoPlist.xcstrings in Resources */,
+				8C87F0AE2FF1C40F00BB7081 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -365,6 +390,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -421,6 +447,7 @@
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -430,6 +457,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -479,6 +507,7 @@
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -512,7 +541,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.littletonrobotics.advantagescopexr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -555,7 +584,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.littletonrobotics.advantagescopexr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -599,7 +628,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.littletonrobotics.advantagescopexr.Clip;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -643,7 +672,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.littletonrobotics.advantagescopexr.Clip;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

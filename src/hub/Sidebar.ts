@@ -12,7 +12,7 @@ import LoggableType from "../shared/log/LoggableType";
 import { getChildLogExtension, isChildLog } from "../shared/log/LogKeyUtils";
 import { getOrDefault, searchFields, TYPE_KEY } from "../shared/log/LogUtil";
 import { SelectionMode } from "../shared/Selection";
-import { arraysEqual, htmlEncode, setsEqual } from "../shared/util";
+import { arraysEqual, formatNumberAuto, htmlEncode, setsEqual } from "../shared/util";
 import CustomSchemas from "./dataSources/schema/CustomSchemas";
 
 export default class Sidebar {
@@ -101,7 +101,7 @@ export default class Sidebar {
     });
     window.addEventListener("mousemove", (event) => {
       if (this.sidebarHandleActive) {
-        let width = event.clientX;
+        let width = document.documentElement.dir === "rtl" ? window.innerWidth - event.clientX : event.clientX;
         if (width > 500) width = 500;
         if (width >= 80 && width < 160) width = 160;
         if (width < 80) {
@@ -147,6 +147,7 @@ export default class Sidebar {
           let rect = button.getBoundingClientRect();
           window.sendMainMessage("open-app-menu", {
             index: index,
+            isRtl: document.documentElement.dir === "rtl",
             rect: {
               x: rect.x,
               y: rect.y,
@@ -355,26 +356,24 @@ export default class Sidebar {
     }
     let title: string;
     if (this.fieldCount === 0) {
-      title = "Open a log or connect to view data";
+      title = t("hub.sidebar.titleDefault");
     } else {
       let runtime = range[1] - range[0];
-      let runtimeUnit = "s";
+      let key = "hub.sidebar.titleSeconds";
       if (runtime > 120) {
         runtime /= 60;
-        runtimeUnit = "m";
+        key = "hub.sidebar.titleMinutes";
+        if (runtime > 120) {
+          runtime /= 60;
+          key = "hub.sidebar.titleHours";
+        }
       }
-      if (runtime > 120) {
-        runtime /= 60;
-        runtimeUnit = "h";
-      }
-      title =
-        this.fieldCount.toString() +
-        " field" +
-        (this.fieldCount === 1 ? "" : "s") +
-        ", " +
-        Math.floor(runtime).toString() +
-        runtimeUnit +
-        " runtime";
+      let fieldsText = t("hub.sidebar.fields", { count: this.fieldCount });
+      title = t(key, {
+        fields: fieldsText,
+        count: Math.floor(runtime),
+        duration: formatNumberAuto(Math.floor(runtime))
+      });
     }
     if (title !== this.SIDEBAR_TITLE.innerText) {
       this.SIDEBAR_TITLE.innerText = title;
@@ -593,11 +592,10 @@ export default class Sidebar {
         label.appendChild(typeWarningSpan);
         typeWarningSpan.innerHTML = " &#x26A0;";
         typeWarningSpan.style.cursor = "help";
-        const warningText =
-          "Values with conflicting types have been written to this field. Only values compatible with the initial type can be viewed and exported.";
+        const warningText = t("hub.sidebar.conflictMessage");
         typeWarningSpan.addEventListener("click", () => {
           window.sendMainMessage("alert", {
-            title: "Conflicting types",
+            title: t("hub.sidebar.conflictTitle"),
             content: warningText
           });
         });
@@ -618,7 +616,11 @@ export default class Sidebar {
         let typeLabel = document.createElement("span");
         typeLabel.classList.add("field-item-type-label");
         label.appendChild(typeLabel);
-        typeLabel.innerHTML = " &ndash; " + htmlEncode(structuredType);
+        if (document.documentElement.dir === "rtl") {
+          typeLabel.innerHTML = htmlEncode(structuredType) + " &ndash; ";
+        } else {
+          typeLabel.innerHTML = " &ndash; " + htmlEncode(structuredType);
+        }
       }
     } else {
       if (title.startsWith(this.MERGED_KEY) && indent === 0) {
@@ -630,7 +632,11 @@ export default class Sidebar {
           let typeLabel = document.createElement("span");
           typeLabel.classList.add("field-item-type-label");
           label.appendChild(typeLabel);
-          typeLabel.innerHTML = " &ndash; " + htmlEncode(filename);
+          if (document.documentElement.dir === "rtl") {
+            typeLabel.innerHTML = htmlEncode(filename) + " &ndash; ";
+          } else {
+            typeLabel.innerHTML = " &ndash; " + htmlEncode(filename);
+          }
         }
       }
     }
@@ -846,7 +852,7 @@ export default class Sidebar {
         numValueInput = document.createElement("input");
         numValueInput.hidden = true;
         numValueInput.type = "number";
-        numValueInput.title = "Set value";
+        numValueInput.title = t("hub.sidebar.setValueTitle");
         valueElement.appendChild(numValueInput);
         numValueSpan = document.createElement("span");
         valueElement.appendChild(numValueSpan);
@@ -867,18 +873,7 @@ export default class Sidebar {
           firstUpdate = false;
           lastValue = value;
 
-          let valueStr = "";
-          if (value !== null) {
-            if (Math.abs(value) < 1e-9) {
-              valueStr = "0";
-            } else if (Math.abs(value) >= 1e5 || Math.abs(value) < 1e-3) {
-              valueStr = value.toExponential(1).replace("+", "");
-            } else if (value % 1 === 0) {
-              valueStr = value.toString();
-            } else {
-              valueStr = value.toFixed(3);
-            }
-          }
+          let valueStr = value !== null ? formatNumberAuto(value) : "";
           numValueInput!.placeholder = valueStr;
           numValueSpan!.innerText = valueStr;
           let charCount = valueStr.length;

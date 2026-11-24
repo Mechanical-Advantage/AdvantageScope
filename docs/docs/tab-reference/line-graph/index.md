@@ -1,12 +1,10 @@
-import Image4 from './img/line-graph-4.png';
-
-# 📉 Line Graph
+# 📉 Line Graph {#line-graph}
 
 The line graph is the default view in AdvantageScope. It supports both continuous (numerical) and discrete fields.
 
-![Line graph demo](./img/line-graph-1.png)
+<img src="/img/tab-reference/line-graph/line-graph-1.webp" alt="Line graph demo" />
 
-## Viewer Pane
+## Viewer Pane {#viewer-pane}
 
 To zoom, place the cursor over the main graph and scroll up or down. A range can also be selected by clicking and dragging while holding `Shift`. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the graph. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again.
 
@@ -16,27 +14,27 @@ Clicking on the graph selects a time, and right-clicking deselects it. The value
 The delta between the selected and hovered times is displayed as an overlay on the graph, making it easy to measure time ranges. Timestamps are formatted according to the [Timestamps](/more-features/timestamps) preference.
 :::
 
-## Control Pane
+## Control Pane {#control-pane}
 
 To get started, drag a field to one of the three sections (left, right, or discrete). Delete a field using the X button, or hide it temporarily by clicking the eye icon or double-clicking the field name. To remove all fields, click the three dots near the axis title and then `Clear All`. Fields can be rearranged in the list by clicking and dragging.
 
 The color and line style of each field can be customized by clicking the colored icon or right-clicking on the field name. Data from the WPILib [persistent alerts](https://docs.wpilib.org/en/latest/docs/software/telemetry/persistent-alerts.html) API can be visualized by adding the alerts group as a discrete field. An example visualization is shown below.
 
-![Alerts visualization](./img/line-graph-2.png)
+<img src="/img/tab-reference/line-graph/line-graph-2.webp" alt="Alerts visualization" />
 
 :::tip
 To overlay the robot mode (autonomous, teleoperated, or utility), click the three dots next to "Discrete Fields" and click "Show Robot Mode".
 
-![Robot mode overlay](./img/line-graph-3.png)
+<img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="Robot mode overlay" />
 :::
 
-### Adjusting Axes
+### Adjusting Axes {#adjusting-axes}
 
 By default, each axis adjusts its range based on the visible data. To disable auto-ranging and lock the range to its current min and max, click the three dots near the axis title and then `Lock Axis`. To manually adjust the range, choose `Edit Range...` and enter the desired values.
 
-<img src={Image4} alt="Editing axis range" height="250" />
+<img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="Editing axis range" height="250" />
 
-### Integration & Differentiation
+### Integration & Differentiation {#integration-and-differentiation}
 
 Values can be automatically integrated or differentiated by AdvantageScope. Delta time is always measured in seconds. Click the three dots near the axis title and then select `Differentiate` or `Integrate`.
 

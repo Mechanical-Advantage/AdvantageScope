@@ -32,7 +32,7 @@ export const SATELLITE_DEFAULT_WIDTH = 900;
 export const SATELLITE_DEFAULT_HEIGHT = 500;
 
 // XR Server
-export const XR_NATIVE_HOST_COMPATIBILITY = 0;
+export const XR_NATIVE_HOST_COMPATIBILITY = 1;
 export const XR_URL_PREFIX =
   "https://appclip.apple.com/id?p=org.littletonrobotics.advantagescopexr.Clip&c=" +
   XR_NATIVE_HOST_COMPATIBILITY +

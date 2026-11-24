@@ -97,6 +97,9 @@ export default class TableRenderer implements TabRenderer {
       this.hoverCursorY = null;
     });
 
+    // Set initial placeholder
+    this.INPUT_FIELD.placeholder = formatTimeWithMS(0);
+
     // Initialize columns
     this.updateFields([]);
   }
@@ -307,7 +310,7 @@ export default class TableRenderer implements TabRenderer {
       let displayTime = this.timestamps[i] + displayOffset;
       let text = formatTimeWithMS(displayTime);
       if (isStartAt0) {
-        text = "+" + text;
+        text = t("units.relativeValue", { value: text });
       }
       cellText.push([text]);
     }
@@ -328,7 +331,7 @@ export default class TableRenderer implements TabRenderer {
             cellText[i - dataRowStart].push("null");
           } else {
             let value = field.data!.values[nextIndex - 1];
-            let text = getLogValueText(value, field.type);
+            let text = getLogValueText(value, field.type, true);
             if (field.type === LoggableType.Boolean) {
               text = (value ? "🟩" : "🟥") + " " + text;
             }
@@ -391,7 +394,7 @@ export default class TableRenderer implements TabRenderer {
     let displayPlaceholder = placeholder + displayOffset;
     let placeholderText = formatTimeWithMS(displayPlaceholder);
     if (isStartAt0) {
-      placeholderText = "+" + placeholderText;
+      placeholderText = t("units.relativeValue", { value: placeholderText });
     }
     this.INPUT_FIELD.placeholder = placeholderText;
   }

@@ -2,19 +2,21 @@
 sidebar_position: 2
 ---
 
-# Privacy Policy
+<!-- Note for translators: This page is a legal document and must be left in its original English form. Translate the title of the page but do not modify any other headers or text. Do not include this comment in the translated page. -->
+
+# Privacy Policy {#privacy-policy}
 
 AdvantageScope is a volunteer-run project that is owned and published by the Littleton STEM Educational Foundation ("Littleton Robotics"), a non-profit organization based in the United States.
 
 _This policy was last modified on August 15th, 2026._
 
-## Information We Collect
+## Information We Collect {#information-we-collect}
 
 Littleton Robotics does not collect data from users of the AdvantageScope application, AdvantageScope XR mobile application, AdvantageScope Lite software, or online documentation site ([docs.advantagescope.org](https://docs.advantagescope.org)).
 
 Users of AdvantageScope may be asked to complete optional online feedback surveys. Responses to these surveys may be retained by Littleton Robotics for the purpose of improving future releases. Personally identifying information will never be shared outside of Littleton Robotics without the user's consent.
 
-## Third-Party Data Collection
+## Third-Party Data Collection {#third-party-data-collection}
 
 The AdvantageScope repository and documentation site are hosted by GitHub, which publishes a [privacy policy](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement) that applies when interacting with these services.
 
@@ -32,6 +34,6 @@ Users of AdvantageScope alpha and beta releases who choose to fill out the feedb
 
 The AdvantageScope XR mobile application is distributed through Apple's App Store, which publishes a [privacy policy](https://www.apple.com/legal/privacy/data/en/app-store/) that applies when using this feature.
 
-## Contact
+## Contact {#contact}
 
 Questions about this policy can be directed to software@team6328.org.

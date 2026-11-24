@@ -8,13 +8,12 @@
 import { SourceListConfig } from "../../shared/SourceListConfig";
 
 const MechanismController_Config: SourceListConfig = {
-  title: "Sources",
+  title: "hub.mechanism.sources",
   autoAdvance: false,
   allowChildrenFromDrag: false,
   types: [
     {
       key: "mechanism",
-      display: "Mechanism",
       symbol: "settings",
       showInTypeName: false,
       color: "#888888",

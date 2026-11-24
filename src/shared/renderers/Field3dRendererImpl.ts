@@ -8,7 +8,14 @@
 import CameraControls from "camera-controls";
 import * as THREE from "three";
 import WorkerManager from "../../hub/WorkerManager";
-import { AdvantageScopeAssets, BuiltIn3dFields, Config3dField, CoordinateSystem } from "../AdvantageScopeAssets";
+import {
+  AdvantageScopeAssets,
+  BuiltIn3dFields,
+  Config3dField,
+  CoordinateSystem,
+  getAssetName
+} from "../AdvantageScopeAssets";
+import { KeyboardUtil } from "../KeyboardUtil";
 import { Rotation3d, rotationSequenceToQuaternion } from "../geometry";
 import { Units } from "../units";
 import { checkArrayType, clampValue } from "../util";
@@ -180,7 +187,8 @@ export default class Field3dRendererImpl implements TabRenderer {
     canvas.addEventListener("mouseup", (event) => {
       if (startPx && event.clientX === startPx[0] && event.clientY === startPx[1]) {
         let robotConfig = window.assets?.robots.find((robotData) => robotData.name === this.primaryRobotModel);
-        let cameraList = robotConfig === undefined ? [] : robotConfig.cameras.map((camera) => camera.name);
+        let cameraList =
+          robotConfig === undefined ? [] : robotConfig.cameras.map((camera) => getAssetName(camera, window.lang));
         window.sendMainMessage("ask-3d-camera", {
           options: cameraList,
           position: [event.clientX, event.clientY],
@@ -271,7 +279,7 @@ export default class Field3dRendererImpl implements TabRenderer {
 
     // Create key bindings
     window.addEventListener("keydown", (event) => {
-      if (window.platform === "darwin" ? event.metaKey : event.ctrlKey) return;
+      if (KeyboardUtil.isPrimaryModifier(event)) return;
       if (
         event.target instanceof HTMLInputElement ||
         event.target instanceof HTMLTextAreaElement ||
@@ -985,18 +993,19 @@ export default class Field3dRendererImpl implements TabRenderer {
       // Update camera alert
       if (this.cameraIndex === CameraIndexEnum.OrbitRobot) {
         this.alert.hidden = this.primaryRobotGroup.visible;
-        this.alert.innerHTML = 'Robot pose not available</br>for camera "Orbit Robot".';
+        this.alert.innerHTML = t("hub.field.cameraAlert", { name: t("menu.field3d.orbitRobot") });
       } else if (this.cameraIndex === CameraIndexEnum.DSAuto) {
         this.alert.hidden = command.autoDriverStation >= 0;
-        this.alert.innerHTML = "Driver Station position</br>not available.";
+        this.alert.innerHTML = t("hub.field.dsAlert");
       } else if (this.cameraIndex === CameraIndexEnum.OrbitField || dsCamera) {
         this.alert.hidden = true;
       } else {
         this.alert.hidden = this.primaryRobotGroup.visible || this.fixedCameraOverrideObj.visible;
-        this.alert.innerHTML =
-          'Robot pose not available</br>for camera "' +
-          (robotConfig ? robotConfig.cameras[this.cameraIndex].name : "???") +
-          '".';
+        this.alert.innerHTML = t("hub.field.cameraAlert", {
+          name: robotConfig
+            ? getAssetName(robotConfig.cameras[this.cameraIndex], window.lang)
+            : t("hub.field.cameraUnknown")
+        });
       }
 
       // Update camera FOV

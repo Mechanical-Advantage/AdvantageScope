@@ -15,12 +15,12 @@ export const TYPE_KEY = ".type";
 export const MAX_SEARCH_RESULTS = 128;
 
 /** Returns a human-readable string representation of a log value. */
-export function getLogValueText(value: any, type: LoggableType): string {
+export function getLogValueText(value: any, type: LoggableType, localized: boolean = false): string {
   if (value === null) {
     return "null";
   } else if (type === LoggableType.Raw) {
     let array: Uint8Array = value;
-    if (array.length === 0) return "(empty)";
+    if (array.length === 0) return localized ? t("sourceList.empty") : "(empty)";
     let textArray: string[] = [];
     array.slice(0, ARRAY_TEXT_SIZE_LIMIT).forEach((byte: number) => {
       textArray.push((byte & 0xff).toString(16).padStart(2, "0"));
@@ -28,11 +28,18 @@ export function getLogValueText(value: any, type: LoggableType): string {
     if (array.length > ARRAY_TEXT_SIZE_LIMIT) textArray.push("...");
     return textArray.join("-");
   } else if (Array.isArray(value)) {
-    let limitedArray = value.slice(0, ARRAY_TEXT_SIZE_LIMIT);
-    if (limitedArray.length < value.length) {
-      limitedArray.push("...");
+    let textArray = value.slice(0, ARRAY_TEXT_SIZE_LIMIT).map((x) => {
+      if (localized && typeof x === "number") {
+        return x.toLocaleString(undefined, { useGrouping: false });
+      }
+      return JSON.stringify(x);
+    });
+    if (value.length > ARRAY_TEXT_SIZE_LIMIT) {
+      textArray.push("...");
     }
-    return "[" + limitedArray.map((x) => JSON.stringify(x)).join(", ") + "]";
+    return "[" + textArray.join(", ") + "]";
+  } else if (localized && typeof value === "number") {
+    return value.toLocaleString(undefined, { useGrouping: false });
   } else {
     return JSON.stringify(value);
   }

@@ -8,10 +8,16 @@
 import type * as Preset from "@docusaurus/preset-classic";
 import type { Config } from "@docusaurus/types";
 import { themes as prismThemes } from "prism-react-renderer";
+import { LOCALIZATION_FEEDBACK_FORMS } from "../src/shared/LocalizationFeedbackForms";
+import { localizationFeedbackAnnouncement, offlineInfoAnnouncement } from "./announcements";
+import youtubeLocaleRehypePlugin from "./youtubeLocales";
+
+const envLocale = process.env.DOCUSAURUS_CURRENT_LOCALE;
+const locale = envLocale && envLocale !== "undefined" ? envLocale : "en-US";
 
 const config: Config = {
   title: "AdvantageScope",
-  favicon: "img/favicon.ico",
+  favicon: "/icons/favicon.ico",
 
   // Set the production url of your site here
   url: "https://docs.advantagescope.org",
@@ -33,13 +39,33 @@ const config: Config = {
     faster: true
   },
 
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: "en",
-    locales: ["en"]
+    defaultLocale: "en-US",
+    locales: ["en-US", "es-419", "fr", "nl", "pt-BR", "ro", "tr", "ru", "kk", "he", "ar", "hi", "zh-CN", "zh-TW"],
+    localeConfigs: {
+      "en-US": {
+        label: "English (US)"
+      },
+      "es-419": {
+        label: "Español (Latinoamérica)"
+      },
+      "zh-CN": {
+        label: "简体中文"
+      },
+      "zh-TW": {
+        label: "繁體中文"
+      }
+    }
   },
+
+  headTags: [
+    {
+      tagName: "script",
+      attributes: {
+        src: "/js/redirect.js"
+      }
+    }
+  ],
 
   presets: [
     [
@@ -49,6 +75,7 @@ const config: Config = {
           routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
           sidebarCollapsed: true,
+          rehypePlugins: [youtubeLocaleRehypePlugin],
           editUrl: "https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/docs/",
           editLocalizedFiles: true
         },
@@ -115,14 +142,27 @@ const config: Config = {
   ],
 
   themeConfig: {
-    image: "img/social.png",
+    image: "/icons/social.webp",
     navbar: {
       title: "AdvantageScope Documentation",
       logo: {
         alt: "AdvantageScope Logo",
-        src: "img/logo.png"
+        src: "/icons/logo.webp"
       },
       items: [
+        {
+          type: "localeDropdown",
+          position: "left"
+        },
+        ...(locale === "en-US"
+          ? []
+          : [
+              {
+                href: LOCALIZATION_FEEDBACK_FORMS[locale],
+                label: "Feedback",
+                position: "left"
+              } as const
+            ]),
         {
           href: "https://github.com/Mechanical-Advantage/AdvantageScope/releases/latest",
           label: "Downloads",
@@ -136,7 +176,7 @@ const config: Config = {
       ]
     },
     footer: {
-      copyright: "Copyright © 2021-2026 Littleton Robotics",
+      copyright: "Copyright © 2021-2026 Littleton Robotics.",
       links: [
         {
           label: "Littleton Robotics",
@@ -162,9 +202,8 @@ const config: Config = {
       respectPrefersColorScheme: true
     },
     announcementBar: {
-      id: "offline_info",
-      content:
-        "This documentation is available <b>offline</b> by clicking the 📖 icon in the tab bar of AdvantageScope.",
+      id: locale === "en-US" ? "ascope_offline_info" : "ascope_localization_feedback",
+      content: locale === "en-US" ? offlineInfoAnnouncement[locale] : localizationFeedbackAnnouncement[locale],
       backgroundColor: "#446ce3",
       textColor: "#ffffff",
       isCloseable: true

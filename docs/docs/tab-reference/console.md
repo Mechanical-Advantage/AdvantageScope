@@ -2,7 +2,7 @@
 sidebar_position: 5
 ---
 
-# 💬 Console
+# 💬 Console {#console}
 
 The console view is designed to view a single string field with console data. Some suggested fields are listed below.
 
@@ -13,7 +13,7 @@ The console view is designed to view a single string field with console data. So
 
 Drag the desired field to the main view to get started. Each row represents an update to the field. For WPILib logs, a new row is created for each saved line. For AdvantageKit logs, a new row is created for each loop cycle.
 
-![Console view](./img/console-1.png)
+<img src="/img/tab-reference/console-1.webp" alt="Console view" />
 
 :::info
 Click the color palette icon to toggle highlighting for warning and error messages. For WPILib and AdvantageKit logs, messages are highlighted if they contain the text "warning" or "error".

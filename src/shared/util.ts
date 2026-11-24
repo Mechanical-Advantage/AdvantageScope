@@ -152,9 +152,48 @@ export function cleanFloat(float: number) {
 
 /** Formats a time with milliseconds using three decimal places. */
 export function formatTimeWithMS(time: number): string {
-  let seconds = Math.floor(time);
-  let milliseconds = Math.floor((time - seconds) * 1000);
-  return seconds.toString() + "." + milliseconds.toString().padStart(3, "0");
+  return time.toLocaleString(undefined, {
+    useGrouping: false,
+    minimumFractionDigits: 3,
+    maximumFractionDigits: 3
+  });
+}
+
+/** Formats a number according to the current locale. */
+export function formatNumber(value: number, fractionDigits?: number): string {
+  if (fractionDigits === undefined) {
+    return value.toLocaleString(undefined, { useGrouping: false });
+  } else {
+    return value.toLocaleString(undefined, {
+      useGrouping: false,
+      minimumFractionDigits: fractionDigits,
+      maximumFractionDigits: fractionDigits
+    });
+  }
+}
+
+/** Formats a number for general display, choosing scientific or fixed notation based on magnitude. */
+export function formatNumberAuto(value: number): string {
+  if (Math.abs(value) < 1e-9) {
+    return (0).toLocaleString(undefined, { useGrouping: false });
+  } else if (Math.abs(value) >= 1e5 || Math.abs(value) < 1e-3) {
+    return value
+      .toLocaleString(undefined, {
+        useGrouping: false,
+        notation: "scientific",
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
+      })
+      .toLowerCase();
+  } else if (value % 1 === 0) {
+    return value.toLocaleString(undefined, { useGrouping: false });
+  } else {
+    return value.toLocaleString(undefined, {
+      useGrouping: false,
+      minimumFractionDigits: 3,
+      maximumFractionDigits: 3
+    });
+  }
 }
 
 /** Formats a date to YYYY-MM-DD in local time. */
@@ -315,4 +354,41 @@ export function getSpiralIndex(x: number, y: number): number {
     offset = off1 + off2 + off3 + off4;
     return interiorCount + offset;
   }
+}
+
+/**
+ * Localizes an online documentation URL by appending the language code if not English.
+ * @param url The documentation URL (must start with https://docs.advantagescope.org)
+ * @param lang The language code (e.g., "en-US", "es-419")
+ */
+export function getDocsUrl(url: string, lang: string): string {
+  if (lang === "en-US") {
+    return url;
+  }
+  return url.replace("https://docs.advantagescope.org", `https://docs.advantagescope.org/${lang}`);
+}
+
+/**
+ * Localizes a WPILib documentation URL based on the current language.
+ * @param url The WPILib documentation URL (e.g. https://docs.wpilib.org)
+ * @param lang The language code (e.g. "es-419", "fr")
+ */
+export function getWpilibDocsUrl(url: string, lang: string): string {
+  const wpilibLangMap: Record<string, string> = {
+    "es-419": "es",
+    fr: "fr",
+    he: "he",
+    "pt-BR": "pt",
+    tr: "tr",
+    "zh-CN": "zh-cn",
+    "zh-TW": "zh-cn"
+  };
+  const wpilibLang = wpilibLangMap[lang];
+  if (wpilibLang) {
+    if (url === "https://docs.wpilib.org" || url === "https://docs.wpilib.org/") {
+      return `https://docs.wpilib.org/${wpilibLang}/stable/index.html`;
+    }
+    return url.replace("https://docs.wpilib.org/en/", `https://docs.wpilib.org/${wpilibLang}/`);
+  }
+  return url;
 }

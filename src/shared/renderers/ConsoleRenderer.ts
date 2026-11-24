@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import { AnsiUp } from "ansi_up";
+import { KeyboardUtil } from "../KeyboardUtil";
 import { SelectionMode } from "../Selection";
 import { IS_LITE } from "../buildConstants";
 import { formatTimeWithMS, upperBound } from "../util";
@@ -102,8 +103,8 @@ export default class ConsoleRenderer implements TabRenderer {
       this.EXPORT_BUTTON.addEventListener("click", () => {
         if (this.lines.length === 0) {
           window.sendMainMessage("error", {
-            title: "Cannot export console log",
-            content: "Please add a field with console data, then try again."
+            title: t("hub.console.cannotExportTitle"),
+            content: t("hub.console.addConsoleData")
           });
         } else {
           window.sendMainMessage("export-console", this.lines.map((l) => l.value).join("\n"));
@@ -133,10 +134,13 @@ export default class ConsoleRenderer implements TabRenderer {
       ) {
         return;
       }
-      if ((window.platform === "darwin" ? event.metaKey : event.ctrlKey) && event.key === "f") {
+      if (KeyboardUtil.isPrimaryModifier(event) && KeyboardUtil.matchesKey(event, "f")) {
         this.FILTER_INPUT.select();
       }
     });
+
+    // Set initial placeholder
+    this.JUMP_INPUT.placeholder = formatTimeWithMS(0);
 
     // Update field text
     this.updateData();
@@ -209,7 +213,7 @@ export default class ConsoleRenderer implements TabRenderer {
     let displayPlaceholder = placeholder + command.displayOffset;
     let placeholderText = formatTimeWithMS(displayPlaceholder);
     if (isStartAt0) {
-      placeholderText = "+" + placeholderText;
+      placeholderText = t("units.relativeValue", { value: placeholderText });
     }
     this.JUMP_INPUT.placeholder = placeholderText;
 
@@ -349,7 +353,7 @@ export default class ConsoleRenderer implements TabRenderer {
       let displayTime = timestamp + this.displayOffset;
       let text = formatTimeWithMS(displayTime);
       if (isStartAt0) {
-        text = "+" + text;
+        text = t("units.relativeValue", { value: text });
       }
       if ((row.children[0] as HTMLElement).textContent !== text) {
         (row.children[0] as HTMLElement).textContent = text;

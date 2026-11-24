@@ -1,0 +1,54 @@
+{
+  "version.label": {
+    "message": "Келесі",
+    "description": "The label for version current"
+  },
+  "sidebar.sidebar.category.Overview": {
+    "message": "Шолу",
+    "description": "The label for category 'Overview' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Overview.link.generated-index.description": {
+    "message": "Бұл беттерде AdvantageScope бағдарламасын пайдалану негіздері мен деректерге қол жеткізу жолдары сипатталған.",
+    "description": "The generated-index page description for category 'Overview' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.🧭 App Navigation": {
+    "message": "🧭 Қолданба навигациясы",
+    "description": "The label for category '🧭 App Navigation' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.📂 Log Files": {
+    "message": "📂 Журнал файлдары",
+    "description": "The label for category '📂 Log Files' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.🛜 Live Sources": {
+    "message": "🛜 Тікелей дереккөздер",
+    "description": "The label for category '🛜 Live Sources' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tab Reference": {
+    "message": "Қойындылар анықтамалығы",
+    "description": "The label for category 'Tab Reference' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tab Reference.link.generated-index.description": {
+    "message": "AdvantageScope қолданбасы деректерді қарау мен талдаудың қойындыларға негізделген көптеген тәсілдерін қолдайды. Әрбір жаңа қойынды үшін визуализация түрін таңдауға және бір түрдегі бірнеше қойындыны қатар ашып қоюға болады. Оңай реттеу үшін қойындыларға атау беруге, сондай-ақ деректерді бір уақытта қарау үшін оларды жеке қалқымалы терезелерге шығаруға болады.",
+    "description": "The generated-index page description for category 'Tab Reference' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.📉 Line Graph": {
+    "message": "📉 Сызықтық график",
+    "description": "The label for category '📉 Line Graph' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.👀 3D Field": {
+    "message": "👀 3D алаң",
+    "description": "The label for category '👀 3D Field' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.More Features": {
+    "message": "Қосымша мүмкіндіктер",
+    "description": "The label for category 'More Features' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.⚙️ Custom Assets": {
+    "message": "⚙️ Пайдаланушы активтері",
+    "description": "The label for category '⚙️ Custom Assets' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Legal": {
+    "message": "Құқықтық ақпарат",
+    "description": "The label for category 'Legal' in sidebar 'sidebar'"
+  }
+}

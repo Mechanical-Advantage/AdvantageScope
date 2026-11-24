@@ -1,9 +1,6 @@
-import PrefsImage from '../../img/prefs.png';
-import Image2 from './img/open-file-2.png';
+# 📂 Log Files {#log-files}
 
-# 📂 Log Files
-
-## Supported Formats
+## Supported Formats {#supported-formats}
 
 - **WPILOG (.wpilog)** - Produced by WPILib's [built-in data logging](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) and AdvantageKit. [URCL](/more-features/urcl) can be used to capture signals from REV motor controllers to a WPILOG file.
 - **Hoot (.hoot)** - Produced by CTRE's Phoenix 6 [signal logger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html).
@@ -17,7 +14,7 @@ import Image2 from './img/open-file-2.png';
 Hoot log files can only be opened after agreeing to CTRE's [end user license agreement](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt). AdvantageScope displays a prompt to confirm agreement to these terms when opening a Hoot log file for the first time.
 :::
 
-## Opening Logs
+## Opening Logs {#opening-logs}
 
 In the menu bar, click `File` > `Open Log(s)...`, then choose a one or more log files from the local disk. Dragging a log file from the system file browser to the AdvantageScope icon or window also causes it to open.
 
@@ -25,22 +22,22 @@ In the menu bar, click `File` > `Open Log(s)...`, then choose a one or more log 
 If multiple files are opened simultaneously, the timestamps will be aligned automatically. This enables easy comparison of log files from multiple sources. See the [Timestamps](/more-features/timestamps) page for details on timestamp display options.
 :::
 
-![Opening a saved log](./img/open-file-1.png)
+<img src="/img/overview/log-files/open-file-1.webp" alt="Opening a saved log" />
 
-## Adding New Logs
+## Adding New Logs {#adding-new-logs}
 
 After opening a log file, additional logs can be easily added to the visualization. Timestamps will be realigned automatically to synchronize with existing data.
 
 In the menu bar, click `File` > `Add News Log(s)...`, then choose a one or more log files to add to the current visualization. The fields from each log will be recorded under tables named `Log0`, `Log1`, etc.
 
-## Downloading From the Robot
+## Downloading From the Robot {#downloading-from-the-robot}
 
 <details>
 <summary>Configuration</summary>
 
 Open the preferences window by clicking `App` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS). Update the robot address and log folder.
 
-<img src={PrefsImage} alt="Diagram of preferences" height="350" />
+<img src="/img/prefs_en-US.webp" alt="Diagram of preferences" height="450" />
 </details>
 
 Click `File` > `Download Logs...` to open the download window. Log downloading is supported on Systemcore and the roboRIO. Once connected to the robot, available logs are shown with the newest at the top. Select one or more log files or folders to download (shift-click to select a range or **cmd/ctrl + A** to select all). Then click the ↓ symbol and select a save location.
@@ -49,9 +46,9 @@ Click `File` > `Download Logs...` to open the download window. Log downloading i
 When downloading multiple files, AdvantageScope skips any that already exist in the destination folder.
 :::
 
-<img src={Image2} alt="Downloading log files" height="350" />
+<img src="/img/overview/log-files/open-file-2.webp" alt="Downloading log files" height="350" />
 
-## CSV Formatting
+## CSV Formatting {#csv-formatting}
 
 CSV column names must be either "Timestamp, Key, Value" or "Timestamp, (Key), (Key), etc". Timestamp values are in seconds. The list below shows the expected format of common value types. Note that exporting and reimporting log data as a CSV is _lossy_, since CSV does not support complex field types.
 

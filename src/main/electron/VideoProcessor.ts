@@ -168,10 +168,9 @@ export class VideoProcessor {
         if (window && !window.isDestroyed()) {
           dialog.showMessageBox(window, {
             type: "error",
-            title: "Error",
-            message: "Python Installation Required",
-            detail:
-              "This feature requires Python 3.11 or above available in your system. Please install Python and try again.",
+            title: t("main.warnings.error"),
+            message: t("main.video.pythonRequired"),
+            detail: t("main.video.pythonRequiredDetail"),
             icon: WINDOW_ICON
           });
         }
@@ -224,10 +223,10 @@ export class VideoProcessor {
     if (process.platform === "linux") {
       await dialog.showMessageBox(window, {
         type: "question",
-        title: "Alert",
-        message: "FFmpeg Installation Required",
-        detail: "FFmpeg is required to process videos files. Please install FFmpeg and add to the PATH.",
-        buttons: ["OK"],
+        title: t("main.warnings.alert"),
+        message: t("main.video.ffmpegRequired"),
+        detail: t("main.video.ffmpegRequiredDetail"),
+        buttons: [t("main.buttons.ok")],
         defaultId: 0,
         icon: WINDOW_ICON
       });
@@ -237,11 +236,10 @@ export class VideoProcessor {
     // Download FFmpeg on Windows and macOS
     let ffmpegDownloadResponse = await dialog.showMessageBox(window, {
       type: "question",
-      title: "Alert",
-      message: "Download FFmpeg?",
-      detail:
-        'FFmpeg is required to process videos files. Select "Continue" to download automatically, or install FFmpeg manually and add to the PATH.',
-      buttons: ["Continue", "Stop"],
+      title: t("main.warnings.alert"),
+      message: t("main.video.downloadFfmpeg"),
+      detail: t("main.video.downloadFfmpegDetail"),
+      buttons: [t("main.buttons.continue"), t("main.buttons.stop")],
       defaultId: 0,
       icon: WINDOW_ICON
     });
@@ -349,9 +347,9 @@ export class VideoProcessor {
         dataCallback({ uuid: uuid, error: true });
         dialog.showMessageBox(window, {
           type: "error",
-          title: "Error",
-          message: "Failed to process video",
-          detail: "There was a problem while processing the video. Please try again.",
+          title: t("main.warnings.error"),
+          message: t("main.video.failedProcess"),
+          detail: t("main.video.failedProcessDetail"),
           icon: WINDOW_ICON
         });
         console.log("*** START FFMPEG OUTPUT ***");
@@ -522,9 +520,9 @@ export class VideoProcessor {
               dataCallback({ uuid: uuid, error: true });
               dialog.showMessageBox(window, {
                 type: "error",
-                title: "Error",
-                message: "Copy URL to clipboard",
-                detail: "Please copy a YouTube URL to the clipboard, then try again.",
+                title: t("main.warnings.error"),
+                message: t("main.video.copyUrl"),
+                detail: t("main.video.copyUrlDetail"),
                 icon: WINDOW_ICON
               });
             } else {
@@ -535,10 +533,9 @@ export class VideoProcessor {
                   if (silent === true) return;
                   dialog.showMessageBox(window, {
                     type: "error",
-                    title: "Error",
-                    message: "YouTube download failed",
-                    detail:
-                      "There was an error while trying to open the YouTube video. Note that this feature may fail unexpectedly due to changes on YouTube's servers. Please check for updates or choose a local video file instead.",
+                    title: t("main.warnings.error"),
+                    message: t("main.video.youtubeFailed"),
+                    detail: t("main.video.youtubeFailedDetail"),
                     icon: WINDOW_ICON
                   });
                 });
@@ -560,10 +557,9 @@ export class VideoProcessor {
             if (silent === true) return;
             dialog.showMessageBox(window, {
               type: "error",
-              title: "Error",
-              message: "TBA download failed",
-              detail:
-                "There was a problem finding the match video on The Blue Alliance. Please check your API key, or load the video using a YouTube URL or local file instead.",
+              title: t("main.warnings.error"),
+              message: t("main.video.tbaFailed"),
+              detail: t("main.video.tbaFailedDetail"),
               icon: WINDOW_ICON
             });
           });
@@ -595,9 +591,9 @@ export class VideoProcessor {
   private static getLocalPath(window: BrowserWindow): Promise<string> {
     return dialog
       .showOpenDialog(window, {
-        title: "Select a video to open",
+        title: t("main.video.openTitle"),
         properties: ["openFile"],
-        filters: [{ name: "Videos", extensions: VideoProcessor.extensions }]
+        filters: [{ name: t("main.video.filter"), extensions: VideoProcessor.extensions }]
       })
       .then((result) => {
         if (result.canceled || result.filePaths.length === 0) {
@@ -696,10 +692,10 @@ export class VideoProcessor {
             },
             window
           );
-          return (output as string).trim() || "Unknown Video";
+          return (output as string).trim() || t("main.video.unknownVideo");
         } catch (e) {
           if (String(e) === "Error: Python missing") throw e; // Stop immediately if python is missing
-          return "Unknown Video";
+          return t("main.video.unknownVideo");
         }
       });
 

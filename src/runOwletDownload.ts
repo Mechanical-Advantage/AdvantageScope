@@ -15,7 +15,7 @@ function download(platform: string) {
   });
 }
 
-console.log("Downloading owlet...");
+console.log("Downloading Owlet...");
 download("mac-x64");
 download("mac-arm64");
 download("linux-x64");

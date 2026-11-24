@@ -433,13 +433,25 @@ export default class JoysticksRenderer implements TabRenderer {
           }
         });
       } else {
+        const isRtl = document.documentElement.dir === "rtl";
+        const columnCount = Math.max(
+          Math.min(joystick.state.buttons.length, 6),
+          Math.min(joystick.state.axes.length, 6),
+          Math.min(joystick.state.povs.length, 6),
+          Math.min(joystick.state.touchpads.length, 6)
+        );
+        const getCol = (colIndex: number) => {
+          let col = colIndex % 6;
+          return isRtl ? columnCount - 1 - col : col;
+        };
+
         // Draw buttons
         let buttonRows = Math.ceil(joystick.state.buttons.length / 6);
         joystick.state.buttons.forEach((button, index) => {
           let buttonLayout = drawButton(
             false,
             false,
-            [70 + (index % 6) * 100, 70 + Math.floor(index / 6) * 100],
+            [70 + getCol(index) * 100, 70 + Math.floor(index / 6) * 100],
             [60, 60],
             button.state
           );
@@ -455,7 +467,7 @@ export default class JoysticksRenderer implements TabRenderer {
         joystick.state.axes.forEach((axis, index) => {
           let axisLayout = drawAxis(
             false,
-            [95 + (index % 6) * 100, 70 + (Math.floor(index / 6) + buttonRows) * 100],
+            [(isRtl ? 45 : 95) + getCol(index) * 100, 70 + (Math.floor(index / 6) + buttonRows) * 100],
             [30, 80],
             scaleValue(axis.value, [-1, 1], [0, 1])
           );
@@ -463,14 +475,18 @@ export default class JoysticksRenderer implements TabRenderer {
           context.textAlign = "center";
           context.textBaseline = "middle";
           context.fillStyle = isLight ? this.BLACK_COLOR : this.WHITE_COLOR;
-          context.fillText(axis.id.toString(), axisLayout[0] - axisLayout[2], axisLayout[1] + axisLayout[3] / 2);
+          context.fillText(
+            axis.id.toString(),
+            isRtl ? axisLayout[0] + axisLayout[2] * 2 : axisLayout[0] - axisLayout[2],
+            axisLayout[1] + axisLayout[3] / 2
+          );
         });
 
         // Draw POVs
         let povRows = Math.ceil(joystick.state.povs.length / 6);
         joystick.state.povs.forEach((pov, index) => {
           // Draw POV buttons
-          let povCenter = [70 + (index % 6) * 100, 70 + (Math.floor(index / 6) + buttonRows + axisRows) * 100];
+          let povCenter = [70 + getCol(index) * 100, 70 + (Math.floor(index / 6) + buttonRows + axisRows) * 100];
           let povValue = pov.angle;
           let upActive = povValue === 315 || povValue === 0 || povValue === 45;
           let rightActive = povValue === 45 || povValue === 90 || povValue === 135;
@@ -494,10 +510,9 @@ export default class JoysticksRenderer implements TabRenderer {
         });
 
         // Draw touchpads
-        let touchpadRows = Math.ceil(joystick.state.touchpads.length / 6);
         joystick.state.touchpads.forEach((touchpad, index) => {
           let touchpadCenter: [number, number] = [
-            95 + index * 140,
+            isRtl ? backgroundWidth - 95 - (index % 6) * 140 : 95 + (index % 6) * 140,
             70 + (Math.floor(index / 6) + buttonRows + axisRows + povRows) * 100
           ];
           let touchpadLayout = drawButton(false, false, touchpadCenter, [80, 80], false);
@@ -517,12 +532,14 @@ export default class JoysticksRenderer implements TabRenderer {
 
           // Draw touchpad text just outside to the left
           context.font = (touchpadLayout[3] * 0.4).toString() + "px sans-serif";
-          context.textAlign = "right";
+          context.textAlign = isRtl ? "left" : "right";
           context.textBaseline = "middle";
           context.fillStyle = isLight ? this.BLACK_COLOR : this.WHITE_COLOR;
           context.fillText(
             index.toString(),
-            touchpadLayout[0] - touchpadLayout[2] / 2 - touchpadLayout[2] * 0.2,
+            isRtl
+              ? touchpadLayout[0] + touchpadLayout[2] / 2 + touchpadLayout[2] * 0.2
+              : touchpadLayout[0] - touchpadLayout[2] / 2 - touchpadLayout[2] * 0.2,
             touchpadLayout[1]
           );
         });
@@ -537,7 +554,11 @@ export default class JoysticksRenderer implements TabRenderer {
           context.textAlign = "center";
           context.textBaseline = "middle";
           context.fillStyle = isLight ? this.BLACK_COLOR : this.WHITE_COLOR;
-          context.fillText("No data for joystick.", joystickLeft + joystickWidth / 2, joystickTop + joystickHeight / 2);
+          context.fillText(
+            t("hub.joysticks.noData"),
+            joystickLeft + joystickWidth / 2,
+            joystickTop + joystickHeight / 2
+          );
         }
       }
     });
@@ -548,7 +569,7 @@ export default class JoysticksRenderer implements TabRenderer {
       context.textAlign = "center";
       context.textBaseline = "middle";
       context.fillStyle = isLight ? this.BLACK_COLOR : this.WHITE_COLOR;
-      context.fillText("Select a joystick layout to view data.", canvasWidth / 2, canvasHeight / 2);
+      context.fillText(t("hub.joysticks.selectLayout"), canvasWidth / 2, canvasHeight / 2);
     }
   }
 }

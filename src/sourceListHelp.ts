@@ -7,7 +7,7 @@
 
 import { ensureThemeContrast } from "./shared/Colors";
 import NamedMessage from "./shared/NamedMessage";
-import { SourceListConfig, SourceListOptionValueConfig } from "./shared/SourceListConfig";
+import { SourceListConfig, getSourceListPrefix, tOption, tType, tValue } from "./shared/SourceListConfig";
 import LoggableType from "./shared/log/LoggableType";
 
 let themeCallbacks: (() => void)[] = [];
@@ -25,13 +25,14 @@ window.addEventListener("message", (event) => {
       let config: SourceListConfig = message.data;
 
       // Update title
-      document.title = config.title + " Help \u2014 AdvantageScope";
+      document.title = t("sourceListHelp.title", { name: t(config.title) });
+      let prefix = getSourceListPrefix(config.title);
 
       // Add items
       let usedColors: string[] = [];
       config.types.forEach((typeConfig) => {
         if (!typeConfig.showDocs) return;
-        let title = typeConfig.display;
+        let title = tType(prefix, typeConfig.key);
         let symbol = typeConfig.symbol;
 
         // Get colors
@@ -43,7 +44,7 @@ window.addEventListener("message", (event) => {
           if (colorOptionConfig !== undefined) {
             let i = 0;
             do {
-              lightColor = colorOptionConfig.values[i].key;
+              lightColor = colorOptionConfig.values[i];
               i++;
             } while (usedColors.includes(lightColor));
             usedColors.push(lightColor);
@@ -66,7 +67,9 @@ window.addEventListener("message", (event) => {
         });
         sourceTypes = sourceTypes.map((type) => {
           if (Object.values(LoggableType).includes(type)) {
-            return type.replaceAll("Array", "[]").toLowerCase();
+            let key = type.charAt(0).toLowerCase() + type.slice(1);
+            let res = t("sourceListHelp.logTypes." + key);
+            return res !== "sourceListHelp.logTypes." + key ? res : type.replaceAll("Array", "[]").toLowerCase();
           } else {
             return type.split(":")[0];
           }
@@ -76,18 +79,26 @@ window.addEventListener("message", (event) => {
         let parentTypes: string[] = [];
         if (typeConfig.childOf !== undefined) {
           config.types.forEach((extraTypeConfig) => {
-            if (extraTypeConfig.parentKey === typeConfig.childOf && !parentTypes.includes(extraTypeConfig.display)) {
-              parentTypes.push(extraTypeConfig.display);
+            if (extraTypeConfig.parentKey === typeConfig.childOf) {
+              let extraTitle = tType(prefix, extraTypeConfig.key);
+              if (!parentTypes.includes(extraTitle)) {
+                parentTypes.push(extraTitle);
+              }
             }
           });
         }
 
         // Get options
-        let options: { name: string; values: SourceListOptionValueConfig[] }[] = typeConfig.options.map(
+        let options: { name: string; values: { key: string; display: string }[] }[] = typeConfig.options.map(
           (optionConfig) => {
             return {
-              name: optionConfig.display,
-              values: optionConfig.values
+              name: tOption(prefix, typeConfig.key, optionConfig.key),
+              values: optionConfig.values.map((valueKey) => {
+                return {
+                  key: valueKey,
+                  display: tValue(prefix, typeConfig.key, optionConfig.key, valueKey)
+                };
+              })
             };
           }
         );
@@ -120,7 +131,7 @@ function addItem(
   darkColor: string,
   sourceTypes: string[],
   parentTypes: string[],
-  options: { name: string; values: SourceListOptionValueConfig[] }[]
+  options: { name: string; values: { key: string; display: string }[] }[]
 ) {
   let typeHeader = document.createElement("div");
   typeHeader.classList.add("type-header");
@@ -156,7 +167,9 @@ function addItem(
     let parentWarning = document.createElement("div");
     parentWarning.classList.add("parent-warning");
     document.body.appendChild(parentWarning);
-    parentWarning.innerText = "Add to existing " + makeCommaList(parentTypes.map((str) => '"' + str + '"')) + " item.";
+    parentWarning.innerText = t("sourceListHelp.parentWarning", {
+      items: parentTypes.map((str) => t("sourceListHelp.quoted", { name: str }))
+    });
   }
 
   if (options.length > 0) {
@@ -173,12 +186,12 @@ function addItem(
 
       let nameCell = document.createElement("td");
       row.appendChild(nameCell);
-      nameCell.innerHTML = option.name + ":";
+      nameCell.innerHTML = t("sourceListHelp.optionName", { name: option.name });
 
       let valuesCell = document.createElement("td");
       row.appendChild(valuesCell);
       let valueStrings = option.values.map((optionConfig) => "<span>" + optionConfig.display + "</span>");
-      valuesCell.innerHTML = makeCommaList(valueStrings);
+      valuesCell.innerHTML = t("sourceListHelp.listOr", { list: valueStrings });
       Array.from(valuesCell.getElementsByTagName("span")).forEach((span, index) => {
         let valueKey = option.values[index].key;
         if (valueKey.startsWith("#")) {
@@ -195,18 +208,8 @@ function addItem(
   let sourceTypesDiv = document.createElement("div");
   sourceTypesDiv.classList.add("source-types");
   document.body.appendChild(sourceTypesDiv);
-  sourceTypesDiv.innerText = "Source" + (sourceTypes.length === 1 ? "" : "s") + ": " + makeCommaList(sourceTypes);
-}
-
-function makeCommaList(values: string[]): string {
-  switch (values.length) {
-    case 0:
-      return "";
-    case 1:
-      return values[0];
-    case 2:
-      return values[0] + " or " + values[1];
-    default:
-      return [...values.slice(0, -1), "or " + values[values.length - 1]].join(", ");
-  }
+  sourceTypesDiv.innerText = t("sourceListHelp.sources", {
+    count: sourceTypes.length,
+    list: sourceTypes
+  });
 }

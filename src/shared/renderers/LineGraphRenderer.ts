@@ -6,11 +6,12 @@
 // at the root directory of this project.
 
 import ScrollSensor from "../../hub/ScrollSensor";
+import { isolateValue } from "../bidi";
 import { ensureThemeContrast } from "../Colors";
 import LineGraphFilter from "../LineGraphFilter";
 import { SelectionMode } from "../Selection";
 import { Units } from "../units";
-import { calcAxisStepSize, clampValue, cleanFloat, scaleValue, shiftColor, ValueScaler } from "../util";
+import { calcAxisStepSize, clampValue, cleanFloat, formatNumber, scaleValue, shiftColor, ValueScaler } from "../util";
 import TabRenderer from "./TabRenderer";
 
 export default class LineGraphRenderer implements TabRenderer {
@@ -125,14 +126,15 @@ export default class LineGraphRenderer implements TabRenderer {
 
   private getAxisValueText(value: number, units: Units.UnitConfig | null, filter: LineGraphFilter): string {
     let valueClean = Math.abs(value) < this.MAX_DECIMAL_VALUE ? cleanFloat(value) : Math.round(value);
-    let output = valueClean.toString();
+    let output = valueClean.toLocaleString(undefined, { useGrouping: false });
     if (units !== null) {
-      let suffix = Units.getSuffixForFilter(units.suffix, filter);
-      output += suffix.length > 1 ? " " : "";
-      output += suffix;
-      if (filter === LineGraphFilter.None && units.pluralizeSuffix && value !== 1) output += "s";
+      let unitKey = Object.keys(Units.ALL_UNITS).find((k) => Units.ALL_UNITS[k] === units) ?? null;
+      if (unitKey !== null) {
+        let filteredKey = Units.getFilteredUnitKey(unitKey, filter);
+        return isolateValue(t(`units.values.${filteredKey}`, { value: output, count: value }));
+      }
     }
-    return output;
+    return isolateValue(output);
   }
 
   render(command: LineGraphRendererCommand): void {
@@ -520,11 +522,16 @@ export default class LineGraphRenderer implements TabRenderer {
     let formatMarkedTimestampText = (time: number, isDelta: boolean = false): string => {
       let displayTime = isDelta ? time : time + displayOffset;
       let fractionDigits = Math.max(0, -Math.floor(Math.log10(timeStepSize / 10)));
-      let text = displayTime.toFixed(fractionDigits) + "s";
+      let formattedValue = formatNumber(displayTime, fractionDigits);
       if (isStartAt0 && !isDelta) {
-        text = "+" + text;
+        formattedValue = t("units.relativeValue", { value: formattedValue });
       }
-      return text;
+      return isolateValue(
+        t("units.values.seconds", {
+          value: formattedValue,
+          count: displayTime
+        })
+      );
     };
 
     // Write formatted timestamp popups to graph view
@@ -597,7 +604,9 @@ export default class LineGraphRenderer implements TabRenderer {
         hoveredX = hoveredX as number;
         hoveredText = hoveredText as string;
 
-        let deltaText = "\u0394" + formatMarkedTimestampText(command.hoveredTime - command.selectedTime, true);
+        let deltaText = t("units.deltaValue", {
+          value: formatMarkedTimestampText(command.hoveredTime - command.selectedTime, true)
+        });
         let xSpace = clampValue(selectedX, graphLeft, graphLeft + graphWidth) - hoveredX;
         let textHalfWidths =
           (context.measureText(selectedText).width + 10) / 2 + (context.measureText(hoveredText).width + 10) / 2 + 4;
@@ -737,10 +746,17 @@ export default class LineGraphRenderer implements TabRenderer {
         x = graphLeft + graphWidth;
       }
 
-      let text = cleanFloat(stepPos).toString() + "s";
+      let value = cleanFloat(stepPos);
+      let formattedValue = value.toLocaleString(undefined, { useGrouping: false });
       if (isStartAt0) {
-        text = "+" + text;
+        formattedValue = t("units.relativeValue", { value: formattedValue });
       }
+      let text = isolateValue(
+        t("units.values.seconds", {
+          value: formattedValue,
+          count: value
+        })
+      );
 
       context.globalAlpha = 1;
       context.fillText(text, x, graphTop + graphHeight + 15);

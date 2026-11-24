@@ -5,11 +5,11 @@ sidebar_position: 11
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📍 Points
+# 📍 Points {#points}
 
 The points tab shows a 2D visualization of arbitrary points. This is a very flexible tool, allowing for custom visualizations of vision data/pipelines, mechanism states, etc.
 
-![Point tab example](./img/points-1.png)
+<img src="/img/tab-reference/points-1.webp" alt="Point tab example" />
 
 <details>
 <summary>Timeline Controls</summary>
@@ -20,11 +20,11 @@ Yellow sections indicate when the robot is autonomous, blue sections indicate wh
 
 To zoom, place the cursor over the timeline and scroll up or down. A range can also be selecting by clicking and dragging while holding `Shift`. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the timeline. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again. Press `Ctrl+\` to zoom to the period where the robot is enabled.
 
-![Timeline](./img/timeline.png)
+<img src="/img/tab-reference/timeline.webp" alt="Timeline" />
 
 </details>
 
-## Adding Sources
+## Adding Sources {#adding-sources}
 
 To get started, drag a field to the "Sources" section. Delete a source using the X button, or hide it temporarily by clicking the eye icon or double-clicking the field name. To remove all objects, click the trash can near the axis title and then `Clear All`. Sources can be rearranged in the list by clicking and dragging.
 
@@ -34,7 +34,7 @@ To get started, drag a field to the "Sources" section. Delete a source using the
 To see a full list of supported sources types, click the `?` icon. This list also includes the supported data types.
 :::
 
-## Data Format
+## Data Format {#data-format}
 
 Point data should be published as a byte-encoded struct or protobuf, using the `Translation2d[]` type. Many libraries support this format, including WPILib and AdvantageKit. The example code below shows how to log point data in Java.
 
@@ -67,7 +67,7 @@ Logger.recordOutput("MyTranslations",
 </TabItem>
 </Tabs>
 
-## Configuration
+## Configuration {#configuration}
 
 The following configuration options are available:
 

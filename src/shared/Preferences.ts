@@ -9,6 +9,7 @@ import { CoordinateSystem } from "./AdvantageScopeAssets";
 
 /** A set of application preferences. */
 export default interface Preferences {
+  language: string;
   theme: "light" | "dark" | "system";
   robotAddress: string;
   remotePath: string;
@@ -24,6 +25,7 @@ export default interface Preferences {
   tbaApiKey: string;
   userAssetsFolder: string | null;
   skipHootNonProWarning: boolean;
+  skipLanguageWarning: boolean;
   skipFRCCoordinateSystemWarning: boolean;
   skipFTCCoordinateSystemWarning: boolean;
   ctreLicenseAccepted: boolean;
@@ -34,7 +36,25 @@ export default interface Preferences {
   timestamps: "start-zero" | "original";
 }
 
+export const SUPPORTED_LANGS = [
+  "en-US",
+  "es-419",
+  "fr",
+  "nl",
+  "pt-BR",
+  "ro",
+  "tr",
+  "ru",
+  "kk",
+  "he",
+  "ar",
+  "hi",
+  "zh-CN",
+  "zh-TW"
+];
+
 export const DEFAULT_PREFS: Preferences = {
+  language: "",
   theme: "system",
   robotAddress: "robot.local",
   remotePath: "/U/logs",
@@ -50,6 +70,7 @@ export const DEFAULT_PREFS: Preferences = {
   tbaApiKey: "",
   userAssetsFolder: null,
   skipHootNonProWarning: false,
+  skipLanguageWarning: false,
   skipFRCCoordinateSystemWarning: false,
   skipFTCCoordinateSystemWarning: false,
   ctreLicenseAccepted: false,
@@ -70,17 +91,17 @@ export type LiveMode = "nt4" | "nt4-akit" | "nt4-systemcore" | "phoenix" | "rlog
 export function getLiveModeName(mode: LiveMode): string {
   switch (mode) {
     case "nt4":
-      return "NetworkTables";
+      return t("liveModeName.nt4");
     case "nt4-akit":
-      return "NetworkTables (AdvantageKit)";
+      return t("liveModeName.nt4Akit");
     case "nt4-systemcore":
-      return "Systemcore Diagnostics";
+      return t("liveModeName.nt4Systemcore");
     case "phoenix":
-      return "Phoenix Diagnostics";
+      return t("liveModeName.phoenix");
     case "rlog":
-      return "RLOG Server";
+      return t("liveModeName.rlog");
     case "ftcdashboard":
-      return "FTC Dashboard";
+      return t("liveModeName.ftcdashboard");
   }
 }
 
@@ -89,6 +110,9 @@ export function getLiveModeName(mode: LiveMode): string {
 export const LITE_ALLOWED_LIVE_MODES: LiveMode[] = ["nt4", "nt4-akit", "nt4-systemcore", "ftcdashboard"];
 
 export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
+  if ("language" in newPrefs && typeof newPrefs.language === "string" && SUPPORTED_LANGS.includes(newPrefs.language)) {
+    basePrefs.language = newPrefs.language;
+  }
   if ("theme" in newPrefs && (newPrefs.theme === "light" || newPrefs.theme === "dark" || newPrefs.theme === "system")) {
     basePrefs.theme = newPrefs.theme;
   }
@@ -193,6 +217,9 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   }
   if ("skipHootNonProWarning" in newPrefs && typeof newPrefs.skipHootNonProWarning === "boolean") {
     basePrefs.skipHootNonProWarning = newPrefs.skipHootNonProWarning;
+  }
+  if ("skipLanguageWarning" in newPrefs && typeof newPrefs.skipLanguageWarning === "boolean") {
+    basePrefs.skipLanguageWarning = newPrefs.skipLanguageWarning;
   }
   if ("skipFRCCoordinateSystemWarning" in newPrefs && typeof newPrefs.skipFRCCoordinateSystemWarning === "boolean") {
     basePrefs.skipFRCCoordinateSystemWarning = newPrefs.skipFRCCoordinateSystemWarning;

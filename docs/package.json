@@ -2,8 +2,8 @@
   "name": "advantagescope-docs",
   "scripts": {
     "start": "docusaurus start",
-    "build": "docusaurus build",
-    "build-embed": "docusaurus build --config docusaurus-embed.config.ts",
+    "build": "docusaurus build && node cleanImg.mjs",
+    "build-embed": "docusaurus build --config docusaurus-embed.config.ts && node cleanImg.mjs",
     "clear": "docusaurus clear",
     "serve": "docusaurus serve"
   },

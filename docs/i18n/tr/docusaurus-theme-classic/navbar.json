@@ -1,0 +1,22 @@
+{
+  "title": {
+    "message": "AdvantageScope dokümantasyonu",
+    "description": "The title in the navbar"
+  },
+  "logo.alt": {
+    "message": "AdvantageScope logosu",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.Feedback": {
+    "message": "Geri bildirim",
+    "description": "Navbar item with label Feedback"
+  },
+  "item.label.Downloads": {
+    "message": "İndirmeler",
+    "description": "Navbar item with label Downloads"
+  },
+  "item.label.GitHub": {
+    "message": "GitHub",
+    "description": "Navbar item with label GitHub"
+  }
+}

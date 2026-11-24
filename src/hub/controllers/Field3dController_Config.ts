@@ -10,14 +10,13 @@ import { SourceListConfig } from "../../shared/SourceListConfig";
 import { SwerveArrangementValues } from "./SwerveController_Config";
 
 const Field3dController_Config: SourceListConfig = {
-  title: "Poses",
+  title: "hub.field.poses",
   autoAdvance: true,
   allowChildrenFromDrag: false,
   typeMemoryId: "field3d",
   types: [
     {
       key: "robot",
-      display: "Robot",
       symbol: "nearme",
       showInTypeName: false,
       color: "#000000",
@@ -36,7 +35,6 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "model",
-          display: "Model",
           showInTypeName: true,
           values: []
         }
@@ -47,7 +45,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "ghost",
-      display: "Ghost",
       symbol: "nearmeoutline",
       showInTypeName: true,
       color: "color",
@@ -65,24 +62,18 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "model",
-          display: "Model",
           showInTypeName: true,
           values: []
         },
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: NeonColors
         },
         {
           key: "fadeOut",
-          display: "Fade When Stale",
           showInTypeName: false,
-          values: [
-            { key: "off", display: "Off" },
-            { key: "on", display: "On" }
-          ]
+          values: ["off", "on"]
         }
       ],
       initialSelectionOption: "model",
@@ -91,7 +82,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "component",
-      display: "Component",
       symbol: "extension",
       showInTypeName: true,
       color: "#9370db",
@@ -103,7 +93,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "mechanism",
-      display: "Mechanism",
       symbol: "settings",
       showInTypeName: true,
       color: "#888888",
@@ -112,19 +101,14 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "plane",
-          display: "Plane",
           showInTypeName: false,
-          values: [
-            { key: "xz", display: "XZ Plane" },
-            { key: "yz", display: "YZ Plane" }
-          ]
+          values: ["xz", "yz"]
         }
       ],
       childOf: "robot"
     },
     {
       key: "vision",
-      display: "Vision Target",
       symbol: "target",
       showInTypeName: true,
       color: "color",
@@ -146,18 +130,13 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: NeonColors
         },
         {
           key: "size",
-          display: "Thickness",
           showInTypeName: false,
-          values: [
-            { key: "normal", display: "Normal" },
-            { key: "bold", display: "Bold" }
-          ]
+          values: ["normal", "bold"]
         }
       ],
       childOf: "robot",
@@ -165,7 +144,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "swerveModuleVelocities",
-      display: "Swerve Module Velocities",
       symbol: "zoomoutmap",
       showInTypeName: true,
       color: "color",
@@ -174,13 +152,11 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: NeonColors_RedStart
         },
         {
           key: "arrangement",
-          display: "Arrangement",
           showInTypeName: false,
           values: SwerveArrangementValues
         }
@@ -191,7 +167,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "rotationOverride",
-      display: "Rotation Override",
       symbol: "360",
       showInTypeName: true,
       color: "#000000",
@@ -204,7 +179,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "rotationOverrideLegacy",
-      display: "Rotation Override",
       symbol: "360",
       showInTypeName: true,
       color: "#000000",
@@ -214,12 +188,8 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "units",
-          display: "Rotation Units",
           showInTypeName: false,
-          values: [
-            { key: "radians", display: "Radians" },
-            { key: "degrees", display: "Degrees" }
-          ]
+          values: ["radians", "degrees"]
         }
       ],
       childOf: "robot",
@@ -227,7 +197,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "gamePiece",
-      display: "Game Piece",
       symbol: "chesspawn",
       showInTypeName: false,
       color: "#ffd700",
@@ -236,7 +205,6 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "variant",
-          display: "Variant",
           showInTypeName: true,
           values: []
         }
@@ -246,7 +214,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "trajectory",
-      display: "Trajectory",
       symbol: "conversionpath",
       showInTypeName: true,
       color: "color",
@@ -265,25 +232,19 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: NeonColors
         },
         {
           key: "size",
-          display: "Thickness",
           showInTypeName: false,
-          values: [
-            { key: "normal", display: "Normal" },
-            { key: "bold", display: "Bold" }
-          ]
+          values: ["normal", "bold"]
         }
       ],
       previewType: "Translation3d"
     },
     {
       key: "heatmap",
-      display: "Heatmap",
       symbol: "map",
       showInTypeName: true,
       color: "#ff0000",
@@ -305,16 +266,8 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "timeRange",
-          display: "Time Range",
           showInTypeName: false,
-          values: [
-            { key: "enabled", display: "Enabled" },
-            { key: "auto", display: "Auto" },
-            { key: "teleop", display: "Teleop" },
-            { key: "teleop-no-endgame", display: "Teleop (No Endgame)" },
-            { key: "full", display: "Full Log" },
-            { key: "visible", display: "Visible Range" }
-          ]
+          values: ["enabled", "auto", "teleop", "teleop-no-endgame", "full", "visible"]
         }
       ],
       initialSelectionOption: "timeRange",
@@ -322,7 +275,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "aprilTag",
-      display: "AprilTag",
       symbol: "qrcode",
       showInTypeName: true,
       color: "#000000",
@@ -332,7 +284,6 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "variant",
-          display: "Variant",
           showInTypeName: true,
           values: []
         }
@@ -343,7 +294,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "aprilTagIDs",
-      display: "AprilTag IDs",
       symbol: "numbers",
       showInTypeName: true,
       color: "#000000",
@@ -356,7 +306,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "axes",
-      display: "Axes",
       symbol: "explore",
       showInTypeName: true,
       color: "#000000",
@@ -368,7 +317,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "cone",
-      display: "Cone",
       symbol: "navigation",
       showInTypeName: true,
       color: "color",
@@ -387,19 +335,13 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: NeonColors
         },
         {
           key: "position",
-          display: "Position",
           showInTypeName: true,
-          values: [
-            { key: "center", display: "Center" },
-            { key: "back", display: "Back" },
-            { key: "front", display: "Front" }
-          ]
+          values: ["center", "back", "front"]
         }
       ],
       initialSelectionOption: "color",
@@ -407,7 +349,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "cameraOverride",
-      display: "Camera Override",
       symbol: "photocamera",
       showInTypeName: true,
       color: "#888888",

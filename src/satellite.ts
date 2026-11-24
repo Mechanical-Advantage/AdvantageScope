@@ -5,7 +5,9 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { TFunction } from "i18next";
 import { AdvantageScopeAssets } from "./shared/AdvantageScopeAssets";
+import { KeyboardUtil } from "./shared/KeyboardUtil";
 import NamedMessage from "./shared/NamedMessage";
 import Preferences from "./shared/Preferences";
 import Selection, { SelectionMode } from "./shared/Selection";
@@ -31,6 +33,7 @@ const SAVE_PERIOD_MS = 250;
 
 declare global {
   interface Window {
+    t: TFunction;
     assets: AdvantageScopeAssets | null;
     preferences: Preferences | null;
     isBattery: boolean;
@@ -146,8 +149,13 @@ window.addEventListener("message", (event) => {
           let titleElement = document.getElementsByTagName("title")[0] as HTMLElement;
           let newTitle = message.data.title;
           if (newTitle !== title) {
+            const windowTitleSuffix = t("satellite.title");
             titleElement.innerHTML =
-              (type !== null ? getTabIcon(type) + " " : "") + htmlEncode(newTitle) + " &mdash; AdvantageScope";
+              (type !== null ? getTabIcon(type) + " " : "") +
+              t("satellite.windowTitle", {
+                title: htmlEncode(newTitle),
+                app: htmlEncode(windowTitleSuffix)
+              });
             title = newTitle;
           }
 
@@ -233,22 +241,15 @@ window.addEventListener("keydown", (event) => {
   ) {
     return;
   }
-  switch (event.code) {
-    case "Space":
-      event.preventDefault();
-      window.selection.togglePlayback();
-      break;
-
-    case "KeyL":
-      event.preventDefault();
-      window.selection.toggleLock();
-      break;
-
-    case "ArrowLeft":
-    case "ArrowRight":
-      event.preventDefault();
-      window.selection.stepCycle(event.code === "ArrowRight");
-      break;
+  if (event.code === "Space") {
+    event.preventDefault();
+    if (!event.repeat) window.selection.togglePlayback();
+  } else if (KeyboardUtil.matchesKey(event, "l")) {
+    event.preventDefault();
+    if (!event.repeat) window.selection.toggleLock();
+  } else if (event.code === "ArrowLeft" || event.code === "ArrowRight") {
+    event.preventDefault();
+    window.selection.stepCycle(event.code === "ArrowRight");
   }
 });
 

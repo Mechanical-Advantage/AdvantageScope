@@ -1,8 +1,8 @@
 <h1>
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/docs/img/banner-ltr-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="docs/docs/img/banner-ltr-light.png">
-    <img alt="AdvantageScope" src="docs/docs/img/banner-ltr-light.png">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/static/img/banner-ltr-dark.webp">
+    <source media="(prefers-color-scheme: light)" srcset="docs/static/img/banner-ltr-light.webp">
+    <img alt="AdvantageScope" src="docs/static/img/banner-ltr-light.webp">
   </picture>
 </h1>
 
