@@ -21,12 +21,12 @@
     "format": "license-check-and-add add -f file-header-config.json && prettier --write .",
     "check-format": "license-check-and-add check -f file-header-config.json && prettier --check .",
     "wasm:compile": "node wasmCompile.mjs",
-    "docs:start": "cd docs && npm run start && cd ..",
-    "docs:build": "cd docs && npm run build && cd ..",
-    "docs:build-embed": "cd docs && npm run build-embed && cd ..",
-    "docs:clear": "cd docs && npm run clear && cd ..",
-    "docs:serve": "cd docs && npm run serve && cd ..",
-    "postinstall": "cd docs && npm install && cd .. && node getLicenses.mjs && node tesseractLangDownload.mjs && node bundleLiteAssets.mjs && npm run download-owlet"
+    "docs:start": "npm --prefix docs run start",
+    "docs:build": "npm --prefix docs run build",
+    "docs:build-embed": "npm --prefix docs run build-embed",
+    "docs:clear": "npm --prefix docs run clear",
+    "docs:serve": "npm --prefix docs run serve",
+    "postinstall": "npm --prefix docs install && node getLicenses.mjs && node tesseractLangDownload.mjs && node bundleLiteAssets.mjs && npm run download-owlet"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.29.14",
