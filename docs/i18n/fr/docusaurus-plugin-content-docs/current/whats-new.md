@@ -8,7 +8,7 @@ sidebar_position: 2
 <img src="/img/whats-new/banner-2027-ltr-light.webp" className="light-only" />
 <img src="/img/whats-new/banner-2027-ltr-dark.webp" className="dark-only" />
 
-La version 2027 d'AdvantageScope est maintenant disponible ! Consultez la [documentation d'installation](/overview/installation) et le [journal des modifications complet](https://github.com/Mechanical-Advantage/AdvantageScope/releases) pour plus de détails. Cette version apporte plusieurs nouveautés majeures et de nombreuses améliorations dans toute l'application. C'est également la première version d'AdvantageScope à prendre entièrement en charge Systemcore.
+La version 2027 d'AdvantageScope est maintenant disponible, apportant la prise en charge complète de Systemcore ainsi que plus de **100 nouvelles fonctionnalités et mises à jour** dans toute l'application. Consultez la [documentation d'installation](/overview/installation) et le [journal des modifications complet](https://github.com/Mechanical-Advantage/AdvantageScope/releases) pour plus de détails. Cette page met en avant les principales nouveautés et améliorations de cette version.
 
 **Vos retours sont précieux ! Vos commentaires, suggestions de fonctionnalités et rapports de bogues sont les bienvenus sur la [page des problèmes](https://github.com/Mechanical-Advantage/AdvantageScope/issues).**
 
@@ -62,7 +62,7 @@ La documentation a été enrichie avec une nouvelle [série de tutoriels](/categ
 2. **🤖 [Sur le terrain : visualisation du robot](/tutorials/to-the-field) :** Publier des poses 2D/3D, des trajectoires et des objets `Mechanism2d` sur des terrains FRC et FTC.
 3. **🕹️ [Prendre le contrôle : DS et manettes](/tutorials/taking-control) :** Diffuser les diagnostics en direct de la console de pilotage, synchroniser les journaux du robot et de la DS, afficher la sortie console et visualiser les entrées des manettes.
 
-Les exemples de code dans toute la documentation ont également été mis à jour pour couvrir l'API de télémétrie de WPILib dans plusieurs langages.
+Les exemples de code dans toute la documentation ont également été mis à jour pour couvrir l'API `Telemetry` de WPILib dans plusieurs langages.
 
 <img src="/img/tutorials/to-the-field-4.webp" alt="Visualisation du terrain 3D tirée du tutoriel Sur le terrain" />
 
@@ -72,7 +72,7 @@ _L'interface en anglais est illustrée ci-dessus._
 
 AdvantageTune est une nouvelle application autonome pour iPhone et iPad qui offre une expérience de réglage mobile légère en complément d'AdvantageScope. Vous pouvez consulter et modifier en direct des rubriques [NetworkTables](https://docs.wpilib.org/fr/stable/docs/software/networktables/index.html) (y compris les types primitifs, les tableaux, les structs WPILib et les Protobufs) directement depuis votre téléphone, permettant à chacun de participer facilement au réglage du code du robot.
 
-AdvantageTune et AdvantageScope simplifient tous deux l'exportation des valeurs réglées vers le code du robot grâce à des boutons permettant d'enregistrer toutes les valeurs réglées dans une liste partageable ([documentation](/overview/live-sources/tuning-mode)).
+AdvantageTune et AdvantageScope simplifient tous deux l'exportation des valeurs réglées vers le code du robot grâce à des boutons permettant d'enregistrer toutes les valeurs réglées dans un fichier texte pour les partager facilement ([documentation](/overview/live-sources/tuning-mode)).
 
 [<img src="/img/app-store_fr.svg" alt="App Store" />](https://apps.apple.com/ca/app/advantagetune/id6811453643?l=fr)
 
@@ -88,7 +88,7 @@ _L'interface en anglais est illustrée ci-dessus._
 
 ## 🪐 Journalisation universelle WPILOG {#wpilog-universal-logging}
 
-Avec la [journalisation universelle](/more-features/universal-logging), un seul fichier WPILOG peut désormais servir de conteneur universel pour plusieurs flux et formats de journaux, y compris les journaux d'appareils spécifiques aux fabricants, les données CSV et les fichiers WPILOG enfants. La journalisation universelle remplace URCL par une approche flexible et indépendante des fabricants : les données de chaque source sont automatiquement synchronisées et fusionnées dans une seule arborescence unifiée dans la barre latérale. Consultez la [documentation de la journalisation universelle](/more-features/universal-logging#experimental-vendor-logging) pour plus de détails sur la capture des journaux de fabricants dans WPILib (Java, C++ et Python) et AdvantageKit.
+Avec la [journalisation universelle](/more-features/universal-logging), un seul fichier WPILOG peut désormais servir de conteneur universel pour plusieurs flux et formats de journaux, y compris les journaux d'appareils spécifiques aux fabricants, les données CSV et les fichiers WPILOG enfants. La journalisation universelle remplace URCL par une approche flexible et indépendante des fabricants : les données de chaque source sont automatiquement synchronisées et fusionnées dans une seule arborescence unifiée dans la barre latérale. Consultez la [documentation de la journalisation universelle](/more-features/universal-logging#experimental-vendor-logging) pour plus de détails sur la capture des journaux de fabricants dans AdvantageKit et WPILib (bientôt disponible).
 
 <img src="/img/more-features/universal-logging-1.webp" alt="Un fichier WPILOG affichant plusieurs journaux de fabricants dans la barre latérale" />
 
@@ -99,6 +99,7 @@ _L'interface en anglais est illustrée ci-dessus._
 Plusieurs améliorations ergonomiques ont été ajoutées aux onglets 🗺️ [Terrain 2D](/tab-reference/2d-field) et 👀 [Terrain 3D](/tab-reference/3d-field) :
 
 - Déplacez et zoomez sur le terrain 2D, ou faites un clic droit pour verrouiller la caméra afin qu'elle suive la position et la rotation du robot ([documentation](/tab-reference/2d-field#camera-controls)).
+- Ajout d'une option permettant d'estomper les fantômes 2D et 3D lorsque les champs n'ont pas été mis à jour récemment (utile pour le rendu des poses de vision).
 - Ajout de lignes de grille de dalles sur les terrains FTC 2D et 3D pour faciliter le repérage spatial.
 - AdvantageScope mémorise désormais si un terrain FRC ou FTC a été utilisé en dernier lors de l'ouverture de nouveaux onglets de terrain 2D ou 3D.
 
@@ -124,7 +125,7 @@ _L'interface en anglais est illustrée ci-dessus._
 AdvantageScope 2027 inclut plusieurs mises à jour pour rendre l'application plus accessible :
 
 - Ajout de la navigation au clavier par tabulation pour toutes les entrées et d'info-bulles descriptives pour tous les contrôles de l'application.
-- AdvantageScope respecte désormais les paramètres du système d'exploitation visant à réduire la transparence et les animations.
+- AdvantageScope respecte désormais les paramètres du système d'exploitation « réduire la transparence » et « réduire les animations ».
 - Les indicateurs booléens dans la barre latérale distinguent désormais les états sans dépendre uniquement de la couleur.
 
 ## 🥔 Nouveaux types d'unités {#new-unit-types}
@@ -143,7 +144,8 @@ Les [graphiques avec unités](/tab-reference/line-graph/units) d'AdvantageScope 
 Cette version comprend de nombreuses corrections de bogues, optimisations de performances et améliorations de stabilité dans toute l'application. La liste complète se trouve dans le [journal des modifications](https://github.com/Mechanical-Advantage/AdvantageScope/releases), avec les points forts ci-dessous :
 
 - Les versions officielles pour Windows sont désormais signées numériquement, réduisant la fréquence des avertissements SmartScreen lors de l'installation.
-- Amélioration significative des performances de chargement et de tracé des journaux, en particulier avec les journaux Hoot (`.hoot`).
+- Amélioration significative des performances de chargement et de tracé des journaux, en particulier avec les journaux Hoot (`.hoot`) et les grands tableaux de structs.
+- Correction de la gestion des horodatages lors de la consultation de journaux AdvantageKit avec des sources de données haute fréquence.
 - Amélioration de l'algorithme de synchronisation des horodatages multi-journaux lors de l'alignement de journaux provenant de plusieurs sources.
 - Amélioration de la fiabilité de la connexion pour les [Diagnostics Phoenix](/overview/live-sources/phoenix-diagnostics).
 - Correction de problèmes d'interface avec la barre de menus sur les fenêtres détachées et la fenêtre contextuelle d'enregistrement dans [AdvantageScope XR](/tab-reference/3d-field/advantagescope-xr).

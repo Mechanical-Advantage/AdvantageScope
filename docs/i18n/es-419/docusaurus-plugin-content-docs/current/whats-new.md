@@ -8,7 +8,7 @@ sidebar_position: 2
 <img src="/img/whats-new/banner-2027-ltr-light.webp" className="light-only" />
 <img src="/img/whats-new/banner-2027-ltr-dark.webp" className="dark-only" />
 
-¡Ya está disponible la versión 2027 de AdvantageScope! Consulta la [documentación de instalación](/overview/installation) y el [registro de cambios completo](https://github.com/Mechanical-Advantage/AdvantageScope/releases) para ver los detalles. Esta versión incluye varias funciones nuevas importantes y numerosas mejoras en toda la aplicación. También es la primera versión de AdvantageScope con soporte completo para Systemcore.
+¡Ya está disponible la versión 2027 de AdvantageScope, con soporte completo para Systemcore y más de **100 nuevas funciones y actualizaciones** en toda la aplicación! Consulta la [documentación de instalación](/overview/installation) y el [registro de cambios completo](https://github.com/Mechanical-Advantage/AdvantageScope/releases) para ver los detalles. Esta página destaca las principales novedades y mejoras de esta versión.
 
 **¡Valoramos tus comentarios! Tus sugerencias, solicitudes de funciones y reportes de errores son bienvenidos en la [página de issues](https://github.com/Mechanical-Advantage/AdvantageScope/issues).**
 
@@ -62,7 +62,7 @@ La documentación se ha ampliado con una nueva [serie de tutoriales](/category/t
 2. **🤖 [Al campo: visualización del robot](/tutorials/to-the-field):** Publicar poses 2D/3D, trayectorias y objetos `Mechanism2d` en campos de FRC y FTC.
 3. **🕹️ [Tomando el control: DS y joysticks](/tutorials/taking-control):** Transmitir diagnósticos en vivo de la Driver Station, sincronizar registros del robot y de la DS, ver la salida de la consola y visualizar entradas de controles.
 
-Los ejemplos de código en toda la documentación también se han actualizado con cobertura completa para la API de telemetría de WPILib en varios lenguajes.
+Los ejemplos de código en toda la documentación también se han actualizado con cobertura completa para la API `Telemetry` de WPILib en varios lenguajes.
 
 <img src="/img/tutorials/to-the-field-4.webp" alt="Visualización de campo 3D del tutorial Al campo" />
 
@@ -72,7 +72,7 @@ _La imagen de arriba muestra la interfaz en inglés._
 
 AdvantageTune es una nueva aplicación independiente para iPhone y iPad que ofrece una experiencia ligera de ajuste móvil para complementar a AdvantageScope. Puedes ver y modificar topics de [NetworkTables](https://docs.wpilib.org/es/stable/docs/software/networktables/index.html) en vivo (incluidos tipos primitivos, arreglos, structs de WPILib y Protobufs) directamente desde tu teléfono, facilitando que todo el equipo participe en el ajuste del código del robot.
 
-Tanto AdvantageTune como AdvantageScope simplifican el proceso de exportar valores ajustados de vuelta al código del robot con botones para guardar todos los valores ajustados en una lista para compartir ([documentación](/overview/live-sources/tuning-mode)).
+Tanto AdvantageTune como AdvantageScope simplifican el proceso de exportar valores ajustados de vuelta al código del robot con botones para guardar todos los valores ajustados en un archivo de texto y compartirlos fácilmente ([documentación](/overview/live-sources/tuning-mode)).
 
 [<img src="/img/app-store_es-419.svg" alt="App Store" />](https://apps.apple.com/mx/app/advantagetune/id6811453643)
 
@@ -88,7 +88,7 @@ _La imagen de arriba muestra la interfaz en inglés._
 
 ## 🪐 Registro universal con WPILOG {#wpilog-universal-logging}
 
-Con el [Registro universal](/more-features/universal-logging), un solo archivo WPILOG ahora puede servir como un contenedor universal para múltiples flujos y formatos de registro, incluidos registros de dispositivos específicos de fabricantes, datos CSV y archivos WPILOG secundarios. El registro universal reemplaza a URCL con un enfoque flexible e independiente del fabricante: los datos de cada fuente se sincronizan automáticamente y se fusionan en un único árbol unificado en la barra lateral. Consulta la [documentación de Registro universal](/more-features/universal-logging#experimental-vendor-logging) para ver los detalles de la captura de registros de fabricantes en WPILib (Java, C++ y Python) y AdvantageKit.
+Con el [registro universal](/more-features/universal-logging), un solo archivo WPILOG ahora puede servir como un contenedor universal para múltiples flujos y formatos de registro, incluidos registros de dispositivos específicos de fabricantes, datos CSV y archivos WPILOG secundarios. El registro universal reemplaza a URCL con un enfoque flexible e independiente del fabricante: los datos de cada fuente se sincronizan automáticamente y se fusionan en un único árbol unificado en la barra lateral. Consulta la [documentación de registro universal](/more-features/universal-logging#experimental-vendor-logging) para ver los detalles de la captura de registros de fabricantes en AdvantageKit y WPILib (próximamente).
 
 <img src="/img/more-features/universal-logging-1.webp" alt="Un archivo WPILOG que muestra varios registros de fabricantes en la barra lateral" />
 
@@ -99,6 +99,7 @@ _La imagen de arriba muestra la interfaz en inglés._
 Se han agregado varias mejoras de usabilidad a las pestañas 🗺️ [Campo 2D](/tab-reference/2d-field) y 👀 [Campo 3D](/tab-reference/3d-field):
 
 - Desplázate y haz zoom por el campo 2D, o haz clic derecho para fijar la cámara y seguir la posición y rotación del robot ([documentación](/tab-reference/2d-field#camera-controls)).
+- Se agregó una opción para desvanecer los fantasmas 2D y 3D cuando los campos no se han actualizado recientemente (útil para renderizar poses de visión).
 - Se agregaron líneas de cuadrícula de losetas en los campos FTC 2D y 3D para facilitar la referencia espacial.
 - AdvantageScope ahora recuerda si se usó por última vez un campo FRC o FTC al abrir nuevas pestañas de campo 2D o 3D.
 
@@ -124,7 +125,7 @@ _La imagen de arriba muestra la interfaz en inglés._
 AdvantageScope 2027 incluye varias actualizaciones para hacer la aplicación más accesible:
 
 - Se agregó navegación por teclado con Tab para todas las entradas e información sobre herramientas descriptiva para todos los controles de la aplicación.
-- AdvantageScope ahora respeta la configuración del sistema operativo para reducir la transparencia y reducir el movimiento.
+- AdvantageScope ahora respeta la configuración del sistema operativo para "reducir la transparencia" y "reducir el movimiento".
 - Los indicadores booleanos en la barra lateral ahora distinguen estados sin depender únicamente del color.
 
 ## 🥔 Nuevos tipos de unidades {#new-unit-types}
@@ -143,7 +144,8 @@ Los [gráficos con reconocimiento de unidades](/tab-reference/line-graph/units) 
 Esta versión incluye numerosas correcciones de errores, optimizaciones de rendimiento y mejoras de estabilidad en toda la aplicación. La lista completa se encuentra en el [registro de cambios](https://github.com/Mechanical-Advantage/AdvantageScope/releases) de la versión, con aspectos destacados a continuación:
 
 - Las versiones oficiales de Windows ahora están firmadas digitalmente, lo que reduce la frecuencia de advertencias de SmartScreen durante la instalación.
-- Se mejoró significativamente el rendimiento de carga y graficación de registros, especialmente al trabajar con registros Hoot (`.hoot`).
+- Se mejoró significativamente el rendimiento de carga y graficación de registros, especialmente al trabajar con registros Hoot (`.hoot`) y arreglos de structs grandes.
+- Se corrigió el manejo de marcas de tiempo al ver registros de AdvantageKit junto con fuentes de datos de alta frecuencia.
 - Se mejoró el algoritmo de sincronización de marcas de tiempo de múltiples registros al alinear registros de distintas fuentes.
 - Se mejoró la confiabilidad de conexión para [Diagnósticos de Phoenix](/overview/live-sources/phoenix-diagnostics).
 - Se corrigieron problemas de interfaz con la barra de menú en ventanas separadas y la ventana emergente de grabación en [AdvantageScope XR](/tab-reference/3d-field/advantagescope-xr).

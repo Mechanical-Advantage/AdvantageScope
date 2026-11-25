@@ -8,7 +8,7 @@ sidebar_position: 2
 <img src="/img/whats-new/banner-2027-ltr-light.webp" className="light-only" />
 <img src="/img/whats-new/banner-2027-ltr-dark.webp" className="dark-only" />
 
-AdvantageScope 2027 版本現已推出！詳細資訊請參閱[安裝文件](/overview/installation)與[完整更新日誌](https://github.com/Mechanical-Advantage/AdvantageScope/releases)。此版本包含多項重大新功能與整體應用程式的眾多改進，同時也是第一個完整支援 Systemcore 的 AdvantageScope 版本。
+AdvantageScope 2027 版本現已推出，帶來對 Systemcore 的完整支援，以及整體應用程式超過 **100 項新功能與更新**。詳細資訊請參閱[安裝文件](/overview/installation)與[完整更新日誌](https://github.com/Mechanical-Advantage/AdvantageScope/releases)。本頁面重點介紹此版本的主要新增功能與改進。
 
 **我們重視你的意見！歡迎到 [issues 頁面](https://github.com/Mechanical-Advantage/AdvantageScope/issues)提供回饋、提出功能需求或回報 Bug。**
 
@@ -62,7 +62,7 @@ AdvantageScope 現已在桌面應用程式、文件網站、行動應用程式�
 2. **🤖 [踏上場地：機器人視覺化](/tutorials/to-the-field)：** 在 FRC 與 FTC 場地上發布 2D／3D 姿態、軌跡與 `Mechanism2d` 物件。
 3. **🕹️ [掌握控制：DS 與搖桿](/tutorials/taking-control)：** 串流即時駕駛站診斷資訊、同步機器人與 DS 日誌、檢視主控台輸出以及視覺化控制器輸入。
 
-整份文件中的程式碼範例也已全面更新，涵蓋多種語言的 WPILib 遙測 API。
+整份文件中的程式碼範例也已全面更新，涵蓋多種語言的 WPILib `Telemetry` API。
 
 <img src="/img/tutorials/to-the-field-4.webp" alt="來自《踏上場地》教學課程的 3D 場地視覺化" />
 
@@ -72,7 +72,7 @@ _上圖所示為英文介面。_
 
 AdvantageTune 是一款全新的獨立 iPhone 與 iPad 應用程式，提供輕量級的行動裝置微調體驗，與 AdvantageScope 相輔相成。你可以直接從手機檢視並修改即時 [NetworkTables](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html) 主題（包含基本型別、陣列、WPILib 結構與 Protobuf），讓每個人都能輕鬆參與機器人程式碼的微調。
 
-AdvantageTune 與 AdvantageScope 皆簡化了將微調數值匯出回機器人程式碼的流程，提供按鈕可將所有已微調數值儲存為清單以便分享（[文件](/overview/live-sources/tuning-mode)）。
+AdvantageTune 與 AdvantageScope 皆簡化了將微調數值匯出回機器人程式碼的流程，提供按鈕可將所有已微調數值儲存為文字檔案以方便分享（[文件](/overview/live-sources/tuning-mode)）。
 
 [<img src="/img/app-store-zh-TW.svg" alt="App Store" />](https://apps.apple.com/tw/app/advantagetune/id6811453643)
 
@@ -88,7 +88,7 @@ _上圖所示為英文介面。_
 
 ## 🪐 WPILOG 通用日誌記錄 {#wpilog-universal-logging}
 
-透過[通用日誌記錄](/more-features/universal-logging)，單一 WPILOG 檔案現在可以作為多種日誌串流與格式的通用容器，包含廠商專用裝置日誌、CSV 資料與子 WPILOG 檔案。通用日誌記錄以彈性且與廠商無關的方式取代了 URCL：來自各來源的資料會自動同步並合併至單一統一的側邊欄樹狀結構中。關於在 WPILib（Java、C++ 與 Python）及 AdvantageKit 中擷取廠商日誌的詳細說明，請參閱[通用日誌記錄文件](/more-features/universal-logging#experimental-vendor-logging)。
+透過[通用日誌記錄](/more-features/universal-logging)，單一 WPILOG 檔案現在可以作為多種日誌串流與格式的通用容器，包含廠商專用裝置日誌、CSV 資料與子 WPILOG 檔案。通用日誌記錄以彈性且與廠商無關的方式取代了 URCL：來自各來源的資料會自動同步並合併至單一統一的側邊欄樹狀結構中。關於在 AdvantageKit 及 WPILib（即將推出）中擷取廠商日誌的詳細說明，請參閱[通用日誌記錄文件](/more-features/universal-logging#experimental-vendor-logging)。
 
 <img src="/img/more-features/universal-logging-1.webp" alt="側邊欄中顯示多個廠商日誌的 WPILOG 檔案" />
 
@@ -99,6 +99,7 @@ _上圖所示為英文介面。_
 🗺️ [2D 場地](/tab-reference/2d-field)與 👀 [3D 場地](/tab-reference/3d-field)分頁新增了多項實用改進：
 
 - 在 2D 場地上平移與縮放，或按右鍵鎖定攝影機以跟隨機器人的位置與旋轉（[文件](/tab-reference/2d-field#camera-controls)）。
+- 新增選項，可在欄位近期未更新時淡出 2D 與 3D 殘影（適用於視覺姿態渲染）。
 - 在 2D 與 3D FTC 場地上新增地墊格線，方便空間參考。
 - 開啟新的 2D 或 3D 場地分頁時，AdvantageScope 現在會記住上次使用的是 FRC 還是 FTC 場地。
 
@@ -124,7 +125,7 @@ _上圖所示為英文介面。_
 AdvantageScope 2027 包含多項更新，提升應用程式的無障礙體驗：
 
 - 為所有輸入控制項新增鍵盤 Tab 導覽，並為全應用程式的所有控制項新增描述性工具提示。
-- AdvantageScope 現在會遵循作業系統層級的減少透明度與減少動態效果設定。
+- AdvantageScope 現在會遵循作業系統層級的「減少透明度」與「減少動態效果」設定。
 - 側邊欄中的布林指示器現在不再僅依賴顏色來區分狀態。
 
 ## 🥔 新增單位類型 {#new-unit-types}
@@ -143,7 +144,8 @@ AdvantageScope 的[單位感知圖表](/tab-reference/line-graph/units)已擴充
 此版本包含大量 Bug 修復、效能最佳化以及全應用程式的穩定性改進。完整清單請見發布[更新日誌](https://github.com/Mechanical-Advantage/AdvantageScope/releases)，主要亮點如下：
 
 - 官方 Windows 發行版本現已進行程式碼簽章，降低安裝過程中出現 SmartScreen 警告的頻率。
-- 顯著提升日誌載入與繪圖效能，特別是在處理 Hoot (`.hoot`) 日誌時。
+- 顯著提升日誌載入與繪圖效能，特別是在處理 Hoot (`.hoot`) 日誌與大型結構陣列時。
+- 修復同時檢視 AdvantageKit 日誌與高頻率資料來源時的時間戳記處理問題。
 - 改進對齊多來源日誌時的多日誌時間戳記同步演算法。
 - 提升 [Phoenix 診斷](/overview/live-sources/phoenix-diagnostics)的連線可靠性。
 - 修復彈出視窗選單列與 [AdvantageScope XR](/tab-reference/3d-field/advantagescope-xr) 中錄製彈出視窗的介面問題。
