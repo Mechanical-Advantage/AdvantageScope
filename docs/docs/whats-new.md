@@ -1,131 +1,140 @@
 ---
-title: What's New in 2026?
+title: What's New in 2027?
 sidebar_position: 2
-draft: true
 ---
 
 #
 
-<img src="/img/whats-new/banner-light.webp" className="light-only" />
-<img src="/img/whats-new/banner-dark.webp" className="dark-only" />
+<img src="/img/whats-new/banner-2027-ltr-light.webp" className="light-only" />
+<img src="/img/whats-new/banner-2027-ltr-dark.webp" className="dark-only" />
 
-The 2026 version of AdvantageScope is now available! Check the [installation docs](/overview/installation) and [full changelog](https://github.com/Mechanical-Advantage/AdvantageScope/releases) for details. This release includes several major new features and numerous enhancements across the application. Many of the features in this release are designed to improve the experience on existing control systems while setting up a smooth transition to [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) in future seasons.
+The 2027 version of AdvantageScope is now available, bringing full support for Systemcore along with over **100 new features and updates** across the application. Check the [installation docs](/overview/installation) and [full changelog](https://github.com/Mechanical-Advantage/AdvantageScope/releases) for details. This page highlights the major additions and improvements in this release.
 
 **We value your feedback! Feedback, feature requests, and bug reports are welcome on the [issues page](https://github.com/Mechanical-Advantage/AdvantageScope/issues).**
 
-## ✴️ Experimental: FTC Support {#ftc-support}
+<img src="/img/screenshot-light.webp" className="light-only" />
+<img src="/img/screenshot-dark.webp" className="dark-only" />
 
-In preparation for full support with Systemcore in the 2027-2028 season, this release adds several features to improve compatibility with the existing FIRST Tech Challenge control system:
+## 🍋‍🟩 Systemcore Compatibility {#systemcore-compatibility}
 
-- FTC fields and robot models on the 🗺️ [2D Field](/tab-reference/2d-field) and 👀 [3D Field](/tab-reference/3d-field)
-- New [coordinate system](/more-features/coordinate-systems) options for compatibility with [standard FTC coordinates](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html)
-- Support for [Road Runner](https://rr.brott.dev/docs/v1-0/installation/) log files
-- Support for the [FTC Dashboard](https://github.com/acmerobotics/ftc-dashboard) live streaming format
+AdvantageScope 2027 is built for seamless operation with the new Systemcore robot controller and WPILib 2027:
 
-:::tip
-FTC teams should exercise caution when using experimental software during the official season. FTC support for AdvantageScope is still in active development.
-:::
+- The default robot address is now `robot.local`, allowing you to connect live or download logs without configuring a team number. Systemcore USB and Wi-Fi addresses are also selectable from the menu bar.
+- [Log downloading](/overview/log-files#downloading-from-the-robot) now supports SFTP for Systemcore alongside legacy roboRIO log downloads.
+- Added the [Center/Red](/more-features/coordinate-systems#center-red) coordinate system used by FRC fields starting in 2027 and FTC fields starting in 2027-2028.
+- Added support for WPILib 2027's `Telemetry` and `Tunables` APIs, updated alert colors, and a new [timestamp display preference](/more-features/timestamps) to keep Systemcore timestamps easy to read.
+- A new [Systemcore Diagnostics](/overview/live-sources) live mode connects directly to Systemcore's built-in NetworkTables server to monitor robot state and hardware IO with no user code required.
 
-<div className="image-gallery">
-  <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-2.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-3.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-4.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
-</div>
+## 💡 AdvantageScope Lite {#advantagescope-lite}
 
-Several third-party FTC logging/telemetry libraries support other formats compatible with AdvantageScope, such as WPILOG and RLOG. Documentation of these libraries can be found in the respective projects; the AdvantageScope developers do not endorse/recommend any particular FTC logging solution for use with AdvantageScope.
+[AdvantageScope Lite](/more-features/advantagescope-lite) brings AdvantageScope's visualization and analysis tools directly to your web browser. It's accessible both from the Systemcore web interface and inside the FIRST Driver Station with **no installation required**.
+
+<iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="AdvantageScope Lite Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## 🎮 FIRST Driver Station {#first-driver-station}
+
+AdvantageScope integrates closely with the new [FIRST Driver Station](https://docs.wpilib.org/en/latest/docs/software/firstdriverstation) to streamline match diagnostics:
+
+- [AdvantageScope Lite](/more-features/advantagescope-lite) is accessible directly from the FIRST Driver Station settings menu to analyze WPILOG files produced by the DS.
+- Use the desktop app to stream real-time match state, comms metrics, battery voltage, and joystick inputs from a local Driver Station with zero configuration.
+- Opening a Driver Station `.wpilog` file on desktop prompts to open a dedicated window pre-configured with tabs for console output, communication metrics, power, CPU usage, and joysticks ([docs](/overview/log-files#driver-station-layout)). This layout is also used by default in AdvantageScope Lite for the Driver Station.
+- View Driver Station console logs on the 💬 [Console](/tab-reference/console) tab with automatic warning/error highlighting and full support for [ANSI escape sequences](/tab-reference/console#ansi-formatting) (colors and text styles).
+
+<img src="/img/tutorials/taking-control-1.webp" alt="Opening AdvantageScope Lite from the FIRST Driver Station" />
+
+## 🌐 Multi-Language Support {#language-support}
+
+AdvantageScope is now available in **14 languages** across the desktop application, documentation site, mobile apps, and AdvantageScope Lite: English (US), Spanish (Latin America), French, Dutch, Portuguese (Brazil), Romanian, Turkish, Russian, Kazakh, Hebrew, Arabic, Hindi, Simplified Chinese, and Traditional Chinese.
 
 :::info
-AdvantageScope is designed to provide the best experience when used alongside the WPILib framework and associated logging tools. You may encounter compatibility issues or limited capabilities when using unofficial logging solutions.
-
-All features of AdvantageScope will be officially supported in FTC after the transition to Systemcore for the 2027-2028 season.
+Translations are a work in progress created with the support of AI and community contributors, and **may include unnatural phrasing or inaccuracies**. Thank you to the teams who have already helped review and refine these translations! See the 🌐 [Language Support](/overview/language-support) page for details on our translation process and how to submit feedback.
 :::
 
-## 🧮 Unit-Aware Graphing {#unit-aware-graphing}
+<img src="/img/whats-new/multi-language-1.webp" alt="Line graph tab in Simplified Chinese" />
 
-The 📉 [Line Graph](/tab-reference/line-graph/) tab has been redesigned to be fully unit-aware. This enables several new capabilities when graphing numeric fields:
+## 📖 New Tutorials & Documentation {#new-tutorials-and-documentation}
 
-- Precise labeling of Y axes and value displays
-- Quick conversion to compatible units (no popup windows)
-- Implicit conversion of compatible unit types within a single axis
-- Accurate display of [integrated and differentiated](/tab-reference/line-graph/#integration-and-differentiation) units
+The documentation has been expanded with a new three-part [tutorial series](/category/tutorials) designed to help teams get started with WPILib 2027 and AdvantageScope:
 
-The screenshot below shows all of these features in action. Note that the left axis includes fields with different angular velocity units, and the right axis includes values that are differentiated and displayed in a non-native unit (degrees). Selecting units is also easier than ever before, with compatible unit options integrated directly in the control menu for each axis.
+1. **👋 [Hello, Telemetry!](/tutorials/hello-telemetry):** Setting up `DataLogManager` and the `Telemetry` API, connecting live, and analyzing data with line graphs, tables, and statistics.
+2. **🤖 [To the Field: Robot Visualization](/tutorials/to-the-field):** Publishing 2D/3D poses, trajectories, and `Mechanism2d` objects on FRC and FTC fields.
+3. **🕹️ [Taking Control: DS & Joysticks](/tutorials/taking-control):** Streaming live Driver Station diagnostics, synchronizing robot and DS logs, viewing console output, and visualizing controller inputs.
 
-_More information about unit support can be found in the [documentation](/tab-reference/line-graph/units)._
+Code examples across the documentation have also been updated with full coverage for WPILib's `Telemetry` API across multiple languages.
 
-<img src="/img/tab-reference/line-graph/units-1.webp" alt="Unit-aware graphing" />
+<img src="/img/tutorials/to-the-field-4.webp" alt="3D field visualization from the To the Field tutorial" />
 
-## 🏁 Faster Log Downloads {#faster-log-downloads}
+## 📱 AdvantageTune {#advantagetune}
 
-[Downloading logs from the roboRIO](/overview/log-files/#downloading-from-the-robot) is now **2-4x faster** than previous releases. This is accomplished by switching to a new protocol (FTP) that allows the roboRIO to transfer log data with less CPU overhead.
+AdvantageTune is a new standalone iPhone and iPad application that provides a lightweight mobile tuning experience to complement AdvantageScope. You can view and modify live [NetworkTables](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html) topics (including primitives, arrays, WPILib structs, and Protobufs) directly from your phone, making it easy for everyone to get involved in tuning robot code.
 
-The table below shows the measured transfer speed on the 2025 and 2026 releases of AdvantageScope while tethered via Ethernet (max bandwidth of 100 Mb/s). Note that the performance of the 2025 release is severely impacted by the CPU load on the roboRIO.
+Both AdvantageTune and AdvantageScope streamline the process of exporting tuned values back to robot code with buttons to save all tuned values to a text file for easy sharing ([docs](/overview/live-sources/tuning-mode)).
 
-|                                                    | 2025 (SFTP) | 2026 (FTP) | Speedup                                          |
-| -------------------------------------------------- | ----------- | ---------- | ------------------------------------------------ |
-| High CPU load<br /><sub>Complex robot code</sub>   | 25 Mb/s     | 80 Mb/s    | <span style={{fontSize: '24px'}}>**3.2x**</span> |
-| Average CPU load<br /><sub>Normal robot code</sub> | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**2.3x**</span> |
-| Minimal CPU load<br /><sub>No robot code</sub>     | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**1.1x**</span> |
-
-## 📁 Download Logs From Subfolders {#download-logs-from-subfolders}
-
-The download window now supports saving logs that are stored in subfolders. Each subfolder of logs can be downloaded as a group, providing a streamlined approach for downloading logs generated by the 2026 release of CTRE's [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) (which uses subfolders as a workaround for being unable to store data in a single log file).
-
-<img src="/img/whats-new/subfolders.webp" alt="Downloading log subfolders" height="450" />
-
-## 🌈 New Visualization Options {#new-visualization-options}
-
-Several new visualization options are supported on the 🗺️ [2D Field](/tab-reference/2d-field) and 👀 [3D Field](/tab-reference/3d-field):
-
-- A wider variety of robot bumper colors are now available on the 2D field, and each object can be configured with its own color. This enables greater flexibility when combining ghosts with multiple robot objects.
-- When [visualizing 2D mechanisms on the 3D field](/tab-reference/3d-field/#2d-mechanisms), mechanisms can now be placed on the YZ plane in addition to the XZ plane. This enables easier visualization of complex mechanisms with movement in multiple axes.
-- The 3D field now supports optional anti-aliasing to improve the quality of rendered edges.
-
-<img src="/img/whats-new/field-viz.jpg" alt="New field visualizations" />
-
-## 🪵 REV Robotics CAN Log Support {#rev-robotics-can-log-support}
-
-You can now open `.revlog` files produced by REV Robotics' [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) directly in AdvantageScope. These files record CAN signals from Spark Max and Spark Flex devices, offering an official alternative to AdvantageScope's [URCL](/more-features/urcl) library.
-
-Both URCL and the official `StatusLogger` will remain available during the 2026 season to ensure a smooth transition and provide feature parity with previous seasons. We will have more details to share about logging options in 2027 and beyond at a later date.
-
-<img src="/img/whats-new/revlog.webp" alt="REVLOG visualization" />
-
-## 💿 CSV File Imports {#csv-file-imports}
-
-For more flexible visualization of data produced outside of robot logging frameworks, AdvantageScope now includes basic support for importing CSV files. Check the [documentation](/overview/log-files/#csv-formatting) for more details on supported formats and other limitations.
-
-<img src="/img/overview/log-files/export-2.webp" alt="CSV data" />
-
-## 🤩 Aesthetic Improvements {#aesthetic-improvements}
-
-The AdvantageScope UI on Windows 11 has been updated to support a translucent sidebar, which was previously exclusive to macOS releases. An updated app icon is also available for macOS Tahoe based on Apple's Liquid Glass material.
-
-<img src="/img/whats-new/windows-ui.webp" alt="Windows UI" />
-
-## 📋 Streamlined Menus {#streamlined-menus}
-
-The menu bar and related controls have been streamlined and reorganized to make the controls more accessible and consistent across all platforms. Notable features include:
-
-- Faster switching between live sources (e.g. NetworkTables and [Phoenix Diagnostics](/overview/live-sources/phoenix-diagnostics)), with no need to open the preferences window.
-- Right-click on the sidebar to quickly copy the name of a field (or the full field key).
-- Reorganization of the preferences window, making options easier to find quickly.
+[<img src="/img/app-store_en-US.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagetune/id6811453643)
 
 <div className="image-gallery">
-  <img src="/img/whats-new/menus-1.webp" />
-  <img src="/img/whats-new/menus-2.webp" />
-  <img src="/img/prefs_en-US.webp" />
+  <img src="/img/whats-new/advantagetune-1.webp" alt="AdvantageTune browse view" />
+  <img src="/img/whats-new/advantagetune-2.webp" alt="AdvantageTune topic editing" />
+  <img src="/img/whats-new/advantagetune-3.webp" alt="AdvantageTune struct editing" />
+  <img src="/img/whats-new/advantagetune-4.webp" alt="AdvantageTune tuned values list" />
+  <img src="/img/whats-new/advantagetune-5.webp" alt="AdvantageTune search and filter" />
 </div>
 
-## 🐛 Stability Improvements {#stability-improvements}
+## 🪐 WPILOG Universal Logging {#wpilog-universal-logging}
 
-This release includes a variety of bug fixes and stability improvements across the application. The full list can be found in the release [changelog](https://github.com/Mechanical-Advantage/AdvantageScope/releases), but some notable fixes are listed below:
+With [universal logging](/more-features/universal-logging), a single WPILOG file can now serve as a universal container for multiple log streams and formats, including vendor-specific device logs, CSV data, and child WPILOG files. Universal logging replaces URCL with a flexible, vendor-agnostic approach: data from every source is automatically synchronized and merged into a single unified sidebar tree. See the [Universal logging documentation](/more-features/universal-logging#experimental-vendor-logging) for details on vendor log capture in AdvantageKit and WPILib (coming soon).
 
-- The performance of AdvantageScope when streaming data for long periods has been greatly improved, especially when using the line graph tab.
-- AdvantageScope is now more tolerant of unusual log data, including large log files and large field values.
-- Various visual glitches have been fixed when browsing log data, especially when using filters on the line graph tab.
-- The ordering of AdvantageKit log files in the download window has been fixed; logs without timestamps are now at the bottom of the list, similar to other formats.
-- On the 3D field tab, robot cameras with a nonzero rotation in the roll axis are now visualized correctly.
-- The stability of AdvantageScope XR has been improved, especially when running on iOS/iPadOS 26. For offline installations, check the App Store for available updates.
+<img src="/img/more-features/universal-logging-1.webp" alt="A WPILOG file showing multiple vendor logs in the sidebar" />
+
+## 🗺️ Field Tab Improvements {#field-tab-improvements}
+
+Several usability improvements have been added to the 🗺️ [2D Field](/tab-reference/2d-field) and 👀 [3D Field](/tab-reference/3d-field) tabs:
+
+- Pan and zoom across the 2D field, or right-click to lock the camera to follow the robot's position and rotation ([docs](/tab-reference/2d-field#camera-controls)).
+- Added an option to fade out 2D and 3D ghosts when the fields have not updated recently (useful for vision pose rendering).
+- Added tile grid lines on 2D and 3D FTC fields for easier spatial reference.
+- AdvantageScope now remembers whether an FRC or FTC field was last used when opening new 2D or 3D field tabs.
+
+<img src="/img/tab-reference/2d-field-1.webp" alt="2D field tab overview" />
+
+## 📉 Line Graph Improvements {#line-graph-improvements}
+
+The 📉 [Line Graph](/tab-reference/line-graph) and timeline include several visual refinements for clearer analysis:
+
+- Enabling "Show Robot Mode" now renders a color-coded bar for autonomous, teleoperated, utility, and disabled periods.
+- Point-style graphs automatically scale point sizes for better visibility at any level of zoom.
+- Helpful hints appear on the line graph and timeline to guide new users on scrolling and zooming gestures.
+- Improved the rendering and legibility of large timestamp values on the timeline and line graph axes.
+
+<img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="Color-coded robot mode overlay on the line graph" />
+
+## 🤝 Accessibility Enhancements {#accessibility-enhancements}
+
+AdvantageScope 2027 includes several updates to make the application more accessible:
+
+- Added keyboard tab navigation for all inputs and descriptive tooltips for all controls across the app.
+- AdvantageScope now respects OS-level "reduce transparency" and "reduce motion" settings.
+- Boolean indicators in the sidebar now distinguish states without relying on color alone.
+
+## 🥔 New Unit Types {#new-unit-types}
+
+AdvantageScope's [unit-aware graphing](/tab-reference/line-graph/units) has been expanded with additional unit types and parsing options:
+
+- Power (watts, horsepower, etc.)
+- Ratios (dimensionless, percent)
+- Temperature in Kelvin
+- Potato energy
+- British English unit spellings (e.g. `metres`)
+- Suffixes for WPILib's unit library
+
+## 🧱 Stability Improvements {#stability-improvements}
+
+This release includes numerous bug fixes, performance optimizations, and stability improvements across the application. The full list can be found in the release [changelog](https://github.com/Mechanical-Advantage/AdvantageScope/releases), with notable highlights below:
+
+- Official Windows releases are now code-signed, reducing the frequency of SmartScreen warnings during installation.
+- Significantly improved log loading and graphing performance, especially when working with Hoot (`.hoot`) logs and large struct arrays.
+- Fixed timestamp handling when viewing AdvantageKit logs along with high-frequency data sources.
+- Improved the multi-log timestamp synchronization algorithm when aligning logs from multiple sources.
+- Improved connection reliability for [Phoenix Diagnostics](/overview/live-sources/phoenix-diagnostics).
+- Fixed UI issues with the menu bar on pop-out windows and the recording popup in [AdvantageScope XR](/tab-reference/3d-field/advantagescope-xr).
+- Refined UI text and phrasing throughout the application to improve clarity.

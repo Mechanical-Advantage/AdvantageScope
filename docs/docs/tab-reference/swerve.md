@@ -18,7 +18,7 @@ The timeline is used to control playback and visualization. Clicking on the time
 
 Yellow sections indicate when the robot is autonomous, blue sections indicate when the robot is teleoperated, and gray sections indicate when the robot is in utility mode.
 
-To zoom, place the cursor over the timeline and scroll up or down. A range can also be selecting by clicking and dragging while holding `Shift`. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the timeline. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again. Press `Ctrl+\` to zoom to the period where the robot is enabled.
+To zoom, place the cursor over the timeline and scroll up or down. A range can also be selected by clicking and dragging while holding `Shift`. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the timeline. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again. Press `Ctrl+\` to zoom to the period where the robot is enabled.
 
 <img src="/img/tab-reference/timeline.webp" alt="Timeline" />
 
@@ -34,14 +34,18 @@ To get started, drag a field to the "Sources" section. Delete a source using the
 - **Robot Velocities:** Linear and angular speeds displayed in the center of the diagram.
 - **Rotation:** Angular position used to rotate the diagram.
 
+:::tip
+Swerve module states can also be visualized on the 🗺️ [2D Field](/tab-reference/2d-field) and 👀 [3D Field](/tab-reference/3d-field) tabs.
+:::
+
 ## Data Format {#data-format}
 
 Data should be published as a byte-encoded struct or protobuf, using the `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d`, or `Rotation3d` types.
 
-Many libraries support the struct format, including WPILib and AdvantageKit. The example code below shows how to log swerve module states in Java.
+Many libraries support the struct format, including WPILib and AdvantageKit. The example code below shows how to log swerve module states.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
@@ -52,6 +56,37 @@ SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
 };
 
 Telemetry.log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+std::array<wpi::math::SwerveModuleVelocity, 4> states{
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{}
+};
+
+wpi::telemetry::Log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import SwerveModuleVelocity
+import telemetry
+
+states = [
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+]
+
+telemetry.log("MyStates", states, element_type=SwerveModuleVelocity)
 ```
 
 </TabItem>

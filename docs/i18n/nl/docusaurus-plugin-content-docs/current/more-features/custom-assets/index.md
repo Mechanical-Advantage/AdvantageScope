@@ -39,7 +39,7 @@ In de map moeten een bestand met de naam "config.json" en een of meer assetbesta
 
 ### Overzicht {#overview}
 
-In de map moet een modelbestand met de naam "model.glb" staan. CAD-bestanden moet je eerst omzetten naar glTF; op [deze pagina](gltf-convert) lees je hoe dat werkt. Het configuratiebestand heeft de volgende structuur:
+In de map moet een modelbestand met de naam "model.glb" staan. CAD-bestanden moet je eerst omzetten naar binair glTF (`.glb`); op [deze pagina](gltf-convert) lees je hoe dat werkt. Het configuratiebestand heeft de volgende structuur:
 
 ```json
 {
@@ -78,7 +78,7 @@ AdvantageScope vereenvoudigt de geometrie van 3D-modellen automatisch voor beter
 Het instellen van scharnierende componenten kan best ingewikkeld en tijdrovend zijn. Kijk daarom eerst of AdvantageScope's 3D-ondersteuning voor [`Mechanism2d`](/tab-reference/3d-field#2d-mechanisms) genoeg is; dat is vaak een veel snellere manier om **mechanismen op het 3D-veld te tonen**.
 :::
 
-Robotmodellen kunnen scharnierende componenten bevatten om data van mechanismen te visualiseren (zie [hier](/tab-reference/3d-field) voor meer uitleg). Het basismodel in glTF mag geen losse componenten bevatten; elk component exporteer je als een apart glTF-bestand. Componenten krijgen de naam "model_INDEX.glb", dus het eerste component heet "model_0.glb".
+Robotmodellen kunnen scharnierende componenten bevatten om data van mechanismen te visualiseren (zie [hier](/tab-reference/3d-field) voor meer uitleg). Het basismodel in glTF (`.glb`) mag geen losse componenten bevatten; elk component exporteer je als een apart glTF-bestand (`.glb`). Componenten krijgen de naam "model_INDEX.glb", dus het eerste component heet "model_0.glb".
 
 De configuratie van de componenten zet je in het configuratiebestand van de robot onder de sleutel "components". Geeft de gebruiker in AdvantageScope geen componentposes op, dan gebruikt AdvantageScope de standaardrotaties en -positie van de robot (zie hierboven). Zodra er wel componentposes worden opgegeven, past AdvantageScope eerst de "zeroed"-rotaties en -positie toe om elk component naar de oorsprong van de robot te verplaatsen, en zet het de componenten daarna met de opgegeven poses op de juiste plek.
 
@@ -224,7 +224,7 @@ In de map moet een afbeelding met de naam "image.png" staan, gedraaid zodat de r
 
 ## 3D-veldmodellen {#3d-field-models}
 
-In de map moet een modelbestand met de naam "model.glb" staan. Nadat alle rotaties zijn toegepast, moet de rode alliantie links zitten. CAD-bestanden moet je eerst omzetten naar glTF; op [deze pagina](gltf-convert) lees je hoe dat werkt. Modellen van speelstukken krijgen de naam "model_INDEX.glb" op basis van hun volgorde in de "gamePieces"-array. AprilTags die je hier opgeeft, worden altijd geplaatst met het coördinatenstelsel [midden/rood](/more-features/coordinate-systems#center-red), ongeacht andere instellingen.
+In de map moet een modelbestand met de naam "model.glb" staan. Nadat alle rotaties zijn toegepast, moet de rode alliantie links zitten. CAD-bestanden moet je eerst omzetten naar binair glTF (`.glb`); op [deze pagina](gltf-convert) lees je hoe dat werkt. Modellen van speelstukken krijgen de naam "model_INDEX.glb" op basis van hun volgorde in de "gamePieces"-array. AprilTags die je hier opgeeft, worden altijd geplaatst met het coördinatenstelsel [midden/rood](/more-features/coordinate-systems#center-red), ongeacht andere instellingen.
 
 Het configuratiebestand heeft de volgende structuur:
 

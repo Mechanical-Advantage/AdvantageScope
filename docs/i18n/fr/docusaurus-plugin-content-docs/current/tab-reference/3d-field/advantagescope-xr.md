@@ -6,7 +6,7 @@ AdvantageScope XR donne vie à l'onglet 👀 [Terrain 3D](/tab-reference/3d-fiel
 
 ## Prérequis {#requirements}
 
-- **Hôte :** l'application de bureau AdvantageScope sur Windows, macOS ou Linux (v4.1.0 ou plus récent). Les pare-feu de l'ordinateur doivent être [désactivés](https://docs.wpilib.org/fr/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
+- **Hôte :** l'application de bureau AdvantageScope sur Windows, macOS ou Linux (v4.1.0 ou plus récent). Les pare-feu de l'ordinateur doivent être [désactivés](https://docs.wpilib.org/fr/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) ou configurés pour autoriser les connexions entrantes sur le port TCP 56328.
 - **Client :** un iPhone ou un iPad sous iOS/iPadOS 16 ou plus récent. Aucune application n'est requise au préalable.
 - **Réseau :** les deux appareils doivent être sur le même réseau (Wi-Fi, partage de connexion USB, etc.). Sous réserve du point suivant, ce réseau n'a pas besoin d'accès à Internet.
 - **Internet :** si vous n'avez pas utilisé AdvantageScope XR récemment, l'appareil mobile doit disposer d'une connexion Internet (données cellulaires, par exemple). Pour vous affranchir de cette contrainte, consultez la section [Utilisation hors ligne](#offline-usage) ci-dessous.
@@ -72,7 +72,7 @@ La fenêtre des contrôles XR propose plusieurs réglages pour adapter l'afficha
 
 AdvantageScope XR n'a pas besoin d'Internet pour fonctionner. Pour garantir son accès hors ligne, téléchargez l'application AdvantageScope XR sur l'App Store via le lien ci-dessous. Pour vous connecter ensuite à l'application de bureau, scannez le code QR avec l'appareil photo iOS ou touchez le bouton « Scanner » directement dans l'application AdvantageScope XR.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_fr.svg" alt="App Store" />](https://apps.apple.com/ca/app/advantagescope-xr/id6739718081?l=fr)
 
 :::note
 Même sans connexion Internet, l'ordinateur hôte et l'appareil client **doivent être connectés au même réseau** (réseau du robot, routeur Wi-Fi dédié ou partage de connexion USB).

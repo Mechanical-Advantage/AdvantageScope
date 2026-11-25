@@ -38,10 +38,10 @@ _上图所示为英文界面。_
 
 ## 数据格式 {#data-format}
 
-点位数据应以字节编码的结构体或 protobuf 形式发布，数据类型为 `Translation2d[]`。包括 WPILib 和 AdvantageKit 在内的许多库都支持这种格式。以下示例展示了如何在 Java 中记录点位数据。
+点位数据应以字节编码的结构体或 protobuf 形式发布，数据类型为 `Translation2d[]`。包括 WPILib 和 AdvantageKit 在内的许多库都支持这种格式。以下示例展示了如何记录点位数据。
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Telemetry.log("MyTranslations",
@@ -49,6 +49,33 @@ Telemetry.log("MyTranslations",
     new Translation2d(0.0, 1.0),
     new Translation2d(2.0, 3.0)
   });
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::telemetry::Log("MyTranslations", std::vector{
+  wpi::math::Translation2d{0_m, 1_m},
+  wpi::math::Translation2d{2_m, 3_m}
+});
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import Translation2d
+import telemetry
+
+telemetry.log(
+    "MyTranslations",
+    [
+        Translation2d(0.0, 1.0),
+        Translation2d(2.0, 3.0),
+    ],
+    element_type=Translation2d,
+)
 ```
 
 </TabItem>

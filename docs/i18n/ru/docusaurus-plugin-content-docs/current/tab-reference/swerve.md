@@ -36,14 +36,18 @@ _Выше показан интерфейс на английском языке
 - **Скорости робота:** Линейные и угловые скорости, отображаемые в центре диаграммы.
 - **Вращение:** Угловая позиция, используемая для вращения диаграммы.
 
+:::tip
+Состояния модулей swerve также можно визуализировать на вкладках 🗺️ [2D-поле](/tab-reference/2d-field) и 👀 [3D-поле](/tab-reference/3d-field).
+:::
+
 ## Формат данных {#data-format}
 
 Данные должны публиковаться в виде закодированных в байты структур (struct) или protobuf с использованием типов `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d` или `Rotation3d`.
 
-Многие библиотеки поддерживают формат struct, включая WPILib и AdvantageKit. Пример кода ниже показывает, как логировать состояния модулей swerve на Java.
+Многие библиотеки поддерживают формат struct, включая WPILib и AdvantageKit. Пример кода ниже показывает, как логировать состояния модулей swerve.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
@@ -54,6 +58,37 @@ SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
 };
 
 Telemetry.log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+std::array<wpi::math::SwerveModuleVelocity, 4> states{
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{}
+};
+
+wpi::telemetry::Log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import SwerveModuleVelocity
+import telemetry
+
+states = [
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+]
+
+telemetry.log("MyStates", states, element_type=SwerveModuleVelocity)
 ```
 
 </TabItem>

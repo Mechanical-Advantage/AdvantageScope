@@ -30,5 +30,5 @@ _ממשק באנגלית מוצג למעלה._
 AdvantageScope כוללת מגוון ג'ויסטיקים נפוצים, ביניהם "ג'ויסטיק גנרי" שמציג את כל הכפתורים, הצירים וה-POVs ברשת מסודרת (כמו בתמונה למעלה). כדי להוסיף ג'ויסטיק מותאם אישית, ראו [נכסים מותאמים אישית](/more-features/custom-assets).
 
 :::warning
-**נתוני ג'ויסטיקים אינם זמינים דרך חיבור NetworkTables ב-WPILib רגיל.** מה שכן נתמך הוא קובצי יומן של WPILib (כאשר [רישום נתוני ג'ויסטיק מופעל](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), יומנים של AdvantageKit וסטרימינג של AdvantageKit.
+**נתוני ג'ויסטיקים אינם זמינים דרך חיבור NetworkTables ב-WPILib רגיל.** מה שכן נתמך הוא קובצי יומן של WPILib (כאשר [רישום נתוני ג'ויסטיק מופעל](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), יומנים של AdvantageKit, סטרימינג של AdvantageKit ונתוני FIRST Driver Station.
 :::

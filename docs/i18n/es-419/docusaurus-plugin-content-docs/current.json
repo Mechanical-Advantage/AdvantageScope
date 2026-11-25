@@ -3,6 +3,14 @@
     "message": "Próxima versión",
     "description": "The label for version current"
   },
+  "sidebar.sidebar.category.Tutorials": {
+    "message": "Tutoriales",
+    "description": "The label for category 'Tutorials' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tutorials.link.generated-index.description": {
+    "message": "Estos tutoriales explican los conceptos básicos para usar AdvantageScope.",
+    "description": "The generated-index page description for category 'Tutorials' in sidebar 'sidebar'"
+  },
   "sidebar.sidebar.category.Overview": {
     "message": "Descripción general",
     "description": "The label for category 'Overview' in sidebar 'sidebar'"

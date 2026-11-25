@@ -13,10 +13,10 @@ Op het tabblad Metadata zie je waarden die zijn gepubliceerd naar de verborgen t
 
 _De Engelstalige interface wordt hierboven weergegeven._
 
-In de voorbeeldcode hieronder zie je hoe je metadata logt in Java.
+In de voorbeeldcode hieronder zie je hoe je metadata logt.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 In WPILib log je waarden als strings naar de tabel "/Metadata" via de klasse `Telemetry`.
 
@@ -24,6 +24,30 @@ In WPILib log je waarden als strings naar de tabel "/Metadata" via de klasse `Te
 TelemetryTable metadata = Telemetry.getTable("Metadata");
 metadata.log("RobotName", "Darwin");
 metadata.log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+In WPILib log je waarden als strings naar de tabel "/Metadata" via de klasse `Telemetry`.
+
+```cpp
+wpi::telemetry::TelemetryTable& metadata = wpi::telemetry::GetTable("Metadata");
+metadata.Log("RobotName", "Darwin");
+metadata.Log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+In WPILib log je waarden als strings naar de tabel "/Metadata" via de module `telemetry`.
+
+```python
+import telemetry
+
+metadata = telemetry.get_table("Metadata")
+metadata.log("RobotName", "Darwin")
+metadata.log("Platform", "macOS")
 ```
 
 </TabItem>

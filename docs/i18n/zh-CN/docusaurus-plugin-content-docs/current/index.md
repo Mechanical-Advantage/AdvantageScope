@@ -17,6 +17,11 @@ AdvantageScope 是 [6328 团队](https://littletonrobotics.org) 为 FIRST 队伍
 items={[
 {
 type: "category",
+label: "教程",
+href: "/category/tutorials"
+},
+{
+type: "category",
 label: "概述",
 href: "/category/overview"
 },
@@ -24,11 +29,6 @@ href: "/category/overview"
 type: "category",
 label: "选项卡参考",
 href: "/category/tab-reference"
-},
-{
-type: "category",
-label: "更多功能",
-href: "/category/more-features"
 },
 {
 type: "link",

@@ -7,9 +7,9 @@ sidebar_position: 5
 「主控台」分頁專用於檢視包含主控台資料的單一字串欄位。以下列出幾種常見的建議欄位：
 
 - **DS:/Dscomm/Console** - 由 FIRST Driver Station 自動儲存。
-- **messages** - 由 WPILib 內建的記錄功能在呼叫 [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>) 方法時儲存。
-- **/RealOutputs/Console** - 在機器人運作期間由 AdvantageKit 自動儲存（如常使用 `System.out.println` 即可）。
-- **/ReplayOutputs/Console** - 在日誌重播期間由 AdvantageKit 自動儲存（如常使用 `System.out.println` 即可）。
+- **messages** - 由 WPILib 內建資料記錄功能儲存。
+- **/RealOutputs/Console** - 在機器人運作期間由 AdvantageKit 自動儲存。
+- **/ReplayOutputs/Console** - 在日誌重播期間由 AdvantageKit 自動儲存。
 
 將需要的欄位拖曳到主檢視區即可開始。每一列代表欄位的一次更新：在 WPILib 日誌中，每儲存一行就會建立一列；在 AdvantageKit 日誌中，則是每個迴圈週期建立一列。
 

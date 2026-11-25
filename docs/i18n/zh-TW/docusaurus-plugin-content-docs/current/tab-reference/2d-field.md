@@ -52,10 +52,10 @@ _上圖所示為英文介面。_
 
 幾何資料應以位元組編碼的 struct 或 protobuf 格式發布。AdvantageScope 支援多種 2D 與 3D 幾何類型，包括 `Pose2d`、`Pose3d`、`Translation2d`、`Translation3d` 等。
 
-許多函式庫都支援 struct 格式，包括 WPILib 與 AdvantageKit。以下範例程式碼示範如何在 Java 中記錄 2D 姿態資料。
+許多函式庫都支援 struct 格式，包括 WPILib 與 AdvantageKit。以下範例程式碼示範如何記錄 2D 姿態資料。
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Pose2d poseA = new Pose2d();
@@ -63,6 +63,31 @@ Pose2d poseB = new Pose2d();
 
 Telemetry.log("MyPose", poseA);
 Telemetry.log("MyPoseArray", new Pose2d[] {poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::math::Pose2d poseA;
+wpi::math::Pose2d poseB;
+
+wpi::telemetry::Log("MyPose", poseA);
+wpi::telemetry::Log("MyPoseArray", std::vector{poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import Pose2d
+import telemetry
+
+pose_a = Pose2d()
+pose_b = Pose2d()
+
+telemetry.log("MyPose", pose_a)
+telemetry.log("MyPoseArray", [pose_a, pose_b], element_type=Pose2d)
 ```
 
 </TabItem>

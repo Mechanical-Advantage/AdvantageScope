@@ -36,14 +36,18 @@ _Жоғарыда ағылшын тіліндегі интерфейс көрс�
 - **Робот жылдамдықтары:** Диаграмманың ортасында көрсетілетін сызықтық және бұрыштық жылдамдықтар.
 - **Айналу:** Диаграмманы бұру үшін қолданылатын бұрыштық күй.
 
+:::tip
+Swerve модулінің күйлерін 🗺️ [2D алаңы](/tab-reference/2d-field) және 👀 [3D алаңы](/tab-reference/3d-field) қойындыларында да визуализациялауға болады.
+:::
+
 ## Деректер пішімі {#data-format}
 
 Деректер `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d` немесе `Rotation3d` түрлерінде байтпен кодталған struct немесе protobuf пішімінде жариялануы тиіс.
 
-Көптеген кітапханалар, соның ішінде WPILib және AdvantageKit struct пішімін қолдайды. Төмендегі мысал кодында Java тілінде swerve модулінің күйлерін қалай журналдау керектігі көрсетілген.
+Көптеген кітапханалар, соның ішінде WPILib және AdvantageKit struct пішімін қолдайды. Төмендегі мысал кодында swerve модулінің күйлерін қалай журналдау керектігі көрсетілген.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
@@ -54,6 +58,37 @@ SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
 };
 
 Telemetry.log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+std::array<wpi::math::SwerveModuleVelocity, 4> states{
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{}
+};
+
+wpi::telemetry::Log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import SwerveModuleVelocity
+import telemetry
+
+states = [
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+]
+
+telemetry.log("MyStates", states, element_type=SwerveModuleVelocity)
 ```
 
 </TabItem>

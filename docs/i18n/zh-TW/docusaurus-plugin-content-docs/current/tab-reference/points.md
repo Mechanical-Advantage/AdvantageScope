@@ -38,10 +38,10 @@ _上圖所示為英文介面。_
 
 ## 資料格式 {#data-format}
 
-點資料應使用 `Translation2d[]` 類型，並以位元組編碼的 struct 或 protobuf 格式發布。WPILib 與 AdvantageKit 等多個函式庫皆支援此格式，以下範例程式示範如何在 Java 中記錄點資料：
+點資料應使用 `Translation2d[]` 類型，並以位元組編碼的 struct 或 protobuf 格式發布。WPILib 與 AdvantageKit 等多個函式庫皆支援此格式，以下範例程式示範如何記錄點資料：
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Telemetry.log("MyTranslations",
@@ -49,6 +49,33 @@ Telemetry.log("MyTranslations",
     new Translation2d(0.0, 1.0),
     new Translation2d(2.0, 3.0)
   });
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::telemetry::Log("MyTranslations", std::vector{
+  wpi::math::Translation2d{0_m, 1_m},
+  wpi::math::Translation2d{2_m, 3_m}
+});
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import Translation2d
+import telemetry
+
+telemetry.log(
+    "MyTranslations",
+    [
+        Translation2d(0.0, 1.0),
+        Translation2d(2.0, 3.0),
+    ],
+    element_type=Translation2d,
+)
 ```
 
 </TabItem>

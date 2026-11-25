@@ -2,7 +2,7 @@
 
 ## Desteklenen formatlar {#supported-formats}
 
-- **WPILOG (.wpilog)** - WPILib'in [yerleşik veri loglama sistemi](https://docs.wpilib.org/tr/stable/docs/software/telemetry/datalog.html) ve AdvantageKit bu formatta kayıt alır. REV motor kontrolcülerinden gelen sinyalleri bir WPILOG dosyasına kaydetmek için [URCL](/more-features/urcl) kullanabilirsiniz.
+- **WPILOG (.wpilog)** - WPILib'in [yerleşik veri loglama sistemi](https://docs.wpilib.org/tr/stable/docs/software/telemetry/datalog.html), AdvantageKit ve FIRST Driver Station bu formatta kayıt alır. Harici logları (örneğin üretici loglarını) bir WPILOG dosyasına yakalamak için [evrensel loglama](/more-features/universal-logging) kullanılabilir.
 - **Hoot (.hoot)** - CTRE'nin Phoenix 6 [sinyal loglayıcısı](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) bu formatta kayıt alır.
 - **REVLOG (.revlog)** - REV Robotics'in [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) aracı bu formatta kayıt alır.
 - **Road Runner (.log)** - FTC için geliştirilen [Road Runner](https://github.com/acmerobotics/road-runner) kütüphanesi bu formatta kayıt alır.
@@ -31,6 +31,12 @@ _Yukarıda İngilizce arayüz gösteriliyor._
 Bir log dosyası açıkken mevcut görselleştirmeye kolayca başka loglar da ekleyebilirsiniz. Zaman damgaları mevcut verilerle eşleşecek şekilde otomatik olarak yeniden hizalanır.
 
 Menü çubuğundan `Dosya` > `Yeni log ekle...` seçeneğine tıklayıp eklemek istediğiniz bir veya daha fazla log dosyasını seçin. Eklenen her logdaki alanlar `Log0`, `Log1` vb. tabloların altında listelenir.
+
+## Sürücü İstasyonu düzeni {#driver-station-layout}
+
+AdvantageScope, konsol çıktısı, iletişim metrikleri, akü voltajı, CPU kullanımı ve joystick girişleri için önceden yapılandırılmış sekmelerle FIRST Driver Station'dan gelen logları ve canlı verileri görüntülemek üzere tasarlanmış yerleşik bir düzen içerir.
+
+Masaüstünde FIRST Driver Station tarafından oluşturulan bir WPILOG dosyasını açtığınızda, AdvantageScope logu Sürücü İstasyonu düzenini kullanarak ayrı bir pencerede açmak isteyip istemediğinizi sorar. Herhangi bir pencere `Dosya` > `DS düzenine sıfırla` seçeneğine tıklanarak da manuel olarak bu düzene geçirilebilir. FIRST Driver Station için [AdvantageScope Lite](/more-features/advantagescope-lite)'ta bu düzen varsayılan olarak kullanılır (ve `Sekmeler` > `Varsayılan düzene sıfırla` seçeneğine tıklanarak geri yüklenebilir).
 
 ## Robottan indirme {#downloading-from-the-robot}
 

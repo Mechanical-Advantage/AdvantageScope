@@ -6,7 +6,7 @@ AdvantageScope XR מפיחה חיים בתצוגת 👀 [מגרש 3D](/tab-refer
 
 ## דרישות {#requirements}
 
-- **מארח (Host):** אפליקציית שולחן העבודה של AdvantageScope ב-Windows, macOS או Linux (גרסה v4.1.0 ומעלה). יש לוודא שכל חומת אש (firewall) במכשיר [מושבתת](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
+- **מארח (Host):** אפליקציית שולחן העבודה של AdvantageScope ב-Windows, macOS או Linux (גרסה v4.1.0 ומעלה). יש לוודא שכל חומת אש (firewall) במכשיר [מושבתת](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) או מוגדרת לאפשר חיבורים נכנסים בפורט TCP 56328.
 - **לקוח (Client):** מכשיר iPhone או iPad עם iOS/iPadOS 16 ומעלה. אין צורך להתקין אפליקציה.
 - **רשת:** שני המכשירים חייבים להיות מחוברים לאותה רשת (Wi-Fi, שיתוף אינטרנט ב-USB וכו'). בכפוף לדרישה למטה, הרשת הזו לא חייבת להיות מחוברת לאינטרנט.
 - **אינטרנט:** אם לא השתמשתם ב-AdvantageScope XR לאחרונה, המכשיר הנייד חייב להיות מחובר לאינטרנט (למשל גלישה סלולרית). כדי לוותר על הדרישה הזו, בדקו את סעיף [שימוש ללא חיבור לאינטרנט](#offline-usage) למטה.
@@ -74,7 +74,7 @@ AdvantageScope XR היא אפליקציה תובענית, וביצועיה על�
 
 AdvantageScope XR אינה דורשת חיבור לאינטרנט. כדי להבטיח שהאפליקציה תהיה זמינה גם אופליין, הורידו את AdvantageScope XR מה-App Store דרך הקישור למטה. כדי להתחבר לאפליקציית שולחן העבודה, סרקו את קוד ה-QR באפליקציית המצלמה של iOS או לחצו על כפתור הסריקה ("Scan") בתוך AdvantageScope XR.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_he.svg" alt="App Store" />](https://apps.apple.com/il/app/advantagescope-xr/id6739718081?l=he)
 
 :::note
 גם כשעובדים ללא חיבור לאינטרנט, המחשב המארח ומכשיר הלקוח **חייבים להיות מחוברים לאותה רשת** (למשל רשת הרובוט, רשת Wi-Fi ייעודית או שיתוף אינטרנט ב-USB).

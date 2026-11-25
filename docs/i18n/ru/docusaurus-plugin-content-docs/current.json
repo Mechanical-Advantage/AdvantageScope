@@ -3,6 +3,14 @@
     "message": "В разработке",
     "description": "The label for version current"
   },
+  "sidebar.sidebar.category.Tutorials": {
+    "message": "Руководства",
+    "description": "The label for category 'Tutorials' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tutorials.link.generated-index.description": {
+    "message": "В этих руководствах рассматриваются основы работы с AdvantageScope.",
+    "description": "The generated-index page description for category 'Tutorials' in sidebar 'sidebar'"
+  },
   "sidebar.sidebar.category.Overview": {
     "message": "Обзор",
     "description": "The label for category 'Overview' in sidebar 'sidebar'"

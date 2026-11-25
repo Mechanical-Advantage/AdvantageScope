@@ -6,7 +6,7 @@ AdvantageScope XR brengt het 👀 [3D-veld](/tab-reference/3d-field) tot leven i
 
 ## Vereisten {#requirements}
 
-- **Host:** De desktopversie van AdvantageScope op Windows, macOS of Linux (v4.1.0 of nieuwer). Eventuele firewalls op het apparaat moet je [uitschakelen](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
+- **Host:** De desktopversie van AdvantageScope op Windows, macOS of Linux (v4.1.0 of nieuwer). Eventuele firewalls op het apparaat moet je [uitschakelen](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) of zo instellen dat inkomende verbindingen op TCP-poort 56328 worden toegestaan.
 - **Client:** Een iPhone of iPad met iOS/iPadOS 16 of nieuwer. Je hoeft geen app te installeren.
 - **Netwerk:** Beide apparaten moeten op hetzelfde netwerk zitten (wifi, USB-tethering, enz.). Behalve voor de voorwaarde hieronder hoeft dit netwerk geen internetverbinding te hebben.
 - **Internet:** Heb je AdvantageScope XR al een tijdje niet gebruikt, dan heeft het mobiele apparaat even internet nodig (bijvoorbeeld via mobiele data). Wil je dat vermijden? Lees dan het stukje over [offline gebruik](#offline-usage) hieronder.
@@ -74,7 +74,7 @@ In het venster XR-bediening vind je verschillende opties voor de weergave in aug
 
 AdvantageScope XR heeft geen internetverbinding nodig. Wil je zeker weten dat de app altijd offline beschikbaar is, download AdvantageScope XR dan vooraf uit de App Store via de link hieronder. Om verbinding te maken met de desktopapp van AdvantageScope scan je de QR-code met de Camera-app van iOS, of tik je op de knop "Scan" in de AdvantageScope XR-app.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_nl.svg" alt="App Store" />](https://apps.apple.com/nl/app/advantagescope-xr/id6739718081)
 
 :::note
 Ook zonder internetverbinding **moeten de host en het mobiele apparaat op hetzelfde netwerk zitten** (bijvoorbeeld dat van de robot, een eigen wifinetwerk of via USB-tethering).

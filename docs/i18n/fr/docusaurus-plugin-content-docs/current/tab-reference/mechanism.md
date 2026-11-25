@@ -32,10 +32,10 @@ Pour commencer, faites glisser un champ `Mechanism2d` dans le panneau de contrô
 
 ## Publication de données {#publishing-data}
 
-<Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+Pour publier des données de mécanisme, enregistrez périodiquement un objet `Mechanism2d` (voir ci-dessous). Attention : cet appel n'enregistre que l'état actuel du `Mechanism2d`, il faut donc l'exécuter à chaque cycle de boucle après avoir mis à jour le mécanisme.
 
-Avec WPILib, enregistrez périodiquement votre objet `Mechanism2d` à l'aide de `Telemetry` (voir ci-dessous). Attention : cet appel n'enregistre que l'état actuel du `Mechanism2d`, il faut donc l'exécuter à chaque cycle de boucle après avoir mis à jour le mécanisme.
+<Tabs groupId="library">
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
@@ -46,9 +46,31 @@ periodic() {
 ```
 
 </TabItem>
-<TabItem value="advantagekit" label="AdvantageKit">
+<TabItem value="wpilib-cpp" label="C++">
 
-Avec AdvantageKit, enregistrez périodiquement votre objet `Mechanism2d` comme champ de sortie (voir ci-dessous). Attention : cet appel n'enregistre que l'état actuel du `Mechanism2d`, il faut donc l'exécuter à chaque cycle de boucle après avoir mis à jour le mécanisme.
+```cpp
+wpi::Mechanism2d mechanism{3, 3};
+
+void Periodic() {
+  wpi::telemetry::Log("MyMechanism", mechanism);
+}
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+import wpilib
+import telemetry
+
+mechanism = wpilib.Mechanism2d(3, 3)
+
+def periodic():
+    telemetry.log("MyMechanism", mechanism)
+```
+
+</TabItem>
+<TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
 LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);

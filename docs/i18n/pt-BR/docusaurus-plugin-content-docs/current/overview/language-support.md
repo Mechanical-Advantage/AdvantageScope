@@ -24,6 +24,8 @@ O AdvantageScope oferece suporte a vários idiomas para proporcionar uma experi�
 - Chinês simplificado
 - Chinês tradicional
 
+Agradecemos à equipe FRC Team 6907 The G.O.A.T. pela ajuda na revisão e melhoria das traduções do AdvantageScope!
+
 ## Configuração {#configuration}
 
 Para mudar o idioma do AdvantageScope, abra a janela de preferências clicando em `App` > `Mostrar preferências...` (Windows/Linux) ou `AdvantageScope` > `Configurações...` (macOS). Na opção "Idioma", escolha um dos idiomas disponíveis ou selecione "Padrão do sistema" para acompanhar automaticamente o idioma do seu sistema operacional.
@@ -37,17 +39,33 @@ Todos os formatos compatíveis com o AdvantageScope têm suporte completo a Unic
 Veja um exemplo de registro de texto usando uma chave em português:
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
-Telemetry.log("Tração/Velocidade do motor direito", "Rápido");
+Telemetry.log("Tração/PosiçãoRobô", "Rápido");
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::telemetry::Log("Tração/PosiçãoRobô", "Rápido");
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+import telemetry
+
+telemetry.log("Tração/PosiçãoRobô", "Rápido")
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
-Logger.recordOutput("Tração/Velocidade do motor direito", "Rápido");
+Logger.recordOutput("Tração/PosiçãoRobô", "Rápido");
 ```
 
 </TabItem>
@@ -61,4 +79,4 @@ Consulte a página sobre [suporte a unidades](/tab-reference/line-graph/units) p
 
 A localização do AdvantageScope é feita combinando inteligência artificial e colaboração da comunidade. Como o projeto evolui muito rápido, o uso de IA é essencial para manter o aplicativo e a documentação sincronizados em todos os idiomas — assim, novos recursos e atualizações chegam ao mesmo tempo, qualquer que seja o idioma escolhido.
 
-Nosso processo busca respeitar o vocabulário, os termos em inglês adotados no dia a dia e as expressões que as equipes locais já usam. Ainda assim, traduções geradas por IA às vezes trazem frases pouco naturais ou pequenas imprecisões. Se você notar algo estranho, seu feedback é muito bem-vindo: basta clicar no ícone roxo dentro do aplicativo (quando ele estiver em qualquer idioma diferente do inglês).
+Nosso processo busca respeitar o vocabulário, os termos em inglês adotados no dia a dia e as expressões que as equipes locais já usam. Ainda assim, **traduções geradas por IA às vezes trazem frases pouco naturais ou pequenas imprecisões**. Se você notar algo estranho, seu feedback é muito bem-vindo: basta clicar no ícone roxo dentro do aplicativo ou no link de feedback na barra de título da documentação (quando estiver em qualquer idioma diferente do inglês).

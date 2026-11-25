@@ -39,7 +39,7 @@ Dentro dessa pasta deve haver um arquivo chamado "config.json" e um ou mais arqu
 
 ### Visão geral {#overview}
 
-A pasta precisa conter um modelo chamado "model.glb". Arquivos CAD precisam ser convertidos para glTF; veja os detalhes [nesta página](gltf-convert). O arquivo de configuração deve seguir este formato:
+A pasta precisa conter um modelo chamado "model.glb". Arquivos CAD precisam ser convertidos para glTF binário (`.glb`); veja os detalhes [nesta página](gltf-convert). O arquivo de configuração deve seguir este formato:
 
 ```json
 {
@@ -79,7 +79,7 @@ O AdvantageScope simplifica a geometria dos modelos automaticamente para melhora
 Configurar componentes articulados pode ser complexo e trabalhoso. Vale considerar o suporte a [`Mechanism2d` em 3D](/tab-reference/3d-field#2d-mechanisms) do AdvantageScope, que oferece um caminho bem mais direto para **visualizar mecanismos no campo 3D**.
 :::
 
-Modelos de robôs podem incluir componentes articulados para visualizar dados de mecanismos (confira os detalhes [aqui](/tab-reference/3d-field)). O modelo glTF base não deve conter esses componentes; cada parte móvel deve ser exportada como um arquivo glTF separado. Os arquivos dos componentes seguem o padrão "model_INDEX.glb", então o primeiro componente articulado seria "model_0.glb".
+Modelos de robôs podem incluir componentes articulados para visualizar dados de mecanismos (confira os detalhes [aqui](/tab-reference/3d-field)). O modelo glTF (`.glb`) base não deve conter esses componentes; cada parte móvel deve ser exportada como um arquivo glTF (`.glb`) separado. Os arquivos dos componentes seguem o padrão "model_INDEX.glb", então o primeiro componente articulado seria "model_0.glb".
 
 A configuração dos componentes fica no `config.json` do robô, dentro de um array na chave "components". Quando você não informa nenhuma pose de componente no AdvantageScope, os modelos aparecem na posição padrão usando as rotações e a posição do robô (descritas acima). Quando você informa poses de componentes, o AdvantageScope aplica as rotações e a posição "zeradas" para levar cada componente até a origem do robô e, depois, aplica as poses informadas para mover cada peça para o lugar certo no robô.
 
@@ -225,7 +225,7 @@ A pasta deve conter uma imagem chamada "image.png", orientada com a aliança ver
 
 ## Modelos de campo 3D {#3d-field-models}
 
-A pasta deve conter um modelo chamado "model.glb". Depois de aplicar todas as rotações, o campo deve ficar orientado com a aliança vermelha à esquerda. Arquivos CAD precisam ser convertidos para glTF; veja os detalhes [nesta página](gltf-convert). Os modelos das peças do jogo seguem o padrão "model_INDEX.glb" de acordo com a ordem em que aparecem no array "gamePieces". As AprilTags declaradas aqui são sempre posicionadas usando o sistema de coordenadas [centro/vermelho](/more-features/coordinate-systems#center-red), independentemente de qualquer outra opção de configuração.
+A pasta deve conter um modelo chamado "model.glb". Depois de aplicar todas as rotações, o campo deve ficar orientado com a aliança vermelha à esquerda. Arquivos CAD precisam ser convertidos para glTF binário (`.glb`); veja os detalhes [nesta página](gltf-convert). Os modelos das peças do jogo seguem o padrão "model_INDEX.glb" de acordo com a ordem em que aparecem no array "gamePieces". As AprilTags declaradas aqui são sempre posicionadas usando o sistema de coordenadas [centro/vermelho](/more-features/coordinate-systems#center-red), independentemente de qualquer outra opção de configuração.
 
 O arquivo de configuração deve seguir este formato:
 

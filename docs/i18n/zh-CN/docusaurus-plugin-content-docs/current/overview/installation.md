@@ -16,10 +16,6 @@ AdvantageScope 官方版本可直接从 6328 团队获取，或通过 WPILib 安
 - 有新版本可供下载时，应用内会自动弹出提醒。
 - 内置多款 6328 团队近年的机器人模型，可在 👀 [3D 场地](/tab-reference/3d-field) 选项卡中直接使用。
 
-:::note
-在 Ubuntu 23.10 及更高版本上运行 AppImage 包之前，请先从 Releases 页面下载 AppArmor 配置文件，并将其复制到 /etc/apparmor.d。
-:::
-
 :::info
 AdvantageScope 每年 1 月 FRC 赛季揭幕战 (kickoff) 前都会发布一个主版本，版本号与年份对应（例如 v26.0.0 于 2026 年 1 月发布）。在正式版发布前的几个月里，我们可能会推出 Beta 和 Alpha 测试版，供愿意尝鲜并提供反馈的队伍试用。**使用这些预发布版本时，你可能会遇到稳定版中不存在的问题或 Bug。**
 :::

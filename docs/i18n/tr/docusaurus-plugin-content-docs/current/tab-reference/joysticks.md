@@ -30,5 +30,5 @@ Sekmenin altındaki tablodan joystick türlerini seçin. Joystick ID'leri 0 ile 
 AdvantageScope, tüm düğmeleri, eksenleri ve POV'leri ızgara düzeninde gösteren “Genel Joystick” (yukarıdaki görselde) dahil olmak üzere yaygın joystick modellerini içerir. Özel bir joystick eklemek için [Özel Varlıklar](/more-features/custom-assets) bölümüne bakın.
 
 :::warning
-**Joystick verileri, standart WPILib ile NetworkTables bağlantısı üzerinden ALINAMAZ.** WPILib log dosyaları ([joystick loglaması etkinleştirilmiş](https://docs.wpilib.org/tr/stable/docs/software/telemetry/datalog.html#logging-joystick-data) şekilde), AdvantageKit logları ve AdvantageKit canlı akışı desteklenir.
+**Joystick verileri, standart WPILib ile NetworkTables bağlantısı üzerinden ALINAMAZ.** WPILib log dosyaları ([joystick loglaması etkinleştirilmiş](https://docs.wpilib.org/tr/stable/docs/software/telemetry/datalog.html#logging-joystick-data) şekilde), AdvantageKit logları, AdvantageKit canlı akışı ve FIRST Driver Station verileri desteklenir.
 :::

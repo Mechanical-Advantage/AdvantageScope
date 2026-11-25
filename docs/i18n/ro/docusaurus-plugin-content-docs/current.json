@@ -3,6 +3,14 @@
     "message": "Versiunea următoare",
     "description": "The label for version current"
   },
+  "sidebar.sidebar.category.Tutorials": {
+    "message": "Tutoriale",
+    "description": "The label for category 'Tutorials' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tutorials.link.generated-index.description": {
+    "message": "Aceste tutoriale prezintă noțiunile de bază pentru utilizarea AdvantageScope.",
+    "description": "The generated-index page description for category 'Tutorials' in sidebar 'sidebar'"
+  },
   "sidebar.sidebar.category.Overview": {
     "message": "Prezentare generală",
     "description": "The label for category 'Overview' in sidebar 'sidebar'"

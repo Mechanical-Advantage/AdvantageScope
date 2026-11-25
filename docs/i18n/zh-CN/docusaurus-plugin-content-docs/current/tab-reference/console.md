@@ -7,9 +7,9 @@ sidebar_position: 5
 控制台视图用于查看包含控制台输出的单个字符串字段。以下是一些常用的推荐字段：
 
 - **DS:/Dscomm/Console** — 由 FIRST Driver Station 保存。
-- **messages** — 由 WPILib 内置日志系统在调用 [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>) 方法时保存。
-- **/RealOutputs/Console** — 机器人实际运行时由 AdvantageKit 自动保存（照常使用 `System.out.println` 即可）。
-- **/ReplayOutputs/Console** — 日志重放时由 AdvantageKit 自动保存（照常使用 `System.out.println` 即可）。
+- **messages** — 由 WPILib 内置数据日志记录功能保存。
+- **/RealOutputs/Console** — 机器人实际运行时由 AdvantageKit 自动保存。
+- **/ReplayOutputs/Console** — 日志重放时由 AdvantageKit 自动保存。
 
 将所需字段拖入主视图即可开始查看，每一行代表该字段的一次更新。对于 WPILib 日志，每保存一行文本就会生成一条新行；对于 AdvantageKit 日志，则是每个循环周期生成一条新行。
 

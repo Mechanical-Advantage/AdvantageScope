@@ -7,9 +7,9 @@ sidebar_position: 5
 Op het tabblad **Console** bekijk je één stringveld met consolemeldingen. Hieronder staan een paar handige velden om te gebruiken:
 
 - **DS:/Dscomm/Console** - Opgeslagen door het FIRST Driver Station.
-- **messages** - Opgeslagen door de ingebouwde logging van WPILib via [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>).
-- **/RealOutputs/Console** - Automatisch opgeslagen door AdvantageKit terwijl de robot draait (gebruik gewoon `System.out.println`).
-- **/ReplayOutputs/Console** - Automatisch opgeslagen door AdvantageKit tijdens het opnieuw afspelen van logs (gebruik gewoon `System.out.println`).
+- **messages** - Automatisch opgeslagen door WPILib's `DataLogManager`.
+- **/RealOutputs/Console** - Automatisch opgeslagen door AdvantageKit terwijl de robot draait.
+- **/ReplayOutputs/Console** - Automatisch opgeslagen door AdvantageKit tijdens het opnieuw afspelen van logs.
 
 Sleep het gewenste veld naar het hoofdvenster om te beginnen. Elke rij laat een update van dat veld zien: bij WPILib-logs is dat elke opgeslagen regel, bij AdvantageKit-logs elke loopcyclus.
 
@@ -25,7 +25,7 @@ De bediening werkt grotendeels hetzelfde als op het tabblad 🔢 [Tabel](../tab-
 
 Typ tekst in het invoerveld "Filteren" om alleen rijen te tonen die die tekst bevatten. Met `Ctrl+F` spring je meteen naar dat filtervak. Zet een "!" voor je zoektekst om overeenkomende meldingen juist _weg te filteren_.
 
-## ANSI-opmaak
+## ANSI-opmaak {#ansi-formatting}
 
 De consoleweergave ondersteunt opmaak- en kleurcodes via standaard ANSI-escapesequenties:
 

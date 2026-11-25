@@ -3,6 +3,14 @@
     "message": "التالي",
     "description": "The label for version current"
   },
+  "sidebar.sidebar.category.Tutorials": {
+    "message": "الدروس التعليمية",
+    "description": "The label for category 'Tutorials' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tutorials.link.generated-index.description": {
+    "message": "تستعرض هذه الدروس التعليمية أساسيات استخدام AdvantageScope.",
+    "description": "The generated-index page description for category 'Tutorials' in sidebar 'sidebar'"
+  },
   "sidebar.sidebar.category.Overview": {
     "message": "نظرة عامة",
     "description": "The label for category 'Overview' in sidebar 'sidebar'"

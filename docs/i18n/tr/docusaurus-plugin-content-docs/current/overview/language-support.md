@@ -24,6 +24,8 @@ AdvantageScope, dünyanın dört bir yanındaki takımlara kendi dillerinde bir 
 - Basitleştirilmiş Çince
 - Geleneksel Çince
 
+AdvantageScope çevirilerini incelemeye ve geliştirmeye yardımcı olduğu için FRC Team 6907 The G.O.A.T. ekibine teşekkür ederiz!
+
 ## Yapılandırma {#configuration}
 
 AdvantageScope'un arayüz dilini değiştirmek için `Uygulama` > `Tercihleri göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) yolunu izleyerek tercihler penceresini açın. “Dil” ayarından desteklenen dillerden birini seçebilir veya işletim sisteminizin dilini otomatik olarak kullanmak için “Sistem varsayılanı”nı tercih edebilirsiniz.
@@ -37,17 +39,33 @@ AdvantageScope'un desteklediği tüm formatlar, log anahtarları tanımlanırken
 Aşağıda Türkçe bir anahtarla metin (string) kaydetme örneğini görebilirsiniz:
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
-Telemetry.log("Sürüş/Sağ motor hızı", "Hızlı");
+Telemetry.log("Sürüş/SağMotorHızı", "Hızlı");
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::telemetry::Log("Sürüş/SağMotorHızı", "Hızlı");
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+import telemetry
+
+telemetry.log("Sürüş/SağMotorHızı", "Hızlı")
 ```
 
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
-Logger.recordOutput("Sürüş/Sağ motor hızı", "Hızlı");
+Logger.recordOutput("Sürüş/SağMotorHızı", "Hızlı");
 ```
 
 </TabItem>
@@ -61,4 +79,4 @@ Birim üst verilerini nasıl ileteceğinizi öğrenmek için [birim desteği](/t
 
 AdvantageScope'un yerelleştirmesi, yapay zekâ ve topluluk katkılarının birleşimiyle hazırlanır. AdvantageScope çok hızlı gelişen bir proje olduğu için, uygulamanın ve belgelerin tüm dillerde güncel kalabilmesi adına yapay zekâdan yararlanmak gerekir. Bu sayede hangi dili seçerseniz seçin, yeni özelliklere ve güncellemelere herkesle aynı anda ulaşabilirsiniz.
 
-Çeviri sürecimiz, yerel takımların günlük hayatta kullandığı terimlere ve alıntı kelimelere uyum sağlayacak şekilde tasarlanmıştır. Yine de yapay zekâ çevirilerinde zaman zaman doğal durmayan ifadeler veya hatalar bulunabilir. Geri bildirimleriniz bizim için çok değerli; uygulama İngilizce dışında bir dile ayarlıyken mor simgeye tıklayarak çevirilerle ilgili görüşlerinizi paylaşabilirsiniz.
+Çeviri sürecimiz, yerel takımların günlük hayatta kullandığı terimlere ve alıntı kelimelere uyum sağlayacak şekilde tasarlanmıştır. Yine de **yapay zekâ çevirilerinde zaman zaman doğal durmayan ifadeler veya hatalar bulunabilir**. Geri bildirimleriniz bizim için çok değerli; uygulama İngilizce dışında bir dile ayarlıyken uygulamadaki mor simgeye veya belge başlık çubuğundaki geri bildirim bağlantısına tıklayarak çevirilerle ilgili görüşlerinizi paylaşabilirsiniz.

@@ -17,6 +17,11 @@ O AdvantageScope é um aplicativo desenvolvido pela [Equipe 6328](https://little
 items={[
 {
 type: "category",
+label: "Tutoriais",
+href: "/category/tutorials"
+},
+{
+type: "category",
 label: "Visão geral",
 href: "/category/overview"
 },
@@ -24,11 +29,6 @@ href: "/category/overview"
 type: "category",
 label: "Referência de guias",
 href: "/category/tab-reference"
-},
-{
-type: "category",
-label: "Mais recursos",
-href: "/category/more-features"
 },
 {
 type: "link",

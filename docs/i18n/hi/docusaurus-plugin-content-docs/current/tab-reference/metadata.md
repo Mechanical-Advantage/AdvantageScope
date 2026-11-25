@@ -13,10 +13,10 @@ import TabItem from '@theme/TabItem';
 
 _ऊपर अंग्रेजी इंटरफ़ेस दिखाया गया है।_
 
-नीचे दिया गया उदाहरण कोड दिखाता है कि Java में मेटाडेटा कैसे लॉग किया जाता है।
+नीचे दिया गया उदाहरण कोड दिखाता है कि मेटाडेटा कैसे लॉग किया जाता है।
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 WPILib में, `Telemetry` क्लास का उपयोग करके "/Metadata" टेबल में मान स्ट्रिंग के रूप में लॉग करें।
 
@@ -24,6 +24,30 @@ WPILib में, `Telemetry` क्लास का उपयोग करक�
 TelemetryTable metadata = Telemetry.getTable("Metadata");
 metadata.log("RobotName", "Darwin");
 metadata.log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+WPILib में, `Telemetry` क्लास का उपयोग करके "/Metadata" टेबल में मान स्ट्रिंग के रूप में लॉग करें।
+
+```cpp
+wpi::telemetry::TelemetryTable& metadata = wpi::telemetry::GetTable("Metadata");
+metadata.Log("RobotName", "Darwin");
+metadata.Log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+WPILib में, `telemetry` मॉड्यूल का उपयोग करके "/Metadata" टेबल में मान स्ट्रिंग के रूप में लॉग करें।
+
+```python
+import telemetry
+
+metadata = telemetry.get_table("Metadata")
+metadata.log("RobotName", "Darwin")
+metadata.log("Platform", "macOS")
 ```
 
 </TabItem>

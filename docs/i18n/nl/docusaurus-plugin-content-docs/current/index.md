@@ -17,6 +17,11 @@ AdvantageScope is een applicatie voor robotdiagnostiek, loganalyse en datavisual
 items={[
 {
 type: "category",
+label: "Tutorials",
+href: "/category/tutorials"
+},
+{
+type: "category",
 label: "Overzicht",
 href: "/category/overview"
 },
@@ -24,11 +29,6 @@ href: "/category/overview"
 type: "category",
 label: "Tabbladreferentie",
 href: "/category/tab-reference"
-},
-{
-type: "category",
-label: "Meer functies",
-href: "/category/more-features"
 },
 {
 type: "link",

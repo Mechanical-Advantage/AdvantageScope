@@ -6,7 +6,7 @@ O AdvantageScope XR leva a visualização do 👀 [Campo 3D](/tab-reference/3d-f
 
 ## Requisitos {#requirements}
 
-- **Computador (host):** O aplicativo de desktop do AdvantageScope no Windows, macOS ou Linux (v4.1.0 ou mais recente). Os firewalls do computador precisam estar [desativados](https://docs.wpilib.org/pt/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
+- **Computador (host):** O aplicativo de desktop do AdvantageScope no Windows, macOS ou Linux (v4.1.0 ou mais recente). Os firewalls do computador precisam estar [desativados](https://docs.wpilib.org/pt/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) ou configurados para permitir conexões de entrada na porta TCP 56328.
 - **Dispositivo móvel (cliente):** Um iPhone ou iPad com iOS/iPadOS 16 ou mais recente. Você não precisa instalar nenhum aplicativo.
 - **Rede:** Os dois aparelhos precisam estar na mesma rede (Wi-Fi, ancoragem USB, etc.). Fora o caso explicado no item abaixo, essa rede não precisa ter acesso à internet.
 - **Internet:** Se o AdvantageScope XR não tiver sido usado recentemente no celular ou tablet, ele precisará de conexão com a internet (por exemplo, dados móveis) na primeira abertura. Para evitar depender disso, veja a seção de [uso offline](#offline-usage) mais abaixo.
@@ -74,7 +74,7 @@ Na janela Controles de XR, você encontra várias opções para ajustar como o c
 
 O AdvantageScope XR não precisa de internet para funcionar. Para garantir que ele esteja disponível mesmo sem conexão, baixe o aplicativo AdvantageScope XR na App Store pelo link abaixo. Depois, para conectar ao AdvantageScope no computador, escaneie o QR code com a câmera do iOS ou toque no botão "Escanear" dentro do próprio app.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_pt-BR.svg" alt="App Store" />](https://apps.apple.com/br/app/advantagescope-xr/id6739718081)
 
 :::note
 Mesmo offline, o computador e o dispositivo móvel **precisam estar na mesma rede** (como a rede do robô, um Wi-Fi próprio ou via ancoragem USB).

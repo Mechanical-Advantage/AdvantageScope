@@ -17,6 +17,11 @@ AdvantageScope es una aplicación de diagnóstico, análisis de registros y visu
 items={[
 {
 type: "category",
+label: "Tutoriales",
+href: "/category/tutorials"
+},
+{
+type: "category",
 label: "Descripción general",
 href: "/category/overview"
 },
@@ -24,11 +29,6 @@ href: "/category/overview"
 type: "category",
 label: "Referencia de pestañas",
 href: "/category/tab-reference"
-},
-{
-type: "category",
-label: "Más funciones",
-href: "/category/more-features"
 },
 {
 type: "link",

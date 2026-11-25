@@ -30,5 +30,5 @@ _تظهر في الصورة أعلاه الواجهة باللغة الإنجل�
 يتضمن AdvantageScope مجموعة من أذرع التحكم الشائعة، بما في ذلك «ذراع تحكم عامة» (Generic Joystick) التي تضم جميع الأزرار والمحاور ومفاتيح الاتجاهات (POVs) في شبكة منظمة (كما يظهر أعلاه). لإضافة ذراع تحكم مخصصة، راجع صفحة [الأصول المخصصة](/more-features/custom-assets).
 
 :::warning
-**لا تتوفر بيانات أذرع التحكم عبر اتصال NetworkTables مع WPILib القياسي.** غير أن التطبيق يدعم ملفات سجل WPILib (مع [تفعيل تسجيل أذرع التحكم](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data))، وسجلات AdvantageKit، والبث المباشر من AdvantageKit.
+**لا تتوفر بيانات أذرع التحكم عبر اتصال NetworkTables مع WPILib القياسي.** غير أن التطبيق يدعم ملفات سجل WPILib (مع [تفعيل تسجيل أذرع التحكم](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data))، وسجلات AdvantageKit، والبث المباشر من AdvantageKit، وبيانات FIRST Driver Station.
 :::

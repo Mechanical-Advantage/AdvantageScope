@@ -38,10 +38,10 @@ Pentru a vedea o listă completă a tipurilor de surse suportate, dă clic pe pi
 
 ## Formatul datelor {#data-format}
 
-Datele punctelor trebuie publicate ca structură codificată pe octeți (byte-encoded struct) sau protobuf, folosind tipul `Translation2d[]`. Multe biblioteci suportă acest format, inclusiv WPILib și AdvantageKit. Codul de exemplu de mai jos arată cum poți înregistra datele de puncte în Java.
+Datele punctelor trebuie publicate ca structură codificată pe octeți (byte-encoded struct) sau protobuf, folosind tipul `Translation2d[]`. Multe biblioteci suportă acest format, inclusiv WPILib și AdvantageKit. Codul de exemplu de mai jos arată cum poți înregistra datele de puncte.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Telemetry.log("MyTranslations",
@@ -49,6 +49,33 @@ Telemetry.log("MyTranslations",
     new Translation2d(0.0, 1.0),
     new Translation2d(2.0, 3.0)
   });
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::telemetry::Log("MyTranslations", std::vector{
+  wpi::math::Translation2d{0_m, 1_m},
+  wpi::math::Translation2d{2_m, 3_m}
+});
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import Translation2d
+import telemetry
+
+telemetry.log(
+    "MyTranslations",
+    [
+        Translation2d(0.0, 1.0),
+        Translation2d(2.0, 3.0),
+    ],
+    element_type=Translation2d,
+)
 ```
 
 </TabItem>

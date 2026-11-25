@@ -7,9 +7,9 @@ sidebar_position: 5
 תצוגת המסוף מציגה שדה מחרוזת (string) אחד המכיל פלט מסוף (Console). הנה כמה שדות מומלצים:
 
 - **DS:/Dscomm/Console** - נשמר על ידי ה-FIRST Driver Station.
-- **messages** - נשמר על ידי מערכת הרישום המובנית של WPILib בעקבות קריאות למתודה [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>).
-- **/RealOutputs/Console** - נשמר אוטומטית על ידי AdvantageKit בזמן פעולת הרובוט (השתמשו ב-`System.out.println` כרגיל).
-- **/ReplayOutputs/Console** - נשמר אוטומטית על ידי AdvantageKit בזמן שחזור יומן (השתמשו ב-`System.out.println` כרגיל).
+- **messages** - נשמר אוטומטית על ידי `DataLogManager` של WPILib.
+- **/RealOutputs/Console** - נשמר אוטומטית על ידי AdvantageKit בזמן פעולת הרובוט.
+- **/ReplayOutputs/Console** - נשמר אוטומטית על ידי AdvantageKit בזמן שחזור יומן.
 
 כדי להתחיל, גררו את השדה הרצוי לתצוגה הראשית. כל שורה מייצגת עדכון של השדה: ביומני WPILib נוצרת שורה חדשה עבור כל שורה שנשמרה, וביומני AdvantageKit נוצרת שורה חדשה עבור כל מחזור לולאה.
 

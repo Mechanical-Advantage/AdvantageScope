@@ -30,5 +30,5 @@ _上图所示为英文界面。_
 AdvantageScope 内置了多种常见控制器预设，包括以网格形式展示所有按钮、轴和 POV 的“通用控制器”（如上图所示）。如需添加自定义控制器，请参阅[自定义资源](/more-features/custom-assets)。
 
 :::warning
-**原生 WPILib 无法通过 NetworkTables 连接传输控制器数据。** 目前支持从 WPILib 日志文件（需[启用控制器日志记录](https://docs.wpilib.org/zh-cn/stable/docs/software/telemetry/datalog.html#logging-joystick-data)）、AdvantageKit 日志以及 AdvantageKit 实时串流中读取控制器数据。
+**原生 WPILib 无法通过 NetworkTables 连接传输控制器数据。** 目前支持从 WPILib 日志文件（需[启用控制器日志记录](https://docs.wpilib.org/zh-cn/stable/docs/software/telemetry/datalog.html#logging-joystick-data)）、FIRST Driver Station 数据、AdvantageKit 日志以及 AdvantageKit 实时串流中读取控制器数据。
 :::

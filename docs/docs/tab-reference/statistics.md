@@ -12,7 +12,7 @@ The statistics tab allows for deep statistical analysis of numerical fields, ana
 
 To get started, drag a field to the "Measurements" section. Delete a field using the X button, or hide it temporarily by clicking the eye icon or double-clicking the field name. To remove all fields, click the trash can near the axis title and then `Clear All`. Fields can be rearranged in the list by clicking and dragging.
 
-To analyze the difference between fields, switch a field to "Reference" mode and additional other fields as children. Children can be switched between "Relative Error" and "Absolute Error" modes.
+To analyze the difference between fields, switch a field to "Reference" mode and add other fields as children. Children can be switched between "Relative Error" and "Absolute Error" modes.
 
 :::info
 The color of each field can be customized by clicking the colored icon or right-clicking on the field name.
@@ -20,7 +20,7 @@ The color of each field can be customized by clicking the colored icon or right-
 
 ### Configuration {#configuration}
 
-The **Time Range** option selectes what parts of the log are used for analysis:
+The **Time Range** option selects what parts of the log are used for analysis:
 
 - _Visible Range:_ Analyzes the range of time visible on the timeline.
 - _Full Log:_ Analyzes the full range of the log file.

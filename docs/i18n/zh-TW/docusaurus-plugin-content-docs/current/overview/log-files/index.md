@@ -2,7 +2,7 @@
 
 ## 支援的格式 {#supported-formats}
 
-- **WPILOG (.wpilog)** - 由 WPILib 的[內建資料記錄](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html)與 AdvantageKit 產生。也可搭配 [URCL](/more-features/urcl) 將 REV 馬達控制器的訊號記錄到 WPILOG 檔案中。
+- **WPILOG (.wpilog)** - 由 WPILib 的[內建資料記錄](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html)、AdvantageKit 與 FIRST Driver Station 產生。若想了解如何從多個來源（包含廠商日誌檔案）擷取資料，請參閱[通用日誌記錄](/more-features/universal-logging)頁面。
 - **Hoot (.hoot)** - 由 CTRE 的 Phoenix 6 [訊號記錄器](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html)產生。
 - **REVLOG (.revlog)** - 由 REV Robotics 的 [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) 產生。
 - **Road Runner (.log)** - 由用於 FTC 的 [Road Runner](https://github.com/acmerobotics/road-runner) 函式庫產生。
@@ -63,3 +63,9 @@ CSV 欄位名稱必須為「Timestamp, Key, Value」或「Timestamp, (Key), (Key
   - 範例：`[1; 2; 3]`
 - **位元組：** 十六進位，以 `-` 分隔
   - 範例：`4d-41-36-33-32-38`
+
+## 駕駛站佈局 {#driver-station-layout}
+
+AdvantageScope 內建專為檢視 FIRST Driver Station 日誌與即時資料而設計的佈局，預先配置了主控台輸出、通訊指標、電池電壓、CPU 使用率與搖桿輸入等分頁。
+
+在桌面版開啟由 FIRST Driver Station 產生的 WPILOG 檔案時，AdvantageScope 會提示是否要使用駕駛站佈局在獨立視窗中開啟該日誌。你也可以隨時點擊 `檔案` > `重設為 DS 佈局`，手動將任何視窗切換為此佈局。在適用於 FIRST Driver Station 的 [AdvantageScope Lite](/more-features/advantagescope-lite) 中，預設即使用此佈局（可透過點擊 `分頁` > `重設為預設佈局` 來還原）。

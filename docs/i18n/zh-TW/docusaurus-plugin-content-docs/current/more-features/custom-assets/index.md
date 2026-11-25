@@ -39,7 +39,7 @@ AdvantageScope 內建一組預設的平面場地圖片、場地模型、機器�
 
 ### 概述 {#overview}
 
-資料夾內必須包含名為「model.glb」的模型檔案。CAD 檔案須先轉換為 glTF 格式，詳細步驟請參閱[此頁面](gltf-convert)。設定檔格式如下：
+資料夾內必須包含名為「model.glb」的模型檔案。CAD 檔案須先轉換為二進位 glTF（`.glb`）格式，詳細步驟請參閱[此頁面](gltf-convert)。設定檔格式如下：
 
 ```json
 {
@@ -79,7 +79,7 @@ AdvantageScope 會自動簡化模型幾何結構以提升效能，細節程度�
 設定連桿組件可能相當繁瑣且耗時。建議優先考慮使用 AdvantageScope 的 3D [`Mechanism2d` 支援](/tab-reference/3d-field#2d-mechanisms)，這是在 **3D 場地上視覺化機構**更簡便的做法。
 :::
 
-機器人模型可以包含連桿組件，用來視覺化機構資料（詳情請參閱[此處](/tab-reference/3d-field)）。基礎 glTF 模型中不應包含任何組件，每個組件都必須單獨匯出成獨立的 glTF 檔案。組件模型須遵守「model_INDEX.glb」的命名規則，例如第一個連桿組件就是「model_0.glb」。
+機器人模型可以包含連桿組件，用來視覺化機構資料（詳情請參閱[此處](/tab-reference/3d-field)）。基礎 glTF（`.glb`）模型中不應包含任何組件，每個組件都必須單獨匯出成獨立的 glTF（`.glb`）檔案。組件模型須遵守「model_INDEX.glb」的命名規則，例如第一個連桿組件就是「model_0.glb」。
 
 組件設定需寫在機器人的設定檔中，並於「components」鍵下提供組件陣列。如果使用者未在 AdvantageScope 中提供組件姿態，組件模型會套用機器人預設的旋轉與位置（見上文）。當使用者提供了組件姿態時，系統會改為先套用「歸零」(zeroed) 的旋轉與位置，將每個組件移回機器人原點，接著再套用使用者的姿態資料，把各組件移動到機器人上的正確位置。
 
@@ -225,7 +225,7 @@ AdvantageScope 會自動簡化模型幾何結構以提升效能，細節程度�
 
 ## 3D 場地模型 {#3d-field-models}
 
-資料夾內必須包含名為「model.glb」的模型檔案。套用所有旋轉後，場地方向應讓紅方聯盟位於左側。CAD 檔案須先轉換為 glTF 格式，詳細步驟請參閱[此頁面](gltf-convert)。遊戲物件模型會依照在「gamePieces」陣列中的出現順序，遵守「model_INDEX.glb」的命名規則。不論其他設定選項為何，此處宣告的 AprilTag 一律使用[中心/紅方](/more-features/coordinate-systems#center-red)座標系來定位。
+資料夾內必須包含名為「model.glb」的模型檔案。套用所有旋轉後，場地方向應讓紅方聯盟位於左側。CAD 檔案須先轉換為二進位 glTF（`.glb`）格式，詳細步驟請參閱[此頁面](gltf-convert)。遊戲物件模型會依照在「gamePieces」陣列中的出現順序，遵守「model_INDEX.glb」的命名規則。不論其他設定選項為何，此處宣告的 AprilTag 一律使用[中心/紅方](/more-features/coordinate-systems#center-red)座標系來定位。
 
 設定檔格式如下：
 

@@ -36,14 +36,18 @@ _上图所示为英文界面。_
 - **机器人速度：** 在图示中心显示的线速度和角速度。
 - **旋转：** 用于旋转机器人图示的角度位置。
 
+:::tip
+Swerve 模块状态也可以在 🗺️ [2D 场地](/tab-reference/2d-field)和 👀 [3D 场地](/tab-reference/3d-field)选项卡中可视化。
+:::
+
 ## 数据格式 {#data-format}
 
 数据应以字节编码的结构体或 protobuf 形式发布，使用 `SwerveModuleVelocity[]`、`ChassisVelocities`、`Rotation2d` 或 `Rotation3d` 类型。
 
-包括 WPILib 和 AdvantageKit 在内的许多库都支持结构体格式。以下示例展示了如何在 Java 中记录 Swerve 模块状态。
+包括 WPILib 和 AdvantageKit 在内的许多库都支持结构体格式。以下示例展示了如何记录 Swerve 模块状态。
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
@@ -54,6 +58,37 @@ SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
 };
 
 Telemetry.log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+std::array<wpi::math::SwerveModuleVelocity, 4> states{
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{}
+};
+
+wpi::telemetry::Log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import SwerveModuleVelocity
+import telemetry
+
+states = [
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+]
+
+telemetry.log("MyStates", states, element_type=SwerveModuleVelocity)
 ```
 
 </TabItem>

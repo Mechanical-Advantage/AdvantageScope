@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # ⚙️ Mechanism {#mechanism}
 
-The mechanism tab displays a a jointed mechanism created with one or more [Mechanism2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html) objects.
+The mechanism tab displays a jointed mechanism created with one or more [Mechanism2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html) objects.
 
 <img src="/img/tab-reference/mechanism-1.webp" alt="Overview of mechanism tab" />
 
@@ -18,7 +18,7 @@ The timeline is used to control playback and visualization. Clicking on the time
 
 Yellow sections indicate when the robot is autonomous, blue sections indicate when the robot is teleoperated, and gray sections indicate when the robot is in utility mode.
 
-To zoom, place the cursor over the timeline and scroll up or down. A range can also be selecting by clicking and dragging while holding `Shift`. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the timeline. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again. Press `Ctrl+\` to zoom to the period where the robot is enabled.
+To zoom, place the cursor over the timeline and scroll up or down. A range can also be selected by clicking and dragging while holding `Shift`. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the timeline. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again. Press `Ctrl+\` to zoom to the period where the robot is enabled.
 
 <img src="/img/tab-reference/timeline.webp" alt="Timeline" />
 
@@ -30,10 +30,10 @@ To get started, drag a `Mechanism2d` to the control pane. Delete a mechanism usi
 
 ## Publishing Data {#publishing-data}
 
-<Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+To publish mechanism data, log a `Mechanism2d` object periodically (shown below). Note that this call only records the current state of the `Mechanism2d`, so it must be called every loop cycle after the object is updated.
 
-To publish mechanism data using WPILib, log a `Mechanism2d` object periodically using `Telemetry` (shown below). Note that this call only records the current state of the `Mechanism2d`, so it must be called every loop cycle after the object is updated.
+<Tabs groupId="library">
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
@@ -44,9 +44,31 @@ periodic() {
 ```
 
 </TabItem>
-<TabItem value="advantagekit" label="AdvantageKit">
+<TabItem value="wpilib-cpp" label="C++">
 
-To publish mechanism data using AdvantageKit, record a `Mechanism2d` periodically as an output field (shown below). Note that this call only records the current state of the `Mechanism2d`, so it must be called every loop cycle after the object is updated.
+```cpp
+wpi::Mechanism2d mechanism{3, 3};
+
+void Periodic() {
+  wpi::telemetry::Log("MyMechanism", mechanism);
+}
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+import wpilib
+import telemetry
+
+mechanism = wpilib.Mechanism2d(3, 3)
+
+def periodic():
+    telemetry.log("MyMechanism", mechanism)
+```
+
+</TabItem>
+<TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
 LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);

@@ -6,7 +6,7 @@ AdvantageScope XR 👀 [3D फील्ड](/tab-reference/3d-field) व्य�
 
 ## आवश्यकताएं {#requirements}
 
-- **होस्ट (Host):** Windows, macOS, या Linux पर AdvantageScope डेस्कटॉप एप्लिकेशन (v4.1.0 या नया)। डिवाइस पर कोई भी फ़ायरवॉल [बंद (disabled)](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) होना चाहिए।
+- **होस्ट (Host):** Windows, macOS, या Linux पर AdvantageScope डेस्कटॉप एप्लिकेशन (v4.1.0 या नया)। डिवाइस पर कोई भी फ़ायरवॉल [बंद (disabled)](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) होना चाहिए या TCP पोर्ट 56328 पर इनकमिंग कनेक्शन की अनुमति देने के लिए कॉन्फ़िगर होना चाहिए।
 - **क्लाइंट (Client):** iOS/iPadOS 16 या उसके बाद के वर्ज़न वाला iPhone या iPad। इसके लिए किसी ऐप इंस्टॉलेशन की ज़रूरत नहीं है।
 - **नेटवर्क (Network):** दोनों डिवाइस एक ही नेटवर्क (वाई-फ़ाई, USB टेदरिंग, आदि) से जुड़े होने चाहिए। नीचे दी गई शर्त को छोड़कर, इस नेटवर्क का इंटरनेट से जुड़ा होना ज़रूरी नहीं है।
 - **इंटरनेट (Internet):** अगर हाल ही में AdvantageScope XR का उपयोग नहीं किया गया है, तो मोबाइल डिवाइस में इंटरनेट कनेक्शन (जैसे सेल्युलर डेटा) होना ज़रूरी है। बिना इंटरनेट के उपयोग करने के लिए नीचे [ऑफ़लाइन उपयोग](#offline-usage) सेक्शन देखें।
@@ -74,7 +74,7 @@ XR कंट्रोल्स विंडो में कई विकल्�
 
 AdvantageScope XR को इंटरनेट कनेक्शन की ज़रूरत नहीं है। यह सुनिश्चित करने के लिए कि ऐप ऑफ़लाइन उपलब्ध रहे, नीचे दिए गए लिंक से App Store से AdvantageScope XR डाउनलोड करें। AdvantageScope डेस्कटॉप एप्लिकेशन से कनेक्ट करने के लिए iOS कैमरा ऐप से QR कोड स्कैन करें या AdvantageScope XR ऐप में "Scan" बटन पर टैप करें।
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_hi.svg" alt="App Store" />](https://apps.apple.com/in/app/advantagescope-xr/id6739718081?l=hi)
 
 :::note
 इंटरनेट कनेक्शन के बिना भी, होस्ट और क्लाइंट डिवाइस **एक ही नेटवर्क से जुड़े होने चाहिए** (जैसे रोबोट नेटवर्क, कस्टम वाई-फ़ाई नेटवर्क, या USB टेदरिंग के माध्यम से)।

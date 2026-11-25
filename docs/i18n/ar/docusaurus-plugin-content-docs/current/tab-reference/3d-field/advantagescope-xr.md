@@ -6,7 +6,7 @@
 
 ## المتطلبات {#requirements}
 
-- **الجهاز المضيف (Host):** تطبيق AdvantageScope لسطح المكتب على Windows أو macOS أو Linux (الإصدار v4.1.0 أو أحدث). يجب [تعطيل](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) أي جدران حماية على الجهاز.
+- **الجهاز المضيف (Host):** تطبيق AdvantageScope لسطح المكتب على Windows أو macOS أو Linux (الإصدار v4.1.0 أو أحدث). يجب [تعطيل](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) أي جدران حماية على الجهاز أو تهيئتها للسماح بالاتصالات الواردة على منفذ TCP رقم 56328.
 - **جهاز العميل (Client):** جهاز iPhone أو iPad يعمل بنظام iOS/iPadOS 16 أو أحدث، دون الحاجة إلى تثبيت أي تطبيق.
 - **الشبكة:** يجب توصيل الجهازين بالشبكة نفسها (مثل Wi-Fi أو التوصيل عبر USB أو غيرهما). ومع مراعاة الشرط أدناه، لا يلزم أن تكون هذه الشبكة متصلة بالإنترنت.
 - **الإنترنت:** إذا لم تستخدم AdvantageScope XR مؤخرًا، فيجب أن يكون الجهاز المحمول متصلًا بالإنترنت (مثل بيانات الهاتف المحمول). للاستغناء عن هذا الشرط، راجع قسم [الاستخدام بدون اتصال بالإنترنت](#offline-usage) أدناه.
@@ -74,7 +74,7 @@ _تظهر في الصورة أعلاه الواجهة باللغة الإنجل�
 
 لا يتطلب AdvantageScope XR اتصالًا بالإنترنت. ولضمان توفر التطبيق بدون اتصال، نزّل AdvantageScope XR من متجر App Store عبر الرابط أدناه. وللاتصال بتطبيق AdvantageScope لسطح المكتب، امسح رمز QR ضوئيًا باستخدام تطبيق كاميرا iOS أو اضغط على زر «Scan» داخل تطبيق AdvantageScope XR.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_ar.svg" alt="App Store" />](https://apps.apple.com/ly/app/advantagescope-xr/id6739718081?l=ar)
 
 :::note
 حتى عند التشغيل بدون اتصال بالإنترنت، **يجب توصيل الجهازين المضيف والعميل بالشبكة نفسها** (مثل شبكة الروبوت، أو شبكة Wi-Fi مخصصة، أو عبر التوصيل بـ USB).

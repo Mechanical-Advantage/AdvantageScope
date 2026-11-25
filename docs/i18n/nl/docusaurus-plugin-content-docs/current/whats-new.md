@@ -1,133 +1,152 @@
 ---
-title: Wat is er nieuw in 2026?
+title: Wat is er nieuw in 2027?
 sidebar_position: 2
-draft: true
 ---
 
 #
 
-<img src="/img/whats-new/banner-light.webp" className="light-only" />
-<img src="/img/whats-new/banner-dark.webp" className="dark-only" />
+<img src="/img/whats-new/banner-2027-ltr-light.webp" className="light-only" />
+<img src="/img/whats-new/banner-2027-ltr-dark.webp" className="dark-only" />
 
-De 2026-versie van AdvantageScope is nu uit! Bekijk de [installatiedocumentatie](/overview/installation) en de [volledige changelog](https://github.com/Mechanical-Advantage/AdvantageScope/releases) voor alle details. Deze release brengt een aantal grote nieuwe functies en flinke verbeteringen door de hele applicatie heen. Veel van deze vernieuwingen maken het werken met de huidige besturingssystemen prettiger en bereiden tegelijk een soepele overstap naar [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) in komende seizoenen voor.
+De 2027-versie van AdvantageScope is nu beschikbaar, met volledige ondersteuning voor Systemcore en meer dan **100 nieuwe functies en updates** in de hele applicatie. Bekijk de [installatiedocumentatie](/overview/installation) en het [volledige wijzigingsoverzicht](https://github.com/Mechanical-Advantage/AdvantageScope/releases) voor details. Deze pagina belicht de belangrijkste toevoegingen en verbeteringen in deze release.
 
-**We horen graag wat je ervan vindt! Feedback, functieverzoeken en bugrapporten zijn welkom op de [issues-pagina](https://github.com/Mechanical-Advantage/AdvantageScope/issues).**
+**We stellen je feedback op prijs! Feedback, functieverzoeken en bugrapporten zijn welkom op de [issues-pagina](https://github.com/Mechanical-Advantage/AdvantageScope/issues).**
 
-## ✴️ Experimenteel: FTC-ondersteuning {#ftc-support}
+<img src="/img/screenshot-light.webp" className="light-only" />
+<img src="/img/screenshot-dark.webp" className="dark-only" />
 
-Als opstap naar volledige ondersteuning voor Systemcore in het seizoen 2027-2028 voegt deze release een aantal functies toe die de samenwerking met het huidige besturingssysteem van FIRST Tech Challenge verbeteren:
+## 🍋‍🟩 Systemcore-compatibiliteit {#systemcore-compatibility}
 
-- FTC-velden en -robotmodellen op het 🗺️ [2D-veld](/tab-reference/2d-field) en 👀 [3D-veld](/tab-reference/3d-field)
-- Nieuwe opties voor het [coördinatenstelsel](/more-features/coordinate-systems) die aansluiten op de [standaard FTC-coördinaten](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html)
-- Ondersteuning voor logbestanden van [Road Runner](https://rr.brott.dev/docs/v1-0/installation/)
-- Ondersteuning voor het live-streamingformaat van [FTC Dashboard](https://github.com/acmerobotics/ftc-dashboard)
+AdvantageScope 2027 is gebouwd voor naadloze samenwerking met de nieuwe Systemcore-robotcontroller en WPILib 2027:
 
-:::tip
-Wees als FTC-team voorzichtig met experimentele software tijdens het officiële seizoen. De FTC-ondersteuning voor AdvantageScope is nog volop in ontwikkeling.
-:::
+- Het standaard robotadres is nu `robot.local`, zodat je live kunt verbinden of logs kunt downloaden zonder een teamnummer in te stellen. Systemcore USB- en wifi-adressen zijn ook te selecteren vanuit de menubalk.
+- [Logs downloaden](/overview/log-files#downloading-from-the-robot) ondersteunt nu SFTP voor Systemcore naast de bestaande roboRIO-logdownloads.
+- Het coördinatensysteem [Midden/rood](/more-features/coordinate-systems#center-red) toegevoegd dat vanaf 2027 op FRC-velden en vanaf 2027-2028 op FTC-velden wordt gebruikt.
+- Ondersteuning toegevoegd voor de `Telemetry`- en `Tunables`-API's van WPILib 2027, bijgewerkte meldingskleuren en een nieuwe [voorkeur voor tijdstempelweergave](/more-features/timestamps) om Systemcore-tijdstempels goed leesbaar te houden.
+- Een nieuwe live-modus [Systemcore-diagnostiek](/overview/live-sources) maakt rechtstreeks verbinding met de ingebouwde NetworkTables-server van Systemcore om de robotstatus en hardware-I/O te monitoren zonder dat gebruikerscode nodig is.
 
-<div className="image-gallery">
-  <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-2.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-3.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-4.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
-</div>
+## 💡 AdvantageScope Lite {#advantagescope-lite}
 
-Meerdere externe FTC-bibliotheken voor logging en telemetrie ondersteunen ook andere formaten waar AdvantageScope mee overweg kan, zoals WPILOG en RLOG. De documentatie van die bibliotheken vind je bij de projecten zelf; de ontwikkelaars van AdvantageScope raden geen specifieke FTC-loggingoplossing aan.
+[AdvantageScope Lite](/more-features/advantagescope-lite) brengt de visualisatie- en analysetools van AdvantageScope rechtstreeks naar je webbrowser. Het is toegankelijk vanuit zowel de Systemcore-webinterface als binnen het FIRST Driver Station, **zonder dat installatie nodig is**.
 
-:::info
-AdvantageScope werkt het best samen met het WPILib-framework en de bijbehorende loggingtools. Gebruik je een onofficiële loggingoplossing, dan kun je tegen compatibiliteitsproblemen of beperkingen aanlopen.
+<iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="AdvantageScope Lite Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-Vanaf de overstap naar Systemcore in het seizoen 2027-2028 worden alle functies van AdvantageScope officieel ondersteund in FTC.
-:::
+## 🎮 FIRST Driver Station {#first-driver-station}
 
-## 🧮 Eenheidsbewuste grafieken {#unit-aware-graphing}
+AdvantageScope integreert nauw met het nieuwe [FIRST Driver Station](https://docs.wpilib.org/en/latest/docs/software/firstdriverstation) om wedstrijddiagnostiek te stroomlijnen:
 
-Het tabblad 📉 [Lijngrafiek](/tab-reference/line-graph/) is helemaal opnieuw ontworpen zodat het volledig eenheidsbewust is. Dat geeft je allerlei nieuwe mogelijkheden bij het plotten van numerieke velden:
+- [AdvantageScope Lite](/more-features/advantagescope-lite) is rechtstreeks toegankelijk vanuit het instellingenmenu van het FIRST Driver Station om WPILOG-bestanden van het DS te analyseren.
+- Gebruik de desktopapp om realtime wedstrijdstatus, communicatiestatistieken, batterijspanning en joystickinvoer te streamen vanaf een lokaal Driver Station zonder enige configuratie.
+- Wanneer je een `.wpilog`-bestand van het Driver Station op de desktop opent, vraagt AdvantageScope om een speciaal venster te openen met vooraf geconfigureerde tabbladen voor console-uitvoer, communicatiestatistieken, stroomverbruik, CPU-gebruik en joysticks ([documentatie](/overview/log-files#driver-station-layout)). Deze indeling wordt ook standaard gebruikt in AdvantageScope Lite voor het Driver Station.
+- Bekijk consolelogs van het Driver Station op het tabblad 💬 [Console](/tab-reference/console) met automatische markering van waarschuwingen/fouten en volledige ondersteuning voor [ANSI-escape-sequenties](/tab-reference/console#ansi-formatting) (kleuren en tekststijlen).
 
-- Nauwkeurige labels bij de Y-assen en waardeweergaven
-- Snel omrekenen naar compatibele eenheden zonder pop-upvensters
-- Automatische conversie van compatibele eenheidstypen op dezelfde as
-- Correcte weergave van [geïntegreerde en gedifferentieerde](/tab-reference/line-graph/#integration-and-differentiation) eenheden
-
-In de schermafbeelding hieronder zie je al deze functies in actie. De linkeras bevat velden met verschillende eenheden voor hoeksnelheid, en op de rechteras staan gedifferentieerde waarden die in een andere eenheid (graden) worden weergegeven. Eenheden kiezen is nu ook makkelijker dan ooit: de compatibele opties staan direct in het bedieningsmenu van elke as.
-
-_Meer informatie over eenheidsondersteuning vind je in de [documentatie](/tab-reference/line-graph/units)._
-
-<img src="/img/tab-reference/line-graph/units-1.webp" alt="Eenheidsbewuste grafieken" />
+<img src="/img/tutorials/taking-control-1.webp" alt="AdvantageScope Lite openen vanuit het FIRST Driver Station" />
 
 _Hierboven zie je de Engelstalige interface._
 
-## 🏁 Snellere logdownloads {#faster-log-downloads}
+## 🌐 Taalondersteuning {#language-support}
 
-[Logs downloaden vanaf de roboRIO](/overview/log-files/#downloading-from-the-robot) gaat nu **2 tot 4 keer sneller** dan in eerdere versies. Dat komt door de overstap naar een nieuw protocol (FTP), waarmee de roboRIO logdata met minder CPU-belasting kan versturen.
+AdvantageScope is nu beschikbaar in **14 talen** in de desktopapplicatie, documentatiewebsite, mobiele apps en AdvantageScope Lite: Engels (VS), Spaans (Latijns-Amerika), Frans, Nederlands, Portugees (Brazilië), Roemeens, Turks, Russisch, Kazachs, Hebreeuws, Arabisch, Hindi, Vereenvoudigd Chinees en Traditioneel Chinees.
 
-De tabel hieronder toont de gemeten overdrachtssnelheden in de 2025- en 2026-versie van AdvantageScope via een ethernetkabel (maximale bandbreedte van 100 Mb/s). Je ziet dat de snelheid van de 2025-versie flink inzakt zodra de CPU van de roboRIO zwaarder belast wordt.
+:::info
+Vertalingen zijn een doorlopend project gemaakt met behulp van AI en communitybijdragers, en **kunnen onnatuurlijke formuleringen of onnauwkeurigheden bevatten**. Dank aan de teams die al hebben geholpen deze vertalingen na te kijken en te verbeteren! Zie de pagina 🌐 [Taalondersteuning](/overview/language-support) voor details over ons vertaalproces en hoe je feedback kunt geven.
+:::
 
-|                                                            | 2025 (SFTP) | 2026 (FTP) | Versnelling                                      |
-| ---------------------------------------------------------- | ----------- | ---------- | ------------------------------------------------ |
-| Hoge CPU-belasting<br /><sub>Complexe robotcode</sub>      | 25 Mb/s     | 80 Mb/s    | <span style={{fontSize: '24px'}}>**3,2x**</span> |
-| Gemiddelde CPU-belasting<br /><sub>Normale robotcode</sub> | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**2,3x**</span> |
-| Minimale CPU-belasting<br /><sub>Geen robotcode</sub>      | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**1,1x**</span> |
+<img src="/img/whats-new/multi-language-1.webp" alt="Tabblad Lijngrafiek in Vereenvoudigd Chinees" />
 
-## 📁 Logs downloaden uit submappen {#download-logs-from-subfolders}
+## 📖 Nieuwe tutorials en documentatie {#new-tutorials-and-documentation}
 
-In het downloadvenster kun je nu ook logs opslaan die in submappen staan. Elke submap wordt als één geheel gedownload. Dat maakt het een stuk handiger om logs binnen te halen van de 2026-versie van CTRE's [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html), die submappen gebruikt omdat data niet in één enkel logbestand kan worden opgeslagen.
+De documentatie is uitgebreid met een nieuwe driedelige [tutorialreeks](/category/tutorials) om teams op weg te helpen met WPILib 2027 en AdvantageScope:
 
-<img src="/img/whats-new/subfolders.webp" alt="Logsubmappen downloaden" height="450" />
+1. **👋 [Hallo, telemetrie!](/tutorials/hello-telemetry):** `DataLogManager` en de `Telemetry`-API instellen, live verbinden en data analyseren met lijngrafieken, tabellen en statistieken.
+2. **🤖 [Het veld op: robotvisualisatie](/tutorials/to-the-field):** 2D/3D-poses, trajecten en `Mechanism2d`-objecten publiceren op FRC- en FTC-velden.
+3. **🕹️ [De controle nemen: DS & joysticks](/tutorials/taking-control):** Live Driver Station-diagnostiek streamen, robot- en DS-logs synchroniseren, console-uitvoer bekijken en controllerinvoer visualiseren.
 
-## 🌈 Nieuwe visualisatieopties {#new-visualization-options}
+Codevoorbeelden in de hele documentatie zijn ook bijgewerkt met volledige dekking voor de `Telemetry`-API van WPILib in meerdere talen.
 
-Het 🗺️ [2D-veld](/tab-reference/2d-field) en 👀 [3D-veld](/tab-reference/3d-field) hebben er een aantal nieuwe visualisatieopties bij gekregen:
+<img src="/img/tutorials/to-the-field-4.webp" alt="3D-veldvisualisatie uit de tutorial Het veld op" />
 
-- Op het 2D-veld heb je nu keuze uit meer bumperkleuren, en elk object kan een eigen kleur krijgen. Dat geeft meer vrijheid wanneer je ghosts combineert met meerdere robotobjecten.
-- Als je [2D-mechanismen op het 3D-veld visualiseert](/tab-reference/3d-field/#2d-mechanisms), kun je ze naast het XZ-vlak nu ook op het YZ-vlak plaatsen. Zo breng je complexe mechanismen die over meerdere assen bewegen makkelijker in beeld.
-- Het 3D-veld ondersteunt nu optionele antialiasing voor strakkere, minder kartelige randen.
+_Hierboven zie je de Engelstalige interface._
 
-<img src="/img/whats-new/field-viz.jpg" alt="Nieuwe veldvisualisaties" />
+## 📱 AdvantageTune {#advantagetune}
 
-## 🪵 Ondersteuning voor REV Robotics CAN-logbestanden {#rev-robotics-can-log-support}
+AdvantageTune is een nieuwe zelfstandige app voor iPhone en iPad die een lichte mobiele tuning-ervaring biedt als aanvulling op AdvantageScope. Je kunt live [NetworkTables](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html)-topics (inclusief primitieven, arrays, WPILib-structs en Protobufs) rechtstreeks vanaf je telefoon bekijken en aanpassen, zodat iedereen eenvoudig kan meedoen aan het tunen van robotcode.
 
-Je kunt `.revlog`-bestanden van REV Robotics' [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) nu rechtstreeks openen in AdvantageScope. Deze bestanden leggen CAN-signalen van Spark Max- en Spark Flex-controllers vast en vormen een officieel alternatief voor de [URCL](/more-features/urcl)-bibliotheek van AdvantageScope.
+Zowel AdvantageTune als AdvantageScope vereenvoudigen het terugexporteren van getunede waarden naar de robotcode met knoppen om alle getunede waarden op te slaan in een tekstbestand om ze eenvoudig te delen ([documentatie](/overview/live-sources/tuning-mode)).
 
-Zowel URCL als de officiële `StatusLogger` blijven tijdens het seizoen 2026 beschikbaar voor een soepele overgang en behoud van alle bekende functies. Over de loggingopties voor 2027 en daarna delen we later meer details.
-
-<img src="/img/whats-new/revlog.webp" alt="REVLOG-visualisatie" />
-
-## 💿 CSV-bestanden importeren {#csv-file-imports}
-
-Wil je data bekijken die niet uit een robotloggingframework komt? AdvantageScope biedt nu basisondersteuning voor het importeren van CSV-bestanden. Kijk in de [documentatie](/overview/log-files/#csv-formatting) voor de ondersteunde formaten en beperkingen.
-
-<img src="/img/overview/log-files/export-2.webp" alt="CSV-data" />
-
-## 🤩 Visuele verbeteringen {#aesthetic-improvements}
-
-Op Windows 11 heeft AdvantageScope nu een halfdoorzichtige zijbalk, een detail dat voorheen alleen op macOS beschikbaar was. Voor macOS Tahoe is er bovendien een nieuw app-pictogram ontworpen op basis van het Liquid Glass-materiaal van Apple.
-
-<img src="/img/whats-new/windows-ui.webp" alt="Windows-interface" />
-
-## 📋 Gestroomlijnde menu's {#streamlined-menus}
-
-We hebben de menubalk en bijbehorende bediening opgeschoond en opnieuw ingedeeld, zodat alles op elk platform logischer en makkelijker te bereiken is:
-
-- Wissel sneller tussen live-bronnen (zoals NetworkTables en [Phoenix-diagnostiek](/overview/live-sources/phoenix-diagnostics)), zonder dat je het voorkeurenvenster hoeft te openen.
-- Klik met de rechtermuisknop in de zijbalk om snel de naam van een veld of de volledige veldsleutel te kopiëren.
-- Vind instellingen sneller terug in het opnieuw ingedeelde voorkeurenvenster.
+[<img src="/img/app-store_nl.svg" alt="App Store" />](https://apps.apple.com/nl/app/advantagetune/id6811453643)
 
 <div className="image-gallery">
-  <img src="/img/whats-new/menus-1.webp" />
-  <img src="/img/whats-new/menus-2.webp" />
-  <img src="/img/prefs_nl.webp" />
+  <img src="/img/whats-new/advantagetune-1.webp" alt="AdvantageTune bladerweergave" />
+  <img src="/img/whats-new/advantagetune-2.webp" alt="AdvantageTune topic bewerken" />
+  <img src="/img/whats-new/advantagetune-3.webp" alt="AdvantageTune struct bewerken" />
+  <img src="/img/whats-new/advantagetune-4.webp" alt="AdvantageTune lijst met getunede waarden" />
+  <img src="/img/whats-new/advantagetune-5.webp" alt="AdvantageTune zoeken en filteren" />
 </div>
 
-## 🐛 Stabiliteitsverbeteringen {#stability-improvements}
+_Hierboven zie je de Engelstalige interface._
 
-Deze release zit ook vol bugfixes en stabiliteitsverbeteringen door de hele applicatie heen. De complete lijst staat in de [changelog](https://github.com/Mechanical-Advantage/AdvantageScope/releases); hieronder een paar opvallende verbeteringen:
+## 🪐 Universele logging met WPILOG {#wpilog-universal-logging}
 
-- De prestaties bij langdurig streamen van data zijn flink verbeterd, vooral op het tabblad Lijngrafiek.
-- AdvantageScope gaat nu beter om met ongewone logdata, zoals hele grote logbestanden en omvangrijke veldwaarden.
-- Verschillende visuele haperingen bij het bladeren door logdata zijn opgelost, met name bij het gebruik van filters op het tabblad Lijngrafiek.
-- De sortering van AdvantageKit-logbestanden in het downloadvenster klopt weer: logs zonder tijdstempel staan nu onderaan de lijst, net als bij andere formaten.
-- Op het tabblad 3D-veld worden robotcamera's met een roll-rotatie ongelijk aan nul nu correct weergegeven.
-- AdvantageScope XR is stabieler geworden, vooral onder iOS/iPadOS 26. Gebruik je een offline installatie, controleer dan de App Store op updates.
+Met [universele logging](/more-features/universal-logging) kan één WPILOG-bestand nu dienen als een universele container voor meerdere logstreams en -formaten, waaronder fabrikantspecifieke apparaatlogs, CSV-data en onderliggende WPILOG-bestanden. Universele logging vervangt URCL door een flexibele, fabrikantonafhankelijke aanpak: data uit elke bron wordt automatisch gesynchroniseerd en samengevoegd in één uniforme boomstructuur in de zijbalk. Zie de [documentatie voor universele logging](/more-features/universal-logging#experimental-vendor-logging) voor details over het vastleggen van fabrikantlogs in AdvantageKit en WPILib (binnenkort beschikbaar).
+
+<img src="/img/more-features/universal-logging-1.webp" alt="Een WPILOG-bestand dat meerdere fabrikantlogs in de zijbalk toont" />
+
+_Hierboven zie je de Engelstalige interface._
+
+## 🗺️ Verbeteringen aan de veldtabbladen {#field-tab-improvements}
+
+Er zijn verschillende gebruiksvriendelijkheidsverbeteringen toegevoegd aan de tabbladen 🗺️ [2D-veld](/tab-reference/2d-field) en 👀 [3D-veld](/tab-reference/3d-field):
+
+- Pan en zoom over het 2D-veld, of klik met de rechtermuisknop om de camera te vergrendelen zodat deze de positie en rotatie van de robot volgt ([documentatie](/tab-reference/2d-field#camera-controls)).
+- Optie toegevoegd om 2D- en 3D-ghosts te laten vervagen wanneer de velden recentelijk niet zijn bijgewerkt (handig voor het weergeven van vision-poses).
+- Tegelrasterlijnen toegevoegd op 2D- en 3D-FTC-velden voor eenvoudigere ruimtelijke oriëntatie.
+- AdvantageScope onthoudt nu of het laatst een FRC- of FTC-veld is gebruikt bij het openen van nieuwe 2D- of 3D-veldtabbladen.
+
+<img src="/img/tab-reference/2d-field-1.webp" alt="Overzicht van het tabblad 2D-veld" />
+
+_Hierboven zie je de Engelstalige interface._
+
+## 📉 Verbeteringen aan de lijngrafiek {#line-graph-improvements}
+
+De 📉 [Lijngrafiek](/tab-reference/line-graph) en tijdlijn bevatten verschillende visuele verfijningen voor duidelijkere analyse:
+
+- Het inschakelen van "Robotmodus tonen" toont nu een kleurgecodeerde balk voor autonome, tele-operated, utility- en uitgeschakelde periodes.
+- Puntgrafieken schalen automatisch de puntgrootte voor betere zichtbaarheid op elk zoomniveau.
+- Handige hints verschijnen op de lijngrafiek en tijdlijn om nieuwe gebruikers te begeleiden bij scroll- en zoomgebaren.
+- De weergave en leesbaarheid van grote tijdstempelwaarden op de tijdlijn en lijngrafiekassen zijn verbeterd.
+
+<img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="Kleurgecodeerde robotmodus-overlay op de lijngrafiek" />
+
+_Hierboven zie je de Engelstalige interface._
+
+## 🤝 Toegankelijkheidsverbeteringen {#accessibility-enhancements}
+
+AdvantageScope 2027 bevat verschillende updates om de applicatie toegankelijker te maken:
+
+- Toetsenbordnavigatie met Tab toegevoegd voor alle invoervelden en beschrijvende tooltips voor alle bedieningselementen in de app.
+- AdvantageScope respecteert nu de OS-instellingen voor "minder transparantie" en "minder beweging".
+- Booleaanse indicatoren in de zijbalk onderscheiden toestanden nu zonder uitsluitend op kleur te vertrouwen.
+
+## 🥔 Nieuwe eenheidstypen {#new-unit-types}
+
+AdvantageScope's [eenheidsbewuste grafieken](/tab-reference/line-graph/units) zijn uitgebreid met extra eenheidstypen en parseeropties:
+
+- Vermogen (watt, paardenkracht, enz.)
+- Verhoudingen (dimensieloos, procent)
+- Temperatuur in Kelvin
+- Aardappelenergie
+- Brits-Engelse eenheidsspelling (bijv. `metres`)
+- Achtervoegsels voor WPILib's eenhedenbibliotheek
+
+## 🧱 Stabiliteitsverbeteringen {#stability-improvements}
+
+Deze release bevat talloze bugfixes, prestatieoptimalisaties en stabiliteitsverbeteringen in de hele applicatie. De volledige lijst staat in het [wijzigingsoverzicht](https://github.com/Mechanical-Advantage/AdvantageScope/releases), met enkele opvallende hoogtepunten hieronder:
+
+- Officiële Windows-releases zijn nu digitaal ondertekend, wat de kans op SmartScreen-waarschuwingen tijdens installatie verkleint.
+- De prestaties bij het laden en plotten van logs zijn aanzienlijk verbeterd, vooral bij het werken met Hoot (`.hoot`)-logs en grote struct-arrays.
+- De verwerking van tijdstempels opgelost bij het bekijken van AdvantageKit-logs samen met hoogfrequente databronnen.
+- Het algoritme voor tijdstempelsynchronisatie bij het uitlijnen van logs uit meerdere bronnen is verbeterd.
+- De verbindingsbetrouwbaarheid voor [Phoenix-diagnostiek](/overview/live-sources/phoenix-diagnostics) is verbeterd.
+- UI-problemen opgelost met de menubalk in losse vensters en de opnamepop-up in [AdvantageScope XR](/tab-reference/3d-field/advantagescope-xr).
+- UI-teksten en formuleringen in de hele applicatie verfijnd voor meer duidelijkheid.

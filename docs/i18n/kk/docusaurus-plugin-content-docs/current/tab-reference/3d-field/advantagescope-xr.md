@@ -6,7 +6,7 @@ AdvantageScope XR толықтырылған шынайылықта 👀 [3D а�
 
 ## Талаптар {#requirements}
 
-- **Хост:** Windows, macOS немесе Linux жүйесіндегі AdvantageScope жұмыс үстелі қолданбасы (v4.1.0 немесе одан кейінгі нұсқасы). Құрылғыдағы кез келген брандмауэрлер [өшірілуі](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) тиіс.
+- **Хост:** Windows, macOS немесе Linux жүйесіндегі AdvantageScope жұмыс үстелі қолданбасы (v4.1.0 немесе одан кейінгі нұсқасы). Құрылғыдағы кез келген брандмауэрлер [өшірілуі](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) немесе 56328 TCP портында кіріс қосылымдарға рұқсат беретіндей етіп бапталуы тиіс.
 - **Клиент:** iOS/iPadOS 16 немесе одан кейінгі нұсқасы орнатылған iPhone немесе iPad. Қолданбаны орнату қажет емес.
 - **Желі:** Екі құрылғы да бір желіге қосылуы керек (Wi-Fi, USB-модем және т.б.). Төмендегі талапты ескергенде, бұл желінің интернетке қосылуы міндетті емес.
 - **Интернет:** Егер AdvantageScope XR жақында пайдаланылмаған болса, мобильді құрылғыда интернет қосылымы болуы қажет (мысалы, мобильді деректер). Бұл талапты алып тастау үшін төмендегі [офлайн пайдалану](#offline-usage) бөлімін қараңыз.
@@ -74,7 +74,7 @@ XR басқару элементтері терезесі үлгінің тол�
 
 AdvantageScope XR интернет қосылымын қажет етпейді. Қолданбаның офлайн режимде қолжетімді болуы үшін төмендегі сілтеме арқылы App Store дүкенінен AdvantageScope XR қолданбасын жүктеп алыңыз. AdvantageScope жұмыс үстелі қолданбасына қосылу үшін iOS камера қолданбасымен QR кодын сканерлеңіз немесе AdvantageScope XR қолданбасындағы «Scan» батырмасын түртіңіз.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_en-US.svg" alt="App Store" />](https://apps.apple.com/kz/app/advantagescope-xr/id6739718081)
 
 :::note
 Интернет қосылымынсыз жұмыс істегенде де хост пен клиенттік құрылғылар **бір желіге қосылған болуы тиіс** (мысалы, робот желісі, жеке Wi-Fi желісі немесе USB-модем арқылы).

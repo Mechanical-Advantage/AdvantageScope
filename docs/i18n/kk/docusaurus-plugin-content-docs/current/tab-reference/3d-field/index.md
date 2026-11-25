@@ -48,10 +48,10 @@ AdvantageScope FTC алаңдары үшін AprilTag белгілерінің �
 
 Геометрия деректері байтпен кодталған struct немесе protobuf пішімінде жариялануы керек. Әртүрлі 2D және 3D геометрия түрлеріне, соның ішінде `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` және т.б. түрлерге қолдау көрсетіледі.
 
-Көптеген кітапхана, соның ішінде WPILib және AdvantageKit, struct пішімін қолдайды. Төмендегі мысал коды Java тілінде 3D поза деректерін журналдауды көрсетеді.
+Көптеген кітапхана, соның ішінде WPILib және AdvantageKit, struct пішімін қолдайды. Төмендегі мысал коды 3D поза деректерін журналдауды көрсетеді.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Pose3d poseA = new Pose3d();
@@ -59,6 +59,31 @@ Pose3d poseB = new Pose3d();
 
 Telemetry.log("MyPose", poseA);
 Telemetry.log("MyPoseArray", new Pose3d[] {poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::math::Pose3d poseA;
+wpi::math::Pose3d poseB;
+
+wpi::telemetry::Log("MyPose", poseA);
+wpi::telemetry::Log("MyPoseArray", std::vector{poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import Pose3d
+import telemetry
+
+pose_a = Pose3d()
+pose_b = Pose3d()
+
+telemetry.log("MyPose", pose_a)
+telemetry.log("MyPoseArray", [pose_a, pose_b], element_type=Pose3d)
 ```
 
 </TabItem>

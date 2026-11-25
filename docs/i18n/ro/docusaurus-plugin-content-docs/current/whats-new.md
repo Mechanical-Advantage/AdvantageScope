@@ -1,133 +1,152 @@
 ---
-title: Ce este nou în 2026?
+title: Ce este nou în 2027?
 sidebar_position: 2
-draft: true
 ---
 
 #
 
-<img src="/img/whats-new/banner-light.webp" className="light-only" />
-<img src="/img/whats-new/banner-dark.webp" className="dark-only" />
+<img src="/img/whats-new/banner-2027-ltr-light.webp" className="light-only" />
+<img src="/img/whats-new/banner-2027-ltr-dark.webp" className="dark-only" />
 
-Versiunea 2026 a AdvantageScope este acum disponibilă! Consultă [documentația de instalare](/overview/installation) și [jurnalul complet de modificări](https://github.com/Mechanical-Advantage/AdvantageScope/releases) pentru detalii. Această versiune include câteva funcționalități noi majore și numeroase îmbunătățiri în întreaga aplicație. Multe dintre funcționalitățile din această versiune sunt concepute pentru a îmbunătăți experiența pe sistemele de control existente, pregătind în același timp o tranziție lină către [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) în sezoanele viitoare.
+Versiunea 2027 a AdvantageScope este acum disponibilă, aducând suport complet pentru Systemcore alături de peste **100 de funcționalități și actualizări noi** în întreaga aplicație. Consultă [documentația de instalare](/overview/installation) și [jurnalul complet de modificări](https://github.com/Mechanical-Advantage/AdvantageScope/releases) pentru detalii. Această pagină evidențiază principalele adăugiri și îmbunătățiri din această versiune.
 
-**Apreciem feedback-ul tău! Feedback-ul, sugestiile de funcționalități noi și raportările de erori sunt binevenite pe [pagina de probleme](https://github.com/Mechanical-Advantage/AdvantageScope/issues).**
+**Apreciem feedback-ul tău! Comentariile, solicitările de funcționalități și raportările de erori sunt binevenite pe [pagina de probleme](https://github.com/Mechanical-Advantage/AdvantageScope/issues).**
 
-## ✴️ Experimental: suport FTC {#ftc-support}
+<img src="/img/screenshot-light.webp" className="light-only" />
+<img src="/img/screenshot-dark.webp" className="dark-only" />
 
-În pregătirea pentru suportul complet cu Systemcore în sezonul 2027-2028, această versiune adaugă câteva funcționalități pentru a îmbunătăți compatibilitatea cu sistemul de control existent FIRST Tech Challenge:
+## 🍋‍🟩 Compatibilitate cu Systemcore {#systemcore-compatibility}
 
-- Terenuri FTC și modele de roboți pe fila 🗺️ [Teren 2D](/tab-reference/2d-field) și 👀 [Teren 3D](/tab-reference/3d-field)
-- Opțiuni noi de [sistem de coordonate](/more-features/coordinate-systems) pentru compatibilitate cu [coordonatele standard FTC](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html)
-- Suport pentru fișiere log [Road Runner](https://rr.brott.dev/docs/v1-0/installation/)
-- Suport pentru formatul de streaming live [FTC Dashboard](https://github.com/acmerobotics/ftc-dashboard)
+AdvantageScope 2027 este construit pentru o funcționare fluidă cu noul controller de robot Systemcore și WPILib 2027:
 
-:::tip
-Echipele FTC ar trebui să fie prudente atunci când folosesc software experimental în timpul sezonului oficial. Suportul FTC pentru AdvantageScope este încă în dezvoltare activă.
-:::
+- Adresa implicită a robotului este acum `robot.local`, permițându-ți să te conectezi live sau să descarci loguri fără a configura un număr de echipă. Adresele USB și Wi-Fi ale Systemcore pot fi, de asemenea, selectate din bara de meniu.
+- [Descărcarea logurilor](/overview/log-files#downloading-from-the-robot) suportă acum SFTP pentru Systemcore alături de descărcările clasice de loguri roboRIO.
+- A fost adăugat sistemul de coordonate [Centru/roșu](/more-features/coordinate-systems#center-red) folosit de terenurile FRC începând cu 2027 și terenurile FTC începând cu 2027-2028.
+- A fost adăugat suport pentru API-urile `Telemetry` și `Tunables` din WPILib 2027, culori de alertă actualizate și o nouă [preferință de afișare a marcajului de timp](/more-features/timestamps) pentru a menține marcajele de timp Systemcore ușor de citit.
+- Un nou mod live [Diagnostice Systemcore](/overview/live-sources) se conectează direct la serverul NetworkTables integrat al Systemcore pentru a monitoriza starea robotului și I/O-ul hardware fără a necesita cod de utilizator.
 
-<div className="image-gallery">
-  <img src="/img/more-features/ftc-compatibility/ftc-1.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-2.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-3.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-4.webp" />
-  <img src="/img/more-features/ftc-compatibility/ftc-5.webp" />
-</div>
+## 💡 AdvantageScope Lite {#advantagescope-lite}
 
-Mai multe biblioteci terțe de jurnalizare/telemetrie FTC acceptă alte formate compatibile cu AdvantageScope, cum ar fi WPILOG și RLOG. Documentația acestor biblioteci poate fi găsită în proiectele respective; dezvoltatorii AdvantageScope nu susțin și nu recomandă o anumită soluție de logare FTC pentru utilizarea cu AdvantageScope.
+[AdvantageScope Lite](/more-features/advantagescope-lite) aduce instrumentele de vizualizare și analiză ale AdvantageScope direct în browserul tău web. Este accesibil atât din interfața web Systemcore, cât și din interiorul FIRST Driver Station, **fără a necesita instalare**.
 
-:::info
-AdvantageScope este conceput pentru a oferi cea mai bună experiență atunci când este utilizat alături de framework-ul WPILib și instrumentele asociate de logare. Poți întâmpina probleme de compatibilitate sau funcționalități limitate când folosești soluții neoficiale de logare.
+<iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="Demonstrație AdvantageScope Lite" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-Toate funcționalitățile AdvantageScope vor fi suportate oficial în FTC după tranziția la Systemcore pentru sezonul 2027-2028.
-:::
+## 🎮 FIRST Driver Station {#first-driver-station}
 
-## 🧮 Grafice bazate pe unități {#unit-aware-graphing}
+AdvantageScope se integrează strâns cu noua [FIRST Driver Station](https://docs.wpilib.org/en/latest/docs/software/firstdriverstation) pentru a simplifica diagnosticarea meciurilor:
 
-Fila 📉 [Grafic liniar](/tab-reference/line-graph/) a fost reproiectată pentru a fi complet compatibilă cu unitățile de măsură. Acest lucru permite mai multe funcționalități noi la reprezentarea grafică a câmpurilor numerice:
+- [AdvantageScope Lite](/more-features/advantagescope-lite) este accesibil direct din meniul de setări al FIRST Driver Station pentru a analiza fișierele WPILOG produse de DS.
+- Folosește aplicația desktop pentru a transmite în timp real starea meciului, metricile de comunicare, tensiunea bateriei și intrările de la joystick-uri dintr-un Driver Station local fără nicio configurare.
+- Deschiderea unui fișier `.wpilog` al Driver Station pe desktop îți propune să deschizi o fereastră dedicată preconfigurată cu file pentru ieșirea din consolă, metrici de comunicare, alimentare, utilizare CPU și joystick-uri ([documentație](/overview/log-files#driver-station-layout)). Acest aranjament este folosit implicit și în AdvantageScope Lite pentru Driver Station.
+- Vizualizează logurile de consolă ale Driver Station pe fila 💬 [Consolă](/tab-reference/console) cu evidențiere automată a avertismentelor/erorilor și suport complet pentru [secvențele escape ANSI](/tab-reference/console#ansi-formatting) (culori și stiluri de text).
 
-- Etichetarea precisă a axelor Y și afișarea valorilor
-- Conversie rapidă în unități compatibile (fără ferestre pop-up)
-- Conversie implicită a tipurilor de unități compatibile în cadrul unei singure axe
-- Afișarea corectă a unităților [integrate și diferențiate](/tab-reference/line-graph/#integration-and-differentiation)
-
-Captura de ecran de mai jos prezintă toate aceste funcționalități în acțiune. Reține că axa stângă include câmpuri cu unități diferite de viteză unghiulară, iar axa dreaptă include valori diferențiate și afișate într-o unitate non-nativă (grade). Selectarea unităților este, de asemenea, mai ușoară ca niciodată, cu opțiuni de unități compatibile integrate direct în meniul de control pentru fiecare axă.
-
-_Mai multe informații despre suportul pentru unități pot fi găsite în [documentație](/tab-reference/line-graph/units)._
-
-<img src="/img/tab-reference/line-graph/units-1.webp" alt="Grafice bazate pe unități" />
+<img src="/img/tutorials/taking-control-1.webp" alt="Deschiderea AdvantageScope Lite din FIRST Driver Station" />
 
 _Mai sus este prezentată interfața în limba engleză._
 
-## 🏁 Descărcări mai rapide de loguri {#faster-log-downloads}
+## 🌐 Suport lingvistic {#language-support}
 
-[Descărcarea logurilor de pe roboRIO](/overview/log-files/#downloading-from-the-robot) este acum de **2-4x mai rapidă** decât în versiunile anterioare. Acest lucru se realizează prin trecerea la un nou protocol (FTP), care îi permite controllerului roboRIO să transfere date de log cu o utilizare mai mică a CPU-ului.
+AdvantageScope este acum disponibil în **14 limbi** în aplicația desktop, site-ul de documentație, aplicațiile mobile și AdvantageScope Lite: engleză (SUA), spaniolă (America Latină), franceză, olandeză, portugheză (Brazilia), română, turcă, rusă, kazahă, ebraică, arabă, hindi, chineză simplificată și chineză tradițională.
 
-Tabelul de mai jos arată viteza de transfer măsurată pe versiunile 2025 și 2026 ale AdvantageScope când este conectat prin Ethernet (lățime de bandă maximă de 100 Mb/s). Reține că performanța versiunii 2025 este puternic afectată de utilizarea CPU-ului pe roboRIO.
+:::info
+Traducerile sunt un proces continuu realizat cu sprijinul inteligenței artificiale și al contribuitorilor din comunitate și **pot include formulări nenaturale sau inexactități**. Mulțumim echipelor care au ajutat deja la revizuirea și îmbunătățirea acestor traduceri! Consultă pagina 🌐 [Suport lingvistic](/overview/language-support) pentru detalii despre procesul nostru de traducere și cum poți trimite feedback.
+:::
 
-|                                                      | 2025 (SFTP) | 2026 (FTP) | Accelerare                                       |
-| ---------------------------------------------------- | ----------- | ---------- | ------------------------------------------------ |
-| Utilizare mare CPU<br /><sub>Cod robot complex</sub> | 25 Mb/s     | 80 Mb/s    | <span style={{fontSize: '24px'}}>**3,2x**</span> |
-| Utilizare medie CPU<br /><sub>Cod robot normal</sub> | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**2,3x**</span> |
-| Utilizare minimă CPU<br /><sub>Fără cod robot</sub>  | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**1,1x**</span> |
+<img src="/img/whats-new/multi-language-1.webp" alt="Fila Grafic liniar în chineză simplificată" />
 
-## 📁 Descărcare loguri din subfoldere {#download-logs-from-subfolders}
+## 📖 Tutoriale și documentație noi {#new-tutorials-and-documentation}
 
-Fereastra de descărcare permite acum salvarea logurilor stocate în subfoldere. Fiecare subfolder poate fi descărcat ca un grup, ceea ce ușurează descărcarea logurilor generate de versiunea 2026 a [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) de la CTRE (care folosește subfoldere deoarece nu poate salva toate datele într-un singur fișier log).
+Documentația a fost extinsă cu o nouă [serie de tutoriale](/category/tutorials) în trei părți, concepută pentru a ajuta echipele să înceapă cu WPILib 2027 și AdvantageScope:
 
-<img src="/img/whats-new/subfolders.webp" alt="Descărcarea logurilor din subfoldere" height="450" />
+1. **👋 [Salut, telemetrie!](/tutorials/hello-telemetry):** Configurarea `DataLogManager` și a API-ului `Telemetry`, conectarea live și analizarea datelor cu grafice liniare, tabele și statistici.
+2. **🤖 [Pe teren: vizualizarea robotului](/tutorials/to-the-field):** Publicarea pose-urilor 2D/3D, a traiectoriilor și a obiectelor `Mechanism2d` pe terenurile FRC și FTC.
+3. **🕹️ [Preluarea controlului: DS și joystick-uri](/tutorials/taking-control):** Transmiterea diagnosticelor live ale Driver Station, sincronizarea logurilor robotului și ale DS, vizualizarea ieșirii din consolă și vizualizarea intrărilor de la controllere.
 
-## 🌈 Opțiuni noi de vizualizare {#new-visualization-options}
+Exemplele de cod din întreaga documentație au fost, de asemenea, actualizate cu acoperire completă pentru API-ul `Telemetry` al WPILib în mai multe limbaje de programare.
 
-Câteva opțiuni noi de vizualizare sunt suportate pe 🗺️ [Teren 2D](/tab-reference/2d-field) și 👀 [Teren 3D](/tab-reference/3d-field):
+<img src="/img/tutorials/to-the-field-4.webp" alt="Vizualizare teren 3D din tutorialul Pe teren" />
 
-- Pe terenul 2D este disponibilă acum o varietate mai largă de culori pentru bumperele robotului, iar fiecare obiect poate fi configurat cu propria sa culoare. Acest lucru oferă o mai mare flexibilitate atunci când combini fantomele cu mai multe obiecte robot.
-- La [vizualizarea mecanismelor 2D pe terenul 3D](/tab-reference/3d-field/#2d-mechanisms), mecanismele pot fi plasate acum și pe planul YZ, pe lângă planul XZ. Acest lucru permite o vizualizare mai ușoară a mecanismelor complexe cu mișcare pe axe multiple.
-- Terenul 3D suportă acum antialiasing opțional pentru a îmbunătăți calitatea marginilor randate.
+_Mai sus este prezentată interfața în limba engleză._
 
-<img src="/img/whats-new/field-viz.jpg" alt="Vizualizări noi de teren" />
+## 📱 AdvantageTune {#advantagetune}
 
-## 🪵 Suport pentru loguri CAN REV Robotics {#rev-robotics-can-log-support}
+AdvantageTune este o nouă aplicație independentă pentru iPhone și iPad care oferă o experiență ușoară de ajustare mobilă pentru a completa AdvantageScope. Poți vizualiza și modifica topicuri [NetworkTables](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html) live (inclusiv primitive, tablouri, structuri WPILib și Protobuf-uri) direct de pe telefon, făcând ușor pentru toată lumea să participe la ajustarea codului robotului.
 
-Acum poți deschide fișiere `.revlog` produse de [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) de la REV Robotics direct în AdvantageScope. Aceste fișiere înregistrează semnale CAN de la dispozitivele Spark Max și Spark Flex, oferind o alternativă oficială la biblioteca [URCL](/more-features/urcl) din AdvantageScope.
+Atât AdvantageTune, cât și AdvantageScope simplifică procesul de exportare a valorilor ajustate înapoi în codul robotului, cu butoane pentru a salva toate valorile ajustate într-un fișier text pentru partajare ușoară ([documentație](/overview/live-sources/tuning-mode)).
 
-Atât URCL, cât și `StatusLogger`-ul oficial vor rămâne disponibile în timpul sezonului 2026 pentru a asigura o tranziție lină și aceleași funcționalități ca în sezoanele anterioare. Vom reveni cu mai multe detalii despre opțiunile de logare pentru 2027 și după.
-
-<img src="/img/whats-new/revlog.webp" alt="Vizualizare REVLOG" />
-
-## 💿 Importuri de fișiere CSV {#csv-file-imports}
-
-Pentru o vizualizare mai flexibilă a datelor produse în afara framework-urilor de logare ale robotului, AdvantageScope include acum suport de bază pentru importul fișierelor CSV. Consultă [documentația](/overview/log-files/#csv-formatting) pentru mai multe detalii despre formatele suportate și alte limitări.
-
-<img src="/img/overview/log-files/export-2.webp" alt="Date CSV" />
-
-## 🤩 Îmbunătățiri estetice {#aesthetic-improvements}
-
-Interfața AdvantageScope pe Windows 11 a fost actualizată și include acum o bară laterală translucidă, care anterior era disponibilă doar pe macOS. O pictogramă actualizată a aplicației este, de asemenea, disponibilă pentru macOS Tahoe, bazată pe materialul Liquid Glass de la Apple.
-
-<img src="/img/whats-new/windows-ui.webp" alt="Interfață utilizator Windows" />
-
-## 📋 Meniuri simplificate {#streamlined-menus}
-
-Bara de meniu și controalele asociate au fost simplificate și reorganizate pentru a fi mai accesibile și mai coerente pe toate platformele. Printre funcționalitățile notabile se numără:
-
-- Comutare mai rapidă între sursele live (de exemplu NetworkTables și [Diagnostice Phoenix](/overview/live-sources/phoenix-diagnostics)), fără să mai fie nevoie să deschizi fereastra de preferințe.
-- Dă clic dreapta în bara laterală pentru a copia rapid numele unui câmp (sau cheia completă a acestuia).
-- Reorganizarea ferestrei de preferințe, astfel încât opțiunile să fie mai ușor de găsit rapid.
+[<img src="/img/app-store_ro.svg" alt="App Store" />](https://apps.apple.com/ro/app/advantagetune/id6811453643?l=ro)
 
 <div className="image-gallery">
-  <img src="/img/whats-new/menus-1.webp" />
-  <img src="/img/whats-new/menus-2.webp" />
-  <img src="/img/prefs_ro.webp" />
+  <img src="/img/whats-new/advantagetune-1.webp" alt="Vizualizare de navigare AdvantageTune" />
+  <img src="/img/whats-new/advantagetune-2.webp" alt="Editare topicuri în AdvantageTune" />
+  <img src="/img/whats-new/advantagetune-3.webp" alt="Editare structuri în AdvantageTune" />
+  <img src="/img/whats-new/advantagetune-4.webp" alt="Lista valorilor ajustate în AdvantageTune" />
+  <img src="/img/whats-new/advantagetune-5.webp" alt="Căutare și filtrare în AdvantageTune" />
 </div>
 
-## 🐛 Îmbunătățiri ale stabilității {#stability-improvements}
+_Mai sus este prezentată interfața în limba engleză._
 
-Această versiune include o serie de remedieri de erori și îmbunătățiri ale stabilității în întreaga aplicație. Lista completă poate fi găsită în [jurnalul de modificări](https://github.com/Mechanical-Advantage/AdvantageScope/releases) al versiunii, însă câteva remedieri importante sunt enumerate mai jos:
+## 🪐 Jurnalizare universală WPILOG {#wpilog-universal-logging}
 
-- Performanța AdvantageScope la streamingul de date pe perioade lungi a fost îmbunătățită considerabil, în special la utilizarea filei Grafic liniar.
-- AdvantageScope este acum mai tolerant cu datele de log neobișnuite, inclusiv fișiere de log mari și valori mari de câmp.
-- Au fost remediate diverse erori vizuale la navigarea prin datele din log, în special la utilizarea filtrelor pe fila Grafic liniar.
-- Ordonarea fișierelor log AdvantageKit în fereastra de descărcare a fost remediată; logurile fără marcaje de timp apar acum în partea de jos a listei, similar cu alte formate.
-- Pe fila Teren 3D, camerele robotului cu o rotație diferită de zero pe axa de ruliu (roll) sunt acum vizualizate corect.
-- Stabilitatea AdvantageScope XR a fost îmbunătățită, în special când rulează pe iOS/iPadOS 26. Pentru instalările offline, verifică App Store pentru actualizările disponibile.
+Cu [jurnalizarea universală](/more-features/universal-logging), un singur fișier WPILOG poate servi acum drept container universal pentru mai multe fluxuri și formate de log, inclusiv loguri ale dispozitivelor specifice producătorilor, date CSV și fișiere WPILOG secundare. Jurnalizarea universală înlocuiește URCL cu o abordare flexibilă, independentă de producător: datele din fiecare sursă sunt sincronizate automat și îmbinate într-un singur arbore unificat în bara laterală. Consultă [documentația de jurnalizare universală](/more-features/universal-logging#experimental-vendor-logging) pentru detalii despre capturarea logurilor producătorilor în AdvantageKit și WPILib (în curând).
+
+<img src="/img/more-features/universal-logging-1.webp" alt="Un fișier WPILOG care afișează mai multe loguri ale producătorilor în bara laterală" />
+
+_Mai sus este prezentată interfața în limba engleză._
+
+## 🗺️ Îmbunătățiri ale filelor de teren {#field-tab-improvements}
+
+Câteva îmbunătățiri de utilizare au fost adăugate filelor 🗺️ [Teren 2D](/tab-reference/2d-field) și 👀 [Teren 3D](/tab-reference/3d-field):
+
+- Deplasează și fă zoom pe terenul 2D sau dă clic dreapta pentru a bloca camera să urmărească poziția și rotația robotului ([documentație](/tab-reference/2d-field#camera-controls)).
+- A fost adăugată o opțiune pentru estomparea fantomelor 2D și 3D atunci când câmpurile nu s-au actualizat recent (util pentru randarea pose-urilor de viziune).
+- Au fost adăugate linii de grilă pentru plăcile terenurilor FTC 2D și 3D pentru o referință spațială mai ușoară.
+- AdvantageScope reține acum dacă a fost folosit ultima dată un teren FRC sau FTC la deschiderea de noi file de teren 2D sau 3D.
+
+<img src="/img/tab-reference/2d-field-1.webp" alt="Prezentare generală a filei Teren 2D" />
+
+_Mai sus este prezentată interfața în limba engleză._
+
+## 📉 Îmbunătățiri ale graficului liniar {#line-graph-improvements}
+
+📉 [Graficul liniar](/tab-reference/line-graph) și axa timpului includ câteva rafinări vizuale pentru o analiză mai clară:
+
+- Activarea „Afișează modul robotului” afișează acum o bară codificată pe culori pentru perioadele autonom, teleoperat, utilitar și dezactivat.
+- Graficele de tip puncte scalează automat dimensiunea punctelor pentru o vizibilitate mai bună la orice nivel de zoom.
+- Sugestii utile apar pe graficul liniar și pe axa timpului pentru a ghida utilizatorii noi privind gesturile de derulare și zoom.
+- S-au îmbunătățit randarea și lizibilitatea valorilor mari ale marcajelor de timp pe axa timpului și pe axele graficului liniar.
+
+<img src="/img/tab-reference/line-graph/line-graph-3.webp" alt="Suprapunerea modului robotului codificată pe culori pe graficul liniar" />
+
+_Mai sus este prezentată interfața în limba engleză._
+
+## 🤝 Îmbunătățiri de accesibilitate {#accessibility-enhancements}
+
+AdvantageScope 2027 include câteva actualizări pentru a face aplicația mai accesibilă:
+
+- Au fost adăugate navigarea cu tasta Tab pentru toate câmpurile de intrare și sugestii descriptive (tooltips) pentru toate controalele din aplicație.
+- AdvantageScope respectă acum setările sistemului de operare pentru „reducerea transparenței” și „reducerea mișcării”.
+- Indicatorii booleeni din bara laterală disting acum stările fără a se baza exclusiv pe culoare.
+
+## 🥔 Tipuri noi de unități {#new-unit-types}
+
+[Graficele bazate pe unități](/tab-reference/line-graph/units) din AdvantageScope au fost extinse cu tipuri suplimentare de unități și opțiuni de analiză:
+
+- Putere (wați, cai putere etc.)
+- Rapoarte (adimensional, procent)
+- Temperatură în Kelvin
+- Energie de cartof
+- Ortografii ale unităților în engleza britanică (de ex. `metres`)
+- Sufixe pentru biblioteca de unități a WPILib
+
+## 🧱 Îmbunătățiri de stabilitate {#stability-improvements}
+
+Această versiune include numeroase remedieri de erori, optimizări de performanță și îmbunătățiri de stabilitate în întreaga aplicație. Lista completă poate fi găsită în [jurnalul de modificări](https://github.com/Mechanical-Advantage/AdvantageScope/releases), cu câteva puncte importante mai jos:
+
+- Versiunile oficiale pentru Windows sunt acum semnate digital, reducând frecvența avertismentelor SmartScreen în timpul instalării.
+- Performanța de încărcare și trasare a logurilor a fost îmbunătățită semnificativ, în special la lucrul cu loguri Hoot (`.hoot`) și tablouri mari de structuri.
+- A fost remediată gestionarea marcajelor de timp la vizualizarea logurilor AdvantageKit împreună cu surse de date de înaltă frecvență.
+- A fost îmbunătățit algoritmul de sincronizare a marcajelor de timp pentru mai multe loguri la alinierea logurilor din surse multiple.
+- A fost îmbunătățită fiabilitatea conexiunii pentru [Diagnostice Phoenix](/overview/live-sources/phoenix-diagnostics).
+- Au fost remediate problemele de interfață cu bara de meniu pe ferestrele detașate și fereastra pop-up de înregistrare în [AdvantageScope XR](/tab-reference/3d-field/advantagescope-xr).
+- Textele și formulările din interfață au fost rafinate în întreaga aplicație pentru mai multă claritate.

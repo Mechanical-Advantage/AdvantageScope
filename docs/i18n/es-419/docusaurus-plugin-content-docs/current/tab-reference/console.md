@@ -7,9 +7,9 @@ sidebar_position: 5
 La pestaña **Consola** sirve para leer un único campo de texto (`string`) con mensajes de consola. Aquí tienes algunos campos recomendados:
 
 - **DS:/Dscomm/Console** - Guardado por la FIRST Driver Station.
-- **messages** - Guardado por el registro integrado de WPILib a partir de llamadas al método [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>).
-- **/RealOutputs/Console** - Guardado automáticamente por AdvantageKit mientras corre el robot (solo usa `System.out.println` como de costumbre).
-- **/ReplayOutputs/Console** - Guardado automáticamente por AdvantageKit al reproducir un registro (usa `System.out.println` como de costumbre).
+- **messages** - Guardado automáticamente por `DataLogManager` de WPILib.
+- **/RealOutputs/Console** - Guardado automáticamente por AdvantageKit mientras corre el robot.
+- **/ReplayOutputs/Console** - Guardado automáticamente por AdvantageKit al reproducir un registro.
 
 Para empezar, arrastra el campo que quieras a la vista principal. Cada fila corresponde a una actualización del campo: en registros de WPILib aparece una fila por cada línea guardada, mientras que en AdvantageKit aparece una fila por cada ciclo de ejecución.
 

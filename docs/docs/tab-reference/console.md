@@ -7,9 +7,9 @@ sidebar_position: 5
 The console view is designed to view a single string field with console data. Some suggested fields are listed below.
 
 - **DS:/Dscomm/Console** - Saved by the FIRST Driver Station.
-- **messages** - Saved by WPILib's built-in logging based on calls to the [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>) method.
-- **/RealOutputs/Console** - Saved by AdvantageKit automatically during robot operation (use `System.out.println` as normal).
-- **/ReplayOutputs/Console** - Saved by AdvantageKit automatically during log replay (use `System.out.println` as normal).
+- **messages** - Saved by WPILib's `DataLogManager` automatically.
+- **/RealOutputs/Console** - Saved by AdvantageKit automatically during robot operation.
+- **/ReplayOutputs/Console** - Saved by AdvantageKit automatically during log replay.
 
 Drag the desired field to the main view to get started. Each row represents an update to the field. For WPILib logs, a new row is created for each saved line. For AdvantageKit logs, a new row is created for each loop cycle.
 

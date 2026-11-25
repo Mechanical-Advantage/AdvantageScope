@@ -2,7 +2,7 @@
 
 ## Formate suportate {#supported-formats}
 
-- **WPILOG (.wpilog)** - Produs de [înregistrarea de date integrată](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) din WPILib și AdvantageKit. [URCL](/more-features/urcl) poate fi folosit pentru a captura semnale de la controllerele de motoare REV într-un fișier WPILOG.
+- **WPILOG (.wpilog)** - Produs de [înregistrarea de date integrată](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) din WPILib, AdvantageKit și FIRST Driver Station. [Jurnalizarea universală](/more-features/universal-logging) poate fi folosită pentru a captura loguri externe (de ex. loguri ale producătorilor) într-un fișier WPILOG.
 - **Hoot (.hoot)** - Produs de [Signal Logger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) Phoenix 6 de la CTRE.
 - **REVLOG (.revlog)** - Produs de [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) de la REV Robotics.
 - **Road Runner (.log)** - Produs de biblioteca [Road Runner](https://github.com/acmerobotics/road-runner) pentru FTC.
@@ -31,6 +31,12 @@ _Mai sus este prezentată interfața în limba engleză._
 După deschiderea unui fișier log, poți adăuga cu ușurință loguri suplimentare în vizualizare. Marcajele de timp vor fi realiniate automat pentru a se sincroniza cu datele existente.
 
 În bara de meniu, dă clic pe `Fișier` > `Adaugă log(uri) noi...`, apoi alege unul sau mai multe fișiere log pentru a le adăuga la vizualizarea curentă. Câmpurile din fiecare log vor fi înregistrate în tabele denumite `Log0`, `Log1` etc.
+
+## Aranjamentul Driver Station {#driver-station-layout}
+
+AdvantageScope include un aranjament integrat conceput pentru vizualizarea logurilor și a datelor în timp real de la FIRST Driver Station, cu file preconfigurate pentru ieșirea din consolă, metrici de comunicare, tensiunea bateriei, utilizarea CPU și intrările de la joystick-uri.
+
+Când deschizi un fișier WPILOG generat de FIRST Driver Station pe desktop, AdvantageScope te întreabă dacă dorești să deschizi logul într-o fereastră separată folosind aranjamentul Driver Station. Orice fereastră poate fi comutată manual la acest aranjament dând clic pe `Fișier` > `Resetează la aranjamentul DS`. În [AdvantageScope Lite](/more-features/advantagescope-lite) pentru FIRST Driver Station, acest aranjament este folosit implicit (și poate fi restaurat dând clic pe `Fișier` > `Resetează la aranjamentul implicit`).
 
 ## Descărcarea de pe robot {#downloading-from-the-robot}
 

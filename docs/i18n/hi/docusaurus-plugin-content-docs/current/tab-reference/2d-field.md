@@ -52,10 +52,10 @@ _ऊपर अंग्रेजी इंटरफ़ेस दिखाया 
 
 ज्योमेट्री डेटा को बाइट-एन्कोडेड struct या protobuf के रूप में पब्लिश किया जाना चाहिए। `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` आदि सहित कई 2D और 3D ज्योमेट्री टाइप्स सपोर्टेड हैं।
 
-WPILib और AdvantageKit सहित कई लाइब्रेरी struct फॉर्मेट को सपोर्ट करती हैं। नीचे दिए गए उदाहरण कोड में दिखाया गया है कि Java में 2D पोज़ डेटा कैसे लॉग किया जाता है।
+WPILib और AdvantageKit सहित कई लाइब्रेरी struct फॉर्मेट को सपोर्ट करती हैं। नीचे दिया गया उदाहरण कोड दिखाता है कि 2D पोज़ डेटा कैसे लॉग किया जाता है।
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Pose2d poseA = new Pose2d();
@@ -63,6 +63,31 @@ Pose2d poseB = new Pose2d();
 
 Telemetry.log("MyPose", poseA);
 Telemetry.log("MyPoseArray", new Pose2d[] {poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::math::Pose2d poseA;
+wpi::math::Pose2d poseB;
+
+wpi::telemetry::Log("MyPose", poseA);
+wpi::telemetry::Log("MyPoseArray", std::vector{poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import Pose2d
+import telemetry
+
+pose_a = Pose2d()
+pose_b = Pose2d()
+
+telemetry.log("MyPose", pose_a)
+telemetry.log("MyPoseArray", [pose_a, pose_b], element_type=Pose2d)
 ```
 
 </TabItem>

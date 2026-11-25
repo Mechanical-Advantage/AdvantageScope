@@ -30,5 +30,5 @@ Elige el tipo de cada control en la tabla de la parte inferior de la pestaña. L
 AdvantageScope ya trae varios modelos comunes, incluido un **Joystick genérico** que muestra todos los botones, ejes y crucetas (POV) en forma de cuadrícula, como en la imagen de arriba. Si quieres agregar tu propio diseño de control, revisa [Recursos personalizados](/more-features/custom-assets).
 
 :::warning
-**Los datos de joysticks NO están disponibles por NetworkTables con WPILib estándar.** Sí puedes verlos desde archivos de registro de WPILib (con el [registro de joysticks habilitado](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), archivos de registro de AdvantageKit y transmisión en vivo de AdvantageKit.
+**Los datos de joysticks NO están disponibles por NetworkTables con WPILib estándar.** Sí puedes verlos desde archivos de registro de WPILib (con el [registro de joysticks habilitado](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), archivos de registro de AdvantageKit, transmisión en vivo de AdvantageKit y datos de la FIRST Driver Station.
 :::

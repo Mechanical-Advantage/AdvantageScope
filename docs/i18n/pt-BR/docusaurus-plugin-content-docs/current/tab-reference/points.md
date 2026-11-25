@@ -38,10 +38,10 @@ Para ver a lista completa dos tipos de fonte suportados, clique no ícone `?`. A
 
 ## Formato dos dados {#data-format}
 
-Os dados de pontos devem ser publicados como struct ou protobuf codificado em bytes, usando o tipo `Translation2d[]`. Várias bibliotecas suportam esse formato, incluindo WPILib e AdvantageKit. O exemplo abaixo mostra como registrar dados de pontos em Java.
+Os dados de pontos devem ser publicados como struct ou protobuf codificado em bytes, usando o tipo `Translation2d[]`. Várias bibliotecas suportam esse formato, incluindo WPILib e AdvantageKit. O exemplo abaixo mostra como registrar dados de pontos.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Telemetry.log("MyTranslations",
@@ -49,6 +49,33 @@ Telemetry.log("MyTranslations",
     new Translation2d(0.0, 1.0),
     new Translation2d(2.0, 3.0)
   });
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::telemetry::Log("MyTranslations", std::vector{
+  wpi::math::Translation2d{0_m, 1_m},
+  wpi::math::Translation2d{2_m, 3_m}
+});
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import Translation2d
+import telemetry
+
+telemetry.log(
+    "MyTranslations",
+    [
+        Translation2d(0.0, 1.0),
+        Translation2d(2.0, 3.0),
+    ],
+    element_type=Translation2d,
+)
 ```
 
 </TabItem>

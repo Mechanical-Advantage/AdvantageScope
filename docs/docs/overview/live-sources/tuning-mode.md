@@ -2,6 +2,9 @@
 sidebar_position: 1
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # Tuning Mode {#tuning-mode}
 
 Some live sources support live tuning of numeric and boolean values. For example, this feature can be used to [tune controller gains](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) when connected to a NetworkTables source. Note that the robot code must support receiving gains via NetworkTables.
@@ -12,9 +15,64 @@ By default, all values in AdvantageScope are read-only. To toggle tuning mode, *
 - To toggle a **boolean field**, click the red or green circle to the right of the field in the sidebar.
 - To copy all published values to the clipboard, **right-click the slider icon** and select **"Copy Tuned Values"**.
 
-:::warning
-This feature is not intended for controlling the robot on the field. Dashboard-style inputs like choosers, trigger buttons, etc. are not supported.
+:::tip
+For users on iPhone and iPad, **AdvantageTune** is an alternative option created by the AdvantageScope developers for tuning NetworkTables values from mobile devices.
+
+[<img src="/img/app-store_en-US.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagetune/id6811453643)
 :::
+
+## WPILib Tunables {#wpilib-tunables}
+
+In WPILib, values such as numbers and booleans can be configured using the Tunable API, allowing them to be adjusted from AdvantageScope in real time. Tunable values are registered once and can be read periodically in robot code:
+
+<Tabs groupId="library">
+<TabItem value="wpilib-java" label="Java" default>
+
+```java
+import org.wpilib.tunable.TunableBoolean;
+import org.wpilib.tunable.TunableDouble;
+import org.wpilib.tunable.Tunables;
+
+TunableDouble tunableNumber = Tunables.addDouble("MyTunableNumber", 0.0);
+TunableBoolean tunableBoolean = Tunables.addBoolean("MyTunableBoolean", false);
+
+// Read the values periodically
+double num = tunableNumber.get();
+boolean bool = tunableBoolean.get();
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+#include <wpi/tunables/Tunables.hpp>
+
+wpi::tunables::TunableDouble tunableNumber =
+    wpi::tunables::Add<double>("MyTunableNumber", 0.0);
+wpi::tunables::TunableBool tunableBoolean =
+    wpi::tunables::Add<bool>("MyTunableBoolean", false);
+
+// Read the values periodically
+double num = tunableNumber.Get();
+bool boolVal = tunableBoolean.Get();
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+import tunables
+
+tunable_number = tunables.add_double("MyTunableNumber", 0.0)
+tunable_boolean = tunables.add_boolean("MyTunableBoolean", False)
+
+# Read the values periodically
+num = tunable_number.get()
+bool_val = tunable_boolean.get()
+```
+
+</TabItem>
+</Tabs>
 
 ## Tuning With AdvantageKit {#tuning-with-advantagekit}
 
@@ -25,6 +83,10 @@ For example, a tunable number can be published using the [`LoggedNetworkNumber`]
 ```java
 LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNumber", 0.0);
 ```
+
+:::note
+Note that keys must include the leading slash (e.g. `/Tuning/MyTunableNumber`, not `Tuning/MyTunableNumber`).
+:::
 
 :::warning
 The `NetworkInputs` subtable **cannot be edited**, since it is used by AdvantageKit to record network values for logging and replay. Use the `Tuning` table to interact with network inputs in real time.

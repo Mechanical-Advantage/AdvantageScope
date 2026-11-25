@@ -24,6 +24,8 @@ AdvantageScope 支援多種語言，為世界各地的隊伍提供在地化體�
 - 簡體中文
 - 繁體中文
 
+感謝 FRC Team 6907 The G.O.A.T. 協助審校並改進 AdvantageScope 的翻譯！
+
 ## 設定 {#configuration}
 
 若要在 AdvantageScope 中變更顯示語言，請點擊 `應用程式` > `顯示偏好設定...` (Windows/Linux) 或 `AdvantageScope` > `設定...` (macOS) 開啟偏好設定視窗。在「語言」設定中，你可以從支援的語言清單中選擇，或選取「系統預設」來自動套用作業系統的語言。
@@ -37,10 +39,26 @@ AdvantageScope 支援的所有格式在定義日誌鍵名時都完整相容 Unic
 以下是使用繁體中文鍵名記錄字串的範例：
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Telemetry.log("驅動/右馬達速度", "快");
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::telemetry::Log("驅動/右馬達速度", "快");
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+import telemetry
+
+telemetry.log("驅動/右馬達速度", "快")
 ```
 
 </TabItem>
@@ -61,4 +79,4 @@ Logger.recordOutput("驅動/右馬達速度", "快");
 
 AdvantageScope 的在地化是透過人工智慧與社群協作共同完成的。由於 AdvantageScope 是一個快速演進的專案，運用 AI 才能讓翻譯後的應用程式與文件在所有語言之間保持同步。這代表無論你選擇哪種語言，新功能與更新都會同步推出。
 
-我們的流程致力於貼近在地隊伍熟悉的詞彙、借詞與音譯。不過，AI 翻譯仍可能出現不夠自然的用詞或其他不準確的地方。歡迎提供意見回饋；當介面設定為英語以外的任何語言時，你可以點擊應用程式中的紫色圖示來回報翻譯相關問題。
+我們的流程致力於貼近在地隊伍熟悉的詞彙、借詞與音譯。不過，**AI 翻譯仍可能出現不夠自然的用詞或其他不準確的地方**。歡迎提供意見回饋；當介面設定為英語以外的任何語言時，你可以點擊應用程式中的紫色圖示，或透過文件標題列中的意見回饋連結來回報翻譯相關問題。

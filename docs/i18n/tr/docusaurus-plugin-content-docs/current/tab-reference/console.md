@@ -7,9 +7,9 @@ sidebar_position: 5
 Konsol sekmesi, konsol verilerini içeren tek bir metin alanını görüntülemek için tasarlanmıştır. Önerilen başlıca alanlar aşağıdadır:
 
 - **DS:/Dscomm/Console** - FIRST Sürücü İstasyonu'nun kaydettiği konsol çıktısı.
-- **messages** - [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>) metoduna yapılan çağrıları WPILib'in yerleşik loglama sistemi buraya kaydeder.
-- **/RealOutputs/Console** - Robot çalışırken AdvantageKit bunu otomatik olarak kaydeder (her zamanki gibi `System.out.println` kullanabilirsiniz).
-- **/ReplayOutputs/Console** - Log tekrar oynatılırken AdvantageKit bunu otomatik olarak kaydeder (her zamanki gibi `System.out.println` kullanabilirsiniz).
+- **messages** - WPILib'in `DataLogManager` sınıfı tarafından otomatik olarak kaydedilir.
+- **/RealOutputs/Console** - Robot çalışırken AdvantageKit tarafından otomatik olarak kaydedilir.
+- **/ReplayOutputs/Console** - Log tekrar oynatılırken AdvantageKit tarafından otomatik olarak kaydedilir.
 
 Başlamak için istediğiniz alanı ana görünüme sürükleyin. Her satır, alandaki bir güncellemeyi gösterir. WPILib loglarında kaydedilen her satır için yeni bir satır oluşturulur; AdvantageKit loglarında ise her döngü periyodu için yeni bir satır eklenir.
 

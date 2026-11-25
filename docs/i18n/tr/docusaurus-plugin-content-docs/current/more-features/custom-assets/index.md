@@ -39,7 +39,7 @@ Bu klasörde aşağıda anlatıldığı gibi “config.json” dosyası ile bir 
 
 ### Genel bakış {#overview}
 
-Klasörde “model.glb” adında bir model dosyası bulunmalıdır. CAD dosyalarını glTF formatına dönüştürmeniz gerekir; detaylar için [bu sayfaya](gltf-convert) bakın. Yapılandırma dosyası şu yapıda olmalıdır:
+Klasörde “model.glb” adında bir model dosyası bulunmalıdır. CAD dosyalarını ikili glTF (`.glb`) formatına dönüştürmeniz gerekir; detaylar için [bu sayfaya](gltf-convert) bakın. Yapılandırma dosyası şu yapıda olmalıdır:
 
 ```json
 {
@@ -79,7 +79,7 @@ AdvantageScope, performansı artırmak için model geometrisini seçilen [işlem
 Eklemli bileşenleri ayarlamak karmaşık ve zaman alıcı olabilir. Bunun yerine, **3B sahada mekanizmaları görselleştirmek** için daha pratik bir yaklaşım sunan AdvantageScope'un 3B [`Mechanism2d` desteğini](/tab-reference/3d-field#2d-mechanisms) kullanmayı düşünebilirsiniz.
 :::
 
-Robot modelleri, mekanizma verilerini görselleştirmek için eklemli bileşenler içerebilir (detaylar için [buraya](/tab-reference/3d-field) bakın). Ana glTF modeli bu bileşenleri içermemeli, her bileşen ayrı bir glTF modeli olarak dışa aktarılmalıdır. Bileşen modelleri “model_İNDEKS.glb” kuralına göre adlandırılır; yani ilk eklemli bileşenin adı “model_0.glb” olur.
+Robot modelleri, mekanizma verilerini görselleştirmek için eklemli bileşenler içerebilir (detaylar için [buraya](/tab-reference/3d-field) bakın). Ana glTF (`.glb`) modeli bu bileşenleri içermemeli, her bileşen ayrı bir glTF (`.glb`) modeli olarak dışa aktarılmalıdır. Bileşen modelleri “model_İNDEKS.glb” kuralına göre adlandırılır; yani ilk eklemli bileşenin adı “model_0.glb” olur.
 
 Bileşen ayarları robotun yapılandırma dosyasındaki “components” dizisinde tanımlanır. AdvantageScope'ta herhangi bir bileşen pozu verilmediğinde, bileşen modelleri robotun varsayılan rotasyon ve konum değerlerine göre yerleştirilir (yukarıya bakın). Bileşen pozları verildiğinde ise önce her bileşeni robot orijinine getirmek için “sıfırlanmış” rotasyonlar ve konum uygulanır; ardından verdiğiniz pozlar kullanılarak her bileşen robottaki doğru yerine taşınır.
 
@@ -225,7 +225,7 @@ Klasörde “image.png” adında bir görsel bulunmalıdır. Görsel, kırmız�
 
 ## 3B saha modelleri {#3d-field-models}
 
-Klasörde “model.glb” adında bir model bulunmalıdır. Tüm rotasyonlar uygulandıktan sonra saha, kırmızı ittifak solda kalacak şekilde yönlendirilmelidir. CAD dosyaları glTF formatına dönüştürülmelidir; detaylar için [bu sayfaya](gltf-convert) bakın. Oyun objesi modelleri “gamePieces” dizisindeki sıraya göre “model_İNDEKS.glb” kuralıyla adlandırılır. Burada tanımlanan AprilTag'ler, diğer yapılandırma ayarlarından bağımsız olarak her zaman [merkez/kırmızı](/more-features/coordinate-systems#center-red) koordinat sistemine göre konumlandırılır.
+Klasörde “model.glb” adında bir model bulunmalıdır. Tüm rotasyonlar uygulandıktan sonra saha, kırmızı ittifak solda kalacak şekilde yönlendirilmelidir. CAD dosyaları ikili glTF (`.glb`) formatına dönüştürülmelidir; detaylar için [bu sayfaya](gltf-convert) bakın. Oyun objesi modelleri “gamePieces” dizisindeki sıraya göre “model_İNDEKS.glb” kuralıyla adlandırılır. Burada tanımlanan AprilTag'ler, diğer yapılandırma ayarlarından bağımsız olarak her zaman [merkez/kırmızı](/more-features/coordinate-systems#center-red) koordinat sistemine göre konumlandırılır.
 
 Yapılandırma dosyası şu yapıda olmalıdır:
 

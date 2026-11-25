@@ -1,10 +1,14 @@
 # Onshape ve STEP dosyalarını glTF'ye dönüştürme {#converting-onshape-and-step-files-to-gltf}
 
-AdvantageScope'un 3B görünümü, sahalar ve robotlar için özel modelleri destekler; bu modelleri [buradaki](/more-features/custom-assets) adımları izleyerek kurabilirsiniz. Tüm modeller, depolama ve yükleme verimliliği nedeniyle tercih edilen [glTF](https://www.khronos.org/gltf/) formatında olmalıdır. AdvantageScope'un saf JSON biçimi (.gltf) yerine, tüm kaynakları tek bir dosyada toplayan ikili biçimi (.glb) kullandığını unutmayın.
+AdvantageScope'un 3B görünümü, sahalar ve robotlar için özel modelleri destekler; bu modelleri [buradaki](/more-features/custom-assets) adımları izleyerek kurabilirsiniz. Tüm modeller, küçük dosya boyutu ve hızlı yükleme performansı nedeniyle tercih edilen ikili [glTF](https://www.khronos.org/gltf/) dosya formatında (`.glb`) olmalıdır.
+
+:::info
+glTF dosyaları iki formatta bulunur: JSON (`.gltf`) ve ikili (`.glb`). AdvantageScope, tüm model verilerini tek bir dosyada toplayan ikili **`.glb`** formatını gerektirir.
+:::
 
 ## Onshape'i STEP'e dönüştürme {#converting-onshape-to-step}
 
-Onshape'te glTF dışa aktarma seçeneği bulunsa da bu genellikle yönetilmesi zor, çok büyük dosyalar oluşturur. Bunun yerine modeli Onshape'ten STEP olarak dışa aktarmanızı, ardından bir sonraki bölümdeki adımları izleyerek glTF'ye dönüştürmenizi öneririz.
+Onshape'te glTF dışa aktarma seçeneği bulunsa da bu genellikle yönetilmesi zor, çok büyük dosyalar oluşturur. Bunun yerine modeli Onshape'ten STEP olarak dışa aktarmanızı, ardından bir sonraki bölümdeki adımları izleyerek ikili glTF (`.glb`) formatına dönüştürmenizi öneririz.
 
 1. Onshape dosyasını açtıktan sonra ana montaja sağ tıklayıp “Export...” seçeneğini seçin:
 
@@ -16,9 +20,9 @@ Onshape'te glTF dışa aktarma seçeneği bulunsa da bu genellikle yönetilmesi 
 
 3. Dosyanın dönüştürülüp indirilmesini bekleyin. Bu işlem birkaç dakika sürebilir.
 
-## STEP'i glTF'ye dönüştürme {#converting-step-to-gltf}
+## STEP'i glTF (.glb) formatına dönüştürme {#converting-step-to-gltf}
 
-1. [CAD Assistant](https://www.opencascade.com/products/cad-assistant/) uygulamasını indirin. Bu ücretsiz uygulama, STEP ve glTF dahil birçok 3B format arasında dönüşüm yapabilir.
+1. [CAD Assistant](https://www.opencascade.com/products/cad-assistant/) uygulamasını indirin. Bu ücretsiz uygulama, STEP ve glTF (`.glb`) dahil birçok 3B format arasında dönüşüm yapabilir.
 
 2. CAD Assistant'ı açın ve dönüştüreceğiniz STEP dosyasını seçin:
 
@@ -30,7 +34,7 @@ Onshape'te glTF dışa aktarma seçeneği bulunsa da bu genellikle yönetilmesi 
 
 <img src="/img/more-features/custom-assets/gltf-convert-4.webp" alt="“Save” simgesine tıklama" />
 
-5. Kaydedilecek konumu seçin, ardından açılır menüden dışa aktarma formatını “glb” yapın:
+5. Kaydedilecek konumu seçin, ardından açılır menüden dışa aktarma formatını “glb” (ikili glTF) yapın:
 
 <img src="/img/more-features/custom-assets/gltf-convert-5.webp" alt="Dışa aktarma formatını değiştirme" />
 
@@ -41,3 +45,5 @@ Onshape'te glTF dışa aktarma seçeneği bulunsa da bu genellikle yönetilmesi 
 7. “Save” simgesine tıklayın ve dışa aktarmanın bitmesini bekleyin:
 
 <img src="/img/more-features/custom-assets/gltf-convert-7.webp" alt="“Save” simgesine tıklama" />
+
+Dışa aktarma tamamlandıktan sonra `.glb` dosyasını yeniden adlandırın (örneğin `model.glb`) ve [Özel varlıklar](/more-features/custom-assets) sayfasında anlatıldığı gibi özel varlık klasörünüze ekleyin.

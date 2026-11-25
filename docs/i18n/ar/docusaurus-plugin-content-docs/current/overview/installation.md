@@ -16,10 +16,6 @@ sidebar_position: 1
 - تنبيهات داخل التطبيق عند توفر إصدار جديد للتنزيل.
 - مجموعة مدمجة من نماذج روبوتات 6328 الحديثة للاستخدام في علامة تبويب 👀 [ملعب ثلاثي الأبعاد](/tab-reference/3d-field).
 
-:::note
-قبل تشغيل نسخ AppImage على Ubuntu 23.10 أو أحدث، يجب تنزيل ملف تعريف AppArmor من صفحة الإصدارات ونسخه إلى `/etc/apparmor.d`.
-:::
-
 :::info
 يصدر كل إصدار رئيسي من AdvantageScope في شهر يناير قبل انطلاق موسم FRC، برقم إصدار يطابق السنة (فعلى سبيل المثال، صدر الإصدار v26.0.0 في يناير 2026). وقد تتوفر إصدارات بيتا وألفا من AdvantageScope في الأشهر التي تسبق كل إصدار، للفرق التي ترغب في تجربة الميزات الجديدة وتقديم الملاحظات. **وعلى الفرق التي تستخدم هذه الإصدارات التجريبية أن تتوقع مواجهة مشكلات وأخطاء غير موجودة في الإصدارات المستقرة.**
 :::
@@ -28,7 +24,7 @@ sidebar_position: 1
 
 ### التثبيت: [وثائق WPILib](https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html) {#wpilib-installation}
 
-تتضمن أداة تثبيت WPILib إصدارًا حديثًا من AdvantageScope، ولكنها قد تتأخر عن أحدث إصدار متاح للتنزيل المباشر. يمكنك العثور على وثائق تشغيل AdvantageScope من إصدار WPILib لـ VSCode [هنا](https://docs.wpilib.org/en/stable/docs/software/dashboards/advantagescope.html).
+تتضمن أداة تثبيت WPILib إصدارًا حديثًا من AdvantageScope، ولكنها قد تتأخر عن أحدث إصدار متاح للتنزيل المباشر. يمكنك العثور على وثائق تشغيل AdvantageScope من إصدار WPILib لـ VS Code [هنا](https://docs.wpilib.org/en/stable/docs/software/dashboards/advantagescope.html).
 
 ## التوزيعات غير الرسمية {#unofficial-distributions}
 

@@ -36,14 +36,18 @@ _تظهر في الصورة أعلاه الواجهة باللغة الإنجل�
 - **سرعات الروبوت:** السرعات الخطية والزاوية المعروضة في مركز الرسم البياني.
 - **الدوران:** الموضع الزاوي المستخدم لتدوير الرسم البياني.
 
+:::tip
+يمكن أيضًا عرض حالات موديولات سويرف في علامتَي التبويب 🗺️ [ملعب ثنائي الأبعاد](/tab-reference/2d-field) و👀 [ملعب ثلاثي الأبعاد](/tab-reference/3d-field).
+:::
+
 ## تنسيق البيانات {#data-format}
 
 يجب نشر البيانات بصيغة struct أو protobuf مرمّزة بالبايت، باستخدام الأنواع `SwerveModuleVelocity[]` أو `ChassisVelocities` أو `Rotation2d` أو `Rotation3d`.
 
-تدعم مكتبات عديدة تنسيق struct، بما في ذلك WPILib وAdvantageKit. ويوضح المثال البرمجي أدناه كيفية تسجيل حالات موديولات سويرف بلغة Java.
+تدعم مكتبات عديدة تنسيق struct، بما في ذلك WPILib وAdvantageKit. ويوضح المثال البرمجي أدناه كيفية تسجيل حالات موديولات سويرف.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
@@ -54,6 +58,37 @@ SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
 };
 
 Telemetry.log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+std::array<wpi::math::SwerveModuleVelocity, 4> states{
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{}
+};
+
+wpi::telemetry::Log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import SwerveModuleVelocity
+import telemetry
+
+states = [
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+]
+
+telemetry.log("MyStates", states, element_type=SwerveModuleVelocity)
 ```
 
 </TabItem>

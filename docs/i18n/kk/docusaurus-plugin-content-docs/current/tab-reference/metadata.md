@@ -13,10 +13,10 @@ import TabItem from '@theme/TabItem';
 
 _Жоғарыда ағылшын тіліндегі интерфейс көрсетілген._
 
-Төмендегі мысал кодында Java тілінде метадеректерді қалай журналдау керектігі көрсетілген.
+Төмендегі мысал кодында метадеректерді қалай журналдау керектігі көрсетілген.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 WPILib кітапханасында `Telemetry` класын пайдаланып, мәндерді «/Metadata» кестесіне жол түрінде журналдаңыз.
 
@@ -24,6 +24,30 @@ WPILib кітапханасында `Telemetry` класын пайдаланы�
 TelemetryTable metadata = Telemetry.getTable("Metadata");
 metadata.log("RobotName", "Darwin");
 metadata.log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+WPILib кітапханасында `Telemetry` класын пайдаланып, мәндерді «/Metadata» кестесіне жол түрінде журналдаңыз.
+
+```cpp
+wpi::telemetry::TelemetryTable& metadata = wpi::telemetry::GetTable("Metadata");
+metadata.Log("RobotName", "Darwin");
+metadata.Log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+WPILib кітапханасында `telemetry` модулін пайдаланып, мәндерді «/Metadata» кестесіне жол түрінде журналдаңыз.
+
+```python
+import telemetry
+
+metadata = telemetry.get_table("Metadata")
+metadata.log("RobotName", "Darwin")
+metadata.log("Platform", "macOS")
 ```
 
 </TabItem>

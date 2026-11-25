@@ -135,6 +135,10 @@ const config: Config = {
           {
             to: "/more-features/custom-assets/gltf-convert",
             from: "/more-features/gltf-convert"
+          },
+          {
+            to: "/more-features/universal-logging",
+            from: "/more-features/urcl"
           }
         ]
       }
@@ -211,7 +215,7 @@ const config: Config = {
     prism: {
       theme: prismThemes.jettwaveLight,
       darkTheme: prismThemes.jettwaveDark,
-      additionalLanguages: ["java"]
+      additionalLanguages: ["java", "bash"]
     },
     algolia: {
       appId: "GBP8QKXFZG",

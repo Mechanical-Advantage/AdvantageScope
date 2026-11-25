@@ -2,7 +2,7 @@
 
 ## פורמטים נתמכים {#supported-formats}
 
-- **WPILOG (.wpilog)** - נוצר על ידי [מערכת תיעוד הנתונים המובנית](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) של WPILib ועל ידי AdvantageKit. אפשר להשתמש ב-[URCL](/more-features/urcl) כדי להקליט אותות מבקרי המנוע של REV לקובץ WPILOG.
+- **WPILOG (.wpilog)** - נוצר על ידי [מערכת תיעוד הנתונים המובנית](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) של WPILib, על ידי AdvantageKit ועל ידי ה-FIRST Driver Station. אפשר להשתמש ב-[רישום אוניברסלי](/more-features/universal-logging) כדי ללכוד יומנים חיצוניים (למשל יומני יצרנים) לתוך קובץ WPILOG.
 - **Hoot (.hoot)** - נוצר על ידי [מקליט האותות (Signal Logger)](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) ב-Phoenix 6 של CTRE.
 - **REVLOG (.revlog)** - נוצר על ידי [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) של REV Robotics.
 - **Road Runner (.log)** - נוצר על ידי ספריית [Road Runner](https://github.com/acmerobotics/road-runner) עבור FTC.
@@ -31,6 +31,12 @@ _הממשק בתמונה מוצג באנגלית._
 לאחר שכבר פתחתם קובץ יומן, אפשר להוסיף לתצוגה קובצי יומן נוספים בקלות. חותמות הזמן יתיישרו אוטומטית כדי להסתנכרן עם הנתונים שכבר טעונים.
 
 לחצו בשורת התפריטים על `קובץ` > `הוספת יומן(ים) חדשים...`, ובחרו קובץ אחד או יותר להוספה. השדות של כל יומן יופיעו תחת טבלאות בשם `Log0`, `Log1` וכן הלאה.
+
+## פריסת Driver Station {#driver-station-layout}
+
+AdvantageScope כוללת פריסה מובנית המיועדת לצפייה ביומנים ובנתונים חיים מתוך FIRST Driver Station, עם כרטיסיות מוגדרות מראש עבור פלט המסוף, מדדי תקשורת, מתח סוללה, ניצולת CPU וקלט ג'ויסטיקים.
+
+בעת פתיחת קובץ WPILOG שנוצר על ידי FIRST Driver Station בגרסת שולחן העבודה, AdvantageScope מציעה לפתוח את היומן בחלון נפרד באמצעות פריסת ה-Driver Station. אפשר גם להעביר כל חלון לפריסה זו ידנית על ידי לחיצה על `קובץ` > `איפוס לפריסת DS`. ב-[AdvantageScope Lite](/more-features/advantagescope-lite) עבור FIRST Driver Station, פריסה זו משמשת כברירת מחדל (וניתן לשחזר אותה בלחיצה על `כרטיסיות` > `איפוס לפריסת ברירת המחדל`).
 
 ## הורדה מהרובוט {#downloading-from-the-robot}
 

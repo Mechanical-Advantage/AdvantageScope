@@ -13,10 +13,10 @@ A guia Metadados mostra os valores publicados na tabela oculta "/Metadata" ou pe
 
 _A interface em inglês é exibida acima._
 
-O exemplo abaixo mostra como registrar metadados em Java.
+O exemplo abaixo mostra como registrar metadados.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 Na WPILib, use a classe `Telemetry` para registrar valores em string na tabela "/Metadata".
 
@@ -24,6 +24,30 @@ Na WPILib, use a classe `Telemetry` para registrar valores em string na tabela "
 TelemetryTable metadata = Telemetry.getTable("Metadata");
 metadata.log("RobotName", "Darwin");
 metadata.log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+Na WPILib, use a classe `Telemetry` para registrar valores em string na tabela "/Metadata".
+
+```cpp
+wpi::telemetry::TelemetryTable& metadata = wpi::telemetry::GetTable("Metadata");
+metadata.Log("RobotName", "Darwin");
+metadata.Log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+Na WPILib, use o módulo `telemetry` para registrar valores em string na tabela "/Metadata".
+
+```python
+import telemetry
+
+metadata = telemetry.get_table("Metadata")
+metadata.log("RobotName", "Darwin")
+metadata.log("Platform", "macOS")
 ```
 
 </TabItem>

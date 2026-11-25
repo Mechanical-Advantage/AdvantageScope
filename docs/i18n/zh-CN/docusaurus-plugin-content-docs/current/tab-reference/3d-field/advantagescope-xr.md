@@ -6,7 +6,7 @@ AdvantageScope XR 将 👀 [3D 场地](/tab-reference/3d-field)视图带入增�
 
 ## 要求 {#requirements}
 
-- **主机：** 运行在 Windows、macOS 或 Linux 上的 AdvantageScope 桌面应用程序（v4.1.0 或更高版本）。请确保[关闭](https://docs.wpilib.org/zh-cn/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall)设备上的防火墙。
+- **主机：** 运行在 Windows、macOS 或 Linux 上的 AdvantageScope 桌面应用程序（v4.1.0 或更高版本）。请确保[关闭](https://docs.wpilib.org/zh-cn/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall)设备上的防火墙，或将其配置为允许 TCP 56328 端口的入站连接。
 - **客户端：** 运行 iOS/iPadOS 16 或更高版本的 iPhone 或 iPad，无需安装额外应用。
 - **网络：** 两台设备必须连接至同一网络（如 Wi-Fi、USB 网络共享等）。除下述情况外，该网络无需连接互联网。
 - **互联网：** 如果近期未曾使用过 AdvantageScope XR，移动设备需要联网（例如通过蜂窝数据）。如需免除联网要求，请参阅下方的[离线使用](#offline-usage)部分。
@@ -74,7 +74,7 @@ XR 控制窗口提供以下选项，用于控制模型在增强现实中的显�
 
 AdvantageScope XR 无需连接互联网即可使用。为确保离线可用，请通过下方链接从 App Store 下载 AdvantageScope XR 应用。连接 AdvantageScope 桌面端时，使用 iOS 相机应用扫描二维码，或在 AdvantageScope XR 应用中轻点“扫描”按钮即可。
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_zh-CN.svg" alt="App Store" />](https://apps.apple.com/cn/app/advantagescope-xr/id6739718081)
 
 :::note
 即使在离线环境下运行，主机和客户端设备仍**必须连接到同一网络**（例如机器人网络、自定义 Wi-Fi 网络或通过 USB 网络共享连接）。

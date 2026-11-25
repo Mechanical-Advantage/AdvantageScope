@@ -17,6 +17,11 @@ AdvantageScope — [6328 командасы](https://littletonrobotics.org) FIRS
 items={[
 {
 type: "category",
+label: "Оқулықтар",
+href: "/category/tutorials"
+},
+{
+type: "category",
 label: "Шолу",
 href: "/category/overview"
 },
@@ -24,11 +29,6 @@ href: "/category/overview"
 type: "category",
 label: "Қойындылар анықтамалығы",
 href: "/category/tab-reference"
-},
-{
-type: "category",
-label: "Қосымша мүмкіндіктер",
-href: "/category/more-features"
 },
 {
 type: "link",

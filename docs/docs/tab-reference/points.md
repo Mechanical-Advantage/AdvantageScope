@@ -18,7 +18,7 @@ The timeline is used to control playback and visualization. Clicking on the time
 
 Yellow sections indicate when the robot is autonomous, blue sections indicate when the robot is teleoperated, and gray sections indicate when the robot is in utility mode.
 
-To zoom, place the cursor over the timeline and scroll up or down. A range can also be selecting by clicking and dragging while holding `Shift`. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the timeline. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again. Press `Ctrl+\` to zoom to the period where the robot is enabled.
+To zoom, place the cursor over the timeline and scroll up or down. A range can also be selected by clicking and dragging while holding `Shift`. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the timeline. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again. Press `Ctrl+\` to zoom to the period where the robot is enabled.
 
 <img src="/img/tab-reference/timeline.webp" alt="Timeline" />
 
@@ -36,10 +36,10 @@ To see a full list of supported sources types, click the `?` icon. This list als
 
 ## Data Format {#data-format}
 
-Point data should be published as a byte-encoded struct or protobuf, using the `Translation2d[]` type. Many libraries support this format, including WPILib and AdvantageKit. The example code below shows how to log point data in Java.
+Point data should be published as a byte-encoded struct or protobuf, using the `Translation2d[]` type. Many libraries support this format, including WPILib and AdvantageKit. The example code below shows how to log point data.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Telemetry.log("MyTranslations",
@@ -47,6 +47,33 @@ Telemetry.log("MyTranslations",
     new Translation2d(0.0, 1.0),
     new Translation2d(2.0, 3.0)
   });
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::telemetry::Log("MyTranslations", std::vector{
+  wpi::math::Translation2d{0_m, 1_m},
+  wpi::math::Translation2d{2_m, 3_m}
+});
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import Translation2d
+import telemetry
+
+telemetry.log(
+    "MyTranslations",
+    [
+        Translation2d(0.0, 1.0),
+        Translation2d(2.0, 3.0),
+    ],
+    element_type=Translation2d,
+)
 ```
 
 </TabItem>

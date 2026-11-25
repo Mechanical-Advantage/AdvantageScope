@@ -1,10 +1,14 @@
 # המרת קובצי Onshape ו-STEP ל-glTF {#converting-onshape-and-step-files-to-gltf}
 
-תצוגת ה-3D ב-AdvantageScope תומכת במודלים מותאמים אישית למגרשים ולרובוטים, שאותם ניתן להתקין לפי ההוראות [כאן](/more-features/custom-assets). כל המודלים חייבים להיות בפורמט [glTF](https://www.khronos.org/gltf/), שנבחר בזכות היעילות שלו באחסון ובטעינה. שימו לב ש-AdvantageScope משתמשת בגרסה הבינארית של הפורמט (`.glb`), האורזת את כל המשאבים בקובץ אחד, ולא בקובץ ה-JSON הנפרד (`.gltf`).
+תצוגת ה-3D ב-AdvantageScope תומכת במודלים מותאמים אישית למגרשים ולרובוטים, שאותם ניתן להתקין לפי ההוראות [כאן](/more-features/custom-assets). כל המודלים חייבים להיות בפורמט [glTF](https://www.khronos.org/gltf/) הבינארי (`.glb`), שנבחר בזכות גודל הקובץ הקטן וביצועי הטעינה המהירים שלו.
+
+:::info
+קובצי glTF מגיעים בשני פורמטים: JSON (`.gltf`) ובינארי (`.glb`). AdvantageScope דורשת את הפורמט הבינארי **`.glb`**, האורז את כל נתוני המודל בקובץ אחד.
+:::
 
 ## המרת Onshape ל-STEP {#converting-onshape-to-step}
 
-למרות ש-Onshape מאפשרת לייצא ישירות ל-glTF, פעולה זו יוצרת לרוב קבצים כבדים מאוד שקשה לעבוד איתם. לכן, מומלץ לייצא מ-Onshape לקובץ STEP, ובהמשך להמיר אותו ל-glTF לפי השלבים הבאים:
+למרות ש-Onshape מאפשרת לייצא ישירות ל-glTF, פעולה זו יוצרת לרוב קבצים כבדים מאוד שקשה לעבוד איתם. לכן, מומלץ לייצא מ-Onshape לקובץ STEP, ובהמשך להמיר אותו ל-glTF בינארי (`.glb`) לפי השלבים הבאים:
 
 1. פתחו את הקובץ ב-Onshape, לחצו לחיצה ימנית על המכלול הראשי (assembly) ובחרו "Export...":
 
@@ -16,9 +20,9 @@
 
 3. המתינו שהקובץ יומר ויירד למחשב. התהליך עשוי להימשך כמה דקות.
 
-## המרת STEP ל-glTF {#converting-step-to-gltf}
+## המרת STEP ל-glTF (.glb) {#converting-step-to-gltf}
 
-1. הורידו את [CAD Assistant](https://www.opencascade.com/products/cad-assistant/), תוכנה חינמית שממירה בין מגוון רחב של פורמטים תלת-ממדיים, כולל STEP ו-glTF.
+1. הורידו את [CAD Assistant](https://www.opencascade.com/products/cad-assistant/), תוכנה חינמית שממירה בין מגוון רחב של פורמטים תלת-ממדיים, כולל STEP ו-glTF (`.glb`).
 
 2. פתחו את CAD Assistant ובחרו את קובץ ה-STEP שברצונכם להמיר:
 
@@ -30,7 +34,7 @@
 
 <img src="/img/more-features/custom-assets/gltf-convert-4.webp" alt="לחיצה על סמל &quot;Save&quot;" />
 
-5. בחרו היכן לשמור את הקובץ, ולאחר מכן שנו בתפריט הנפתח את פורמט הייצוא ל-"glb":
+5. בחרו היכן לשמור את הקובץ, ולאחר מכן שנו בתפריט הנפתח את פורמט הייצוא ל-"glb" (glTF בינארי):
 
 <img src="/img/more-features/custom-assets/gltf-convert-5.webp" alt="שינוי פורמט הייצוא" />
 
@@ -41,3 +45,5 @@
 7. לחצו שוב על סמל ה-"Save" והמתינו לסיום הייצוא:
 
 <img src="/img/more-features/custom-assets/gltf-convert-7.webp" alt="לחיצה על סמל &quot;Save&quot;" />
+
+לאחר הייצוא, שנו את שם קובץ ה-`.glb` (למשל `model.glb`) והוסיפו אותו לתיקיית הנכסים המותאמים אישית שלכם כמתואר בדף [נכסים מותאמים אישית](/more-features/custom-assets).

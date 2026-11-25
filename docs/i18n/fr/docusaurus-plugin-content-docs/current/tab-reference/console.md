@@ -7,9 +7,9 @@ sidebar_position: 5
 La vue Console sert à afficher un champ de type chaîne de caractères contenant des messages de console. Voici les champs les plus courants :
 
 - **DS:/Dscomm/Console** : enregistré par la console de pilotage FIRST.
-- **messages** : enregistré par la journalisation intégrée de WPILib via les appels à [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>).
-- **/RealOutputs/Console** : enregistré automatiquement par AdvantageKit pendant le fonctionnement du robot (utilisez `System.out.println` comme d'habitude).
-- **/ReplayOutputs/Console** : enregistré automatiquement par AdvantageKit pendant la relecture d'un journal (utilisez `System.out.println` comme d'habitude).
+- **messages** : enregistré automatiquement par `DataLogManager` de WPILib.
+- **/RealOutputs/Console** : enregistré automatiquement par AdvantageKit pendant le fonctionnement du robot.
+- **/ReplayOutputs/Console** : enregistré automatiquement par AdvantageKit pendant la relecture d'un journal.
 
 Pour commencer, faites glisser le champ souhaité dans la vue principale. Chaque ligne correspond à une mise à jour du champ : avec les journaux WPILib, une ligne apparaît pour chaque texte enregistré; avec AdvantageKit, une ligne est créée à chaque cycle de boucle.
 

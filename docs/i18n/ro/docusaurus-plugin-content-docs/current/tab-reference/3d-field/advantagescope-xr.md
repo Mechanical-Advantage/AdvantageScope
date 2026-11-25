@@ -6,7 +6,7 @@ AdvantageScope XR aduce la viață vizualizarea 👀 [Teren 3D](/tab-reference/3
 
 ## Cerințe {#requirements}
 
-- **Gazdă (Host):** Aplicația desktop AdvantageScope pe Windows, macOS sau Linux (v4.1.0 sau mai recentă). Orice firewall de pe dispozitiv trebuie să fie [dezactivat](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
+- **Gazdă (Host):** Aplicația desktop AdvantageScope pe Windows, macOS sau Linux (v4.1.0 sau mai recentă). Orice firewall de pe dispozitiv trebuie să fie [dezactivat](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) sau configurat pentru a permite conexiuni de intrare pe portul TCP 56328.
 - **Client:** Un iPhone sau iPad cu iOS/iPadOS 16 sau mai recent. Nu trebuie să instalezi nicio aplicație.
 - **Rețea:** Ambele dispozitive trebuie să fie conectate la aceeași rețea (Wi-Fi, partajare internet prin USB etc.). Cu excepția situației de mai jos, această rețea nu are nevoie de conexiune la internet.
 - **Internet:** Dacă AdvantageScope XR nu a fost folosit recent, dispozitivul mobil trebuie să aibă conexiune la internet (de ex., date mobile). Pentru a elimina această cerință, consultă secțiunea [Utilizare offline](#offline-usage) de mai jos.
@@ -74,7 +74,7 @@ Fereastra de controale XR îți oferă câteva opțiuni pentru a controla modul 
 
 AdvantageScope XR nu are nevoie de conexiune la internet. Pentru a te asigura că aplicația este disponibilă offline, descarcă AdvantageScope XR din App Store folosind linkul de mai jos. Pentru a te conecta la aplicația desktop AdvantageScope, scanează codul QR cu aplicația de cameră iOS sau atinge butonul „Scan” din aplicația AdvantageScope XR.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_ro.svg" alt="App Store" />](https://apps.apple.com/ro/app/advantagescope-xr/id6739718081?l=ro)
 
 :::note
 Chiar și atunci când rulează fără conexiune la internet, dispozitivele gazdă și client **trebuie să fie conectate la aceeași rețea** (cum ar fi rețeaua unui robot, o rețea Wi-Fi dedicată sau prin partajare internet USB).

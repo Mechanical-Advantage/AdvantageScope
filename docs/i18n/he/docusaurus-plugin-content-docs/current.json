@@ -3,6 +3,14 @@
     "message": "הבא",
     "description": "The label for version current"
   },
+  "sidebar.sidebar.category.Tutorials": {
+    "message": "מדריכים",
+    "description": "The label for category 'Tutorials' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tutorials.link.generated-index.description": {
+    "message": "מדריכים אלה מציגים את היסודות של השימוש ב-AdvantageScope.",
+    "description": "The generated-index page description for category 'Tutorials' in sidebar 'sidebar'"
+  },
   "sidebar.sidebar.category.Overview": {
     "message": "סקירה כללית",
     "description": "The label for category 'Overview' in sidebar 'sidebar'"

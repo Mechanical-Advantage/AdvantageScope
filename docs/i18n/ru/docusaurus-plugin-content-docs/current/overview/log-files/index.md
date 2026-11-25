@@ -2,7 +2,7 @@
 
 ## Поддерживаемые форматы {#supported-formats}
 
-- **WPILOG (.wpilog)** - Создаются встроенным [логгером данных](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) WPILib и AdvantageKit. [URCL](/more-features/urcl) можно использовать для захвата сигналов от контроллеров двигателей REV в файл WPILOG.
+- **WPILOG (.wpilog)** - Создаются встроенным [логгером данных](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) WPILib, AdvantageKit и FIRST Driver Station. [Универсальное логирование](/more-features/universal-logging) можно использовать для захвата внешних логов (например, логов производителей) в файл WPILOG.
 - **Hoot (.hoot)** - Создаются [сигнальным логированием](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) Phoenix 6 от CTRE.
 - **REVLOG (.revlog)** - Создаются [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) от REV Robotics.
 - **Road Runner (.log)** - Создаются библиотекой [Road Runner](https://github.com/acmerobotics/road-runner) для FTC.
@@ -31,6 +31,12 @@ _Выше показан интерфейс на английском языке
 После открытия файла лога в визуализацию можно легко добавить дополнительные логи. Временные метки будут автоматически выровнены для синхронизации с уже открытыми данными.
 
 В строке меню выберите `Файл` > `Добавить логи...`, затем выберите один или несколько файлов логов для добавления в текущую визуализацию. Поля из каждого лога будут записаны в таблицы с именами `Log0`, `Log1` и т. д.
+
+## Макет Driver Station {#driver-station-layout}
+
+AdvantageScope включает встроенный макет, предназначенный для просмотра логов и данных в реальном времени от FIRST Driver Station, с предварительно настроенными вкладками для вывода консоли, метрик связи, напряжения батареи, загрузки ЦП и ввода с джойстиков.
+
+При открытии файла WPILOG, созданного FIRST Driver Station на компьютере, AdvantageScope предложит открыть лог в отдельном окне с использованием макета Driver Station. Любое окно также можно переключить на этот макет вручную, выбрав `Файл` > `Сбросить к макету DS`. В [AdvantageScope Lite](/more-features/advantagescope-lite) для FIRST Driver Station этот макет используется по умолчанию (его можно восстановить, выбрав `Вкладки` > `Сбросить к макету по умолчанию`).
 
 ## Загрузка с робота {#downloading-from-the-robot}
 

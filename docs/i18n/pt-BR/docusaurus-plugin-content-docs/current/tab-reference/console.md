@@ -7,9 +7,9 @@ sidebar_position: 5
 A guia Console serve para acompanhar um único campo de texto com as mensagens do console do robô. Estes são os campos mais comuns para arrastar para cá:
 
 - **DS:/Dscomm/Console** - Gravado pela Driver Station da FIRST.
-- **messages** - Gravado pelo sistema de log integrado da WPILib quando você chama [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>).
-- **/RealOutputs/Console** - Gravado automaticamente pelo AdvantageKit durante a execução no robô (basta usar `System.out.println` normalmente).
-- **/ReplayOutputs/Console** - Gravado automaticamente pelo AdvantageKit durante a reprodução (replay) de um log (basta usar `System.out.println` normalmente).
+- **messages** - Gravado automaticamente pelo `DataLogManager` da WPILib.
+- **/RealOutputs/Console** - Gravado automaticamente pelo AdvantageKit durante a execução no robô.
+- **/ReplayOutputs/Console** - Gravado automaticamente pelo AdvantageKit durante a reprodução (replay) de um log.
 
 Para começar, arraste o campo desejado para a área principal. Cada linha da lista representa uma atualização daquele campo: em logs da WPILib, aparece uma linha para cada texto salvo; em logs do AdvantageKit, aparece uma linha para cada ciclo de loop.
 

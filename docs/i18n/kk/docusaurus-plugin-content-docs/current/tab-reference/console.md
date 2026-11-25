@@ -7,9 +7,9 @@ sidebar_position: 5
 Консоль көрінісі консоль деректері бар бір жолдық өрісті қарауға арналған. Төменде ұсынылатын өрістердің бірнешеуі келтірілген.
 
 - **DS:/Dscomm/Console** — FIRST Driver Station бағдарламасы сақтайды.
-- **messages** — [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>) әдісін шақыру негізінде WPILib кірістірілген журналдау жүйесі сақтайды.
-- **/RealOutputs/Console** — Робот жұмыс істеп тұрғанда AdvantageKit автоматты түрде сақтайды (әдеттегідей `System.out.println` пайдаланыңыз).
-- **/ReplayOutputs/Console** — Журналды қайталау кезінде AdvantageKit автоматты түрде сақтайды (әдеттегідей `System.out.println` пайдаланыңыз).
+- **messages** — WPILib `DataLogManager` арқылы автоматты түрде сақталады.
+- **/RealOutputs/Console** — Робот жұмыс істеп тұрғанда AdvantageKit автоматты түрде сақтайды.
+- **/ReplayOutputs/Console** — Журналды қайталау кезінде AdvantageKit автоматты түрде сақтайды.
 
 Жұмысты бастау үшін қажетті өрісті негізгі көрініске сүйреп апарыңыз. Әрбір жол өрістің жаңартылуын білдіреді. WPILib журналдарында сақталған әрбір жол үшін жаңа жол жасалады. AdvantageKit журналдарында әрбір цикл үшін жаңа жол жасалады.
 

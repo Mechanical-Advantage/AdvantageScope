@@ -16,10 +16,6 @@ Descărcarea AdvantageScope direct de la Echipa 6328 oferă:
 - Alerte în aplicație când este disponibilă o versiune nouă pentru descărcare.
 - O colecție integrată de modele recente de roboți ai Echipei 6328 pentru utilizare pe fila 👀 [Teren 3D](/tab-reference/3d-field).
 
-:::note
-Înainte de a rula versiuni AppImage pe Ubuntu 23.10 sau mai nou, trebuie să descarci profilul AppArmor de pe pagina de lansări și să îl copiezi în `/etc/apparmor.d`.
-:::
-
 :::info
 Fiecare versiune majoră a AdvantageScope este lansată în ianuarie, înainte de lansarea sezonului FRC, cu un număr de versiune corespunzător anului (de ex. v26.0.0 a fost lansată în ianuarie 2026). Versiunile beta și alpha ale AdvantageScope pot fi disponibile în lunile premergătoare fiecărei lansări, pentru echipele care vor să experimenteze funcționalități noi și să ofere feedback. **Echipele care folosesc aceste versiuni de pre-lansare ar trebui să se aștepte la probleme și erori care nu sunt prezente în versiunile stabile.**
 :::
@@ -28,7 +24,7 @@ Fiecare versiune majoră a AdvantageScope este lansată în ianuarie, înainte d
 
 ### Instalare: [Documentația WPILib](https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html) {#wpilib-installation}
 
-Instalatorul WPILib include o versiune recentă a AdvantageScope, dar poate fi în urma celei mai noi versiuni disponibile pentru descărcare directă. Documentația pentru lansarea AdvantageScope din versiunea WPILib a VSCode poate fi găsită [aici](https://docs.wpilib.org/en/stable/docs/software/dashboards/advantagescope.html).
+Instalatorul WPILib include o versiune recentă a AdvantageScope, dar poate fi în urma celei mai noi versiuni disponibile pentru descărcare directă. Documentația pentru lansarea AdvantageScope din versiunea WPILib a VS Code poate fi găsită [aici](https://docs.wpilib.org/en/stable/docs/software/dashboards/advantagescope.html).
 
 ## Distribuții neoficiale {#unofficial-distributions}
 

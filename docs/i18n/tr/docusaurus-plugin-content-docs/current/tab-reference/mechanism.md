@@ -32,10 +32,10 @@ Başlamak için bir `Mechanism2d` nesnesini kontrol paneline sürükleyin. Bir m
 
 ## Veri yayınlama {#publishing-data}
 
-<Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+Mekanizma verilerini yayınlamak için periyodik olarak bir `Mechanism2d` nesnesi loglayın (aşağıda gösterildiği gibi). Bu çağrının yalnızca `Mechanism2d` nesnesinin o anki durumunu kaydettiğini unutmayın; bu yüzden nesne güncellendikten sonra her döngü periyodunda çağrılmalıdır.
 
-WPILib kullanarak mekanizma verilerini yayınlamak için `Telemetry` aracılığıyla periyodik olarak bir `Mechanism2d` nesnesi loglayın (aşağıda gösterildiği gibi). Bu çağrının yalnızca `Mechanism2d` nesnesinin o anki durumunu kaydettiğini unutmayın; bu yüzden nesne güncellendikten sonra her döngü periyodunda çağrılmalıdır.
+<Tabs groupId="library">
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
@@ -46,9 +46,31 @@ periodic() {
 ```
 
 </TabItem>
-<TabItem value="advantagekit" label="AdvantageKit">
+<TabItem value="wpilib-cpp" label="C++">
 
-AdvantageKit kullanarak mekanizma verilerini yayınlamak için bir `Mechanism2d` nesnesini periyodik olarak bir çıktı alanı olarak kaydedin (aşağıda gösterildiği gibi). Bu çağrının yalnızca `Mechanism2d` nesnesinin o anki durumunu kaydettiğini unutmayın; bu yüzden nesne güncellendikten sonra her döngü periyodunda çağrılmalıdır.
+```cpp
+wpi::Mechanism2d mechanism{3, 3};
+
+void Periodic() {
+  wpi::telemetry::Log("MyMechanism", mechanism);
+}
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+import wpilib
+import telemetry
+
+mechanism = wpilib.Mechanism2d(3, 3)
+
+def periodic():
+    telemetry.log("MyMechanism", mechanism)
+```
+
+</TabItem>
+<TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
 LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);

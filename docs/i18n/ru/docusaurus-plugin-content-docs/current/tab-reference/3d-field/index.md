@@ -48,10 +48,10 @@ AdvantageScope поддерживает несколько размеров Apri
 
 Данные геометрии должны публиковаться в виде закодированных в байты структур (struct) или protobuf. Поддерживаются различные 2D- и 3D-типы геометрии, включая `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` и другие.
 
-Многие библиотеки поддерживают формат struct, включая WPILib и AdvantageKit. Пример кода ниже показывает, как логировать данные 3D-позы на Java.
+Многие библиотеки поддерживают формат struct, включая WPILib и AdvantageKit. Пример кода ниже показывает, как логировать данные 3D-позы.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Pose3d poseA = new Pose3d();
@@ -59,6 +59,31 @@ Pose3d poseB = new Pose3d();
 
 Telemetry.log("MyPose", poseA);
 Telemetry.log("MyPoseArray", new Pose3d[] {poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::math::Pose3d poseA;
+wpi::math::Pose3d poseB;
+
+wpi::telemetry::Log("MyPose", poseA);
+wpi::telemetry::Log("MyPoseArray", std::vector{poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import Pose3d
+import telemetry
+
+pose_a = Pose3d()
+pose_b = Pose3d()
+
+telemetry.log("MyPose", pose_a)
+telemetry.log("MyPoseArray", [pose_a, pose_b], element_type=Pose3d)
 ```
 
 </TabItem>

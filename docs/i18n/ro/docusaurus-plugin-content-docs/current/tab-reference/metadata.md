@@ -13,10 +13,10 @@ Fila metadate afișează valorile publicate în tabelul ascuns „/Metadata” s
 
 _Mai sus este prezentată interfața în limba engleză._
 
-Codul de exemplu de mai jos arată cum poți înregistra metadatele în Java.
+Codul de exemplu de mai jos arată cum poți înregistra metadatele.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 În WPILib, înregistrează valorile în tabelul „/Metadata” ca șiruri de caractere folosind clasa `Telemetry`.
 
@@ -24,6 +24,30 @@ Codul de exemplu de mai jos arată cum poți înregistra metadatele în Java.
 TelemetryTable metadata = Telemetry.getTable("Metadata");
 metadata.log("RobotName", "Darwin");
 metadata.log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+În WPILib, înregistrează valorile în tabelul „/Metadata” ca șiruri de caractere folosind clasa `Telemetry`.
+
+```cpp
+wpi::telemetry::TelemetryTable& metadata = wpi::telemetry::GetTable("Metadata");
+metadata.Log("RobotName", "Darwin");
+metadata.Log("Platform", "macOS");
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+În WPILib, înregistrează valorile în tabelul „/Metadata” ca șiruri de caractere folosind modulul `telemetry`.
+
+```python
+import telemetry
+
+metadata = telemetry.get_table("Metadata")
+metadata.log("RobotName", "Darwin")
+metadata.log("Platform", "macOS")
 ```
 
 </TabItem>

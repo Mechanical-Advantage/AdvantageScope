@@ -32,10 +32,10 @@ _上图所示为英文界面。_
 
 ## 发布数据 {#publishing-data}
 
-<Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+要发布机构数据，请周期性地记录 `Mechanism2d` 对象（如下所示）。请注意，该调用只会记录 `Mechanism2d` 当前的状态，因此在每次更新对象后，都必须在每个循环周期中重新调用一次。
 
-要使用 WPILib 发布机构数据，请通过 `Telemetry` 周期性地记录 `Mechanism2d` 对象（如下所示）。请注意，该调用只会记录 `Mechanism2d` 当前的状态，因此在每次更新对象后，都必须在每个循环周期中重新调用一次。
+<Tabs groupId="library">
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
@@ -46,9 +46,31 @@ periodic() {
 ```
 
 </TabItem>
-<TabItem value="advantagekit" label="AdvantageKit">
+<TabItem value="wpilib-cpp" label="C++">
 
-要使用 AdvantageKit 发布机构数据，请将 `Mechanism2d` 周期性地记录为输出字段（如下所示）。请注意，该调用只会记录 `Mechanism2d` 当前的状态，因此在每次更新对象后，都必须在每个循环周期中重新调用一次。
+```cpp
+wpi::Mechanism2d mechanism{3, 3};
+
+void Periodic() {
+  wpi::telemetry::Log("MyMechanism", mechanism);
+}
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+import wpilib
+import telemetry
+
+mechanism = wpilib.Mechanism2d(3, 3)
+
+def periodic():
+    telemetry.log("MyMechanism", mechanism)
+```
+
+</TabItem>
+<TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
 LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);

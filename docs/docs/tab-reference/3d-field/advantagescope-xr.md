@@ -6,7 +6,7 @@ AdvantageScope XR brings the 👀 [3D Field](/tab-reference/3d-field) view to li
 
 ## Requirements {#requirements}
 
-- **Host:** The AdvantageScope desktop application on Windows, macOS, or Linux (v4.1.0 or later). Any firewalls on the device should be [disabled](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
+- **Host:** The AdvantageScope desktop application on Windows, macOS, or Linux (v4.1.0 or later). Any firewalls on the device should be [disabled](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) or configured to allow incoming connections on TCP port 56328.
 - **Client:** An iPhone or iPad running iOS/iPadOS 16 or later. No app installation is required.
 - **Network:** Both devices must be connected to the same network (Wi-Fi, USB tethering, etc). Subject to the requirement below, this network does not need to be connected to the internet.
 - **Internet:** If AdvantageScope XR has not been used recently, the mobile device must have an internet connection (e.g. cellular data). To eliminate this requirement, check the [offline usage](#offline-usage) section below.
@@ -70,7 +70,7 @@ The XR controls window presents several options that control how the model is di
 
 AdvantageScope XR does not require an internet connection. To ensure that the app is available offline, download AdvantageScope XR from the App Store using the link below. To connect to the AdvantageScope desktop application, scan the QR code using the iOS camera app or tap the "Scan" button in the AdvantageScope XR app.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_en-US.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
 
 :::note
 Even when running without an internet connection, the host and client devices **must be connected to the same network** (such as a robot, custom Wi-Fi network, or via USB tethering).

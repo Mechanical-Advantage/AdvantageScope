@@ -39,7 +39,7 @@ This folder should contain a file named "config.json" and one or more asset file
 
 ### Overview {#overview}
 
-A model must be included in the folder with the name "model.glb". CAD files must be converted to glTF; see [this page](gltf-convert) for details. The config file must be in the following format:
+A model must be included in the folder with the name "model.glb". CAD files must be converted to binary glTF (`.glb`); see [this page](gltf-convert) for details. The config file must be in the following format:
 
 ```json
 {
@@ -79,7 +79,7 @@ AdvantageScope simplifies model geometry automatically to improve performance, w
 Setting up articulated components can be complex and time-consuming. Consider utilizing AdvantageScope's 3D [`Mechanism2d` support](/tab-reference/3d-field#2d-mechanisms), which offers a more streamlined approach to **visualize mechanisms on the 3D field**.
 :::
 
-Robot models can contain articulated components for visualizing mechanism data (see [here](/tab-reference/3d-field) for details). The base glTF model should include no components, then each component should be exported as a separate glTF model. Components models follow the naming convention "model_INDEX.glb", so the first articulated component would be "model_0.glb"
+Robot models can contain articulated components for visualizing mechanism data (see [here](/tab-reference/3d-field) for details). The base glTF (`.glb`) model should include no components, then each component should be exported as a separate glTF (`.glb`) model. Components models follow the naming convention "model_INDEX.glb", so the first articulated component would be "model_0.glb"
 
 Component configuration is provided in the robot's config file. An array of components should be provided under the "components" key. When no component poses are provided by the user in AdvantageScope, the component models will be positioned using the default robot rotations and position (see above). When component poses are provided by the user, the "zeroed" rotations and position are instead applied to bring each component to the robot origin. The user's poses are then applied to move each component to the correct location on the robot.
 
@@ -225,7 +225,7 @@ An image must be included in the folder with the name "image.png". It should be 
 
 ## 3D Field Models {#3d-field-models}
 
-A model must be included in the folder with the name "model.glb". After all rotations are applied, the field should be oriented with the red alliance on the left. CAD files must be converted to glTF; see [this page](gltf-convert) for details. Game piece models follow the naming convention "model_INDEX.glb" based on the order that they appear in the "gamePieces" array. AprilTags declared here are always positioned using a [center/red](/more-features/coordinate-systems#center-red) coordinate system, regardless of any other configuration options.
+A model must be included in the folder with the name "model.glb". After all rotations are applied, the field should be oriented with the red alliance on the left. CAD files must be converted to binary glTF (`.glb`); see [this page](gltf-convert) for details. Game piece models follow the naming convention "model_INDEX.glb" based on the order that they appear in the "gamePieces" array. AprilTags declared here are always positioned using a [center/red](/more-features/coordinate-systems#center-red) coordinate system, regardless of any other configuration options.
 
 The config file must be in the following format:
 

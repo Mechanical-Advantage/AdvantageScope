@@ -30,5 +30,5 @@ Selectează tipurile de joystick-uri din tabelul din partea de jos a filei. ID-u
 AdvantageScope include un set de joystick-uri comune, inclusiv un „Joystick generic” care afișează toate butoanele, axele și POV-urile într-un format de grilă (vizibil mai sus). Pentru a adăuga un joystick personalizat, consultă [Resurse personalizate](/more-features/custom-assets).
 
 :::warning
-**Datele de la joystick-uri NU sunt disponibile printr-o conexiune NetworkTables cu WPILib standard.** Sunt suportate fișierele de log WPILib (cu [logarea datelor de joystick activată](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), logurile AdvantageKit și streamingul AdvantageKit.
+**Datele de la joystick-uri NU sunt disponibile printr-o conexiune NetworkTables cu WPILib standard.** Sunt suportate fișierele de log WPILib (cu [logarea datelor de joystick activată](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), logurile AdvantageKit, streamingul AdvantageKit și datele FIRST Driver Station.
 :::

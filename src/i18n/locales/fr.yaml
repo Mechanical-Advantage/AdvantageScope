@@ -111,7 +111,7 @@ preferences:
   liveModeSelectTitle: "Sélectionner le mode d'abonnement aux données en direct"
   liveModeLowBandwidth: "Faible bande passante"
   liveModeLogging: "Journalisation"
-  discardLive: "Conservation des données en direct"
+  discardLive: "Suppression des données en direct"
   discardLiveSelectTitle: "Sélectionner la durée de conservation des données en direct"
   discardLive1Min: "Après 1 minute"
   discardLive5Min: "Après 5 minutes"

@@ -36,14 +36,18 @@ Başlamak için bir alanı “Kaynaklar” bölümüne sürükleyin. X düğmesi
 - **Robot hızları:** Diyagramın merkezinde görüntülenen doğrusal ve açısal hızlar.
 - **Rotasyon:** Diyagramı döndürmek için kullanılan açısal konum.
 
+:::tip
+Swerve modül durumları 🗺️ [2B saha](/tab-reference/2d-field) ve 👀 [3B saha](/tab-reference/3d-field) sekmelerinde de görselleştirilebilir.
+:::
+
 ## Veri formatı {#data-format}
 
 Veriler, `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d` veya `Rotation3d` türleri kullanılarak bayt kodlu (byte-encoded) struct veya protobuf formatında yayınlanmalıdır.
 
-WPILib ve AdvantageKit dahil birçok kütüphane struct formatını destekler. Aşağıdaki örnek kod, Java'da swerve modül durumlarının nasıl loglanacağını gösterir.
+WPILib ve AdvantageKit dahil birçok kütüphane struct formatını destekler. Aşağıdaki örnek kod, swerve modül durumlarının nasıl loglanacağını gösterir.
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
@@ -54,6 +58,37 @@ SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
 };
 
 Telemetry.log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+std::array<wpi::math::SwerveModuleVelocity, 4> states{
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{}
+};
+
+wpi::telemetry::Log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import SwerveModuleVelocity
+import telemetry
+
+states = [
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+]
+
+telemetry.log("MyStates", states, element_type=SwerveModuleVelocity)
 ```
 
 </TabItem>

@@ -6,7 +6,7 @@ AdvantageScope XR 將 👀 [3D 場地](/tab-reference/3d-field)帶入擴增實�
 
 ## 系統需求 {#requirements}
 
-- **主機：** Windows、macOS 或 Linux 上的 AdvantageScope 桌面應用程式（v4.1.0 或更高版本）。請先[停用](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall)裝置上的防火牆。
+- **主機：** Windows、macOS 或 Linux 上的 AdvantageScope 桌面應用程式（v4.1.0 或更高版本）。請先[停用](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall)裝置上的防火牆，或將其設定為允許 TCP 連接埠 56328 的連入連線。
 - **用戶端：** 搭載 iOS / iPadOS 16 或更高版本的 iPhone 或 iPad，無需安裝應用程式。
 - **網路：** 兩台裝置必須連線到同一個網路（Wi-Fi、USB 網路共用等）。除下列特定情況外，此網路不需要連接網際網路。
 - **網際網路：** 若近期未曾使用過 AdvantageScope XR，行動裝置需具備網際網路連線（例如行動數據）。若想省去這項需求，請參考下方的[離線使用](#offline-usage)說明。
@@ -74,7 +74,7 @@ XR 控制視窗提供數個選項，可調整模型在擴增實境中的顯示�
 
 AdvantageScope XR 不需要網際網路連線。為確保離線時也能使用，請透過下方連結從 App Store 下載 AdvantageScope XR。若要連線至 AdvantageScope 桌面應用程式，請使用 iOS 相機應用程式掃描 QR Code，或點擊 AdvantageScope XR 應用程式中的「掃描」按鈕。
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_zh-TW.svg" alt="App Store" />](https://apps.apple.com/tw/app/advantagescope-xr/id6739718081)
 
 :::note
 即使在沒有網際網路連線的情況下執行，主機與用戶端裝置**仍必須連線到同一個網路**（例如機器人網路、自訂 Wi-Fi 網路，或透過 USB 網路共用）。

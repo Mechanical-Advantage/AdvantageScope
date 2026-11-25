@@ -3,6 +3,14 @@
     "message": "Sonraki",
     "description": "The label for version current"
   },
+  "sidebar.sidebar.category.Tutorials": {
+    "message": "Eğitimler",
+    "description": "The label for category 'Tutorials' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tutorials.link.generated-index.description": {
+    "message": "Bu öğreticiler, AdvantageScope kullanımının temellerini adım adım anlatır.",
+    "description": "The generated-index page description for category 'Tutorials' in sidebar 'sidebar'"
+  },
   "sidebar.sidebar.category.Overview": {
     "message": "Genel bakış",
     "description": "The label for category 'Overview' in sidebar 'sidebar'"

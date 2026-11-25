@@ -24,6 +24,8 @@ AdvantageScope supports multiple languages to provide a localized experience for
 - Simplified Chinese
 - Traditional Chinese
 
+Thank you to FRC Team 6907 The G.O.A.T. for their help reviewing and improving AdvantageScope translations!
+
 ## Configuration {#configuration}
 
 To change the display language in AdvantageScope, open the preferences window by clicking `App` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS). Under the "Language" setting, you can choose from the list of supported languages or select "System Default" to automatically match your operating system's language.
@@ -39,10 +41,26 @@ Here is an example of logging a string with a Simplified Chinese key:
 <!-- Note for translators: This example should be updated based on the target language for translation. The key and value should use non-ASCII characters and be written in the target language. Do not include this comment in the translated page. -->
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Telemetry.log("驱动/右电机速度", "快");
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::telemetry::Log("驱动/右电机速度", "快");
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+import telemetry
+
+telemetry.log("驱动/右电机速度", "快")
 ```
 
 </TabItem>
@@ -63,4 +81,4 @@ See the page on [unit support](/tab-reference/line-graph/units) for more details
 
 AdvantageScope's localization is created with a combination of artificial intelligence and community collaboration. Because AdvantageScope is a rapidly evolving project, utilizing AI is essential to keeping the translated app and documentation in sync across every language. This means that new features and updates are always available simultaneously regardless of the language you select.
 
-Our process is designed to match the specific vocabulary, loanwords, and transliterations that local teams are familiar with. However, AI translations often include unnatural phrasing or other inaccuracies. We welcome your feedback; you can provide feedback on translations by clicking the purple icon in the app (when configured for any language other than English).
+Our process is designed to match the specific vocabulary, loanwords, and transliterations that local teams are familiar with. However, **AI translations often include unnatural phrasing or other inaccuracies**. We welcome your feedback; you can provide feedback on translations by clicking the purple icon in the app or the feedback link in the documentation title bar (when configured for any language other than English).

@@ -6,7 +6,7 @@ AdvantageScope XR, 👀 [3B saha](/tab-reference/3d-field) görünümünü artı
 
 ## Gereksinimler {#requirements}
 
-- **Ana Bilgisayar:** Windows, macOS veya Linux üzerinde AdvantageScope masaüstü uygulaması (v4.1.0 veya üzeri). Cihazdaki güvenlik duvarları [devre dışı bırakılmalıdır](https://docs.wpilib.org/tr/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
+- **Ana Bilgisayar:** Windows, macOS veya Linux üzerinde AdvantageScope masaüstü uygulaması (v4.1.0 veya üzeri). Cihazdaki güvenlik duvarları [devre dışı bırakılmalı](https://docs.wpilib.org/tr/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) veya 56328 numaralı TCP portundan gelen bağlantılara izin verecek şekilde yapılandırılmalıdır.
 - **İstemci:** iOS/iPadOS 16 veya üzerini çalıştıran bir iPhone ya da iPad. Herhangi bir uygulama yüklemeniz gerekmez.
 - **Ağ:** Her iki cihaz da aynı ağa bağlı olmalıdır (Wi-Fi, USB internet paylaşımı vb.). Aşağıdaki madde dışında bu ağın internete bağlı olması gerekmez.
 - **İnternet:** AdvantageScope XR yakın zamanda kullanılmadıysa mobil cihazda internet bağlantısı (örneğin hücresel veri) bulunmalıdır. Bu gereksinimi ortadan kaldırmak için aşağıdaki [çevrimdışı kullanım](#offline-usage) bölümüne göz atın.
@@ -74,7 +74,7 @@ XR kontrolleri penceresi, modelin artırılmış gerçeklikte nasıl görünece�
 
 AdvantageScope XR internet bağlantısı olmadan da çalışır. Uygulamanın çevrimdışı kullanıma hazır olması için aşağıdaki bağlantıyı kullanarak App Store'dan AdvantageScope XR'ı indirin. Masaüstü uygulamasına bağlanmak için iOS kamera uygulamasıyla QR kodunu okutabilir veya AdvantageScope XR uygulamasındaki “Tara” düğmesine dokunabilirsiniz.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_tr.svg" alt="App Store" />](https://apps.apple.com/tr/app/advantagescope-xr/id6739718081?l=tr)
 
 :::note
 İnternet bağlantısı olmadan çalışırken bile ana bilgisayar ve istemci cihaz **aynı ağa bağlı olmalıdır** (örneğin bir robot ağı, özel Wi-Fi ağı veya USB internet paylaşımı).

@@ -823,7 +823,7 @@ menu:
     integrate: "Integrar"
 
   field2d:
-    unlocked: "Desbloqueado"
+    unlocked: "Destravado"
     lockedRobot: "Travado no robô"
     lockedRobotRotation: "Travado no robô e na rotação"
 
@@ -1122,7 +1122,7 @@ units:
     kilowatts: "Quilowatts"
     horsepower: "Cavalos-vapor"
     joules: "Joules"
-    wattHours: "Watt-horas"
+    wattHours: "Watts-hora"
     calories: "Calorias"
     potatoes: "Batatas"
     ratio: "Proporção"

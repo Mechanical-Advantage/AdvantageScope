@@ -48,18 +48,42 @@ AdvantageScope 支持用于 FTC 场地的多种尺寸 AprilTag。尺寸按 **Apr
 
 几何数据需要以字节编码的 Struct 或 protobuf 格式发布，支持多种 2D 和 3D 几何类型，包括 `Pose2d`、`Pose3d`、`Translation2d`、`Translation3d` 等。
 
-WPILib、AdvantageKit 等众多库均支持 Struct 格式。以下示例代码演示了如何在 Java 中记录 3D 位姿数据。
+WPILib、AdvantageKit 等众多库均支持 Struct 格式。以下示例代码演示了如何记录 3D 位姿数据。
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Pose3d poseA = new Pose3d();
 Pose3d poseB = new Pose3d();
 
 Telemetry.log("MyPose", poseA);
-Telemetry.log("MyPoseArray", poseA, poseB);
 Telemetry.log("MyPoseArray", new Pose3d[] {poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+wpi::math::Pose3d poseA;
+wpi::math::Pose3d poseB;
+
+wpi::telemetry::Log("MyPose", poseA);
+wpi::telemetry::Log("MyPoseArray", std::vector{poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import Pose3d
+import telemetry
+
+pose_a = Pose3d()
+pose_b = Pose3d()
+
+telemetry.log("MyPose", pose_a)
+telemetry.log("MyPoseArray", [pose_a, pose_b], element_type=Pose3d)
 ```
 
 </TabItem>

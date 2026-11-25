@@ -36,14 +36,18 @@ _ऊपर अंग्रेजी इंटरफ़ेस दिखाया 
 - **रोबोट वेलोसिटीज़ (Robot Velocities):** डायग्राम के बीच में दिखने वाली रैखिक (linear) और कोणीय (angular) गति।
 - **रोटेशन (Rotation):** डायग्राम को घुमाने के लिए उपयोग की जाने वाली कोणीय स्थिति।
 
+:::tip
+स्वर्व मॉड्यूल स्टेट्स को 🗺️ [2D फील्ड](/tab-reference/2d-field) और 👀 [3D फील्ड](/tab-reference/3d-field) टैब्स पर भी विज़ुअलाइज़ किया जा सकता है।
+:::
+
 ## डेटा फॉर्मेट {#data-format}
 
 डेटा को `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d`, या `Rotation3d` प्रकारों का उपयोग करके बाइट-एन्कोडेड struct या protobuf के रूप में पब्लिश किया जाना चाहिए।
 
-WPILib और AdvantageKit सहित कई लाइब्रेरी struct फॉर्मेट सपोर्ट करती हैं। नीचे दिया गया उदाहरण कोड दिखाता है कि Java में स्वर्व मॉड्यूल की स्थिति कैसे लॉग की जाती है।
+WPILib और AdvantageKit सहित कई लाइब्रेरी struct फॉर्मेट सपोर्ट करती हैं। नीचे दिया गया उदाहरण कोड दिखाता है कि स्वर्व मॉड्यूल की स्थिति कैसे लॉग की जाती है।
 
 <Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
@@ -54,6 +58,37 @@ SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
 };
 
 Telemetry.log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-cpp" label="C++">
+
+```cpp
+std::array<wpi::math::SwerveModuleVelocity, 4> states{
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{},
+  wpi::math::SwerveModuleVelocity{}
+};
+
+wpi::telemetry::Log("MyStates", states);
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+from wpimath import SwerveModuleVelocity
+import telemetry
+
+states = [
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+    SwerveModuleVelocity(),
+]
+
+telemetry.log("MyStates", states, element_type=SwerveModuleVelocity)
 ```
 
 </TabItem>

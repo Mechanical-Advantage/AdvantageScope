@@ -6,7 +6,7 @@ AdvantageScope XR оживляет вид 👀 [3D-поле](/tab-reference/3d-f
 
 ## Требования {#requirements}
 
-- **Хост:** Десктопное приложение AdvantageScope на Windows, macOS или Linux (v4.1.0 или более поздняя). Любые брандмауэры на устройстве должны быть [отключены](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
+- **Хост:** Десктопное приложение AdvantageScope на Windows, macOS или Linux (v4.1.0 или более поздняя). Любые брандмауэры на устройстве должны быть [отключены](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) или настроены так, чтобы разрешать входящие подключения по TCP-порту 56328.
 - **Клиент:** iPhone или iPad под управлением iOS/iPadOS 16 или более поздней версии. Установка приложения не требуется.
 - **Сеть:** Оба устройства должны быть подключены к одной сети (Wi-Fi, USB-модем и т. д.). С учётом требования ниже эта сеть может не иметь подключения к интернету.
 - **Интернет:** Если AdvantageScope XR не использовался в последнее время, мобильное устройство должно иметь подключение к интернету (например, сотовые данные). Чтобы устранить это требование, ознакомьтесь с разделом [автономное использование](#offline-usage) ниже.
@@ -74,7 +74,7 @@ AdvantageScope XR — ресурсоёмкое приложение, и его �
 
 AdvantageScope XR не требует подключения к интернету. Чтобы убедиться, что приложение доступно в автономном режиме, скачайте AdvantageScope XR из App Store по ссылке ниже. Чтобы подключиться к десктопному приложению AdvantageScope, отсканируйте QR-код с помощью приложения камеры iOS или нажмите кнопку «Сканировать» в приложении AdvantageScope XR.
 
-[<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
+[<img src="/img/app-store_ru.svg" alt="App Store" />](https://apps.apple.com/kz/app/advantagescope-xr/id6739718081?l=ru)
 
 :::note
 Даже при работе без подключения к интернету устройства хоста и клиента **должны быть подключены к одной сети** (такой как робот, пользовательская сеть Wi-Fi или через USB-модем).

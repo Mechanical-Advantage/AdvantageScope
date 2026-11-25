@@ -16,10 +16,6 @@ Al descargar AdvantageScope directamente del Equipo 6328 obtienes:
 - Avisos dentro de la aplicación cuando haya una nueva versión lista para descargar.
 - Una colección integrada de modelos recientes de los robots de 6328 para usar en la pestaña 👀 [Campo 3D](/tab-reference/3d-field).
 
-:::note
-Antes de ejecutar los paquetes AppImage en Ubuntu 23.10 o posterior, descarga el perfil de AppArmor desde la página de versiones y cópialo a /etc/apparmor.d.
-:::
-
 :::info
 Cada versión principal de AdvantageScope sale en enero, antes del kickoff de FRC, con un número de versión correspondiente al año (por ejemplo, la v26.0.0 se lanzó en enero de 2026). En los meses previos a cada lanzamiento suelen estar disponibles versiones alfa y beta para los equipos que quieran probar funciones nuevas y enviar comentarios. **Si usas estas versiones preliminares, ten en cuenta que probablemente encontrarás problemas y errores que no aparecen en las versiones estables.**
 :::
@@ -28,7 +24,7 @@ Cada versión principal de AdvantageScope sale en enero, antes del kickoff de FR
 
 ### Instalación: [Documentación de WPILib](https://docs.wpilib.org/es/stable/docs/zero-to-robot/step-2/wpilib-setup.html) {#wpilib-installation}
 
-El instalador de WPILib incluye una versión reciente de AdvantageScope, aunque puede ir un poco por detrás de la última versión disponible para descarga directa. Puedes consultar [aquí](https://docs.wpilib.org/es/stable/docs/software/dashboards/advantagescope.html) cómo iniciar AdvantageScope desde la versión de VSCode de WPILib.
+El instalador de WPILib incluye una versión reciente de AdvantageScope, aunque puede ir un poco por detrás de la última versión disponible para descarga directa. Puedes consultar [aquí](https://docs.wpilib.org/es/stable/docs/software/dashboards/advantagescope.html) cómo iniciar AdvantageScope desde la versión de VS Code de WPILib.
 
 ## Distribuciones no oficiales {#unofficial-distributions}
 

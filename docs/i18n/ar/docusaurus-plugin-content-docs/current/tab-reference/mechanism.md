@@ -32,10 +32,10 @@ _تظهر في الصورة أعلاه الواجهة باللغة الإنجل�
 
 ## نشر البيانات {#publishing-data}
 
-<Tabs groupId="library">
-<TabItem value="wpilib" label="WPILib" default>
+لنشر بيانات الآليات، سجّل كائن `Mechanism2d` دوريًا (كما هو موضح أدناه). لاحظ أن هذا الاستدعاء يسجل الحالة الحالية لـ `Mechanism2d` فقط، لذا يجب استدعاؤه في كل دورة حلقة بعد تحديث الكائن.
 
-لنشر بيانات الآليات باستخدام WPILib، سجّل كائن `Mechanism2d` دوريًا باستخدام `Telemetry` (كما هو موضح أدناه). لاحظ أن هذا الاستدعاء يسجل الحالة الحالية لـ `Mechanism2d` فقط، لذا يجب استدعاؤه في كل دورة حلقة بعد تحديث الكائن.
+<Tabs groupId="library">
+<TabItem value="wpilib-java" label="Java" default>
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
@@ -46,9 +46,31 @@ periodic() {
 ```
 
 </TabItem>
-<TabItem value="advantagekit" label="AdvantageKit">
+<TabItem value="wpilib-cpp" label="C++">
 
-لنشر بيانات الآليات باستخدام AdvantageKit، سجّل كائن `Mechanism2d` دوريًا كحقل إخراج (كما هو موضح أدناه). لاحظ أن هذا الاستدعاء يسجل الحالة الحالية لـ `Mechanism2d` فقط، لذا يجب استدعاؤه في كل دورة حلقة بعد تحديث الكائن.
+```cpp
+wpi::Mechanism2d mechanism{3, 3};
+
+void Periodic() {
+  wpi::telemetry::Log("MyMechanism", mechanism);
+}
+```
+
+</TabItem>
+<TabItem value="wpilib-python" label="Python">
+
+```python
+import wpilib
+import telemetry
+
+mechanism = wpilib.Mechanism2d(3, 3)
+
+def periodic():
+    telemetry.log("MyMechanism", mechanism)
+```
+
+</TabItem>
+<TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
 LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);

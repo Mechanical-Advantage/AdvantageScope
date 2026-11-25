@@ -50,5 +50,13 @@
   "sidebar.sidebar.category.Legal": {
     "message": "法律声明",
     "description": "The label for category 'Legal' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tutorials": {
+    "message": "教程",
+    "description": "The label for category 'Tutorials' in sidebar 'sidebar'"
+  },
+  "sidebar.sidebar.category.Tutorials.link.generated-index.description": {
+    "message": "面向新用户的分步指南，带你掌握 AdvantageScope 的核心工作流程。",
+    "description": "The generated-index page description for category 'Tutorials' in sidebar 'sidebar'"
   }
 }
