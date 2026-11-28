@@ -131,7 +131,7 @@ export class VideoProcessor {
 
     // Initialize youtube-dl-exec
     if (app.isPackaged) {
-      const fullBinaryPath = path.join(
+      let fullBinaryPath = path.join(
         __dirname,
         "..",
         "..",
@@ -141,6 +141,11 @@ export class VideoProcessor {
         "bin",
         process.platform === "win32" ? "yt-dlp.exe" : process.platform === "darwin" ? "yt-dlp_macos" : "yt-dlp"
       );
+      
+      if (!fs.existsSync(fullBinaryPath)) {
+        fullBinaryPath = "yt-dlp"
+      }
+
       this.ytInst = youtubedl.create(fullBinaryPath);
     } else {
       this.ytInst = youtubedl;
