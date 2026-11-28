@@ -26,28 +26,45 @@ BUNDLED_ASSETS_PATH = os.path.join(ROOT, "bundledAssets")
 ALLOWED_LOG_SUFFIXES = [".wpilog", ".wpilogxz", ".rlog", ".log"]
 ENABLE_FILESYSTEM_ACCESS = IS_SYSTEMCORE or "--enable-file-access" in sys.argv
 WEBROOT = ""
+GZIP_COMPRESS_LEVEL = 6
+GZIP_MIN_SIZE = 1024
+UNCOMPRESSED_SUFFIXES = (".wpilogxz", ".png")
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
-    def _send_response_with_compression(self, status_code, content_type, source_data):
-        """Sends a response, compressing it with gzip if the client supports it."""
-        use_gzip = "gzip" in self.headers.get("Accept-Encoding", "")
+    def _send_response_with_compression(self, status_code, content_type, source_data, allow_gzip=True):
+        """Sends a response, compressing it with gzip if appropriate."""
+        use_gzip = (
+            allow_gzip
+            and len(source_data) >= GZIP_MIN_SIZE
+            and "gzip" in self.headers.get("Accept-Encoding", "")
+        )
 
         if use_gzip:
-            data = gzip.compress(source_data)
-            content_length = len(data)
+            data = gzip.compress(source_data, compresslevel=GZIP_COMPRESS_LEVEL)
         else:
             data = source_data
-            content_length = len(source_data)
 
         self.send_response(status_code)
         self.send_header("Content-type", content_type)
-        self.send_header("Content-Length", str(content_length))
+        self.send_header("Content-Length", str(len(data)))
         if use_gzip:
             self.send_header("Content-Encoding", "gzip")
         self.end_headers()
 
         self.wfile.write(data)
+
+    def _send_file_response(self, status_code, content_type, filepath):
+        """Reads and sends a file response."""
+        try:
+            with open(filepath, "rb") as f:
+                file_content = f.read()
+        except Exception as e:
+            self.send_error(500, f"Error serving file: {e}")
+            return
+
+        allow_gzip = not filepath.lower().endswith(UNCOMPRESSED_SUFFIXES)
+        self._send_response_with_compression(status_code, content_type, file_content, allow_gzip=allow_gzip)
 
     def do_GET(self):
         request = urllib.parse.urlparse(self.path)
@@ -83,15 +100,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             bundled_asset_path = os.path.join(BUNDLED_ASSETS_PATH, asset_path)
             for path in [extra_asset_path, bundled_asset_path]:
                 if os.path.exists(path) and os.path.isfile(path):
-                    try:
-                        with open(path, 'rb') as f:
-                            file_content = f.read()
-                            mimetype, _ = mimetypes.guess_type(path)
-                            if not mimetype:
-                                mimetype = 'application/octet-stream'
-                            self._send_response_with_compression(200, mimetype, file_content)
-                    except Exception as e:
-                        self.send_error(500, f"Error serving file: {e}")
+                    mimetype, _ = mimetypes.guess_type(path)
+                    if not mimetype:
+                        mimetype = 'application/octet-stream'
+                    self._send_file_response(200, mimetype, path)
                     return
             self.send_error(404, f"File not found: {request.path}")
 
@@ -122,12 +134,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 if any(filename.endswith(suffix) for suffix in ALLOWED_LOG_SUFFIXES):
                     full_path = os.path.join(query["folder"][0], filename)
                     if os.path.exists(full_path):
-                        try:
-                            with open(full_path, 'rb') as f:
-                                file_content = f.read()
-                                self._send_response_with_compression(200, "application/octet-stream", file_content)
-                        except Exception as e:
-                            self.send_error(500, f"Error serving file: {e}")
+                        self._send_file_response(200, "application/octet-stream", full_path)
                         return
             self.send_error(404, f"File not found: {request.path}")
 
@@ -143,15 +150,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     return
 
             if os.path.exists(filepath) and os.path.isfile(filepath):
-                try:
-                    with open(filepath, "rb") as f:
-                        file_content = f.read()
-                        mimetype, _ = mimetypes.guess_type(filepath)
-                        if not mimetype:
-                            mimetype = "application/octet-stream"
-                        self._send_response_with_compression(200, mimetype, file_content)
-                except Exception as e:
-                    self.send_error(500, f"Error serving file: {e}")
+                mimetype, _ = mimetypes.guess_type(filepath)
+                if not mimetype:
+                    mimetype = "application/octet-stream"
+                self._send_file_response(200, mimetype, filepath)
             else:
                 self.send_error(404, f"File not found: {self.path}")
 
