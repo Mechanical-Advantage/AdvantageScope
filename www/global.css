@@ -15,6 +15,11 @@ html.dark {
   color-scheme: dark;
 }
 
+/* Match embedded SVG documents' default light color-scheme so browsers keep <object> transparent */
+object {
+  color-scheme: light;
+}
+
 body {
   font-family:
     ui-sans-serif,
@@ -25,7 +30,7 @@ body {
   user-select: none;
 }
 
-html.dark {
+:where(html.dark) {
   body {
     color: #eee;
   }
@@ -103,7 +108,7 @@ button:not(:disabled):active {
   background-color: #ddd;
 }
 
-html.dark {
+:where(html.dark) {
   button > img {
     /* https://codepen.io/sosuke/pen/Pjoqqp */
     filter: invert(75%) sepia(0%) saturate(0%) hue-rotate(138deg) brightness(83%) contrast(81%);

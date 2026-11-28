@@ -15,7 +15,7 @@ body {
   background-color: #fff;
 }
 
-html.dark {
+:where(html.dark) {
   body {
     background-color: #222;
   }
@@ -40,7 +40,7 @@ div.type-header:first-child {
   border-top: none;
 }
 
-html.dark {
+:where(html.dark) {
   div.type-header {
     border-top: 1px solid #333;
   }

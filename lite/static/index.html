@@ -68,7 +68,7 @@
         font-size: calc(min(5vh, 5vw));
       }
 
-      html.dark {
+      :where(html.dark) {
         div.too-small {
           background-color: #222;
         }
@@ -96,7 +96,7 @@
         box-shadow: 0px 0px 3px 0px #00000022;
       }
 
-      html.dark {
+      :where(html.dark) {
         body {
           background-color: #222;
         }
@@ -139,7 +139,7 @@
         background-color: #fff;
       }
 
-      html.dark {
+      :where(html.dark) {
         iframe.popup-frame {
           border: 1px solid #4a4a4a;
           background-color: #222;
@@ -173,7 +173,7 @@
         opacity: 0.35;
       }
 
-      html.dark {
+      :where(html.dark) {
         .popup-menu .popup-menu--submenu-content,
         .popup-menu .popup-menu--container {
           background: #191919;

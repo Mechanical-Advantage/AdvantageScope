@@ -7,7 +7,7 @@
   at the root directory of this project.
 */
 
-html.dark {
+:where(html.dark) {
   body {
     background-color: #222;
   }
@@ -33,7 +33,7 @@ h2 {
   color: #012be5;
 }
 
-html.dark {
+:where(html.dark) {
   h2 {
     color: #446ce3;
   }
@@ -61,7 +61,7 @@ span.purple {
   color: #c566e2;
 }
 
-html.dark {
+:where(html.dark) {
   span.purple {
     color: #b560cd;
   }
@@ -89,7 +89,7 @@ button:not(:disabled):active {
   background-color: #5f7bf5;
 }
 
-html.dark {
+:where(html.dark) {
   button {
     background-color: #446ce3;
   }

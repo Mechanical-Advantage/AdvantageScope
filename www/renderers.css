@@ -95,7 +95,7 @@ div.line-graph-help-row {
   color: #000;
 }
 
-html.dark {
+:where(html.dark) {
   div.line-graph-help-row {
     color: #fff;
   }
@@ -107,7 +107,7 @@ img.line-graph-help-icon {
   object-fit: contain;
 }
 
-html.dark {
+:where(html.dark) {
   img.line-graph-help-icon {
     filter: invert(1);
   }
@@ -220,7 +220,7 @@ div.field-3d-alert {
   border: 1px solid #555;
 }
 
-html.dark {
+:where(html.dark) {
   canvas.field-3d-canvas.fixed {
     border: 1px solid #999;
   }
@@ -328,7 +328,7 @@ img.large-table-hand-icon {
   width: 100px;
 }
 
-html.dark {
+:where(html.dark) {
   img.large-table-hand-icon {
     filter: invert(100%);
   }
@@ -479,7 +479,7 @@ table.data-table tr.selected td {
   background-color: #aaa;
 }
 
-html.dark {
+:where(html.dark) {
   table.data-table th {
     border-inline-end: 1px solid #333;
     border-bottom: 1px solid #eee;
@@ -722,7 +722,7 @@ table.console-table tr.error.selected td {
   background-color: #ff0000aa;
 }
 
-html.dark {
+:where(html.dark) {
   table.console-table th {
     border-inline-end: 1px solid #333;
     border-bottom: 1px solid #eee;
@@ -783,7 +783,7 @@ table.stats-values tr.section:not(:first-child) td {
   border-top: 1px solid #555;
 }
 
-html.dark {
+:where(html.dark) {
   table.stats-values {
     border: 1px solid #999;
   }
@@ -868,7 +868,7 @@ canvas.swerve-canvas {
   border: 1px solid #555;
 }
 
-html.dark {
+:where(html.dark) {
   canvas.swerve-canvas {
     background-color: #292929;
     border: 1px solid #999;
@@ -920,7 +920,7 @@ div.points-background {
   border: 1px solid #555;
 }
 
-html.dark {
+:where(html.dark) {
   div.points-background {
     background-color: #292929;
     border: 1px solid #999;
@@ -983,7 +983,7 @@ table.metadata-table td.no-data {
   font-style: italic;
 }
 
-html.dark {
+:where(html.dark) {
   table.metadata-table th {
     border-bottom: 1px solid #eee;
     background-color: #222;

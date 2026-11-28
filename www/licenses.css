@@ -16,7 +16,7 @@ body {
   padding: 10px;
 }
 
-html.dark {
+:where(html.dark) {
   body {
     background-color: #222;
   }

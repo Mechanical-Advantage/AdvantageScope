@@ -11,7 +11,7 @@ body {
   background-color: #fff;
 }
 
-html.dark {
+:where(html.dark) {
   body {
     background-color: #222;
   }
@@ -97,7 +97,7 @@ div.file-item.selected > span:last-child {
   color: #555;
 }
 
-html.dark {
+:where(html.dark) {
   div.file-list {
     background-color: #111;
     box-shadow: inset 0px 0px 2px #000;
@@ -137,7 +137,7 @@ div.file-item.selected:nth-child(even) {
   background-color: #77e;
 }
 
-html.dark {
+:where(html.dark) {
   div.file-item:not(.selected):hover {
     background-color: #151515;
   }
