@@ -31,6 +31,18 @@ GZIP_MIN_SIZE = 1024
 UNCOMPRESSED_SUFFIXES = (".wpilogxz", ".png")
 
 
+def _resolve_within(base_dir, *paths):
+    """Resolves a path relative to base_dir and returns it only if it stays strictly within base_dir."""
+    base_real = os.path.realpath(base_dir)
+    target_real = os.path.realpath(os.path.join(base_real, *paths))
+    try:
+        if target_real != base_real and os.path.commonpath([base_real, target_real]) == base_real:
+            return target_real
+    except ValueError:
+        pass
+    return None
+
+
 class Handler(http.server.SimpleHTTPRequestHandler):
     def _send_response_with_compression(self, status_code, content_type, source_data, allow_gzip=True):
         """Sends a response, compressing it with gzip if appropriate."""
@@ -94,12 +106,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self._send_response_with_compression(200, "application/json", json_string.encode('utf-8'))
 
         # Serve asset files (bundled or extra)
-        elif request.path.startswith(WEBROOT + "/assets"):
-            asset_path = urllib.parse.unquote(self.path[len(WEBROOT + "/assets/"):])
-            extra_asset_path = os.path.join(EXTRA_ASSETS_PATH, asset_path)
-            bundled_asset_path = os.path.join(BUNDLED_ASSETS_PATH, asset_path)
-            for path in [extra_asset_path, bundled_asset_path]:
-                if os.path.exists(path) and os.path.isfile(path):
+        elif request.path.startswith(WEBROOT + "/assets/"):
+            asset_path = urllib.parse.unquote(request.path[len(WEBROOT + "/assets/"):])
+            for base_dir in [EXTRA_ASSETS_PATH, BUNDLED_ASSETS_PATH]:
+                path = _resolve_within(base_dir, asset_path)
+                if path and os.path.isfile(path):
                     mimetype, _ = mimetypes.guess_type(path)
                     if not mimetype:
                         mimetype = 'application/octet-stream'
@@ -169,38 +180,55 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
                 for part in parser:
                     if part.filename:
-                        if part.filename.lower().endswith(".zip"):
-                            asset_zip = f"{EXTRA_ASSETS_PATH}/{part.filename}"
-                            part.save_as(asset_zip)
-                            temp_path = EXTRA_ASSETS_PATH + "/AS_TEMP/"
-                            asset_path = temp_path + part.filename[:-len(".zip")]  # remove .zip ending
+                        filename = os.path.basename(part.filename.replace("\\", "/"))
+                        if not filename.lower().endswith(".zip"):
+                            self.send_response(400, "Uploaded asset must be a zip")
+                            self.end_headers()
+                            continue
 
+                        stem = filename[:-len(".zip")]
+                        temp_path = os.path.join(EXTRA_ASSETS_PATH, "AS_TEMP")
+                        asset_zip = _resolve_within(EXTRA_ASSETS_PATH, filename)
+                        asset_path = _resolve_within(temp_path, stem) if stem and not filename.startswith(".") else None
+                        if not asset_zip or not asset_path:
+                            self.send_response(400, "Invalid asset filename")
+                            self.end_headers()
+                            continue
+
+                        try:
+                            part.save_as(asset_zip)
                             with zipfile.ZipFile(asset_zip, "r") as zip_ref:
                                 zip_ref.extractall(asset_path)
-                                os.remove(asset_zip)
+                            os.remove(asset_zip)
 
                             # recursively extract .zips
                             for dirpath, _, filenames in os.walk(asset_path):
-                                for filename in filenames:
-                                    if filename.lower().endswith(".zip"):
-                                        with zipfile.ZipFile(f"{dirpath}/{filename}", "r") as zip_ref:
-                                            filename_no_ext = filename[:-4]  # remove .zip (4 char)
-                                            zip_ref.extractall(f"{dirpath}/{filename_no_ext}")
-                                            os.remove(f"{dirpath}/{filename}")
+                                for nested_filename in filenames:
+                                    if nested_filename.lower().endswith(".zip") and len(nested_filename) > 4:
+                                        nested_zip = os.path.join(dirpath, nested_filename)
+                                        nested_dest = _resolve_within(dirpath, nested_filename[:-4])
+                                        if nested_dest:
+                                            with zipfile.ZipFile(nested_zip, "r") as zip_ref:
+                                                zip_ref.extractall(nested_dest)
+                                            os.remove(nested_zip)
+
                             # find config folders
                             for dirpath, _, filenames in os.walk(asset_path):
-                                for filename in filenames:
-                                    if filename == "config.json":
+                                for asset_filename in filenames:
+                                    if asset_filename == "config.json":
                                         # recursively copy the parent directory to extra assets, overwriting existing files
                                         dirname = os.path.basename(dirpath)
-                                        shutil.copytree(dirpath, f"{EXTRA_ASSETS_PATH}/{dirname}", dirs_exist_ok=True)
-                            shutil.rmtree(temp_path)
+                                        dest_dir = _resolve_within(EXTRA_ASSETS_PATH, dirname)
+                                        if dest_dir and dirname != "AS_TEMP":
+                                            shutil.copytree(dirpath, dest_dir, dirs_exist_ok=True)
+                        finally:
+                            if os.path.exists(asset_zip):
+                                os.remove(asset_zip)
+                            if os.path.exists(temp_path):
+                                shutil.rmtree(temp_path)
 
-                            self.send_response(200)
-                            self.end_headers()
-                        else:
-                            self.send_response(400, "Uploaded asset must be a zip")
-                            self.end_headers()
+                        self.send_response(200)
+                        self.end_headers()
 
                 # Free up resources after use
                 for part in parser.parts():
