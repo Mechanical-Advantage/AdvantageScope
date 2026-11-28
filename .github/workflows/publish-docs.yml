@@ -32,8 +32,9 @@ jobs:
         with:
           node-version: "24.x"
           cache: "npm"
+          cache-dependency-path: "docs/package-lock.json"
       - name: Install Node.js dependencies
-        run: npm ci
+        run: npm --prefix docs ci
       - name: Build docs
         run: npm run docs:build
       - name: Upload artifact
