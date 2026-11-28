@@ -219,7 +219,7 @@ export function formatParsedTimestamp(
     appLocale !== undefined &&
     systemLocale !== undefined &&
     appLocale.split("-")[0].toLowerCase() === systemLocale.split("-")[0].toLowerCase();
-  const locale = sameLanguage ? systemLocale : appLocale ?? systemLocale;
+  const locale = sameLanguage ? systemLocale : (appLocale ?? systemLocale);
 
   // Detect 12h vs 24h from the OS/browser locale
   let hour12: boolean | undefined;

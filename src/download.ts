@@ -365,7 +365,7 @@ function updateSelectionSummary() {
   }
 
   const targetFilename = selectedFiles.length === 1 ? selectedFiles[0] : hoveredFilename;
-  const parsed = targetFilename !== null ? parsedFiles.get(targetFilename) ?? null : null;
+  const parsed = targetFilename !== null ? (parsedFiles.get(targetFilename) ?? null) : null;
   if (parsed === null) {
     SELECTION_SUMMARY.hidden = true;
     return;
