@@ -157,6 +157,10 @@ div.file-item.selected:nth-child(even) {
   div.file-item.selected img {
     filter: drop-shadow(0px 0.5px 1px #000);
   }
+
+  div.file-item.selected img.folder {
+    filter: invert(1) drop-shadow(0px 0.5px 1px #000);
+  }
 }
 
 /* Control bar */
