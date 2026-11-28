@@ -108,7 +108,6 @@ let isExporting = false;
 let logFriendlyName: string | null = null;
 let liveActive = false;
 let liveConnected = false;
-let liveAutoStartComplete = false;
 
 let dragActive = false;
 let dragOffsetX = 0;
@@ -305,13 +304,6 @@ let periodic = () => {
 window.requestAnimationFrame(periodic);
 
 // DATA SOURCE HANDLING
-
-function checkLiveAutoStart() {
-  if (IS_LITE && window.preferences !== null && !liveAutoStartComplete) {
-    startLive(DISTRIBUTION === Distribution.LiteDS ? "ds" : "robot");
-    liveAutoStartComplete = true;
-  }
-}
 
 window.getLoadingFields = () => {
   let output: Set<string> = new Set();
@@ -626,7 +618,6 @@ async function handleMainMessage(message: NamedMessage) {
 
     case "set-preferences":
       window.preferences = message.data;
-      checkLiveAutoStart();
       break;
 
     case "set-assets":

@@ -218,6 +218,15 @@ function closePopupWindow(forceClose = false) {
   }
 }
 
+/** Clears any "log" URL query parameters without reloading the page. */
+function clearLogUrlParams() {
+  const url = new URL(window.location.href);
+  if (url.searchParams.has("log")) {
+    url.searchParams.delete("log");
+    window.history.replaceState(null, "", url.toString());
+  }
+}
+
 /**
  * Sends a message to a port.
  * @param window The window target
@@ -310,6 +319,7 @@ function openDownload() {
 
       case "save":
         closePopupWindow();
+        clearLogUrlParams();
         sendMessage(hubPort, "open-files", { files: message.data, merge: false });
         break;
     }
@@ -386,6 +396,16 @@ async function initHub() {
   if (state !== null) sendMessage(hubPort, "restore-state", state);
   sendMessage(hubPort, "show-when-ready");
 
+  // Open log files specified in URL parameters, or start live mode
+  const logFiles = new URLSearchParams(window.location.search)
+    .getAll("log")
+    .filter((name) => name.length > 0 && !name.includes("/") && !name.includes("\\") && !name.includes(".."));
+  if (logFiles.length > 0) {
+    sendMessage(hubPort, "open-files", { files: logFiles, merge: false });
+  } else {
+    sendMessage(hubPort, "start-live", DISTRIBUTION === Distribution.LiteDS ? "ds" : "robot");
+  }
+
   // Add cursor event handlers
   HUB_FRAME.contentWindow?.addEventListener("contextmenu", (event) => {
     event.preventDefault();
@@ -424,6 +444,7 @@ async function handleHubMessage(message: NamedMessage) {
       break;
 
     case "open-files-request":
+      clearLogUrlParams();
       sendMessage(hubPort, "open-files", { files: message.data.files, merge: false });
       break;
 
@@ -517,11 +538,29 @@ async function handleHubMessage(message: NamedMessage) {
           break;
         }
 
-        let prefs = DEFAULT_PREFS;
+        let prefs = Object.assign({}, DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS);
         let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
         if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
 
-        let response = await fetch(`logs/${encodeURIComponent(path)}?folder=${encodeURIComponent(prefs.remotePath)}`);
+        let response: Response;
+        try {
+          response = await fetch(`logs/${encodeURIComponent(path)}?folder=${encodeURIComponent(prefs.remotePath)}`);
+        } catch (e) {
+          sendMessage(hubPort, "historical-data", {
+            files: [null],
+            error: null,
+            uuid: uuid
+          });
+          break;
+        }
+        if (!response.ok) {
+          sendMessage(hubPort, "historical-data", {
+            files: [null],
+            error: null,
+            uuid: uuid
+          });
+          break;
+        }
         let buffer = await response.arrayBuffer();
         let array = new Uint8Array(buffer);
         let error: string | null = null;
@@ -699,6 +738,7 @@ async function handleHubMessage(message: NamedMessage) {
                 {
                   content: t("menu.file.connectRobotShortcut", { shortcut: `${modifier} K` }),
                   callback() {
+                    clearLogUrlParams();
                     sendMessage(hubPort, "start-live", DISTRIBUTION === Distribution.LiteDS ? "ds" : "robot");
                   }
                 },
@@ -714,6 +754,7 @@ async function handleHubMessage(message: NamedMessage) {
                               prefs.liveMode = liveMode;
                               localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
                               sendMessage(hubPort, "set-preferences", prefs);
+                              clearLogUrlParams();
                               sendMessage(hubPort, "start-live", "robot");
                             }
                           };
@@ -1538,7 +1579,10 @@ function processKeydown(event: KeyboardEvent): boolean {
   if (event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "o")) {
     if (!event.repeat) openDownload();
   } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "k")) {
-    if (!event.repeat) sendMessage(hubPort, "start-live", false);
+    if (!event.repeat) {
+      clearLogUrlParams();
+      sendMessage(hubPort, "start-live", DISTRIBUTION === Distribution.LiteDS ? "ds" : "robot");
+    }
   } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, "\\")) {
     if (!event.repeat) sendMessage(hubPort, "zoom-enabled");
   } else if (!event.shiftKey && modifier && KeyboardUtil.matchesKey(event, ".")) {
