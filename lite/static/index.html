@@ -240,8 +240,8 @@
           let localeDir = locale.textInfo
             ? locale.textInfo.direction
             : locale.getTextInfo
-            ? locale.getTextInfo().direction
-            : undefined;
+              ? locale.getTextInfo().direction
+              : undefined;
           if (localeDir === "rtl") {
             document.documentElement.dir = "rtl";
           }

@@ -2462,15 +2462,13 @@ function setupMenu() {
                   let data = jsonfile.readFileSync(files.filePaths[0]);
 
                   // Check for required fields
-                  if (
-                    !(
-                      "version" in data &&
-                      "hubs" in data &&
-                      Array.isArray(data.hubs) &&
-                      "satellites" in data &&
-                      Array.isArray(data.satellites)
-                    )
-                  ) {
+                  if (!(
+                    "version" in data &&
+                    "hubs" in data &&
+                    Array.isArray(data.hubs) &&
+                    "satellites" in data &&
+                    Array.isArray(data.satellites)
+                  )) {
                     const oldLayout = "layout" in data && Array.isArray(data.layout);
                     dialog.showMessageBox({
                       type: "error",

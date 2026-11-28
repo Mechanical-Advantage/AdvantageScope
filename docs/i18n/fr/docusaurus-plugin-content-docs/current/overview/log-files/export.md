@@ -39,9 +39,9 @@ Les options suivantes sont disponibles lors de l'exportation :
   - _Cycles AdvantageKit :_ crée une ligne pour chaque cycle de boucle synchronisé d'AdvantageKit. Toutes les valeurs sont incluses, même si elles n'ont pas changé d'un cycle à l'autre.
 - **Période :** disponible uniquement lorsque « Période fixe » est sélectionné. Définit l'intervalle en millisecondes entre chaque échantillon. En général, choisissez la durée d'un cycle de boucle de votre code robot.
 - **Préfixes :** laissez ce champ vide pour exporter tous les champs, ou indiquez une liste de préfixes séparés par des virgules pour filtrer l'exportation. Exemples :
-  - « */DriverStation/Joystick0* » : inclut tous les champs commençant par « /DriverStation/Joystick0 » (les données de la première manette).
-  - « *Flywheels,DS:enabled* » : inclut tous les champs commençant par « /Flywheels » ou « DS:enabled » (toutes les données du lanceur ainsi que l'état d'activation du robot).
-  - « *Drive/LeftPosition,Drive/RightPosition* » : inclut uniquement les champs « /Drive/LeftPosition » et « /Drive/RightPosition ».
+  - « _/DriverStation/Joystick0_ » : inclut tous les champs commençant par « /DriverStation/Joystick0 » (les données de la première manette).
+  - « _Flywheels,DS:enabled_ » : inclut tous les champs commençant par « /Flywheels » ou « DS:enabled » (toutes les données du lanceur ainsi que l'état d'activation du robot).
+  - « _Drive/LeftPosition,Drive/RightPosition_ » : inclut uniquement les champs « /Drive/LeftPosition » et « /Drive/RightPosition ».
 - **Ensemble de champs :** permet d'inclure ou non les champs générés par AdvantageScope (affichés en gris dans la barre latérale) qui décomposent les types complexes comme les tableaux, les structures (_structs_) et d'autres schémas.
   - _Inclure les champs générés :_ exporte tous les champs visibles, y compris les champs générés. C'est le meilleur choix si vous ouvrez le fichier dans un logiciel qui ne sait pas lire les types complexes.
   - _Originaux uniquement :_ exporte uniquement les champs présents dans le journal d'origine, sans les champs générés. Recommandé si vous comptez rouvrir le fichier dans AdvantageScope ou un autre outil gérant les types complexes.

@@ -61,14 +61,14 @@ function bundle(input, isMain, isXRClient, external = []) {
             })
           ]
         : isLite
-        ? [
-            getBabelOutputPlugin({
-              presets: [["@babel/preset-env", { modules: false }]],
-              compact: true,
-              targets: "> 0.1%, not dead"
-            })
-          ]
-        : []),
+          ? [
+              getBabelOutputPlugin({
+                presets: [["@babel/preset-env", { modules: false }]],
+                compact: true,
+                targets: "> 0.1%, not dead"
+              })
+            ]
+          : []),
       replacePlugin(
         {
           __distribution__: isWpilib ? "WPILib" : isDS ? "LiteDS" : isLite ? "Lite" : "FRC6328",

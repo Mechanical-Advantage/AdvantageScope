@@ -25,8 +25,8 @@ try {
   const direction = locale.textInfo
     ? locale.textInfo.direction
     : locale.getTextInfo
-    ? locale.getTextInfo().direction
-    : undefined;
+      ? locale.getTextInfo().direction
+      : undefined;
   if (direction === "rtl") {
     isRtl = true;
   }

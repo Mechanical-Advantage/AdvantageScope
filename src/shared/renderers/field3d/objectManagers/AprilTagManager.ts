@@ -97,8 +97,8 @@ export default class AprilTagManager extends ObjectManager<Field3dRendererComman
           this.isXR
             ? `/apriltag?family=${object.variant.family}&name=${textureName}`
             : IS_LITE
-            ? `textures/apriltag-${object.variant.family}/${textureName}.png`
-            : `../www/textures/apriltag-${object.variant.family}/${textureName}.png`,
+              ? `textures/apriltag-${object.variant.family}/${textureName}.png`
+              : `../www/textures/apriltag-${object.variant.family}/${textureName}.png`,
           (texture) => {
             texture.minFilter = THREE.NearestFilter;
             texture.magFilter = THREE.NearestFilter;

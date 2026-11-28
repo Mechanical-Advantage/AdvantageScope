@@ -381,8 +381,8 @@ export default class Tabs {
               tab.type === TabType.Documentation
                 ? t("tabs.documentation")
                 : tab.title === ""
-                ? getDefaultTabTitle(tab.type)
-                : tab.title;
+                  ? getDefaultTabTitle(tab.type)
+                  : tab.title;
             window.sendMainMessage("update-satellite", {
               uuid: tab.controller.UUID,
               command: command,

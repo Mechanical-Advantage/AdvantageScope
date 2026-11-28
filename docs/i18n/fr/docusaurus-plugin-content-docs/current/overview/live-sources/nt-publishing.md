@@ -31,9 +31,9 @@ Par défaut, AdvantageScope publie tous les champs NetworkTables présents dans 
 
 Le champ « Préfixes de publication NT » permet de filtrer les données envoyées sur NetworkTables. Laissez-le vide pour tout publier, ou saisissez une liste de préfixes ou de champs séparés par des virgules. Exemples :
 
-- « *Telemetry* » : inclut tous les champs de la table « Telemetry ».
-- « *Telemetry/Drive* » : inclut uniquement la sous-table « Telemetry/Drive ».
-- « *limelight/tx,limelight/ty* » : inclut uniquement les champs « limelight/tx » et « limelight/ty ».
+- « _Telemetry_ » : inclut tous les champs de la table « Telemetry ».
+- « _Telemetry/Drive_ » : inclut uniquement la sous-table « Telemetry/Drive ».
+- « _limelight/tx,limelight/ty_ » : inclut uniquement les champs « limelight/tx » et « limelight/ty ».
 
 ## Limites {#limitations}
 

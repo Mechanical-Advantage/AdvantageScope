@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 🦀 Swerve {#swerve}
 
-L'onglet Swerve affiche l'état des quatre modules *swerve* : vecteurs de vitesse, positions au repos, rotation du robot et vitesses du châssis.
+L'onglet Swerve affiche l'état des quatre modules _swerve_ : vecteurs de vitesse, positions au repos, rotation du robot et vitesses du châssis.
 
 <img src="/img/tab-reference/swerve-1.webp" alt="Aperçu de l'onglet Swerve" />
 

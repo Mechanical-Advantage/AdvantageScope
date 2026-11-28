@@ -41,8 +41,8 @@ export function getChildLogExtension(
   let logType = wpilibType?.startsWith("log:")
     ? wpilibType
     : structuredType?.startsWith("log:")
-    ? structuredType
-    : null;
+      ? structuredType
+      : null;
   return logType ? logType.slice(4).toLowerCase() : null;
 }
 

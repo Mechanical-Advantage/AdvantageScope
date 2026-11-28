@@ -419,8 +419,8 @@ export default class JoysticksRenderer implements TabRenderer {
                       let color = component.isYellow
                         ? this.YELLOW_COLOR
                         : isLight
-                        ? this.BLACK_COLOR
-                        : this.WHITE_COLOR;
+                          ? this.BLACK_COLOR
+                          : this.WHITE_COLOR;
                       context.fillStyle = color;
                       context.beginPath();
                       context.arc(canvasX, canvasY, 8, 0, Math.PI * 2);
