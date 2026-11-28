@@ -310,16 +310,19 @@ div.viewer-background {
   background-color: #fff;
 }
 
+body.fancy-side-bar-mac-27 div.viewer-background {
+  box-shadow: 0px 0px 0px 0.5px #ccc;
+}
+
 :where(html.dark) {
   div.viewer-background {
     box-shadow: 0px 0px 0px 1px #000;
     background-color: #222;
   }
-}
 
-/** macOS Golden Gate uses a flat sidebar style, so removing the shadow blends in better with native apps. **/
-body.fancy-side-bar-mac-27 div.viewer-background {
-  box-shadow: none;
+  body.fancy-side-bar-mac-27 div.viewer-background {
+    box-shadow: 0px 0px 0px 0.5px #383838;
+  }
 }
 
 div.viewer {
@@ -761,11 +764,11 @@ body.fancy-title-bar-lite div.tab-bar-shadow-right {
 }
 
 :where(html.dark) {
-  [dir="rtl"] div.tab-bar-shadow-left {
+  &[dir="rtl"] div.tab-bar-shadow-left {
     background-image: linear-gradient(to left, #222, rgba(34, 34, 34, 0.75), transparent);
   }
 
-  [dir="rtl"] div.tab-bar-shadow-right {
+  &[dir="rtl"] div.tab-bar-shadow-right {
     background-image: linear-gradient(to right, #222, rgba(34, 34, 34, 0.75), transparent);
   }
 }
