@@ -33,6 +33,11 @@ download:
   alertSaved_other: "Saved {{count}} logs to <u>{{path}}</u>" # Dialog alert when saving multiple logs finishes
   alertSavedSkipped_one: "Saved {{count}} new log ({{skipped}} skipped) to <u>{{path}}</u>" # Dialog alert when saving a single new log with some skipped finishes
   alertSavedSkipped_other: "Saved {{count}} new logs ({{skipped}} skipped) to <u>{{path}}</u>" # Dialog alert when saving multiple new logs with some skipped finishes
+  matchPractice: "Practice {{number}}" # Practice match label in log picker summary
+  matchQualification: "Qualification {{number}}" # Qualification match label in log picker summary
+  matchPlayoff: "Playoff {{number}}" # Playoff match label in log picker summary
+  selectedSummary_one: "{{count}} log selected ({{size}} MB)" # Footer summary when one log is selected
+  selectedSummary_other: "{{count}} logs selected ({{size}} MB)" # Footer summary when multiple logs are selected
 
 editFov:
   title: "Edit FOV — AdvantageScope" # Window title for camera FOV configuration

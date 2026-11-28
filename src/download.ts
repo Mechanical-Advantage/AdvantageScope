@@ -7,6 +7,13 @@
 
 import { IS_LITE } from "./shared/buildConstants";
 import { KeyboardUtil } from "./shared/KeyboardUtil";
+import {
+  formatParsedLogSummary,
+  formatParsedMatch,
+  formatParsedTimestamp,
+  ParsedLogFilename,
+  parseLogFilename
+} from "./shared/LogFilenameParser";
 import NamedMessage from "./shared/NamedMessage";
 import Preferences, { getRobotAddress } from "./shared/Preferences";
 import { zfill } from "./shared/util";
@@ -15,6 +22,7 @@ const FILE_LIST: HTMLElement = document.getElementsByClassName("file-list")[0] a
 const FILE_LIST_ITEMS: HTMLElement = FILE_LIST.children[0] as HTMLElement;
 const LOADING_ANIMATION: HTMLElement = document.getElementsByClassName("loading")[0] as HTMLElement;
 const ALERT_TEXT: HTMLElement = document.getElementsByClassName("alert-text")[0] as HTMLElement;
+const SELECTION_SUMMARY: HTMLElement = document.getElementsByClassName("selection-summary")[0] as HTMLElement;
 const PROGRESS_BAR: HTMLProgressElement = document.getElementsByTagName("progress")[0] as HTMLProgressElement;
 const PROGRESS_DETAILS: HTMLElement = document.getElementsByClassName("progress-details")[0] as HTMLElement;
 const EXIT_BUTTON: HTMLElement = document.getElementById("exit") as HTMLElement;
@@ -25,6 +33,7 @@ const BOTTOM_FILLER_MARGIN_PX = 5;
 
 let messagePort: MessagePort | null = null;
 let platform: string = "";
+let systemLocale: string | undefined = undefined;
 let preferences: Preferences | null = null;
 
 let address: string = IS_LITE ? window.location.hostname : "";
@@ -32,7 +41,10 @@ let loading = true;
 let startTime: number | null = null;
 let alertIsError = false;
 let filenames: string[] = [];
+let fileSizes: Map<string, number> = new Map();
+let parsedFiles: Map<string, ParsedLogFilename | null> = new Map();
 let selectedFiles: string[] = [];
+let hoveredFilename: string | null = null;
 let lastClickedIndex: number | null = null;
 let lastClickedSelect = true;
 
@@ -57,6 +69,10 @@ function handleMainMessage(message: NamedMessage) {
   switch (message.name) {
     case "set-platform":
       platform = message.data;
+      break;
+
+    case "set-system-locale":
+      systemLocale = message.data;
       break;
 
     case "set-preferences":
@@ -120,6 +136,7 @@ function handleMainMessage(message: NamedMessage) {
       }
       alertIsError = true;
       ALERT_TEXT.innerHTML = friendlyText;
+      updateSelectionSummary();
       break;
 
     case "show-alert":
@@ -130,6 +147,7 @@ function handleMainMessage(message: NamedMessage) {
       startTime = null;
       alertIsError = false;
       ALERT_TEXT.innerHTML = message.data;
+      updateSelectionSummary();
       break;
 
     case "set-progress":
@@ -137,6 +155,7 @@ function handleMainMessage(message: NamedMessage) {
       ALERT_TEXT.hidden = true;
       PROGRESS_BAR.hidden = false;
       PROGRESS_DETAILS.hidden = false;
+      updateSelectionSummary();
 
       alertIsError = false;
       if (message.data === 0) {
@@ -214,14 +233,39 @@ function handleMainMessage(message: NamedMessage) {
 
       // Add new list items
       filenames = fileData.map((file) => file.name);
+      fileSizes.clear();
+      parsedFiles.clear();
       fileData.forEach((file, index) => {
+        fileSizes.set(file.name, file.size);
+        const parsed = file.isFolder ? null : parseLogFilename(file.name);
+        parsedFiles.set(file.name, parsed);
+
         let item = document.createElement("div");
         FILE_LIST_ITEMS.appendChild(item);
         item.classList.add("file-item");
+        if (parsed?.match) {
+          item.classList.add("match");
+        }
+        if (parsed) {
+          const summary = formatParsedLogSummary(parsed, t, document.documentElement.lang || undefined, systemLocale);
+          if (summary.length > 0) {
+            item.title = summary;
+          }
+        }
 
         if (selectedFiles.includes(file.name)) {
           item.classList.add("selected");
         }
+        item.addEventListener("mouseenter", () => {
+          hoveredFilename = file.name;
+          updateSelectionSummary();
+        });
+        item.addEventListener("mouseleave", () => {
+          if (hoveredFilename === file.name) {
+            hoveredFilename = null;
+            updateSelectionSummary();
+          }
+        });
         item.addEventListener("click", (event) => {
           if (event.shiftKey && lastClickedIndex !== null) {
             // Update a range of items
@@ -249,6 +293,7 @@ function handleMainMessage(message: NamedMessage) {
             lastClickedIndex = index;
             lastClickedSelect = true;
           }
+          updateSelectionSummary();
         });
 
         let img = document.createElement("img");
@@ -287,12 +332,78 @@ function handleMainMessage(message: NamedMessage) {
       });
 
       updateFiller();
+      updateSelectionSummary();
       break;
 
     default:
       console.warn("Unknown message from main process", message);
       break;
   }
+}
+
+/** Updates the single-line summary shown in the footer bar when idle. */
+function updateSelectionSummary() {
+  if (!ALERT_TEXT.hidden || !PROGRESS_BAR.hidden) {
+    SELECTION_SUMMARY.hidden = true;
+    return;
+  }
+
+  SELECTION_SUMMARY.replaceChildren();
+
+  if (selectedFiles.length > 1) {
+    let totalSize = 0;
+    selectedFiles.forEach((name) => {
+      totalSize += fileSizes.get(name) ?? 0;
+    });
+    const sizeText = totalSize < 1e5 ? "<0.1" : (Math.round(totalSize / 1e5) / 10).toString();
+    SELECTION_SUMMARY.innerText = t("download.selectedSummary", {
+      count: selectedFiles.length,
+      size: sizeText
+    });
+    SELECTION_SUMMARY.hidden = false;
+    return;
+  }
+
+  const targetFilename = selectedFiles.length === 1 ? selectedFiles[0] : hoveredFilename;
+  const parsed = targetFilename !== null ? parsedFiles.get(targetFilename) ?? null : null;
+  if (parsed === null) {
+    SELECTION_SUMMARY.hidden = true;
+    return;
+  }
+
+  const segments: HTMLElement[] = [];
+  if (parsed.timestamp) {
+    const tsSpan = document.createElement("span");
+    tsSpan.innerText = formatParsedTimestamp(
+      parsed.timestamp,
+      document.documentElement.lang || undefined,
+      systemLocale
+    );
+    segments.push(tsSpan);
+  }
+  if (parsed.event) {
+    const eventSpan = document.createElement("span");
+    eventSpan.innerText = parsed.event;
+    segments.push(eventSpan);
+  }
+  if (parsed.match) {
+    const matchSpan = document.createElement("span");
+    matchSpan.innerText = formatParsedMatch(parsed.match, t);
+    segments.push(matchSpan);
+  }
+
+  if (segments.length === 0) {
+    SELECTION_SUMMARY.hidden = true;
+    return;
+  }
+
+  segments.forEach((segment, index) => {
+    if (index > 0) {
+      SELECTION_SUMMARY.appendChild(document.createTextNode(" · "));
+    }
+    SELECTION_SUMMARY.appendChild(segment);
+  });
+  SELECTION_SUMMARY.hidden = false;
 }
 
 /** Add/remove filler rows (zebra striping). */
@@ -342,7 +453,29 @@ window.addEventListener("keydown", (event) => {
   if (event.code === "Enter") {
     save();
   } else if (!IS_LITE && KeyboardUtil.isPrimaryModifier(event) && KeyboardUtil.matchesKey(event, "a")) {
-    if (filenames.length === selectedFiles.length) {
+    event.preventDefault();
+    if (event.shiftKey) {
+      const matchFilenames = filenames.filter((name) => parsedFiles.get(name)?.match !== undefined);
+      const allMatchesSelected =
+        matchFilenames.length > 0 &&
+        selectedFiles.length === matchFilenames.length &&
+        matchFilenames.every((name) => selectedFiles.includes(name));
+      if (allMatchesSelected) {
+        // Deselect all
+        selectedFiles = [];
+        Array.from(FILE_LIST_ITEMS.children).forEach((row) => {
+          row.classList.remove("selected");
+        });
+      } else {
+        // Select all match logs
+        selectedFiles = [...matchFilenames];
+        Array.from(FILE_LIST_ITEMS.children).forEach((row, index) => {
+          if (index < filenames.length) {
+            row.classList.toggle("selected", matchFilenames.includes(filenames[index]));
+          }
+        });
+      }
+    } else if (filenames.length === selectedFiles.length) {
       // Deselect all
       selectedFiles = [];
       Array.from(FILE_LIST_ITEMS.children).forEach((row) => {
@@ -357,6 +490,7 @@ window.addEventListener("keydown", (event) => {
         }
       });
     }
+    updateSelectionSummary();
   }
 });
 window.addEventListener("load", () => {

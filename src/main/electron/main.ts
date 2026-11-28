@@ -3668,6 +3668,7 @@ function openDownload(parentWindow: Electron.BrowserWindow) {
 
     // Init messages
     sendMessage(downloadWindow, "set-platform", process.platform);
+    sendMessage(downloadWindow, "set-system-locale", app.getSystemLocale());
     sendAllPreferences();
   });
   downloadWindow.on("blur", () => sendMessage(downloadWindow!, "set-focused", false));
