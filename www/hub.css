@@ -764,11 +764,11 @@ body.fancy-title-bar-lite div.tab-bar-shadow-right {
 }
 
 :where(html.dark) {
-  [dir="rtl"] div.tab-bar-shadow-left {
+  &[dir="rtl"] div.tab-bar-shadow-left {
     background-image: linear-gradient(to left, #222, rgba(34, 34, 34, 0.75), transparent);
   }
 
-  [dir="rtl"] div.tab-bar-shadow-right {
+  &[dir="rtl"] div.tab-bar-shadow-right {
     background-image: linear-gradient(to right, #222, rgba(34, 34, 34, 0.75), transparent);
   }
 }
