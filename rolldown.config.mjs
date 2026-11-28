@@ -10,7 +10,6 @@ import typescript from "@rollup/plugin-typescript";
 import yaml from "@rollup/plugin-yaml";
 import fs from "fs";
 import { replacePlugin } from "rolldown/plugins";
-import cleanup from "rollup-plugin-cleanup";
 
 const isWpilib = process.env.ASCOPE_DISTRIBUTION === "WPILIB";
 const isDS = process.env.ASCOPE_DISTRIBUTION === "LITEDS";
@@ -41,6 +40,7 @@ function bundle(input, isMain, isXRClient, external = []) {
       chunkFileNames: "chunk/[name].js",
       format: isMain ? "cjs" : "es",
       banner: licenseHeader + (isLite && !isMain ? liteI18nLoader : ""),
+      comments: false,
       minify: isXRClient || isLite || "dce-only",
       minifyInternalExports: isXRClient || isLite
     },
@@ -52,19 +52,23 @@ function bundle(input, isMain, isXRClient, external = []) {
     plugins: [
       typescript(),
       yaml(),
-      isXRClient
-        ? getBabelOutputPlugin({
-            presets: [["@babel/preset-env", { modules: false }]],
-            compact: true,
-            targets: "iOS 16" // AdvantageScope XR is built for iOS 16
-          })
+      ...(isXRClient
+        ? [
+            getBabelOutputPlugin({
+              presets: [["@babel/preset-env", { modules: false }]],
+              compact: true,
+              targets: "iOS 16" // AdvantageScope XR is built for iOS 16
+            })
+          ]
         : isLite
-        ? getBabelOutputPlugin({
-            presets: [["@babel/preset-env", { modules: false }]],
-            compact: true,
-            targets: "> 0.1%, not dead"
-          })
-        : cleanup(),
+        ? [
+            getBabelOutputPlugin({
+              presets: [["@babel/preset-env", { modules: false }]],
+              compact: true,
+              targets: "> 0.1%, not dead"
+            })
+          ]
+        : []),
       replacePlugin(
         {
           __distribution__: isWpilib ? "WPILib" : isDS ? "LiteDS" : isLite ? "Lite" : "FRC6328",
