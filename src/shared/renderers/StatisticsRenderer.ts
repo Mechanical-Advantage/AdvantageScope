@@ -7,7 +7,7 @@
 
 import { Chart, ChartDataset, LegendOptions, LinearScaleOptions, TooltipCallbacks, registerables } from "chart.js";
 import { ensureThemeContrast } from "../Colors";
-import { cleanFloat, formatNumber } from "../util";
+import { cleanFloat, formatNumber, isDarkTheme } from "../util";
 import TabRenderer from "./TabRenderer";
 
 export default class StatisticsRenderer implements TabRenderer {
@@ -97,7 +97,7 @@ export default class StatisticsRenderer implements TabRenderer {
     }
 
     // Update histogram colors
-    const isLight = !window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isLight = !isDarkTheme();
     if (isLight !== this.lastIsLight) {
       this.lastIsLight = isLight;
       (this.histogram.options.plugins!.legend as LegendOptions<"bar">).labels.color = isLight ? "#222" : "#eee";

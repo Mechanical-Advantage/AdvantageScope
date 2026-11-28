@@ -37,6 +37,14 @@ window.addEventListener("DOMContentLoaded", () => {
   document.documentElement.dir = isRtl ? "rtl" : "ltr";
 });
 
+// Set up theme
+const darkThemeMedia = window.matchMedia("(prefers-color-scheme: dark)");
+const updateTheme = () => {
+  document.documentElement.classList.toggle("dark", darkThemeMedia.matches);
+};
+darkThemeMedia.addEventListener("change", updateTheme);
+window.addEventListener("DOMContentLoaded", updateTheme);
+
 const windowLoaded = new Promise((resolve) => {
   window.onload = resolve;
 });

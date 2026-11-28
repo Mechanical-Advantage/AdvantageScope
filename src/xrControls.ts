@@ -8,6 +8,7 @@
 import QRCodeStyling from "qr-code-styling";
 import NamedMessage from "./shared/NamedMessage";
 import { XRSettings } from "./shared/XRTypes";
+import { isDarkTheme } from "./shared/util";
 
 const QR_CONTAINER = document.getElementsByClassName("qr-container")[0] as HTMLElement;
 const QR_DIV = document.getElementsByClassName("qr")[0] as HTMLElement;
@@ -24,7 +25,7 @@ let lastIsDark: boolean | null = null;
 
 // Render QR code
 function makeQRcode(text: string) {
-  const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const isDark = isDarkTheme();
   let qrCode = new QRCodeStyling({
     width: QR_CONTAINER.clientWidth,
     height: QR_CONTAINER.clientHeight,
@@ -73,7 +74,7 @@ function sendSettings() {
 let periodic = () => {
   let width = window.innerWidth - QR_CONTAINER.clientWidth;
   CONTROLS_DIV.style.width = width.toString() + "px";
-  const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const isDark = isDarkTheme();
   if (isDark !== lastIsDark && lastQRText.length > 0) {
     lastIsDark = isDark;
     makeQRcode(lastQRText);

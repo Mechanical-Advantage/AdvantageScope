@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import { hex, hsl } from "color-convert";
+import { isDarkTheme } from "./util";
 export const GraphColors: string[] = [
   "#2b66a2",
   "#e5b31b",
@@ -43,7 +44,7 @@ const LIGHT_MAX_LIGHTNESS = 45;
  */
 export function ensureThemeContrast(color: string, darkMode?: boolean): string {
   if (darkMode === undefined) {
-    darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    darkMode = isDarkTheme();
   }
 
   let hslVal = hex.hsl(color.slice(1));

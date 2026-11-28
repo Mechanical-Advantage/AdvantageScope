@@ -7,6 +7,14 @@
   at the root directory of this project.
 */
 
+:root {
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
 body {
   font-family:
     ui-sans-serif,
@@ -17,7 +25,7 @@ body {
   user-select: none;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   body {
     color: #eee;
   }
@@ -95,7 +103,7 @@ button:not(:disabled):active {
   background-color: #ddd;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   button > img {
     /* https://codepen.io/sosuke/pen/Pjoqqp */
     filter: invert(75%) sepia(0%) saturate(0%) hue-rotate(138deg) brightness(83%) contrast(81%);

@@ -149,7 +149,7 @@ div.title-bar-menu button:active {
   background-color: #cccccc;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.title-bar-menu button {
     color: #eee;
   }
@@ -212,7 +212,7 @@ div.side-bar-background {
   }
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.side-bar-background {
     background-color: #292929;
   }
@@ -239,7 +239,7 @@ body.fancy-title-bar-lite div.side-bar-shadow {
   display: initial;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.side-bar-shadow {
     box-shadow: 0px 0px 0px 0.7px #000;
   }
@@ -310,7 +310,7 @@ div.viewer-background {
   background-color: #fff;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.viewer-background {
     box-shadow: 0px 0px 0px 1px #000;
     background-color: #222;
@@ -422,7 +422,7 @@ button.side-bar-tuning-button.active > img {
   filter: invert(9%) sepia(91%) saturate(7487%) hue-rotate(277deg) brightness(106%) contrast(110%);
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   input.side-bar-search {
     background-color: rgba(255, 255, 255, 0.05);
     border: 0.5px solid rgba(255, 255, 255, 0.3);
@@ -533,7 +533,7 @@ div.field-item-container.highlight {
   background-color: #ffff00;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.field-item-container.highlight {
     background-color: #ce9421;
   }
@@ -546,7 +546,7 @@ svg.field-item-icon {
   fill: #222;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   svg.field-item-icon {
     fill: #eee;
   }
@@ -655,7 +655,7 @@ div.search-results-item.hovered {
   background-color: #ccc;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.search-results {
     box-shadow: none;
     border: 0.5px solid rgba(255, 255, 255, 0.3);
@@ -742,7 +742,7 @@ body.fancy-title-bar-lite div.tab-bar-shadow-right {
   inset-inline-end: 10px;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.tab-bar-shadow-left {
     background-image: linear-gradient(to right, #222, rgba(34, 34, 34, 0.75), transparent);
   }
@@ -760,7 +760,7 @@ body.fancy-title-bar-lite div.tab-bar-shadow-right {
   background-image: linear-gradient(to right, white, rgba(255, 255, 255, 0.75), transparent);
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   [dir="rtl"] div.tab-bar-shadow-left {
     background-image: linear-gradient(to left, #222, rgba(34, 34, 34, 0.75), transparent);
   }
@@ -855,7 +855,7 @@ div.tab.tab-selected {
   border: 1px solid #222;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.tab {
     background-color: #444;
     border: 1px solid #666;
@@ -961,7 +961,7 @@ button.unlock.blurred > img {
   filter: invert(83%) sepia(68%) saturate(3617%) hue-rotate(294deg) brightness(99%) contrast(119%);
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   button.update.blurred > img {
     /* https://codepen.io/sosuke/pen/Pjoqqp */
     filter: invert(30%) sepia(37%) saturate(3821%) hue-rotate(26deg) brightness(97%) contrast(101%);
@@ -1032,7 +1032,7 @@ canvas.timeline-canvas {
   border: 1px solid #222;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   canvas.timeline-canvas {
     background-color: #444;
     border: 1px solid #eee;
@@ -1081,7 +1081,7 @@ div.controls-content {
   background-color: #fff;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.controls-content {
     box-shadow: 0px 0px 0px 0.7px #000;
     background-color: #222;
@@ -1189,7 +1189,7 @@ div.source-list div.item.parent-highlight {
   box-shadow: -0.5px 0px 3px 2px #00ff00bb inset;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.source-list div.item {
     border-top: 1px solid #333;
   }
@@ -1366,7 +1366,7 @@ div.source-list img.hand-icon {
   pointer-events: none;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.source-list img.hand-icon {
     filter: invert(100%);
   }
@@ -1565,7 +1565,7 @@ div.setting-blocks div.split div.selected span {
   color: #aaa;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.setting-blocks div.split div {
     background-color: #444;
     border: 1px solid #666;
@@ -1639,7 +1639,7 @@ div.setting-blocks input[type="number"]::-webkit-inner-spin-button {
   margin: 0;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.setting-blocks div.split div img.lighten {
     /* Lighten blue tone  */
     filter: hue-rotate(-45deg) brightness(450%);
@@ -1691,7 +1691,7 @@ div.line-graph-discrete {
   border-right: 1px solid #ddd;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.line-graph-discrete {
     border-left: 1px solid black;
     border-right: 1px solid black;
@@ -1722,7 +1722,7 @@ div.field-2d-settings {
   overflow-y: auto;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.field-2d-settings {
     border-inline-start: 1px solid black;
   }
@@ -1752,7 +1752,7 @@ div.field-3d-settings {
   overflow-y: auto;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.field-3d-settings {
     border-inline-start: 1px solid black;
   }
@@ -1809,7 +1809,7 @@ div.stats-settings {
   overflow-y: auto;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.stats-settings {
     border-inline-start: 1px solid black;
   }
@@ -1834,7 +1834,7 @@ div.video-synchronization {
   height: 100%;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.video-source {
     border-inline-end: 1px solid black;
   }
@@ -2042,7 +2042,7 @@ div.swerve-settings {
   overflow-y: auto;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.swerve-settings {
     border-inline-start: 1px solid black;
   }
@@ -2082,7 +2082,7 @@ div.points-settings {
   overflow-y: auto;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.points-settings {
     border-inline-start: 1px solid black;
   }

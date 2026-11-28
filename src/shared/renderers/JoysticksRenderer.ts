@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 import { JoystickState } from "../log/LogJoystickState";
-import { scaleValue } from "../util";
+import { isDarkTheme, scaleValue } from "../util";
 import TabRenderer from "./TabRenderer";
 
 export default class JoysticksRenderer implements TabRenderer {
@@ -45,7 +45,7 @@ export default class JoysticksRenderer implements TabRenderer {
     let context = this.CANVAS.getContext("2d") as CanvasRenderingContext2D;
     let canvasWidth = this.CANVAS.clientWidth;
     let canvasHeight = this.CANVAS.clientHeight;
-    let isLight = !window.matchMedia("(prefers-color-scheme: dark)").matches;
+    let isLight = !isDarkTheme();
 
     // Exit if render state unchanged
     let renderState: any[] = [

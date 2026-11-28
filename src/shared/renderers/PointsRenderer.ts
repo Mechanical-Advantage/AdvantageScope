@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import { GraphColors } from "../Colors";
+import { isDarkTheme } from "../util";
 import TabRenderer from "./TabRenderer";
 
 export default class PointsRenderer implements TabRenderer {
@@ -103,7 +104,7 @@ export default class PointsRenderer implements TabRenderer {
         // Set color
         let color = "";
         if (set.groupSize < 1) {
-          color = window.matchMedia("(prefers-color-scheme: dark)").matches ? "white" : "black";
+          color = isDarkTheme() ? "white" : "black";
         } else {
           color = GraphColors[Math.floor(index / set.groupSize) % GraphColors.length];
         }

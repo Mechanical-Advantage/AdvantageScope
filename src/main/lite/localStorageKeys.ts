@@ -17,4 +17,5 @@ export namespace LocalStorageKeys {
   export const BETA_STATE = PREFIX + "beta-" + (BETA_CONFIG === null ? "NA" : BETA_CONFIG.year);
   export const SIDEBAR_WIDTH = "AdvantageScopeLite/sidebar-width"; // Shared with DS lite
   export const DIRECTION = "AdvantageScopeLite/direction"; // Shared with DS lite
+  export const THEME = "AdvantageScopeLite/theme"; // Shared with DS lite
 }

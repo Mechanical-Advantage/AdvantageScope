@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import { SUPPORTED_LANGS } from "../Preferences";
+import { isDarkTheme } from "../util";
 import TabRenderer from "./TabRenderer";
 
 export default class DocumentationRenderer implements TabRenderer {
@@ -150,6 +151,26 @@ export default class DocumentationRenderer implements TabRenderer {
             subtree: true,
             attributes: true,
             attributeFilter: ["src"]
+          });
+
+          // Sync theme with application theme
+          const syncTheme = () => {
+            const theme = isDarkTheme() ? "dark" : "light";
+            if (iframeDocument.documentElement.getAttribute("data-theme") !== theme) {
+              iframeDocument.documentElement.setAttribute("data-theme", theme);
+            }
+            if (iframeDocument.documentElement.style.colorScheme !== theme) {
+              iframeDocument.documentElement.style.colorScheme = theme;
+            }
+          };
+          syncTheme();
+          new MutationObserver(syncTheme).observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ["class"]
+          });
+          new MutationObserver(syncTheme).observe(iframeDocument.documentElement, {
+            attributes: true,
+            attributeFilter: ["data-theme"]
           });
 
           // Detect and fix incorrect hashes (e.g. homepage links)

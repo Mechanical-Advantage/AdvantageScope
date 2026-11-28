@@ -21,7 +21,7 @@ import {
   LineGraphRendererCommand_NumericField
 } from "../../shared/renderers/LineGraphRenderer";
 import { Units } from "../../shared/units";
-import { clampValue, createUUID, lowerBound, scaleValueClamped, upperBound } from "../../shared/util";
+import { clampValue, createUUID, isDarkTheme, lowerBound, scaleValueClamped, upperBound } from "../../shared/util";
 import SourceList from "../SourceList";
 import { LineGraphController_DiscreteConfig, LineGraphController_NumericConfig } from "./LineGraphController_Config";
 import TabController from "./TabController";
@@ -709,7 +709,7 @@ export default class LineGraphController implements TabController {
           values.push(""); // Terminate visual block
         }
 
-        let light = !window.matchMedia("(prefers-color-scheme: dark)").matches;
+        let light = !isDarkTheme();
         let colorMap: { [key: string]: string } = {};
         colorMap[t("hub.lineGraph.robotMode.disabled")] = light ? "#dddddd" : "#444444";
         colorMap[t("hub.lineGraph.robotMode.teleop")] = light ? "#5a83ff" : "#3957dd";

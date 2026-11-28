@@ -15,7 +15,7 @@ body {
   background-color: #fff;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   body {
     background-color: #222;
   }
@@ -40,7 +40,7 @@ div.type-header:first-child {
   border-top: none;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.type-header {
     border-top: 1px solid #333;
   }

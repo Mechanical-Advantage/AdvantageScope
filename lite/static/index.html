@@ -68,7 +68,7 @@
         font-size: calc(min(5vh, 5vw));
       }
 
-      @media (prefers-color-scheme: dark) {
+      html.dark {
         div.too-small {
           background-color: #222;
         }
@@ -96,7 +96,7 @@
         box-shadow: 0px 0px 3px 0px #00000022;
       }
 
-      @media (prefers-color-scheme: dark) {
+      html.dark {
         body {
           background-color: #222;
         }
@@ -139,7 +139,7 @@
         background-color: #fff;
       }
 
-      @media (prefers-color-scheme: dark) {
+      html.dark {
         iframe.popup-frame {
           border: 1px solid #4a4a4a;
           background-color: #222;
@@ -173,7 +173,7 @@
         opacity: 0.35;
       }
 
-      @media (prefers-color-scheme: dark) {
+      html.dark {
         .popup-menu .popup-menu--submenu-content,
         .popup-menu .popup-menu--container {
           background: #191919;
@@ -218,6 +218,12 @@
     <script>
       const SIDEBAR_WIDTH_KEY = "AdvantageScopeLite/sidebar-width";
       const DIRECTION_KEY = "AdvantageScopeLite/direction";
+      const THEME_KEY = "AdvantageScopeLite/theme";
+
+      // Update theme for loading background
+      let theme = window.localStorage.getItem(THEME_KEY);
+      let isDark = theme === "dark" || (theme !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+      document.documentElement.classList.toggle("dark", isDark);
 
       // Update side bar width and layout direction for loading background
       let width = window.localStorage.getItem(SIDEBAR_WIDTH_KEY);

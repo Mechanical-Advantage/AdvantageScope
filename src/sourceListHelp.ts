@@ -9,12 +9,9 @@ import { ensureThemeContrast } from "./shared/Colors";
 import NamedMessage from "./shared/NamedMessage";
 import { SourceListConfig, getSourceListPrefix, tOption, tType, tValue } from "./shared/SourceListConfig";
 import LoggableType from "./shared/log/LoggableType";
+import { isDarkTheme } from "./shared/util";
 
 let themeCallbacks: (() => void)[] = [];
-
-function isDark() {
-  return window.matchMedia("(prefers-color-scheme: dark)").matches;
-}
 
 window.addEventListener("message", (event) => {
   if (event.data === "port") {
@@ -110,7 +107,7 @@ window.addEventListener("message", (event) => {
       // Update when theme changes
       let lastIsDark: boolean | null = null;
       let periodic = () => {
-        let newIsDark = isDark();
+        let newIsDark = isDarkTheme();
         if (newIsDark !== lastIsDark) {
           lastIsDark = newIsDark;
           themeCallbacks.forEach((callback) => {
@@ -151,7 +148,7 @@ function addItem(
     if (typeIcon.contentDocument !== null) {
       let svg = typeIcon.contentDocument.getElementsByTagName("svg")[0];
       if (svg !== undefined) {
-        svg.style.color = isDark() ? darkColor : lightColor;
+        svg.style.color = isDarkTheme() ? darkColor : lightColor;
       }
     }
   };

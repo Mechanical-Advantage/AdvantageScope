@@ -44,7 +44,7 @@ import {
   LITE_COMPATIBLE_TABS
 } from "../../shared/TabType";
 import { Units } from "../../shared/units";
-import { getDocsUrl, getWpilibDocsUrl } from "../../shared/util";
+import { getDocsUrl, getWpilibDocsUrl, isDarkTheme } from "../../shared/util";
 import { GITHUB_REPOSITORY } from "../github";
 import { loadAssets } from "./assetLoader";
 import { isAlpha, isBeta, isBetaExpired, isBetaWelcomeComplete, saveBetaWelcomeComplete } from "./betaUtil";
@@ -109,6 +109,37 @@ try {
 document.documentElement.dir = isRtl ? "rtl" : "ltr";
 localStorage.setItem(LocalStorageKeys.DIRECTION, document.documentElement.dir);
 
+// Set up theme
+function getTheme(prefs: Preferences | null = null): "light" | "dark" | "system" {
+  if (prefs === null) {
+    prefs = Object.assign({}, DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS);
+    let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
+    if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+  }
+  return prefs.theme;
+}
+
+let currentTheme: "light" | "dark" | "system" = getTheme();
+const darkThemeMedia = window.matchMedia("(prefers-color-scheme: dark)");
+
+function isDarkThemeEnabled(): boolean {
+  return currentTheme === "dark" || (currentTheme === "system" && darkThemeMedia.matches);
+}
+
+function applyTheme(theme?: "light" | "dark" | "system") {
+  if (theme !== undefined) {
+    currentTheme = theme;
+    localStorage.setItem(LocalStorageKeys.THEME, theme);
+  }
+  const isDark = isDarkThemeEnabled();
+  document.documentElement.classList.toggle("dark", isDark);
+  HUB_FRAME?.contentDocument?.documentElement?.classList.toggle("dark", isDark);
+  POPUP_FRAME?.contentDocument?.documentElement?.classList.toggle("dark", isDark);
+}
+
+applyTheme(currentTheme);
+darkThemeMedia.addEventListener("change", () => applyTheme());
+
 /**
  * Open a new popup menu
  * @param rect The rectangle for the button
@@ -164,6 +195,7 @@ function openPopupWindow(
       if (POPUP_FRAME.contentDocument?.documentElement) {
         POPUP_FRAME.contentDocument.documentElement.lang = lang;
         POPUP_FRAME.contentDocument.documentElement.dir = isRtl ? "rtl" : "ltr";
+        POPUP_FRAME.contentDocument.documentElement.classList.toggle("dark", isDarkThemeEnabled());
       }
       POPUP_FRAME.hidden = false;
       HUB_FRAME.classList.add("background");
@@ -253,7 +285,7 @@ function openSourceListHelp(config: SourceListConfig) {
 /** Opens a popup window for preferences. */
 function openPreferences() {
   const width = 400;
-  const optionRows = 9;
+  const optionRows = 10;
   const titleRows = 2;
   const height = optionRows * 27 + titleRows * 34 + 54;
   openPopupWindow("www/preferences.html", [width, height], "pixels", (message) => {
@@ -270,6 +302,7 @@ function openPreferences() {
 
     // Update preferences
     closePopupWindow();
+    applyTheme(message.theme);
     sendMessage(hubPort, "set-preferences", message);
     localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(message));
 
@@ -342,6 +375,13 @@ async function openUploadAsset() {
 }
 
 async function initHub() {
+  // Set up document attributes
+  if (HUB_FRAME.contentDocument?.documentElement) {
+    HUB_FRAME.contentDocument.documentElement.lang = lang;
+    HUB_FRAME.contentDocument.documentElement.dir = isRtl ? "rtl" : "ltr";
+    HUB_FRAME.contentDocument.documentElement.classList.toggle("dark", isDarkThemeEnabled());
+  }
+
   // Create message ports
   const channel = new MessageChannel();
   HUB_FRAME.contentWindow?.postMessage("port", "*", [channel.port1]);
@@ -429,12 +469,6 @@ async function initHub() {
   HUB_FRAME.contentWindow?.addEventListener("keydown", (event) => processKeydown(event as KeyboardEvent), {
     capture: true
   });
-
-  // Set up document attributes
-  if (HUB_FRAME.contentDocument?.documentElement) {
-    HUB_FRAME.contentDocument.documentElement.lang = lang;
-    HUB_FRAME.contentDocument.documentElement.dir = isRtl ? "rtl" : "ltr";
-  }
 }
 
 async function handleHubMessage(message: NamedMessage) {
@@ -482,6 +516,7 @@ async function handleHubMessage(message: NamedMessage) {
         let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
         if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
         mergePreferences(prefs, message.data);
+        applyTheme(prefs.theme);
         localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
         sendMessage(hubPort, "set-preferences", prefs);
       }
@@ -990,8 +1025,7 @@ async function handleHubMessage(message: NamedMessage) {
         // Make colorred text
         let getStyle = (value: string): string => {
           if (value.startsWith("#")) {
-            const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-            return `color: ${ensureThemeContrast(value, isDark)};`;
+            return `color: ${ensureThemeContrast(value, isDarkTheme())};`;
           } else {
             return "";
           }

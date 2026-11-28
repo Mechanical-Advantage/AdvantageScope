@@ -18,7 +18,7 @@ import {
 import { KeyboardUtil } from "../KeyboardUtil";
 import { Rotation3d, rotationSequenceToQuaternion } from "../geometry";
 import { Units } from "../units";
-import { checkArrayType, clampValue } from "../util";
+import { checkArrayType, clampValue, isDarkTheme } from "../util";
 import {
   Field3dRendererCommand,
   Field3dRendererCommand_AnyObj,
@@ -586,7 +586,7 @@ export default class Field3dRendererImpl implements TabRenderer {
     // Check for new parameters
     let commandString = JSON.stringify(command);
     let assetsString = JSON.stringify(window.assets);
-    let isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    let isDark = isDarkTheme();
     let newAssets = assetsString !== JSON.stringify(this.lastAssets);
     let newFieldAssets = JSON.stringify(window.assets?.field3ds) !== JSON.stringify(this.lastAssets?.field3ds);
     let newRobotAssets = JSON.stringify(window.assets?.robots) !== JSON.stringify(this.lastAssets?.robots);

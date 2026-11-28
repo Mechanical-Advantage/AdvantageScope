@@ -11,7 +11,7 @@ body {
   overflow: hidden;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   body {
     background-color: #222;
   }
@@ -27,7 +27,7 @@ div.qr-container {
   background-color: #f3f3f3;
 }
 
-@media (prefers-color-scheme: dark) {
+html.dark {
   div.qr-container {
     background-color: #1b1b1b;
   }

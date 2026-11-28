@@ -11,7 +11,16 @@ import { ensureThemeContrast } from "../Colors";
 import LineGraphFilter from "../LineGraphFilter";
 import { SelectionMode } from "../Selection";
 import { Units } from "../units";
-import { calcAxisStepSize, clampValue, cleanFloat, formatNumber, scaleValue, shiftColor, ValueScaler } from "../util";
+import {
+  calcAxisStepSize,
+  clampValue,
+  cleanFloat,
+  formatNumber,
+  isDarkTheme,
+  scaleValue,
+  shiftColor,
+  ValueScaler
+} from "../util";
 import TabRenderer from "./TabRenderer";
 
 export default class LineGraphRenderer implements TabRenderer {
@@ -157,7 +166,7 @@ export default class LineGraphRenderer implements TabRenderer {
     let context = this.CANVAS.getContext("2d") as CanvasRenderingContext2D;
     let width = this.CANVAS.clientWidth;
     let height = this.CANVAS.clientHeight;
-    let light = !window.matchMedia("(prefers-color-scheme: dark)").matches;
+    let light = !isDarkTheme();
 
     // Exit if render state unchanged
     let renderState: any[] = [

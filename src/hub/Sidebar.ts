@@ -12,7 +12,7 @@ import LoggableType from "../shared/log/LoggableType";
 import { getChildLogExtension, isChildLog } from "../shared/log/LogKeyUtils";
 import { getOrDefault, searchFields, TYPE_KEY } from "../shared/log/LogUtil";
 import { SelectionMode } from "../shared/Selection";
-import { arraysEqual, formatNumberAuto, htmlEncode, setsEqual } from "../shared/util";
+import { arraysEqual, formatNumberAuto, htmlEncode, isDarkTheme, setsEqual } from "../shared/util";
 import CustomSchemas from "./dataSources/schema/CustomSchemas";
 
 export default class Sidebar {
@@ -811,7 +811,7 @@ export default class Sidebar {
           lastValue = value;
 
           if (value !== null) {
-            const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            const darkMode = isDarkTheme();
             circle.setAttributeNS(null, "fill", value ? (darkMode ? "lightgreen" : "green") : "red");
             line.style.display = value ? "none" : "initial";
           }

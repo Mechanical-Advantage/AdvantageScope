@@ -392,3 +392,8 @@ export function getWpilibDocsUrl(url: string, lang: string): string {
   }
   return url;
 }
+
+/** Returns whether the application is currently using dark theme. */
+export function isDarkTheme(): boolean {
+  return document.documentElement.classList.contains("dark");
+}

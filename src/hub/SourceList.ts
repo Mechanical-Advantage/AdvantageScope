@@ -29,7 +29,7 @@ import { getMechanismState } from "../shared/log/LogMechanismState";
 import { getLogValueText, getOrDefault } from "../shared/log/LogUtil";
 import LoggableType from "../shared/log/LoggableType";
 import { Units } from "../shared/units";
-import { createUUID, formatNumber, jsonCopy } from "../shared/util";
+import { createUUID, formatNumber, isDarkTheme, jsonCopy } from "../shared/util";
 
 export default class SourceList {
   private DRAG_THRESHOLD_PX = 5;
@@ -272,7 +272,7 @@ export default class SourceList {
       if (this.stopped) return;
 
       // Update items when theme changes (some icon colors will change)
-      let isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      let isDark = isDarkTheme();
       if (isDark !== lastIsDark) {
         lastIsDark = isDark;
         this.updateAllItems();
@@ -939,7 +939,7 @@ export default class SourceList {
       typeIconHidden = temp;
     }
     let color: string;
-    const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = isDarkTheme();
     let optionColor = typeConfig.color.startsWith("#") ? undefined : state.options[typeConfig.color];
     if (typeConfig.color.startsWith("#")) {
       if (isDark && typeConfig.darkColor !== undefined) {

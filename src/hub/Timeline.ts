@@ -6,7 +6,7 @@
 // at the root directory of this project.
 import { isolateValue } from "../shared/bidi";
 import { getRobotStateRanges } from "../shared/log/RobotState";
-import { calcAxisStepSize, clampValue, cleanFloat, scaleValue } from "../shared/util";
+import { calcAxisStepSize, clampValue, cleanFloat, isDarkTheme, scaleValue } from "../shared/util";
 import ScrollSensor from "./ScrollSensor";
 
 export default class Timeline {
@@ -117,7 +117,7 @@ export default class Timeline {
     let context = this.CANVAS.getContext("2d") as CanvasRenderingContext2D;
     let width = this.CONTAINER.clientWidth;
     let height = this.CONTAINER.clientHeight;
-    let light = !window.matchMedia("(prefers-color-scheme: dark)").matches;
+    let light = !isDarkTheme();
     let timeRange = window.selection.getTimelineRange();
     this.CANVAS.width = width * devicePixelRatio;
     this.CANVAS.height = height * devicePixelRatio;

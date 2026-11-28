@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import { ModuleVelocity, RobotVelocities, Rotation2d } from "../geometry";
-import { transformPx, wrapRadians } from "../util";
+import { isDarkTheme, transformPx, wrapRadians } from "../util";
 import TabRenderer from "./TabRenderer";
 
 export default class SwerveRenderer implements TabRenderer {
@@ -38,7 +38,7 @@ export default class SwerveRenderer implements TabRenderer {
     let renderState: any[] = [
       this.CONTAINER.clientWidth,
       this.CONTAINER.clientHeight,
-      window.matchMedia("(prefers-color-scheme: dark)").matches,
+      isDarkTheme(),
       window.devicePixelRatio,
       command
     ];
@@ -60,7 +60,7 @@ export default class SwerveRenderer implements TabRenderer {
     context.lineCap = "round";
     context.lineJoin = "round";
     let centerPx: [number, number] = [size / 2, size / 2];
-    let isLight = !window.matchMedia("(prefers-color-scheme: dark)").matches;
+    let isLight = !isDarkTheme();
     let strokeColor = isLight ? this.BLACK_COLOR : this.WHITE_COLOR;
 
     // Calculate component dimensions
