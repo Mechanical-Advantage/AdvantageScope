@@ -965,6 +965,7 @@ main:
     openDsInNewWindow: "פתיחה בחלון חדש"
     openDsInThisWindow: "פתיחה בחלון זה"
     unsupportedFormatLite: "פורמט קובץ שאינו נתמך ב-AdvantageScope Lite."
+    nonDsLogLiteDs: "קובץ זה אינו קובץ יומן של Driver Station. פתחו אותו במקום זאת באפליקציית שולחן העבודה של AdvantageScope."
     decompressFailed: "חילוץ קובץ ה-WPILOG נכשל."
     invalidExtension: "סיומת יומן לא חוקית"
     limitedSignals: "זמינות אותות מוגבלת"

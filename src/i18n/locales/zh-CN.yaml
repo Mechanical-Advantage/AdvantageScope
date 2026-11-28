@@ -942,6 +942,7 @@ main:
     openDsInNewWindow: "在新窗口中打开"
     openDsInThisWindow: "在此窗口中打开"
     unsupportedFormatLite: "AdvantageScope Lite 不支持的文件格式。"
+    nonDsLogLiteDs: "此文件不是操控站日志。请改用 AdvantageScope 桌面应用打开。"
     decompressFailed: "解压 WPILOG 文件失败。"
     invalidExtension: "无效的日志扩展名"
     limitedSignals: "可用信号有限"

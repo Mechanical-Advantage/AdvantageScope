@@ -24,5 +24,5 @@ Zip files containing collections of common assets can be downloaded by clicking 
 :::
 
 :::tip
-No installation is required to use AdvantageScope Lite in the FIRST Driver Station. Navigate to http://localhost:6768/ascope to connect live or view log files.
+No installation is required to use AdvantageScope Lite in the FIRST Driver Station. Navigate to http://localhost:6768/ascope to connect live or view log files. External Driver Station log files can also be opened by dragging and dropping them onto the window.
 :::

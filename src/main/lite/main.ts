@@ -44,7 +44,14 @@ import {
   LITE_COMPATIBLE_TABS
 } from "../../shared/TabType";
 import { Units } from "../../shared/units";
-import { getDocsUrl, getWpilibDocsUrl, isDarkTheme } from "../../shared/util";
+import {
+  createUUID,
+  DS_LOG_HEADER_LENGTH,
+  getDocsUrl,
+  getWpilibDocsUrl,
+  isDarkTheme,
+  isDsLogHeader
+} from "../../shared/util";
 import { GITHUB_REPOSITORY } from "../github";
 import { loadAssets } from "./assetLoader";
 import { isAlpha, isBeta, isBetaExpired, isBetaWelcomeComplete, saveBetaWelcomeComplete } from "./betaUtil";
@@ -75,6 +82,7 @@ let assetsPromise: Promise<AdvantageScopeAssets>;
 let downloadInterval: number | null = null;
 let popupRequiresForceClose = false;
 let isReloading = false;
+let localFiles: Map<string, File> = new Map();
 
 // Set up locale
 function getLocale(prefs: Preferences | null = null): string {
@@ -478,8 +486,41 @@ async function handleHubMessage(message: NamedMessage) {
       break;
 
     case "open-files-request":
-      clearLogUrlParams();
-      sendMessage(hubPort, "open-files", { files: message.data.files, merge: false });
+      if (DISTRIBUTION === Distribution.LiteDS) {
+        const files: File[] = message.data.files;
+        if (files.length === 0) break;
+
+        let allDsLogs = true;
+        for (const file of files) {
+          if (!file.name.endsWith(".wpilog")) {
+            allDsLogs = false;
+            break;
+          }
+          try {
+            const header = new Uint8Array(await file.slice(0, DS_LOG_HEADER_LENGTH).arrayBuffer());
+            if (!isDsLogHeader(header)) {
+              allDsLogs = false;
+              break;
+            }
+          } catch {
+            allDsLogs = false;
+            break;
+          }
+        }
+
+        if (!allDsLogs) {
+          window.alert(t("main.logs.nonDsLogLiteDs"));
+          break;
+        }
+
+        const virtualPaths = files.map((file) => {
+          const virtualPath = `local/${createUUID()}/${file.name}`;
+          localFiles.set(virtualPath, file);
+          return virtualPath;
+        });
+        clearLogUrlParams();
+        sendMessage(hubPort, "open-files", { files: virtualPaths, merge: false });
+      }
       break;
 
     case "alert":
@@ -562,6 +603,26 @@ async function handleHubMessage(message: NamedMessage) {
       {
         const uuid: string = message.data.uuid;
         const path: string = message.data.path;
+
+        if (localFiles.has(path)) {
+          const file = localFiles.get(path)!;
+          localFiles.delete(path);
+          try {
+            const array = new Uint8Array(await file.arrayBuffer());
+            sendMessage(hubPort, "historical-data", {
+              files: [array],
+              error: null,
+              uuid: uuid
+            });
+          } catch {
+            sendMessage(hubPort, "historical-data", {
+              files: [null],
+              error: null,
+              uuid: uuid
+            });
+          }
+          break;
+        }
 
         let extension = path.split(".").pop();
         if (extension === "hoot" || extension === "revlog") {
@@ -1698,6 +1759,8 @@ window.addEventListener("load", () => {
   // Prevent dragging
   document.addEventListener("mousedown", (event) => event.preventDefault());
   document.addEventListener("mousemove", (event) => event.preventDefault());
+  document.addEventListener("dragover", (event) => event.preventDefault());
+  document.addEventListener("drop", (event) => event.preventDefault());
 
   // Set up keyboard shortcuts
   window.addEventListener(

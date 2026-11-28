@@ -950,6 +950,7 @@ main:
     openDsInNewWindow: "Ouvrir dans une nouvelle fenêtre"
     openDsInThisWindow: "Ouvrir dans cette fenêtre"
     unsupportedFormatLite: "Format de fichier non pris en charge dans AdvantageScope Lite."
+    nonDsLogLiteDs: "Ce fichier n'est pas un journal de la console de pilotage. Ouvrez-le plutôt dans l'application de bureau d'AdvantageScope."
     decompressFailed: "Échec de la décompression du fichier WPILOG."
     invalidExtension: "Extension de journal non valide"
     limitedSignals: "Signaux limités disponibles"

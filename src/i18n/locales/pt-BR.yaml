@@ -949,6 +949,7 @@ main:
     openDsInNewWindow: "Abrir em nova janela"
     openDsInThisWindow: "Abrir nesta janela"
     unsupportedFormatLite: "Formato de arquivo não suportado no AdvantageScope Lite."
+    nonDsLogLiteDs: "Este arquivo não é um log da Driver Station. Em vez disso, abra-o no aplicativo para desktop do AdvantageScope."
     decompressFailed: "Falha ao descompactar arquivo WPILOG."
     invalidExtension: "Extensão de log inválida"
     limitedSignals: "Sinais limitados disponíveis"

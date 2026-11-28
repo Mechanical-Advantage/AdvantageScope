@@ -938,6 +938,7 @@ main:
     openDsInNewWindow: "Yeni pencerede aç"
     openDsInThisWindow: "Bu pencerede aç"
     unsupportedFormatLite: "AdvantageScope Lite'ta desteklenmeyen dosya formatı."
+    nonDsLogLiteDs: "Bu dosya bir Sürücü İstasyonu logu değil. Bunun yerine AdvantageScope masaüstü uygulamasında açın."
     decompressFailed: "WPILOG dosyasının sıkıştırması açılamadı."
     invalidExtension: "Geçersiz log uzantısı"
     limitedSignals: "Sınırlı sinyal mevcut"

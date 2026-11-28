@@ -950,6 +950,7 @@ main:
     openDsInNewWindow: "नई विंडो में खोलें"
     openDsInThisWindow: "इस विंडो में खोलें"
     unsupportedFormatLite: "AdvantageScope लाइट में असमर्थित फ़ाइल फ़ॉर्मेट।"
+    nonDsLogLiteDs: "यह फ़ाइल ड्राइवर स्टेशन लॉग नहीं है। इसके बजाय इसे AdvantageScope डेस्कटॉप ऐप में खोलें।"
     decompressFailed: "WPILOG फ़ाइल को डीकंप्रेस करने में विफल।"
     invalidExtension: "अमान्य लॉग एक्सटेंशन"
     limitedSignals: "सीमित सिग्नल उपलब्ध हैं"

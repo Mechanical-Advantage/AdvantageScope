@@ -26,5 +26,5 @@ _上图所示为英文界面。_
 :::
 
 :::tip
-在 FIRST Driver Station 中使用 AdvantageScope Lite 无需安装，直接访问 http://localhost:6768/ascope 即可连接实时数据或查看日志文件。
+在 FIRST Driver Station 中使用 AdvantageScope Lite 无需安装，直接访问 http://localhost:6768/ascope 即可连接实时数据或查看日志文件。此外，你也可以直接将外部操控站日志文件拖放到窗口中打开。
 :::

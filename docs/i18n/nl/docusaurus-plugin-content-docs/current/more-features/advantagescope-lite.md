@@ -23,5 +23,5 @@ Via de onderstaande links download je zipbestanden met verzamelingen van veelgeb
   :::
 
 :::tip
-Je hoeft niets te installeren om AdvantageScope Lite in het FIRST Driver Station te gebruiken. Ga in je browser naar http://localhost:6768/ascope om live verbinding te maken of logbestanden te bekijken.
+Je hoeft niets te installeren om AdvantageScope Lite in het FIRST Driver Station te gebruiken. Ga in je browser naar http://localhost:6768/ascope om live verbinding te maken of logbestanden te bekijken. Je kunt externe Driver Station-logbestanden ook openen door ze naar het venster te slepen.
 :::

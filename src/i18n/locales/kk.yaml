@@ -948,6 +948,7 @@ main:
     openDsInNewWindow: "Жаңа терезеде ашу"
     openDsInThisWindow: "Осы терезеде ашу"
     unsupportedFormatLite: "AdvantageScope Lite нұсқасында қолдау көрсетілмейтін файл пішімі."
+    nonDsLogLiteDs: "Бұл файл Driver Station журналы емес. Оның орнына AdvantageScope жұмыс үстелі қолданбасында ашыңыз."
     decompressFailed: "WPILOG файлы қысудан шығарылмады."
     invalidExtension: "Жарамсыз журнал кеңейтімі"
     limitedSignals: "Шектеулі сигналдар қолжетімді"

@@ -26,5 +26,5 @@ Vous pouvez télécharger des archives zip contenant des ensembles de ressources
 :::
 
 :::tip
-Aucune installation n'est nécessaire pour utiliser AdvantageScope Lite dans la console de pilotage FIRST. Rendez-vous simplement à l'adresse http://localhost:6768/ascope pour vous connecter en direct ou consulter des fichiers journaux.
+Aucune installation n'est nécessaire pour utiliser AdvantageScope Lite dans la console de pilotage FIRST. Rendez-vous simplement à l'adresse http://localhost:6768/ascope pour vous connecter en direct ou consulter des fichiers journaux. Vous pouvez également ouvrir des fichiers journaux externes de la console de pilotage en les glissant-déposant dans la fenêtre.
 :::

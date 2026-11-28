@@ -512,12 +512,19 @@ document.addEventListener("drop", (event) => {
   event.stopPropagation();
 
   if (event.dataTransfer) {
-    let files: string[] = [];
-    for (const file of event.dataTransfer.files) {
-      files.push(window.electron.getFilePath(file));
-    }
-    if (files.length > 0) {
-      window.sendMainMessage("open-files-request", { files: files });
+    if (!IS_LITE) {
+      let files: string[] = [];
+      for (const file of event.dataTransfer.files) {
+        files.push(window.electron.getFilePath(file));
+      }
+      if (files.length > 0) {
+        window.sendMainMessage("open-files-request", { files: files });
+      }
+    } else if (DISTRIBUTION === Distribution.LiteDS) {
+      let files: File[] = Array.from(event.dataTransfer.files);
+      if (files.length > 0) {
+        window.sendMainMessage("open-files-request", { files: files });
+      }
     }
   }
 });

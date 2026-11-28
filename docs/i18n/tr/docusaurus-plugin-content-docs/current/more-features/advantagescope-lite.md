@@ -26,5 +26,5 @@ Sık kullanılan varlık paketlerini içeren zip dosyalarını aşağıdaki bağ
 :::
 
 :::tip
-FIRST Sürücü İstasyonu'nda AdvantageScope Lite'ı kullanmak için kurulum yapmanız gerekmez. Canlı bağlanmak veya log dosyalarını incelemek için http://localhost:6768/ascope adresine gidin.
+FIRST Sürücü İstasyonu'nda AdvantageScope Lite'ı kullanmak için kurulum yapmanız gerekmez. Canlı bağlanmak veya log dosyalarını incelemek için http://localhost:6768/ascope adresine gidin. Harici Sürücü İstasyonu log dosyalarını pencereye sürükleyip bırakarak da açabilirsiniz.
 :::

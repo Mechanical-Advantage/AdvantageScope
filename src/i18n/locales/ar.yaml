@@ -1009,6 +1009,7 @@ main:
     openDsInNewWindow: "فتح في نافذة جديدة"
     openDsInThisWindow: "فتح في هذه النافذة"
     unsupportedFormatLite: "تنسيق ملف غير مدعوم في AdvantageScope Lite."
+    nonDsLogLiteDs: "هذا الملف ليس سجلًا لمحطة السائق. افتحه بدلًا من ذلك في تطبيق AdvantageScope لسطح المكتب."
     decompressFailed: "فشل فك ضغط ملف WPILOG."
     invalidExtension: "امتداد سجل غير صالح"
     limitedSignals: "إشارات محدودة متاحة"

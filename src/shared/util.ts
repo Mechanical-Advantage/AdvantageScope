@@ -397,3 +397,28 @@ export function getWpilibDocsUrl(url: string, lang: string): string {
 export function isDarkTheme(): boolean {
   return document.documentElement.classList.contains("dark");
 }
+
+const DS_LOG_EXTRA_HEADER = new TextEncoder().encode("DS Log File");
+export const DS_LOG_HEADER_LENGTH = 12 + DS_LOG_EXTRA_HEADER.length;
+
+/** Returns whether the given WPILOG file header bytes belong to a FIRST Driver Station log. */
+export function isDsLogHeader(header: Uint8Array): boolean {
+  if (header.length < DS_LOG_HEADER_LENGTH) return false;
+  if (
+    header[0] !== 0x57 || // W
+    header[1] !== 0x50 || // P
+    header[2] !== 0x49 || // I
+    header[3] !== 0x4c || // L
+    header[4] !== 0x4f || // O
+    header[5] !== 0x47 // G
+  ) {
+    return false;
+  }
+  if (header[7] !== 1) return false;
+  const view = new DataView(header.buffer, header.byteOffset, header.byteLength);
+  if (view.getUint32(8, true) !== DS_LOG_EXTRA_HEADER.length) return false;
+  for (let i = 0; i < DS_LOG_EXTRA_HEADER.length; i++) {
+    if (header[12 + i] !== DS_LOG_EXTRA_HEADER[i]) return false;
+  }
+  return true;
+}

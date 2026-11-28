@@ -980,6 +980,7 @@ main:
     openDsInNewWindow: "Открыть в новом окне"
     openDsInThisWindow: "Открыть в этом окне"
     unsupportedFormatLite: "Неподдерживаемый формат файла в AdvantageScope Lite."
+    nonDsLogLiteDs: "Этот файл не является логом Driver Station. Вместо этого откройте его в настольном приложении AdvantageScope."
     decompressFailed: "Не удалось распаковать файл WPILOG."
     invalidExtension: "Недопустимое расширение лога"
     limitedSignals: "Доступен ограниченный набор сигналов"

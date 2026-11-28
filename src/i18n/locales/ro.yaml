@@ -965,6 +965,7 @@ main:
     openDsInNewWindow: "Deschide în fereastră nouă"
     openDsInThisWindow: "Deschide în această fereastră"
     unsupportedFormatLite: "Format de fișier neacceptat în AdvantageScope Lite."
+    nonDsLogLiteDs: "Acest fișier nu este un log Driver Station. Deschide-l în schimb în aplicația desktop AdvantageScope."
     decompressFailed: "Nu s-a putut decomprima fișierul WPILOG."
     invalidExtension: "Extensie de log nevalidă"
     limitedSignals: "Semnale limitate disponibile"

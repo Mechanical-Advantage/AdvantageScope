@@ -936,6 +936,7 @@ main:
     openDsInNewWindow: "在新視窗中開啟"
     openDsInThisWindow: "在此視窗中開啟"
     unsupportedFormatLite: "AdvantageScope Lite 不支援的檔案格式。"
+    nonDsLogLiteDs: "此檔案不是駕駛站日誌。請改用 AdvantageScope 桌面應用程式開啟。"
     decompressFailed: "解壓縮 WPILOG 檔案失敗。"
     invalidExtension: "無效的日誌副檔名"
     limitedSignals: "可用的訊號受限"

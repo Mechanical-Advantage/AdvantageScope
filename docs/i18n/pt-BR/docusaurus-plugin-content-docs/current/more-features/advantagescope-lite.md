@@ -26,5 +26,5 @@ Você pode baixar arquivos `.zip` com coleções dos recursos mais usados nos li
 :::
 
 :::tip
-Você não precisa instalar nada para usar o AdvantageScope Lite na Driver Station da FIRST. Basta acessar http://localhost:6768/ascope no navegador para se conectar ao vivo ou visualizar arquivos de log.
+Você não precisa instalar nada para usar o AdvantageScope Lite na Driver Station da FIRST. Basta acessar http://localhost:6768/ascope no navegador para se conectar ao vivo ou visualizar arquivos de log. Você também pode abrir arquivos de log externos da Driver Station arrastando-os e soltando-os na janela.
 :::

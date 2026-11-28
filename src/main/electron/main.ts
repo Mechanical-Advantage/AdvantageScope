@@ -58,7 +58,7 @@ import {
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTION, Distribution } from "../../shared/buildConstants";
 import { Units } from "../../shared/units";
-import { createUUID, formatDate, getWpilibDocsUrl } from "../../shared/util";
+import { createUUID, DS_LOG_HEADER_LENGTH, formatDate, getWpilibDocsUrl, isDsLogHeader } from "../../shared/util";
 import { GITHUB_REPOSITORY } from "../github";
 import { getDefaultDsLayout } from "../lite/dsLayout";
 import {
@@ -3809,8 +3809,7 @@ function openBetaWelcome(parentWindow: Electron.BrowserWindow) {
 function isDsLog(path: string): boolean {
   // Read the extra header from the WPILOG directory. This happens before
   // actually loading the file normally, so just parse the start of it.
-  const expectedExtra = Buffer.from("DS Log File", "utf8");
-  const buffer = Buffer.alloc(12 + expectedExtra.length);
+  const buffer = Buffer.alloc(DS_LOG_HEADER_LENGTH);
   let fd: number | null = null;
   try {
     fd = fs.openSync(path, "r");
@@ -3820,10 +3819,7 @@ function isDsLog(path: string): boolean {
   } finally {
     if (fd !== null) fs.closeSync(fd);
   }
-  if (buffer.toString("ascii", 0, 6) !== "WPILOG") return false;
-  if (buffer.readUInt8(7) !== 1) return false;
-  if (buffer.readUInt32LE(8) !== expectedExtra.length) return false;
-  return buffer.subarray(12).equals(expectedExtra);
+  return isDsLogHeader(buffer);
 }
 
 /**

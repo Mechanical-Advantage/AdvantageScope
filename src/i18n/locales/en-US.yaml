@@ -960,6 +960,7 @@ main:
     openDsInNewWindow: "Open in New Window" # Button option to open log in a new Driver Station window
     openDsInThisWindow: "Open in This Window" # Button option to open log in the current window
     unsupportedFormatLite: "Unsupported file format in AdvantageScope Lite." # Error message when attempting to open an unsupported file format in Lite
+    nonDsLogLiteDs: "This file isn't a Driver Station log. Open it in the AdvantageScope desktop app instead." # Error message when attempting to open a non-DS log file in the version of AdvantageScope Lite bundled with the Driver Station
     decompressFailed: "Failed to decompress WPILOG file." # Error message when decompressing a WPILOGXZ file fails
     invalidExtension: "Invalid log extension" # Error message when a child log has an invalid file extension
     limitedSignals: "Limited Signals Available" # Warning message for limited Phoenix signals in a log file
